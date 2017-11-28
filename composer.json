@@ -1,0 +1,14 @@
+{
+    "name": "woocommerce-mundipagg-payments",
+    "description": "WooCommerce Mundipagg Payments",
+    "type": "wordpress-plugin",
+    "license": "GPL",
+    "autoload": {
+        "psr-4": {
+            "Woocommerce\\Mundipagg\\": "src/"
+        }
+    },
+    "require": {
+        "mashape/unirest-php": "^3.0"
+    }
+}

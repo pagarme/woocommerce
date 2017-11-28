@@ -1,0 +1,114 @@
+%clearFix {
+	clear: both;
+
+	&:after {
+		clear: both;
+		content: '';
+		display: block;
+		font-size: 0;
+		height: 0;
+		visibility: hidden;
+	}
+}
+
+%ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+%imageReplacement {
+	overflow: hidden;
+	text-indent: 101%;
+	white-space: nowrap;
+}
+
+%img {
+	display: block;
+	height: auto;
+	max-width: 100%;
+}
+
+%alignCenterV {
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+			transform: translateY(-50%);
+}
+
+%alignCenterH {
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+			transform: translateX(-50%);
+}
+
+%alignCenter {
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate3d(-50%, -50%, 0);
+    -ms-transform: translate(-50%,-50%);
+	    transform: translate3d(-50%, -50%, 0);
+}
+
+%translate {
+    -ms-transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+}
+
+%noSelect {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+		user-select: none;
+}
+
+%transitionAll {
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+        transition: all 0.5s ease-in-out;
+}
+
+@-ms-keyframes spinner {
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(360deg); }
+}
+@-moz-keyframes spinner {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spinner {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spinner {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+
+%spinner {
+    position: absolute;
+    -webkit-animation-name: spinner;
+    -webkit-animation-duration: 700ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: spinner;
+    -moz-animation-duration: 700ms;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -ms-animation-name: spinner;
+    -ms-animation-duration: 700ms;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-timing-function: linear;
+
+    animation-name: spinner;
+    animation-duration: 700ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}

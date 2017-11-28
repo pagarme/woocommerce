@@ -1,0 +1,21 @@
+.#{$prefix}-spinner {
+    @extend %spinner;
+}
+
+#send-notification {
+
+	&.active {
+		border-color: #e2e0e0;
+		box-shadow: none;
+		color: #8e8e8e;
+		cursor: progress;
+		pointer-events: none;
+
+		span {
+			margin-left: 10px;
+			margin-right: 20px;
+			position: relative;
+			top: 3px;
+		}
+	}
+}
