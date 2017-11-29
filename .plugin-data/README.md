@@ -25,14 +25,14 @@ Pagamentos tem que ser fáceis. São muitos passos por trás de uma simples tran
 * Operação no modo Apenas Autorizar ou Autorizar e Capturar;
 * Pagamento com cartão de crédito;
 * Pagamento com boleto;
-* Transação segura! Não se preocupe com os dados do cartão, eles são enviados diretamente para nossa API (Ambiente PCI) e no seu ambiente apenas um token referente ao cartão é trafegado, fornecendo maior segurança para o lojista e para o cliente final;
-* Cancelamento e captura pelo módulo;
-
-## O que vem por ai?
-* Carteira do cliente - Salvar cartões;
-* Compra com 1-click;
 * Pagamento com dois cartões;
 * Pagamento com cartão  + boleto;
+* Transação segura! Não se preocupe com os dados do cartão, eles são enviados diretamente para nossa API (Ambiente PCI) e no seu ambiente apenas um token referente ao cartão é trafegado, fornecendo maior segurança para o lojista e para o cliente final;
+* Carteira do cliente - Salvar cartões;
+* Compra com 1-click;
+
+## O que vem por ai?
+* Cancelamento e captura pelo módulo;
 * Multicompradores - Informar um comprador para cada forma de pagamento;
 * Antifraude com opção de valor mínimo;
 * Gerenciamento de planos e assinaturas;
