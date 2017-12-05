@@ -25,7 +25,8 @@ See in [https://wordpress.org/plugins/woo-mundipagg-payments](https://wordpress.
 
 # Configuration
 
-After installation has completed go to **WooCommerce** > **Settings** > **Checkout** > **MundiPagg Payments**
+After installation has completed go to **WooCommerce** > **Settings** > **Checkout** > **MundiPagg Payments**.
+
 To learn more about how detailad configure the module, see our [wiki](https://github.com/mundipagg/woocommerce/wiki)
 
 # Business/Technical Support
