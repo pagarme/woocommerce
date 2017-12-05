@@ -6,61 +6,65 @@ Tags: ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommer
 Requires at least: 4.4
 Tested up to: 4.9
 Stable tag: beta-1.0.0
+Requires PHP: 5.6  
 License: MIT
 License URI: https://github.com/mundipagg/woocommerce/blob/master/LICENSE
 
-Módulo de integração da MundiPagg com o WooCommerce. Aceite pagamentos de cartão de crédito, boleto, multimeios e aumente a sua conversão.
+MundiPagg integration module with WooCommerce. Accept credit card payments, boleto (brazilian ticket), multiple methods and increase your conversion.
 
 == Description ==
 
-<img src="https://image.opencart.com/original/599de532c1ebd.jpg" alt="MundiPagg" border="0" />
+**MundiPagg integration module with WooCommerce**
+The intelligence of your payment - Solutions focused on increasing your conversion!
 
-**Módulo de integração da MundiPagg com o WooCommerce**
-A inteligência do seu pagamento - Soluções focadas em aumentar sua conversão!
+Payments have to be easy. There are many steps behind a simple financial transaction. But your consumer does not need to know that. Our solutions are available to help you increase your conversion and provide the best payment experience for your customer.
 
-Pagamentos tem que ser fáceis. São muitos passos por trás de uma simples transação financeira. Mas o seu consumidor não precisa saber disso. Nossas soluções estão disponíveis para ajuda-lo a aumentar sua conversão e oferecer a melhor experiência no momento do pagamento para o seu cliente.
+## Features:
+* Single installment or by brand with incremental interest option;
+* Operations *Authorize Only* or *Authorize and Capture*;
+* Payment with credit card;
+* Payment with 'boleto' (brazilian ticket);
+* Payment with two credit cards;
+* Payment with credit card + 'boleto' (brazilian ticket);
+* Secure transaction! Do not worry about the credit card data, they are sent directly to our API (PCI Environment) and in your environment only one token pertaining to the credit card is trafficked, providing greater security for the merchant and the end customer;
+* Customer wallet - Save credit cards;
+* Purchase with 1-click;
+* Anti-fraud with minimum value option;
 
-## Atualmente nosso módulo suporta:
-* Parcelamento único ou por bandeira com opção de juros incrementais;
-* Operação no modo Apenas Autorizar ou Autorizar e Capturar;
-* Pagamento com cartão de crédito;
-* Pagamento com boleto;
-* Pagamento com dois cartões;
-* Pagamento com cartão  + boleto;
-* Transação segura! Não se preocupe com os dados do cartão, eles são enviados diretamente para nossa API (Ambiente PCI) e no seu ambiente apenas um token referente ao cartão é trafegado, fornecendo maior segurança para o lojista e para o cliente final;
-* Carteira do cliente - Salvar cartões;
-* Compra com 1-click;
+## Comming Soon
+* Cancellation and capture by module;
+* Multiple buyers - Inform a buyer for each form of payment;
+* Plans and signatures management;
 
-## O que vem por ai?
-* Cancelamento e captura pelo módulo;
-* Multicompradores - Informar um comprador para cada forma de pagamento;
-* Antifraude com opção de valor mínimo;
-* Gerenciamento de planos e assinaturas;
+## Free and Opensource
+Our module is totally free and always will be!
+Our code is opensource and also always will be!
+Source code: [https://www.github.com/mundipagg/woocommerce](https://www.github.com/mundipagg/woocommerce)
 
-## Gratuito e OpenSource
-Nosso módulo é totalmente gratuito e sempre será! 
-Nosso código é *opensource* e também sempre será!
-Código fonte: [https://www.github.com/mundipagg/woocommerce](https://www.github.com/mundipagg/woocommerce)
+## Support
 
-## Dúvidas, críticas ou sugestões?
-Você pode enviar um email diretamente para [embeddables@mundipagg.com](mailto:embeddables@mundipagg.com) e enviar sua mensagem diretamente para o time que cuida do módulo. Esperamos seu contato :)
+For any questions, please send a email to [suporte@mundipagg.com](suporte@mundipagg.com)
+
+## Technical team
+
+Send to us your comment about this module [embeddables@mundipagg.com](mailto:embeddables@mundipagg.com). Please, do not send support request to this e-mail. 
 
 <a href="https://dashboard.mundipagg.com/#/signup?utm_source=woocommerce&utm_medium=backlink&utm_campaign=modulo_woocommerce&utm_content=footer" target="_blank"><img src="https://image.opencart.com/original/599ddc6c9bbf3.jpg" alt="MundiPagg" border="0" /></a>
 
 == Frequently Asked Questions == 
 
-Por favor, veja nossa wiki em [github wiki](https://github.com/mundipagg/woocommerce/wiki)
+Please, see our wiki in [github wiki](https://github.com/mundipagg/woocommerce/wiki)
 
 == Changelog == 
 
-Por favor, veja o nosso changelog em [github releases](https://github.com/mundipagg/woocommerce/releases)
+Please, see our changelog in [github releases](https://github.com/mundipagg/woocommerce/releases)
 
 == Screenshots ==
 
-1. Após a instação, vá em WooCommerce > Configurações (Settings) > Finalizar compra (Checkout) para acessar as configurações
-2. Habilitando métodos de pagamento e configurando antifraude
-3. Configurando boleto e cartão de crédito (parcial)
-4. Configurando cartão de crédito (configurações completares a imagem anterior)
-5. Exemplo de como ficou o Checkout para o cliente final
-6. Exemplo da visualização da carteira de cartões do cliente em Minha Conta
-7. Exemplo da visualização do detalhe do pagamento pelo cliente no detalhe do pedido
+1. After installation, go to **WooCommerce** > **Settings** > **Checkout** > **MundiPagg Payments** to access configuration
+2. Enable payment methods and anti-fraud configuration
+3. Configuring *boleto* (brazilian ticket) and credit card (partial)
+4. Configuring credit card (complete process from a previous image)
+5. Example of Checkout to the end customer
+6. Example of the customer credit cards portfolio in My Account
+7. Example of detail view of payment by customer in order detail
