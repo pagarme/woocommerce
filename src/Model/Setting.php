@@ -45,7 +45,6 @@ class Setting
 		'cc_installments_interest'          => array(),
 		'cc_installments_interest_increase' => array(),
 		'cc_installments_by_flag'           => array(),
-		'webhook_id'                        => array()
 	);
 
 	private function __construct( $settings )

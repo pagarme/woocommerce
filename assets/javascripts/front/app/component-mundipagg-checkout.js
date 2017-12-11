@@ -24,8 +24,11 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 		this.form.on( 'submit', this.onSubmit.bind(this) );
 	};
 
-	Model.fn.hasCardId = function () {
-		return ( this.chooseCreditCard !== undefined && this.chooseCreditCard.val().trim() !== '' );
+	Model.fn.hasCardId = function() {
+		if ( this.chooseCreditCard === undefined || this.chooseCreditCard.length === 0 ) {
+			return false;
+		}
+		return this.chooseCreditCard.val().trim() !== '';
 	};
 
 	Model.fn.createCheckoutObj = function (fields) {

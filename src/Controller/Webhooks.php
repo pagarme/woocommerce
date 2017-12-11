@@ -8,7 +8,6 @@ if ( ! function_exists( 'add_action' ) ) {
 use Woocommerce\Mundipagg\Helper\Utils;
 use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\Model\Setting;
-use Woocommerce\Mundipagg\Resource\Webhooks as Webhooks_Resource;
 use Woocommerce\Mundipagg\Model\Order;
 use Exception;
 
@@ -17,7 +16,6 @@ class Webhooks
     public function __construct()
     {
         add_action( 'woocommerce_api_' . Core::get_webhook_name(), array( $this, 'handle_requests' ) );
-        add_action( 'admin_init', array( $this, 'create_webhooks' ) );
         add_action( 'on_mundipagg_order_paid', array( $this, 'set_order_paid' ), 20, 2 );
         add_action( 'on_mundipagg_order_created', array( $this, 'set_order_created' ), 20, 2 );
         add_action( 'on_mundipagg_order_canceled', array( $this, 'set_order_canceled' ), 20, 2 );
@@ -47,33 +45,6 @@ class Webhooks
         $order = new Order( $order_id );
         
         do_action( "on_mundipagg_{$event}", $order, $body );
-    }
-
-    public function create_webhooks()
-    {
-        if ( ! Utils::is_settings_page() ) {
-			return;
-        }
-
-        $setting = Setting::get_instance();
-        
-        if ( $setting->webhook_id ) {
-            return;
-        }
-
-        try {
-            $resource          = new Webhooks_Resource();
-            $notifications_url = Core::get_webhook_url();
-            $response          = $resource->create( $notifications_url );
-
-            if ( ! $response || $response->code != 200 ) {
-                return;
-            }
-
-            $setting->set( 'webhook_id', $response->body->id );
-        } catch ( \Exception $e ) {
-			error_log( $e->__toString() );
-		}
     }
 
     public function sanitize_event_name( $event )

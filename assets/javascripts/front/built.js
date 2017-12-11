@@ -2778,7 +2778,13 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn.hasCardId = function(wrapper) {
-		return wrapper.find( '[data-element="choose-credit-card"]' ).val().trim() !== '';
+		var element = wrapper.find( '[data-element="choose-credit-card"]' );
+		
+		if ( element === undefined || element.length === 0 ) {
+			return false;
+		}
+
+		return element.val().trim() !== '';
 	};
 
 	Model.fn.requestInProgress = function() {
@@ -2882,8 +2888,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		this.form.on( 'submit', this.onSubmit.bind(this) );
 	};
 
-	Model.fn.hasCardId = function () {
-		return ( this.chooseCreditCard !== undefined && this.chooseCreditCard.val().trim() !== '' );
+	Model.fn.hasCardId = function() {
+		if ( this.chooseCreditCard === undefined || this.chooseCreditCard.length === 0 ) {
+			return false;
+		}
+		return this.chooseCreditCard.val().trim() !== '';
 	};
 
 	Model.fn.createCheckoutObj = function (fields) {

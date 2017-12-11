@@ -45,8 +45,6 @@ class Gateways extends WC_Payment_Gateway
 
 		add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thank_you_page' ) );
-		add_action( 'admin_notices', array( $this, 'display_errors' ) );
-
 	}
 
 	/**
@@ -95,8 +93,6 @@ class Gateways extends WC_Payment_Gateway
 			'sandbox_public_key'                => $this->field_sandbox_public_key(),
 			'production_secret_key'             => $this->field_production_secret_key(),
 			'production_public_key'             => $this->field_production_public_key(),
-			'account_management_key'            => $this->field_account_management_key(),
-			'account_id'                        => $this->field_account_id(),
 			'section_payment_settings'          => $this->section_payment_settings(),
 			'enable_billet'                     => $this->field_enable_billet(),
 			'enable_credit_card'                => $this->field_enable_credit_card(),
@@ -150,39 +146,6 @@ class Gateways extends WC_Payment_Gateway
 		$wc_order = new WC_Order( $order_id );
 
 		require_once( Core::get_file_path( 'main.php', 'templates/checkout/' ) );
-	}
-
-	public function display_errors()
-	{
-		$account_management_key = $this->model->settings->account_management_key;
-		$account_id             = $this->model->settings->account_id;
-
-		if ( $account_id && $account_management_key ) {
-			return;
-		}
-
-		echo '<div id="woocommerce_errors" class="error notice is-dismissible">';
-
-		printf( '<p><strong>%s:</strong></p>', Core::get_name() );
-		
-		echo '<ol>';
-
-		if ( ! $account_id ) {
-			printf( '<li>%s</li>', __( 'Fill out the field', Core::TEXTDOMAIN ) . ' <strong>Account ID</strong>' );
-		}
-
-		if ( ! $account_management_key ) {
-			printf( '<li>%s</li>', __( 'Fill out the field', Core::TEXTDOMAIN ) . ' <strong>Account Management Key</strong>' );
-		}
-
-		echo '</ol>';
-
-		printf( '<p><a href="%s">%s</a></p>', 
-			Core::get_page_link(),
-			__( 'Go to setup', Core::TEXTDOMAIN )
-		);
-
-		echo '</div>';
 	}
 
 	public function section_payment_settings()
@@ -275,26 +238,6 @@ class Gateways extends WC_Payment_Gateway
 			'title'             => __( 'Production Public Key', Core::TEXTDOMAIN ),
 			'custom_attributes' => array(
 				'data-field' => 'production-public-key',
-			),
-		);
-	}
-	
-	public function field_account_management_key()
-	{
-		return array(
-			'title' => __( 'Account Management Key', Core::TEXTDOMAIN ),
-			'custom_attributes' => array(
-				'required' => 'required',
-			),
-		);
-	}
-
-	public function field_account_id()
-	{
-		return array(
-			'title' => __( 'Account ID', Core::TEXTDOMAIN ),
-			'custom_attributes' => array(
-				'required' => 'required',
 			),
 		);
 	}

@@ -223,7 +223,13 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 	};
 
 	Model.fn.hasCardId = function(wrapper) {
-		return wrapper.find( '[data-element="choose-credit-card"]' ).val().trim() !== '';
+		var element = wrapper.find( '[data-element="choose-credit-card"]' );
+		
+		if ( element === undefined || element.length === 0 ) {
+			return false;
+		}
+
+		return element.val().trim() !== '';
 	};
 
 	Model.fn.requestInProgress = function() {
