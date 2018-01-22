@@ -7,7 +7,7 @@ Refer to [module documentation](https://github.com/mundipagg/woocommerce/wiki)
 # Plugin in Wordpres.org
 See in [https://wordpress.org/plugins/woo-mundipagg-payments](https://wordpress.org/plugins/woo-mundipagg-payments)
 
-# Manual Installation
+# Installation
 
 ### Method 1 - Using WP CLI
 
