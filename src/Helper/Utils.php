@@ -555,5 +555,20 @@ class Utils
 		return empty( $post_data ) ? false : json_decode( $post_data );
 	}
 
+	public static function error_server_json( $code, $message = 'Generic Message Error', $echo = true )
+	{
+		$response = json_encode(
+			array(
+				'status' 	=> 'error',
+				'code'   	=> $code,
+				'message'	=> $message,
+			)
+		);
 
+		if ( ! $echo ) {
+			return $response;
+		}
+
+		echo $response;
+	}
 }

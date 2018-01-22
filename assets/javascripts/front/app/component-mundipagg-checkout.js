@@ -31,6 +31,7 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 		return this.chooseCreditCard.val().trim() !== '';
 	};
 
+
 	Model.fn.createCheckoutObj = function (fields) {
 		var obj = {},
 			i = 0,

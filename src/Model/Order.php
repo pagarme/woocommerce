@@ -68,14 +68,18 @@ class Order extends Meta
 		}
 	}
 
-	public function get_charges()
+	public function get_charges( $full_data = false )
 	{
 		$model = new Charge();
 		$items = $model->find_by_wc_order( $this->ID );
 
         if ( ! $items ) {
             return false;
-        }
+		}
+		
+		if ( $full_data ) {
+			return $items;
+		}
 
         $list = [];
 

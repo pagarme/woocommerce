@@ -9,6 +9,8 @@ use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\Helper\Utils;
 use Woocommerce\Mundipagg\Model\Custom_Gateway;
 
+use WC_Logger;
+
 class Setting
 {
 	public static $_instance = null;
@@ -45,6 +47,8 @@ class Setting
 		'cc_installments_interest'          => array(),
 		'cc_installments_interest_increase' => array(),
 		'cc_installments_by_flag'           => array(),
+		'webhook_id'                        => array(),
+		'enable_logs'                       => array(),
 	);
 
 	private function __construct( $settings )
@@ -148,9 +152,19 @@ class Setting
 		$this->set_settings( $settings );
 	}
 
+	public function log()
+	{
+		return new \WC_Logger();
+	}
+
 	public function is_enabled()
 	{
 		return ( 'yes' === $this->__get( 'enabled' ) );
+	}
+
+	public function is_enabled_logs()
+	{
+		return ( 'yes' === $this->__get( 'enable_logs' ) );
 	}
 
 	public function is_active_credit_card()

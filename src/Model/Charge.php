@@ -131,6 +131,38 @@ class Charge
         return ucfirst( isset( $list[ $status ] ) ? $list[ $status ] : $status );
     }
 
+    public function is_allowed_capture( $charge )
+    {
+        $data = maybe_unserialize( $charge->charge_data );
+
+        if ( $data->payment_method == 'boleto' ) {
+            return false;
+        }
+
+        if ( $charge->charge_status == 'pending' ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function is_allowed_cancel( $charge )
+    {
+        $data   = maybe_unserialize( $charge->charge_data );
+        $status = $charge->charge_status;
+        $method = $data->payment_method;
+
+        if ( $method == 'boleto' && in_array( $status, ['pending', 'paid', 'overpaid', 'underpaid'] ) ) {
+            return true;
+        }
+
+        if ( $method == 'credit_card' && $status == 'pending' ) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function get_table_name()
     {
         global $wpdb;

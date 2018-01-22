@@ -9,11 +9,15 @@ See in [https://wordpress.org/plugins/woo-mundipagg-payments](https://wordpress.
 
 # Manual Installation
 
-### Method 1
+### Method 1 - Using WC-CLI
+
+`wp plugin install woo-mundipagg-payments --activate --allow-root`
+
+### Method 2 - Upload Zip
 * Upload [zip file](https://github.com/mundipagg/woocommerce/releases) in wordpress
 * Activate plugin 
 
-### Method 2
+### Method 3 - Clone from GitHub
 * Create and change directory to `wp-content/plugins/woo-mundipagg-payments`
 * Run `git clone https://github.com/mundipagg/woocommerce .`
 * Activate plugin in wordpress

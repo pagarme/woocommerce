@@ -15,11 +15,13 @@ use WC_Order;
 class Api
 {
 	public static $instance = null;
+	public $debug = false;
 	public $settings;
 
 	private function __construct()
 	{
 		$this->settings = Setting::get_instance();
+		$this->debug    = $this->settings->is_enabled_logs();
 	}
 
 	public function create_customer( WC_Order $wc_order )
@@ -27,11 +29,9 @@ class Api
 		$customers = new Customers();
 
 		try {
-			$model       = new Order( $wc_order->get_order_number() );
-			$person_type = $model->billing_persontype;
-			$document    = ( $person_type == 1 ) ? $model->billing_cpf : $model->billing_cnpj;
-
-			$address = array(
+			$model    = new Order( $wc_order->get_order_number() );
+			$document = $this->_get_document_by_person_type( $model );
+			$address  = array(
 				"street"       => $model->billing_address_1,
 				"number"       => $model->billing_number,
 				"complement"   => $model->billing_address_2,
@@ -45,14 +45,21 @@ class Api
 			$response = $customers->create([
 				'name'     => "{$model->billing_first_name} {$model->billing_last_name}",
 				'email'    => $model->billing_email,
-				'document' => Utils::format_document( $document ),
-				'type'     => $person_type == 1 ? 'individual' : 'company',
+				'document' => Utils::format_document( $document['value'] ),
+				'type'     => $document['type'],
 				'address'  => $address
 			]);
+
+			if ( $this->debug ) {
+				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER: ' . print_r( $response->body, true ) );
+			}
 
 			return $response->body;
 
 		} catch ( Exception $e ) {
+			if ( $this->debug ) {
+				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER ERROR: ' . $e->__toString() );
+			}
 			error_log( $e->__toString() );
 		    return null;
 		}
@@ -77,7 +84,7 @@ class Api
 				return $payments;
 			}
 
-			return $orders->create([
+			$response = $orders->create([
 				'code'              => $wc_order_id,
 				'items'             => $items,
 				'customer'          => $customer,
@@ -85,7 +92,16 @@ class Api
 				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method )
 			]);
 
+			if ( $this->debug ) {
+				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER: ' . print_r( $response->body, true ) );
+			}
+
+			return $response;
+
 		} catch ( Exception $e ) {
+			if ( $this->debug ) {
+				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER ERROR: ' . $e->__toString() );
+			}
 			error_log( $e->__toString() );
 		    return null;
 		}
@@ -157,6 +173,31 @@ class Api
 		}
 
 		return $amount;
+	}
+
+	private function _get_document_by_person_type( $order )
+	{
+		$wcbcf_options = get_option( 'wcbcf_settings' ); //WooCommerce Extra Checkout Fields
+		
+		$cpf = array(
+			'type' => 'individual',
+			'value' => $order->billing_cpf
+		);
+		$cnpj = array(
+			'type' => 'company',
+			'value' => $order->billing_cnpj
+		);
+
+		switch ( $wcbcf_options['person_type'] ) {
+			case 1:
+				return ( $order->billing_persontype == 1 ) ? $cpf : $cnpj;
+			case 2:
+				return $cpf;
+			case 3:
+				return $cnpj;
+			default:
+				return array( 'type' => '', 'value' => '' );
+		}
 	}
 
 	public static function get_instance()

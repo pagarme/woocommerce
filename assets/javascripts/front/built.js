@@ -2895,6 +2895,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		return this.chooseCreditCard.val().trim() !== '';
 	};
 
+
 	Model.fn.createCheckoutObj = function (fields) {
 		var obj = {},
 			i = 0,

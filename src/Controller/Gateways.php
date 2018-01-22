@@ -97,8 +97,8 @@ class Gateways extends WC_Payment_Gateway
 			'enable_billet'                     => $this->field_enable_billet(),
 			'enable_credit_card'                => $this->field_enable_credit_card(),
 			'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
-			'multimethods_2_cards'          	=> $this->field_multimethods_2_cards(),
-			//'multicustomers'                    => $this->field_multicustomers(),
+			'multimethods_2_cards'          	   => $this->field_multimethods_2_cards(),
+			//'multicustomers'                  => $this->field_multicustomers(),
 			'section_antifraud'                 => $this->section_antifraud(),
 			'antifraud_enabled'                 => $this->antifraud_enabled(),
 			'antifraud_min_value'               => $this->antifraud_min_value(),
@@ -116,6 +116,8 @@ class Gateways extends WC_Payment_Gateway
 			'cc_installments_interest'          => $this->field_cc_installment_fields( 'interest' ),
 			'cc_installments_interest_increase' => $this->field_cc_installment_fields( 'interest_increase' ),
 			'cc_installments_by_flag'           => $this->field_cc_installment_fields( 'flags' ),
+			'section_tools'                     => $this->section_tools(),
+			'enable_logs'                       => $this->field_enabled_logs(),
 		);
 	}
 
@@ -634,5 +636,24 @@ class Gateways extends WC_Payment_Gateway
 	public function validate_installments_by_flag_field( $key, $value )
 	{
 		return $value;
+	}
+
+	public function section_tools()
+	{
+		return array(
+			'title' => __( 'Tools', Core::TEXTDOMAIN ),
+			'type'  => 'title',
+		);
+	}
+
+	public function field_enabled_logs()
+	{
+		return array(
+			'title'       => __( 'Logs', Core::TEXTDOMAIN ),
+			'type'        => 'checkbox',
+			'label'       => __( 'Enable', Core::TEXTDOMAIN ),
+			'default'     => 'no',
+			'description' => __( 'Log MundiPagg events, you can check this log in WooCommerce>Status>Logs.', Core::TEXTDOMAIN )
+		);
 	}
 }

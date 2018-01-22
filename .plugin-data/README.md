@@ -5,7 +5,7 @@ Contributors: mundipagg
 Tags: ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, mundipagg, payments, creditcard
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: beta-1.0.1
+Stable tag: beta-1.0.2
 Requires PHP: 5.6  
 License: MIT
 License URI: https://github.com/mundipagg/woocommerce/blob/master/LICENSE
@@ -30,9 +30,9 @@ Payments have to be easy. There are many steps behind a simple financial transac
 * Customer wallet - Save credit cards;
 * Purchase with 1-click;
 * Anti-fraud with minimum value option;
+* Cancellation and capture by module;
 
 ## Comming Soon
-* Cancellation and capture by module;
 * Multiple buyers - Inform a buyer for each form of payment;
 * Plans and signatures management;
 

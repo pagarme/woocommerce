@@ -16,6 +16,7 @@ class Orders
         add_action( 'on_mundipagg_order_paid', array( $this, 'set_order_paid' ), 20, 2 );
         add_action( 'on_mundipagg_order_created', array( $this, 'set_order_created' ), 20, 2 );
         add_action( 'on_mundipagg_order_canceled', array( $this, 'set_order_canceled' ), 20, 2 );
+        add_action( 'add_meta_boxes', array( $this, 'add_capture_metabox' ) );
     }
 
     public function set_order_created( Order $order, $body )
@@ -34,5 +35,17 @@ class Orders
     {
         $wc_order = wc_get_order( $order->ID );
         $wc_order->update_status( 'cancelled', __( 'Mundipagg: Payment canceled.', Core::SLUG ) );
+    }
+
+    public function add_capture_metabox()
+    {
+        add_meta_box(
+			'woo-mundipagg-capture',
+			'MundiPagg - Captura/Cancelamento',
+			array( 'Woocommerce\Mundipagg\View\Orders', 'render_capture_metabox' ),
+			'shop_order',
+			'advanced',
+			'high'
+		);
     }
 }    

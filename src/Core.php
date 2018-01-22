@@ -93,10 +93,6 @@ class Core
 
 	public static function admin_enqueue_scripts()
 	{
-		if ( ! Utils::is_settings_page() ) {
-			return;
-		}
-
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'scripts_admin' ) );
 	}
 

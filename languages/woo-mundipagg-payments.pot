@@ -1,15 +1,15 @@
-# Copyright (C) 2017 Mundipagg
+# Copyright (C) 2018 Mundipagg
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce MundiPagg Payments 1.0.0\n"
+"Project-Id-Version: WooCommerce MundiPagg Payments beta-1.0.2\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/woo-mundipagg-payments\n"
-"POT-Creation-Date: 2017-11-27 23:17:12+00:00\n"
+"POT-Creation-Date: 2018-01-17 22:03:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en\n"
@@ -53,19 +53,19 @@ msgstr ""
 msgid "Empty fields"
 msgstr ""
 
-#: src/Controller/Checkout.php:179
+#: src/Controller/Checkout.php:189
 msgid "The sum of billet and credit card is less than the total"
 msgstr ""
 
-#: src/Controller/Checkout.php:183
+#: src/Controller/Checkout.php:193
 msgid "The sum of billet and credit card is greater than the total"
 msgstr ""
 
-#: src/Controller/Checkout.php:201
+#: src/Controller/Checkout.php:211
 msgid "The sum of the two credit cards is less than the total"
 msgstr ""
 
-#: src/Controller/Checkout.php:205
+#: src/Controller/Checkout.php:215
 msgid "The sum of the two credits cards is greater than the total"
 msgstr ""
 
@@ -81,290 +81,303 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: src/Controller/Gateways.php:171 src/Controller/Gateways.php:175
+#: src/Controller/Gateways.php:173 src/Controller/Gateways.php:177
 msgid "Fill out the field"
 msgstr ""
 
-#: src/Controller/Gateways.php:182
+#: src/Controller/Gateways.php:184
 msgid "Go to setup"
 msgstr ""
 
-#: src/Controller/Gateways.php:191
+#: src/Controller/Gateways.php:193
 msgid "Payment settings"
 msgstr ""
 
-#: src/Controller/Gateways.php:199 src/Controller/Gateways.php:363
+#: src/Controller/Gateways.php:201 src/Controller/Gateways.php:365
+#: src/Controller/Gateways.php:711
 msgid "Enable"
 msgstr ""
 
-#: src/Controller/Gateways.php:201
+#: src/Controller/Gateways.php:203
 msgid "Enable payment"
 msgstr ""
 
-#: src/Controller/Gateways.php:209
+#: src/Controller/Gateways.php:211
 msgid "Title"
 msgstr ""
 
-#: src/Controller/Gateways.php:210
+#: src/Controller/Gateways.php:212
 msgid "This the title which the user sees during checkout."
 msgstr ""
 
-#: src/Controller/Gateways.php:212
+#: src/Controller/Gateways.php:214
 msgid "MundiPagg"
 msgstr ""
 
-#: src/Controller/Gateways.php:219
+#: src/Controller/Gateways.php:221
 msgid "Description"
 msgstr ""
 
-#: src/Controller/Gateways.php:220
+#: src/Controller/Gateways.php:222
 msgid "Pay with Mundipagg"
 msgstr ""
 
-#: src/Controller/Gateways.php:228
+#: src/Controller/Gateways.php:230
 msgid "Environment"
 msgstr ""
 
-#: src/Controller/Gateways.php:233
+#: src/Controller/Gateways.php:235
 msgid "Production"
 msgstr ""
 
-#: src/Controller/Gateways.php:245
+#: src/Controller/Gateways.php:247
 msgid "Sandbox Secret Key"
 msgstr ""
 
-#: src/Controller/Gateways.php:255
+#: src/Controller/Gateways.php:257
 msgid "Sandbox Public Key"
 msgstr ""
 
-#: src/Controller/Gateways.php:265
+#: src/Controller/Gateways.php:267
 msgid "Production Secret Key"
 msgstr ""
 
-#: src/Controller/Gateways.php:275
+#: src/Controller/Gateways.php:277
 msgid "Production Public Key"
 msgstr ""
 
-#: src/Controller/Gateways.php:285
+#: src/Controller/Gateways.php:287
 msgid "Account Management Key"
 msgstr ""
 
-#: src/Controller/Gateways.php:295
+#: src/Controller/Gateways.php:297
 msgid "Account ID"
 msgstr ""
 
-#: src/Controller/Gateways.php:305
+#: src/Controller/Gateways.php:307
 msgid "Billet Banking"
 msgstr ""
 
-#: src/Controller/Gateways.php:307
+#: src/Controller/Gateways.php:309
 msgid "Enable Billet Banking"
 msgstr ""
 
-#: src/Controller/Gateways.php:315 src/View/Checkouts.php:234
+#: src/Controller/Gateways.php:317 src/View/Checkouts.php:234
 msgid "Credit Card"
 msgstr ""
 
-#: src/Controller/Gateways.php:317
+#: src/Controller/Gateways.php:319
 msgid "Enable Credit Card"
 msgstr ""
 
-#: src/Controller/Gateways.php:325
+#: src/Controller/Gateways.php:327
 msgid "Multimethods </br>(Billet + Credit Card)"
 msgstr ""
 
-#: src/Controller/Gateways.php:327
+#: src/Controller/Gateways.php:329
 msgid "Enable Multimethods (Billet + Credit Card)"
 msgstr ""
 
-#: src/Controller/Gateways.php:335
+#: src/Controller/Gateways.php:337
 msgid "Multimethods </br>(2 Credit Cards)"
 msgstr ""
 
-#: src/Controller/Gateways.php:337
+#: src/Controller/Gateways.php:339
 msgid "Enable Multimethods (2 Credit Cards)"
 msgstr ""
 
-#: src/Controller/Gateways.php:345
+#: src/Controller/Gateways.php:347
 msgid "Multicustomers"
 msgstr ""
 
-#: src/Controller/Gateways.php:347
+#: src/Controller/Gateways.php:349
 msgid "Enable Multicustomers"
 msgstr ""
 
-#: src/Controller/Gateways.php:355
+#: src/Controller/Gateways.php:357
 msgid "Anti-fraud settings"
 msgstr ""
 
-#: src/Controller/Gateways.php:365
+#: src/Controller/Gateways.php:367
 msgid "Enable anti-fraud"
 msgstr ""
 
-#: src/Controller/Gateways.php:373
+#: src/Controller/Gateways.php:375
 msgid "Minimum value"
 msgstr ""
 
-#: src/Controller/Gateways.php:375
+#: src/Controller/Gateways.php:377
 msgid "Minimum anti-fraud value"
 msgstr ""
 
-#: src/Controller/Gateways.php:388
+#: src/Controller/Gateways.php:390
 msgid "Billet settings"
 msgstr ""
 
-#: src/Controller/Gateways.php:397
+#: src/Controller/Gateways.php:399
 msgid "Bank"
 msgstr ""
 
-#: src/Controller/Gateways.php:401
+#: src/Controller/Gateways.php:403
 msgid "Select a bank"
 msgstr ""
 
-#: src/Controller/Gateways.php:415
+#: src/Controller/Gateways.php:417
 msgid "Number of Days"
 msgstr ""
 
-#: src/Controller/Gateways.php:416
+#: src/Controller/Gateways.php:418
 msgid "Days of expiry of the billet after printed."
 msgstr ""
 
-#: src/Controller/Gateways.php:426
+#: src/Controller/Gateways.php:428
 msgid "Instructions"
 msgstr ""
 
-#: src/Controller/Gateways.php:428
+#: src/Controller/Gateways.php:430
 msgid "Instructions for the billet."
 msgstr ""
 
-#: src/Controller/Gateways.php:436
+#: src/Controller/Gateways.php:438
 msgid "Credit Card settings"
 msgstr ""
 
-#: src/Controller/Gateways.php:444
+#: src/Controller/Gateways.php:446
 msgid "Soft Descriptor"
 msgstr ""
 
-#: src/Controller/Gateways.php:446
+#: src/Controller/Gateways.php:448
 msgid "Maximum of 13 characters"
 msgstr ""
 
-#: src/Controller/Gateways.php:447
+#: src/Controller/Gateways.php:449
 msgid ""
 "It allows the shopkeeper to send a text of up to 13 characters that will be "
 "printed on the bearer's invoice, next to the shop identification, "
 "respecting the length of the flags."
 msgstr ""
 
-#: src/Controller/Gateways.php:452
+#: src/Controller/Gateways.php:454
 msgid "This field is required."
 msgstr ""
 
-#: src/Controller/Gateways.php:461
+#: src/Controller/Gateways.php:463
 msgid "Operation Type"
 msgstr ""
 
-#: src/Controller/Gateways.php:465
+#: src/Controller/Gateways.php:467
 msgid "Authorize"
 msgstr ""
 
-#: src/Controller/Gateways.php:466
+#: src/Controller/Gateways.php:468
 msgid "Authorize and Capture"
 msgstr ""
 
-#: src/Controller/Gateways.php:474
+#: src/Controller/Gateways.php:476
 msgid "Manual Capture"
 msgstr ""
 
-#: src/Controller/Gateways.php:476
+#: src/Controller/Gateways.php:478
 msgid "Enable Manual Capture"
 msgstr ""
 
-#: src/Controller/Gateways.php:485
+#: src/Controller/Gateways.php:487
 msgid "Flags"
 msgstr ""
 
-#: src/Controller/Gateways.php:488
+#: src/Controller/Gateways.php:490
 msgid "Select one or more flags"
 msgstr ""
 
-#: src/Controller/Gateways.php:500
+#: src/Controller/Gateways.php:502
 msgid "Installment type"
 msgstr ""
 
-#: src/Controller/Gateways.php:503
+#: src/Controller/Gateways.php:505
 msgid "Choose the installment type"
 msgstr ""
 
-#: src/Controller/Gateways.php:506
+#: src/Controller/Gateways.php:508
 msgid "Single installment"
 msgstr ""
 
-#: src/Controller/Gateways.php:507
+#: src/Controller/Gateways.php:509
 msgid "Installment by flags"
 msgstr ""
 
-#: src/Controller/Gateways.php:521
+#: src/Controller/Gateways.php:523
 msgid "Maximum installments number"
 msgstr ""
 
-#: src/Controller/Gateways.php:523
+#: src/Controller/Gateways.php:525
 msgid "Force a maximum number of installments for payment."
 msgstr ""
 
-#: src/Controller/Gateways.php:533
+#: src/Controller/Gateways.php:535
 msgid "Without Interest"
 msgstr ""
 
-#: src/Controller/Gateways.php:535
+#: src/Controller/Gateways.php:537
 msgid "Defines which installment will have no interest."
 msgstr ""
 
-#: src/Controller/Gateways.php:545 src/Controller/Gateways.php:679
+#: src/Controller/Gateways.php:547 src/Controller/Gateways.php:681
 msgid "Initial interest"
 msgstr ""
 
-#: src/Controller/Gateways.php:547
+#: src/Controller/Gateways.php:549
 msgid "Interest to be applied to the installment."
 msgstr ""
 
-#: src/Controller/Gateways.php:558 src/Controller/Gateways.php:680
+#: src/Controller/Gateways.php:560 src/Controller/Gateways.php:682
 msgid "Interest increase"
 msgstr ""
 
-#: src/Controller/Gateways.php:560
+#: src/Controller/Gateways.php:562
 msgid "Interest to be increamented for each installment."
 msgstr ""
 
-#: src/Controller/Gateways.php:572
+#: src/Controller/Gateways.php:574
 msgid "Settings by flag"
 msgstr ""
 
-#: src/Controller/Gateways.php:574
+#: src/Controller/Gateways.php:576
 msgid "Defines the settings for each flag."
 msgstr ""
 
-#: src/Controller/Gateways.php:675
+#: src/Controller/Gateways.php:677
 msgid "Columns"
 msgstr ""
 
-#: src/Controller/Gateways.php:676 src/View/Checkouts.php:241
+#: src/Controller/Gateways.php:678 src/View/Checkouts.php:241
 msgid "Flag"
 msgstr ""
 
-#: src/Controller/Gateways.php:677
+#: src/Controller/Gateways.php:679
 msgid "Max installment"
 msgstr ""
 
-#: src/Controller/Gateways.php:678
+#: src/Controller/Gateways.php:680
 msgid "No interest"
 msgstr ""
 
-#: src/Controller/Orders.php:29 src/Controller/Webhooks.php:92
+#: src/Controller/Gateways.php:701
+msgid "Tools"
+msgstr ""
+
+#: src/Controller/Gateways.php:709
+msgid "Logs"
+msgstr ""
+
+#: src/Controller/Gateways.php:713
+msgid "Log MundiPagg events, you can check this log in WooCommerce>Status>Logs."
+msgstr ""
+
+#: src/Controller/Orders.php:30 src/Controller/Webhooks.php:97
 msgid "Mundipagg: Payment has already been confirmed."
 msgstr ""
 
-#: src/Controller/Orders.php:36 src/Controller/Webhooks.php:99
+#: src/Controller/Orders.php:37 src/Controller/Webhooks.php:108
 msgid "Mundipagg: Payment canceled."
 msgstr ""
 
