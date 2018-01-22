@@ -9,7 +9,7 @@ See in [https://wordpress.org/plugins/woo-mundipagg-payments](https://wordpress.
 
 # Manual Installation
 
-### Method 1 - Using WC-CLI
+### Method 1 - Using WP CLI
 
 `wp plugin install woo-mundipagg-payments --activate --allow-root`
 
