@@ -1,4 +1,5 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/1f5b02d84d2d9fa288af/maintainability)](https://codeclimate.com/github/mundipagg/woocommerce/maintainability)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8d9b94c412e042aebc219f2f268cfd13)](https://www.codacy.com/app/mundipagg/woocommerce?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mundipagg/woocommerce&amp;utm_campaign=Badge_Grade)
 
 # WooCommerce/Mundipagg Integration module
 This is the official WooCommerce module for Mundipagg integration
