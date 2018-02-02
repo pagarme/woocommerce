@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/1f5b02d84d2d9fa288af/maintainability)](https://codeclimate.com/github/mundipagg/woocommerce/maintainability)
+
 # WooCommerce/Mundipagg Integration module
 This is the official WooCommerce module for Mundipagg integration
 
