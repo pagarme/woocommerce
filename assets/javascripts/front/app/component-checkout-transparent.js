@@ -12,6 +12,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.addEventListener = function() {
 		this.$el.on( 'submit', this._onSubmit.bind(this) );
+		this.$el.find( '[data-value]' ).on( 'blur', this.fillAnotherInput.bind(this) );
 		this.click( 'tab' );
 		this.click( 'choose-payment' );
 
@@ -149,9 +150,14 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 	Model.fn.updateInstallments = function(e) {
 		if ( ! this.value ) {
 			var option = '<option value="">...</option>';
-			$( e.currentTarget )
+			var select = $( e.currentTarget )
 				.closest( 'fieldset' )
-				.find('[data-element=installments]' ).html( option );
+				.find('[data-element=installments]' )
+			;
+
+			if ( select.data( 'type' ) == 2 ) {
+				select.html( option );
+			}
 		}
 	};
 
@@ -239,6 +245,36 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 			allowOutsideClick : false
 		});
 		swal.showLoading();
+	};
+
+	Model.fn.fillAnotherInput = function(event) {
+		var input = $(event.currentTarget);
+		var nextIndex = input.data('value') == 2 ? 1 : 2;
+		var nextInput = $('[data-value=' + nextIndex + ']');
+		var value = event.currentTarget.value;
+		var total = parseFloat( this.data.orderTotal );
+
+		if ( ! value ) {
+			return;
+		}
+		
+		value = value.replace('.', '');
+		value = parseFloat( value.replace(',', '.') );
+
+		var nextValue = total - value;
+		
+		if ( value > total ) {
+			swal({
+				type: 'error',
+				text: 'O valor não pode ser maior que total do pedido!'
+			});
+			return;
+		}
+
+		nextValue = nextValue.toFixed(2);
+		nextValue = nextValue.replace('.',',');
+
+		nextInput.val(nextValue);
 	};
 
 });

@@ -343,13 +343,13 @@ class Gateways extends WC_Payment_Gateway
 			'class'   => 'wc-enhanced-select',
 			'default' => 0,
 			'options' => array(
-				0   => __( 'Select a bank', Core::TEXTDOMAIN ),
-				341 => 'Banco Itaú S.A.',
-				237 => 'Banco Bradesco S.A.',
-				033 => 'Banco Santander S.A.',
-				745 => 'Banco Citibank S.A.',
-				001 => 'Banco do Brasil S.A.',
-				104 => 'Caixa Econômica Federal'
+				''    => __( 'Select a bank', Core::TEXTDOMAIN ),
+				'341' => 'Banco Itaú S.A.',
+				'237' => 'Banco Bradesco S.A.',
+				'033' => 'Banco Santander S.A.',
+				'745' => 'Banco Citibank S.A.',
+				'001' => 'Banco do Brasil S.A.',
+				'104' => 'Caixa Econômica Federal'
 			),
 		);
 	}

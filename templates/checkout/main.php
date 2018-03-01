@@ -30,6 +30,7 @@ $swal_data   = array(
 	  data-payment-url="<?php echo $payment_url; ?>"
 	  data-api-request="<?php echo esc_url( $wc_api ); ?>"
 	  data-order="<?php echo $wc_order->get_order_number(); ?>"
+	  data-order-total="<?php echo $wc_order->get_total(); ?>"
 	  data-swal='<?php echo wp_json_encode( $swal_data, JSON_HEX_APOS ); ?>'
 	  data-mundicheckout-form
 	  <?php echo Utils::get_component( 'checkout-transparent' ); ?>>

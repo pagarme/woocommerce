@@ -42,16 +42,19 @@ class Api
 				"country"      => "BR",
 			);
 
-			$response = $customers->create([
+			$params = array(
 				'name'     => "{$model->billing_first_name} {$model->billing_last_name}",
 				'email'    => $model->billing_email,
 				'document' => Utils::format_document( $document['value'] ),
 				'type'     => $document['type'],
 				'address'  => $address
-			]);
+			);
+
+			$response = $customers->create( $params );
 
 			if ( $this->debug ) {
-				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER: ' . print_r( $response->body, true ) );
+				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER REQUEST: ' . print_r( $params, true ) );
+				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER RESPONSE: ' . print_r( $response->body, true ) );
 			}
 
 			return $response->body;
@@ -84,16 +87,19 @@ class Api
 				return $payments;
 			}
 
-			$response = $orders->create([
+			$params = array(
 				'code'              => $wc_order_id,
 				'items'             => $items,
 				'customer'          => $customer,
 				'payments'          => $payments,
 				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method )
-			]);
+			);
+
+			$response = $orders->create( $params );
 
 			if ( $this->debug ) {
-				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER: ' . print_r( $response->body, true ) );
+				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER REQUEST: ' . print_r( $params, true ) );
+				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER RESPONSE: ' . print_r( $response->body, true ) );
 			}
 
 			return $response;

@@ -10,6 +10,7 @@ if ( ! $model->settings->is_active_2_cards() ) {
 use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\Helper\Utils;
 use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Mundipagg\View\Checkouts;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
 
@@ -31,6 +32,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 				<input id="card-order-value" name="card_order_value"
 						data-element="card-order-value"
 						data-required="true"
+						data-value="1"
 						data-mask="#.##0,00" data-mask-reverse="true"
 						class="input-text wc-credit-card-form-card-expiry">
 			</p>
@@ -87,6 +89,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 
 				<input id="card-order-value2" name="card_order_value2"
 						data-element="card-order-value"
+						data-value="2"
 						data-required="true"
 						data-mask="#.##0,00" data-mask-reverse="true"
 						class="input-text wc-credit-card-form-card-expiry">
@@ -108,11 +111,11 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 
 			<p class="form-row form-row-first">
 
-				<label for="installments">
+				<label for="installments2">
 					<?php _e( 'Installments quantity', Core::TEXTDOMAIN ); ?><span class="required">*</span>
 				</label>
 
-				<select id="installments"
+				<select id="installments2"
 						<?php echo Utils::get_component( 'installments' ); ?>
 						data-total="<?php echo $wc_order->get_total(); ?>"
 						data-type="<?php echo $installments_type; ?>"

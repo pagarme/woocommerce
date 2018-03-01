@@ -33,6 +33,7 @@ $billet_and_card   = true;
 							data-mask="#.##0,00"
 							data-mask-reverse="true"
 							data-element="billet-value"
+							data-value="1"
 							data-required="true"
 							class="input-text wc-credit-card-form-card-expiry">
 				</p>
@@ -44,6 +45,7 @@ $billet_and_card   = true;
 					<input id="card-order-value"
 							name="card_order_value"
 							data-element="card-order-value"
+							data-value="2"
 							data-required="true"
 							data-mask="#.##0,00"
 							data-mask-reverse="true"

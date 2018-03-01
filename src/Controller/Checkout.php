@@ -76,7 +76,7 @@ class Checkout
 		$order->mundipagg_status = $response->body->status;
 		$order->response_data    = $response->body;
 
-		$order->payment_on_hold();
+		$order->update_by_mundipagg_status( $response->body->status );
 
 		WC()->cart->empty_cart();
 

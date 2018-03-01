@@ -82,7 +82,7 @@
 	display: none;
 }
 
-.woocommerce-message {
+.woocommerce-message, .woocommerce-error {
 
 	.mundipagg-response {
 
@@ -107,4 +107,9 @@
 
 #wcmp-checkout-errors {
 	display: none;
+}
+
+
+#payment .payment_methods li img {
+	max-height: 1.618em !important;
 }

@@ -7,21 +7,14 @@ if ( ! function_exists( 'add_action' ) ) {
 
 use Woocommerce\Mundipagg\Helper\Utils;
 use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Setting;
 use Woocommerce\Mundipagg\Model\Order;
 use Exception;
 
 class Webhooks
 {
     public function __construct()
-    {
-        $this->settings = Setting::get_instance();
-        $this->debug    = $this->settings->is_enabled_logs();
-        
+    { 
         add_action( 'woocommerce_api_' . Core::get_webhook_name(), array( $this, 'handle_requests' ) );
-        add_action( 'on_mundipagg_order_paid', array( $this, 'set_order_paid' ), 20, 2 );
-        add_action( 'on_mundipagg_order_created', array( $this, 'set_order_created' ), 20, 2 );
-        add_action( 'on_mundipagg_order_canceled', array( $this, 'set_order_canceled' ), 20, 2 );
     }
 
     public function handle_requests()
@@ -53,35 +46,5 @@ class Webhooks
     public function sanitize_event_name( $event )
 	{
 		return str_replace( '.', '_', strtolower( $event ) );
-    }
-    
-    public function set_order_created( Order $order, $body )
-    {
-        $order->payment_on_hold();
-
-        if ( $this->debug ) {
-			$this->settings->log()->add( 'woo-mundipagg', 'WEBHOOK ORDER CREATED: ' . print_r( $body, true ) );
-		}
-    }
-
-    public function set_order_paid( Order $order, $body )
-	{
-        $wc_order = wc_get_order( $order->ID );
-        $wc_order->add_order_note( __( 'Mundipagg: Payment has already been confirmed.', Core::TEXTDOMAIN ) );
-        $wc_order->payment_complete();
-
-        if ( $this->debug ) {
-			$this->settings->log()->add( 'woo-mundipagg', 'WEBHOOK ORDER PAID: ' . print_r( $body, true ) );
-		}
-    }
-
-    public function set_order_canceled( Order $order, $body )
-    {
-        $wc_order = wc_get_order( $order->ID );
-        $wc_order->update_status( 'cancelled', __( 'Mundipagg: Payment canceled.', Core::TEXTDOMAIN ) );
-
-        if ( $this->debug ) {
-			$this->settings->log()->add( 'woo-mundipagg', 'WEBHOOK ORDER CANCELED: ' . print_r( $body, true ) );
-		}
     }
 }

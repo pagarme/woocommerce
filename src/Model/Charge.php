@@ -152,11 +152,11 @@ class Charge
         $status = $charge->charge_status;
         $method = $data->payment_method;
 
-        if ( $method == 'boleto' && in_array( $status, ['pending', 'paid', 'overpaid', 'underpaid'] ) ) {
+        if ( $method == 'boleto' && in_array( $status, ['pending'] ) ) {
             return true;
         }
 
-        if ( $method == 'credit_card' && $status == 'pending' ) {
+        if ( $method == 'credit_card' && in_array( $status, ['pending', 'paid' ] ) ) {
             return true;
         }
 

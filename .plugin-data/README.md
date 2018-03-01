@@ -5,7 +5,7 @@ Contributors: mundipagg
 Tags: ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, mundipagg, payments, creditcard
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: beta-1.0.2
+Stable tag: beta-1.0.6
 Requires PHP: 5.6  
 License: MIT
 License URI: https://github.com/mundipagg/woocommerce/blob/master/LICENSE
@@ -44,12 +44,6 @@ Source code: [https://www.github.com/mundipagg/woocommerce](https://www.github.c
 ## Support
 
 For any questions, please send a email to [suporte@mundipagg.com](suporte@mundipagg.com)
-
-## Technical team
-
-Send to us your comment about this module [embeddables@mundipagg.com](mailto:embeddables@mundipagg.com). Please, do not send support request to this e-mail. 
-
-<a href="https://dashboard.mundipagg.com/#/signup?utm_source=woocommerce&utm_medium=backlink&utm_campaign=modulo_woocommerce&utm_content=footer" target="_blank"><img src="https://image.opencart.com/original/599ddc6c9bbf3.jpg" alt="MundiPagg" border="0" /></a>
 
 == Frequently Asked Questions == 
 

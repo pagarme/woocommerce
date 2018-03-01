@@ -60,7 +60,8 @@ class Charges
 
 		$this->model->update(
             array(
-                'charge_status' => esc_sql( $response->body->status ),
+				'charge_status' => esc_sql( $response->body->status ),
+				'charge_data'   => maybe_serialize( $response->body )
             ),
             array(
                 'charge_id' => $charge_id

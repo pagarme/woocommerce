@@ -3973,6 +3973,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.start = function() {
 		this.init();
+		this.lock = false;
 	};
 
 	Model.fn.init = function() {
@@ -3981,34 +3982,38 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn.addEventListener = function() {
-		this.$el.find( '[data-ref]' ).on( 'click', function(e){
+		this.$el.find( '[data-ref]:enabled' ).on( 'click', function(e){
 			e.preventDefault();
-			$( '[data-charge=' + e.currentTarget.dataset.ref + ']' ).iziModal( 'open' );
+			var target   = e.currentTarget;
+			var selector = '[data-charge-action=' + target.dataset.ref + '-' + target.dataset.type + ']';
+			$( selector ).iziModal( 'open' );
 		});
-
-		this.$el.find( '[data-action=cancel]' ).on( 'click', this.onClickCancel.bind(this) );
 	};
 
 	Model.fn.onClickCancel = function(e) {
 		e.preventDefault();
-		var target   = $( e.currentTarget );
-		var chargeId = target.next().data( 'ref' );
-
-		this.request( 'cancel', chargeId, 0 );
+		this.handleEvents( e, 'cancel' );
 	};
 
 	Model.fn.onClickCapture = function(e) {
 		e.preventDefault();
-	
-		var target   = $( e.currentTarget );
+		this.handleEvents( e, 'capture' );
+	};
+
+	Model.fn.handleEvents = function(DOMEvent, type) {
+		var target   = $( DOMEvent.currentTarget );
 		var wrapper  = target.closest( '[data-charge]' );
 		var chargeId = wrapper.data( 'charge' );
 		var amount   = wrapper.find( '[data-element=amount]' ).val();
 
-		this.request( 'capture', chargeId, amount );
+		this.request( type, chargeId, amount);
 	};
 
 	Model.fn.request = function(mode, chargeId, amount) {
+		if ( this.lock ) {
+			return;
+		}
+		this.lock = true;
 		this.requestInProgress();
 		var ajax = $.ajax({
 			'url': MONSTER.utils.getAjaxUrl(),
@@ -4033,9 +4038,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 				var amount = self.$el.find( '[data-element=amount]' );
 				amount.mask( "#.##0,00", { reverse: true } );
 				modal.$element.on( 'click', '[data-action=capture]', self.onClickCapture.bind(self) );
-			},
-			onClosing: function (modal) {
-				console.log( 'Fechou', modal );
+				modal.$element.on( 'click', '[data-action=cancel]', self.onClickCancel.bind(self) );
 			}
 		});
 	};
@@ -4050,6 +4053,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn._onDone = function(response) {
+		this.lock = false;
 		$( '.modal' ).iziModal('close');
 		swal.close();
 		swal({
@@ -4067,6 +4071,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn._onFail = function(xhr) {
+		this.lock = false;
 		swal.close();
 		var data = JSON.parse(xhr.responseText);
 		swal({
