@@ -80,18 +80,21 @@ class Gateway
 
 	public function render_installments_options( $total, $max_installments, $interest, $interest_increase, $no_interest )
 	{
-		$amount = $total;
 		$output = sprintf( 
 			'<option value="1">%1$s</option>',
 			__( 'At sight', Core::SLUG ) . ' ('. wc_price( $total ) . ')' 
 		);
 
+		$interest_base = $interest;
+
 		for ( $times = 2; $times <= $max_installments; $times++ ) {
+			$interest = $interest_base;
+			$amount = $total;
 
 			if ( $interest ) {
 
-				if ( $interest_increase && ( $times > $no_interest + 1 ) ) {
-					$interest += $interest_increase;
+				if ( $interest_increase && $times > $no_interest + 1 ) {
+					$interest += ( $interest_increase * ( $times - ( $no_interest + 1 ) ) );
 				}
 
 				$amount += Utils::calc_percentage( $interest, $total );
@@ -107,7 +110,7 @@ class Gateway
 			$text  = sprintf( __( '%dx of %s (%s)', Core::TEXTDOMAIN ),
 				$times,
 				wc_price( $price ),
-				wc_price( $price * $times )
+				wc_price( $value )
 			);
 
 			$amount = $total;

@@ -308,8 +308,38 @@ class Utils
 		if ( empty( $price ) ) {
 			return;
 		}
-
+		
 		return @(int)number_format( $price, 2, '', '' );
+	}
+
+	/**
+	 * Format desnormalized order price with amount
+	 *
+	 * @since 1.0
+	 * @param Mixed String|Float|Int $price
+	 * @return Integer
+	 */
+	public static function format_desnormalized_order_price( $price )
+	{
+		if ( empty( $price ) ) {
+			return;
+		}
+		
+		$price = Utils::normalize_price( $price );
+
+		return Utils::format_order_price( $price );
+	}
+
+	public static function normalize_price( $price )
+	{
+		if ( empty( $price ) ) {
+			return;
+		}
+		
+		$price = str_replace('.', '', $price);
+		$price = str_replace(',', '.', $price);
+
+		return $price;
 	}
 
 	/**

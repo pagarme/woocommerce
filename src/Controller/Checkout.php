@@ -180,9 +180,10 @@ class Checkout
 
 		$billet_value = Utils::get_value_by( $fields, 'billet_value' );
 		$card_value   = Utils::get_value_by( $fields, 'card_order_value' );
+
 		$total        = Utils::format_order_price( $wc_order->get_total() );
-		$billet       = Utils::format_order_price( $billet_value );
-		$credit_card  = Utils::format_order_price( $card_value );
+		$billet       = Utils::format_desnormalized_order_price( $billet_value );
+		$credit_card  = Utils::format_desnormalized_order_price( $card_value );
 		$amount       = intval( $billet ) + intval( $credit_card );
 
 		if ( $amount < $total ) {
@@ -202,9 +203,10 @@ class Checkout
 
 		$card1  = Utils::get_value_by( $fields, 'card_order_value' );
 		$card2  = Utils::get_value_by( $fields, 'card_order_value2' );
+
 		$total  = Utils::format_order_price( $wc_order->get_total() );
-		$value1 = Utils::format_order_price( $card1 );
-		$value2 = Utils::format_order_price( $card2 );
+		$value1 = Utils::format_desnormalized_order_price( $card1 );
+		$value2 = Utils::format_desnormalized_order_price( $card2 );
 		$amount = intval( $value1 ) + intval( $value2 );
 
 		if ( $amount < $total ) {

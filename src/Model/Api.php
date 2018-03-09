@@ -39,7 +39,7 @@ class Api
 				"neighborhood" => $model->billing_neighborhood,
 				"city"         => $model->billing_city,
 				"state"        => $model->billing_state,
-				"country"      => "BR",
+				"country"      => "BR"
 			);
 
 			$params = array(
@@ -81,16 +81,20 @@ class Api
 			$orders      = new Orders();
 			$payment     = new Payment( $payment_method );
 			$items       = $this->_build_order_items( $wc_order, $form_fields );
-			$payments    = $payment->get_payment_data( $form_fields, $customer );
+			$payments    = $payment->get_payment_data( $wc_order, $form_fields, $customer );
+			$shipping    = $this->_build_shipping( $wc_order );
+			$amount      = $this->_get_amount_total( $payments );
 
 			if ( ! is_array( $payments ) ) {
 				return $payments;
 			}
 
 			$params = array(
+				'amount'            => $amount,
 				'code'              => $wc_order_id,
 				'items'             => $items,
 				'customer'          => $customer,
+				'shipping'          => $shipping,
 				'payments'          => $payments,
 				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method )
 			);
@@ -126,9 +130,9 @@ class Api
 		if ( ! $min_value = $this->settings->antifraud_min_value ) {
 			return false;
 		}
-		
+
+		$min_value = Utils::format_desnormalized_order_price( $min_value );
 		$total     = Utils::format_order_price( $wc_order->get_total() );
-		$min_value = Utils::format_order_price( $min_value );
 
 		if ( $total < $min_value ) {
 			return false;
@@ -137,7 +141,32 @@ class Api
 		return true;
 	}
 
-	private function _build_order_items( WC_Order $wc_order, $form_fields )
+	private function _build_shipping( WC_Order $wc_order )
+	{
+		$method = $wc_order->get_shipping_method();
+		if ( !$method ) {
+			$method = "Não informado";
+		}
+
+		$total = Utils::format_order_price( $wc_order->get_total_shipping() );
+
+		return array(
+			"amount"          => $total,
+			"description"     => $method,
+			"address"         => array(
+				    "street"       => $wc_order->shipping_address_1,
+				    "number"       => $wc_order->shipping_number,
+				    "complement"   => $wc_order->shipping_address_2,
+				    "zip_code"     => preg_replace( '/[^\d]+/', '', $wc_order->shipping_postcode ),
+				    "neighborhood" => $wc_order->shipping_neighborhood,
+				    "city"         => $wc_order->shipping_city,
+				    "state"        => $wc_order->shipping_state,
+				    "country"      => "BR"
+			)
+		);
+	}
+
+	private function _build_order_items( WC_Order $wc_order )
 	{
 		$items = $wc_order->get_items();
 
@@ -147,7 +176,7 @@ class Api
 
 		foreach ( $items as $item ) {
 			$product     = $wc_order->get_product_from_item( $item );
-			$price       = $this->_get_price_with_interest( $product->get_price(), Utils::get_value_by( $form_fields, 'installments' ) );
+			$price       = $product->get_price();
 			$quantity    = absint( $item['qty'] );
 			$description = sanitize_title( $item['name'] ) . ' x ' . $quantity;
 			$amount      = Utils::format_order_price( $price );
@@ -155,30 +184,6 @@ class Api
 		}
 
 		return $data;
-	}
-
-	private function _get_price_with_interest( $price, $installments )
-	{
-		$amount            = $price;
-		$max_installments  = intval( $this->settings->cc_installments_maximum );
-		$no_interest       = intval( $this->settings->cc_installments_without_interest );
-		$interest          = Utils::str_to_float( $this->settings->cc_installments_interest );
-		$interest_increase = Utils::str_to_float( $this->settings->cc_installments_interest_increase );
-
-		if ( $installments <= $no_interest ) {
-			return $amount;
-		}
-
-		if ( $interest ) {
-
-			if ( $interest_increase && $installments > $no_interest + 1 ) {
-				$interest += ( $interest_increase * ( $installments - ( $no_interest + 1 ) ) );
-			}
-
-			$amount += Utils::calc_percentage( $interest, $price );
-		}
-
-		return $amount;
 	}
 
 	private function _get_document_by_person_type( $order )
@@ -204,6 +209,15 @@ class Api
 			default:
 				return array( 'type' => '', 'value' => '' );
 		}
+	}
+
+	private function _get_amount_total( $payments )
+	{
+		$total = 0;
+		foreach($payments as $key=>$value){
+     		$total += $value['amount'];
+     	}
+		return $total;
 	}
 
 	public static function get_instance()
