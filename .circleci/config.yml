@@ -122,7 +122,9 @@ jobs:
           name: Clear release and update plugin assets
           command: |
             mkdir /app-released
-            cp -r /app/* /app-released
+            cp -ar /app/* /app-released
+            ls -la /app-released
+            ls -la /app-released/.plugin-data
             cd /app-released
             rm -rf .github .circleci .git .gitignore .editorconfig 
             rm -rf update-wp-config.php wait-for-mysql.sh LICENSE *.MD      
