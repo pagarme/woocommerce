@@ -133,17 +133,21 @@ jobs:
           name: Get current version
           command: |
             cd /app-released
-            VERSION_TAG="$(cat ${PLUGIN_NAME}.php | grep -i 'Version:' | cut -c16- | xargs)"
+            VERSION_TAG="$(cat ${PLUGIN_NAME}.php | grep -i 'Version:' | cut -c12- | xargs)"
+            echo ${VERSION_TAG}
       - run:
           name: Add release files 
           command: |
+            cd /app-released
+            echo "Before: ${VERSION_TAG}"
+            VERSION_TAG="$(cat ${PLUGIN_NAME}.php | grep -i 'Version:' | cut -c12- | xargs)"
             echo "Release Number: ${VERSION_TAG}"
             cd /svn/${PLUGIN_NAME}
             if [ -d "${VERSION_TAG}" ]; then rm -rf ${VERSION_TAG}; fi
             mkdir tags/${VERSION_TAG}
-            cp /app-released /svn/tags/${VERSION_TAG}
-            rm -rf /svn/${PLUGIN_NAME}/trunk/*
-            cp /app-released /svn/trunk            
+            cp -ar /app-released /svn/tags/${VERSION_TAG}
+            rm -rf /svn/${PLUGIN_NAME}/trunk
+            cp -ar /app-released /svn/trunk            
       - deploy:
           name: Commit and push changes 
           command: |
