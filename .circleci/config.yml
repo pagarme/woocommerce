@@ -121,7 +121,6 @@ jobs:
       - run: 
           name: Clear release and update plugin assets
           command: |
-            mkdir /app-released
             cp -ar /app /app-released
             ls -la /app
             ls -la /app-released
