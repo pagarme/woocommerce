@@ -121,7 +121,8 @@ jobs:
       - run: 
           name: Clear release and update plugin assets
           command: |
-            cp /app /app-released
+            mkdir /app-released
+            cp -r /app/* /app-released
             cd /app-released
             rm -rf .github .circleci .git .gitignore .editorconfig 
             rm -rf update-wp-config.php wait-for-mysql.sh LICENSE *.MD      
