@@ -137,7 +137,6 @@ jobs:
             echo "Release Number: ${VERSION_TAG}"
             cd /svn/${PLUGIN_NAME}
             if [ -d "tags/${VERSION_TAG}" ]; then rm -rf tags/${VERSION_TAG}; fi
-            mkdir tags/${VERSION_TAG}
             cp -ar /app-released tags/${VERSION_TAG}
             rm -rf trunk
             cp -ar /app-released trunk            
