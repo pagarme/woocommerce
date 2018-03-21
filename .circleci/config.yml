@@ -132,6 +132,7 @@ jobs:
       - run:
           name: Add release files 
           command: |
+            echo "CircleCI TAG: ${CIRCLE_TAG}"
             cd /svn/${PLUGIN_NAME}
             if [ -d "${CIRCLE_TAG}" ]; then rm -rf ${CIRCLE_TAG}; fi
             mkdir tags/${CIRCLE_TAG}
@@ -162,7 +163,7 @@ workflows:
             branches:
               only: master
             tags:
-              only: /^*/  
+              only: /^*/{1,64}  
       - deploy_wordpress:
           requires:
             - publish
@@ -170,4 +171,4 @@ workflows:
             branches:
               only: master
             tags:
-              only: /^*/ 
+              only: /^*/{1,64}  
