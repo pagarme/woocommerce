@@ -122,15 +122,12 @@ jobs:
           name: Clear release and update plugin assets
           command: |
             cp -ar /app /app-released
-            ls -la /app
-            ls -la /app-released
-            ls -la /app-released/.plugin-data
             cd /app-released
             rm -rf .github .circleci .git .gitignore .editorconfig 
             rm -rf update-wp-config.php wait-for-mysql.sh LICENSE *.MD      
             cp /app-released/.plugin-data/README.md /app-released/README.md
             rm -rf /svn/${PLUGIN_NAME}/assets
-            cp /app-released/.plugin-data/assets /svn/${PLUGIN_NAME}/assets
+            cp -ar /app-released/.plugin-data/assets /svn/${PLUGIN_NAME}/assets
             rm -rf /app-released/.plugin-data
       - run:
           name: Add release files 
