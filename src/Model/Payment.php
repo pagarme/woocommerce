@@ -103,21 +103,21 @@ class Payment
 	 */
     public function pay_billet_and_card( $wc_order, $form_fields, $customer )
     {
-		$billet_amount = Utils::get_value_by( $form_fields, 'billet_value' );
-		$billet = $this->_pay_billet_base();
+		$billet_amount    = Utils::get_value_by( $form_fields, 'billet_value' );
+		$billet           = $this->_pay_billet_base();
 		$billet['amount'] = Utils::format_desnormalized_order_price( $billet_amount );
 
+		$card = $this->_pay_credit_card_base( $wc_order, $form_fields, $customer );
 		
-		$card   = $this->_pay_credit_card_base( $wc_order, $form_fields, $customer );
 		if ( ! is_array( $card ) && $card->code != 200 ) {
 			return $card;
 		}
 		
-		$card_amount   = Utils::normalize_price( Utils::get_value_by( $form_fields, 'card_order_value' ));
-		$card_installments  = Utils::get_value_by( $form_fields, 'installments' );
+		$card_amount = Utils::normalize_price( Utils::get_value_by( $form_fields, 'card_order_value' ) );
+		$card_installments = Utils::get_value_by( $form_fields, 'installments' );
 		
-		$card_amount  = $this->_get_price_with_interest( $card_amount, $card_installments );
-		$card['amount']   = Utils::format_order_price( $card_amount );
+		$card_amount = $this->_get_price_with_interest( $card_amount, $card_installments );
+		$card['amount'] = Utils::format_order_price( $card_amount );
 
 		return array( $billet, $card );
     }

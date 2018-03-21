@@ -27,6 +27,7 @@ class Checkout
 		add_action( 'woocommerce_api_' . Model\Checkout::API_REQUEST, array( $this, 'process_checkout_transparent' ) );
 		add_action( 'woocommerce_view_order', array( 'Woocommerce\Mundipagg\View\Checkouts', 'render_payment_details' ) );
 		add_action( 'wp_ajax_xqRhBHJ5sW', array( $this, 'build_installments' ) );
+		add_action( 'wp_ajax_nopriv_xqRhBHJ5sW', array( $this, 'build_installments' ) );
 		add_filter( 'wcbcf_billing_fields', array( $this, 'set_required_fields' ) );
 	}
 
@@ -86,7 +87,7 @@ class Checkout
 	public function build_installments()
 	{
 		if ( ! Utils::is_request_ajax() || Utils::server( 'REQUEST_METHOD' ) !== 'GET' ) {
-			exit( 0 );
+			exit(0);
 		}
 
 		$flag  = Utils::get( 'flag', false, 'esc_html' );
@@ -180,7 +181,6 @@ class Checkout
 
 		$billet_value = Utils::get_value_by( $fields, 'billet_value' );
 		$card_value   = Utils::get_value_by( $fields, 'card_order_value' );
-
 		$total        = Utils::format_order_price( $wc_order->get_total() );
 		$billet       = Utils::format_desnormalized_order_price( $billet_value );
 		$credit_card  = Utils::format_desnormalized_order_price( $card_value );
@@ -203,7 +203,6 @@ class Checkout
 
 		$card1  = Utils::get_value_by( $fields, 'card_order_value' );
 		$card2  = Utils::get_value_by( $fields, 'card_order_value2' );
-
 		$total  = Utils::format_order_price( $wc_order->get_total() );
 		$value1 = Utils::format_desnormalized_order_price( $card1 );
 		$value2 = Utils::format_desnormalized_order_price( $card2 );

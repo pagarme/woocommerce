@@ -2635,11 +2635,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		var option  = '<option value="">...</option>';
 		var wrapper = $( e.currentTarget ).closest( 'fieldset' );
 		
-		if ( ! this.hasCardId( wrapper ) )  {
-			wrapper.find( '[data-element=installments]' ).html( option );
-			return;
-		}
-		
 		var total = e.target.value;
 		
 		if ( total ) {
@@ -2823,6 +2818,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 				type: 'error',
 				text: 'O valor não pode ser maior que total do pedido!'
 			});
+			input.val('');
+			nextInput.val('');
 			return;
 		}
 

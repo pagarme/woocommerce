@@ -80,11 +80,6 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		var option  = '<option value="">...</option>';
 		var wrapper = $( e.currentTarget ).closest( 'fieldset' );
 		
-		if ( ! this.hasCardId( wrapper ) )  {
-			wrapper.find( '[data-element=installments]' ).html( option );
-			return;
-		}
-		
 		var total = e.target.value;
 		
 		if ( total ) {
@@ -268,6 +263,8 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 				type: 'error',
 				text: 'O valor não pode ser maior que total do pedido!'
 			});
+			input.val('');
+			nextInput.val('');
 			return;
 		}
 

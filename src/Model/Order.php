@@ -36,6 +36,13 @@ class Order extends Meta
 	protected $billing_state;
 	protected $billing_postcode;
 	protected $billing_cpf;
+	protected $shipping_address_1;
+	protected $shipping_number;
+	protected $shipping_address_2;
+	protected $shipping_postcode;
+	protected $shipping_neighborhood;
+	protected $shipping_city;
+	protected $shipping_state;
 	// == END WC ORDER ==
 
 	public $with_prefix = array(
@@ -134,5 +141,34 @@ class Order extends Meta
 		}
 		
 		return $list;
+	}
+
+	/**
+	 * Returns the shipping data. If it is empty then returns billing data as fallback. 
+	 *
+	 * @return array
+	 */
+	public function get_shipping_info()
+	{
+		return array(
+			'address_1'    => $this->_handle_shipping_properties( 'address_1' ),
+			'number'       => $this->_handle_shipping_properties( 'number' ),
+			'address_2'    => $this->_handle_shipping_properties( 'address_2' ),
+			'postcode'     => $this->_handle_shipping_properties( 'postcode' ),
+			'neighborhood' => $this->_handle_shipping_properties( 'neighborhood' ),
+			'city'         => $this->_handle_shipping_properties( 'city' ),
+			'state'        => $this->_handle_shipping_properties( 'state' )
+		);
+	}
+
+	private function _handle_shipping_properties( $prop )
+	{
+		$shipping_prop = $this->__get( "shipping_{$prop}" );
+
+		if ( empty( $shipping_prop ) ) {
+			return $this->__get( "billing_{$prop}" );
+		}
+
+		return $shipping_prop;
 	}
 }

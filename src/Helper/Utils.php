@@ -308,7 +308,7 @@ class Utils
 		if ( empty( $price ) ) {
 			return;
 		}
-		
+
 		return @(int)number_format( $price, 2, '', '' );
 	}
 
@@ -325,9 +325,9 @@ class Utils
 			return;
 		}
 		
-		$price = Utils::normalize_price( $price );
+		$price = self::normalize_price( $price );
 
-		return Utils::format_order_price( $price );
+		return self::format_order_price( $price );
 	}
 
 	public static function normalize_price( $price )

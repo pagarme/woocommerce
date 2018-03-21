@@ -39,7 +39,7 @@ class Api
 				"neighborhood" => $model->billing_neighborhood,
 				"city"         => $model->billing_city,
 				"state"        => $model->billing_state,
-				"country"      => "BR"
+				"country"      => "BR",
 			);
 
 			$params = array(
@@ -80,7 +80,7 @@ class Api
 			$wc_order_id = intval( $wc_order->get_order_number() );
 			$orders      = new Orders();
 			$payment     = new Payment( $payment_method );
-			$items       = $this->_build_order_items( $wc_order, $form_fields );
+			$items       = $this->_build_order_items( $wc_order, $form_fields, $payment );
 			$payments    = $payment->get_payment_data( $wc_order, $form_fields, $customer );
 			$shipping    = $this->_build_shipping( $wc_order );
 			$amount      = $this->_get_amount_total( $payments );
@@ -130,7 +130,7 @@ class Api
 		if ( ! $min_value = $this->settings->antifraud_min_value ) {
 			return false;
 		}
-
+		
 		$min_value = Utils::format_desnormalized_order_price( $min_value );
 		$total     = Utils::format_order_price( $wc_order->get_total() );
 
@@ -144,35 +144,40 @@ class Api
 	private function _build_shipping( WC_Order $wc_order )
 	{
 		$method = $wc_order->get_shipping_method();
-		if ( !$method ) {
+		$order  = new Order( $wc_order->get_order_number() );
+		
+		if ( ! $method ) {
 			$method = "Não informado";
 		}
 
-		$total = Utils::format_order_price( $wc_order->get_total_shipping() );
+		$total    = Utils::format_order_price( $wc_order->get_total_shipping() );
+		$shipping = $order->get_shipping_info();
 
 		return array(
 			"amount"          => $total,
 			"description"     => $method,
 			"address"         => array(
-				    "street"       => $wc_order->shipping_address_1,
-				    "number"       => $wc_order->shipping_number,
-				    "complement"   => $wc_order->shipping_address_2,
-				    "zip_code"     => preg_replace( '/[^\d]+/', '', $wc_order->shipping_postcode ),
-				    "neighborhood" => $wc_order->shipping_neighborhood,
-				    "city"         => $wc_order->shipping_city,
-				    "state"        => $wc_order->shipping_state,
-				    "country"      => "BR"
+				"street"       => $shipping['address_1'],
+				"number"       => $shipping['number'],
+				"complement"   => $shipping['address_2'],
+				"zip_code"     => preg_replace( '/[^\d]+/', '', $shipping['postcode'] ),
+				"neighborhood" => $shipping['neighborhood'],
+				"city"         => $shipping['city'],
+				"state"        => $shipping['state'],
+				"country"      => "BR"
 			)
 		);
 	}
 
-	private function _build_order_items( WC_Order $wc_order )
+	private function _build_order_items( WC_Order $wc_order, $form_fields, Payment $payment )
 	{
 		$items = $wc_order->get_items();
 
 		if ( ! $items ) {
 			return;
 		}
+
+		$installments = Utils::get_value_by( $form_fields, 'installments' );
 
 		foreach ( $items as $item ) {
 			$product     = $wc_order->get_product_from_item( $item );
@@ -214,9 +219,11 @@ class Api
 	private function _get_amount_total( $payments )
 	{
 		$total = 0;
-		foreach($payments as $key=>$value){
+
+		foreach( $payments as $key => $value ) {
      		$total += $value['amount'];
-     	}
+		}
+		 
 		return $total;
 	}
 
