@@ -130,13 +130,18 @@ jobs:
             cp -ar /app-released/.plugin-data/assets /svn/${PLUGIN_NAME}/assets
             rm -rf /app-released/.plugin-data
       - run:
+          name: Get current version
+          command: |
+            cd /app-released
+            VERSION_TAG="$(cat ${PLUGIN_NAME}.php | grep -i 'Version:' | cut -c16- | xargs)"
+      - run:
           name: Add release files 
           command: |
-            echo "CircleCI TAG: ${CIRCLE_TAG}"
+            echo "Release Number: ${VERSION_TAG}"
             cd /svn/${PLUGIN_NAME}
-            if [ -d "${CIRCLE_TAG}" ]; then rm -rf ${CIRCLE_TAG}; fi
-            mkdir tags/${CIRCLE_TAG}
-            cp /app-released /svn/tags/${CIRCLE_TAG}
+            if [ -d "${VERSION_TAG}" ]; then rm -rf ${VERSION_TAG}; fi
+            mkdir tags/${VERSION_TAG}
+            cp /app-released /svn/tags/${VERSION_TAG}
             rm -rf /svn/${PLUGIN_NAME}/trunk/*
             cp /app-released /svn/trunk            
       - deploy:
@@ -146,7 +151,7 @@ jobs:
             svn cleanup .
             svn rm $( svn status | sed -e '/^!/!d' -e 's/^!//' )
             svn add --force * --auto-props --parents --depth infinity -q
-            svn commit . --force-log -m 'Auto generate release ${CIRCLE_TAG}' --no-auth-cache --username ${SVN_USER} --password ${SVN_PASS}
+            svn commit . --force-log -m 'Auto generate release ${VERSION_TAG}' --no-auth-cache --username ${SVN_USER} --password ${SVN_PASS}
             
 workflows:
   version: 2
@@ -162,13 +167,9 @@ workflows:
           filters:
             branches:
               only: master
-            tags:
-              only: /^*/{1,64}  
       - deploy_wordpress:
           requires:
             - publish
           filters:
             branches:
               only: master
-            tags:
-              only: /^*/{1,64}  
