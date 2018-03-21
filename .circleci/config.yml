@@ -165,7 +165,7 @@ workflows:
               only: master
       - deploy_wordpress:
           requires:
-            - publish
+            - deploy_staging
           filters:
             branches:
               only: master
