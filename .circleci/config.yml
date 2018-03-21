@@ -108,7 +108,7 @@ jobs:
   deploy_wordpress:
     working_directory: /
     docker:
-      - image: docker pull aneesv/svn-client
+      - image: aneesv/svn-client
     steps:
       - setup_remote_docker
       - attach_workspace:
