@@ -140,7 +140,7 @@ jobs:
             rm -rf /svn/${PLUGIN_NAME}/trunk/*
             cp /app-released /svn/trunk            
       - deploy:
-          name: Commit and push changes
+          name: Commit and push changes 
           command: |
             cd /svn/${PLUGIN_NAME}
             svn cleanup .
