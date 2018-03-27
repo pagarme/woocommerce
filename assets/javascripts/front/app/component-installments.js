@@ -1,7 +1,6 @@
 MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
     Model.fn.start = function() {
 		this.total = this.$el.data( 'total' );
-
 		this.addEventListener();
 	};
 
@@ -12,7 +11,6 @@ MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
 		}
 
 		$( 'body' ).on( 'mundipaggBlurCardOrderValue', this.onBlurCardOrderValue.bind(this) );
-
 	};
 
 	Model.fn.onChangeBrand = function(event, brand, cardNumberLength, wrapper) {
@@ -24,7 +22,7 @@ MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
 			this.total = this.total.replace( ',', '.' );
 		}
 
-		if ( cardNumberLength >= 13 ) {
+		if ( cardNumberLength >= 13 && cardNumberLength <= 19 ) {
 			this.request( brand, this.total, wrapper );
 		}
 	};

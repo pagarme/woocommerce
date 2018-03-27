@@ -1,6 +1,6 @@
 {
   "name": "woo-mundipagg-payments",
-  "version": "beta-1.0.10",
+  "version": "1.0.0",
   "description": "WooCommerce Mundipagg Payments",
   "main": "woo-mundipagg-payments.php",
   "dependencies": {},
