@@ -89,6 +89,35 @@ class Charge
         );
     }
 
+    public function create_from_order( $order_id, $charges )
+    {
+        if ( empty( $charges ) ) {
+            return;
+        }
+
+        foreach ( $charges as $charge ) {
+            if ( ! $this->is_exists( $charge->id ) ) {
+                $this->insert([
+                    'wc_order_id'   => $charge->code,
+                    'order_id'      => $order_id,
+                    'charge_id'     => $charge->id,
+                    'charge_data'   => $charge,
+                    'charge_status' => $charge->status
+                ]);
+            } else {
+                $this->update(
+                    array(
+                        'charge_status' => esc_sql( $charge->status ),
+                        'charge_data'   => maybe_serialize( $charge ) 
+                    ),
+                    array(
+                        'charge_id' => esc_sql( $charge->id )
+                    )
+                );
+            }
+        }
+    }
+
     public function find_by_wc_order( $wc_order_id )
     {
         global $wpdb;

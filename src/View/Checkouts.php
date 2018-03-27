@@ -16,7 +16,7 @@ class Checkouts
 {
 	protected static function message_before()
 	{
-		echo '<p class="title">' . __( 'Your transaction has been processed by MundiPagg.', Core::TEXTDOMAIN ) . '</p>';
+		echo '<p class="title">' . __( 'Your transaction has been processed successfully.', Core::TEXTDOMAIN ) . '</p>';
 	}
 
 	protected static function message_after()
@@ -157,7 +157,7 @@ class Checkouts
 
 		?>
 		<section>
-			<h2><?php _e( 'Payment Data - MundiPagg', Core::TEXTDOMAIN ); ?></h2>
+			<h2><?php _e( 'Payment Data', Core::TEXTDOMAIN ); ?></h2>
 			<table class="woocommerce-table">
 			<?php
 				foreach ( $charges as $charge ) {

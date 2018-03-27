@@ -9,6 +9,7 @@ use Woocommerce\Mundipagg\Model\Api;
 use Woocommerce\Mundipagg\Model\Order;
 use Woocommerce\Mundipagg\Model\Customer;
 use Woocommerce\Mundipagg\Model\Gateway;
+use Woocommerce\Mundipagg\Model\Charge;
 use Woocommerce\Mundipagg\Helper\Utils;
 use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\View;
@@ -70,7 +71,8 @@ class Checkout
 			$this->_save_customer_card( $response->raw_body, 2 );
 		}
 
-		$order = new Order( $wc_order->get_order_number() );
+		$order  = new Order( $wc_order->get_order_number() );
+		$charge = new Charge();
 
 		$order->payment_method   = $fields['payment_method'];
 		$order->mundipagg_id     = $response->body->id;
@@ -78,6 +80,7 @@ class Checkout
 		$order->response_data    = $response->body;
 
 		$order->update_by_mundipagg_status( $response->body->status );
+		$charge->create_from_order( $response->body->id, $response->body->charges );
 
 		WC()->cart->empty_cart();
 

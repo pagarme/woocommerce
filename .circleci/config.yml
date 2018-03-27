@@ -145,7 +145,8 @@ jobs:
           command: |
             cd /svn/${PLUGIN_NAME}
             svn cleanup .
-            svn rm $( svn status | sed -e '/^!/!d' -e 's/^!//' )
+            removed=$(svn status | sed -e '/^!/!d' -e 's/^!//')
+            if [ ! -z  ${removed// } ]; then svn rm $(svn status | sed -e '/^!/!d' -e 's/^!//'); fi
             svn add --force * --auto-props --parents --depth infinity -q
             svn commit . --force-log -m 'Auto generate release ${VERSION_TAG}' --no-auth-cache --username ${SVN_USER} --password ${SVN_PASS}
             
@@ -157,6 +158,9 @@ workflows:
       - publish:
           requires:
             - build
+          filters:
+            branches:
+              only: master
       - deploy_staging:
           requires:
             - publish
