@@ -143,6 +143,8 @@ jobs:
       - deploy:
           name: Commit and push changes 
           command: |
+            cd /app-released
+            VERSION_TAG="$(cat ${PLUGIN_NAME}.php | grep -i 'Version:' | cut -c12- | xargs)"
             cd /svn/${PLUGIN_NAME}
             svn cleanup .
             removed=$(svn status | sed -e '/^!/!d' -e 's/^!//')
