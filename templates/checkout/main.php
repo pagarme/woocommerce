@@ -57,7 +57,7 @@ $swal_data   = array(
 			?>
 				<li class="<?php echo ( $tab_num === 2 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="boleto" href="#tab-billet">
-						<?php _e( 'Pay with billet banking', Core::TEXTDOMAIN ); ?>
+						<?php _e( 'Pay with boleto', Core::TEXTDOMAIN ); ?>
 					</a>
 				</li>
 
@@ -69,7 +69,7 @@ $swal_data   = array(
 			?>
 				<li class="<?php echo ( $tab_num === 3 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="billetAndCard" href="#tab-billet-and-card">
-						<?php _e( 'Pay with billet and credit card', Core::TEXTDOMAIN ); ?>
+						<?php _e( 'Pay with boleto and credit card', Core::TEXTDOMAIN ); ?>
 					</a>
 				</li>
 

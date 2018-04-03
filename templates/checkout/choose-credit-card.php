@@ -8,6 +8,10 @@ use Woocommerce\Mundipagg\Model\Customer;
 use Woocommerce\Mundipagg\Model\Setting;
 use Woocommerce\Mundipagg\Helper\Utils;
 
+if ( ! is_user_logged_in() ) {
+	return;
+}
+
 $customer = new Customer( get_current_user_id() );
 $suffix   = isset( $suffix ) ? $suffix : '';
 
@@ -26,7 +30,7 @@ if ( ! $customer->cards ) {
 			data-installments-type="<?php echo Setting::get_instance()->cc_installment_type; ?>"
 			data-element="choose-credit-card">
 		<option value="">
-			<?php _e( 'Choose a credit card save', Core::TEXTDOMAIN ) ?>
+			<?php _e( 'Saved credit card', Core::TEXTDOMAIN ) ?>
 		</option>
 
 		<?php

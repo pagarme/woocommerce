@@ -190,11 +190,11 @@ class Checkout
 		$amount       = intval( $billet ) + intval( $credit_card );
 
 		if ( $amount < $total ) {
-			wp_send_json_error( __( 'The sum of billet and credit card is less than the total', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'The sum of boleto and credit card is less than the total', Core::TEXTDOMAIN ) );
 		}
 
 		if ( $amount > $total ) {
-			wp_send_json_error( __( 'The sum of billet and credit card is greater than the total', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'The sum of boleto and credit card is greater than the total', Core::TEXTDOMAIN ) );
 		}
 	}
 

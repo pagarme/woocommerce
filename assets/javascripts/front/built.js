@@ -2836,11 +2836,13 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		nextValue = nextValue.replace('.',',');
 
 		nextInput.val(nextValue);
+		nextInput.trigger('blur');
 	};
 
 });
 ;MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
     Model.fn.start = function() {
+		this.lock  = false;
 		this.total = this.$el.data( 'total' );
 		this.addEventListener();
 	};
@@ -2885,6 +2887,14 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			select.html( storage );
 			return false;
 		}
+		
+		if ( this.lock ) {
+			return;
+		}
+
+		this.lock = true;
+
+		this.showLoader();
 
 		var ajax = $.ajax({
 			'url': MONSTER.utils.getAjaxUrl(),
@@ -2895,12 +2905,34 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			}
 		});
 
-		var self = this;
+		ajax.done( $.proxy( this._done, this, select, storageName ) );
+		ajax.fail( this._fail.bind(this) );
+	};
 
-		ajax.done(function(response){
-			select.html( response );
-			sessionStorage.setItem( storageName, response );
+	Model.fn._done = function(select, storageName, response) {
+		this.lock = false;
+		select.html(response);
+		sessionStorage.setItem(storageName, response);
+		this.removeLoader();
+	};
+
+	Model.fn._fail = function() {
+		this.lock = false;
+		this.removeLoader();
+	};
+
+	Model.fn.showLoader = function() {
+		$('#wcmp-checkout-form').block({
+			message: null,
+			overlayCSS: {
+				background: '#fff',
+				opacity: 0.6
+			}
 		});
+	};
+
+	Model.fn.removeLoader = function() {
+		$('#wcmp-checkout-form').unblock();
 	};
 });    ;MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 

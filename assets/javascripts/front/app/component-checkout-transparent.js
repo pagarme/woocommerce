@@ -281,6 +281,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		nextValue = nextValue.replace('.',',');
 
 		nextInput.val(nextValue);
+		nextInput.trigger('blur');
 	};
 
 });

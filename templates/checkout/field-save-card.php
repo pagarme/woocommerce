@@ -6,6 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\Model\Customer;
 
+if ( ! is_user_logged_in() ) {
+	return;
+}
+
 $customer = new Customer( get_current_user_id() );
 $suffix   = isset( $suffix ) ? $suffix : '';
 
