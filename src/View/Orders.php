@@ -108,29 +108,17 @@ class Orders
 
     private static function _render_cancel_modal( $item, $charge )
     {
-        $canceled_amount = isset( $charge->canceled_amount ) ? $charge->canceled_amount: 0;
-        $paid_amount     = isset( $charge->paid_amount ) ? $charge->paid_amount : 0;
-        $value_to_cancel = $charge->amount;
-        
-        if ( $paid_amount ) {
-            $value_to_cancel = $paid_amount;
-        }
-
-        if ( $paid_amount && $canceled_amount ) {
-            $value_to_cancel = $paid_amount - $canceled_amount;
-        }
-
         ?>
         <div data-charge-action="<?php echo $item->charge_id; ?>-cancel" data-charge="<?php echo $item->charge_id; ?>" class="modal">
             <h2>MundiPagg - Cancelamento</h2>
             <p><b>CHARGE ID: </b><?php echo $item->charge_id; ?></p>
             <p><b>TIPO: </b><?php echo strtoupper( $charge->payment_method ); ?></p>
             <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view( $charge->amount ); ?></p>
-            <p><b>PARCIALMENTE CANCELADO: </b><?php echo $canceled_amount ? Utils::format_order_price_to_view( $canceled_amount ) : '-'; ?></p>
+            <p><b>PARCIALMENTE CANCELADO: </b> - </p>
             <p><b>STATUS: </b><?php echo strtoupper( $item->charge_status ); ?></p>
             <p>
                 <label>Valor a ser cancelado:
-                    <input data-element="amount" type="text" value="<?php echo $value_to_cancel; ?>"
+                    <input data-element="amount" type="text" value="<?php echo $charge->amount; ?>"
                     <?php echo $item->charge_status == 'pending' ? 'disabled=disabled' : ''; ?>/>
                 </label>
             </p>

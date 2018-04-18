@@ -9,7 +9,6 @@ use Woocommerce\Mundipagg\Model\Api;
 use Woocommerce\Mundipagg\Model\Order;
 use Woocommerce\Mundipagg\Model\Customer;
 use Woocommerce\Mundipagg\Model\Gateway;
-use Woocommerce\Mundipagg\Model\Charge;
 use Woocommerce\Mundipagg\Helper\Utils;
 use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\View;
@@ -28,7 +27,6 @@ class Checkout
 		add_action( 'woocommerce_api_' . Model\Checkout::API_REQUEST, array( $this, 'process_checkout_transparent' ) );
 		add_action( 'woocommerce_view_order', array( 'Woocommerce\Mundipagg\View\Checkouts', 'render_payment_details' ) );
 		add_action( 'wp_ajax_xqRhBHJ5sW', array( $this, 'build_installments' ) );
-		add_action( 'wp_ajax_nopriv_xqRhBHJ5sW', array( $this, 'build_installments' ) );
 		add_filter( 'wcbcf_billing_fields', array( $this, 'set_required_fields' ) );
 	}
 
@@ -71,16 +69,14 @@ class Checkout
 			$this->_save_customer_card( $response->raw_body, 2 );
 		}
 
-		$order  = new Order( $wc_order->get_order_number() );
-		$charge = new Charge();
+		$order = new Order( $wc_order->get_order_number() );
 
 		$order->payment_method   = $fields['payment_method'];
 		$order->mundipagg_id     = $response->body->id;
 		$order->mundipagg_status = $response->body->status;
 		$order->response_data    = $response->body;
 
-		$order->update_by_mundipagg_status( $response->body->status );
-		$charge->create_from_order( $response->body->id, $response->body->charges );
+		$order->payment_on_hold();
 
 		WC()->cart->empty_cart();
 
@@ -90,7 +86,7 @@ class Checkout
 	public function build_installments()
 	{
 		if ( ! Utils::is_request_ajax() || Utils::server( 'REQUEST_METHOD' ) !== 'GET' ) {
-			exit(0);
+			exit( 0 );
 		}
 
 		$flag  = Utils::get( 'flag', false, 'esc_html' );
@@ -185,16 +181,16 @@ class Checkout
 		$billet_value = Utils::get_value_by( $fields, 'billet_value' );
 		$card_value   = Utils::get_value_by( $fields, 'card_order_value' );
 		$total        = Utils::format_order_price( $wc_order->get_total() );
-		$billet       = Utils::format_desnormalized_order_price( $billet_value );
-		$credit_card  = Utils::format_desnormalized_order_price( $card_value );
+		$billet       = Utils::format_order_price( $billet_value );
+		$credit_card  = Utils::format_order_price( $card_value );
 		$amount       = intval( $billet ) + intval( $credit_card );
 
 		if ( $amount < $total ) {
-			wp_send_json_error( __( 'The sum of boleto and credit card is less than the total', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'The sum of billet and credit card is less than the total', Core::TEXTDOMAIN ) );
 		}
 
 		if ( $amount > $total ) {
-			wp_send_json_error( __( 'The sum of boleto and credit card is greater than the total', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'The sum of billet and credit card is greater than the total', Core::TEXTDOMAIN ) );
 		}
 	}
 
@@ -207,8 +203,8 @@ class Checkout
 		$card1  = Utils::get_value_by( $fields, 'card_order_value' );
 		$card2  = Utils::get_value_by( $fields, 'card_order_value2' );
 		$total  = Utils::format_order_price( $wc_order->get_total() );
-		$value1 = Utils::format_desnormalized_order_price( $card1 );
-		$value2 = Utils::format_desnormalized_order_price( $card2 );
+		$value1 = Utils::format_order_price( $card1 );
+		$value2 = Utils::format_order_price( $card2 );
 		$amount = intval( $value1 ) + intval( $value2 );
 
 		if ( $amount < $total ) {

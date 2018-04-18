@@ -313,36 +313,6 @@ class Utils
 	}
 
 	/**
-	 * Format desnormalized order price with amount
-	 *
-	 * @since 1.0
-	 * @param Mixed String|Float|Int $price
-	 * @return Integer
-	 */
-	public static function format_desnormalized_order_price( $price )
-	{
-		if ( empty( $price ) ) {
-			return;
-		}
-		
-		$price = self::normalize_price( $price );
-
-		return self::format_order_price( $price );
-	}
-
-	public static function normalize_price( $price )
-	{
-		if ( empty( $price ) ) {
-			return;
-		}
-		
-		$price = str_replace('.', '', $price);
-		$price = str_replace(',', '.', $price);
-
-		return $price;
-	}
-
-	/**
 	 * Format order price to current currency
 	 *
 	 * @since 1.0

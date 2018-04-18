@@ -1,7 +1,6 @@
 MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.start = function() {
-		this.lock = false;
 		this.addEventListener();
 
 		Mundipagg.CheckoutErrors.create( this );
@@ -13,7 +12,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.addEventListener = function() {
 		this.$el.on( 'submit', this._onSubmit.bind(this) );
-		this.$el.find( '[data-value]' ).on( 'keyup', this.fillAnotherInput.bind(this) );
+		this.$el.find( '[data-value]' ).on( 'blur', this.fillAnotherInput.bind(this) );
 		this.click( 'tab' );
 		this.click( 'choose-payment' );
 
@@ -81,6 +80,11 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		var option  = '<option value="">...</option>';
 		var wrapper = $( e.currentTarget ).closest( 'fieldset' );
 		
+		if ( ! this.hasCardId( wrapper ) )  {
+			wrapper.find( '[data-element=installments]' ).html( option );
+			return;
+		}
+		
 		var total = e.target.value;
 		
 		if ( total ) {
@@ -96,7 +100,6 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 	};
 
 	Model.fn._done = function(response) {
-		this.lock = false;
 		if ( ! response.success ) {
 			this.failMessage( response.data );
 		} else {
@@ -105,7 +108,6 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 	};
 
 	Model.fn._fail = function(jqXHR, textStatus, errorThrown) {
-		this.lock = false;
 		this.failMessage();
 	};
 
@@ -190,13 +192,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 	};
 
 	Model.fn._onOpenSwal = function() {
-		if ( this.lock ) {
-			return;
-		}
-
-		this.lock = true;
-
-		swal.showLoading();
+    	swal.showLoading();
 
 	    this.ajax({
 	    	url  : this.data.apiRequest,
@@ -234,7 +230,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.hasCardId = function(wrapper) {
 		var element = wrapper.find( '[data-element="choose-credit-card"]' );
-		
+
 		if ( element === undefined || element.length === 0 ) {
 			return false;
 		}
@@ -281,7 +277,6 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		nextValue = nextValue.replace('.',',');
 
 		nextInput.val(nextValue);
-		nextInput.trigger('blur');
 	};
 
 });

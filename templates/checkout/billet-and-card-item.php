@@ -26,7 +26,7 @@ $billet_and_card   = true;
 			<div class="form-row form-row-wide">
 				<p class="form-row form-row-first">
 					<label for="billet-value">
-						<?php _e( 'Value (Boleto)', Core::TEXTDOMAIN ); ?><span class="required">*</span>
+						<?php _e( 'Value (Billet)', Core::TEXTDOMAIN ); ?><span class="required">*</span>
 					</label>
 					<input id="billet-value"
 							name="billet_value"

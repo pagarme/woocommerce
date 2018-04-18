@@ -17,11 +17,14 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 	};
 
 	Model.fn.addEventListener = function() {
+		this.creditCardNumber.on( 'keypress', this.keyEventHandlerCard.bind(this) );
+		this.creditCardNumber.on( 'keydown', this.keyEventHandlerCard.bind(this) );
 		this.creditCardNumber.on( 'keyup', this.keyEventHandlerCard.bind(this) );
+	
 		this.form.on( 'submit', this.onSubmit.bind(this) );
 	};
 
-	Model.fn.hasCardId = function() {
+	Model.fn.hasCardId = function () {
 		if ( this.chooseCreditCard === undefined || this.chooseCreditCard.length === 0 ) {
 			return false;
 		}
@@ -83,10 +86,8 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 				fail.call(null, errorObj, suffix);
 			}
 		};
-
-		xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-		xhr.send(JSON.stringify(data));
-		
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		xhr.send(this.serialize(data));
 		return xhr;
 	};
 
@@ -247,7 +248,7 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 		swal.close();
 
 		swal({
-			title: '',
+			title: 'MundiPagg',
 			text: 'Gerando transação segura...',
 			allowOutsideClick: false
 		});
