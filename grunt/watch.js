@@ -5,6 +5,6 @@ module.exports =  {
 	},
 	scripts : {
 		files : ['<%= concat.admin.src %>', '<%= concat.front.src %>'],
-		tasks : ['jshint', 'concat:admin', 'concat:front']
+		tasks : ['concat:admin', 'concat:front']
 	}
 };

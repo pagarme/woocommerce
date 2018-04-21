@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: WooCommerce MundiPagg Payments
- * Version:     beta-1.0.12
+ * Version:     beta-1.0.13
  * Author:      Mundipagg
  * Author URI:  https://mundipagg.com
  * Text Domain: woo-mundipagg-payments

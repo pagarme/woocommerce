@@ -5,9 +5,10 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 	Model.fn.start = function() {
 		this.script           = $( '[data-mundicheckout-app-id]' );
 		this.form             = $( '[data-mundicheckout-form]' );
-		this.suffix 		  = this.$el.data( 'mundicheckoutSuffix' ) || 1; 
+		this.suffix           = this.$el.data( 'mundicheckoutSuffix' ) || 1; 
 		this.creditCardNumber = this.$el.find( '[data-mundicheckout-element="number"]' );
 		this.creditCardBrand  = this.$el.find( '[data-mundicheckout-element="brand"]' );
+		this.brandInput       = this.$el.find( '[data-mundicheckout-element="brand-input"]' );
 		this.chooseCreditCard = this.$el.closest( 'fieldset' ).find( '[data-element="choose-credit-card"]' );
 		this.cvv              = this.$el.find( '[data-mundicheckout-element="cvv"]' );
 		this.appId            = this.script.data( 'mundicheckoutAppId' );
@@ -17,14 +18,11 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 	};
 
 	Model.fn.addEventListener = function() {
-		this.creditCardNumber.on( 'keypress', this.keyEventHandlerCard.bind(this) );
-		this.creditCardNumber.on( 'keydown', this.keyEventHandlerCard.bind(this) );
 		this.creditCardNumber.on( 'keyup', this.keyEventHandlerCard.bind(this) );
-	
 		this.form.on( 'submit', this.onSubmit.bind(this) );
 	};
 
-	Model.fn.hasCardId = function () {
+	Model.fn.hasCardId = function() {
 		if ( this.chooseCreditCard === undefined || this.chooseCreditCard.length === 0 ) {
 			return false;
 		}
@@ -86,8 +84,10 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 				fail.call(null, errorObj, suffix);
 			}
 		};
-		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-		xhr.send(this.serialize(data));
+
+		xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+		xhr.send(JSON.stringify(data));
+		
 		return xhr;
 	};
 
@@ -111,6 +111,7 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 		var src;
 		
 		$brand.setAttribute('data-mundicheckout-brand', brand);
+		this.brandInput.val( brand );
 
 		jQuery('body').trigger( 'mundipaggChangeBrand', [brand, cardNumberLength, wrapper] );
 
@@ -248,7 +249,7 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 		swal.close();
 
 		swal({
-			title: 'MundiPagg',
+			title: '',
 			text: 'Gerando transação segura...',
 			allowOutsideClick: false
 		});

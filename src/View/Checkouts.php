@@ -16,7 +16,7 @@ class Checkouts
 {
 	protected static function message_before()
 	{
-		echo '<p class="title">' . __( 'Your transaction has been processed by MundiPagg.', Core::TEXTDOMAIN ) . '</p>';
+		echo '<p class="title">' . __( 'Your transaction has been processed.', Core::TEXTDOMAIN ) . '</p>';
 	}
 
 	protected static function message_after()
@@ -53,7 +53,7 @@ class Checkouts
 
 		?>
 		<p>
-			<?php _e( 'If you have not yet received the billet, please click the button below to print.', Core::TEXTDOMAIN ); ?>
+			<?php _e( 'If you have not yet received the boleto, please click the button below to print.', Core::TEXTDOMAIN ); ?>
 		</p>
 
 		<a href="<?php echo esc_url( $transaction->pdf ); ?>" target="_blank" class="payment-link">
@@ -120,7 +120,7 @@ class Checkouts
 			if ( $charge->payment_method == 'boleto' ) :
 				?>
 				<p>
-					<?php _e( 'BILLET: If you have not yet received the billet, please click the button below to print.', Core::TEXTDOMAIN ); ?>
+					<?php _e( 'BOLETO: If you have not yet received the boleto, please click the button below to print.', Core::TEXTDOMAIN ); ?>
 				</p>
 
 				<a href="<?php echo esc_url( $charge->last_transaction->pdf ); ?>" target="_blank" class="payment-link">
@@ -157,7 +157,7 @@ class Checkouts
 
 		?>
 		<section>
-			<h2><?php _e( 'Payment Data - MundiPagg', Core::TEXTDOMAIN ); ?></h2>
+			<h2><?php _e( 'Payment Data', Core::TEXTDOMAIN ); ?></h2>
 			<table class="woocommerce-table">
 			<?php
 				foreach ( $charges as $charge ) {
@@ -188,7 +188,7 @@ class Checkouts
 			?>
 			<tr>
 				<th><?php _e( 'Payment Type', Core::TEXTDOMAIN ); ?>:</th>
-				<td><?php _e( 'Bank Billet', Core::TEXTDOMAIN ); ?></td>
+				<td><?php _e( 'Boleto', Core::TEXTDOMAIN ); ?></td>
 			</tr>
 			<tr>
 				<th>Link:</th>

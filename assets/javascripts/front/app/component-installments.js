@@ -1,7 +1,7 @@
 MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
     Model.fn.start = function() {
+		this.lock  = false;
 		this.total = this.$el.data( 'total' );
-
 		this.addEventListener();
 	};
 
@@ -12,7 +12,6 @@ MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
 		}
 
 		$( 'body' ).on( 'mundipaggBlurCardOrderValue', this.onBlurCardOrderValue.bind(this) );
-
 	};
 
 	Model.fn.onChangeBrand = function(event, brand, cardNumberLength, wrapper) {
@@ -24,7 +23,7 @@ MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
 			this.total = this.total.replace( ',', '.' );
 		}
 
-		if ( cardNumberLength >= 13 ) {
+		if ( cardNumberLength >= 13 && cardNumberLength <= 19 ) {
 			this.request( brand, this.total, wrapper );
 		}
 	};
@@ -46,6 +45,14 @@ MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
 			select.html( storage );
 			return false;
 		}
+		
+		if ( this.lock ) {
+			return;
+		}
+
+		this.lock = true;
+
+		this.showLoader();
 
 		var ajax = $.ajax({
 			'url': MONSTER.utils.getAjaxUrl(),
@@ -56,11 +63,33 @@ MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
 			}
 		});
 
-		var self = this;
+		ajax.done( $.proxy( this._done, this, select, storageName ) );
+		ajax.fail( this._fail.bind(this) );
+	};
 
-		ajax.done(function(response){
-			select.html( response );
-			sessionStorage.setItem( storageName, response );
+	Model.fn._done = function(select, storageName, response) {
+		this.lock = false;
+		select.html(response);
+		sessionStorage.setItem(storageName, response);
+		this.removeLoader();
+	};
+
+	Model.fn._fail = function() {
+		this.lock = false;
+		this.removeLoader();
+	};
+
+	Model.fn.showLoader = function() {
+		$('#wcmp-checkout-form').block({
+			message: null,
+			overlayCSS: {
+				background: '#fff',
+				opacity: 0.6
+			}
 		});
+	};
+
+	Model.fn.removeLoader = function() {
+		$('#wcmp-checkout-form').unblock();
 	};
 });    

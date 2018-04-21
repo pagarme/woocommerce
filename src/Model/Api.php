@@ -81,16 +81,20 @@ class Api
 			$orders      = new Orders();
 			$payment     = new Payment( $payment_method );
 			$items       = $this->_build_order_items( $wc_order, $form_fields, $payment );
-			$payments    = $payment->get_payment_data( $form_fields, $customer );
+			$payments    = $payment->get_payment_data( $wc_order, $form_fields, $customer );
+			$shipping    = $this->_build_shipping( $wc_order );
+			$amount      = $this->_get_amount_total( $payments );
 
 			if ( ! is_array( $payments ) ) {
 				return $payments;
 			}
 
 			$params = array(
+				'amount'            => $amount,
 				'code'              => $wc_order_id,
 				'items'             => $items,
 				'customer'          => $customer,
+				'shipping'          => $shipping,
 				'payments'          => $payments,
 				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method )
 			);
@@ -127,14 +131,42 @@ class Api
 			return false;
 		}
 		
+		$min_value = Utils::format_desnormalized_order_price( $min_value );
 		$total     = Utils::format_order_price( $wc_order->get_total() );
-		$min_value = Utils::format_order_price( $min_value );
 
 		if ( $total < $min_value ) {
 			return false;
 		}
 
 		return true;
+	}
+
+	private function _build_shipping( WC_Order $wc_order )
+	{
+		$method = $wc_order->get_shipping_method();
+		$order  = new Order( $wc_order->get_order_number() );
+		
+		if ( ! $method ) {
+			$method = "Não informado";
+		}
+
+		$total    = Utils::format_order_price( $wc_order->get_total_shipping() );
+		$shipping = $order->get_shipping_info();
+
+		return array(
+			"amount"          => $total,
+			"description"     => $method,
+			"address"         => array(
+				"street"       => $shipping['address_1'],
+				"number"       => $shipping['number'],
+				"complement"   => $shipping['address_2'],
+				"zip_code"     => preg_replace( '/[^\d]+/', '', $shipping['postcode'] ),
+				"neighborhood" => $shipping['neighborhood'],
+				"city"         => $shipping['city'],
+				"state"        => $shipping['state'],
+				"country"      => "BR"
+			)
+		);
 	}
 
 	private function _build_order_items( WC_Order $wc_order, $form_fields, Payment $payment )
@@ -149,7 +181,7 @@ class Api
 
 		foreach ( $items as $item ) {
 			$product     = $wc_order->get_product_from_item( $item );
-			$price       = $payment->get_price_with_interest( $product->get_price(), $installments );
+			$price       = $product->get_price();
 			$quantity    = absint( $item['qty'] );
 			$description = sanitize_title( $item['name'] ) . ' x ' . $quantity;
 			$amount      = Utils::format_order_price( $price );
@@ -182,6 +214,17 @@ class Api
 			default:
 				return array( 'type' => '', 'value' => '' );
 		}
+	}
+
+	private function _get_amount_total( $payments )
+	{
+		$total = 0;
+
+		foreach( $payments as $key => $value ) {
+     		$total += $value['amount'];
+		}
+		 
+		return $total;
 	}
 
 	public static function get_instance()

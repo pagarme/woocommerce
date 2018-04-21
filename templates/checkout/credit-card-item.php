@@ -46,7 +46,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 						data-action="select2"
 						data-required="true"
 						data-element="installments"
-						name="installments<?php echo $suffix; ?>">
+						name="installments">
 
 					<?php
 						if ( $installments_type != 2 ) {

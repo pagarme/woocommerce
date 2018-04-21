@@ -18,7 +18,7 @@ use Woocommerce\Mundipagg\Core;
 					<?php
 						printf( '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
 							Core::plugins_url( 'assets/images/barcode.svg' ),
-							__( 'Bank Billet', Core::TEXTDOMAIN )
+							__( 'Boleto', Core::TEXTDOMAIN )
 						);
 					?>
 					<input data-element="boleto"

@@ -37,10 +37,11 @@ $setting = Setting::get_instance();
         <input id="card-number"
                 data-element="card-number"
                 class="input-text wc-credit-card-form-card-expiry"
-                data-mask="0000000000000000"
+                data-mask="0000000000000000000"
                 placeholder="•••• •••• •••• ••••"
                 data-required="true"
                 data-mundicheckout-element="number">
+        <input type="hidden" name="brand<?php echo $suffix; ?>" data-mundicheckout-element="brand-input"/>
         <span data-mundicheckout-element="brand"
                 data-mundicheckout-brand-image
                 data-mundicheckout-brand></span>

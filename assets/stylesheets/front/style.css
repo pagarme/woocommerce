@@ -949,13 +949,13 @@ body .swal2-animate-x-mark {
   display: none;
 }
 
-.woocommerce-message .mundipagg-response {
+.woocommerce-message .mundipagg-response, .woocommerce-error .mundipagg-response {
   text-align: center;
 }
-.woocommerce-message .mundipagg-response .title {
+.woocommerce-message .mundipagg-response .title, .woocommerce-error .mundipagg-response .title {
   font-weight: bold;
 }
-.woocommerce-message .mundipagg-response .payment-link {
+.woocommerce-message .mundipagg-response .payment-link, .woocommerce-error .mundipagg-response .payment-link {
   background: #333;
   border-radius: 4px;
   cursor: pointer;

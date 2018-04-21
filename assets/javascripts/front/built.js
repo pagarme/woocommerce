@@ -2556,6 +2556,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 ;MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.start = function() {
+		this.lock = false;
 		this.addEventListener();
 
 		Mundipagg.CheckoutErrors.create( this );
@@ -2567,7 +2568,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.addEventListener = function() {
 		this.$el.on( 'submit', this._onSubmit.bind(this) );
-		this.$el.find( '[data-value]' ).on( 'blur', this.fillAnotherInput.bind(this) );
+		this.$el.find( '[data-value]' ).on( 'keyup', this.fillAnotherInput.bind(this) );
 		this.click( 'tab' );
 		this.click( 'choose-payment' );
 
@@ -2635,11 +2636,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		var option  = '<option value="">...</option>';
 		var wrapper = $( e.currentTarget ).closest( 'fieldset' );
 		
-		if ( ! this.hasCardId( wrapper ) )  {
-			wrapper.find( '[data-element=installments]' ).html( option );
-			return;
-		}
-		
 		var total = e.target.value;
 		
 		if ( total ) {
@@ -2655,6 +2651,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn._done = function(response) {
+		this.lock = false;
 		if ( ! response.success ) {
 			this.failMessage( response.data );
 		} else {
@@ -2663,6 +2660,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn._fail = function(jqXHR, textStatus, errorThrown) {
+		this.lock = false;
 		this.failMessage();
 	};
 
@@ -2747,7 +2745,13 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn._onOpenSwal = function() {
-    	swal.showLoading();
+		if ( this.lock ) {
+			return;
+		}
+
+		this.lock = true;
+
+		swal.showLoading();
 
 	    this.ajax({
 	    	url  : this.data.apiRequest,
@@ -2763,17 +2767,20 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		var wrapper = select.closest( 'fieldset' );
 		var method  = event.currentTarget.value.trim() ? 'slideUp': 'slideDown';
 		var type    = method == 'slideUp' ? 'OneClickBuy': 'DefaultBuy';
+		var brandInput = wrapper.find( '[data-mundicheckout-element="brand-input"]' );
 
 		$( '#wcmp-checkout-errors' ).hide();
 
 		$( 'body' ).trigger( "onMundipaggCardTypeChange", [ type, wrapper ] );
 
 		if ( select.data( 'installments-type' ) == 2 ) {
-
+			
 			if ( type == 'OneClickBuy' ) {
 				var brand = select.find( 'option:selected' ).data( 'brand' );
+				brandInput.val( brand );
 				$( 'body' ).trigger( 'mundipaggSelectOneClickBuy', [ brand, wrapper ] );
 			} else {
+				brandInput.val( '' );
 				var option = '<option value="">...</option>';
 				$( '[data-element=installments]' ).html( option );
 			}
@@ -2785,7 +2792,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.hasCardId = function(wrapper) {
 		var element = wrapper.find( '[data-element="choose-credit-card"]' );
-
+		
 		if ( element === undefined || element.length === 0 ) {
 			return false;
 		}
@@ -2832,13 +2839,14 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		nextValue = nextValue.replace('.',',');
 
 		nextInput.val(nextValue);
+		nextInput.trigger('blur');
 	};
 
 });
 ;MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
     Model.fn.start = function() {
+		this.lock  = false;
 		this.total = this.$el.data( 'total' );
-
 		this.addEventListener();
 	};
 
@@ -2849,7 +2857,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		}
 
 		$( 'body' ).on( 'mundipaggBlurCardOrderValue', this.onBlurCardOrderValue.bind(this) );
-
 	};
 
 	Model.fn.onChangeBrand = function(event, brand, cardNumberLength, wrapper) {
@@ -2861,7 +2868,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			this.total = this.total.replace( ',', '.' );
 		}
 
-		if ( cardNumberLength >= 13 ) {
+		if ( cardNumberLength >= 13 && cardNumberLength <= 19 ) {
 			this.request( brand, this.total, wrapper );
 		}
 	};
@@ -2883,6 +2890,14 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			select.html( storage );
 			return false;
 		}
+		
+		if ( this.lock ) {
+			return;
+		}
+
+		this.lock = true;
+
+		this.showLoader();
 
 		var ajax = $.ajax({
 			'url': MONSTER.utils.getAjaxUrl(),
@@ -2893,12 +2908,34 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			}
 		});
 
-		var self = this;
+		ajax.done( $.proxy( this._done, this, select, storageName ) );
+		ajax.fail( this._fail.bind(this) );
+	};
 
-		ajax.done(function(response){
-			select.html( response );
-			sessionStorage.setItem( storageName, response );
+	Model.fn._done = function(select, storageName, response) {
+		this.lock = false;
+		select.html(response);
+		sessionStorage.setItem(storageName, response);
+		this.removeLoader();
+	};
+
+	Model.fn._fail = function() {
+		this.lock = false;
+		this.removeLoader();
+	};
+
+	Model.fn.showLoader = function() {
+		$('#wcmp-checkout-form').block({
+			message: null,
+			overlayCSS: {
+				background: '#fff',
+				opacity: 0.6
+			}
 		});
+	};
+
+	Model.fn.removeLoader = function() {
+		$('#wcmp-checkout-form').unblock();
 	};
 });    ;MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 
@@ -2907,9 +2944,10 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn.start = function() {
 		this.script           = $( '[data-mundicheckout-app-id]' );
 		this.form             = $( '[data-mundicheckout-form]' );
-		this.suffix 		  = this.$el.data( 'mundicheckoutSuffix' ) || 1; 
+		this.suffix           = this.$el.data( 'mundicheckoutSuffix' ) || 1; 
 		this.creditCardNumber = this.$el.find( '[data-mundicheckout-element="number"]' );
 		this.creditCardBrand  = this.$el.find( '[data-mundicheckout-element="brand"]' );
+		this.brandInput       = this.$el.find( '[data-mundicheckout-element="brand-input"]' );
 		this.chooseCreditCard = this.$el.closest( 'fieldset' ).find( '[data-element="choose-credit-card"]' );
 		this.cvv              = this.$el.find( '[data-mundicheckout-element="cvv"]' );
 		this.appId            = this.script.data( 'mundicheckoutAppId' );
@@ -2919,14 +2957,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn.addEventListener = function() {
-		this.creditCardNumber.on( 'keypress', this.keyEventHandlerCard.bind(this) );
-		this.creditCardNumber.on( 'keydown', this.keyEventHandlerCard.bind(this) );
 		this.creditCardNumber.on( 'keyup', this.keyEventHandlerCard.bind(this) );
-	
 		this.form.on( 'submit', this.onSubmit.bind(this) );
 	};
 
-	Model.fn.hasCardId = function () {
+	Model.fn.hasCardId = function() {
 		if ( this.chooseCreditCard === undefined || this.chooseCreditCard.length === 0 ) {
 			return false;
 		}
@@ -2988,8 +3023,10 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 				fail.call(null, errorObj, suffix);
 			}
 		};
-		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-		xhr.send(this.serialize(data));
+
+		xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+		xhr.send(JSON.stringify(data));
+		
 		return xhr;
 	};
 
@@ -3013,6 +3050,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		var src;
 		
 		$brand.setAttribute('data-mundicheckout-brand', brand);
+		this.brandInput.val( brand );
 
 		jQuery('body').trigger( 'mundipaggChangeBrand', [brand, cardNumberLength, wrapper] );
 
@@ -3150,7 +3188,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		swal.close();
 
 		swal({
-			title: 'MundiPagg',
+			title: '',
 			text: 'Gerando transação segura...',
 			allowOutsideClick: false
 		});
