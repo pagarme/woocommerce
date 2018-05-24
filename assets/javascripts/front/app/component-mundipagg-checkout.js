@@ -79,8 +79,14 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 			if (xhr.status == 200) {
 				success.call(null, xhr.responseText, suffix);
 			} else {
-				var errorObj = JSON.parse(xhr.response);
-				errorObj.statusCode = xhr.status;
+				var errorObj = {};
+				if (xhr.response) {
+					errorObj = JSON.parse(xhr.response);
+					errorObj.statusCode = xhr.status;
+				} else {
+					errorObj.statusCode = 503;
+				}	
+				
 				fail.call(null, errorObj, suffix);
 			}
 		};
@@ -285,7 +291,14 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 			},
 			function (error, suffix) {
 				swal.close();
-				$this._onFail(error, suffix);
+				if (error.statusCode == 503) {
+					swal({
+						type: 'error',
+						html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
+					});
+				} else {
+					$this._onFail(error, suffix);
+				}
 
 			}
 		);

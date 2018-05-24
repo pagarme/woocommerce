@@ -2,7 +2,7 @@
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce MundiPagg Payments beta-1.0.13\n"
+"Project-Id-Version: WooCommerce MundiPagg Payments beta-1.0.15\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/woo-mundipagg-payments\n"
 "POT-Creation-Date: 2018-04-03 11:09:03+00:00\n"

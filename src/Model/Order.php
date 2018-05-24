@@ -76,7 +76,7 @@ class Order extends Meta
 	{
 		$current_status = $this->wc_order->get_status();
 
-		if ( $current_status != 'on-hold' ) {
+		if ( ! in_array( $current_status, ['on-hold', 'completed', 'canceled', 'cancelled', 'processing'] ) ) {
 			$this->wc_order->update_status( 'on-hold', __( 'MundiPagg: Awaiting payment confirmation.', Core::TEXTDOMAIN ) );
 			wc_reduce_stock_levels( $this->wc_order->get_order_number() );
 		}
@@ -86,7 +86,7 @@ class Order extends Meta
 	{
 		$current_status = $this->wc_order->get_status();
 
-		if ( $current_status != 'completed' ) {
+		if ( ! in_array( $current_status, ['completed', 'processing'] ) ) {
 			$this->wc_order->add_order_note( __( 'Mundipagg: Payment has already been confirmed.', Core::TEXTDOMAIN ) );
 			$this->wc_order->payment_complete();
 		}
@@ -95,7 +95,7 @@ class Order extends Meta
 	public function payment_canceled()
 	{
 		$current_status = $this->wc_order->get_status();
-		
+
 		if ( ! in_array( $current_status, ['cancelled', 'canceled'] ) ) {
 			$this->wc_order->update_status( 'cancelled', __( 'Mundipagg: Payment canceled.', Core::TEXTDOMAIN ) );
 		}
@@ -127,7 +127,7 @@ class Order extends Meta
         if ( ! $items ) {
             return false;
 		}
-		
+
 		if ( $full_data ) {
 			return $items;
 		}
@@ -139,12 +139,12 @@ class Order extends Meta
 			$charge = maybe_unserialize( $item->charge_data );
 			$list[] = $charge;
 		}
-		
+
 		return $list;
 	}
 
 	/**
-	 * Returns the shipping data. If it is empty then returns billing data as fallback. 
+	 * Returns the shipping data. If it is empty then returns billing data as fallback.
 	 *
 	 * @return array
 	 */
