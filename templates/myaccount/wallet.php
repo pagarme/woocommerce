@@ -16,12 +16,12 @@ do_action( 'woocommerce_before_account_wallet' );
 if ( $customer->cards ) :
 	$api_route = get_home_url( null, '/wc-api/' . Account::WALLET_ENDPOINT );
 	$swal_data = apply_filters( Core::tag_name( 'account_wallet_swal_data' ), array(
-		'title'          => __( 'Waiting...', Core::TEXTDOMAIN ),
-		'text'           => __( 'We are processing your request.', Core::TEXTDOMAIN ),
-		'confirm_title'  => __( 'Are you sure?', Core::TEXTDOMAIN ),
-		'confirm_text'   => __( 'You won\'t be able to revert this!', Core::TEXTDOMAIN ),
-		'confirm_button' => __( 'Yes, delete it!', Core::TEXTDOMAIN ),
-		'cancel_button'  => __( 'No, cancel!', Core::TEXTDOMAIN ),
+		'title'          => __( 'Waiting...', 'woo-mundipagg-payments' ),
+		'text'           => __( 'We are processing your request.', 'woo-mundipagg-payments' ),
+		'confirm_title'  => __( 'Are you sure?', 'woo-mundipagg-payments' ),
+		'confirm_text'   => __( 'You won\'t be able to revert this!', 'woo-mundipagg-payments' ),
+		'confirm_button' => __( 'Yes, delete it!', 'woo-mundipagg-payments' ),
+		'cancel_button'  => __( 'No, cancel!', 'woo-mundipagg-payments' ),
 		'confirm_color'  => '#3085d6',
 		'cancel_color'   => '#d33',
 	) );
@@ -34,22 +34,22 @@ if ( $customer->cards ) :
 	<thead>
 		<tr>
 			<th class="woocommerce-wallet-name">
-				<?php _e( 'Name', Core::TEXTDOMAIN ); ?>
+				<?php _e( 'Name', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-last-digits">
-				<?php _e( 'Last digits', Core::TEXTDOMAIN ); ?>
+				<?php _e( 'Last digits', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-status">
-				<?php _e( 'Status', Core::TEXTDOMAIN ); ?>
+				<?php _e( 'Status', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-expire">
-				<?php _e( 'Expire', Core::TEXTDOMAIN ); ?>
+				<?php _e( 'Expire', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-brand">
-				<?php _e( 'Brand', Core::TEXTDOMAIN ); ?>
+				<?php _e( 'Brand', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-brand">
-				<?php _e( 'Action', Core::TEXTDOMAIN ); ?>
+				<?php _e( 'Action', 'woo-mundipagg-payments' ); ?>
 			</th>
 		</tr>
 	</thead>
@@ -75,7 +75,7 @@ if ( $customer->cards ) :
 			</td>
 			<td>
 				<button class="woocommerce-button button" data-action="remove-card" data-value="<?php echo esc_attr( $card_id ); ?>">
-					<?php _e( 'Remove', Core::TEXTDOMAIN ); ?>
+					<?php _e( 'Remove', 'woo-mundipagg-payments' ); ?>
 				</button>
 			</td>
 		</tr>
@@ -91,7 +91,7 @@ else :
 
 	printf(
 		'<p class="woocommerce-message woocommerce-info">%s</p>',
-		__( 'No credit card saved.', Core::TEXTDOMAIN )
+		__( 'No credit card saved.', 'woo-mundipagg-payments' )
 	);
 
 endif;

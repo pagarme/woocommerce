@@ -41,6 +41,8 @@ class Setting
 		'billet_deadline_days'              => array(),
 		'cc_soft_descriptor'                => array(),
 		'cc_operation_type'                 => array(),
+		'cc_flags'                          => array(),
+		'cc_allow_save'                     => array(),
 		'cc_installment_type'               => array(),
 		'cc_installments_maximum'           => array(),
 		'cc_installments_without_interest'  => array(),
@@ -172,6 +174,11 @@ class Setting
 		return ( 'yes' === $this->__get( 'enable_credit_card' ) );
 	}
 
+	public function is_allowed_save_credit_card()
+	{
+		return ( 'yes' === $this->__get( 'cc_allow_save' ) );
+	}
+
 	public function is_active_billet()
 	{
 		return ( 'yes' === $this->__get( 'enable_billet' ) );
@@ -192,6 +199,11 @@ class Setting
 		$operation_type = $this->__get( 'cc_operation_type' );
 
 		return intval( $operation_type ) === 1 ? false : true;
+	}
+
+	public function is_active_multicustomers()
+	{
+		return ( 'yes' === $this->__get( 'multicustomers' ) );
 	}
 
 	public function is_valid_key( $key )

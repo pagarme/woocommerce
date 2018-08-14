@@ -37,6 +37,10 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 			this.elements.cardNumber.on( 'keyup', this.updateInstallments );
 			this.elements.cardNumber.on( 'keydown', this.updateInstallments );
 		}
+
+		if ( this.elements.enableMulticustomers ) {
+			this.elements.enableMulticustomers.on( 'click', this.handleMultiCustomers )
+		}
 	};
 
 	Model.fn._onSubmit = function(e) {
@@ -45,6 +49,8 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		if ( ! this.validate() ) {
 			return false;
 		}
+
+		$( 'body' ).trigger( 'onMundiPaggSubmit', [ e ] )
 
 		if ( $('input[name=payment_method]').val() === 'billet' ) {
 			this.loadSwal();
@@ -56,7 +62,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 			}
 			this.loadSwal();
 		}.bind(this));
-		
+
 		$( 'body' ).on( 'onMundiPagg2CardsDone', function(){
 			if ( window.MundiPagg2Cards === 2 ) {
 				this.loadSwal();
@@ -80,9 +86,9 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 	Model.fn._onBlurCardOrderValue = function(e) {
 		var option  = '<option value="">...</option>';
 		var wrapper = $( e.currentTarget ).closest( 'fieldset' );
-		
+
 		var total = e.target.value;
-		
+
 		if ( total ) {
 			total = total.replace( '.', '' );
 			total = total.replace( ',', '.' );
@@ -129,10 +135,15 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 	};
 
 	Model.fn.applySelect2 = function() {
-		this.$el.byAction( 'select2' ).select2( {
+		this.$el.byAction( 'select2' ).select2({
 			width: '400px',
 			minimumResultsForSearch: 20
 		});
+
+		this.$el.find('[data-element=state]').select2({
+			width: '300px',
+			minimumResultsForSearch: 20
+		})
 	};
 
 	Model.fn.removeSpecialChars = function() {
@@ -158,6 +169,13 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 			}
 		}
 	};
+
+	Model.fn.handleMultiCustomers = function(e) {
+		var input = $(e.currentTarget);
+		var method = input.is(':checked') ? 'slideDown' : 'slideUp';
+		var target = '[data-ref="' + input.data('target') + '"]';
+		$( target )[method]();
+	}
 
 	Model.fn.validate = function() {
 		var requiredFields = $( '[data-required=true]:visible' )
@@ -218,11 +236,12 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 
 		$( 'body' ).trigger( "onMundipaggCardTypeChange", [ type, wrapper ] );
 
+		var brand = select.find('option:selected').data('brand');
+		brandInput.val(brand);
+
 		if ( select.data( 'installments-type' ) == 2 ) {
-			
+
 			if ( type == 'OneClickBuy' ) {
-				var brand = select.find( 'option:selected' ).data( 'brand' );
-				brandInput.val( brand );
 				$( 'body' ).trigger( 'mundipaggSelectOneClickBuy', [ brand, wrapper ] );
 			} else {
 				brandInput.val( '' );
@@ -237,7 +256,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.hasCardId = function(wrapper) {
 		var element = wrapper.find( '[data-element="choose-credit-card"]' );
-		
+
 		if ( element === undefined || element.length === 0 ) {
 			return false;
 		}
@@ -264,12 +283,12 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		if ( ! value ) {
 			return;
 		}
-		
+
 		value = value.replace('.', '');
 		value = parseFloat( value.replace(',', '.') );
 
 		var nextValue = total - value;
-		
+
 		if ( value > total ) {
 			swal({
 				type: 'error',

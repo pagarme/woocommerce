@@ -16,8 +16,6 @@ class Core
 
 	const PREFIX = WCMP_PREFIX;
 
-	const TEXTDOMAIN = WCMP_TEXTDOMAIN;
-
 	const LOCALIZE_SCRIPT_ID = 'MundiPaggGlobalVars';
 
 	private function __construct()
@@ -146,7 +144,7 @@ class Core
 
 	public static function get_name()
 	{
-		return __( 'WooCommerce MundiPagg Payments', self::TEXTDOMAIN );
+		return __( 'WooCommerce MundiPagg Payments', 'woo-mundipagg-payments' );
 	}
 
 	public static function plugin_dir_path( $path = '' )
@@ -234,7 +232,7 @@ class Core
 			'holder_name: The holder_name field is required.'             => 'O nome impresso no cartão é obrigatório.',
 			'number: The number field is required.'                       => 'O número do cartão é obrigatório.',
 			'number: The number field is not a valid credit card number.' => 'Este número de cartão é inválido.',
-			'number: The field number must be a string with a minimum length of 13 and a maximum length of 19.' 
+			'number: The field number must be a string with a minimum length of 13 and a maximum length of 19.'
 				=> 'O numéro do cartão tamanho deve ter entre 13 e 19 caracteres.',
 		);
 	}

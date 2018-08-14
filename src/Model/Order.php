@@ -63,10 +63,10 @@ class Order extends Meta
 	{
 		$status = strtolower( $this->__get( 'mundipagg_status' ) );
 		$texts  = array(
-			'paid'     => __( 'Paid', Core::TEXTDOMAIN ),
-			'pending'  => __( 'Pending', Core::TEXTDOMAIN ),
-			'canceled' => __( 'Canceled', Core::TEXTDOMAIN ),
-			'failed'   => __( 'Failed', Core::TEXTDOMAIN )
+			'paid'     => __( 'Paid', 'woo-mundipagg-payments' ),
+			'pending'  => __( 'Pending', 'woo-mundipagg-payments' ),
+			'canceled' => __( 'Canceled', 'woo-mundipagg-payments' ),
+			'failed'   => __( 'Failed', 'woo-mundipagg-payments' )
 		);
 
 		return isset( $texts[ $status ] ) ? $texts[ $status ] : false;
@@ -77,7 +77,7 @@ class Order extends Meta
 		$current_status = $this->wc_order->get_status();
 
 		if ( ! in_array( $current_status, ['on-hold', 'completed', 'canceled', 'cancelled', 'processing'] ) ) {
-			$this->wc_order->update_status( 'on-hold', __( 'MundiPagg: Awaiting payment confirmation.', Core::TEXTDOMAIN ) );
+			$this->wc_order->update_status( 'on-hold', __( 'MundiPagg: Awaiting payment confirmation.', 'woo-mundipagg-payments' ) );
 			wc_reduce_stock_levels( $this->wc_order->get_order_number() );
 		}
 	}
@@ -87,7 +87,7 @@ class Order extends Meta
 		$current_status = $this->wc_order->get_status();
 
 		if ( ! in_array( $current_status, ['completed', 'processing'] ) ) {
-			$this->wc_order->add_order_note( __( 'Mundipagg: Payment has already been confirmed.', Core::TEXTDOMAIN ) );
+			$this->wc_order->add_order_note( __( 'Mundipagg: Payment has already been confirmed.', 'woo-mundipagg-payments' ) );
 			$this->wc_order->payment_complete();
 		}
 	}
@@ -97,7 +97,7 @@ class Order extends Meta
 		$current_status = $this->wc_order->get_status();
 
 		if ( ! in_array( $current_status, ['cancelled', 'canceled'] ) ) {
-			$this->wc_order->update_status( 'cancelled', __( 'Mundipagg: Payment canceled.', Core::TEXTDOMAIN ) );
+			$this->wc_order->update_status( 'cancelled', __( 'Mundipagg: Payment canceled.', 'woo-mundipagg-payments' ) );
 		}
 	}
 

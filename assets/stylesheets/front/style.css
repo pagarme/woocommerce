@@ -75,15 +75,15 @@ body .swal2-container {
   z-index: 1060;
 }
 body .swal2-container.swal2-fade {
-  -webkit-transition: background-color .1s;
-  transition: background-color .1s;
+  -webkit-transition: background-color 0.1s;
+  transition: background-color 0.1s;
 }
 body .swal2-container.swal2-shown {
   background-color: rgba(0, 0, 0, 0.4);
 }
 body .swal2-modal {
   background-color: #fff;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   border-radius: 5px;
   box-sizing: border-box;
   text-align: center;
@@ -107,7 +107,7 @@ body .swal2-modal .swal2-title {
   font-weight: 600;
   text-transform: none;
   position: relative;
-  margin: 0 0 .4em;
+  margin: 0 0 0.4em;
   padding: 0;
   display: block;
   word-wrap: break-word;
@@ -116,7 +116,7 @@ body .swal2-modal .swal2-buttonswrapper {
   margin-top: 15px;
 }
 body .swal2-modal .swal2-buttonswrapper:not(.swal2-loading) .swal2-styled[disabled] {
-  opacity: .4;
+  opacity: 0.4;
   cursor: no-drop;
 }
 body .swal2-modal .swal2-buttonswrapper.swal2-loading .swal2-styled.swal2-confirm {
@@ -145,7 +145,7 @@ body .swal2-modal .swal2-buttonswrapper.swal2-loading .swal2-styled.swal2-cancel
 }
 body .swal2-modal .swal2-buttonswrapper.swal2-loading :not(.swal2-styled).swal2-confirm::after {
   display: inline-block;
-  content: '';
+  content: "";
   margin-left: 5px 0 15px;
   vertical-align: -1px;
   height: 15px;
@@ -187,8 +187,8 @@ body .swal2-modal .swal2-close {
   right: 8px;
   cursor: pointer;
   color: #cccccc;
-  -webkit-transition: color .1s ease;
-  transition: color .1s ease;
+  -webkit-transition: color 0.1s ease;
+  transition: color 0.1s ease;
 }
 body .swal2-modal .swal2-close:hover {
   color: #d55;
@@ -230,8 +230,8 @@ body .swal2-modal .swal2-textarea {
   border-radius: 3px;
   border: 1px solid #d9d9d9;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06);
-  -webkit-transition: border-color box-shadow .3s;
-  transition: border-color box-shadow .3s;
+  -webkit-transition: border-color box-shadow 0.3s;
+  transition: border-color box-shadow 0.3s;
 }
 body .swal2-modal .swal2-input.swal2-inputerror,
 body .swal2-modal .swal2-file.swal2-inputerror,
@@ -249,23 +249,23 @@ body .swal2-modal .swal2-textarea:focus {
 body .swal2-modal .swal2-input:focus::-webkit-input-placeholder,
 body .swal2-modal .swal2-file:focus::-webkit-input-placeholder,
 body .swal2-modal .swal2-textarea:focus::-webkit-input-placeholder {
-  -webkit-transition: opacity .3s .03s ease;
-  transition: opacity .3s .03s ease;
-  opacity: .8;
+  -webkit-transition: opacity 0.3s 0.03s ease;
+  transition: opacity 0.3s 0.03s ease;
+  opacity: 0.8;
 }
 body .swal2-modal .swal2-input:focus:-ms-input-placeholder,
 body .swal2-modal .swal2-file:focus:-ms-input-placeholder,
 body .swal2-modal .swal2-textarea:focus:-ms-input-placeholder {
-  -webkit-transition: opacity .3s .03s ease;
-  transition: opacity .3s .03s ease;
-  opacity: .8;
+  -webkit-transition: opacity 0.3s 0.03s ease;
+  transition: opacity 0.3s 0.03s ease;
+  opacity: 0.8;
 }
 body .swal2-modal .swal2-input:focus::placeholder,
 body .swal2-modal .swal2-file:focus::placeholder,
 body .swal2-modal .swal2-textarea:focus::placeholder {
-  -webkit-transition: opacity .3s .03s ease;
-  transition: opacity .3s .03s ease;
-  opacity: .8;
+  -webkit-transition: opacity 0.3s 0.03s ease;
+  transition: opacity 0.3s 0.03s ease;
+  opacity: 0.8;
 }
 body .swal2-modal .swal2-input::-webkit-input-placeholder,
 body .swal2-modal .swal2-file::-webkit-input-placeholder,
@@ -305,7 +305,7 @@ body .swal2-modal .swal2-input {
   height: 43px;
   padding: 0 12px;
 }
-body .swal2-modal .swal2-input[type='number'] {
+body .swal2-modal .swal2-input[type=number] {
   max-width: 150px;
 }
 body .swal2-modal .swal2-file {
@@ -353,7 +353,7 @@ body .swal2-modal .swal2-validationerror {
   display: none;
 }
 body .swal2-modal .swal2-validationerror::before {
-  content: '!';
+  content: "!";
   display: inline-block;
   width: 24px;
   height: 24px;
@@ -402,7 +402,7 @@ body .swal2-icon.swal2-error .swal2-x-mark {
   position: relative;
   display: block;
 }
-body .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+body .swal2-icon.swal2-error [class^=swal2-x-mark-line] {
   position: absolute;
   height: 5px;
   width: 47px;
@@ -411,18 +411,18 @@ body .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
   top: 37px;
   border-radius: 2px;
 }
-body .swal2-icon.swal2-error [class^='swal2-x-mark-line'][class$='left'] {
+body .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left] {
   -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
   left: 17px;
 }
-body .swal2-icon.swal2-error [class^='swal2-x-mark-line'][class$='right'] {
+body .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right] {
   -webkit-transform: rotate(-45deg);
   transform: rotate(-45deg);
   right: 16px;
 }
 body .swal2-icon.swal2-warning {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #f8bb86;
   border-color: #facea8;
   font-size: 60px;
@@ -430,7 +430,7 @@ body .swal2-icon.swal2-warning {
   text-align: center;
 }
 body .swal2-icon.swal2-info {
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   color: #3fc3ee;
   border-color: #9de0f6;
   font-size: 60px;
@@ -438,7 +438,7 @@ body .swal2-icon.swal2-info {
   text-align: center;
 }
 body .swal2-icon.swal2-question {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #87adbd;
   border-color: #c9dae1;
   font-size: 60px;
@@ -448,7 +448,7 @@ body .swal2-icon.swal2-question {
 body .swal2-icon.swal2-success {
   border-color: #a5dc86;
 }
-body .swal2-icon.swal2-success [class^='swal2-success-circular-line'] {
+body .swal2-icon.swal2-success [class^=swal2-success-circular-line] {
   border-radius: 50%;
   position: absolute;
   width: 60px;
@@ -456,7 +456,7 @@ body .swal2-icon.swal2-success [class^='swal2-success-circular-line'] {
   -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-body .swal2-icon.swal2-success [class^='swal2-success-circular-line'][class$='left'] {
+body .swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left] {
   border-radius: 120px 0 0 120px;
   top: -7px;
   left: -33px;
@@ -465,7 +465,7 @@ body .swal2-icon.swal2-success [class^='swal2-success-circular-line'][class$='le
   -webkit-transform-origin: 60px 60px;
   transform-origin: 60px 60px;
 }
-body .swal2-icon.swal2-success [class^='swal2-success-circular-line'][class$='right'] {
+body .swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right] {
   border-radius: 0 120px 120px 0;
   top: -11px;
   left: 30px;
@@ -495,7 +495,7 @@ body .swal2-icon.swal2-success .swal2-success-fix {
   -webkit-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-body .swal2-icon.swal2-success [class^='swal2-success-line'] {
+body .swal2-icon.swal2-success [class^=swal2-success-line] {
   height: 5px;
   background-color: #a5dc86;
   display: block;
@@ -503,14 +503,14 @@ body .swal2-icon.swal2-success [class^='swal2-success-line'] {
   position: absolute;
   z-index: 2;
 }
-body .swal2-icon.swal2-success [class^='swal2-success-line'][class$='tip'] {
+body .swal2-icon.swal2-success [class^=swal2-success-line][class$=tip] {
   width: 25px;
   left: 14px;
   top: 46px;
   -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-body .swal2-icon.swal2-success [class^='swal2-success-line'][class$='long'] {
+body .swal2-icon.swal2-success [class^=swal2-success-line][class$=long] {
   width: 47px;
   right: 8px;
   top: 38px;
@@ -553,11 +553,11 @@ body .swal2-progresssteps .swal2-progresscircle.swal2-activeprogressstep ~ .swal
 }
 body .swal2-progresssteps .swal2-progressline {
   background: #3085d6;
-  height: .4em;
+  height: 0.4em;
   margin: 0 -1px;
   z-index: 10;
 }
-body [class^='swal2'] {
+body [class^=swal2] {
   -webkit-tap-highlight-color: transparent;
 }
 @-webkit-keyframes showSweetAlert {
@@ -884,11 +884,12 @@ body .swal2-animate-x-mark {
     transform: rotate(360deg);
   }
 }
+
 #wcmp-checkout-form .panel .invalid {
   border: 1px solid #da3c39;
   box-shadow: 1px 1px 3px #da3c39;
 }
-#wcmp-checkout-form .panel input[type="text"] {
+#wcmp-checkout-form .panel input[type=text] {
   width: 200px;
 }
 #wcmp-checkout-form .panel input, #wcmp-checkout-form .panel select {
@@ -930,11 +931,10 @@ body .swal2-animate-x-mark {
 }
 #wcmp-checkout-form #payment .payment_methods li .logo {
   max-height: 100%;
-  margin-top: -18px;
-  margin-left: 10px;
+  float: left;
   width: 60px;
 }
-#wcmp-checkout-form label[for="save-credit-card"] {
+#wcmp-checkout-form label[for=save-credit-card] {
   cursor: pointer;
 }
 #wcmp-checkout-form .form-row-wide {
@@ -971,8 +971,8 @@ body .swal2-animate-x-mark {
   display: none;
 }
 
-#payment .payment_methods li img {
+.payment_method_woo-mundipagg-payments img {
   max-height: 1.618em !important;
 }
 
-/*# sourceMappingURL=style.css.map */
+/*# sourceMappingURL=assets/stylesheets/front/style.css.map */

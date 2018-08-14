@@ -14,6 +14,8 @@ use Woocommerce\Mundipagg\Model\Setting;
 use Woocommerce\Mundipagg\Helper\Utils;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
+$ref               = md5( rand( 1, 1000 ) );
+$type              = 'card';
 
 ?>
 
@@ -25,7 +27,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 			<?php require_once dirname( __FILE__ ) .  '/choose-credit-card.php'; ?>
 
 			<div class="wc-credit-card-info" data-element="fields-cc-data">
-			<?php	
+			<?php
 				Utils::get_template(
 					'templates/checkout/common-card-item',
 					compact( 'wc_order', 'installments_type' )
@@ -36,7 +38,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 			<p class="form-row form-row-first">
 
 				<label for="installments">
-					<?php _e( 'Installments quantity', Core::TEXTDOMAIN ); ?><span class="required">*</span>
+					<?php _e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments"
@@ -59,9 +61,12 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 				</select>
 			</p>
 
-			<?php require dirname( __FILE__ ) .  '/field-save-card.php'; ?>
-			
-		</fieldset>	
+			<?php Utils::get_template( 'templates/checkout/field-save-card' ); ?>
+			<?php Utils::get_template( 'templates/checkout/field-enable-multicustomers', compact( 'ref', 'type' ) ); ?>
+
+		</fieldset>
+
+		<?php Utils::get_template( 'templates/checkout/multicustomers-form', compact( 'ref', 'type' ) ); ?>
 
 		<input style="display:none;"
 		       data-element="credit-card"

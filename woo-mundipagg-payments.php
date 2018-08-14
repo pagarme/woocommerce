@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: WooCommerce MundiPagg Payments
- * Version:     beta-1.0.15
+ * Version:     beta-1.0.16
  * Author:      Mundipagg
  * Author URI:  https://mundipagg.com
  * Text Domain: woo-mundipagg-payments
@@ -20,7 +20,7 @@ function wcmp_render_admin_notice_html( $message, $type = 'error' ) {
 ?>
 	<div class="<?php echo $type; ?> notice is-dismissible">
 		<p>
-			<strong><?php _e( 'WooCommerce MundiPagg Payments', WCMP_TEXTDOMAIN ); ?>: </strong>
+			<strong><?php _e( 'WooCommerce MundiPagg Payments', 'woo-mundipagg-payments' ); ?>: </strong>
 
 			<?php echo $message; ?>
 		</p>
@@ -32,7 +32,7 @@ if ( version_compare( PHP_VERSION, '5.5', '<' ) ) {
 
 	function wcmp_admin_notice_php_version() {
 		wcmp_render_admin_notice_html(
-			__( 'Your PHP version is not supported. Required >= 5.5.', WCMP_TEXTDOMAIN )
+			__( 'Your PHP version is not supported. Required >= 5.5.', 'woo-mundipagg-payments' )
 		);
 	}
 
@@ -42,13 +42,13 @@ if ( version_compare( PHP_VERSION, '5.5', '<' ) ) {
 
 function wcmp_admin_notice_error() {
 	wcmp_render_admin_notice_html(
-		__( 'WooCoomerce plugin is required.', WCMP_TEXTDOMAIN )
+		__( 'WooCoomerce plugin is required.', 'woo-mundipagg-payments' )
 	);
 }
 
 function wcmp_admin_notice_error_wecffb() {
 	wcmp_render_admin_notice_html(
-		__( 'WooCoomerce Extra Checkout Fields For Brazil plugin is required.',WCMP_TEXTDOMAIN
+		__( 'WooCoomerce Extra Checkout Fields For Brazil plugin is required.','woo-mundipagg-payments'
 		)
 	);
 }

@@ -16,12 +16,12 @@ class Checkouts
 {
 	protected static function message_before()
 	{
-		echo '<p class="title">' . __( 'Your transaction has been processed.', Core::TEXTDOMAIN ) . '</p>';
+		echo '<p class="title">' . __( 'Your transaction has been processed.', 'woo-mundipagg-payments' ) . '</p>';
 	}
 
 	protected static function message_after()
 	{
-		echo '<p>' . __( 'If you have any questions regarding the transaction, please contact us.', Core::TEXTDOMAIN ) . '</p>';
+		echo '<p>' . __( 'If you have any questions regarding the transaction, please contact us.', 'woo-mundipagg-payments' ) . '</p>';
 	}
 
 	public static function handle_messages( Order $order )
@@ -53,11 +53,11 @@ class Checkouts
 
 		?>
 		<p>
-			<?php _e( 'If you have not yet received the boleto, please click the button below to print.', Core::TEXTDOMAIN ); ?>
+			<?php _e( 'If you have not yet received the boleto, please click the button below to print.', 'woo-mundipagg-payments' ); ?>
 		</p>
 
 		<a href="<?php echo esc_url( $transaction->pdf ); ?>" target="_blank" class="payment-link">
-			<?php _e( 'Print', Core::TEXTDOMAIN ); ?>
+			<?php _e( 'Print', 'woo-mundipagg-payments' ); ?>
 		</a>
 
 		<?php
@@ -82,7 +82,7 @@ class Checkouts
 		<p>
 		<?php
 			printf(
-				__( 'The status of your transaction is %s.', Core::TEXTDOMAIN ),
+				__( 'The status of your transaction is %s.', 'woo-mundipagg-payments' ),
 				'<strong>' . strtoupper( $order->get_status_translate() ) . '</strong>'
 			);
 		?>
@@ -111,7 +111,7 @@ class Checkouts
 			if ( $charge->payment_method == 'credit_card' ) :
 				echo '<p>';
 					printf(
-						__( 'CREDIT CARD: The status of your transaction is %s.', Core::TEXTDOMAIN ),
+						__( 'CREDIT CARD: The status of your transaction is %s.', 'woo-mundipagg-payments' ),
 						'<strong>' . strtoupper( $order->get_status_translate() ) . '</strong>'
 					);
 				echo '</p>';
@@ -120,11 +120,11 @@ class Checkouts
 			if ( $charge->payment_method == 'boleto' ) :
 				?>
 				<p>
-					<?php _e( 'BOLETO: If you have not yet received the boleto, please click the button below to print.', Core::TEXTDOMAIN ); ?>
+					<?php _e( 'BOLETO: If you have not yet received the boleto, please click the button below to print.', 'woo-mundipagg-payments' ); ?>
 				</p>
 
 				<a href="<?php echo esc_url( $charge->last_transaction->pdf ); ?>" target="_blank" class="payment-link">
-					<?php _e( 'Print', Core::TEXTDOMAIN ); ?>
+					<?php _e( 'Print', 'woo-mundipagg-payments' ); ?>
 				</a>
 				<?php
 			endif;
@@ -148,7 +148,7 @@ class Checkouts
 		if ( ! $charges ) {
 			$charges = isset( $order->response_data->charges ) ? $order->response_data->charges : false;
 		}
-		
+
 		if ( empty( $charges ) ) {
 			return;
 		}
@@ -157,7 +157,7 @@ class Checkouts
 
 		?>
 		<section>
-			<h2><?php _e( 'Payment Data', Core::TEXTDOMAIN ); ?></h2>
+			<h2><?php _e( 'Payment Data', 'woo-mundipagg-payments' ); ?></h2>
 			<table class="woocommerce-table">
 			<?php
 				foreach ( $charges as $charge ) {
@@ -187,8 +187,8 @@ class Checkouts
 
 			?>
 			<tr>
-				<th><?php _e( 'Payment Type', Core::TEXTDOMAIN ); ?>:</th>
-				<td><?php _e( 'Boleto', Core::TEXTDOMAIN ); ?></td>
+				<th><?php _e( 'Payment Type', 'woo-mundipagg-payments' ); ?>:</th>
+				<td><?php _e( 'Boleto', 'woo-mundipagg-payments' ); ?></td>
 			</tr>
 			<tr>
 				<th>Link:</th>
@@ -199,19 +199,19 @@ class Checkouts
 				</td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Line Code', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Line Code', 'woo-mundipagg-payments' ); ?>:</th>
 				<td><?php echo $charge->last_transaction->line; ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Due at', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Due at', 'woo-mundipagg-payments' ); ?>:</th>
 				<td><?php echo $due_at->format( 'd/m/Y' ); ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Paid value', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Paid value', 'woo-mundipagg-payments' ); ?>:</th>
 				<td><?php echo Utils::format_order_price_to_view( $charge->amount ); ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Status', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Status', 'woo-mundipagg-payments' ); ?>:</th>
 				<td><?php echo $model_charge->get_i18n_status( $charge->status ); ?></td>
 			</tr>
 			<tr>
@@ -230,33 +230,33 @@ class Checkouts
 
 			?>
 			<tr>
-				<th><?php _e( 'Payment Type', Core::TEXTDOMAIN ); ?>:</th>
-				<td><?php _e( 'Credit Card', Core::TEXTDOMAIN ); ?></td>
+				<th><?php _e( 'Payment Type', 'woo-mundipagg-payments' ); ?>:</th>
+				<td><?php _e( 'Credit Card', 'woo-mundipagg-payments' ); ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Card Holder Name', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Card Holder Name', 'woo-mundipagg-payments' ); ?>:</th>
 				<td><?php echo $charge->last_transaction->card->holder_name; ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Flag', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Flag', 'woo-mundipagg-payments' ); ?>:</th>
 				<td><?php echo $charge->last_transaction->card->brand; ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Card number', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Card number', 'woo-mundipagg-payments' ); ?>:</th>
 				<td>
 					**** **** **** <?php echo $charge->last_transaction->card->last_four_digits; ?>
 				</td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Installments', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Installments', 'woo-mundipagg-payments' ); ?>:</th>
 				<td><?php echo $charge->last_transaction->installments; ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Paid value', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Paid value', 'woo-mundipagg-payments' ); ?>:</th>
 				<td><?php echo Utils::format_order_price_to_view( $charge->amount ); ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Status', Core::TEXTDOMAIN ); ?>:</th>
+				<th><?php _e( 'Status', 'woo-mundipagg-payments' ); ?>:</th>
 				<td><?php echo $model_charge->get_i18n_status( $charge->status ); ?></td>
 			</tr>
 			<tr>

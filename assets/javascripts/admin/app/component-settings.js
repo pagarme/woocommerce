@@ -144,6 +144,13 @@ MONSTER( 'Mundipagg.Components.Settings', function(Model, $, Utils) {
 	Model.fn.setInstallmentsByFlags = function( event, firstLoad ) {
 		var flags        = this.elements.flagsSelect.val() || [];
 		var flagsWrapper = this.installmentsByFlag.closest( 'tr' );
+		var allFlags = $('[data-flag]');
+
+		if ( parseInt( this.elements.installmentsTypeSelect.val() ) !== 2 ) {
+			allFlags.hide();
+			flagsWrapper.hide();
+			return;
+		}
 
 		if ( ! firstLoad ) {
 			var selectedItem = event.params.args.data.id;
@@ -163,24 +170,20 @@ MONSTER( 'Mundipagg.Components.Settings', function(Model, $, Utils) {
 				filtered.push( selectedItem );
 			}
 
+			allFlags.hide();
+
 			filtered.map(function(item) {
-				var element = $( '[data-flag=' + selectedItem + ']' );
-				if ( ! filtered.includes( selectedItem ) ) {
-					element.hide();
-				} else {
-					element.show();
-				}
+				var element = $( '[data-flag=' + item + ']' );
+				element.show();
 			});
 		} else {
-			var selector = $( '[data-flag]' );
-
 			if ( flags.length === 0 ) {
-				selector.hide();
+				allFlags.hide();
 				flagsWrapper.hide();
 				return;
 			}
 
-			selector.each(function(index, item) {
+			allFlags.each(function(index, item) {
 				item = $(item);
 				if ( ! flags.includes( item.data( 'flag' ) ) ) {
 					item.hide();

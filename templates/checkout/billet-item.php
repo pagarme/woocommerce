@@ -8,25 +8,29 @@ if ( ! $model->settings->is_active_billet() ) {
 }
 
 use Woocommerce\Mundipagg\Core;
+use Woocommerce\Mundipagg\Helper\Utils;
+
+$ref  = md5( rand( 1, 1000 ) );
+$type = 'billet';
 
 ?>
 <li>
 	<div id="tab-billet" class="panel entry-content">
-		<ul>
-			<li>
-				<label>
-					<?php
-						printf( '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
-							Core::plugins_url( 'assets/images/barcode.svg' ),
-							__( 'Boleto', Core::TEXTDOMAIN )
-						);
-					?>
-					<input data-element="boleto"
-					       type="radio"
-					       name="payment_method"
-					       value="billet">
-				</label>
-			</li>
-		</ul>
+		<fieldset class="wc-credit-card-form wc-payment-form">
+			<label>
+				<?php
+					printf( '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
+						Core::plugins_url( 'assets/images/barcode.svg' ),
+						__( 'Boleto', 'woo-mundipagg-payments' )
+					);
+				?>
+				<input data-element="boleto"
+					type="radio"
+					name="payment_method"
+					value="billet">
+			</label>
+		<?php Utils::get_template( 'templates/checkout/field-enable-multicustomers', compact( 'ref', 'type' ) ); ?>
+		</fieldset>
+		<?php Utils::get_template( 'templates/checkout/multicustomers-form', compact( 'ref', 'type' ) ); ?>
 	</div>
 </li>

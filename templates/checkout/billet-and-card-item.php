@@ -14,19 +14,22 @@ use Woocommerce\Mundipagg\Model\Setting;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
 $billet_and_card   = true;
+$ref_billet        = md5( rand( 1, 1000 ) );
+$ref_card          = md5( rand( 1, 1000 ) );
 
 ?>
+
 <li>
 	<div id="tab-billet-and-card" class="payment_box panel entry-content">
 
 		<fieldset class="wc-credit-card-form wc-payment-form">
 
-			<?php require_once dirname( __FILE__ ) .  '/choose-credit-card.php'; ?>
+			<?php Utils::get_template( 'templates/checkout/choose-credit-card' ); ?>
 
 			<div class="form-row form-row-wide">
 				<p class="form-row form-row-first">
 					<label for="billet-value">
-						<?php _e( 'Value (Boleto)', Core::TEXTDOMAIN ); ?><span class="required">*</span>
+						<?php _e( 'Value (Boleto)', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 					</label>
 					<input id="billet-value"
 							name="billet_value"
@@ -36,11 +39,17 @@ $billet_and_card   = true;
 							data-value="1"
 							data-required="true"
 							class="input-text wc-credit-card-form-card-expiry">
+					<?php
+						Utils::get_template(
+							'templates/checkout/field-enable-multicustomers',
+							array( 'ref' => $ref_billet, 'type' => 'billet', 'without_container' => true )
+						);
+					?>
 				</p>
 
 				<p class="form-row form-row-last">
 					<label for="card-order-value">
-						<?php _e( 'Value (Credit Card)', Core::TEXTDOMAIN ); ?> <span class="required">*</span>
+						<?php _e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span>
 					</label>
 					<input id="card-order-value"
 							name="card_order_value"
@@ -50,11 +59,17 @@ $billet_and_card   = true;
 							data-mask="#.##0,00"
 							data-mask-reverse="true"
 							class="input-text wc-credit-card-form-card-expiry">
+					<?php
+						Utils::get_template(
+							'templates/checkout/field-enable-multicustomers',
+							array( 'ref' => $ref_card, 'type' => 'card', 'without_container' => true )
+						);
+					?>
 				</p>
 			</div>
 
 			<div class="wc-credit-card-info" data-element="fields-cc-data">
-				<?php	
+				<?php
 					Utils::get_template(
 						'templates/checkout/common-card-item',
 						compact( 'wc_order', 'installments_type' )
@@ -65,7 +80,7 @@ $billet_and_card   = true;
 			 <p class="form-row form-row-first">
 
 				<label for="installments">
-					<?php _e( 'Installments quantity', Core::TEXTDOMAIN ); ?><span class="required">*</span>
+					<?php _e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments"
@@ -75,7 +90,7 @@ $billet_and_card   = true;
 						data-action="select2"
 						data-required="true"
 						data-element="installments"
-						name="installments<?php echo $suffix; ?>">
+						name="installments">
 
 					<?php
 						if ( $installments_type != 2 ) {
@@ -88,9 +103,29 @@ $billet_and_card   = true;
 				</select>
 			</p>
 
-			<?php require dirname( __FILE__ ) .  '/field-save-card.php'; ?>
-			
-		</fieldset>	
+			<?php Utils::get_template( 'templates/checkout/field-save-card' ); ?>
+
+		</fieldset>
+
+		<?php
+			Utils::get_template(
+				'templates/checkout/multicustomers-form',
+				array(
+					'ref'   => $ref_billet,
+					'type'  => 'billet',
+					'title' => 'Dados comprador (Boleto)'
+				)
+			);
+
+			Utils::get_template(
+				'templates/checkout/multicustomers-form',
+				array(
+					'ref'   => $ref_card,
+					'type'  => 'card',
+					'title' => 'Dados comprador (Cartão)'
+				)
+			);
+		?>
 
 		<input style="display:none;"
 			   data-action="choose-payment"

@@ -26,9 +26,9 @@ class Gateways extends WC_Payment_Gateway
 	{
 		$this->model = new Gateway();
 
-		$this->id                 = Core::TEXTDOMAIN;
-		$this->method_title       = __( 'MundiPagg Payments', Core::TEXTDOMAIN );
-		$this->method_description = __( 'Payment Gateway MundiPagg', Core::TEXTDOMAIN );
+		$this->id                 = 'woo-mundipagg-payments';
+		$this->method_title       = __( 'MundiPagg Payments', 'woo-mundipagg-payments' );
+		$this->method_description = __( 'Payment Gateway MundiPagg', 'woo-mundipagg-payments' );
 		$this->has_fields         = false;
 		$this->icon               = Core::plugins_url( 'assets/images/logo.png' );
 
@@ -61,7 +61,7 @@ class Gateways extends WC_Payment_Gateway
 			 <div %s>
 			 	<table class="form-table">%s</table>
 			 </div>',
-			__( 'General', Core::TEXTDOMAIN ),
+			__( 'General', 'woo-mundipagg-payments' ),
 			Utils::get_component( 'settings' ),
 			$this->generate_settings_html( $this->get_form_fields(), false )
 		);
@@ -97,8 +97,8 @@ class Gateways extends WC_Payment_Gateway
 			'enable_billet'                     => $this->field_enable_billet(),
 			'enable_credit_card'                => $this->field_enable_credit_card(),
 			'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
-			'multimethods_2_cards'          	   => $this->field_multimethods_2_cards(),
-			//'multicustomers'                  => $this->field_multicustomers(),
+			'multimethods_2_cards'         		=> $this->field_multimethods_2_cards(),
+			'multicustomers'                  	=> $this->field_multicustomers(),
 			'section_antifraud'                 => $this->section_antifraud(),
 			'antifraud_enabled'                 => $this->antifraud_enabled(),
 			'antifraud_min_value'               => $this->antifraud_min_value(),
@@ -109,6 +109,7 @@ class Gateways extends WC_Payment_Gateway
 			'section_credit_card'               => $this->section_credit_card(),
 			'cc_soft_descriptor'                => $this->field_cc_soft_descriptor(),
 			'cc_operation_type'                 => $this->field_cc_operation_type(),
+			'cc_allow_save'                     => $this->field_cc_allow_save(),
 			'cc_flags'                          => $this->field_cc_flags(),
 			'cc_installment_type'               => $this->field_cc_installment_type(),
 			'cc_installments_maximum'           => $this->field_cc_installment_fields( 'maximum' ),
@@ -153,7 +154,7 @@ class Gateways extends WC_Payment_Gateway
 	public function section_payment_settings()
 	{
 		return array(
-			'title' => __( 'Payment settings', Core::TEXTDOMAIN ),
+			'title' => __( 'Payment settings', 'woo-mundipagg-payments' ),
 			'type'  => 'title',
 		);
 	}
@@ -161,9 +162,9 @@ class Gateways extends WC_Payment_Gateway
 	public function field_enabled()
 	{
 		return array(
-			'title'   => __( 'Enable', Core::TEXTDOMAIN ),
+			'title'   => __( 'Enable', 'woo-mundipagg-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable payment', Core::TEXTDOMAIN ),
+			'label'   => __( 'Enable payment', 'woo-mundipagg-payments' ),
 			'default' => 'no',
 		);
 	}
@@ -171,18 +172,18 @@ class Gateways extends WC_Payment_Gateway
 	public function field_title()
 	{
 		return array(
-			'title'       => __( 'Title', Core::TEXTDOMAIN ),
-			'description' => __( 'This the title which the user sees during checkout.', Core::TEXTDOMAIN ),
+			'title'       => __( 'Title', 'woo-mundipagg-payments' ),
+			'description' => __( 'This the title which the user sees during checkout.', 'woo-mundipagg-payments' ),
 			'desc_tip'    => true,
-			'default'     => __( 'MundiPagg', Core::TEXTDOMAIN ),
+			'default'     => __( 'MundiPagg', 'woo-mundipagg-payments' ),
 		);
 	}
 
 	public function field_description()
 	{
 		return array(
-			'title'   => __( 'Description', Core::TEXTDOMAIN ),
-			'default' => __( 'Pay with Mundipagg', Core::TEXTDOMAIN ),
+			'title'   => __( 'Description', 'woo-mundipagg-payments' ),
+			'default' => __( 'Pay with Mundipagg', 'woo-mundipagg-payments' ),
 		);
 	}
 
@@ -190,12 +191,12 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'type'    => 'select',
-			'title'   => __( 'Environment', Core::TEXTDOMAIN ),
+			'title'   => __( 'Environment', 'woo-mundipagg-payments' ),
 			'class'   => 'wc-enhanced-select',
 			'default' => 'sandbox',
 			'options' => array(
 				'sandbox'    => 'Sandbox',
-				'production' => __( 'Production', Core::TEXTDOMAIN ),
+				'production' => __( 'Production', 'woo-mundipagg-payments' ),
 			),
 			'custom_attributes' => array(
 				'data-action'  => 'environment',
@@ -207,7 +208,7 @@ class Gateways extends WC_Payment_Gateway
 	public function field_sandbox_secret_key()
 	{
 		return array(
-			'title'             => __( 'Sandbox Secret Key', Core::TEXTDOMAIN ),
+			'title'             => __( 'Sandbox Secret Key', 'woo-mundipagg-payments' ),
 			'custom_attributes' => array(
 				'data-field' => 'sandbox-secret-key',
 			),
@@ -217,7 +218,7 @@ class Gateways extends WC_Payment_Gateway
 	public function field_sandbox_public_key()
 	{
 		return array(
-			'title'             => __( 'Sandbox Public Key', Core::TEXTDOMAIN ),
+			'title'             => __( 'Sandbox Public Key', 'woo-mundipagg-payments' ),
 			'custom_attributes' => array(
 				'data-field' => 'sandbox-public-key',
 			),
@@ -227,7 +228,7 @@ class Gateways extends WC_Payment_Gateway
 	public function field_production_secret_key()
 	{
 		return array(
-			'title'             => __( 'Production Secret Key', Core::TEXTDOMAIN ),
+			'title'             => __( 'Production Secret Key', 'woo-mundipagg-payments' ),
 			'custom_attributes' => array(
 				'data-field' => 'production-secret-key',
 			),
@@ -237,7 +238,7 @@ class Gateways extends WC_Payment_Gateway
 	public function field_production_public_key()
 	{
 		return array(
-			'title'             => __( 'Production Public Key', Core::TEXTDOMAIN ),
+			'title'             => __( 'Production Public Key', 'woo-mundipagg-payments' ),
 			'custom_attributes' => array(
 				'data-field' => 'production-public-key',
 			),
@@ -247,9 +248,9 @@ class Gateways extends WC_Payment_Gateway
 	public function field_enable_billet()
 	{
 		return array(
-			'title'   => __( 'Billet Banking', Core::TEXTDOMAIN ),
+			'title'   => __( 'Billet Banking', 'woo-mundipagg-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Billet Banking', Core::TEXTDOMAIN ),
+			'label'   => __( 'Enable Billet Banking', 'woo-mundipagg-payments' ),
 			'default' => 'yes',
 		);
 	}
@@ -257,9 +258,9 @@ class Gateways extends WC_Payment_Gateway
 	public function field_enable_credit_card()
 	{
 		return array(
-			'title'   => __( 'Credit Card', Core::TEXTDOMAIN ),
+			'title'   => __( 'Credit Card', 'woo-mundipagg-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Credit Card', Core::TEXTDOMAIN ),
+			'label'   => __( 'Enable Credit Card', 'woo-mundipagg-payments' ),
 			'default' => 'yes',
 		);
 	}
@@ -267,9 +268,9 @@ class Gateways extends WC_Payment_Gateway
 	public function field_multimethods_billet_card()
 	{
 		return array(
-			'title'   => __( 'Multimethods </br>(Billet + Credit Card)', Core::TEXTDOMAIN ),
+			'title'   => __( 'Multimethods </br>(Billet + Credit Card)', 'woo-mundipagg-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Multimethods (Billet + Credit Card)', Core::TEXTDOMAIN ),
+			'label'   => __( 'Enable Multimethods (Billet + Credit Card)', 'woo-mundipagg-payments' ),
 			'default' => 'no',
 		);
 	}
@@ -277,9 +278,9 @@ class Gateways extends WC_Payment_Gateway
 	public function field_multimethods_2_cards()
 	{
 		return array(
-			'title'   => __( 'Multimethods </br>(2 Credit Cards)', Core::TEXTDOMAIN ),
+			'title'   => __( 'Multimethods </br>(2 Credit Cards)', 'woo-mundipagg-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Multimethods (2 Credit Cards)', Core::TEXTDOMAIN ),
+			'label'   => __( 'Enable Multimethods (2 Credit Cards)', 'woo-mundipagg-payments' ),
 			'default' => 'no',
 		);
 	}
@@ -287,9 +288,9 @@ class Gateways extends WC_Payment_Gateway
 	public function field_multicustomers()
 	{
 		return array(
-			'title'   => __( 'Multicustomers', Core::TEXTDOMAIN ),
+			'title'   => __( 'Multicustomers', 'woo-mundipagg-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Multicustomers', Core::TEXTDOMAIN ),
+			'label'   => __( 'Enable Multicustomers', 'woo-mundipagg-payments' ),
 			'default' => 'no',
 		);
 	}
@@ -297,7 +298,7 @@ class Gateways extends WC_Payment_Gateway
 	public function section_antifraud()
 	{
 		return array(
-			'title' => __( 'Anti-fraud settings', Core::TEXTDOMAIN ),
+			'title' => __( 'Anti-fraud settings', 'woo-mundipagg-payments' ),
 			'type'  => 'title',
 		);
 	}
@@ -305,9 +306,9 @@ class Gateways extends WC_Payment_Gateway
 	public function antifraud_enabled()
 	{
 		return array(
-			'title'   => __( 'Enable', Core::TEXTDOMAIN ),
+			'title'   => __( 'Enable', 'woo-mundipagg-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable anti-fraud', Core::TEXTDOMAIN ),
+			'label'   => __( 'Enable anti-fraud', 'woo-mundipagg-payments' ),
 			'default' => 'no',
 		);
 	}
@@ -315,9 +316,9 @@ class Gateways extends WC_Payment_Gateway
 	public function antifraud_min_value()
 	{
 		return array(
-			'title'             => __( 'Minimum value', Core::TEXTDOMAIN ),
+			'title'             => __( 'Minimum value', 'woo-mundipagg-payments' ),
 			'type'              => 'text',
-			'description'       => __( 'Minimum anti-fraud value', Core::TEXTDOMAIN ),
+			'description'       => __( 'Minimum anti-fraud value', 'woo-mundipagg-payments' ),
 			'desc_tip'          => true,
 			'placeholder'       => 'Ex.: 100,00',
 			'custom_attributes' => array(
@@ -330,7 +331,7 @@ class Gateways extends WC_Payment_Gateway
 	public function section_billet()
 	{
 		return array(
-			'title' => __( 'Billet settings', Core::TEXTDOMAIN ),
+			'title' => __( 'Billet settings', 'woo-mundipagg-payments' ),
 			'type'  => 'title',
 		);
 	}
@@ -339,11 +340,11 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'type'    => 'select',
-			'title'   => __( 'Bank', Core::TEXTDOMAIN ),
+			'title'   => __( 'Bank', 'woo-mundipagg-payments' ),
 			'class'   => 'wc-enhanced-select',
 			'default' => 0,
 			'options' => array(
-				''    => __( 'Select a bank', Core::TEXTDOMAIN ),
+				''    => __( 'Select a bank', 'woo-mundipagg-payments' ),
 				'341' => 'Banco Itaú S.A.',
 				'237' => 'Banco Bradesco S.A.',
 				'033' => 'Banco Santander S.A.',
@@ -357,8 +358,8 @@ class Gateways extends WC_Payment_Gateway
 	public function field_billet_deadline_days()
 	{
 		return array(
-			'title'       => __( 'Number of Days', Core::TEXTDOMAIN ),
-			'description' => __( 'Days of expiry of the billet after printed.', Core::TEXTDOMAIN ),
+			'title'       => __( 'Number of Days', 'woo-mundipagg-payments' ),
+			'description' => __( 'Days of expiry of the billet after printed.', 'woo-mundipagg-payments' ),
 			'desc_tip'    => true,
 			'placeholder' => 5,
 			'default'     => 5,
@@ -368,9 +369,9 @@ class Gateways extends WC_Payment_Gateway
 	public function field_billet_instructions()
 	{
 		return array(
-			'title'       => __( 'Instructions', Core::TEXTDOMAIN ),
+			'title'       => __( 'Instructions', 'woo-mundipagg-payments' ),
 			'type'        => 'text',
-			'description' => __( 'Instructions for the billet.', Core::TEXTDOMAIN ),
+			'description' => __( 'Instructions for the billet.', 'woo-mundipagg-payments' ),
 			'desc_tip'    => true,
 		);
 	}
@@ -378,7 +379,7 @@ class Gateways extends WC_Payment_Gateway
 	public function section_credit_card()
 	{
 		return array(
-			'title' => __( 'Credit Card settings', Core::TEXTDOMAIN ),
+			'title' => __( 'Credit Card settings', 'woo-mundipagg-payments' ),
 			'type'  => 'title',
 		);
 	}
@@ -386,15 +387,15 @@ class Gateways extends WC_Payment_Gateway
 	public function field_cc_soft_descriptor()
 	{
 		return array(
-			'title'             => __( 'Soft Descriptor', Core::TEXTDOMAIN ),
+			'title'             => __( 'Soft Descriptor', 'woo-mundipagg-payments' ),
 			'desc_tip'          => true,
-			'placeholder'       => __( 'Maximum of 13 characters', Core::TEXTDOMAIN ),
-			'description'       => __( 'It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer\'s invoice, next to the shop identification, respecting the length of the flags.', Core::TEXTDOMAIN ),
+			'placeholder'       => __( 'Maximum of 13 characters', 'woo-mundipagg-payments' ),
+			'description'       => __( 'It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer\'s invoice, next to the shop identification, respecting the length of the flags.', 'woo-mundipagg-payments' ),
 			'custom_attributes' => array(
 				'data-action'    => 'soft-descriptor',
 				'data-element'   => 'validate',
 				'maxlength'      => 13,
-				'data-error-msg' => __( 'This field is required.', Core::TEXTDOMAIN ),
+				'data-error-msg' => __( 'This field is required.', 'woo-mundipagg-payments' ),
 			),
 		);
 	}
@@ -403,22 +404,32 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'type'    => 'select',
-			'title'   => __( 'Operation Type', Core::TEXTDOMAIN ),
+			'title'   => __( 'Operation Type', 'woo-mundipagg-payments' ),
 			'class'   => 'wc-enhanced-select',
 			'default' => 1,
 			'options' => array(
-				1 => __( 'Authorize', Core::TEXTDOMAIN ),
-				2 => __( 'Authorize and Capture', Core::TEXTDOMAIN ),
+				1 => __( 'Authorize', 'woo-mundipagg-payments' ),
+				2 => __( 'Authorize and Capture', 'woo-mundipagg-payments' ),
 			),
+		);
+	}
+
+	public function field_cc_allow_save()
+	{
+		return array(
+			'title'   => __( 'Enable storage', 'woo-mundipagg-payments' ),
+			'type'    => 'checkbox',
+			'label'   => __( 'Allow card salvage for future purchases', 'woo-mundipagg-payments' ),
+			'default' => 'yes',
 		);
 	}
 
 	public function field_cc_manual_capture()
 	{
 		return array(
-			'title'   => __( 'Manual Capture', Core::TEXTDOMAIN ),
+			'title'   => __( 'Manual Capture', 'woo-mundipagg-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Manual Capture', Core::TEXTDOMAIN ),
+			'label'   => __( 'Enable Manual Capture', 'woo-mundipagg-payments' ),
 			'default' => 'yes',
 		);
 	}
@@ -427,10 +438,10 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'type'              => 'multiselect',
-			'title'             => __( 'Flags', Core::TEXTDOMAIN ),
+			'title'             => __( 'Flags', 'woo-mundipagg-payments' ),
 			'select_buttons'    => false,
 			'class'             => 'wc-enhanced-select',
-			'desc_tip'          => __( 'Select one or more flags', Core::TEXTDOMAIN ),
+			'desc_tip'          => __( 'Select one or more flags', 'woo-mundipagg-payments' ),
 			'options'           => $this->model->settings->get_flags_list(),
 			'custom_attributes' => array(
 				'data-element' => 'flags-select',
@@ -442,14 +453,14 @@ class Gateways extends WC_Payment_Gateway
 	public function field_cc_installment_type()
 	{
 		return array(
-			'title'   => __( 'Installment type', Core::TEXTDOMAIN ),
+			'title'   => __( 'Installment type', 'woo-mundipagg-payments' ),
 			'type'    => 'select',
 			'class'   => 'wc-enhanced-select',
-			'label'   => __( 'Choose the installment type', Core::TEXTDOMAIN ),
+			'label'   => __( 'Choose the installment type', 'woo-mundipagg-payments' ),
 			'default' => 1,
 			'options' => array(
-				Gateway::CC_TYPE_SINGLE  => __( 'Single installment', Core::TEXTDOMAIN ),
-				Gateway::CC_TYPE_BY_FLAG => __( 'Installment by flags', Core::TEXTDOMAIN ),
+				Gateway::CC_TYPE_SINGLE  => __( 'Single installment', 'woo-mundipagg-payments' ),
+				Gateway::CC_TYPE_BY_FLAG => __( 'Installment by flags', 'woo-mundipagg-payments' ),
 			),
 			'custom_attributes' => array(
 				'data-element' => 'installments-type-select',
@@ -463,9 +474,9 @@ class Gateways extends WC_Payment_Gateway
 		$installments = array();
 
 		$installments['maximum'] = array(
-			'title'             => __( 'Maximum installments number', Core::TEXTDOMAIN ),
+			'title'             => __( 'Maximum installments number', 'woo-mundipagg-payments' ),
 			'type'              => 'select',
-			'description'       => __( 'Force a maximum number of installments for payment.', Core::TEXTDOMAIN ),
+			'description'       => __( 'Force a maximum number of installments for payment.', 'woo-mundipagg-payments' ),
 			'desc_tip'          => true,
 			'default'           => 12,
 			'options'           => $this->model->get_installment_options(),
@@ -475,9 +486,9 @@ class Gateways extends WC_Payment_Gateway
 		);
 
 		$installments['without_interest'] = array(
-			'title'             => __( 'Without Interest', Core::TEXTDOMAIN ),
+			'title'             => __( 'Without Interest', 'woo-mundipagg-payments' ),
 			'type'              => 'select',
-			'description'       => __( 'Defines which installment will have no interest.', Core::TEXTDOMAIN ),
+			'description'       => __( 'Defines which installment will have no interest.', 'woo-mundipagg-payments' ),
 			'desc_tip'          => true,
 			'default'           => 3,
 			'options'           => $this->model->get_installment_options(),
@@ -487,9 +498,9 @@ class Gateways extends WC_Payment_Gateway
 		);
 
 		$installments['interest'] = array(
-			'title'             => __( 'Initial interest', Core::TEXTDOMAIN ),
+			'title'             => __( 'Initial interest', 'woo-mundipagg-payments' ),
 			'type'              => 'text',
-			'description'       => __( 'Interest to be applied to the installment.', Core::TEXTDOMAIN ),
+			'description'       => __( 'Interest to be applied to the installment.', 'woo-mundipagg-payments' ),
 			'desc_tip'          => true,
 			'placeholder'       => '0,00',
 			'custom_attributes' => array(
@@ -500,9 +511,9 @@ class Gateways extends WC_Payment_Gateway
 		);
 
 		$installments['interest_increase'] = array(
-			'title'             => __( 'Interest increase', Core::TEXTDOMAIN ),
+			'title'             => __( 'Interest increase', 'woo-mundipagg-payments' ),
 			'type'              => 'text',
-			'description'       => __( 'Interest to be increamented for each installment.', Core::TEXTDOMAIN ),
+			'description'       => __( 'Interest to be increamented for each installment.', 'woo-mundipagg-payments' ),
 			'desc_tip'          => true,
 			'placeholder'       => '0,00',
 			'custom_attributes' => array(
@@ -514,10 +525,8 @@ class Gateways extends WC_Payment_Gateway
 
 
 		$installments['flags'] = array(
-			'title'             => __( 'Settings by flag', Core::TEXTDOMAIN ),
-			'type'              => 'installments_by_flag',
-			'description'       => __( 'Defines the settings for each flag.', Core::TEXTDOMAIN ),
-			'desc_tip'          => true,
+			'title' => __( 'Settings by flag', 'woo-mundipagg-payments' ),
+			'type'  => 'installments_by_flag',
 		);
 
 		return $installments[ $field ];
@@ -617,12 +626,12 @@ class Gateways extends WC_Payment_Gateway
 					<?php echo $this->get_description_html( $data ); ?>
 
 					</br><p class="description">
-						<strong><?php _e( 'Columns', Core::TEXTDOMAIN ); ?>:</strong>
-						<?php _e( 'Flag', Core::TEXTDOMAIN ); ?>,
-						<?php _e( 'Max installment', Core::TEXTDOMAIN ); ?>,
-						<?php _e( 'No interest', Core::TEXTDOMAIN ); ?>,
-						<?php _e( 'Initial interest', Core::TEXTDOMAIN ); ?>,
-						<?php _e( 'Interest increase', Core::TEXTDOMAIN ); ?>
+						<strong><?php _e( 'Columns', 'woo-mundipagg-payments' ); ?>:</strong>
+						<?php _e( 'Flag', 'woo-mundipagg-payments' ); ?>,
+						<?php _e( 'Max installment', 'woo-mundipagg-payments' ); ?>,
+						<?php _e( 'No interest', 'woo-mundipagg-payments' ); ?>,
+						<?php _e( 'Initial interest', 'woo-mundipagg-payments' ); ?>,
+						<?php _e( 'Interest increase', 'woo-mundipagg-payments' ); ?>
 					</p>
 
 				</fieldset>
@@ -641,7 +650,7 @@ class Gateways extends WC_Payment_Gateway
 	public function section_tools()
 	{
 		return array(
-			'title' => __( 'Tools', Core::TEXTDOMAIN ),
+			'title' => __( 'Tools', 'woo-mundipagg-payments' ),
 			'type'  => 'title',
 		);
 	}
@@ -649,11 +658,11 @@ class Gateways extends WC_Payment_Gateway
 	public function field_enabled_logs()
 	{
 		return array(
-			'title'       => __( 'Logs', Core::TEXTDOMAIN ),
+			'title'       => __( 'Logs', 'woo-mundipagg-payments' ),
 			'type'        => 'checkbox',
-			'label'       => __( 'Enable', Core::TEXTDOMAIN ),
+			'label'       => __( 'Enable', 'woo-mundipagg-payments' ),
 			'default'     => 'no',
-			'description' => __( 'Log MundiPagg events, you can check this log in WooCommerce>Status>Logs.', Core::TEXTDOMAIN )
+			'description' => __( 'Log MundiPagg events, you can check this log in WooCommerce>Status>Logs.', 'woo-mundipagg-payments' )
 		);
 	}
 }

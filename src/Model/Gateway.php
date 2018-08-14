@@ -80,9 +80,9 @@ class Gateway
 
 	public function render_installments_options( $total, $max_installments, $interest, $interest_increase, $no_interest )
 	{
-		$output = sprintf( 
+		$output = sprintf(
 			'<option value="1">%1$s</option>',
-			__( 'At sight', Core::SLUG ) . ' ('. wc_price( $total ) . ')' 
+			__( 'At sight', Core::SLUG ) . ' ('. wc_price( $total ) . ')'
 		);
 
 		$interest_base = $interest;
@@ -107,7 +107,7 @@ class Gateway
 			}
 
 			$price = ceil( $value / $times * 100 ) / 100;
-			$text  = sprintf( __( '%dx of %s (%s)', Core::TEXTDOMAIN ),
+			$text  = sprintf( __( '%dx of %s (%s)', 'woo-mundipagg-payments' ),
 				$times,
 				wc_price( $price ),
 				wc_price( $value )

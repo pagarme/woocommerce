@@ -12,10 +12,10 @@ $tab_num     = Setting::get_instance()->get_active_tab();
 $payment_url = esc_url( $wc_order->get_checkout_payment_url( true ) );
 $wc_api      = get_home_url( null, '/wc-api/' . Checkout::API_REQUEST );
 $swal_data   = array(
-	'title'        => __( 'Waiting...', Core::TEXTDOMAIN ),
-	'text'         => __( 'We are processing your request.', Core::TEXTDOMAIN ),
-	'text_default' => __( 'An error occurred while processing.', Core::TEXTDOMAIN ),
-	'text_success' => __( 'Your transaction has been processed successfully.', Core::TEXTDOMAIN ),
+	'title'        => __( 'Waiting...', 'woo-mundipagg-payments' ),
+	'text'         => __( 'We are processing your request.', 'woo-mundipagg-payments' ),
+	'text_default' => __( 'An error occurred while processing.', 'woo-mundipagg-payments' ),
+	'text_success' => __( 'Your transaction has been processed successfully.', 'woo-mundipagg-payments' ),
 );
 
 ?>
@@ -45,7 +45,7 @@ $swal_data   = array(
 			?>
 				<li class="<?php echo ( $tab_num === 0 || $tab_num === 1 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="creditCard" href="#tab-credit-card">
-						<?php _e( 'Pay with credit card', Core::TEXTDOMAIN ); ?>
+						<?php _e( 'Pay with credit card', 'woo-mundipagg-payments' ); ?>
 					</a>
 				</li>
 
@@ -57,7 +57,7 @@ $swal_data   = array(
 			?>
 				<li class="<?php echo ( $tab_num === 2 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="boleto" href="#tab-billet">
-						<?php _e( 'Pay with boleto', Core::TEXTDOMAIN ); ?>
+						<?php _e( 'Pay with boleto', 'woo-mundipagg-payments' ); ?>
 					</a>
 				</li>
 
@@ -69,7 +69,7 @@ $swal_data   = array(
 			?>
 				<li class="<?php echo ( $tab_num === 3 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="billetAndCard" href="#tab-billet-and-card">
-						<?php _e( 'Pay with boleto and credit card', Core::TEXTDOMAIN ); ?>
+						<?php _e( 'Pay with boleto and credit card', 'woo-mundipagg-payments' ); ?>
 					</a>
 				</li>
 
@@ -81,7 +81,7 @@ $swal_data   = array(
 			?>
 				<li class="<?php echo ( $tab_num === 4 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="2cards" href="#tab-2-cards">
-						<?php _e( 'Pay with 2 cards', Core::TEXTDOMAIN ); ?>
+						<?php _e( 'Pay with 2 cards', 'woo-mundipagg-payments' ); ?>
 					</a>
 				</li>
 
@@ -142,11 +142,11 @@ $swal_data   = array(
 
 	<p>
 		<a class="button cancel" href="<?php echo esc_url( $wc_order->get_cancel_order_url() ) ?>">
-			<?php _e( 'Cancel order &amp; restore cart', Core::TEXTDOMAIN ) ?>
+			<?php _e( 'Cancel order &amp; restore cart', 'woo-mundipagg-payments' ) ?>
 		</a>
 		<span></span>
 		<button type="submit" class="button alt" id="wcmp-submit">
-			<?php _e( 'Pay order', Core::TEXTDOMAIN ); ?>
+			<?php _e( 'Pay order', 'woo-mundipagg-payments' ); ?>
 		</button>
 	</p>
 

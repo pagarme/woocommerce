@@ -38,7 +38,7 @@ class Accounts
 
 		unset( $items[ $last_key ] );
 
-		$items[ $this->wallet_endpoint ] = __( 'Wallet', Core::TEXTDOMAIN );
+		$items[ $this->wallet_endpoint ] = __( 'Wallet', 'woo-mundipagg-payments' );
 		$items[ $last_key ]              = $last_value;
 
 		return $items;
@@ -61,8 +61,8 @@ class Accounts
 	public function settings_account( $settings )
 	{
 		$wallet = array(
-			'title'    => __( 'Wallet', Core::TEXTDOMAIN ),
-			'desc'     => __( 'Your wallet for Mundipagg registered credit cards', Core::TEXTDOMAIN ),
+			'title'    => __( 'Wallet', 'woo-mundipagg-payments' ),
+			'desc'     => __( 'Your wallet for Mundipagg registered credit cards', 'woo-mundipagg-payments' ),
 			'id'       => self::OPT_WALLET_ENDPOINT,
 			'type'     => 'text',
 			'default'  => $this->wallet_endpoint,
@@ -86,7 +86,7 @@ class Accounts
 		}
 
 		if ( ! is_user_logged_in() ) {
-			wp_send_json_error( __( 'User not loggedin.', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'User not loggedin.', 'woo-mundipagg-payments' ) );
 		}
 
 		$customer    = new Customer( get_current_user_id() );
@@ -94,13 +94,13 @@ class Accounts
 		$card_id     = Utils::post( 'card_id' );
 
 		if ( ! isset( $saved_cards[ $card_id ] ) ) {
-			wp_send_json_error( __( 'Card not found.', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'Card not found.', 'woo-mundipagg-payments' ) );
 		}
 
 		unset( $saved_cards[ $card_id ] );
 
 		$customer->cards = $saved_cards;
 
-		wp_send_json_success( __( 'Card removed successfully.', Core::TEXTDOMAIN ) );
+		wp_send_json_success( __( 'Card removed successfully.', 'woo-mundipagg-payments' ) );
 	}
 }

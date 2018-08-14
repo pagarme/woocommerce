@@ -29,7 +29,7 @@ class Settings
 		$plugin_links = array( sprintf(
 			'<a href="%s">%s</a>',
 			Core::get_page_link(),
-			__( 'Settings', Core::TEXTDOMAIN )
+			__( 'Settings', 'woo-mundipagg-payments' )
 		) );
 
 		return array_merge( $plugin_links, $links );

@@ -12,6 +12,12 @@ if ( ! is_user_logged_in() ) {
 	return;
 }
 
+$setting = Setting::get_instance();
+
+if ( ! $setting->is_allowed_save_credit_card() ) {
+	return;
+}
+
 $customer = new Customer( get_current_user_id() );
 $suffix   = isset( $suffix ) ? $suffix : '';
 
@@ -23,14 +29,14 @@ if ( ! $customer->cards ) {
 
  <p class="form-row form-row-wide">
 
- 	<?php _e( 'Credit cards save', Core::TEXTDOMAIN ); ?><br>
+ 	<?php _e( 'Credit cards save', 'woo-mundipagg-payments' ); ?><br>
 
-	<select name="card_id<?php echo $suffix; ?>" id="field-choose-card" 
+	<select name="card_id<?php echo $suffix; ?>" id="field-choose-card"
 			data-action="select2"
 			data-installments-type="<?php echo Setting::get_instance()->cc_installment_type; ?>"
 			data-element="choose-credit-card">
 		<option value="">
-			<?php _e( 'Saved credit card', Core::TEXTDOMAIN ) ?>
+			<?php _e( 'Saved credit card', 'woo-mundipagg-payments' ) ?>
 		</option>
 
 		<?php

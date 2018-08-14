@@ -10,6 +10,7 @@ use Woocommerce\Mundipagg\Model\Order;
 use Woocommerce\Mundipagg\Model\Customer;
 use Woocommerce\Mundipagg\Model\Gateway;
 use Woocommerce\Mundipagg\Model\Charge;
+use Woocommerce\Mundipagg\Model\Setting;
 use Woocommerce\Mundipagg\Helper\Utils;
 use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\View;
@@ -41,17 +42,18 @@ class Checkout
 		$wc_order = wc_get_order( Utils::post( 'order', 0, 'intval' ) );
 
 		if ( ! $wc_order ) {
-			wp_send_json_error( __( 'Invalid order', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'Invalid order', 'woo-mundipagg-payments' ) );
 		}
 
 		$fields = $this->_prepare_fields( $_POST['fields'] );
 
 		if ( empty( $fields ) ) {
-			wp_send_json_error( __( 'Empty fields', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'Empty fields', 'woo-mundipagg-payments' ) );
 		}
 
 		$this->_validate_amount_billet_and_card( $fields, $wc_order );
 		$this->_validate_amount_2_cards( $fields, $wc_order );
+		$this->_validate_brands( $fields );
 
 		$response = $this->api->create_order(
 			$wc_order,
@@ -109,6 +111,19 @@ class Checkout
 		$fields['billing_neighborhood']['required'] = true;
 
 		return $fields;
+	}
+
+	public function parse_cards( $data, $key = 'card' )
+	{
+		if ( isset( $data[ $key ] ) ) {
+			$this->cards[ $data[ $key ]['id'] ] = $data[ $key ];
+		}
+
+		foreach ( $data as &$value ) :
+			if ( is_array( $value ) ) {
+				$this->parse_cards( $value, $key );
+			}
+		endforeach;
 	}
 
 	private function _save_customer_card( $raw_body, $index )
@@ -190,11 +205,11 @@ class Checkout
 		$amount       = intval( $billet ) + intval( $credit_card );
 
 		if ( $amount < $total ) {
-			wp_send_json_error( __( 'The sum of boleto and credit card is less than the total', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'The sum of boleto and credit card is less than the total', 'woo-mundipagg-payments' ) );
 		}
 
 		if ( $amount > $total ) {
-			wp_send_json_error( __( 'The sum of boleto and credit card is greater than the total', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'The sum of boleto and credit card is greater than the total', 'woo-mundipagg-payments' ) );
 		}
 	}
 
@@ -212,24 +227,32 @@ class Checkout
 		$amount = intval( $value1 ) + intval( $value2 );
 
 		if ( $amount < $total ) {
-			wp_send_json_error( __( 'The sum of the two credit cards is less than the total', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'The sum of the two credit cards is less than the total', 'woo-mundipagg-payments' ) );
 		}
 
 		if ( $amount > $total ) {
-			wp_send_json_error( __( 'The sum of the two credits cards is greater than the total', Core::TEXTDOMAIN ) );
+			wp_send_json_error( __( 'The sum of the two credits cards is greater than the total', 'woo-mundipagg-payments' ) );
 		}
 	}
 
-	public function parse_cards( $data, $key = 'card' )
+	private function _validate_brands( $fields )
 	{
-		if ( isset( $data[ $key ] ) ) {
-			$this->cards[ $data[ $key ]['id'] ] = $data[ $key ];
+		$setting = Setting::get_instance();
+		$brand1  = Utils::get_value_by( $fields, 'brand' );
+		$brand2  = Utils::get_value_by( $fields, 'brand2' );
+
+		$flags = $setting->cc_flags;
+
+		if ( empty( $flags ) ) {
+			return;
 		}
 
-	    foreach ( $data as &$value ) :
-	        if ( is_array( $value ) ) {
-	        	$this->parse_cards( $value, $key );
-	        }
-	    endforeach;
+		if ( $brand1 && ! in_array( $brand1, $flags ) ) {
+			wp_send_json_error( sprintf( __( 'The flag <b>%s</b> is not supported.', 'woo-mundipagg-payments' ), $brand1 ) );
+		}
+
+		if ( $brand2 && ! in_array( $brand2, $flags ) ) {
+			wp_send_json_error( sprintf( __( 'The flag <b>%s</b> is not supported.', 'woo-mundipagg-payments' ), $brand2 ) );
+		}
 	}
 }

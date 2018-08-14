@@ -13,14 +13,14 @@ $setting = Setting::get_instance();
 
 ?>
 
-<div <?php echo Utils::get_component( 'mundipagg-checkout' ); ?> 
+<div <?php echo Utils::get_component( 'mundipagg-checkout' ); ?>
     data-mundicheckout-app-id="<?php echo $setting->get_public_key(); ?>"
     data-mundicheckout-suffix="<?php echo ! $suffix ? 1 : $suffix; ?>">
 
     <p class="form-row form-row-wide">
 
         <label for="card-holder-name">
-            <?php _e( 'Card Holder Name', Core::TEXTDOMAIN ); ?> <span class="required">*</span>
+            <?php _e( 'Card Holder Name', 'woo-mundipagg-payments' ); ?> <span class="required">*</span>
         </label>
 
         <input id="card-holder-name"
@@ -32,7 +32,7 @@ $setting = Setting::get_instance();
 
     <p class="form-row form-row-wide">
 
-        <label for="card-number"><?php _e( 'Card number', Core::TEXTDOMAIN ); ?> <span class="required">*</span></label>
+        <label for="card-number"><?php _e( 'Card number', 'woo-mundipagg-payments' ); ?> <span class="required">*</span></label>
 
         <input id="card-number"
                 data-element="card-number"
@@ -50,7 +50,7 @@ $setting = Setting::get_instance();
     <p class="form-row form-row-first">
 
         <label for="card-expiry">
-            <?php _e( 'Expiry (MM/YY)', Core::TEXTDOMAIN ); ?>
+            <?php _e( 'Expiry (MM/YY)', 'woo-mundipagg-payments' ); ?>
             <span class="required">*</span>
         </label>
 
@@ -58,14 +58,14 @@ $setting = Setting::get_instance();
                 class="input-text wc-credit-card-form-card-expiry"
                 data-mask="00/00"
                 data-required="true"
-                placeholder="<?php _e( 'MM / YY', Core::TEXTDOMAIN ); ?>"
+                placeholder="<?php _e( 'MM / YY', 'woo-mundipagg-payments' ); ?>"
                 data-mundicheckout-element="exp_date">
     </p>
 
     <p class="form-row form-row-last">
 
         <label for="card-cvc">
-            <?php _e( 'Card code', Core::TEXTDOMAIN ); ?> <span class="required">*</span>
+            <?php _e( 'Card code', 'woo-mundipagg-payments' ); ?> <span class="required">*</span>
         </label>
 
         <input id="card-cvc"

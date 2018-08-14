@@ -66,10 +66,14 @@ class Payment
 	 *
 	 * @return array
 	 */
-	public function pay_billet( $wc_order )
+	public function pay_billet( $wc_order, $form_fields )
     {
     	$billet = $this->_pay_billet_base();
-    	$billet['amount'] = Utils::format_order_price( $wc_order->get_total() );
+		$billet['amount'] = Utils::format_order_price( $wc_order->get_total() );
+
+		if ( $multicustomer = $this->_get_multicustomer_data( 'billet', $form_fields ) ) {
+			$billet['customer'] = $multicustomer;
+		}
 
     	return $billet;
     }
@@ -91,6 +95,10 @@ class Payment
 		$card_amount       = $this->_get_price_with_interest( $wc_order->get_total(), $card_installments, $card_brand );
 		$card['amount']    = Utils::format_order_price( $card_amount );
 
+		if ( $multicustomer = $this->_get_multicustomer_data( 'card', $form_fields ) ) {
+			$card['customer'] = $multicustomer;
+		}
+
 		return $card;
     }
 
@@ -109,18 +117,26 @@ class Payment
 		$billet           = $this->_pay_billet_base();
 		$billet['amount'] = Utils::format_desnormalized_order_price( $billet_amount );
 
+		if ( $billet_multicustomer = $this->_get_multicustomer_data( 'billet', $form_fields ) ) {
+			$billet['customer'] = $billet_multicustomer;
+		}
+
 		$card = $this->_pay_credit_card_base( $wc_order, $form_fields, $customer );
-		
+
 		if ( ! is_array( $card ) && $card->code != 200 ) {
 			return $card;
 		}
-		
+
 		$card_amount = Utils::normalize_price( Utils::get_value_by( $form_fields, 'card_order_value' ) );
 		$card_installments = Utils::get_value_by( $form_fields, 'installments' );
 		$card_brand = Utils::get_value_by( $form_fields, 'brand' );
-		
+
 		$card_amount = $this->_get_price_with_interest( $card_amount, $card_installments, $card_brand );
 		$card['amount'] = Utils::format_order_price( $card_amount );
+
+		if ( $multicustomer = $this->_get_multicustomer_data( 'card', $form_fields ) ) {
+			$card['customer'] = $multicustomer;
+		}
 
 		return array( $billet, $card );
     }
@@ -153,6 +169,17 @@ class Payment
 
 		$card1['amount'] = Utils::format_order_price( $card1_amount );
 		$card2['amount'] = Utils::format_order_price( $card2_amount );
+
+		$multicustomer_card1 = $this->_get_multicustomer_data( 'card1', $form_fields );
+		$multicustomer_card2 = $this->_get_multicustomer_data( 'card2', $form_fields );
+
+		if ( $multicustomer_card1 ) {
+			$card1['customer'] = $multicustomer_card1;
+		}
+
+		if ( $multicustomer_card2 ) {
+			$card2['customer'] = $multicustomer_card2;
+		}
 
 		return array( $card1, $card2 );
     }
@@ -259,5 +286,35 @@ class Payment
 		}
 
 		return $amount;
+	}
+
+	private function _get_multicustomer_data( $type, $form_fields )
+	{
+		$prefix     = "multicustomer_{$type}";
+		$is_enabled = Utils::get_value_by( $form_fields, "enable_multicustomers_{$type}" );
+
+		if ( ! $is_enabled ) {
+			return false;
+		}
+
+		$cpf      = Utils::get_value_by( $form_fields, $prefix . '[cpf]' );
+		$zip_code = Utils::get_value_by( $form_fields, $prefix . '[zip_code]' );
+
+		return array(
+			'name'     => Utils::get_value_by( $form_fields, $prefix . '[name]' ),
+			'email'    => Utils::get_value_by( $form_fields, $prefix . '[email]' ),
+			'document' => Utils::format_document( $cpf ),
+			'type'     => 'individual',
+			'address' => array(
+				'street'       => Utils::get_value_by( $form_fields, $prefix . '[street]' ),
+				'number'       => Utils::get_value_by( $form_fields, $prefix . '[number]' ),
+				'complement'   => Utils::get_value_by( $form_fields, $prefix . '[complement]' ),
+				'neighborhood' => Utils::get_value_by( $form_fields, $prefix . '[neighborhood]' ),
+				'zip_code'     => preg_replace( '/[^\d]+/', '', $zip_code ),
+				'city'         => Utils::get_value_by( $form_fields, $prefix . '[city]' ),
+				'state'        => Utils::get_value_by( $form_fields, $prefix . '[state]' ),
+				'country'      => 'BR'
+			)
+		);
 	}
 }

@@ -13,6 +13,8 @@ use Woocommerce\Mundipagg\Model\Setting;
 use Woocommerce\Mundipagg\View\Checkouts;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
+$ref1              = md5( rand( 1, 1000 ) );
+$ref2              = md5( rand( 1, 1000 ) );
 
 ?>
 
@@ -27,7 +29,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 
 			<p class="form-row form-row-first">
 
-				<label for="card-order-value"><?php _e( 'Value (Credit Card)', Core::TEXTDOMAIN ); ?> <span class="required">*</span></label>
+				<label for="card-order-value"><?php _e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span></label>
 
 				<input id="card-order-value" name="card_order_value"
 						data-element="card-order-value"
@@ -39,7 +41,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 
 			<div class="wc-credit-card-info" data-element="fields-cc-data">
 
-				<?php	
+				<?php
 					Utils::get_template(
 						'templates/checkout/common-card-item',
 						compact( 'wc_order', 'installments_type' )
@@ -50,7 +52,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 			 <p class="form-row form-row-first">
 
 				<label for="installments">
-					<?php _e( 'Installments quantity', Core::TEXTDOMAIN ); ?><span class="required">*</span>
+					<?php _e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments"
@@ -73,11 +75,27 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 				</select>
 			</p>
 
-			<?php Utils::get_template( 'templates/checkout/field-save-card' ); ?>
+			<?php
+				Utils::get_template( 'templates/checkout/field-save-card' );
+				Utils::get_template(
+					'templates/checkout/field-enable-multicustomers',
+					array( 'ref' => $ref1, 'type' => 'card1' )
+				);
+			?>
 
 		</fieldset>
 
-		<fieldset class="wc-credit-card-form wc-payment-form">	
+		<?php
+			Utils::get_template(
+				'templates/checkout/multicustomers-form',
+				array(
+					'ref'   => $ref1,
+					'type'  => 'card1',
+				)
+			);
+		?>
+
+		<fieldset class="wc-credit-card-form wc-payment-form">
 
 			<h4>2º Cartão</h4>
 
@@ -85,7 +103,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 
 			<p class="form-row form-row-first">
 
-				<label for="card-order-value2"><?php _e( 'Value (Credit Card)', Core::TEXTDOMAIN ); ?> <span class="required">*</span></label>
+				<label for="card-order-value2"><?php _e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span></label>
 
 				<input id="card-order-value2" name="card_order_value2"
 						data-element="card-order-value"
@@ -96,8 +114,8 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 			</p>
 
 			<div class="wc-credit-card-info" data-element="fields-cc-data">
-				
-				<?php	
+
+				<?php
 					Utils::get_template(
 						'templates/checkout/common-card-item',
 						array(
@@ -112,7 +130,7 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 			<p class="form-row form-row-first">
 
 				<label for="installments2">
-					<?php _e( 'Installments quantity', Core::TEXTDOMAIN ); ?><span class="required">*</span>
+					<?php _e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments2"
@@ -135,9 +153,25 @@ $installments_type = Setting::get_instance()->cc_installment_type;
 				</select>
 			</p>
 
-			<?php Utils::get_template( 'templates/checkout/field-save-card', [ 'suffix' => 2 ] ); ?>
+			<?php
+				Utils::get_template( 'templates/checkout/field-save-card', [ 'suffix' => 2 ] );
+				Utils::get_template(
+					'templates/checkout/field-enable-multicustomers',
+					array( 'ref' => $ref2, 'type' => 'card2' )
+				);
+			?>
 
 		</fieldset>
+
+		<?php
+			Utils::get_template(
+				'templates/checkout/multicustomers-form',
+				array(
+					'ref'   => $ref2,
+					'type'  => 'card2',
+				)
+			);
+		?>
 
 		<input style="display:none;"
 			   data-action="choose-payment"
