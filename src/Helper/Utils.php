@@ -110,7 +110,7 @@ class Utils
 	public static function sanitize( $value, $sanitize )
 	{
 		if ( ! is_callable( $sanitize ) ) {
-	    	return ( false === $sanitize ) ? $value : self::rm_tags( $value );
+			return ( false === $sanitize ) ? $value : self::rm_tags( $value );
 		}
 
 		if ( is_array( $value ) ) {
@@ -138,7 +138,7 @@ class Utils
 			return array_map( __METHOD__, $value );
 		}
 
-	    return wp_strip_all_tags( $value, $remove_breaks );
+		return wp_strip_all_tags( $value, $remove_breaks );
 	}
 
 	/**
@@ -324,7 +324,7 @@ class Utils
 		if ( empty( $price ) ) {
 			return;
 		}
-		
+
 		$price = self::normalize_price( $price );
 
 		return self::format_order_price( $price );
@@ -335,9 +335,9 @@ class Utils
 		if ( empty( $price ) ) {
 			return;
 		}
-		
-		$price = str_replace('.', '', $price);
-		$price = str_replace(',', '.', $price);
+
+		$price = str_replace( '.', '', $price );
+		$price = str_replace( ',', '.', $price );
 
 		return $price;
 	}
@@ -361,14 +361,14 @@ class Utils
 		return $value;
 	}
 
-    /**
-     * Generate log file
-     *
-     * @since 1.0
-     * @param Mixed $data
-     * @param String $log_name
-     * @return Void
-     */
+	/**
+	 * Generate log file
+	 *
+	 * @since 1.0
+	 * @param Mixed $data
+	 * @param String $log_name
+	 * @return Void
+	 */
 	public static function log( $data, $log_name = 'debug' )
 	{
 		$name = sprintf( '%s-%s.log', $log_name, date( 'd-m-Y' ) );
@@ -398,7 +398,7 @@ class Utils
 		for ( $j = 10; $j <= 11; $j++ ) {
 			$sum = 0;
 
-			for( $i = 0; $i< $j-1; $i++ ) {
+			for ( $i = 0; $i < $j - 1; $i++ ) {
 				$sum += ( $j - $i ) * ( (int) $digit[ $i ] );
 			}
 
@@ -418,11 +418,12 @@ class Utils
 	 */
 	public static function is_cnpj( $cnpj = null )
 	{
-		$cnpj = preg_replace('/[^0-9]/', '', (string) $cnpj);
+		$cnpj = preg_replace( '/[^0-9]/', '', (string) $cnpj );
 
 		// Valida tamanho
-		if (strlen($cnpj) != 14)
+		if ( strlen( $cnpj ) != 14 ) {
 			return false;
+		}
 
 		// Valida primeiro dígito verificador
 		for ( $i = 0, $j = 5, $soma = 0; $i < 12; $i++ ) {
@@ -470,7 +471,7 @@ class Utils
 	 */
 	public static function format_document( $document )
 	{
-		return preg_replace('/[^0-9]+/', '', $document );
+		return preg_replace( '/[^0-9]+/', '', $document );
 	}
 
 	/**
@@ -496,7 +497,7 @@ class Utils
 			$meta_value
 		);
 
-		return (int)$wpdb->get_var( $query );
+		return (int) $wpdb->get_var( $query );
 	}
 
 	/**
@@ -589,9 +590,9 @@ class Utils
 	{
 		$response = json_encode(
 			array(
-				'status' 	=> 'error',
-				'code'   	=> $code,
-				'message'	=> $message,
+				'status'  => 'error',
+				'code'    => $code,
+				'message' => $message,
 			)
 		);
 

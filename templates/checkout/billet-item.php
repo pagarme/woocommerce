@@ -20,8 +20,8 @@ $type = 'billet';
 			<label>
 				<?php
 					printf( '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
-						Core::plugins_url( 'assets/images/barcode.svg' ),
-						__( 'Boleto', 'woo-mundipagg-payments' )
+						esc_url( Core::plugins_url( 'assets/images/barcode.svg' ) ),
+						esc_html__( 'Boleto', 'woo-mundipagg-payments' )
 					);
 				?>
 				<input data-element="boleto"

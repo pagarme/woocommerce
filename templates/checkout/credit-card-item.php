@@ -24,7 +24,7 @@ $type              = 'card';
 
 		<fieldset class="wc-credit-card-form wc-payment-form">
 
-			<?php require_once dirname( __FILE__ ) .  '/choose-credit-card.php'; ?>
+			<?php require_once dirname( __FILE__ ) . '/choose-credit-card.php'; ?>
 
 			<div class="wc-credit-card-info" data-element="fields-cc-data">
 			<?php
@@ -38,24 +38,24 @@ $type              = 'card';
 			<p class="form-row form-row-first">
 
 				<label for="installments">
-					<?php _e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+					<?php esc_html_e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments"
-						<?php echo Utils::get_component( 'installments' ); ?>
-						data-total="<?php echo $wc_order->get_total(); ?>"
-						data-type="<?php echo $installments_type; ?>"
+						<?php echo /** phpcs:ignore */ Utils::get_component( 'installments' ); ?>
+						data-total="<?php echo esc_html( $wc_order->get_total() ); ?>"
+						data-type="<?php echo intval( $installments_type ); ?>"
 						data-action="select2"
 						data-required="true"
 						data-element="installments"
 						name="installments">
 
 					<?php
-						if ( $installments_type != 2 ) {
-							Checkouts::render_installments( $wc_order );
-						} else {
-							echo '<option value="">...</option>';
-						};
+					if ( $installments_type != 2 ) {
+						Checkouts::render_installments( $wc_order );
+					} else {
+						echo '<option value="">...</option>';
+					};
 					?>
 
 				</select>
@@ -69,10 +69,10 @@ $type              = 'card';
 		<?php Utils::get_template( 'templates/checkout/multicustomers-form', compact( 'ref', 'type' ) ); ?>
 
 		<input style="display:none;"
-		       data-element="credit-card"
-		       data-action="choose-payment"
-		       type="radio"
-		       name="payment_method"
-		       value="credit_card">
+			data-element="credit-card"
+			data-action="choose-payment"
+			type="radio"
+			name="payment_method"
+			value="credit_card">
 	</div>
 </li>

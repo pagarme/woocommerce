@@ -30,9 +30,9 @@ class Charges extends Base
 			$args['amount'] = $amount;
 		}
 
-		return Request::post( 
-			Base::URL . self::PATH . '/' . $charge_id . '/capture', 
-			$this->get_headers(), 
+		return Request::post(
+			Base::URL . self::PATH . '/' . $charge_id . '/capture',
+			$this->get_headers(),
 			Body::Json( $args )
 		);
 	}
@@ -42,7 +42,7 @@ class Charges extends Base
 	 *
 	 * @param int $charge_id
 	 * @param int $amount
-	 * 
+	 *
 	 * @return object Unirest\Response
 	 */
 	public function cancel( $charge_id, $amount = 0 )
@@ -55,7 +55,7 @@ class Charges extends Base
 
 		return Request::delete(
 			Base::URL . self::PATH . '/' . $charge_id,
-			$this->get_headers(), 
+			$this->get_headers(),
 			Body::Json( $args )
 		);
 	}

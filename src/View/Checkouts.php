@@ -27,16 +27,16 @@ class Checkouts
 	public static function handle_messages( Order $order )
 	{
 		switch ( $order->payment_method ) {
-			case 'billet' :
+			case 'billet':
 				return self::billet_message( $order );
 
-			case 'credit_card' :
+			case 'credit_card':
 				return self::credit_card_message( $order );
 
-			case 'billet_and_card' :
+			case 'billet_and_card':
 				return self::billet_and_card_message( $order );
 
-			case '2_cards' :
+			case '2_cards':
 				return self::credit_card_message( $order );
 		}
 	}
@@ -81,10 +81,12 @@ class Checkouts
 		?>
 		<p>
 		<?php
+			/** phpcs:disable */
 			printf(
 				__( 'The status of your transaction is %s.', 'woo-mundipagg-payments' ),
 				'<strong>' . strtoupper( $order->get_status_translate() ) . '</strong>'
 			);
+			/** phpcs:enable */
 		?>
 		</p>
 		<?php
@@ -110,10 +112,12 @@ class Checkouts
 
 			if ( $charge->payment_method == 'credit_card' ) :
 				echo '<p>';
+					/** phpcs:disable */
 					printf(
 						__( 'CREDIT CARD: The status of your transaction is %s.', 'woo-mundipagg-payments' ),
 						'<strong>' . strtoupper( $order->get_status_translate() ) . '</strong>'
 					);
+					/** phpcs:enable */
 				echo '</p>';
 			endif;
 
@@ -160,9 +164,9 @@ class Checkouts
 			<h2><?php _e( 'Payment Data', 'woo-mundipagg-payments' ); ?></h2>
 			<table class="woocommerce-table">
 			<?php
-				foreach ( $charges as $charge ) {
-					echo self::_get_payment_detail( $charge, $model_charge );
-				}
+			foreach ( $charges as $charge ) {
+				echo self::get_payment_detail( $charge, $model_charge );
+			}
 			?>
 			</table>
 		</section>
@@ -177,7 +181,7 @@ class Checkouts
 		echo $gateway->get_installments_by_type( $total );
 	}
 
-	private static function _get_payment_detail( $charge, Charge $model_charge )
+	private static function get_payment_detail( $charge, Charge $model_charge )
 	{
 		if ( $charge->payment_method == 'boleto' ) {
 

@@ -39,16 +39,16 @@ class Payment
 		$method_name = $this->get_method_name();
 
 		if ( ! method_exists( $this, $method_name ) ) {
-	    	throw new \Exception( 'Payment method name not exists' );
-	  	}
+			throw new \Exception( 'Payment method name not exists' );
+		}
 
-	  	$data = $this->{$method_name}( $wc_order, $form_fields, $customer );
+		$data = $this->{$method_name}( $wc_order, $form_fields, $customer );
 
-	  	if ( $method_name == 'pay_billet_and_card' || $method_name == 'pay_2_cards' ) {
-	  		return $data;
-	  	}
+		if ( $method_name == 'pay_billet_and_card' || $method_name == 'pay_2_cards' ) {
+			return $data;
+		}
 
-	  	return array( $data );
+		return array( $data );
 	}
 
 	/**
@@ -67,18 +67,19 @@ class Payment
 	 * @return array
 	 */
 	public function pay_billet( $wc_order, $form_fields )
-    {
-    	$billet = $this->_pay_billet_base();
+	{
+		$billet           = $this->pay_billet_base();
 		$billet['amount'] = Utils::format_order_price( $wc_order->get_total() );
+		$multicustomer    = $this->get_multicustomer_data( 'billet', $form_fields );
 
-		if ( $multicustomer = $this->_get_multicustomer_data( 'billet', $form_fields ) ) {
+		if ( $multicustomer ) {
 			$billet['customer'] = $multicustomer;
 		}
 
-    	return $billet;
-    }
+		return $billet;
+	}
 
-    /**
+	/**
 	 * Return payment data for "credit_card"
 	 *
 	 * @param $wc_order object order from woocommerce
@@ -88,21 +89,22 @@ class Payment
 	 * @return array
 	 */
 	public function pay_credit_card( $wc_order, $form_fields, $customer )
-    {
-		$card              = $this->_pay_credit_card_base( $wc_order, $form_fields, $customer );
+	{
+		$card              = $this->pay_credit_card_base( $wc_order, $form_fields, $customer );
 		$card_installments = Utils::get_value_by( $form_fields, 'installments' );
 		$card_brand        = Utils::get_value_by( $form_fields, 'brand' );
-		$card_amount       = $this->_get_price_with_interest( $wc_order->get_total(), $card_installments, $card_brand );
+		$card_amount       = $this->get_price_with_interest( $wc_order->get_total(), $card_installments, $card_brand );
 		$card['amount']    = Utils::format_order_price( $card_amount );
+		$multicustomer     = $this->get_multicustomer_data( 'card', $form_fields );
 
-		if ( $multicustomer = $this->_get_multicustomer_data( 'card', $form_fields ) ) {
+		if ( $multicustomer ) {
 			$card['customer'] = $multicustomer;
 		}
 
 		return $card;
-    }
+	}
 
-    /**
+	/**
 	 * Return payment data for "billet_and_card"
 	 *
 	 * @param $wc_order object order from woocommerce
@@ -111,37 +113,39 @@ class Payment
 	 *
 	 * @return array
 	 */
-    public function pay_billet_and_card( $wc_order, $form_fields, $customer )
-    {
-		$billet_amount    = Utils::get_value_by( $form_fields, 'billet_value' );
-		$billet           = $this->_pay_billet_base();
-		$billet['amount'] = Utils::format_desnormalized_order_price( $billet_amount );
+	public function pay_billet_and_card( $wc_order, $form_fields, $customer )
+	{
+		$billet_amount        = Utils::get_value_by( $form_fields, 'billet_value' );
+		$billet               = $this->pay_billet_base();
+		$billet['amount']     = Utils::format_desnormalized_order_price( $billet_amount );
+		$billet_multicustomer = $this->get_multicustomer_data( 'billet', $form_fields );
 
-		if ( $billet_multicustomer = $this->_get_multicustomer_data( 'billet', $form_fields ) ) {
+		if ( $billet_multicustomer ) {
 			$billet['customer'] = $billet_multicustomer;
 		}
 
-		$card = $this->_pay_credit_card_base( $wc_order, $form_fields, $customer );
+		$card = $this->pay_credit_card_base( $wc_order, $form_fields, $customer );
 
 		if ( ! is_array( $card ) && $card->code != 200 ) {
 			return $card;
 		}
 
-		$card_amount = Utils::normalize_price( Utils::get_value_by( $form_fields, 'card_order_value' ) );
+		$card_amount       = Utils::normalize_price( Utils::get_value_by( $form_fields, 'card_order_value' ) );
 		$card_installments = Utils::get_value_by( $form_fields, 'installments' );
-		$card_brand = Utils::get_value_by( $form_fields, 'brand' );
+		$card_brand        = Utils::get_value_by( $form_fields, 'brand' );
 
-		$card_amount = $this->_get_price_with_interest( $card_amount, $card_installments, $card_brand );
+		$card_amount    = $this->get_price_with_interest( $card_amount, $card_installments, $card_brand );
 		$card['amount'] = Utils::format_order_price( $card_amount );
+		$multicustomer  = $this->get_multicustomer_data( 'card', $form_fields );
 
-		if ( $multicustomer = $this->_get_multicustomer_data( 'card', $form_fields ) ) {
+		if ( $multicustomer ) {
 			$card['customer'] = $multicustomer;
 		}
 
 		return array( $billet, $card );
-    }
+	}
 
-    /**
+	/**
 	 * Return payment data for "2_cards"
 	 *
 	 * @param $wc_order object order from woocommerce
@@ -150,13 +154,13 @@ class Payment
 	 *
 	 * @return array
 	 */
-    public function pay_2_cards( $wc_order, $form_fields, $customer )
-    {
-		$card1_amount = Utils::normalize_price( Utils::get_value_by( $form_fields, 'card_order_value' ));
-		$card2_amount = Utils::normalize_price( Utils::get_value_by( $form_fields, 'card_order_value2' ));
+	public function pay_2_cards( $wc_order, $form_fields, $customer )
+	{
+		$card1_amount = Utils::normalize_price( Utils::get_value_by( $form_fields, 'card_order_value' ) );
+		$card2_amount = Utils::normalize_price( Utils::get_value_by( $form_fields, 'card_order_value2' ) );
 
-		$card1 = $this->_pay_credit_card_base( $wc_order, $form_fields, $customer );
-		$card2 = $this->_pay_credit_card_base( $wc_order, $form_fields, $customer, true );
+		$card1 = $this->pay_credit_card_base( $wc_order, $form_fields, $customer );
+		$card2 = $this->pay_credit_card_base( $wc_order, $form_fields, $customer, true );
 
 		$card1_installments = Utils::get_value_by( $form_fields, 'installments' );
 		$card2_installments = Utils::get_value_by( $form_fields, 'installments2' );
@@ -164,14 +168,14 @@ class Payment
 		$card1_brand = Utils::get_value_by( $form_fields, 'brand' );
 		$card2_brand = Utils::get_value_by( $form_fields, 'brand2' );
 
-		$card1_amount = $this->_get_price_with_interest( $card1_amount, $card1_installments, $card1_brand );
-		$card2_amount = $this->_get_price_with_interest( $card2_amount, $card2_installments, $card2_brand );
+		$card1_amount = $this->get_price_with_interest( $card1_amount, $card1_installments, $card1_brand );
+		$card2_amount = $this->get_price_with_interest( $card2_amount, $card2_installments, $card2_brand );
 
 		$card1['amount'] = Utils::format_order_price( $card1_amount );
 		$card2['amount'] = Utils::format_order_price( $card2_amount );
 
-		$multicustomer_card1 = $this->_get_multicustomer_data( 'card1', $form_fields );
-		$multicustomer_card2 = $this->_get_multicustomer_data( 'card2', $form_fields );
+		$multicustomer_card1 = $this->get_multicustomer_data( 'card1', $form_fields );
+		$multicustomer_card2 = $this->get_multicustomer_data( 'card2', $form_fields );
 
 		if ( $multicustomer_card1 ) {
 			$card1['customer'] = $multicustomer_card1;
@@ -182,9 +186,9 @@ class Payment
 		}
 
 		return array( $card1, $card2 );
-    }
+	}
 
-    /**
+	/**
 	 * Return payment data for "credit_card" base (without amount)
 	 *
 	 * @param $wc_order object order from woocommerce
@@ -193,68 +197,69 @@ class Payment
 	 *
 	 * @return array
 	 */
-	private function _pay_credit_card_base( $wc_order, $form_fields, $customer, $is_second_card = false )
-    {
-		$suffix     = $is_second_card ? '2' : '';
+	private function pay_credit_card_base( $wc_order, $form_fields, $customer, $is_second_card = false )
+	{
+		$suffix    = $is_second_card ? '2' : '';
 		$card_data = array(
 			'payment_method' => 'credit_card',
 			'credit_card'    => array(
 				'installments'         => Utils::get_value_by( $form_fields, "installments{$suffix}" ),
 				'statement_descriptor' => $this->settings->cc_soft_descriptor,
-				'capture'              => $this->settings->is_active_capture()
-			)
+				'capture'              => $this->settings->is_active_capture(),
+			),
 		);
 
-		return $this->_handle_credit_card_type( $form_fields, $card_data, $suffix );
-    }
+		return $this->handle_credit_card_type( $form_fields, $card_data, $suffix );
+	}
 
-    /**
+	/**
 	 * Return payment data for "boleto"
 	 *
 	 * @return array
 	 */
-	private function _pay_billet_base()
-    {
-    	$expiration_date = new \DateTime();
+	private function pay_billet_base()
+	{
+		$expiration_date = new \DateTime();
+		$days            = (int) $this->settings->billet_deadline_days;
 
-    	if ( $days = (int)$this->settings->billet_deadline_days ) {
-    		$expiration_date->modify( "+{$days} day" );
-    	}
+		if ( $days ) {
+			$expiration_date->modify( "+{$days} day" );
+		}
 
-    	return array(
+		return array(
 			'payment_method' => 'boleto',
 			'boleto' => array(
 				'bank'         => $this->settings->billet_bank,
 				'instructions' => $this->settings->billet_instructions,
-				'due_at'       => $expiration_date->format( 'c' )
-			)
+				'due_at'       => $expiration_date->format( 'c' ),
+			),
 		);
-    }
+	}
 
-    /**
-     * Return which credit card type will be send. (card ou card_token)
-     *
-     * @param  array $form_fields
-     * @param  array $card_data
-     * @param  string $suffix Suffix for each attribute
-     *
-     * @return array
-     */
-    private function _handle_credit_card_type( $form_fields, $card_data, $suffix = '' )
-    {
-		$card_id = Utils::get_value_by( $form_fields, "card_id{$suffix}", false );
+	/**
+	 * Return which credit card type will be send. (card ou card_token)
+	 *
+	 * @param  array $form_fields
+	 * @param  array $card_data
+	 * @param  string $suffix Suffix for each attribute
+	 *
+	 * @return array
+	 */
+	private function handle_credit_card_type( $form_fields, $card_data, $suffix = '' )
+	{
+		$card_id    = Utils::get_value_by( $form_fields, "card_id{$suffix}", false );
 		$munditoken = ! $suffix ? 'munditoken1' : "munditoken{$suffix}";
 
-    	if ( $card_id ) {
-    		$card_data['credit_card']['card_id'] = $card_id;
-    	} else {
-    		$card_data['credit_card']['card_token'] = Utils::get_value_by( $form_fields, $munditoken );
-    	}
+		if ( $card_id ) {
+			$card_data['credit_card']['card_id'] = $card_id;
+		} else {
+			$card_data['credit_card']['card_token'] = Utils::get_value_by( $form_fields, $munditoken );
+		}
 
-    	return $card_data;
-    }
+		return $card_data;
+	}
 
-    private function _get_price_with_interest( $price, $installments, $flag = '' )
+	private function get_price_with_interest( $price, $installments, $flag = '' )
 	{
 		$type   = intval( $this->settings->cc_installment_type );
 		$amount = $price;
@@ -288,7 +293,7 @@ class Payment
 		return $amount;
 	}
 
-	private function _get_multicustomer_data( $type, $form_fields )
+	private function get_multicustomer_data( $type, $form_fields )
 	{
 		$prefix     = "multicustomer_{$type}";
 		$is_enabled = Utils::get_value_by( $form_fields, "enable_multicustomers_{$type}" );
@@ -313,8 +318,8 @@ class Payment
 				'zip_code'     => preg_replace( '/[^\d]+/', '', $zip_code ),
 				'city'         => Utils::get_value_by( $form_fields, $prefix . '[city]' ),
 				'state'        => Utils::get_value_by( $form_fields, $prefix . '[state]' ),
-				'country'      => 'BR'
-			)
+				'country'      => 'BR',
+			),
 		);
 	}
 }

@@ -29,7 +29,7 @@ $ref_card          = md5( rand( 1, 1000 ) );
 			<div class="form-row form-row-wide">
 				<p class="form-row form-row-first">
 					<label for="billet-value">
-						<?php _e( 'Value (Boleto)', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+						<?php esc_html_e( 'Value (Boleto)', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 					</label>
 					<input id="billet-value"
 							name="billet_value"
@@ -42,14 +42,18 @@ $ref_card          = md5( rand( 1, 1000 ) );
 					<?php
 						Utils::get_template(
 							'templates/checkout/field-enable-multicustomers',
-							array( 'ref' => $ref_billet, 'type' => 'billet', 'without_container' => true )
+							array(
+								'ref'               => $ref_billet,
+								'type'              => 'billet',
+								'without_container' => true,
+							)
 						);
 					?>
 				</p>
 
 				<p class="form-row form-row-last">
 					<label for="card-order-value">
-						<?php _e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span>
+						<?php esc_html_e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span>
 					</label>
 					<input id="card-order-value"
 							name="card_order_value"
@@ -62,7 +66,11 @@ $ref_card          = md5( rand( 1, 1000 ) );
 					<?php
 						Utils::get_template(
 							'templates/checkout/field-enable-multicustomers',
-							array( 'ref' => $ref_card, 'type' => 'card', 'without_container' => true )
+							array(
+								'ref'               => $ref_card,
+								'type'              => 'card',
+								'without_container' => true,
+							)
 						);
 					?>
 				</p>
@@ -77,27 +85,27 @@ $ref_card          = md5( rand( 1, 1000 ) );
 				?>
 			</div>
 
-			 <p class="form-row form-row-first">
+			<p class="form-row form-row-first">
 
 				<label for="installments">
-					<?php _e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+					<?php esc_html_e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments"
-						<?php echo Utils::get_component( 'installments' ); ?>
-						data-total="<?php echo $wc_order->get_total(); ?>"
-						data-type="<?php echo $installments_type; ?>"
+						<?php /*phpcs:ignore*/ echo Utils::get_component( 'installments' ); ?>
+						data-total="<?php echo esc_html( $wc_order->get_total() ); ?>"
+						data-type="<?php echo intval( $installments_type ); ?>"
 						data-action="select2"
 						data-required="true"
 						data-element="installments"
 						name="installments">
 
 					<?php
-						if ( $installments_type != 2 ) {
-							Checkouts::render_installments( $wc_order );
-						} else {
-							echo '<option value="">...</option>';
-						};
+					if ( $installments_type != 2 ) {
+						Checkouts::render_installments( $wc_order );
+					} else {
+						echo '<option value="">...</option>';
+					};
 					?>
 
 				</select>
@@ -113,7 +121,7 @@ $ref_card          = md5( rand( 1, 1000 ) );
 				array(
 					'ref'   => $ref_billet,
 					'type'  => 'billet',
-					'title' => 'Dados comprador (Boleto)'
+					'title' => 'Dados comprador (Boleto)',
 				)
 			);
 
@@ -122,16 +130,16 @@ $ref_card          = md5( rand( 1, 1000 ) );
 				array(
 					'ref'   => $ref_card,
 					'type'  => 'card',
-					'title' => 'Dados comprador (Cartão)'
+					'title' => 'Dados comprador (Cartão)',
 				)
 			);
 		?>
 
 		<input style="display:none;"
-			   data-action="choose-payment"
-			   data-element="billet-and-card"
-		       type="radio"
-		       name="payment_method"
-		       value="billet_and_card">
+			data-action="choose-payment"
+			data-element="billet-and-card"
+			type="radio"
+			name="payment_method"
+			value="billet_and_card">
 	</div>
 </li>

@@ -27,7 +27,9 @@ class Order extends Meta
 	protected $billing_last_name;
 	protected $billing_email;
 	protected $billing_birthdate;
+	protected $billing_country;
 	protected $billing_phone;
+	protected $billing_cellphone;
 	protected $billing_address_1;
 	protected $billing_address_2;
 	protected $billing_number;
@@ -49,15 +51,17 @@ class Order extends Meta
 		'payment_method'   => 1,
 		'response_data'    => 1,
 		'mundipagg_status' => 1,
-		'mundipagg_id'     => 1
+		'mundipagg_id'     => 1,
 	);
 
+	/** phpcs:disable */
 	public function __construct( $ID = false )
 	{
 		parent::__construct( $ID );
 
 		$this->wc_order = new WC_Order( $this->ID );
 	}
+	/** phpcs:enable */
 
 	public function get_status_translate()
 	{
@@ -66,7 +70,7 @@ class Order extends Meta
 			'paid'     => __( 'Paid', 'woo-mundipagg-payments' ),
 			'pending'  => __( 'Pending', 'woo-mundipagg-payments' ),
 			'canceled' => __( 'Canceled', 'woo-mundipagg-payments' ),
-			'failed'   => __( 'Failed', 'woo-mundipagg-payments' )
+			'failed'   => __( 'Failed', 'woo-mundipagg-payments' ),
 		);
 
 		return isset( $texts[ $status ] ) ? $texts[ $status ] : false;
@@ -76,7 +80,7 @@ class Order extends Meta
 	{
 		$current_status = $this->wc_order->get_status();
 
-		if ( ! in_array( $current_status, ['on-hold', 'completed', 'canceled', 'cancelled', 'processing'] ) ) {
+		if ( ! in_array( $current_status, [ 'on-hold', 'completed', 'canceled', 'cancelled', 'processing' ] ) ) {
 			$this->wc_order->update_status( 'on-hold', __( 'MundiPagg: Awaiting payment confirmation.', 'woo-mundipagg-payments' ) );
 			wc_reduce_stock_levels( $this->wc_order->get_order_number() );
 		}
@@ -86,7 +90,7 @@ class Order extends Meta
 	{
 		$current_status = $this->wc_order->get_status();
 
-		if ( ! in_array( $current_status, ['completed', 'processing'] ) ) {
+		if ( ! in_array( $current_status, [ 'completed', 'processing' ] ) ) {
 			$this->wc_order->add_order_note( __( 'Mundipagg: Payment has already been confirmed.', 'woo-mundipagg-payments' ) );
 			$this->wc_order->payment_complete();
 		}
@@ -96,7 +100,7 @@ class Order extends Meta
 	{
 		$current_status = $this->wc_order->get_status();
 
-		if ( ! in_array( $current_status, ['cancelled', 'canceled'] ) ) {
+		if ( ! in_array( $current_status, [ 'cancelled', 'canceled' ] ) ) {
 			$this->wc_order->update_status( 'cancelled', __( 'Mundipagg: Payment canceled.', 'woo-mundipagg-payments' ) );
 		}
 	}
@@ -124,17 +128,17 @@ class Order extends Meta
 		$model = new Charge();
 		$items = $model->find_by_wc_order( $this->ID );
 
-        if ( ! $items ) {
-            return false;
+		if ( ! $items ) {
+			return false;
 		}
 
 		if ( $full_data ) {
 			return $items;
 		}
 
-        $list = [];
+		$list = [];
 
-        foreach ( $items as $item ) {
+		foreach ( $items as $item ) {
 			$charge = new \stdClass();
 			$charge = maybe_unserialize( $item->charge_data );
 			$list[] = $charge;
@@ -151,17 +155,17 @@ class Order extends Meta
 	public function get_shipping_info()
 	{
 		return array(
-			'address_1'    => $this->_handle_shipping_properties( 'address_1' ),
-			'number'       => $this->_handle_shipping_properties( 'number' ),
-			'address_2'    => $this->_handle_shipping_properties( 'address_2' ),
-			'postcode'     => $this->_handle_shipping_properties( 'postcode' ),
-			'neighborhood' => $this->_handle_shipping_properties( 'neighborhood' ),
-			'city'         => $this->_handle_shipping_properties( 'city' ),
-			'state'        => $this->_handle_shipping_properties( 'state' )
+			'address_1'    => $this->handle_shipping_properties( 'address_1' ),
+			'number'       => $this->handle_shipping_properties( 'number' ),
+			'address_2'    => $this->handle_shipping_properties( 'address_2' ),
+			'postcode'     => $this->handle_shipping_properties( 'postcode' ),
+			'neighborhood' => $this->handle_shipping_properties( 'neighborhood' ),
+			'city'         => $this->handle_shipping_properties( 'city' ),
+			'state'        => $this->handle_shipping_properties( 'state' ),
 		);
 	}
 
-	private function _handle_shipping_properties( $prop )
+	private function handle_shipping_properties( $prop )
 	{
 		$shipping_prop = $this->__get( "shipping_{$prop}" );
 

@@ -133,7 +133,7 @@ class Setting
 			'vr'                => 'VR',
 			'alelo'             => 'Alelo',
 			'banese'            => 'Banese',
-			'cabal'             => 'Cabal'
+			'cabal'             => 'Cabal',
 		);
 	}
 
@@ -211,50 +211,50 @@ class Setting
 		return isset( $this->_fields[ $key ] );
 	}
 
-    /**
-     * Get the secret key according to the environment
-     *
-     * @return string
-     */
-    public function get_secret_key()
+	/**
+	 * Get the secret key according to the environment
+	 *
+	 * @return string
+	 */
+	public function get_secret_key()
 	{
 		return $this->__get( $this->is_sandbox() ? 'sandbox_secret_key' : 'production_secret_key' );
 	}
 
-    /**
-     * Get the public key according to the environment
-     *
-     * @return string
-     */
-    public function get_public_key()
-    {
-        return $this->__get( $this->is_sandbox() ? 'sandbox_public_key' : 'production_public_key' );
-    }
+	/**
+	 * Get the public key according to the environment
+	 *
+	 * @return string
+	 */
+	public function get_public_key()
+	{
+		return $this->__get( $this->is_sandbox() ? 'sandbox_public_key' : 'production_public_key' );
+	}
 
-    public function is_sandbox()
-    {
-    	return ( $this->__get( 'environment' ) === 'sandbox' );
-    }
+	public function is_sandbox()
+	{
+		return ( $this->__get( 'environment' ) === 'sandbox' );
+	}
 
-    public function get_active_tab()
-    {
-    	switch ( Utils::get( 'tab' ) ) :
-    		case 'creditCard' :
-    			return 1;
+	public function get_active_tab()
+	{
+		switch ( Utils::get( 'tab' ) ) {
+			case 'creditCard':
+				return 1;
 
-    		case 'boleto' :
-    			return 2;
+			case 'boleto':
+				return 2;
 
-    		case 'billetAndCard' :
-    			return 3;
+			case 'billetAndCard':
+				return 3;
 
-    		case '2cards' :
-    			return 4;
+			case '2cards':
+				return 4;
 
-    		default :
-    			return 0;
-    	endswitch;
-    }
+			default:
+				return 0;
+		}
+	}
 
 	public static function get_instance( $settings = false )
 	{

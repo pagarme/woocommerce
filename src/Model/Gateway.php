@@ -78,11 +78,12 @@ class Gateway
 		);
 	}
 
+	/** phpcs:disable */
 	public function render_installments_options( $total, $max_installments, $interest, $interest_increase, $no_interest )
 	{
 		$output = sprintf(
 			'<option value="1">%1$s</option>',
-			__( 'At sight', Core::SLUG ) . ' ('. wc_price( $total ) . ')'
+			__( 'At sight', 'woo-mundipagg-payments' ) . ' (' . wc_price( $total ) . ')'
 		);
 
 		$interest_base = $interest;

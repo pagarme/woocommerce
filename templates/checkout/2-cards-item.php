@@ -29,7 +29,7 @@ $ref2              = md5( rand( 1, 1000 ) );
 
 			<p class="form-row form-row-first">
 
-				<label for="card-order-value"><?php _e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span></label>
+				<label for="card-order-value"><?php esc_html_e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span></label>
 
 				<input id="card-order-value" name="card_order_value"
 						data-element="card-order-value"
@@ -49,27 +49,27 @@ $ref2              = md5( rand( 1, 1000 ) );
 				?>
 			</div>
 
-			 <p class="form-row form-row-first">
+			<p class="form-row form-row-first">
 
 				<label for="installments">
-					<?php _e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+					<?php esc_html_e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments"
-						<?php echo Utils::get_component( 'installments' ); ?>
-						data-total="<?php echo $wc_order->get_total(); ?>"
-						data-type="<?php echo $installments_type; ?>"
+						<?php echo /** phpcs:ignore */ Utils::get_component( 'installments' ); ?>
+						data-total="<?php echo esc_html( $wc_order->get_total() ); ?>"
+						data-type="<?php echo intval( $installments_type ); ?>"
 						data-action="select2"
 						data-required="true"
 						data-element="installments"
 						name="installments">
 
 					<?php
-						if ( $installments_type != 2 ) {
-							Checkouts::render_installments( $wc_order );
-						} else {
-							echo '<option value="">...</option>';
-						};
+					if ( $installments_type != 2 ) {
+						Checkouts::render_installments( $wc_order );
+					} else {
+						echo '<option value="">...</option>';
+					};
 					?>
 
 				</select>
@@ -79,7 +79,10 @@ $ref2              = md5( rand( 1, 1000 ) );
 				Utils::get_template( 'templates/checkout/field-save-card' );
 				Utils::get_template(
 					'templates/checkout/field-enable-multicustomers',
-					array( 'ref' => $ref1, 'type' => 'card1' )
+					array(
+						'ref'  => $ref1,
+						'type' => 'card1',
+					)
 				);
 			?>
 
@@ -89,8 +92,8 @@ $ref2              = md5( rand( 1, 1000 ) );
 			Utils::get_template(
 				'templates/checkout/multicustomers-form',
 				array(
-					'ref'   => $ref1,
-					'type'  => 'card1',
+					'ref'  => $ref1,
+					'type' => 'card1',
 				)
 			);
 		?>
@@ -103,7 +106,7 @@ $ref2              = md5( rand( 1, 1000 ) );
 
 			<p class="form-row form-row-first">
 
-				<label for="card-order-value2"><?php _e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span></label>
+				<label for="card-order-value2"><?php esc_html_e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span></label>
 
 				<input id="card-order-value2" name="card_order_value2"
 						data-element="card-order-value"
@@ -121,7 +124,7 @@ $ref2              = md5( rand( 1, 1000 ) );
 						array(
 							'wc_order'          => $wc_order,
 							'installments_type' => $installments_type,
-							'suffix'            => 2
+							'suffix'            => 2,
 						)
 					);
 				?>
@@ -130,24 +133,24 @@ $ref2              = md5( rand( 1, 1000 ) );
 			<p class="form-row form-row-first">
 
 				<label for="installments2">
-					<?php _e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+					<?php esc_html_e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments2"
-						<?php echo Utils::get_component( 'installments' ); ?>
-						data-total="<?php echo $wc_order->get_total(); ?>"
-						data-type="<?php echo $installments_type; ?>"
+						<?php echo /** phpcs:ignore */ Utils::get_component( 'installments' ); ?>
+						data-total="<?php echo esc_html( $wc_order->get_total() ); ?>"
+						data-type="<?php echo intval( $installments_type ); ?>"
 						data-action="select2"
 						data-required="true"
 						data-element="installments"
 						name="installments2">
 
 					<?php
-						if ( $installments_type != 2 ) {
-							Checkouts::render_installments( $wc_order );
-						} else {
-							echo '<option value="">...</option>';
-						};
+					if ( $installments_type != 2 ) {
+						Checkouts::render_installments( $wc_order );
+					} else {
+						echo '<option value="">...</option>';
+					};
 					?>
 
 				</select>
@@ -157,7 +160,10 @@ $ref2              = md5( rand( 1, 1000 ) );
 				Utils::get_template( 'templates/checkout/field-save-card', [ 'suffix' => 2 ] );
 				Utils::get_template(
 					'templates/checkout/field-enable-multicustomers',
-					array( 'ref' => $ref2, 'type' => 'card2' )
+					array(
+						'ref'  => $ref2,
+						'type' => 'card2',
+					)
 				);
 			?>
 
@@ -167,17 +173,17 @@ $ref2              = md5( rand( 1, 1000 ) );
 			Utils::get_template(
 				'templates/checkout/multicustomers-form',
 				array(
-					'ref'   => $ref2,
-					'type'  => 'card2',
+					'ref'  => $ref2,
+					'type' => 'card2',
 				)
 			);
 		?>
 
 		<input style="display:none;"
-			   data-action="choose-payment"
-			   data-element="2cards"
-		       type="radio"
-		       name="payment_method"
-		       value="2_cards">
+			data-action="choose-payment"
+			data-element="2cards"
+			type="radio"
+			name="payment_method"
+			value="2_cards">
 	</div>
 </li>

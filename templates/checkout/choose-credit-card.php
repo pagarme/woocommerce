@@ -27,28 +27,28 @@ if ( ! $customer->cards ) {
 
 ?>
 
- <p class="form-row form-row-wide">
+<p class="form-row form-row-wide">
 
- 	<?php _e( 'Credit cards save', 'woo-mundipagg-payments' ); ?><br>
+	<?php esc_html_e( 'Credit cards save', 'woo-mundipagg-payments' ); ?><br>
 
-	<select name="card_id<?php echo $suffix; ?>" id="field-choose-card"
+	<select name="card_id<?php echo esc_html( $suffix ); ?>" id="field-choose-card"
 			data-action="select2"
-			data-installments-type="<?php echo Setting::get_instance()->cc_installment_type; ?>"
+			data-installments-type="<?php echo intval( Setting::get_instance()->cc_installment_type ); ?>"
 			data-element="choose-credit-card">
 		<option value="">
-			<?php _e( 'Saved credit card', 'woo-mundipagg-payments' ) ?>
+			<?php esc_html_e( 'Saved credit card', 'woo-mundipagg-payments' ); ?>
 		</option>
 
 		<?php
-			foreach ( $customer->cards as $id => $card ) :
-				printf(
-					'<option data-brand="%s" value="%s">(%s) •••• •••• •••• %s</option>',
-					strtolower( $card['brand'] ),
-					$id,
-					strtoupper( $card['brand'] ),
-					$card['last_four_digits']
-				);
-			endforeach;
+		foreach ( $customer->cards as $id => $card ) :
+			printf(
+				'<option data-brand="%3$s" value="%2$s">(%1$s) •••• •••• •••• %4$s</option>',
+				esc_html( strtoupper( $card['brand'] ) ),
+				esc_attr( $id ),
+				esc_html( strtolower( $card['brand'] ) ),
+				esc_html( $card['last_four_digits'] )
+			);
+		endforeach;
 		?>
 	</select>
  </p>

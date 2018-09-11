@@ -45,15 +45,15 @@ class Checkout
 			wp_send_json_error( __( 'Invalid order', 'woo-mundipagg-payments' ) );
 		}
 
-		$fields = $this->_prepare_fields( $_POST['fields'] );
+		$fields = $this->prepare_fields( $_POST['fields'] );
 
 		if ( empty( $fields ) ) {
 			wp_send_json_error( __( 'Empty fields', 'woo-mundipagg-payments' ) );
 		}
 
-		$this->_validate_amount_billet_and_card( $fields, $wc_order );
-		$this->_validate_amount_2_cards( $fields, $wc_order );
-		$this->_validate_brands( $fields );
+		$this->validate_amount_billet_and_card( $fields, $wc_order );
+		$this->validate_amount_2_cards( $fields, $wc_order );
+		$this->validate_brands( $fields );
 
 		$response = $this->api->create_order(
 			$wc_order,
@@ -65,12 +65,12 @@ class Checkout
 			wp_send_json_error( Utils::get_errors( $response->body->errors ) );
 		}
 
-		if ( (int)Utils::get_value_by( $fields, 'save_credit_card' ) === 1 ) {
-			$this->_save_customer_card( $response->raw_body, 1 );
+		if ( (int) Utils::get_value_by( $fields, 'save_credit_card' ) === 1 ) {
+			$this->save_customer_card( $response->raw_body, 1 );
 		}
 
-		if ( (int)Utils::get_value_by( $fields, 'save_credit_card2' ) === 1 ) {
-			$this->_save_customer_card( $response->raw_body, 2 );
+		if ( (int) Utils::get_value_by( $fields, 'save_credit_card2' ) === 1 ) {
+			$this->save_customer_card( $response->raw_body, 2 );
 		}
 
 		$order  = new Order( $wc_order->get_order_number() );
@@ -92,7 +92,7 @@ class Checkout
 	public function build_installments()
 	{
 		if ( ! Utils::is_request_ajax() || Utils::server( 'REQUEST_METHOD' ) !== 'GET' ) {
-			exit(0);
+			exit( 0 );
 		}
 
 		$flag  = Utils::get( 'flag', false, 'esc_html' );
@@ -126,12 +126,12 @@ class Checkout
 		endforeach;
 	}
 
-	private function _save_customer_card( $raw_body, $index )
+	private function save_customer_card( $raw_body, $index )
 	{
 		$customer = new Customer( get_current_user_id() );
 		$body     = json_decode( $raw_body, true );
 		$cards    = $customer->cards;
-		$count	  = 1;
+		$count    = 1;
 
 		$this->parse_cards( $body );
 
@@ -149,7 +149,7 @@ class Checkout
 		$customer->cards = $cards;
 	}
 
-	private function _prepare_fields( $form_data )
+	private function prepare_fields( $form_data )
 	{
 		if ( empty( $form_data ) ) {
 			return false;
@@ -173,25 +173,25 @@ class Checkout
 			}
 
 			if ( $data['name'] == 'card_expiry' ) {
-				$this->_prepare_expiry_field( $data, $fields );
+				$this->prepare_expiry_field( $data, $fields );
 			}
 
 			if ( $data['name'] == 'card_expiry2' ) {
-				$this->_prepare_expiry_field( $data, $fields, 2 );
+				$this->prepare_expiry_field( $data, $fields, 2 );
 			}
 		}
 
 		return $fields;
 	}
 
-	private function _prepare_expiry_field( $data, &$fields, $sufix = '' )
+	private function prepare_expiry_field( $data, &$fields, $sufix = '' )
 	{
-		$expiry_pieces                       = explode( '/',  $data['value'] );
-		$fields["card_expiry_month{$sufix}"] = trim( $expiry_pieces[0] );
-		$fields["card_expiry_year{$sufix}"]  = trim( $expiry_pieces[1] );
+		$expiry_pieces                         = explode( '/', $data['value'] );
+		$fields[ "card_expiry_month{$sufix}" ] = trim( $expiry_pieces[0] );
+		$fields[ "card_expiry_year{$sufix}" ]  = trim( $expiry_pieces[1] );
 	}
 
-	private function _validate_amount_billet_and_card( $fields, WC_Order $wc_order )
+	private function validate_amount_billet_and_card( $fields, WC_Order $wc_order )
 	{
 		if ( $fields['payment_method'] != 'billet_and_card' ) {
 			return;
@@ -213,7 +213,7 @@ class Checkout
 		}
 	}
 
-	private function _validate_amount_2_cards( $fields, WC_Order $wc_order )
+	private function validate_amount_2_cards( $fields, WC_Order $wc_order )
 	{
 		if ( $fields['payment_method'] != '2_cards' ) {
 			return;
@@ -235,7 +235,7 @@ class Checkout
 		}
 	}
 
-	private function _validate_brands( $fields )
+	private function validate_brands( $fields )
 	{
 		$setting = Setting::get_instance();
 		$brand1  = Utils::get_value_by( $fields, 'brand' );

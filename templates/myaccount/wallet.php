@@ -28,34 +28,34 @@ if ( $customer->cards ) :
 ?>
 
 <table class="woocommerce-wallet-table shop_table shop_table_responsive"
-	   data-swal='<?php echo wp_json_encode( $swal_data, JSON_HEX_APOS ); ?>'
-	   data-api-request="<?php echo esc_url( $api_route ); ?>"
-	   <?php echo Utils::get_component( 'wallet' ); ?>>
+	data-swal='<?php echo wp_json_encode( $swal_data, JSON_HEX_APOS ); ?>'
+	data-api-request="<?php echo esc_url( $api_route ); ?>"
+	<?php echo /** phpcs:ignore */ Utils::get_component( 'wallet' ); ?>>
 	<thead>
 		<tr>
 			<th class="woocommerce-wallet-name">
-				<?php _e( 'Name', 'woo-mundipagg-payments' ); ?>
+				<?php esc_html_e( 'Name', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-last-digits">
-				<?php _e( 'Last digits', 'woo-mundipagg-payments' ); ?>
+				<?php esc_html_e( 'Last digits', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-status">
-				<?php _e( 'Status', 'woo-mundipagg-payments' ); ?>
+				<?php esc_html_e( 'Status', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-expire">
-				<?php _e( 'Expire', 'woo-mundipagg-payments' ); ?>
+				<?php esc_html_e( 'Expire', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-brand">
-				<?php _e( 'Brand', 'woo-mundipagg-payments' ); ?>
+				<?php esc_html_e( 'Brand', 'woo-mundipagg-payments' ); ?>
 			</th>
 			<th class="woocommerce-wallet-brand">
-				<?php _e( 'Action', 'woo-mundipagg-payments' ); ?>
+				<?php esc_html_e( 'Action', 'woo-mundipagg-payments' ); ?>
 			</th>
 		</tr>
 	</thead>
 	<tbody>
 
-		<?php foreach( $customer->cards as $card_id => $card ) : ?>
+		<?php foreach ( $customer->cards as $card_id => $card ) : ?>
 
 		<tr>
 			<td>
@@ -75,7 +75,7 @@ if ( $customer->cards ) :
 			</td>
 			<td>
 				<button class="woocommerce-button button" data-action="remove-card" data-value="<?php echo esc_attr( $card_id ); ?>">
-					<?php _e( 'Remove', 'woo-mundipagg-payments' ); ?>
+					<?php esc_html_e( 'Remove', 'woo-mundipagg-payments' ); ?>
 				</button>
 			</td>
 		</tr>
@@ -91,7 +91,7 @@ else :
 
 	printf(
 		'<p class="woocommerce-message woocommerce-info">%s</p>',
-		__( 'No credit card saved.', 'woo-mundipagg-payments' )
+		esc_html__( 'No credit card saved.', 'woo-mundipagg-payments' )
 	);
 
 endif;

@@ -24,14 +24,14 @@ class Customers extends Base
 	public function create( array $data )
 	{
 		$fields = array(
-			'name' ,
+			'name',
 			'email',
 			'document',
 			'phones',
 			'type',
 			'address',
 			'code',
-			'birthdate'
+			'birthdate',
 		);
 
 		$args = $this->get_args( $fields, $data );

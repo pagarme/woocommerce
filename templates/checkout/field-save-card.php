@@ -21,14 +21,14 @@ if ( ! $setting->is_allowed_save_credit_card() ) {
 
 ?>
 <p class="form-row form-row-first" data-element="save-cc-check">
-	<label for="save-credit-card<?php echo $suffix; ?>">
+	<label for="save-credit-card<?php echo esc_html( $suffix ); ?>">
 
 		<input type="checkbox"
-		       id="save-credit-card<?php echo $suffix; ?>"
-		       name="save_credit_card<?php echo $suffix; ?>"
-		       value="1"
-		       <?php checked( $customer->save_credit_card, true ); ?>>
+			id="save-credit-card<?php echo esc_html( $suffix ); ?>"
+			name="save_credit_card<?php echo esc_html( $suffix ); ?>"
+			value="1"
+			<?php checked( $customer->save_credit_card, true ); ?>>
 
-		<?php _e( 'Save this card for future purchases', 'woo-mundipagg-payments' ); ?>
+		<?php esc_html_e( 'Save this card for future purchases', 'woo-mundipagg-payments' ); ?>
 	</label>
 </p>

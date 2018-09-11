@@ -25,63 +25,63 @@ $swal_data   = array(
 </div>
 
 <form method="post"
-	  id="wcmp-checkout-form"
-	  data-return-url="<?php echo esc_url( $this->get_return_url( $wc_order ) ); ?>"
-	  data-payment-url="<?php echo $payment_url; ?>"
-	  data-api-request="<?php echo esc_url( $wc_api ); ?>"
-	  data-order="<?php echo $wc_order->get_order_number(); ?>"
-	  data-order-total="<?php echo $wc_order->get_total(); ?>"
-	  data-swal='<?php echo wp_json_encode( $swal_data, JSON_HEX_APOS ); ?>'
-	  data-mundicheckout-form
-	  <?php echo Utils::get_component( 'checkout-transparent' ); ?>>
+	id="wcmp-checkout-form"
+	data-return-url="<?php echo esc_url( $this->get_return_url( $wc_order ) ); ?>"
+	data-payment-url="<?php echo esc_url( $payment_url ); ?>"
+	data-api-request="<?php echo esc_url( $wc_api ); ?>"
+	data-order="<?php echo esc_attr( $wc_order->get_order_number() ); ?>"
+	data-order-total="<?php echo esc_html( $wc_order->get_total() ); ?>"
+	data-swal='<?php echo wp_json_encode( $swal_data, JSON_HEX_APOS ); ?>'
+	data-mundicheckout-form
+	<?php echo /** phpcs:ignore */ Utils::get_component( 'checkout-transparent' ); ?>>
 
 	<div class="product">
 		<div class="woocommerce-tabs">
 			<ul class="tabs">
 
 			<?php
-				if ( $this->model->settings->is_active_credit_card() ) :
-					$tab_credit_card = true;
+			if ( $this->model->settings->is_active_credit_card() ) :
+				$tab_credit_card = true;
 			?>
 				<li class="<?php echo ( $tab_num === 0 || $tab_num === 1 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="creditCard" href="#tab-credit-card">
-						<?php _e( 'Pay with credit card', 'woo-mundipagg-payments' ); ?>
+						<?php esc_html_e( 'Pay with credit card', 'woo-mundipagg-payments' ); ?>
 					</a>
 				</li>
 
 			<?php endif; ?>
 
 			<?php
-				if ( $this->model->settings->is_active_billet() ) :
-					$tab_billet = true;
+			if ( $this->model->settings->is_active_billet() ) :
+				$tab_billet = true;
 			?>
 				<li class="<?php echo ( $tab_num === 2 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="boleto" href="#tab-billet">
-						<?php _e( 'Pay with boleto', 'woo-mundipagg-payments' ); ?>
+						<?php esc_html_e( 'Pay with boleto', 'woo-mundipagg-payments' ); ?>
 					</a>
 				</li>
 
 			<?php endif; ?>
 
 			<?php
-				if ( $this->model->settings->is_active_billet_and_card() ) :
-					$tab_billet_and_card = true;
+			if ( $this->model->settings->is_active_billet_and_card() ) :
+				$tab_billet_and_card = true;
 			?>
 				<li class="<?php echo ( $tab_num === 3 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="billetAndCard" href="#tab-billet-and-card">
-						<?php _e( 'Pay with boleto and credit card', 'woo-mundipagg-payments' ); ?>
+						<?php esc_html_e( 'Pay with boleto and credit card', 'woo-mundipagg-payments' ); ?>
 					</a>
 				</li>
 
 			<?php endif; ?>
 
 			<?php
-				if ( $this->model->settings->is_active_2_cards() ) :
-					$tab_two_cards = true;
+			if ( $this->model->settings->is_active_2_cards() ) :
+				$tab_two_cards = true;
 			?>
 				<li class="<?php echo ( $tab_num === 4 ) ? 'active' : ''; ?>">
 					<a data-action="tab" data-ref="2cards" href="#tab-2-cards">
-						<?php _e( 'Pay with 2 cards', 'woo-mundipagg-payments' ); ?>
+						<?php esc_html_e( 'Pay with 2 cards', 'woo-mundipagg-payments' ); ?>
 					</a>
 				</li>
 
@@ -99,7 +99,7 @@ $swal_data   = array(
 						'templates/checkout/credit-card-item',
 						array(
 							'model'    => $this->model,
-							'wc_order' => $wc_order
+							'wc_order' => $wc_order,
 						)
 					);
 				endif;
@@ -120,7 +120,7 @@ $swal_data   = array(
 						'templates/checkout/billet-and-card-item',
 						array(
 							'model'    => $this->model,
-							'wc_order' => $wc_order
+							'wc_order' => $wc_order,
 						)
 					);
 				endif;
@@ -130,7 +130,7 @@ $swal_data   = array(
 						'templates/checkout/2-cards-item',
 						array(
 							'model'    => $this->model,
-							'wc_order' => $wc_order
+							'wc_order' => $wc_order,
 						)
 					);
 				endif;
@@ -141,12 +141,12 @@ $swal_data   = array(
 	</div>
 
 	<p>
-		<a class="button cancel" href="<?php echo esc_url( $wc_order->get_cancel_order_url() ) ?>">
-			<?php _e( 'Cancel order &amp; restore cart', 'woo-mundipagg-payments' ) ?>
+		<a class="button cancel" href="<?php echo esc_url( $wc_order->get_cancel_order_url() ); ?>">
+			<?php esc_html_e( 'Cancel order &amp; restore cart', 'woo-mundipagg-payments' ); ?>
 		</a>
 		<span></span>
 		<button type="submit" class="button alt" id="wcmp-submit">
-			<?php _e( 'Pay order', 'woo-mundipagg-payments' ); ?>
+			<?php esc_html_e( 'Pay order', 'woo-mundipagg-payments' ); ?>
 		</button>
 	</p>
 

@@ -11,15 +11,15 @@ use Woocommerce\Mundipagg\View\Checkouts;
 $model = new Order( $order_id );
 $class = 'message';
 
-if ( in_array( $model->mundipagg_status, ['failed', 'canceled'] ) ) {
-	$class = 'error'; 
+if ( in_array( $model->mundipagg_status, [ 'failed', 'canceled' ] ) ) {
+	$class = 'error';
 }
 
 ?>
 
-<div class="woocommerce-<?php echo $class; ?>">
+<div class="woocommerce-<?php echo esc_attr( $class ); ?>">
 	<div class="mundipagg-response">
-	<?php echo Checkouts::handle_messages( $model ); ?>
+	<?php echo /** phpcs:ignore */ Checkouts::handle_messages( $model ); ?>
 	</div>
 </div>
 

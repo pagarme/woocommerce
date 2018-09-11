@@ -49,7 +49,7 @@ class Core
 
 		wp_redirect( self::get_page_link() );
 
-		exit(1);
+		exit( 1 );
 	}
 
 	public static function initialize()
@@ -79,11 +79,11 @@ class Core
 		$defaults = array(
 			'ajaxUrl'        => Utils::get_admin_url( 'admin-ajax.php' ),
 			'WPLANG'         => get_locale(),
-			'spinnerUrl'     => Core::plugins_url( 'assets/images/icons/spinner.png' ),
+			'spinnerUrl'     => self::plugins_url( 'assets/images/icons/spinner.png' ),
 			'prefix'         => self::PREFIX,
 			'checkoutErrors' => array(
-				'pt_BR' => self::credit_card_errors_pt_br()
-			)
+				'pt_BR' => self::credit_card_errors_pt_br(),
+			),
 		);
 
 		return array_merge( $defaults, $args );
@@ -205,7 +205,7 @@ class Core
 	public static function instance()
 	{
 		if ( is_null( self::$_instance ) ) :
-			self::$_instance = new self;
+			self::$_instance = new self();
 		endif;
 	}
 

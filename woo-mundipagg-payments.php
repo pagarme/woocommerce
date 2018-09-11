@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: WooCommerce MundiPagg Payments
- * Version:     beta-1.0.16
+ * Version:     beta-1.0.17
  * Author:      Mundipagg
  * Author URI:  https://mundipagg.com
  * Text Domain: woo-mundipagg-payments
@@ -18,11 +18,11 @@ require_once dirname( __FILE__ ) . '/constants.php';
 
 function wcmp_render_admin_notice_html( $message, $type = 'error' ) {
 ?>
-	<div class="<?php echo $type; ?> notice is-dismissible">
+	<div class="<?php echo esc_html( $type ); ?> notice is-dismissible">
 		<p>
-			<strong><?php _e( 'WooCommerce MundiPagg Payments', 'woo-mundipagg-payments' ); ?>: </strong>
+			<strong><?php esc_html_e( 'WooCommerce MundiPagg Payments', 'woo-mundipagg-payments' ); ?>: </strong>
 
-			<?php echo $message; ?>
+			<?php echo /*phpcs:ignore*/ $message; ?>
 		</p>
 	</div>
 <?php
@@ -48,7 +48,7 @@ function wcmp_admin_notice_error() {
 
 function wcmp_admin_notice_error_wecffb() {
 	wcmp_render_admin_notice_html(
-		__( 'WooCoomerce Extra Checkout Fields For Brazil plugin is required.','woo-mundipagg-payments'
+		__( 'WooCoomerce Extra Checkout Fields For Brazil plugin is required.', 'woo-mundipagg-payments'
 		)
 	);
 }
@@ -58,7 +58,7 @@ function _wcmp_load_notice( $name ) {
 }
 
 function _wcmp_load_instances() {
-	require_once( 'vendor/autoload.php' );
+	require_once 'vendor/autoload.php';
 
 	Woocommerce\Mundipagg\Core::instance();
 
@@ -97,11 +97,10 @@ function wcmp_on_activation() {
 	register_uninstall_hook( __FILE__, 'wcmp_on_uninstall' );
 }
 
-function wcmp_create_charges_table()
-{
+function wcmp_create_charges_table() {
 	global $wpdb;
 
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 	$charset    = $wpdb->get_charset_collate();
 	$table_name = $wpdb->prefix . 'woocommerce_mundipagg_charges';

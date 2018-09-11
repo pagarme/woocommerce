@@ -31,7 +31,7 @@ class Orders extends Base
 			'shipping',
 			'payments',
 			'closed',
-			'antifraud_enabled'
+			'antifraud_enabled',
 		);
 
 		$args = $this->get_args( $fields, $data );

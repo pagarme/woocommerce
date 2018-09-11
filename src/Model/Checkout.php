@@ -9,12 +9,12 @@ use Woocommerce\Mundipagg\Helper\Utils;
 
 class Checkout
 {
-    private $setting;
+	private $setting;
 
-    const API_REQUEST = 'e3hpgavff3cw';
+	const API_REQUEST = 'e3hpgavff3cw';
 
-    public function __construct()
-    {
-        $this->setting = Setting::get_instance();
-    }
+	public function __construct()
+	{
+		$this->setting = Setting::get_instance();
+	}
 }

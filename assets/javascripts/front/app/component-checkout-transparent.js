@@ -13,7 +13,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.addEventListener = function() {
 		this.$el.on( 'submit', this._onSubmit.bind(this) );
-		this.$el.find( '[data-value]' ).on( 'keyup', this.fillAnotherInput.bind(this) );
+		this.$el.find( '[data-value]' ).on( 'blur', this.fillAnotherInput.bind(this) );
 		this.click( 'tab' );
 		this.click( 'choose-payment' );
 
@@ -303,7 +303,6 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		nextValue = nextValue.replace('.',',');
 
 		nextInput.val(nextValue);
-		nextInput.trigger('blur');
 	};
 
 });

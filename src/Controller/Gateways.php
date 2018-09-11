@@ -97,8 +97,8 @@ class Gateways extends WC_Payment_Gateway
 			'enable_billet'                     => $this->field_enable_billet(),
 			'enable_credit_card'                => $this->field_enable_credit_card(),
 			'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
-			'multimethods_2_cards'         		=> $this->field_multimethods_2_cards(),
-			'multicustomers'                  	=> $this->field_multicustomers(),
+			'multimethods_2_cards'              => $this->field_multimethods_2_cards(),
+			'multicustomers'                    => $this->field_multicustomers(),
 			'section_antifraud'                 => $this->section_antifraud(),
 			'antifraud_enabled'                 => $this->antifraud_enabled(),
 			'antifraud_min_value'               => $this->antifraud_min_value(),
@@ -128,7 +128,7 @@ class Gateways extends WC_Payment_Gateway
 
 		return array(
 			'result'   => 'success',
-			'redirect' => $wc_order->get_checkout_payment_url( true )
+			'redirect' => $wc_order->get_checkout_payment_url( true ),
 		);
 	}
 
@@ -141,14 +141,14 @@ class Gateways extends WC_Payment_Gateway
 	{
 		$order = new WC_Order( $order_id );
 
-		require_once( Core::get_file_path( 'thank-you-page.php', 'templates/' ) );
+		require_once Core::get_file_path( 'thank-you-page.php', 'templates/' );
 	}
 
 	public function checkout_transparent( $order_id )
 	{
 		$wc_order = new WC_Order( $order_id );
 
-		require_once( Core::get_file_path( 'main.php', 'templates/checkout/' ) );
+		require_once Core::get_file_path( 'main.php', 'templates/checkout/' );
 	}
 
 	public function section_payment_settings()
@@ -200,7 +200,7 @@ class Gateways extends WC_Payment_Gateway
 			),
 			'custom_attributes' => array(
 				'data-action'  => 'environment',
-				'data-element' => 'environment-select'
+				'data-element' => 'environment-select',
 			),
 		);
 	}
@@ -322,7 +322,7 @@ class Gateways extends WC_Payment_Gateway
 			'desc_tip'          => true,
 			'placeholder'       => 'Ex.: 100,00',
 			'custom_attributes' => array(
-				'data-mask'         => "#.##0,00",
+				'data-mask'         => '#.##0,00',
 				'data-mask-reverse' => 'true',
 			),
 		);
@@ -350,7 +350,7 @@ class Gateways extends WC_Payment_Gateway
 				'033' => 'Banco Santander S.A.',
 				'745' => 'Banco Citibank S.A.',
 				'001' => 'Banco do Brasil S.A.',
-				'104' => 'Caixa Econômica Federal'
+				'104' => 'Caixa Econômica Federal',
 			),
 		);
 	}
@@ -445,7 +445,7 @@ class Gateways extends WC_Payment_Gateway
 			'options'           => $this->model->settings->get_flags_list(),
 			'custom_attributes' => array(
 				'data-element' => 'flags-select',
-				'data-action'  => 'flags'
+				'data-action'  => 'flags',
 			),
 		);
 	}
@@ -505,7 +505,7 @@ class Gateways extends WC_Payment_Gateway
 			'placeholder'       => '0,00',
 			'custom_attributes' => array(
 				'data-field'        => 'installments-interest',
-				'data-mask'         => "##0,00",
+				'data-mask'         => '##0,00',
 				'data-mask-reverse' => 'true',
 			),
 		);
@@ -518,11 +518,10 @@ class Gateways extends WC_Payment_Gateway
 			'placeholder'       => '0,00',
 			'custom_attributes' => array(
 				'data-field'        => 'installments-interest-increase',
-				'data-mask'         => "##0,00",
+				'data-mask'         => '##0,00',
 				'data-mask-reverse' => 'true',
 			),
 		);
-
 
 		$installments['flags'] = array(
 			'title' => __( 'Settings by flag', 'woo-mundipagg-payments' ),
@@ -590,36 +589,36 @@ class Gateways extends WC_Payment_Gateway
 			<td class="forminp">
 				<fieldset data-field="installments-by-flag">
 					<?php
-						foreach ( $flags as $flag_key => $flag_name ) :
-							$interest          = isset( $value['interest'][ $flag_key ] ) ? $value['interest'][ $flag_key ] : '';
-							$interest_increase = isset( $value['interest_increase'][ $flag_key ] ) ? $value['interest_increase'][ $flag_key ] : '';
-							$max_installment   = isset( $value['max_installment'][ $flag_key ] ) ? $value['max_installment'][ $flag_key ] : 12;
-							$no_interest       = isset( $value['no_interest'][ $flag_key ] ) ? $value['no_interest'][ $flag_key ] : 1;
+					foreach ( $flags as $flag_key => $flag_name ) :
+						$interest          = isset( $value['interest'][ $flag_key ] ) ? $value['interest'][ $flag_key ] : '';
+						$interest_increase = isset( $value['interest_increase'][ $flag_key ] ) ? $value['interest_increase'][ $flag_key ] : '';
+						$max_installment   = isset( $value['max_installment'][ $flag_key ] ) ? $value['max_installment'][ $flag_key ] : 12;
+						$no_interest       = isset( $value['no_interest'][ $flag_key ] ) ? $value['no_interest'][ $flag_key ] : 1;
 					?>
 					<p class="flag" data-flag="<?php echo $flag_key; ?>">
 
 						<input class="small-input" type="text" value="<?php echo $flag_name; ?>"
-							   <?php disabled( 1, true ); ?> />
+							<?php disabled( 1, true ); ?> />
 
 						<input class="small-input" type="number" min="1" max="12"
-							   name="<?php echo esc_attr( $field_key ); ?>[max_installment][<?php echo $flag_key; ?>]"
-							   id="<?php echo esc_attr( $field_key ); ?>" value="<?php echo intval( $max_installment ); ?>" />
+							name="<?php echo esc_attr( $field_key ); ?>[max_installment][<?php echo $flag_key; ?>]"
+							id="<?php echo esc_attr( $field_key ); ?>" value="<?php echo intval( $max_installment ); ?>" />
 
 						<input class="small-input" type="number" min="1" max="12"
-							   name="<?php echo esc_attr( $field_key ); ?>[no_interest][<?php echo $flag_key; ?>]"
-							   id="<?php echo esc_attr( $field_key ); ?>" value="<?php echo intval( $no_interest ); ?>" />
+							name="<?php echo esc_attr( $field_key ); ?>[no_interest][<?php echo $flag_key; ?>]"
+							id="<?php echo esc_attr( $field_key ); ?>" value="<?php echo intval( $no_interest ); ?>" />
 
 						<input class="small-input" type="text"
-							   placeholder="0,00"
-							   data-mask="##0,00" data-mask-reverse="true"
-							   name="<?php echo esc_attr( $field_key ); ?>[interest][<?php echo $flag_key; ?>]"
-							   id="<?php echo esc_attr( $field_key ); ?>" value="<?php echo wc_format_localized_price( $interest ) ?>" />%
+							placeholder="0,00"
+							data-mask="##0,00" data-mask-reverse="true"
+							name="<?php echo esc_attr( $field_key ); ?>[interest][<?php echo $flag_key; ?>]"
+							id="<?php echo esc_attr( $field_key ); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price( $interest ) ?>" />%
 
 						<input class="small-input" type="text"
-							   placeholder="0,00"
-							   data-mask="##0,00" data-mask-reverse="true"
-							   name="<?php echo esc_attr( $field_key ); ?>[interest_increase][<?php echo $flag_key; ?>]"
-							   id="<?php echo esc_attr( $field_key ); ?>" value="<?php echo wc_format_localized_price( $interest_increase ) ?>" />%
+							placeholder="0,00"
+							data-mask="##0,00" data-mask-reverse="true"
+							name="<?php echo esc_attr( $field_key ); ?>[interest_increase][<?php echo $flag_key; ?>]"
+							id="<?php echo esc_attr( $field_key ); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price( $interest_increase ) ?>" />%
 					</p>
 					<?php endforeach; ?>
 
@@ -662,7 +661,7 @@ class Gateways extends WC_Payment_Gateway
 			'type'        => 'checkbox',
 			'label'       => __( 'Enable', 'woo-mundipagg-payments' ),
 			'default'     => 'no',
-			'description' => __( 'Log MundiPagg events, you can check this log in WooCommerce>Status>Logs.', 'woo-mundipagg-payments' )
+			'description' => __( 'Log MundiPagg events, you can check this log in WooCommerce>Status>Logs.', 'woo-mundipagg-payments' ),
 		);
 	}
 }

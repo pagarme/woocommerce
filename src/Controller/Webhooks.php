@@ -12,18 +12,18 @@ use Exception;
 
 class Webhooks
 {
-    public function __construct()
-    {
-        add_action( 'woocommerce_api_' . Core::get_webhook_name(), array( $this, 'handle_requests' ) );
-    }
+	public function __construct()
+	{
+		add_action( 'woocommerce_api_' . Core::get_webhook_name(), array( $this, 'handle_requests' ) );
+	}
 
-    public function handle_requests()
-    {
-        $body = Utils::get_json_post_data();
+	public function handle_requests()
+	{
+		$body = Utils::get_json_post_data();
 
-        if ( empty( $body ) ) {
-            return;
-        }
+		if ( empty( $body ) ) {
+			return;
+		}
 
 		$event = $this->sanitize_event_name( $body->type );
 
@@ -31,25 +31,25 @@ class Webhooks
 			return;
 		}
 
-        if ( strpos( $event, 'charge' ) !== false ) {
+		if ( strpos( $event, 'charge' ) !== false ) {
 			update_post_meta( $body->data->code, "webhook_{$event}_{$body->id}", true );
 			do_action( "on_mundipagg_{$event}", $body );
-            return;
+			return;
 		}
 
-        $order_id = Utils::get_order_by_meta_value( $body->data->id );
+		$order_id = Utils::get_order_by_meta_value( $body->data->id );
 
 		if ( ! $order_id ) {
 			return;
-        }
+		}
 
-        $order = new Order( $order_id );
+		$order = new Order( $order_id );
 
 		update_post_meta( $order_id, "webhook_{$event}_{$body->id}", true );
 		do_action( "on_mundipagg_{$event}", $order, $body );
-    }
+	}
 
-    public function sanitize_event_name( $event )
+	public function sanitize_event_name( $event )
 	{
 		return str_replace( '.', '_', strtolower( $event ) );
 	}

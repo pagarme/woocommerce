@@ -2568,7 +2568,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.addEventListener = function() {
 		this.$el.on( 'submit', this._onSubmit.bind(this) );
-		this.$el.find( '[data-value]' ).on( 'keyup', this.fillAnotherInput.bind(this) );
+		this.$el.find( '[data-value]' ).on( 'blur', this.fillAnotherInput.bind(this) );
 		this.click( 'tab' );
 		this.click( 'choose-payment' );
 
@@ -2858,7 +2858,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		nextValue = nextValue.replace('.',',');
 
 		nextInput.val(nextValue);
-		nextInput.trigger('blur');
 	};
 
 });

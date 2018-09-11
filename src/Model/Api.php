@@ -15,7 +15,7 @@ use WC_Order;
 class Api
 {
 	public static $instance = null;
-	public $debug = false;
+	public $debug           = false;
 	public $settings;
 
 	private function __construct()
@@ -30,16 +30,16 @@ class Api
 
 		try {
 			$model    = new Order( $wc_order->get_order_number() );
-			$document = $this->_get_document_by_person_type( $model );
+			$document = $this->get_document_by_person_type( $model );
 			$address  = array(
-				"street"       => $model->billing_address_1,
-				"number"       => $model->billing_number,
-				"complement"   => $model->billing_address_2,
-				"zip_code"     => preg_replace( '/[^\d]+/', '', $model->billing_postcode ),
-				"neighborhood" => $model->billing_neighborhood,
-				"city"         => $model->billing_city,
-				"state"        => $model->billing_state,
-				"country"      => "BR",
+				'street'       => $model->billing_address_1,
+				'number'       => $model->billing_number,
+				'complement'   => $model->billing_address_2,
+				'zip_code'     => preg_replace( '/[^\d]+/', '', $model->billing_postcode ),
+				'neighborhood' => $model->billing_neighborhood,
+				'city'         => $model->billing_city,
+				'state'        => $model->billing_state,
+				'country'      => 'BR',
 			);
 
 			$params = array(
@@ -47,7 +47,8 @@ class Api
 				'email'    => $model->billing_email,
 				'document' => Utils::format_document( $document['value'] ),
 				'type'     => $document['type'],
-				'address'  => $address
+				'address'  => $address,
+				'phones'   => $this->get_phones( $model ),
 			);
 
 			$response = $customers->create( $params );
@@ -64,7 +65,7 @@ class Api
 				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER ERROR: ' . $e->__toString() );
 			}
 			error_log( $e->__toString() );
-		    return null;
+			return null;
 		}
 	}
 
@@ -80,10 +81,10 @@ class Api
 			$wc_order_id = intval( $wc_order->get_order_number() );
 			$orders      = new Orders();
 			$payment     = new Payment( $payment_method );
-			$items       = $this->_build_order_items( $wc_order, $form_fields, $payment );
+			$items       = $this->build_order_items( $wc_order, $form_fields );
 			$payments    = $payment->get_payment_data( $wc_order, $form_fields, $customer );
-			$shipping    = $this->_build_shipping( $wc_order );
-			$amount      = $this->_get_amount_total( $payments );
+			$shipping    = $this->build_shipping( $wc_order );
+			$amount      = $this->get_amount_total( $payments );
 
 			if ( ! is_array( $payments ) ) {
 				return $payments;
@@ -96,7 +97,7 @@ class Api
 				'customer'          => $customer,
 				'shipping'          => $shipping,
 				'payments'          => $payments,
-				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method )
+				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method ),
 			);
 
 			$response = $orders->create( $params );
@@ -113,7 +114,7 @@ class Api
 				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER ERROR: ' . $e->__toString() );
 			}
 			error_log( $e->__toString() );
-		    return null;
+			return null;
 		}
 	}
 
@@ -126,11 +127,12 @@ class Api
 		if ( $this->settings->antifraud_enabled != 'yes' ) {
 			return false;
 		}
-
+		/** phpcs:disable */
 		if ( ! $min_value = $this->settings->antifraud_min_value ) {
 			return false;
 		}
-		
+		/** phpcs:enable */
+
 		$min_value = Utils::format_desnormalized_order_price( $min_value );
 		$total     = Utils::format_order_price( $wc_order->get_total() );
 
@@ -141,35 +143,35 @@ class Api
 		return true;
 	}
 
-	private function _build_shipping( WC_Order $wc_order )
+	private function build_shipping( WC_Order $wc_order )
 	{
 		$method = $wc_order->get_shipping_method();
 		$order  = new Order( $wc_order->get_order_number() );
-		
+
 		if ( ! $method ) {
-			$method = "Não informado";
+			$method = 'Não informado';
 		}
 
 		$total    = Utils::format_order_price( $wc_order->get_total_shipping() );
 		$shipping = $order->get_shipping_info();
 
 		return array(
-			"amount"          => $total,
-			"description"     => $method,
-			"address"         => array(
-				"street"       => $shipping['address_1'],
-				"number"       => $shipping['number'],
-				"complement"   => $shipping['address_2'],
-				"zip_code"     => preg_replace( '/[^\d]+/', '', $shipping['postcode'] ),
-				"neighborhood" => $shipping['neighborhood'],
-				"city"         => $shipping['city'],
-				"state"        => $shipping['state'],
-				"country"      => "BR"
-			)
+			'amount'      => $total,
+			'description' => $method,
+			'address'     => array(
+				'street'       => $shipping['address_1'],
+				'number'       => $shipping['number'],
+				'complement'   => $shipping['address_2'],
+				'zip_code'     => preg_replace( '/[^\d]+/', '', $shipping['postcode'] ),
+				'neighborhood' => $shipping['neighborhood'],
+				'city'         => $shipping['city'],
+				'state'        => $shipping['state'],
+				'country'      => 'BR',
+			),
 		);
 	}
 
-	private function _build_order_items( WC_Order $wc_order, $form_fields, Payment $payment )
+	private function build_order_items( WC_Order $wc_order, $form_fields )
 	{
 		$items = $wc_order->get_items();
 
@@ -191,17 +193,18 @@ class Api
 		return $data;
 	}
 
-	private function _get_document_by_person_type( $order )
+	private function get_document_by_person_type( $order )
 	{
 		$wcbcf_options = get_option( 'wcbcf_settings' ); //WooCommerce Extra Checkout Fields
-		
+
 		$cpf = array(
-			'type' => 'individual',
-			'value' => $order->billing_cpf
+			'type'  => 'individual',
+			'value' => $order->billing_cpf,
 		);
+
 		$cnpj = array(
-			'type' => 'company',
-			'value' => $order->billing_cnpj
+			'type'  => 'company',
+			'value' => $order->billing_cnpj,
 		);
 
 		switch ( $wcbcf_options['person_type'] ) {
@@ -212,18 +215,60 @@ class Api
 			case 3:
 				return $cnpj;
 			default:
-				return array( 'type' => '', 'value' => '' );
+				return array(
+					'type'  => '',
+					'value' => '',
+				);
 		}
 	}
 
-	private function _get_amount_total( $payments )
+	private function get_phones( $order )
+	{
+		$phones    = array();
+		$phone     = $order->billing_phone;
+		$cellphone = $order->billing_cellphone;
+
+		if ( $phone ) {
+			$pieces               = Utils::format_phone_number( $phone );
+			$phones['home_phone'] = array(
+				'country_code' => $this->get_phone_country_code( $order->billing_country ),
+				'area_code'    => isset( $pieces[0] ) ? $pieces[0] : '',
+				'number'       => isset( $pieces[1] ) ? $pieces[1] : '',
+			);
+		}
+
+		if ( $cellphone ) {
+			$pieces                 = Utils::format_phone_number( $cellphone );
+			$phones['mobile_phone'] = array(
+				'country_code' => $this->get_phone_country_code( $order->billing_country ),
+				'area_code'    => isset( $pieces[0] ) ? $pieces[0] : '',
+				'number'       => isset( $pieces[1] ) ? $pieces[1] : '',
+			);
+		}
+
+		return $phones;
+	}
+
+	private function get_phone_country_code( $country )
+	{
+		$list = array(
+			'BR' => 55,
+			'US' => 1,
+			'UK' => 44,
+			'ES' => 34,
+		);
+
+		return isset( $list[ $country ] ) ? $list[ $country ] : 55;
+	}
+
+	private function get_amount_total( $payments )
 	{
 		$total = 0;
 
-		foreach( $payments as $key => $value ) {
-     		$total += $value['amount'];
+		foreach ( $payments as $key => $value ) {
+			$total += $value['amount'];
 		}
-		 
+
 		return $total;
 	}
 

@@ -26,11 +26,13 @@ class Settings
 	 * @return Array
 	 */
 	public function plugin_link( $links ) {
-		$plugin_links = array( sprintf(
-			'<a href="%s">%s</a>',
-			Core::get_page_link(),
-			__( 'Settings', 'woo-mundipagg-payments' )
-		) );
+		$plugin_links = array(
+			sprintf(
+				'<a href="%s">%s</a>',
+				Core::get_page_link(),
+				__( 'Settings', 'woo-mundipagg-payments' )
+			),
+		);
 
 		return array_merge( $plugin_links, $links );
 	}

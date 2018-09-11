@@ -17,9 +17,10 @@ class Customer
 
 	public $prefix = '_mundipagg_wc_';
 
+	/** phpcs:disable */
 	public function __construct( $ID )
 	{
-		$this->ID = (int)$ID;
+		$this->ID = (int) $ID;
 	}
 
 	public function __get( $prop_name )
@@ -33,13 +34,11 @@ class Customer
 
 	public function __set( $prop_name, $value )
 	{
-		switch ( $prop_name ) :
-
-			case 'cards' :
+		switch ( $prop_name ) {
+			case 'cards':
 				$value = $this->filter_cards( $value );
 				break;
-
-		endswitch;
+		}
 
 		update_user_meta( $this->ID, $this->get_meta_key( $prop_name ), $value );
 	}
@@ -53,14 +52,13 @@ class Customer
 	{
 		$value = get_user_meta( $this->ID, $this->get_meta_key( $prop_name ), true );
 
-		switch ( $prop_name ) :
-
-			case 'cards' :
+		switch ( $prop_name ) {
+			case 'cards':
 				return $this->filter_cards( $value );
 
-			default :
+			default:
 				return $value;
-		endswitch;
+		}
 	}
 
 	public function get_meta_key( $name )
@@ -70,6 +68,6 @@ class Customer
 
 	public function filter_cards( $cards )
 	{
-		return array_filter( (array)$cards );
+		return array_filter( (array) $cards );
 	}
 }

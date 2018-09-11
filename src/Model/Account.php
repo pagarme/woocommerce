@@ -9,12 +9,12 @@ use Woocommerce\Mundipagg\Helper\Utils;
 
 class Account
 {
-    private $setting;
+	private $setting;
 
-    const WALLET_ENDPOINT = 'zff3yg2have4pcw';
+	const WALLET_ENDPOINT = 'zff3yg2have4pcw';
 
-    public function __construct()
-    {
-        $this->setting = Setting::get_instance();
-    }
+	public function __construct()
+	{
+		$this->setting = Setting::get_instance();
+	}
 }

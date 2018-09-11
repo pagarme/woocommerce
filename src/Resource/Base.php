@@ -29,9 +29,9 @@ abstract class Base
 		Request::verifyPeer( false );
 		Request::verifyHost( false );
 
-        if ( $auth ) {
-		  $this->auth();
-        }
+		if ( $auth ) {
+			$this->auth();
+		}
 	}
 
 	/**
@@ -44,51 +44,51 @@ abstract class Base
 		Request::auth( $this->settings->get_secret_key(), '' );
 	}
 
-    /**
-     * Get default headers
-     *
-     * @return array
-     */
-    protected function get_headers()
-    {
-    	return array(
-    		'Accept'       => 'application/json',
-            'content-type' => 'application/json; charset=utf-8'
-    	);
-    }
+	/**
+	 * Get default headers
+	 *
+	 * @return array
+	 */
+	protected function get_headers()
+	{
+		return array(
+			'Accept'       => 'application/json',
+			'content-type' => 'application/json; charset=utf-8',
+		);
+	}
 
-    /**
-     * Get a key of an array if it exists.
-     *
-     * @param string         $key
-     * @param \array|null $data
-     *
-     * @return mixed
-     */
-    protected function get( $key, array $data = null )
-    {
-        if ( empty( $data ) || ! isset( $data[ $key ] ) ) {
-            return null;
-        }
+	/**
+	 * Get a key of an array if it exists.
+	 *
+	 * @param string         $key
+	 * @param \array|null $data
+	 *
+	 * @return mixed
+	 */
+	protected function get( $key, array $data = null )
+	{
+		if ( empty( $data ) || ! isset( $data[ $key ] ) ) {
+			return null;
+		}
 
-        return $data[ $key ];
-    }
+		return $data[ $key ];
+	}
 
-   	/**
-   	 * Build parameters for make the request
-   	 *
-   	 * @param  array  $properties
-   	 * @param  array  $data
-   	 * @return array
-   	 */
-    protected function get_args( array $properties, array $data )
+	/**
+	 * Build parameters for make the request
+	 *
+	 * @param  array  $properties
+	 * @param  array  $data
+	 * @return array
+	 */
+	protected function get_args( array $properties, array $data )
 	{
 		$args = array(
-            'metadata' => array(
-                'module_name'    => 'WooCommerce',
-                'module_version' => WCMP_VERSION
-            )
-        );
+			'metadata' => array(
+				'module_name'    => 'WooCommerce',
+				'module_version' => WCMP_VERSION,
+			),
+		);
 
 		foreach ( $properties as $property ) {
 			$args[ $property ] = call_user_func( [ $this, 'get' ], $property, $data );
