@@ -244,6 +244,8 @@ class Api
 				'area_code'    => isset( $pieces[0] ) ? $pieces[0] : '',
 				'number'       => isset( $pieces[1] ) ? $pieces[1] : '',
 			);
+		} else {
+			$phones['mobile_phone'] = $phones['home_phone'];
 		}
 
 		return $phones;

@@ -108,6 +108,17 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		} else {
 			this.successMessage();
 		}
+		
+        var self = this;
+
+		if( response.data.status == "failed" ){
+            swal({
+                type : 'error',
+                html : this.data.swal.text_default
+            }).then(function(){
+                window.location.href = self.data.returnUrl;
+            });
+		}
 	};
 
 	Model.fn._fail = function(jqXHR, textStatus, errorThrown) {

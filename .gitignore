@@ -3,3 +3,4 @@
 *.orig
 .sass-cache
 node_modules/
+.idea/
