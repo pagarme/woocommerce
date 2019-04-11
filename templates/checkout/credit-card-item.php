@@ -73,6 +73,7 @@ $type              = 'card';
 			data-action="choose-payment"
 			type="radio"
 			name="payment_method"
+            checked="checked"
 			value="credit_card">
 	</div>
 </li>
