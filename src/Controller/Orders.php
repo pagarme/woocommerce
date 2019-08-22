@@ -12,6 +12,8 @@ use Woocommerce\Mundipagg\Model\Setting;
 
 class Orders
 {
+    private $settings;
+
 	public function __construct()
 	{
 		$this->settings = Setting::get_instance();
@@ -23,31 +25,19 @@ class Orders
 		add_action( 'add_meta_boxes', array( $this, 'add_capture_metabox' ) );
 	}
 
-	public function set_order_created( Order $order, $body )
+	public function set_order_created( Order $order, $body)
 	{
 		$order->payment_on_hold();
-
-		if ( $this->debug ) {
-			$this->settings->log()->add( 'woo-mundipagg', 'WEBHOOK ORDER CREATED: ' . print_r( $body, true ) );
-		}
 	}
 
-	public function set_order_paid( Order $order, $body )
+	public function set_order_paid( Order $order, $body)
 	{
 		$order->payment_paid();
-
-		if ( $this->debug ) {
-			$this->settings->log()->add( 'woo-mundipagg', 'WEBHOOK ORDER PAID: ' . print_r( $body, true ) );
-		}
 	}
 
-	public function set_order_canceled( Order $order, $body )
+	public function set_order_canceled( Order $order, $body)
 	{
 		$order->payment_canceled();
-
-		if ( $this->debug ) {
-			$this->settings->log()->add( 'woo-mundipagg', 'WEBHOOK ORDER CANCELED: ' . print_r( $body, true ) );
-		}
 	}
 
 	public function add_capture_metabox()
