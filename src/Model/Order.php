@@ -11,6 +11,7 @@ use Woocommerce\Mundipagg\Model\Charge;
 
 // WooCommerce
 use WC_Order;
+use Woocommerce\Mundipagg\Model\Setting;
 
 class Order extends Meta
 {
@@ -19,6 +20,7 @@ class Order extends Meta
 	protected $mundipagg_status;
 	protected $mundipagg_id;
 	protected $wc_order;
+	protected $settings;
 
 	// == BEGIN WC ORDER ==
 	protected $billing_persontype;
@@ -60,6 +62,7 @@ class Order extends Meta
 		parent::__construct( $ID );
 
 		$this->wc_order = new WC_Order( $this->ID );
+        $this->settings = Setting::get_instance();
 	}
 	/** phpcs:enable */
 
@@ -83,7 +86,15 @@ class Order extends Meta
 		if ( ! in_array( $current_status, [ 'on-hold', 'completed', 'canceled', 'cancelled', 'processing' ] ) ) {
 			$this->wc_order->update_status( 'on-hold', __( 'MundiPagg: Awaiting payment confirmation.', 'woo-mundipagg-payments' ) );
 			wc_reduce_stock_levels( $this->wc_order->get_order_number() );
+
 		}
+
+		$statusArray = [
+            'previous_status' => $current_status,
+            'new_status' => $this->wc_order->get_status()
+		];
+
+		$this->log($statusArray);
 	}
 
 	public function payment_paid()
@@ -94,6 +105,13 @@ class Order extends Meta
 			$this->wc_order->add_order_note( __( 'Mundipagg: Payment has already been confirmed.', 'woo-mundipagg-payments' ) );
 			$this->wc_order->payment_complete();
 		}
+
+        $statusArray = [
+            'previous_status' => $current_status,
+            'new_status' => $this->wc_order->get_status()
+        ];
+
+        $this->log($statusArray);
 	}
 
 	public function payment_canceled()
@@ -103,6 +121,13 @@ class Order extends Meta
 		if ( ! in_array( $current_status, [ 'cancelled', 'canceled' ] ) ) {
 			$this->wc_order->update_status( 'cancelled', __( 'Mundipagg: Payment canceled.', 'woo-mundipagg-payments' ) );
 		}
+
+        $statusArray = [
+            'previous_status' => $current_status,
+            'new_status' => $this->wc_order->get_status()
+        ];
+
+        $this->log($statusArray);
 	}
 
 	public function update_by_mundipagg_status( $mundipagg_status )
@@ -175,4 +200,17 @@ class Order extends Meta
 
 		return $shipping_prop;
 	}
+
+    private function log($content) {
+
+	    $file = 'woo-mundipagg';
+        $message =
+            'ORDER STATUS UPDATE: #' .
+            $this->wc_order->get_id() .
+            json_encode($content, JSON_PRETTY_PRINT);
+
+        if (!empty($this->settings)) {
+            $this->settings->log()->add($file, $message);
+        }
+    }
 }

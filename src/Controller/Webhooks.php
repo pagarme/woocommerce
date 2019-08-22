@@ -8,12 +8,16 @@ if ( ! function_exists( 'add_action' ) ) {
 use Woocommerce\Mundipagg\Helper\Utils;
 use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\Model\Order;
+use Woocommerce\Mundipagg\Model\Setting;
 use Exception;
 
 class Webhooks
 {
+    private $settings;
+
 	public function __construct()
 	{
+        $this->settings = Setting::get_instance();
 		add_action( 'woocommerce_api_' . Core::get_webhook_name(), array( $this, 'handle_requests' ) );
 	}
 
@@ -22,16 +26,18 @@ class Webhooks
 		$body = Utils::get_json_post_data();
 
 		if ( empty( $body ) ) {
+            $this->settings->log()->add( 'woo-mundipagg', 'Webhook Received: empty body!');
 			return;
 		}
+        $this->settings->log()->add( 'woo-mundipagg', 'Webhook Received: ' . json_encode( $body, JSON_PRETTY_PRINT));
 
 		$event = $this->sanitize_event_name( $body->type );
 
-		if ( $this->was_sent( $event, $body->id, $body->data->code ) ) {
+		if ($this->was_sent( $event, $body->id, $body->data->code)) {
 			return;
 		}
 
-		if ( strpos( $event, 'charge' ) !== false ) {
+		if (strpos( $event, 'charge' ) !== false) {
 			update_post_meta( $body->data->code, "webhook_{$event}_{$body->id}", true );
 			do_action( "on_mundipagg_{$event}", $body );
 			return;
@@ -43,7 +49,7 @@ class Webhooks
 			return;
 		}
 
-		$order = new Order( $order_id );
+		$order = new Order($order_id);
 
 		update_post_meta( $order_id, "webhook_{$event}_{$body->id}", true );
 		do_action( "on_mundipagg_{$event}", $order, $body );
