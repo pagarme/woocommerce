@@ -53,15 +53,15 @@ class Api
 
 			$response = $customers->create( $params );
 
-			if ( $this->debug ) {
-				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER REQUEST: ' . print_r( $params, true ) );
-				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER RESPONSE: ' . print_r( $response->body, true ) );
+			if (!empty($this->settings)) {
+				$this->settings->log()->add('woo-mundipagg', 'CREATE CUSTOMER REQUEST: ' . json_encode($params, JSON_PRETTY_PRINT));
+				$this->settings->log()->add('woo-mundipagg', 'CREATE CUSTOMER RESPONSE: ' . json_encode($response->body, JSON_PRETTY_PRINT));
 			}
 
 			return $response->body;
 
 		} catch ( Exception $e ) {
-			if ( $this->debug ) {
+			if (!empty($this->settings)) {
 				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER ERROR: ' . $e->__toString() );
 			}
 			error_log( $e->__toString() );
@@ -71,7 +71,8 @@ class Api
 
 	public function create_order( WC_Order $wc_order, $payment_method, $form_fields )
 	{
-		$customer = $this->create_customer( $wc_order );
+        $file = 'woo-mundipagg';
+		$customer = $this->create_customer($wc_order);
 
 		if ( ! $customer ) {
 			return;
@@ -100,17 +101,46 @@ class Api
 				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method ),
 			);
 
+            if (!empty($this->settings)) {
+                $previous_status = $wc_order->get_status();
+
+                //LOG ORDER REQUEST
+                $this->settings->log()->add(
+                    $file,
+                    'CREATE ORDER REQUEST: #' .
+                    $wc_order_id .
+                    json_encode($params, JSON_PRETTY_PRINT)
+                );
+            }
 			$response = $orders->create( $params );
 
-			if ( $this->debug ) {
-				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER REQUEST: ' . print_r( $params, true ) );
-				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER RESPONSE: ' . print_r( $response->body, true ) );
+			if (!empty($this->settings)) {
+
+			    //LOG ORDER RESPONSE
+				$this->settings->log()->add(
+				    $file,
+                    'CREATE ORDER RESPONSE: #' .
+                    $wc_order_id .
+                    json_encode($response->body, JSON_PRETTY_PRINT));
+
+                $statusArray = [
+                    'previous_status' => $previous_status,
+                    'new_status' => $wc_order->get_status()
+                ];
+
+				$message =
+                    'ORDER STATUS UPDATE: #' .
+                    $wc_order_id .
+                    json_encode($statusArray, JSON_PRETTY_PRINT);
+
+				//LOG ORDER STATUS CHANGE
+                $this->settings->log()->add($file, $message);
 			}
 
 			return $response;
 
 		} catch ( Exception $e ) {
-			if ( $this->debug ) {
+			if (!empty($this->settings)) {
 				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER ERROR: ' . $e->__toString() );
 			}
 			error_log( $e->__toString() );
