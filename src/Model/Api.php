@@ -217,7 +217,8 @@ class Api
 			$quantity    = absint( $item['qty'] );
 			$description = sanitize_title( $item['name'] ) . ' x ' . $quantity;
 			$amount      = Utils::format_order_price( $price );
-			$data[]      = compact( 'amount', 'description', 'quantity' );
+			$code        = $item['product_id'];
+			$data[]      = compact( 'amount', 'description', 'quantity', 'code' );
 		}
 
 		return $data;
