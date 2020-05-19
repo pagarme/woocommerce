@@ -1,19 +1,19 @@
 # MundiPagg módulo para WooCommerce #
 **Contributors:** [mundipagg](https://profiles.wordpress.org/mundipagg)
-**Tags:** ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, mundipagg, payments, creditcard 
-**Requires at least:** 4.4  
-**Tested up to:** 4.9  
-**Stable tag:** beta-1.0.21  
-**Requires PHP:** 5.6  
-**License:** MIT  
-**License URI:** https://github.com/mundipagg/woocommerce/blob/master/LICENS  
+**Tags:** ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, mundipagg, payments, creditcard
+**Requires at least:** 4.4
+**Tested up to:** 4.9
+**Stable tag:** beta-1.0.22
+**Requires PHP:** 5.6
+**License:** MIT
+**License URI:** https://github.com/mundipagg/woocommerce/blob/master/LICENS
 
 Módulo de integração da MundiPagg com o WooCommerce. Aceite pagamentos de cartão de crédito, boleto, multimeios e aumente a sua conversão.
 
 ## Descrição ##
 
 A inteligência do seu pagamento - Soluções focadas em aumentar sua conversão!
-	
+
 Pagamentos tem que ser fáceis. São muitos passos por trás de uma simples transação financeira. Mas o seu consumidor não precisa saber disso. Nossas soluções estão disponíveis para ajuda-lo a aumentar sua conversão e oferecer a melhor experiência no momento do pagamento para o seu cliente.
 
 ## Compatibilidade ##
