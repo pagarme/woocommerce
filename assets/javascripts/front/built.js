@@ -2599,11 +2599,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn._onSubmit = function(e) {
-
 		e.preventDefault();
 
 		if ( ! this.validate() ) {
-			console.log(1);
 			jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
 			return false;
 		}
