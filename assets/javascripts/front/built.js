@@ -2540,7 +2540,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		error            = error.replace( 'request.', '' );
 		var output       = error + ': ' + message;
 		var ptBrMessages = MundiPaggGlobalVars.checkoutErrors.pt_BR;
-		
+
 		if ( MundiPaggGlobalVars.WPLANG != 'pt_BR' ) {
 			return output;
 		}
@@ -2602,8 +2602,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		e.preventDefault();
 
 		if ( ! this.validate() ) {
+			jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
 			return false;
 		}
+
+		jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
 		$( 'body' ).trigger( 'onMundiPaggSubmit', [ e ] )
 
@@ -2663,7 +2666,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		} else {
 			this.successMessage();
 		}
-		
+
         var self = this;
 
 		if( response.data.status == "failed" ){
@@ -2890,7 +2893,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.onChangeBrand = function(event, brand, cardNumberLength, wrapper) {
 		var cardOrderValue = wrapper.find( '[data-element=card-order-value]' );
-		
+
 		if ( cardOrderValue.length ) {
 			this.total = cardOrderValue.val();
 			this.total = this.total.replace( '.', '' );
@@ -2919,7 +2922,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			select.html( storage );
 			return false;
 		}
-		
+
 		if ( this.lock ) {
 			return;
 		}
@@ -3247,7 +3250,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn.onSubmit = function(e) {
-
 		if ( this.hasCardId() ) {
 			$( 'body' ).trigger( 'onMundiPaggCheckoutDone' );
 
