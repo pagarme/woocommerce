@@ -1,10 +1,12 @@
 <?php
+
 namespace Woocommerce\Mundipagg\Resource;
 
-if ( ! function_exists( 'add_action' ) ) {
-	exit( 0 );
+if (!function_exists('add_action')) {
+	exit(0);
 }
 
+use Unirest\Exception;
 use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\Helper\Utils;
 use Unirest\Request;
@@ -20,8 +22,9 @@ class Orders extends Base
 	 * @param array $data fields to send
 	 *
 	 * @return object Unirest\Response
+	 * @throws Exception
 	 */
-	public function create( array $data )
+	public function create(array $data)
 	{
 		$fields = array(
 			'code',
@@ -34,8 +37,12 @@ class Orders extends Base
 			'antifraud_enabled',
 		);
 
-		$args = $this->get_args( $fields, $data );
+		$args = $this->get_args($fields, $data);
 
-		return Request::post( Base::URL . self::PATH, $this->get_headers(), Body::Json( $args ) );
+		return Request::post(
+			Base::URL . self::PATH,
+			$this->get_headers($data['idempotencyKey']),
+			Body::Json($args)
+		);
 	}
 }

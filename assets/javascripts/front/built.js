@@ -2529,6 +2529,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		rect = element.get(0).getBoundingClientRect();
 
+		jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
+
 		window.scrollTo( 0, ( rect.top + window.scrollY ) - 40 );
 	};
 
@@ -2557,6 +2559,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.start = function() {
 		this.lock = false;
+		this.idempotencyKey = this.generateUUID();
+
 		this.addEventListener();
 
 		Mundipagg.CheckoutErrors.create( this );
@@ -2564,6 +2568,23 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		if ( typeof $().select2 === 'function' ) {
 			this.applySelect2();
 		}
+	};
+
+	Model.fn.generateUUID = function () {
+		var d = new Date().getTime();
+		var d2 = (performance && performance.now && (performance.now() * 1000)) || 0;
+
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			var r = Math.random() * 16;
+			if (d > 0) {
+				r = (d + r) % 16 | 0;
+				d = Math.floor(d / 16);
+			} else {
+				r = (d2 + r) % 16 | 0;
+				d2 = Math.floor(d2 / 16);
+			}
+			return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+		});
 	};
 
 	Model.fn.addEventListener = function() {
@@ -2776,8 +2797,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		});
 	};
 
-	Model.fn._onOpenSwal = function() {
-		if ( this.lock ) {
+	Model.fn._onOpenSwal = function () {
+		if (this.lock) {
 			return;
 		}
 
@@ -2785,11 +2806,22 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		swal.showLoading();
 
-	    this.ajax({
-	    	url  : this.data.apiRequest,
-			data : {
-				order  : this.data.order,
-				fields : this.$el.serializeArray()
+		var inputsSubmit = this.$el.serializeArray();
+		inputsSubmit.push({name: "idempotencyKey", value: this.idempotencyKey});
+
+		this.ajax({
+			url: this.data.apiRequest,
+			data: {
+				order: this.data.order,
+				fields: inputsSubmit
+			},
+			success: function (data) {
+				if (data.success == false) {
+					jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
+				}
+			},
+			fail: function (data) {
+				jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
 			}
 		});
 	};

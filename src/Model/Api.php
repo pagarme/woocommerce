@@ -87,9 +87,17 @@ class Api
 			$shipping    = $this->build_shipping( $wc_order );
 			$amount      = $this->get_amount_total( $payments );
 
+
 			if ( ! is_array( $payments ) ) {
 				return $payments;
 			}
+
+			$idempotencyKey = null;
+			if (isset($form_fields['idempotencyKey']) && !empty($form_fields['idempotencyKey'])) {
+				$idempotencyKey = $form_fields['idempotencyKey'];
+			}
+
+
 
 			$params = array(
 				'amount'            => $amount,
@@ -99,6 +107,7 @@ class Api
 				'shipping'          => $shipping,
 				'payments'          => $payments,
 				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method ),
+				'idempotencyKey'    => $idempotencyKey
 			);
 
             if (!empty($this->settings)) {
@@ -112,7 +121,7 @@ class Api
                     json_encode($params, JSON_PRETTY_PRINT)
                 );
             }
-			$response = $orders->create( $params );
+			$response = $orders->create($params);
 
 			if (!empty($this->settings)) {
 
