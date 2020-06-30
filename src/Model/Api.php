@@ -93,7 +93,7 @@ class Api
 			}
 
 			$idempotencyKey = null;
-			if (isset($form_fields['idempotencyKey']) && !empty($form_fields['idempotencyKey'])) {
+			if (!empty($form_fields['idempotencyKey'])) {
 				$idempotencyKey = $form_fields['idempotencyKey'];
 			}
 
