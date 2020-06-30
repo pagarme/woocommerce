@@ -97,8 +97,6 @@ class Api
 				$idempotencyKey = $form_fields['idempotencyKey'];
 			}
 
-
-
 			$params = array(
 				'amount'            => $amount,
 				'code'              => $wc_order_id,
