@@ -219,7 +219,7 @@ class Api
 		$installments = Utils::get_value_by( $form_fields, 'installments' );
 
 		foreach ( $items as $item ) {
-			$product     = $wc_order->get_product_from_item( $item );
+			$product     = $item->get_product();
 			$price       = $product->get_price();
 			$quantity    = absint( $item['qty'] );
 			$description = sanitize_title( $item['name'] ) . ' x ' . $quantity;
