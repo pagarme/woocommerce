@@ -92,10 +92,12 @@ class Api
 				return $payments;
 			}
 
-			$idempotencyKey = null;
-			if (!empty($form_fields['idempotencyKey'])) {
-				$idempotencyKey = $form_fields['idempotencyKey'];
+			$hash = rand(1, 9999);
+			if (property_exists($customer, 'email')){
+				$hash = $customer->email;
 			}
+
+			$idempotencyKey = md5("{$hash}-{$wc_order_id}");
 
 			$params = array(
 				'amount'            => $amount,
