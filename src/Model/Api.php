@@ -92,10 +92,7 @@ class Api
 				return $payments;
 			}
 
-			$hash = rand(1, 9999);
-			if (property_exists($customer, 'email')){
-				$hash = $customer->email;
-			}
+			$hash = $customer->document;
 
 			$idempotencyKey = md5("{$hash}-{$wc_order_id}");
 
