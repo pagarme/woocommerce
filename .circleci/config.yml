@@ -20,7 +20,7 @@ jobs:
           name: Install Composer
           command: |
             php -r "copy('http://getcomposer.org/installer', 'composer-setup.php');"
-            php composer-setup.php
+            php composer-setup.php --version=1.10.13
        - run:
           name: Display PHP information
           command: |
