@@ -27,7 +27,6 @@ jobs:
           name: Display PHP information
           command: |
             php -v
-            php composer.phar --version
        - run:
           name: Check PHP sintax
           command: find . -name \*.php -exec php -l "{}" \;
