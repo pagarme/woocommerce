@@ -2559,7 +2559,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.start = function() {
 		this.lock = false;
-		this.idempotencyKey = this.generateUUID();
 
 		this.addEventListener();
 
@@ -2568,23 +2567,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		if ( typeof $().select2 === 'function' ) {
 			this.applySelect2();
 		}
-	};
-
-	Model.fn.generateUUID = function () {
-		var d = new Date().getTime();
-		var d2 = (performance && performance.now && (performance.now() * 1000)) || 0;
-
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-			var r = Math.random() * 16;
-			if (d > 0) {
-				r = (d + r) % 16 | 0;
-				d = Math.floor(d / 16);
-			} else {
-				r = (d2 + r) % 16 | 0;
-				d2 = Math.floor(d2 / 16);
-			}
-			return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-		});
 	};
 
 	Model.fn.addEventListener = function() {
@@ -2807,7 +2789,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		swal.showLoading();
 
 		var inputsSubmit = this.$el.serializeArray();
-		inputsSubmit.push({name: "idempotencyKey", value: this.idempotencyKey});
 
 		this.ajax({
 			url: this.data.apiRequest,
