@@ -32,20 +32,22 @@ class Api
 			$model    = new Order( $wc_order->get_order_number() );
 			$document = $this->get_document_by_person_type( $model );
 			$address  = array(
-				'street'       => $model->billing_address_1,
-				'number'       => $model->billing_number,
-				'complement'   => $model->billing_address_2,
+				'street'       => substr($model->billing_address_1, 0, 64),
+				'number'       => substr($model->billing_number, 0, 15),
+				'complement'   => substr($model->billing_address_2, 0, 64),
 				'zip_code'     => preg_replace( '/[^\d]+/', '', $model->billing_postcode ),
-				'neighborhood' => $model->billing_neighborhood,
-				'city'         => $model->billing_city,
-				'state'        => $model->billing_state,
+				'neighborhood' => substr(substr($model->billing_neighborhood, 0, 64), 0, 16),
+				'city'         => substr($model->billing_city, 0, 64),
+				'state'        => substr($model->billing_state, 0, 2),
 				'country'      => 'BR',
 			);
 
+			$name = "{$model->billing_first_name} {$model->billing_last_name}";
+
 			$params = array(
-				'name'     => "{$model->billing_first_name} {$model->billing_last_name}",
-				'email'    => $model->billing_email,
-				'document' => Utils::format_document( $document['value'] ),
+				'name'     => substr($name, 0, 64),
+				'email'    => substr($model->billing_email, 0, 64),
+				'document' => substr(Utils::format_document( $document['value'] ), 0, 16),
 				'type'     => $document['type'],
 				'address'  => $address,
 				'phones'   => $this->get_phones( $model ),
@@ -195,13 +197,13 @@ class Api
 			'amount'      => $total,
 			'description' => $method,
 			'address'     => array(
-				'street'       => $shipping['address_1'],
-				'number'       => $shipping['number'],
-				'complement'   => $shipping['address_2'],
-				'zip_code'     => preg_replace( '/[^\d]+/', '', $shipping['postcode'] ),
-				'neighborhood' => $shipping['neighborhood'],
-				'city'         => $shipping['city'],
-				'state'        => $shipping['state'],
+				'street'       => substr($shipping['address_1'], 0, 64),
+				'number'       => substr($shipping['number'], 0, 15),
+				'complement'   => substr($shipping['address_2'], 0, 64),
+				'zip_code'     => substr(preg_replace( '/[^\d]+/', '', $shipping['postcode'] ), 0, 16),
+				'neighborhood' => substr($shipping['neighborhood'], 0, 64),
+				'city'         => substr($shipping['city'], 0, 64),
+				'state'        => substr($shipping['state'], 0, 2),
 				'country'      => 'BR',
 			),
 		);
