@@ -36,7 +36,7 @@ class Api
 				'number'       => substr($model->billing_number, 0, 15),
 				'complement'   => substr($model->billing_address_2, 0, 64),
 				'zip_code'     => preg_replace( '/[^\d]+/', '', $model->billing_postcode ),
-				'neighborhood' => substr(substr($model->billing_neighborhood, 0, 64), 0, 16),
+				'neighborhood' => substr($model->billing_neighborhood, 0, 64),
 				'city'         => substr($model->billing_city, 0, 64),
 				'state'        => substr($model->billing_state, 0, 2),
 				'country'      => 'BR',
