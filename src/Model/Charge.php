@@ -8,6 +8,7 @@ if ( ! function_exists( 'add_action' ) ) {
 use Woocommerce\Mundipagg\Core;
 use Woocommerce\Mundipagg\Helper\Utils;
 use Woocommerce\Mundipagg\Model\Setting;
+use WC_Order;
 
 class Charge
 {
@@ -64,9 +65,39 @@ class Charge
 	}
 	/** phpcs:enable */
 
+	/**
+	 * @param object $webHookData
+	 */
+	public function add_notes($webHookData)
+	{
+		if (!$webHookData) {
+			return;
+		}
+
+		$messageList = [
+			"charge.antifraud_reproved" => "Anti-Fraud reproved.",
+			"charge.antifraud_approved" => "Anti-Fraud approved.",
+			"charge.antifraud_manual" => "Anti-fraud process in manual analysis.",
+			"charge.antifraud_pending" => "Anti-fraud process pending"
+		];
+
+		$message = __(
+			$messageList[$webHookData->type],
+			'woo-mundipagg-payments'
+		);
+
+		$messageWebHook = __(
+			"Webhook received: ",
+			'woo-mundipagg-payments'
+		);
+
+		$wc_order = new WC_Order($webHookData->data->order->code);
+		$wc_order->add_order_note($messageWebHook . $message);
+	}
+
 	public function create_from_webhook( $webhook_data )
 	{
-		if ( ! $webhook_data ) {
+		if (!$webhook_data) {
 			return;
 		}
 
