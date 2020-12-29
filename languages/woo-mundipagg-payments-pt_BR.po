@@ -426,10 +426,10 @@ msgstr "Antifraude aprovado."
 
 #: src/Model/Charge.php:80
 msgid "Anti-fraud process in manual analysis."
-msgstr "Processo de Antifraude em analise manual."
+msgstr "Processo de Antifraude em análise manual."
 
 #: src/Model/Charge.php:81
-msgid "Anti-fraud process pending"
+msgid "Anti-fraud process pending."
 msgstr "Processo de antifraude pendente."
 
 #: src/Model/Order.php:100

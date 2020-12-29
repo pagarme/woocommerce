@@ -78,7 +78,7 @@ class Charge
 			"charge.antifraud_reproved" => "Anti-Fraud reproved.",
 			"charge.antifraud_approved" => "Anti-Fraud approved.",
 			"charge.antifraud_manual" => "Anti-fraud process in manual analysis.",
-			"charge.antifraud_pending" => "Anti-fraud process pending"
+			"charge.antifraud_pending" => "Anti-fraud process pending."
 		];
 
 		$message = __(
