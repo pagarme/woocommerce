@@ -40,6 +40,7 @@ class Webhooks
 		if (strpos( $event, 'charge' ) !== false) {
 			update_post_meta( $body->data->code, "webhook_{$event}_{$body->id}", true );
 			do_action( "on_mundipagg_{$event}", $body );
+			do_action( "on_mundipagg_notes_{$event}", $body );
 			return;
 		}
 
