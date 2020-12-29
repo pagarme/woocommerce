@@ -3,7 +3,7 @@
 **Tags:** ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, mundipagg, payments, creditcard
 **Requires at least:** 4.4
 **Tested up to:** 4.9
-**Stable tag:** beta-1.0.25
+**Stable tag:** beta-1.0.26
 **Requires PHP:** 5.6
 **License:** MIT
 **License URI:** https://github.com/mundipagg/woocommerce/blob/master/LICENS

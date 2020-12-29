@@ -2665,7 +2665,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn._done = function(response) {
 		this.lock = false;
 		if ( ! response.success ) {
-			this.failMessage( response.data );
+			this.failMessage(
+				this.getFailMessage(response.data)
+			);
 		} else {
 			this.successMessage();
 		}
@@ -2675,7 +2677,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		if( response.data.status == "failed" ){
             swal({
                 type : 'error',
-                html : this.data.swal.text_default
+                html : this.getFailMessage()
             }).then(function(){
                 window.location.href = self.data.returnUrl;
             });
@@ -2685,6 +2687,14 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn._fail = function(jqXHR, textStatus, errorThrown) {
 		this.lock = false;
 		this.failMessage();
+	};
+
+	Model.fn.getFailMessage = function (message = "") {
+		if (!message) {
+			return "Transação não autorizada."
+		}
+
+		return message;
 	};
 
 	Model.fn.failMessage = function(message) {
