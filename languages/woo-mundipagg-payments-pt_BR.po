@@ -416,9 +416,29 @@ msgstr "MundiPagg: Aguardando confirmação de pagamento."
 msgid "Mundipagg: Payment has already been confirmed."
 msgstr "Mundipagg: O pagamento já foi confirmado."
 
+#: src/Model/Charge.php:78
+msgid "Anti-Fraud reproved."
+msgstr "Antifraude reprovado."
+
+#: src/Model/Charge.php:79
+msgid "Anti-Fraud approved."
+msgstr "Antifraude aprovado."
+
+#: src/Model/Charge.php:80
+msgid "Anti-fraud process in manual analysis."
+msgstr "Processo de Antifraude em analise manual."
+
+#: src/Model/Charge.php:81
+msgid "Anti-fraud process pending"
+msgstr "Processo de antifraude pendente."
+
 #: src/Model/Order.php:100
 msgid "Mundipagg: Payment canceled."
 msgstr "Mundipagg: Pagamento cancelado."
+
+#: src/Model/Order.php:86
+msgid "Webhook received: "
+msgstr "Webhook recebido: "
 
 #: src/View/Checkouts.php:19
 msgid "Your transaction has been processed."
