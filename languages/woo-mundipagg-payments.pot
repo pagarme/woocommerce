@@ -420,6 +420,30 @@ msgid ""
 "print."
 msgstr ""
 
+#: src/Model/Charge.php:78
+msgid "Anti-Fraud reproved."
+msgstr ""
+
+#: src/Model/Charge.php:79
+msgid "Anti-Fraud approved."
+msgstr ""
+
+#: src/Model/Charge.php:80
+msgid "Anti-fraud process in manual analysis."
+msgstr ""
+
+#: src/Model/Charge.php:81
+msgid "Anti-fraud process pending"
+msgstr ""
+
+#: src/Model/Order.php:100
+msgid "Mundipagg: Payment canceled."
+msgstr ""
+
+#: src/Model/Order.php:86
+msgid "Webhook received: "
+msgstr ""
+
 #: src/View/Checkouts.php:60 src/View/Checkouts.php:127
 msgid "Print"
 msgstr ""
