@@ -20,6 +20,11 @@ class Charges
 		add_action( 'wp_ajax_STW3dqRT6E', array( $this, 'handle_ajax_operations' ) );
 	}
 
+	public function handle_actions_add_notes($body)
+	{
+		$this->model->add_notes($body);
+	}
+
 	public function handle_actions( $body )
 	{
 		$this->model->create_from_webhook( $body );
@@ -83,8 +88,19 @@ class Charges
 			'charge_pending',
 		);
 
-		foreach ( $events as $event ) {
-			add_action( "on_mundipagg_{$event}", array( $this, 'handle_actions' ) );
+		foreach ($events as $event) {
+			add_action("on_mundipagg_{$event}", array($this, 'handle_actions'));
+		}
+
+		$eventsNotes = array(
+			'charge_antifraud_approved',
+			'charge_antifraud_manual',
+			'charge_antifraud_pending',
+			'charge_antifraud_reproved',
+		);
+
+		foreach ($eventsNotes as $event) {
+			add_action("on_mundipagg_notes_{$event}", array($this, 'handle_actions_add_notes'));
 		}
 	}
 }
