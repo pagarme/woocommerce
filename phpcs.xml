@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Plugin">
+    <description>Strict WordPress plugin coding standards.</description>
+
+    <exclude-pattern>./*\.(css|js|json|map|xml)</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+    <rule ref="Generic.Commenting.Todo"/>
+    <rule ref="WordPress-Extra">
+        <exclude name="WordPress.CSRF.NonceVerification" />
+        <exclude name="WordPress.PHP.YodaConditions" />
+    </rule>
+
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array" value="woo-mundipagg-payments"/>
+        </properties>
+    </rule>
+
+    <role ref="Generic.Files.LowercasedFilename">
+        <exclude-pattern>./src/*\.php</exclude-pattern>
+    </role>
+
+    <rule ref="WordPress.XSS.EscapeOutput">
+        <exclude-pattern>./src/*\.php</exclude-pattern>
+    </rule>
+
+    <rule ref="WordPress.Files.FileName">
+        <exclude-pattern>./src/*\.php</exclude-pattern>
+    </rule>
+
+    <rule ref="WordPress.WhiteSpace.ControlStructureSpacing.OpenBraceNotSameLine">
+        <exclude-pattern>./src/*\.php</exclude-pattern>
+    </rule>
+
+    <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine">
+        <exclude-pattern>./src/*\.php</exclude-pattern>
+    </rule>
+
+    <rule ref="Generic.Classes.OpeningBraceSameLine">
+        <exclude-pattern>./src/*\.php</exclude-pattern>
+    </rule>
+</ruleset>
