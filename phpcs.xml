@@ -15,7 +15,7 @@
 
     <rule ref="WordPress.WP.I18n">
         <properties>
-            <property name="text_domain" type="array" value="woo-mundipagg-payments"/>
+            <property name="text_domain" type="array" value="woo-pagarme-payments"/>
         </properties>
     </rule>
 
