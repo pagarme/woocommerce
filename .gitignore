@@ -1,0 +1,6 @@
+*.lock
+*.log
+*.orig
+.sass-cache
+node_modules/
+.idea/

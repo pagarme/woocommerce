@@ -1,0 +1,24 @@
+{
+	"laxcomma" : true,
+	"latedef"  : true,
+	"browser"  : true,
+	"eqnull"   : true,
+	"curly"    : true,
+	"undef"    : true,
+	"noarg"    : true,
+	"immed"    : true,
+	"expr"     : true,
+	"sub"      : true,
+	"globals"  : {
+		"MONSTER" 		      : true,
+		"MundiPaggGlobalVars" : true,
+		"MundiCheckout"       : true,
+		"Mundipagg" 		  : true,
+		"console" 		      : true,
+		"jQuery"  		      : true,
+		"Toastr"  		      : true,
+		"swal"			      : true,
+		"wp"      		      : true,
+		"$"       		      : true
+	}
+}
