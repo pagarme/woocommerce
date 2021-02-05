@@ -1,13 +1,13 @@
 <?php
-namespace Woocommerce\Mundipagg\Model;
+namespace Woocommerce\Pagarme\Model;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Setting;
 use WC_Order;
 
 class Charge
@@ -15,7 +15,7 @@ class Charge
 	/**
 	 * The table name.
 	 */
-	const TABLE = 'woocommerce_mundipagg_charges';
+	const TABLE = 'woocommerce_pagarme_charges';
 
 	public function insert( array $data )
 	{
@@ -83,12 +83,12 @@ class Charge
 
 		$message = __(
 			$messageList[$webHookData->type],
-			'woo-mundipagg-payments'
+			'woo-pagarme-payments'
 		);
 
 		$messageWebHook = __(
 			"Webhook received: ",
-			'woo-mundipagg-payments'
+			'woo-pagarme-payments'
 		);
 
 		$wc_order = new WC_Order($webHookData->data->order->code);

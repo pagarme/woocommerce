@@ -1,15 +1,15 @@
 <?php
-namespace Woocommerce\Mundipagg\Model;
+namespace Woocommerce\Pagarme\Model;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Setting;
-use Woocommerce\Mundipagg\Model\Gateway;
-use Woocommerce\Mundipagg\Resource\Tokens;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Resource\Tokens;
 
 class Payment
 {
@@ -30,7 +30,7 @@ class Payment
 	 *
 	 * @param $wc_order object order from woocommerce
 	 * @param $form_fields array Sent form fields
-	 * @param $customer object response of Woocommerce\Mundipagg\Resource\Customer
+	 * @param $customer object response of Woocommerce\Pagarme\Resource\Customer
 	 *
 	 * @return array
 	 */
@@ -84,7 +84,7 @@ class Payment
 	 *
 	 * @param $wc_order object order from woocommerce
 	 * @param $form_fields array Sent form fields
-	 * @param $customer object response of Woocommerce\Mundipagg\Resource\Customer
+	 * @param $customer object response of Woocommerce\Pagarme\Resource\Customer
 	 *
 	 * @return array
 	 */
@@ -109,7 +109,7 @@ class Payment
 	 *
 	 * @param $wc_order object order from woocommerce
 	 * @param $form_fields array Sent form fields
-	 * @param $customer object response of Woocommerce\Mundipagg\Resource\Customer
+	 * @param $customer object response of Woocommerce\Pagarme\Resource\Customer
 	 *
 	 * @return array
 	 */
@@ -150,7 +150,7 @@ class Payment
 	 *
 	 * @param $wc_order object order from woocommerce
 	 * @param $form_fields array Sent form fields
-	 * @param $customer object response of Woocommerce\Mundipagg\Resource\Customer
+	 * @param $customer object response of Woocommerce\Pagarme\Resource\Customer
 	 *
 	 * @return array
 	 */
@@ -193,7 +193,7 @@ class Payment
 	 *
 	 * @param $wc_order object order from woocommerce
 	 * @param $form_fields array Sent form fields
-	 * @param $customer object response of Woocommerce\Mundipagg\Resource\Customer
+	 * @param $customer object response of Woocommerce\Pagarme\Resource\Customer
 	 *
 	 * @return array
 	 */

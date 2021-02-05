@@ -1,14 +1,14 @@
 <?php
-namespace Woocommerce\Mundipagg\Model;
+namespace Woocommerce\Pagarme\Model;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
 use Exception;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Resource\Customers;
-use Woocommerce\Mundipagg\Resource\Orders;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Resource\Customers;
+use Woocommerce\Pagarme\Resource\Orders;
 
 use WC_Order;
 
@@ -56,15 +56,15 @@ class Api
 			$response = $customers->create( $params );
 
 			if (!empty($this->settings)) {
-				$this->settings->log()->add('woo-mundipagg', 'CREATE CUSTOMER REQUEST: ' . json_encode($params, JSON_PRETTY_PRINT));
-				$this->settings->log()->add('woo-mundipagg', 'CREATE CUSTOMER RESPONSE: ' . json_encode($response->body, JSON_PRETTY_PRINT));
+				$this->settings->log()->add('woo-pagarme', 'CREATE CUSTOMER REQUEST: ' . json_encode($params, JSON_PRETTY_PRINT));
+				$this->settings->log()->add('woo-pagarme', 'CREATE CUSTOMER RESPONSE: ' . json_encode($response->body, JSON_PRETTY_PRINT));
 			}
 
 			return $response->body;
 
 		} catch ( Exception $e ) {
 			if (!empty($this->settings)) {
-				$this->settings->log()->add( 'woo-mundipagg', 'CREATE CUSTOMER ERROR: ' . $e->__toString() );
+				$this->settings->log()->add( 'woo-pagarme', 'CREATE CUSTOMER ERROR: ' . $e->__toString() );
 			}
 			error_log( $e->__toString() );
 			return null;
@@ -73,7 +73,7 @@ class Api
 
 	public function create_order( WC_Order $wc_order, $payment_method, $form_fields )
 	{
-        $file = 'woo-mundipagg';
+        $file = 'woo-pagarme';
 		$customer = $this->create_customer($wc_order);
 
 		if ( ! $customer ) {
@@ -149,7 +149,7 @@ class Api
 
 		} catch ( Exception $e ) {
 			if (!empty($this->settings)) {
-				$this->settings->log()->add( 'woo-mundipagg', 'CREATE ORDER ERROR: ' . $e->__toString() );
+				$this->settings->log()->add( 'woo-pagarme', 'CREATE ORDER ERROR: ' . $e->__toString() );
 			}
 			error_log( $e->__toString() );
 			return null;

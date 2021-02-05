@@ -1,5 +1,5 @@
 <?php
-namespace Woocommerce\Mundipagg\Model;
+namespace Woocommerce\Pagarme\Model;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
@@ -8,9 +8,9 @@ if ( ! function_exists( 'add_action' ) ) {
 // Exeption
 use Exception;
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Setting;
 
 // WooCommerce
 use WC_Order;
@@ -83,7 +83,7 @@ class Gateway
 	{
 		$output = sprintf(
 			'<option value="1">%1$s</option>',
-			__( 'At sight', 'woo-mundipagg-payments' ) . ' (' . wc_price( $total ) . ')'
+			__( 'At sight', 'woo-pagarme-payments' ) . ' (' . wc_price( $total ) . ')'
 		);
 
 		$interest_base = $interest;
@@ -108,7 +108,7 @@ class Gateway
 			}
 
 			$price = ceil( $value / $times * 100 ) / 100;
-			$text  = sprintf( __( '%dx of %s (%s)', 'woo-mundipagg-payments' ),
+			$text  = sprintf( __( '%dx of %s (%s)', 'woo-pagarme-payments' ),
 				$times,
 				wc_price( $price ),
 				wc_price( $value )
