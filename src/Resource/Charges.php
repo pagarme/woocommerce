@@ -1,12 +1,12 @@
 <?php
-namespace Woocommerce\Mundipagg\Resource;
+namespace Woocommerce\Pagarme\Resource;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
 use Unirest\Request;
 use Unirest\Request\Body;
 
