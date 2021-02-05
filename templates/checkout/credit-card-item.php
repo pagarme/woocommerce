@@ -7,11 +7,11 @@ if ( ! $model->settings->is_active_credit_card() ) {
 	return;
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\View\Checkouts;
-use Woocommerce\Mundipagg\Model\Customer;
-use Woocommerce\Mundipagg\Model\Setting;
-use Woocommerce\Mundipagg\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\View\Checkouts;
+use Woocommerce\Pagarme\Model\Customer;
+use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Helper\Utils;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
 $ref               = md5( rand( 1, 1000 ) );
@@ -38,7 +38,7 @@ $type              = 'card';
 			<p class="form-row form-row-first">
 
 				<label for="installments">
-					<?php esc_html_e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+					<?php esc_html_e( 'Installments quantity', 'woo-pagarme-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments"

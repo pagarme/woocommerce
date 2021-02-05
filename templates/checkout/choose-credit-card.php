@@ -3,10 +3,10 @@ if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Customer;
-use Woocommerce\Mundipagg\Model\Setting;
-use Woocommerce\Mundipagg\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Customer;
+use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Helper\Utils;
 
 if ( ! is_user_logged_in() ) {
 	return;
@@ -29,14 +29,14 @@ if ( ! $customer->cards ) {
 
 <p class="form-row form-row-wide">
 
-	<?php esc_html_e( 'Credit cards save', 'woo-mundipagg-payments' ); ?><br>
+	<?php esc_html_e( 'Credit cards save', 'woo-pagarme-payments' ); ?><br>
 
 	<select name="card_id<?php echo esc_html( $suffix ); ?>" id="field-choose-card"
 			data-action="select2"
 			data-installments-type="<?php echo intval( Setting::get_instance()->cc_installment_type ); ?>"
 			data-element="choose-credit-card">
 		<option value="">
-			<?php esc_html_e( 'Saved credit card', 'woo-mundipagg-payments' ); ?>
+			<?php esc_html_e( 'Saved credit card', 'woo-pagarme-payments' ); ?>
 		</option>
 
 		<?php

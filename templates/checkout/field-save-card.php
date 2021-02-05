@@ -3,9 +3,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Customer;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Customer;
+use Woocommerce\Pagarme\Model\Setting;
 
 if ( ! is_user_logged_in() ) {
 	return;
@@ -29,6 +29,6 @@ if ( ! $setting->is_allowed_save_credit_card() ) {
 			value="1"
 			<?php checked( $customer->save_credit_card, true ); ?>>
 
-		<?php esc_html_e( 'Save this card for future purchases', 'woo-mundipagg-payments' ); ?>
+		<?php esc_html_e( 'Save this card for future purchases', 'woo-pagarme-payments' ); ?>
 	</label>
 </p>

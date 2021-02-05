@@ -3,10 +3,10 @@ if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Order;
-use Woocommerce\Mundipagg\View\Checkouts;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Order;
+use Woocommerce\Pagarme\View\Checkouts;
 
 $model = new Order( $order_id );
 $class = 'message';
