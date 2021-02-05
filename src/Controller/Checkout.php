@@ -1,20 +1,20 @@
 <?php
-namespace Woocommerce\Mundipagg\Controller;
+namespace Woocommerce\Pagarme\Controller;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Model\Api;
-use Woocommerce\Mundipagg\Model\Order;
-use Woocommerce\Mundipagg\Model\Customer;
-use Woocommerce\Mundipagg\Model\Gateway;
-use Woocommerce\Mundipagg\Model\Charge;
-use Woocommerce\Mundipagg\Model\Setting;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\View;
-use Woocommerce\Mundipagg\Model;
+use Woocommerce\Pagarme\Model\Api;
+use Woocommerce\Pagarme\Model\Order;
+use Woocommerce\Pagarme\Model\Customer;
+use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Charge;
+use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\View;
+use Woocommerce\Pagarme\Model;
 
 use WC_Order;
 
@@ -27,7 +27,7 @@ class Checkout
 		$this->api = Api::get_instance();
 
 		add_action( 'woocommerce_api_' . Model\Checkout::API_REQUEST, array( $this, 'process_checkout_transparent' ) );
-		add_action( 'woocommerce_view_order', array( 'Woocommerce\Mundipagg\View\Checkouts', 'render_payment_details' ) );
+		add_action( 'woocommerce_view_order', array( 'Woocommerce\Pagarme\View\Checkouts', 'render_payment_details' ) );
 		add_action( 'wp_ajax_xqRhBHJ5sW', array( $this, 'build_installments' ) );
 		add_action( 'wp_ajax_nopriv_xqRhBHJ5sW', array( $this, 'build_installments' ) );
 		add_filter( 'wcbcf_billing_fields', array( $this, 'set_required_fields' ) );

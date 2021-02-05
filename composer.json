@@ -1,11 +1,11 @@
 {
-    "name": "woocommerce-mundipagg-payments",
-    "description": "WooCommerce Mundipagg Payments",
+    "name": "woocommerce-pagarme-payments",
+    "description": "WooCommerce Pagar.me Payments",
     "type": "wordpress-plugin",
     "license": "GPL",
     "autoload": {
         "psr-4": {
-            "Woocommerce\\Mundipagg\\": "src/"
+            "Woocommerce\\Pagarme\\": "src/"
         }
     },
     "require": {

@@ -60,7 +60,7 @@ function _wcmp_load_notice( $name ) {
 function _wcmp_load_instances() {
 	require_once 'vendor/autoload.php';
 
-	Woocommerce\Mundipagg\Core::instance();
+	Woocommerce\Pagarme\Core::instance();
 
 	do_action( 'wcmp_init' );
 }

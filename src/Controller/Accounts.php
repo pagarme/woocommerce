@@ -1,15 +1,15 @@
 <?php
-namespace Woocommerce\Mundipagg\Controller;
+namespace Woocommerce\Pagarme\Controller;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Setting;
-use Woocommerce\Mundipagg\Model\Account;
-use Woocommerce\Mundipagg\Model\Customer;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Account;
+use Woocommerce\Pagarme\Model\Customer;
 
 class Accounts
 {

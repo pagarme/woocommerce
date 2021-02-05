@@ -1,14 +1,14 @@
 <?php
-namespace Woocommerce\Mundipagg\Controller;
+namespace Woocommerce\Pagarme\Controller;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Order;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Order;
+use Woocommerce\Pagarme\Model\Setting;
 
 class Orders
 {
@@ -45,7 +45,7 @@ class Orders
 		add_meta_box(
 			'woo-mundipagg-capture',
 			'MundiPagg - Captura/Cancelamento',
-			array( 'Woocommerce\Mundipagg\View\Orders', 'render_capture_metabox' ),
+			array( 'Woocommerce\Pagarme\View\Orders', 'render_capture_metabox' ),
 			'shop_order',
 			'advanced',
 			'high'

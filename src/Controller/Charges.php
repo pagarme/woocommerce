@@ -1,14 +1,14 @@
 <?php
-namespace Woocommerce\Mundipagg\Controller;
+namespace Woocommerce\Pagarme\Controller;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Charge;
-use Woocommerce\Mundipagg\Resource\Charges as Charges_Resource;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Charge;
+use Woocommerce\Pagarme\Resource\Charges as Charges_Resource;
 
 class Charges
 {
