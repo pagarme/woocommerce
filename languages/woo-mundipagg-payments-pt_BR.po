@@ -1,13 +1,13 @@
-# Copyright (C) 2017 MundiPagg WordPress
+# Copyright (C) 2017 Pagarme WordPress
 # This file is distributed under the GPL2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce MundiPagg Payments 1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-mundipagg-"
+"Project-Id-Version: WooCommerce Pagarme Payments 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-"
 "payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
 "PO-Revision-Date: 2018-06-22 13:59-0300\n"
-"Last-Translator: MundiPagg\n"
+"Last-Translator: Pagarme\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -27,8 +27,8 @@ msgid "Wallet"
 msgstr "Carteira"
 
 #: src/Controller/Accounts.php:65
-msgid "Your wallet for Mundipagg registered credit cards"
-msgstr "Sua carteira para cartões de crédito registrados no Mundipagg"
+msgid "Your wallet for Pagarme registered credit cards"
+msgstr "Sua carteira para cartões de crédito registrados no Pagarme"
 
 #: src/Controller/Accounts.php:89
 msgid "User not loggedin."
@@ -71,12 +71,12 @@ msgid "The flag <b>%s</b> is not supported."
 msgstr "A bandeira <b>%s</b> não é suportada."
 
 #: src/Controller/Gateways.php:30
-msgid "MundiPagg Payments"
-msgstr "MundiPagg Pagamentos"
+msgid "Pagarme Payments"
+msgstr "Pagarme Pagamentos"
 
 #: src/Controller/Gateways.php:31
-msgid "Payment Gateway MundiPagg"
-msgstr "Gateway de pagamento MundiPagg"
+msgid "Payment Gateway Pagarme"
+msgstr "Gateway de pagamento Pagarme"
 
 #: src/Controller/Gateways.php:64
 msgid "General"
@@ -104,16 +104,16 @@ msgid "This the title which the user sees during checkout."
 msgstr "Este é o título que o usuário vê durante o checkout."
 
 #: src/Controller/Gateways.php:178
-msgid "MundiPagg"
-msgstr "MundiPagg"
+msgid "Pagarme"
+msgstr "Pagarme"
 
 #: src/Controller/Gateways.php:185
 msgid "Description"
 msgstr "Descrição"
 
 #: src/Controller/Gateways.php:186
-msgid "Pay with Mundipagg"
-msgstr "Pagar com MundiPagg"
+msgid "Pay with Pagarme"
+msgstr "Pagar com Pagarme"
 
 #: src/Controller/Gateways.php:194
 msgid "Environment"
@@ -367,9 +367,9 @@ msgstr "Logs"
 
 #: src/Controller/Gateways.php:667
 msgid ""
-"Log MundiPagg events, you can check this log in WooCommerce>Status>Logs."
+"Log Pagarme events, you can check this log in WooCommerce>Status>Logs."
 msgstr ""
-"Registra eventos da MundiPagg, você pode conferir esse arquivo de log em "
+"Registra eventos da Pagarme, você pode conferir esse arquivo de log em "
 "WooCommerce>Status>Logs."
 
 #: src/Controller/Settings.php:32
@@ -377,8 +377,8 @@ msgid "Settings"
 msgstr "Configurações"
 
 #. Plugin Name of the plugin/theme
-msgid "WooCommerce MundiPagg Payments"
-msgstr "WooCommerce MundiPagg Pagamentos"
+msgid "WooCommerce Pagarme Payments"
+msgstr "WooCommerce Pagarme Pagamentos"
 
 #: src/Model/Gateway.php:85
 msgid "At sight"
@@ -409,12 +409,12 @@ msgid "Failed"
 msgstr "Falhou"
 
 #: src/Model/Order.php:80
-msgid "MundiPagg: Awaiting payment confirmation."
-msgstr "MundiPagg: Aguardando confirmação de pagamento."
+msgid "Pagarme: Awaiting payment confirmation."
+msgstr "Pagarme: Aguardando confirmação de pagamento."
 
 #: src/Model/Order.php:90
-msgid "Mundipagg: Payment has already been confirmed."
-msgstr "Mundipagg: O pagamento já foi confirmado."
+msgid "Pagarme: Payment has already been confirmed."
+msgstr "Pagarme: O pagamento já foi confirmado."
 
 #: src/Model/Charge.php:78
 msgid "Anti-Fraud reproved."
@@ -433,8 +433,8 @@ msgid "Anti-fraud process pending."
 msgstr "Processo de antifraude pendente."
 
 #: src/Model/Order.php:100
-msgid "Mundipagg: Payment canceled."
-msgstr "Mundipagg: Pagamento cancelado."
+msgid "Pagarme: Payment canceled."
+msgstr "Pagarme: Pagamento cancelado."
 
 #: src/Model/Order.php:86
 msgid "Webhook received: "
@@ -687,28 +687,28 @@ msgstr "Remover"
 msgid "No credit card saved."
 msgstr "Nenhum cartão de crédito salvo."
 
-#: woo-mundipagg-payments.php:35
+#: woo-pagarme-payments.php:35
 msgid "Your PHP version is not supported. Required >= 5.5."
 msgstr "Sua versão do PHP não é suportada. Obrigatório >= 5.5."
 
-#: woo-mundipagg-payments.php:45
+#: woo-pagarme-payments.php:45
 msgid "WooCoomerce plugin is required."
 msgstr "Plugin WooCoomerce é requerido."
 
-#: woo-mundipagg-payments.php:51
+#: woo-pagarme-payments.php:51
 msgid "WooCoomerce Extra Checkout Fields For Brazil plugin is required."
 msgstr "O plugin WooCoomerce Extra Checkout Fields For Brazil  é obrigatório."
 
 #. Description of the plugin/theme
-msgid "Enable MundiPagg Gateway for WooCommerce"
-msgstr "Habilita o gateway de pagamento MundiPagg para o WooCommerce"
+msgid "Enable Pagarme Gateway for WooCommerce"
+msgstr "Habilita o gateway de pagamento Pagarme para o WooCommerce"
 
 #. Author of the plugin/theme
-msgid "Mundipagg"
+msgid "Pagarme"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "https://mundipagg.com"
+msgid "https://pagarme.me"
 msgstr ""
 
 #~ msgid "The flag %s is not supported."
@@ -755,11 +755,11 @@ msgstr ""
 #~ msgid "Go to setup"
 #~ msgstr "Ir para as configurações"
 
-#~ msgid "Your transaction has been processed by MundiPagg."
-#~ msgstr "Sua transação foi processada pela MundiPagg."
+#~ msgid "Your transaction has been processed by Pagarme."
+#~ msgstr "Sua transação foi processada pela Pagarme."
 
-#~ msgid "Payment Data - MundiPagg"
-#~ msgstr "Dados do Pagamento - MundiPagg"
+#~ msgid "Payment Data - Pagarme"
+#~ msgstr "Dados do Pagamento - Pagarme"
 
 #~ msgid "Interest"
 #~ msgstr "Juros"

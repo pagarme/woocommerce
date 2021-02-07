@@ -42,13 +42,13 @@ class Checkout
 		$wc_order = wc_get_order( Utils::post( 'order', 0, 'intval' ) );
 
 		if ( ! $wc_order ) {
-			wp_send_json_error( __( 'Invalid order', 'woo-mundipagg-payments' ) );
+			wp_send_json_error( __( 'Invalid order', 'woo-pagarme-payments' ) );
 		}
 
 		$fields = $this->prepare_fields( $_POST['fields'] );
 
 		if ( empty( $fields ) ) {
-			wp_send_json_error( __( 'Empty fields', 'woo-mundipagg-payments' ) );
+			wp_send_json_error( __( 'Empty fields', 'woo-pagarme-payments' ) );
 		}
 
 		$this->validate_amount_billet_and_card( $fields, $wc_order );
@@ -77,11 +77,11 @@ class Checkout
 		$charge = new Charge();
 
 		$order->payment_method   = $fields['payment_method'];
-		$order->mundipagg_id     = $response->body->id;
-		$order->mundipagg_status = $response->body->status;
+		$order->pagarme_id     = $response->body->id;
+		$order->pagarme_status = $response->body->status;
 		$order->response_data    = $response->body;
 
-		$order->update_by_mundipagg_status( $response->body->status );
+		$order->update_by_pagarme_status( $response->body->status );
 		$charge->create_from_order( $response->body->id, $response->body->charges );
 
 		WC()->cart->empty_cart();
@@ -205,11 +205,11 @@ class Checkout
 		$amount       = intval( $billet ) + intval( $credit_card );
 
 		if ( $amount < $total ) {
-			wp_send_json_error( __( 'The sum of boleto and credit card is less than the total', 'woo-mundipagg-payments' ) );
+			wp_send_json_error( __( 'The sum of boleto and credit card is less than the total', 'woo-pagarme-payments' ) );
 		}
 
 		if ( $amount > $total ) {
-			wp_send_json_error( __( 'The sum of boleto and credit card is greater than the total', 'woo-mundipagg-payments' ) );
+			wp_send_json_error( __( 'The sum of boleto and credit card is greater than the total', 'woo-pagarme-payments' ) );
 		}
 	}
 
@@ -227,11 +227,11 @@ class Checkout
 		$amount = intval( $value1 ) + intval( $value2 );
 
 		if ( $amount < $total ) {
-			wp_send_json_error( __( 'The sum of the two credit cards is less than the total', 'woo-mundipagg-payments' ) );
+			wp_send_json_error( __( 'The sum of the two credit cards is less than the total', 'woo-pagarme-payments' ) );
 		}
 
 		if ( $amount > $total ) {
-			wp_send_json_error( __( 'The sum of the two credits cards is greater than the total', 'woo-mundipagg-payments' ) );
+			wp_send_json_error( __( 'The sum of the two credits cards is greater than the total', 'woo-pagarme-payments' ) );
 		}
 	}
 
@@ -248,11 +248,11 @@ class Checkout
 		}
 
 		if ( $brand1 && ! in_array( $brand1, $flags ) ) {
-			wp_send_json_error( sprintf( __( 'The flag <b>%s</b> is not supported.', 'woo-mundipagg-payments' ), $brand1 ) );
+			wp_send_json_error( sprintf( __( 'The flag <b>%s</b> is not supported.', 'woo-pagarme-payments' ), $brand1 ) );
 		}
 
 		if ( $brand2 && ! in_array( $brand2, $flags ) ) {
-			wp_send_json_error( sprintf( __( 'The flag <b>%s</b> is not supported.', 'woo-mundipagg-payments' ), $brand2 ) );
+			wp_send_json_error( sprintf( __( 'The flag <b>%s</b> is not supported.', 'woo-pagarme-payments' ), $brand2 ) );
 		}
 	}
 }

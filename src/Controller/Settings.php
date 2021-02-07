@@ -30,7 +30,7 @@ class Settings
 			sprintf(
 				'<a href="%s">%s</a>',
 				Core::get_page_link(),
-				__( 'Settings', 'woo-mundipagg-payments' )
+				__( 'Settings', 'woo-pagarme-payments' )
 			),
 		);
 

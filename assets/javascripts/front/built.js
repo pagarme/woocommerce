@@ -114,7 +114,7 @@
     MONSTER.utils = {
 
         getGlobalVars: function(name) {
-            return ( window.MundiPaggGlobalVars || {} )[name];
+            return ( window.PagarmeGlobalVars || {} )[name];
         },
 
         prefix: function() {
@@ -264,7 +264,7 @@
     context.MONSTER = MONSTER;
 
 })( window, jQuery );
-;MONSTER( 'Mundipagg.BuildComponents', function(Model, $, utils) {
+;MONSTER( 'Pagarme.BuildComponents', function(Model, $, utils) {
 
 	Model.create = function(container) {
 		var components    = '[data-' + utils.addPrefix( 'component' ) + ']'
@@ -275,7 +275,7 @@
 	};
 
 	Model._start = function(components) {
-		if ( typeof Mundipagg.Components === 'undefined' ) {
+		if ( typeof Pagarme.Components === 'undefined' ) {
 			return;
 		}
 
@@ -303,7 +303,7 @@
 	};
 
 	Model._callback = function(name, component) {
-		var callback = Mundipagg.Components[name];
+		var callback = Pagarme.Components[name];
 
 		if ( typeof callback == 'function' ) {
 			callback.call( null, component );
@@ -314,7 +314,7 @@
 	};
 
 }, {} );
-;MONSTER( 'Mundipagg.BuildCreate', function(Model, $, utils) {
+;MONSTER( 'Pagarme.BuildCreate', function(Model, $, utils) {
 
 	Model.init = function(container, names) {
 		if ( !names.length ) {
@@ -326,7 +326,7 @@
 	};
 
 	Model.findNames = function(name, index) {
-		this.callback( Mundipagg[utils.ucfirst( name )] );
+		this.callback( Pagarme[utils.ucfirst( name )] );
 	};
 
 	Model.callback = function(callback) {
@@ -2490,18 +2490,18 @@ return sweetAlert;
 
 })));
 if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
-;MONSTER( 'Mundipagg.Application', function(Model, $, utils) {
+;MONSTER( 'Pagarme.Application', function(Model, $, utils) {
 
 	var createNames = [
 	];
 
 	Model.init = function(container) {
-		Mundipagg.BuildComponents.create( container );
-		Mundipagg.BuildCreate.init( container, createNames );
+		Pagarme.BuildComponents.create( container );
+		Pagarme.BuildCreate.init( container, createNames );
 	};
 
 });
-;MONSTER( 'Mundipagg.CheckoutErrors', function(Model, $, utils) {
+;MONSTER( 'Pagarme.CheckoutErrors', function(Model, $, utils) {
 
 	Model.create = function(context) {
 		this.context = context;
@@ -2509,7 +2509,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.init = function() {
-		$( 'body' ).on( 'onMundiPaggCheckoutFail', this.error.bind(this) );
+		$( 'body' ).on( 'onPagarmeCheckoutFail', this.error.bind(this) );
 	};
 
 	Model.error = function(event, errorThrown) {
@@ -2541,9 +2541,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.translateErrors = function( error, message ) {
 		error            = error.replace( 'request.', '' );
 		var output       = error + ': ' + message;
-		var ptBrMessages = MundiPaggGlobalVars.checkoutErrors.pt_BR;
+		var ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
 
-		if ( MundiPaggGlobalVars.WPLANG != 'pt_BR' ) {
+		if ( PagarmeGlobalVars.WPLANG != 'pt_BR' ) {
 			return output;
 		}
 
@@ -2555,14 +2555,14 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 });
-;MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
+;MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.start = function() {
 		this.lock = false;
 
 		this.addEventListener();
 
-		Mundipagg.CheckoutErrors.create( this );
+		Pagarme.CheckoutErrors.create( this );
 
 		if ( typeof $().select2 === 'function' ) {
 			this.applySelect2();
@@ -2611,24 +2611,24 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
-		$( 'body' ).trigger( 'onMundiPaggSubmit', [ e ] )
+		$( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
 
 		if ( $('input[name=payment_method]').val() === 'billet' ) {
 			this.loadSwal();
 		}
 
-		$( 'body' ).on( 'onMundiPaggCheckoutDone', function(){
+		$( 'body' ).on( 'onPagarmeCheckoutDone', function(){
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
 				return;
 			}
 			this.loadSwal();
 		}.bind(this));
 
-		$( 'body' ).on( 'onMundiPagg2CardsDone', function(){
-			if ( window.MundiPagg2Cards === 2 ) {
+		$( 'body' ).on( 'onPagarme2CardsDone', function(){
+			if ( window.Pagarme2Cards === 2 ) {
 				this.loadSwal();
 			}
-			window.MundiPagg2Cards = 0;
+			window.Pagarme2Cards = 0;
 		}.bind(this));
 	};
 
@@ -2656,7 +2656,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 			var brand = wrapper.find( '[data-element="choose-credit-card"]' ).find( 'option:selected' ).data( 'brand' );
 
-			$( 'body' ).trigger( "mundipaggBlurCardOrderValue", [ brand, total, wrapper ] );
+			$( 'body' ).trigger( "pagarmeBlurCardOrderValue", [ brand, total, wrapper ] );
 		} else {
 			wrapper.find( '[data-element=installments]' ).html( option );
 		}
@@ -2822,11 +2822,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		var wrapper = select.closest( 'fieldset' );
 		var method  = event.currentTarget.value.trim() ? 'slideUp': 'slideDown';
 		var type    = method == 'slideUp' ? 'OneClickBuy': 'DefaultBuy';
-		var brandInput = wrapper.find( '[data-mundicheckout-element="brand-input"]' );
+		var brandInput = wrapper.find( '[data-pagarmecheckout-element="brand-input"]' );
 
 		$( '#wcmp-checkout-errors' ).hide();
 
-		$( 'body' ).trigger( "onMundipaggCardTypeChange", [ type, wrapper ] );
+		$( 'body' ).trigger( "onPagarmeCardTypeChange", [ type, wrapper ] );
 
 		var brand = select.find('option:selected').data('brand');
 		brandInput.val(brand);
@@ -2834,7 +2834,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		if ( select.data( 'installments-type' ) == 2 ) {
 
 			if ( type == 'OneClickBuy' ) {
-				$( 'body' ).trigger( 'mundipaggSelectOneClickBuy', [ brand, wrapper ] );
+				$( 'body' ).trigger( 'pagarmeSelectOneClickBuy', [ brand, wrapper ] );
 			} else {
 				brandInput.val( '' );
 				var option = '<option value="">...</option>';
@@ -2898,7 +2898,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 });
-;MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
+;MONSTER( 'Pagarme.Components.Installments', function(Model, $, utils) {
     Model.fn.start = function() {
 		this.lock  = false;
 		this.total = this.$el.data( 'total' );
@@ -2907,11 +2907,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.addEventListener = function() {
 		if ( this.$el.data( 'type' ) == 2 ) {
-			$( 'body' ).on( 'mundipaggChangeBrand', this.onChangeBrand.bind(this) );
-			$( 'body' ).on( 'mundipaggSelectOneClickBuy', this.onSelectOneClickBuy.bind(this) );
+			$( 'body' ).on( 'pagarmeChangeBrand', this.onChangeBrand.bind(this) );
+			$( 'body' ).on( 'pagarmeSelectOneClickBuy', this.onSelectOneClickBuy.bind(this) );
 		}
 
-		$( 'body' ).on( 'mundipaggBlurCardOrderValue', this.onBlurCardOrderValue.bind(this) );
+		$( 'body' ).on( 'pagarmeBlurCardOrderValue', this.onBlurCardOrderValue.bind(this) );
 	};
 
 	Model.fn.onChangeBrand = function(event, brand, cardNumberLength, wrapper) {
@@ -2992,28 +2992,28 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn.removeLoader = function() {
 		$('#wcmp-checkout-form').unblock();
 	};
-});    ;MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
+});    ;MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 
-	window.MundiPagg2Cards = 0;
+	window.Pagarme2Cards = 0;
 
 	Model.fn.start = function() {
-		this.script           = $( '[data-mundicheckout-app-id]' );
-		this.form             = $( '[data-mundicheckout-form]' );
-		this.suffix           = this.$el.data( 'mundicheckoutSuffix' ) || 1;
-		this.creditCardNumber = this.$el.find( '[data-mundicheckout-element="number"]' );
-		this.creditCardBrand  = this.$el.find( '[data-mundicheckout-element="brand"]' );
-		this.brandInput       = this.$el.find( '[data-mundicheckout-element="brand-input"]' );
+		this.script           = $( '[data-pagarmecheckout-app-id]' );
+		this.form             = $( '[data-pagarmecheckout-form]' );
+		this.suffix           = this.$el.data( 'pagarmecheckoutSuffix' ) || 1;
+		this.creditCardNumber = this.$el.find( '[data-pagarmecheckout-element="number"]' );
+		this.creditCardBrand  = this.$el.find( '[data-pagarmecheckout-element="brand"]' );
+		this.brandInput       = this.$el.find( '[data-pagarmecheckout-element="brand-input"]' );
 		this.chooseCreditCard = this.$el.closest( 'fieldset' ).find( '[data-element="choose-credit-card"]' );
-		this.cvv              = this.$el.find( '[data-mundicheckout-element="cvv"]' );
-		this.appId            = this.script.data( 'mundicheckoutAppId' );
-		this.apiURL           = 'https://api.mundipagg.com/core/v1/tokens?appId=' + this.appId;
+		this.cvv              = this.$el.find( '[data-pagarmecheckout-element="cvv"]' );
+		this.appId            = this.script.data( 'pagarmecheckoutAppId' );
+		this.apiURL           = 'https://api.pagarme.com/core/v1/tokens?appId=' + this.appId;
 
 		this.addEventListener();
 	};
 
 	Model.fn.addEventListener = function() {
 		this.creditCardNumber.on( 'keyup', this.keyEventHandlerCard.bind(this) );
-		$('body').on( 'onMundiPaggSubmit', this.onSubmit.bind(this) );
+		$('body').on( 'onPagarmeSubmit', this.onSubmit.bind(this) );
 	};
 
 	Model.fn.hasCardId = function() {
@@ -3030,17 +3030,17 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			prop, key;
 		obj['type'] = 'credit_card';
 		for (i = 0; i < length; i += 1) {
-			if (fields[i].getAttribute('data-mundicheckout-element') === 'exp_date') {
-				var sep = fields[i].getAttribute('data-mundicheckout-separator') ? fields[i].getAttribute('data-mundicheckout-separator') : '/';
+			if (fields[i].getAttribute('data-pagarmecheckout-element') === 'exp_date') {
+				var sep = fields[i].getAttribute('data-pagarmecheckout-separator') ? fields[i].getAttribute('data-pagarmecheckout-separator') : '/';
 				var values = fields[i].value.split(sep);
 				obj['exp_month'] = values[0];
 				obj['exp_year'] = values[1];
 			} else {
-				prop = fields[i].getAttribute('data-mundicheckout-element');
+				prop = fields[i].getAttribute('data-pagarmecheckout-element');
 				key = fields[i].value;
 
 				if ( prop == 'brand' ) {
-					key = fields[i].getAttribute('data-mundicheckout-brand' );
+					key = fields[i].getAttribute('data-pagarmecheckout-brand' );
 				}
 			}
 			obj[prop] = key;
@@ -3111,19 +3111,19 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn.changeBrand = function (brand, cardNumberLength) {
 		var $brand = this.creditCardBrand.get(0);
 		var wrapper = this.creditCardBrand.closest( 'fieldset' );
-		var imageSrc = 'https://checkout.mundipagg.com/images/brands/';
+		var imageSrc = 'https://checkout.pagarme.com/images/brands/';
 		var $img = $('img', $brand)[0];
 		var src;
 
-		$brand.setAttribute('data-mundicheckout-brand', brand);
+		$brand.setAttribute('data-pagarmecheckout-brand', brand);
 		this.brandInput.val( brand );
 
-		jQuery('body').trigger( 'mundipaggChangeBrand', [brand, cardNumberLength, wrapper] );
+		jQuery('body').trigger( 'pagarmeChangeBrand', [brand, cardNumberLength, wrapper] );
 
 		if (brand === '') {
 			$brand.innerHTML = '';
 		} else {
-			if ($brand.getAttribute('data-mundicheckout-brand-image') !== null) {
+			if ($brand.getAttribute('data-pagarmecheckout-brand-image') !== null) {
 				src = imageSrc + brand + '.min.png';
 				if (!$img) {
 					var $newImg = document.createElement('img');
@@ -3274,23 +3274,23 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.onSubmit = function(e) {
 		if ( this.hasCardId() ) {
-			$( 'body' ).trigger( 'onMundiPaggCheckoutDone' );
+			$( 'body' ).trigger( 'onPagarmeCheckoutDone' );
 
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
-				window.MundiPagg2Cards = window.MundiPagg2Cards + 1;
-				if ( window.MundiPagg2Cards === 2 ) {
-					$( 'body' ).trigger( 'onMundiPagg2CardsDone' );
+				window.Pagarme2Cards = window.Pagarme2Cards + 1;
+				if ( window.Pagarme2Cards === 2 ) {
+					$( 'body' ).trigger( 'onPagarme2CardsDone' );
 				}
 			}
 			return;
 		}
 
 		var $this = this;
-		var markedInputs = this.$el.find( '[data-mundicheckout-element]' );
-		var notMarkedInputs = this.$el.find( 'input:not([data-mundicheckout-element])' );
+		var markedInputs = this.$el.find( '[data-pagarmecheckout-element]' );
+		var notMarkedInputs = this.$el.find( 'input:not([data-pagarmecheckout-element])' );
 		var checkoutObj = this.createCheckoutObj(markedInputs);
 		var callbackObj = {};
-		var $hidden = this.$el.find( '[name="munditoken' + this.suffix + '"]' );
+		var $hidden = this.$el.find( '[name="pagarmetoken' + this.suffix + '"]' );
 		var cb;
 
 		if ( $hidden ) {
@@ -3317,9 +3317,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 				$hidden = document.createElement('input');
 				$hidden.setAttribute('type', 'hidden');
-				$hidden.setAttribute('name', 'munditoken' + $this.suffix );
+				$hidden.setAttribute('name', 'pagarmetoken' + $this.suffix );
 				$hidden.setAttribute('value', objJSON.id);
-				$hidden.setAttribute('data-munditoken', $this.suffix );
+				$hidden.setAttribute('data-pagarmetoken', $this.suffix );
 
 				$this.$el.append($hidden);
 
@@ -3327,7 +3327,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 					callbackObj[notMarkedInputs[i]['name']] = notMarkedInputs[i]['value'];
 				}
 
-				callbackObj['munditoken'] = objJSON.id;
+				callbackObj['pagarmetoken'] = objJSON.id;
 				cb = $this._onDone.call(null, callbackObj, suffix);
 
 				if ( typeof cb === 'boolean' && !cb ) {
@@ -3352,22 +3352,22 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn._onFail = function(error, suffix) {
-		$( 'body' ).trigger( 'onMundiPaggCheckoutFail', [ error ] );
+		$( 'body' ).trigger( 'onPagarmeCheckoutFail', [ error ] );
 	};
 
 	Model.fn._onDone = function(data, suffix) {
-		$( 'body' ).trigger( 'onMundiPaggCheckoutDone', [ data ] );
+		$( 'body' ).trigger( 'onPagarmeCheckoutDone', [ data ] );
 
 		if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
-			window.MundiPagg2Cards = window.MundiPagg2Cards + 1;
-			if ( window.MundiPagg2Cards === 2 ) {
-				$( 'body' ).trigger( 'onMundiPagg2CardsDone' );
+			window.Pagarme2Cards = window.Pagarme2Cards + 1;
+			if ( window.Pagarme2Cards === 2 ) {
+				$( 'body' ).trigger( 'onPagarme2CardsDone' );
 			}
 		}
 	};
 
 });
-;MONSTER( 'Mundipagg.Components.Wallet', function(Model, $, utils) {
+;MONSTER( 'Pagarme.Components.Wallet', function(Model, $, utils) {
 
 	Model.fn.start = function() {
 		this.addEventListener();
@@ -3437,9 +3437,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 ;jQuery(function($) {
 	var context = $( 'body' );
 
-	Mundipagg.vars = {
+	Pagarme.vars = {
 		body : context
 	};
 
-	Mundipagg.Application.init.apply( null, [context] );
+	Pagarme.Application.init.apply( null, [context] );
 });

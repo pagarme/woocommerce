@@ -114,7 +114,7 @@
     MONSTER.utils = {
 
         getGlobalVars: function(name) {
-            return ( window.MundiPaggGlobalVars || {} )[name];
+            return ( window.PagarmeGlobalVars || {} )[name];
         },
 
         prefix: function() {

@@ -89,7 +89,7 @@ class Charges
 		);
 
 		foreach ($events as $event) {
-			add_action("on_mundipagg_{$event}", array($this, 'handle_actions'));
+			add_action("on_pagarme_{$event}", array($this, 'handle_actions'));
 		}
 
 		$eventsNotes = array(
@@ -100,7 +100,7 @@ class Charges
 		);
 
 		foreach ($eventsNotes as $event) {
-			add_action("on_mundipagg_notes_{$event}", array($this, 'handle_actions_add_notes'));
+			add_action("on_pagarme_notes_{$event}", array($this, 'handle_actions_add_notes'));
 		}
 	}
 }

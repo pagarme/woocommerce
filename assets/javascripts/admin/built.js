@@ -114,7 +114,7 @@
     MONSTER.utils = {
 
         getGlobalVars: function(name) {
-            return ( window.MundiPaggGlobalVars || {} )[name];
+            return ( window.PagarmeGlobalVars || {} )[name];
         },
 
         prefix: function() {
@@ -264,7 +264,7 @@
     context.MONSTER = MONSTER;
 
 })( window, jQuery );
-;MONSTER( 'Mundipagg.BuildComponents', function(Model, $, utils) {
+;MONSTER( 'Pagarme.BuildComponents', function(Model, $, utils) {
 
 	Model.create = function(container) {
 		var components    = '[data-' + utils.addPrefix( 'component' ) + ']'
@@ -275,7 +275,7 @@
 	};
 
 	Model._start = function(components) {
-		if ( typeof Mundipagg.Components === 'undefined' ) {
+		if ( typeof Pagarme.Components === 'undefined' ) {
 			return;
 		}
 
@@ -303,7 +303,7 @@
 	};
 
 	Model._callback = function(name, component) {
-		var callback = Mundipagg.Components[name];
+		var callback = Pagarme.Components[name];
 
 		if ( typeof callback == 'function' ) {
 			callback.call( null, component );
@@ -314,7 +314,7 @@
 	};
 
 }, {} );
-;MONSTER( 'Mundipagg.BuildCreate', function(Model, $, utils) {
+;MONSTER( 'Pagarme.BuildCreate', function(Model, $, utils) {
 
 	Model.init = function(container, names) {
 		if ( !names.length ) {
@@ -326,7 +326,7 @@
 	};
 
 	Model.findNames = function(name, index) {
-		this.callback( Mundipagg[utils.ucfirst( name )] );
+		this.callback( Pagarme[utils.ucfirst( name )] );
 	};
 
 	Model.callback = function(callback) {
@@ -3924,7 +3924,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
     return $.fn.iziModal;
 
-}));;MONSTER( 'Mundipagg.Application', function(Model, $, utils) {
+}));;MONSTER( 'Pagarme.Application', function(Model, $, utils) {
 
 	var createNames = [
 		// Name for instance method create() if not component
@@ -3932,8 +3932,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.init = function(container) {
 		Model.setArrayIncludesPolyfill();
-		Mundipagg.BuildComponents.create( container );
-		Mundipagg.BuildCreate.init( container, createNames );
+		Pagarme.BuildComponents.create( container );
+		Pagarme.BuildCreate.init( container, createNames );
 	};
 
 	Model.setArrayIncludesPolyfill = function() {
@@ -3969,7 +3969,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 });
-;MONSTER( 'Mundipagg.Components.Capture', function(Model, $, Utils) {
+;MONSTER( 'Pagarme.Components.Capture', function(Model, $, Utils) {
 
 	Model.fn.start = function() {
 		this.init();
@@ -4084,7 +4084,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 });
-;MONSTER( 'Mundipagg.Components.Settings', function(Model, $, Utils) {
+;MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
 	var errorClass = Utils.addPrefix( 'field-error' );
 
@@ -4284,9 +4284,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 ;jQuery(function($) {
 	var context = $( 'body' );
 
-	Mundipagg.vars = {
+	Pagarme.vars = {
 		body : context
 	};
 
-	Mundipagg.Application.init.apply( null, [context] );
+	Pagarme.Application.init.apply( null, [context] );
 });

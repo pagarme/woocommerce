@@ -26,10 +26,10 @@ class Webhooks
 		$body = Utils::get_json_post_data();
 
 		if ( empty( $body ) ) {
-            $this->settings->log()->add( 'woo-mundipagg', 'Webhook Received: empty body!');
+            $this->settings->log()->add( 'woo-pagarme', 'Webhook Received: empty body!');
 			return;
 		}
-        $this->settings->log()->add( 'woo-mundipagg', 'Webhook Received: ' . json_encode( $body, JSON_PRETTY_PRINT));
+        $this->settings->log()->add( 'woo-pagarme', 'Webhook Received: ' . json_encode( $body, JSON_PRETTY_PRINT));
 
 		$event = $this->sanitize_event_name( $body->type );
 
@@ -39,8 +39,8 @@ class Webhooks
 
 		if (strpos( $event, 'charge' ) !== false) {
 			update_post_meta( $body->data->code, "webhook_{$event}_{$body->id}", true );
-			do_action( "on_mundipagg_{$event}", $body );
-			do_action( "on_mundipagg_notes_{$event}", $body );
+			do_action( "on_pagarme_{$event}", $body );
+			do_action( "on_pagarme_notes_{$event}", $body );
 			return;
 		}
 
@@ -53,7 +53,7 @@ class Webhooks
 		$order = new Order($order_id);
 
 		update_post_meta( $order_id, "webhook_{$event}_{$body->id}", true );
-		do_action( "on_mundipagg_{$event}", $order, $body );
+		do_action( "on_pagarme_{$event}", $order, $body );
 	}
 
 	public function sanitize_event_name( $event )
