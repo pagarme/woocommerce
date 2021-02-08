@@ -43,7 +43,7 @@ Source code: [https://www.github.com/pagarme/woocommerce](https://www.github.com
 
 ## Support
 
-For any questions, please send a email to [atendimento@pagar.me](atendimento@pagar.me)
+For any questions, please send a email to [relacionamento@pagar.me](relacionamento@pagar.me)
 
 == Frequently Asked Questions ==
 
