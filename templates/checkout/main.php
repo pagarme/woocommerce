@@ -32,7 +32,7 @@ $swal_data   = array(
 	data-order="<?php echo esc_attr( $wc_order->get_order_number() ); ?>"
 	data-order-total="<?php echo esc_html( $wc_order->get_total() ); ?>"
 	data-swal='<?php echo wp_json_encode( $swal_data, JSON_HEX_APOS ); ?>'
-	data-mundicheckout-form
+	data-pagarmecheckout-form
 	<?php echo /** phpcs:ignore */ Utils::get_component( 'checkout-transparent' ); ?>>
 
 	<div class="product">

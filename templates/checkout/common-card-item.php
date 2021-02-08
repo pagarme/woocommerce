@@ -14,8 +14,8 @@ $setting = Setting::get_instance();
 ?>
 
 <div <?php echo /** phpcs:ignore */ Utils::get_component( 'pagarme-checkout' ); ?>
-	data-mundicheckout-app-id="<?php echo esc_attr( $setting->get_public_key() ); ?>"
-	data-mundicheckout-suffix="<?php echo ! $suffix ? 1 : esc_html( $suffix ); ?>">
+	data-pagarmecheckout-app-id="<?php echo esc_attr( $setting->get_public_key() ); ?>"
+	data-pagarmecheckout-suffix="<?php echo ! $suffix ? 1 : esc_html( $suffix ); ?>">
 
 	<p class="form-row form-row-wide">
 
@@ -27,7 +27,7 @@ $setting = Setting::get_instance();
 				data-element="card-holder-name"
 				data-required="true"
 				class="input-text wc-credit-card-form-card-expiry"
-				data-mundicheckout-element="holder_name">
+				data-pagarmecheckout-element="holder_name">
 	</p>
 
 	<p class="form-row form-row-wide">
@@ -40,11 +40,11 @@ $setting = Setting::get_instance();
 				data-mask="0000000000000000000"
 				placeholder="•••• •••• •••• ••••"
 				data-required="true"
-				data-mundicheckout-element="number">
-		<input type="hidden" name="brand<?php echo esc_html( $suffix ); ?>" data-mundicheckout-element="brand-input"/>
-		<span data-mundicheckout-element="brand"
-				data-mundicheckout-brand-image
-				data-mundicheckout-brand></span>
+				data-pagarmecheckout-element="number">
+		<input type="hidden" name="brand<?php echo esc_html( $suffix ); ?>" data-pagarmecheckout-element="brand-input"/>
+		<span data-pagarmecheckout-element="brand"
+				data-pagarmecheckout-brand-image
+				data-pagarmecheckout-brand></span>
 	</p>
 
 	<p class="form-row form-row-first">
@@ -59,7 +59,7 @@ $setting = Setting::get_instance();
 				data-mask="00/00"
 				data-required="true"
 				placeholder="<?php esc_html_e( 'MM / YY', 'woo-pagarme-payments' ); ?>"
-				data-mundicheckout-element="exp_date">
+				data-pagarmecheckout-element="exp_date">
 	</p>
 
 	<p class="form-row form-row-last">
@@ -76,7 +76,7 @@ $setting = Setting::get_instance();
 				placeholder="CVC"
 				style="width:100px"
 				data-required="true"
-				data-mundicheckout-element="cvv">
+				data-pagarmecheckout-element="cvv">
 	</p>
 
 </div>
