@@ -1,20 +1,20 @@
-﻿=== MundiPagg WooCommerce Module ===
-Plugin Name: MundiPagg WooCommerce Module
-Plugin URI: https://github.com/mundipagg/woocommerce
-Contributors: mundipagg
-Tags: ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, mundipagg, payments, creditcard
+﻿=== Pagar.me WooCommerce Module ===
+Plugin Name: Pagar.me WooCommerce Module
+Plugin URI: https://github.com/pagarme/woocommerce
+Contributors: pagarme
+Tags: ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, pagarme, payments, creditcard
 Requires at least: 4.4
 Tested up to: 4.9
 Stable tag: beta-1.0.27
 Requires PHP: 5.6
 License: MIT
-License URI: https://github.com/mundipagg/woocommerce/blob/master/LICENSE
+License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
-MundiPagg integration module with WooCommerce. Accept credit card payments, boleto (brazilian ticket), multiple methods and increase your conversion.
+Pagar.me integration module with WooCommerce. Accept credit card payments, boleto (brazilian ticket), multiple methods and increase your conversion.
 
 == Description ==
 
-**MundiPagg integration module with WooCommerce**
+**Pagar.me integration module with WooCommerce**
 The intelligence of your payment - Solutions focused on increasing your conversion!
 
 Payments have to be easy. There are many steps behind a simple financial transaction. But your consumer does not need to know that. Our solutions are available to help you increase your conversion and provide the best payment experience for your customer.
@@ -39,23 +39,23 @@ Payments have to be easy. There are many steps behind a simple financial transac
 ## Free and Opensource
 Our module is totally free and always will be!
 Our code is opensource and also always will be!
-Source code: [https://www.github.com/mundipagg/woocommerce](https://www.github.com/mundipagg/woocommerce)
+Source code: [https://www.github.com/pagarme/woocommerce](https://www.github.com/pagarme/woocommerce)
 
 ## Support
 
-For any questions, please send a email to [suporte@mundipagg.com](suporte@mundipagg.com)
+For any questions, please send a email to [atendimento@pagar.me](atendimento@pagar.me)
 
 == Frequently Asked Questions ==
 
-Please, see our wiki in [github wiki](https://github.com/mundipagg/woocommerce/wiki)
+Please, see our wiki in [github wiki](https://github.com/pagarme/woocommerce/wiki)
 
 == Changelog ==
 
-Please, see our changelog in [github releases](https://github.com/mundipagg/woocommerce/releases)
+Please, see our changelog in [github releases](https://github.com/pagarme/woocommerce/releases)
 
 == Screenshots ==
 
-1. After installation, go to **WooCommerce** > **Settings** > **Checkout** > **MundiPagg Payments** to access configuration
+1. After installation, go to **WooCommerce** > **Settings** > **Checkout** > **Pagar.me Payments** to access configuration
 2. Enable payment methods and anti-fraud configuration
 3. Configuring *boleto* (brazilian ticket) and credit card (partial)
 4. Configuring credit card (complete process from a previous image)

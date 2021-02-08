@@ -1,14 +1,14 @@
-# MundiPagg módulo para WooCommerce #
-**Contributors:** [mundipagg](https://profiles.wordpress.org/mundipagg)
-**Tags:** ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, mundipagg, payments, creditcard
+# Pagar.me módulo para WooCommerce #
+**Contributors:** [Pagar.me](https://profiles.wordpress.org/pagarme)
+**Tags:** ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, pagarme, payments, creditcard
 **Requires at least:** 4.4
 **Tested up to:** 4.9
 **Stable tag:** beta-1.0.27
 **Requires PHP:** 5.6
 **License:** MIT
-**License URI:** https://github.com/mundipagg/woocommerce/blob/master/LICENS
+**License URI:** https://github.com/pagarme/woocommerce/blob/master/LICENS
 
-Módulo de integração da MundiPagg com o WooCommerce. Aceite pagamentos de cartão de crédito, boleto, multimeios e aumente a sua conversão.
+Módulo de integração da Pagar.me com o WooCommerce. Aceite pagamentos de cartão de crédito, boleto, multimeios e aumente a sua conversão.
 
 ## Descrição ##
 
@@ -28,13 +28,13 @@ Pagamentos tem que ser fáceis. São muitos passos por trás de uma simples tran
 
 ## Requerimentos: ##
 
-- [Conta na MundiPagg] (http://www.mundipagg.com.br/)
+- [Conta na Pagar.me] (http://www.pagar.me/)
 - [WooCommerce] (https://wordpress.org/plugins/woocommerce/)
 - [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/) em sua última versão
 
 ## Configurações ##
 
-- Após a instalação e ativação do plugin acesse o menu WooCommerce > Configurações > Finalizar Compra > MundiPagg Pagamentos
+- Após a instalação e ativação do plugin acesse o menu WooCommerce > Configurações > Finalizar Compra > Pagar.me Pagamentos
 - Habilite o pagamento
 - Selecione o ambiente (Produção ou Sandbox)
 - Insira as chaves (pública e privada)
