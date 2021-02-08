@@ -20,7 +20,7 @@ function wcmp_render_admin_notice_html( $message, $type = 'error' ) {
 ?>
 	<div class="<?php echo esc_html( $type ); ?> notice is-dismissible">
 		<p>
-			<strong><?php esc_html_e( 'WooCommerce MundiPagg Payments', 'woo-mundipagg-payments' ); ?>: </strong>
+			<strong><?php esc_html_e( 'WooCommerce Pagar.me Payments', 'woo-pagarme-payments' ); ?>: </strong>
 
 			<?php echo /*phpcs:ignore*/ $message; ?>
 		</p>
@@ -32,7 +32,7 @@ if ( version_compare( PHP_VERSION, '5.5', '<' ) ) {
 
 	function wcmp_admin_notice_php_version() {
 		wcmp_render_admin_notice_html(
-			__( 'Your PHP version is not supported. Required >= 5.5.', 'woo-mundipagg-payments' )
+			__( 'Your PHP version is not supported. Required >= 5.5.', 'woo-pagarme-payments' )
 		);
 	}
 
@@ -42,13 +42,13 @@ if ( version_compare( PHP_VERSION, '5.5', '<' ) ) {
 
 function wcmp_admin_notice_error() {
 	wcmp_render_admin_notice_html(
-		__( 'WooCoomerce plugin is required.', 'woo-mundipagg-payments' )
+		__( 'WooCoomerce plugin is required.', 'woo-pagarme-payments' )
 	);
 }
 
 function wcmp_admin_notice_error_wecffb() {
 	wcmp_render_admin_notice_html(
-		__( 'WooCoomerce Extra Checkout Fields For Brazil plugin is required.', 'woo-mundipagg-payments'
+		__( 'WooCoomerce Extra Checkout Fields For Brazil plugin is required.', 'woo-pagarme-payments'
 		)
 	);
 }
@@ -103,7 +103,7 @@ function wcmp_create_charges_table() {
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 	$charset    = $wpdb->get_charset_collate();
-	$table_name = $wpdb->prefix . 'woocommerce_mundipagg_charges';
+	$table_name = $wpdb->prefix . 'woocommerce_pagarme_charges';
 	$query      = "
 		CREATE TABLE IF NOT EXISTS {$table_name} (
 			id         		BIGINT(20)   UNSIGNED NOT NULL AUTO_INCREMENT,
