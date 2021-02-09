@@ -297,7 +297,7 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 		var notMarkedInputs = this.$el.find( 'input:not([data-pagarmecheckout-element])' );
 		var checkoutObj = this.createCheckoutObj(markedInputs);
 		var callbackObj = {};
-		var $hidden = this.$el.find( '[name="pagarmetoken' + this.suffix + '"]' );
+		var $hidden = this.$el.find( '[name="munditoken' + this.suffix + '"]' );
 		var cb;
 
 		if ( $hidden ) {
@@ -324,9 +324,9 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 
 				$hidden = document.createElement('input');
 				$hidden.setAttribute('type', 'hidden');
-				$hidden.setAttribute('name', 'pagarmetoken' + $this.suffix );
+				$hidden.setAttribute('name', 'munditoken' + $this.suffix );
 				$hidden.setAttribute('value', objJSON.id);
-				$hidden.setAttribute('data-pagarmetoken', $this.suffix );
+				$hidden.setAttribute('data-munditoken', $this.suffix );
 
 				$this.$el.append($hidden);
 
@@ -334,7 +334,7 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 					callbackObj[notMarkedInputs[i]['name']] = notMarkedInputs[i]['value'];
 				}
 
-				callbackObj['pagarmetoken'] = objJSON.id;
+				callbackObj['munditoken'] = objJSON.id;
 				cb = $this._onDone.call(null, callbackObj, suffix);
 
 				if ( typeof cb === 'boolean' && !cb ) {

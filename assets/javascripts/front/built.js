@@ -3006,7 +3006,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		this.chooseCreditCard = this.$el.closest( 'fieldset' ).find( '[data-element="choose-credit-card"]' );
 		this.cvv              = this.$el.find( '[data-pagarmecheckout-element="cvv"]' );
 		this.appId            = this.script.data( 'pagarmecheckoutAppId' );
-		this.apiURL           = 'https://api.pagarme.com/core/v1/tokens?appId=' + this.appId;
+		this.apiURL           = 'https://api.mundipagg.com/core/v1/tokens?appId=' + this.appId;
 
 		this.addEventListener();
 	};
@@ -3111,7 +3111,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn.changeBrand = function (brand, cardNumberLength) {
 		var $brand = this.creditCardBrand.get(0);
 		var wrapper = this.creditCardBrand.closest( 'fieldset' );
-		var imageSrc = 'https://checkout.pagarme.com/images/brands/';
+		var imageSrc = 'https://checkout.mundipagg.com/images/brands/';
 		var $img = $('img', $brand)[0];
 		var src;
 
@@ -3290,7 +3290,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		var notMarkedInputs = this.$el.find( 'input:not([data-pagarmecheckout-element])' );
 		var checkoutObj = this.createCheckoutObj(markedInputs);
 		var callbackObj = {};
-		var $hidden = this.$el.find( '[name="pagarmetoken' + this.suffix + '"]' );
+		var $hidden = this.$el.find( '[name="munditoken' + this.suffix + '"]' );
 		var cb;
 
 		if ( $hidden ) {
@@ -3317,9 +3317,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 				$hidden = document.createElement('input');
 				$hidden.setAttribute('type', 'hidden');
-				$hidden.setAttribute('name', 'pagarmetoken' + $this.suffix );
+				$hidden.setAttribute('name', 'munditoken' + $this.suffix );
 				$hidden.setAttribute('value', objJSON.id);
-				$hidden.setAttribute('data-pagarmetoken', $this.suffix );
+				$hidden.setAttribute('data-munditoken', $this.suffix );
 
 				$this.$el.append($hidden);
 
@@ -3327,7 +3327,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 					callbackObj[notMarkedInputs[i]['name']] = notMarkedInputs[i]['value'];
 				}
 
-				callbackObj['pagarmetoken'] = objJSON.id;
+				callbackObj['munditoken'] = objJSON.id;
 				cb = $this._onDone.call(null, callbackObj, suffix);
 
 				if ( typeof cb === 'boolean' && !cb ) {

@@ -248,7 +248,7 @@ class Payment
 	private function handle_credit_card_type( $form_fields, $card_data, $suffix = '' )
 	{
 		$card_id    = Utils::get_value_by( $form_fields, "card_id{$suffix}", false );
-		$pagarmetoken = ! $suffix ? 'pagarmetoken1' : "pagarmetoken{$suffix}";
+		$pagarmetoken = ! $suffix ? 'munditoken1' : "munditoken{$suffix}";
 
 		if ( $card_id ) {
 			$card_data['credit_card']['card_id'] = $card_id;
