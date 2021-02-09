@@ -9,17 +9,17 @@ This is the official WooCommerce module for Pagar.me integration
 Refer to [module documentation](https://github.com/pagarme/woocommerce/wiki)
 
 # Plugin in Wordpres.org
-See in [https://wordpress.org/plugins/woo-mundipagg-payments](https://wordpress.org/plugins/woo-mundipagg-payments)
+See in [https://wordpress.org/plugins/woo-pagarme-payments](https://wordpress.org/plugins/woo-pagarme-payments)
 
 # Installation
 
 ### Method 1 - Using WP CLI
 
-`wp plugin install woo-mundipagg-payments --activate --allow-root`
+`wp plugin install woo-pagarme-payments --activate --allow-root`
 
 ### Method 2 - Upload Zip
 * Upload [zip file](https://github.com/pagarme/woocommerce/releases) in wordpress
-* Activate plugin 
+* Activate plugin
 
 ### Method 3 - Clone from GitHub
 * Create and change directory to `wp-content/plugins/woo-pagarme-payments`
