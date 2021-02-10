@@ -85,7 +85,7 @@ class Orders
 
 		?>
 		<div data-charge-action="<?php echo $item->charge_id; ?>-capture" data-charge="<?php echo $item->charge_id; ?>" class="modal">
-			<h2>Pagarme - Captura</h2>
+			<h2>Pagar.me - Captura</h2>
 			<p><b>CHARGE ID: </b><?php echo $item->charge_id; ?></p>
 			<p><b>TIPO: </b><?php echo strtoupper( $charge->payment_method ); ?></p>
 			<p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view( $charge->amount ); ?></p>
@@ -120,7 +120,7 @@ class Orders
 
 		?>
 		<div data-charge-action="<?php echo $item->charge_id; ?>-cancel" data-charge="<?php echo $item->charge_id; ?>" class="modal">
-			<h2>Pagarme - Cancelamento</h2>
+			<h2>Pagar.me - Cancelamento</h2>
 			<p><b>CHARGE ID: </b><?php echo $item->charge_id; ?></p>
 			<p><b>TIPO: </b><?php echo strtoupper( $charge->payment_method ); ?></p>
 			<p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view( $charge->amount ); ?></p>
