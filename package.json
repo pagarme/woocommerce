@@ -1,8 +1,8 @@
 {
-  "name": "woo-mundipagg-payments",
+  "name": "woo-pagarme-payments",
   "version": "beta-1.0.27",
-  "description": "WooCommerce Mundipagg Payments",
-  "main": "woo-mundipagg-payments.php",
+  "description": "WooCommerce Pagar.me Payments",
+  "main": "woo-pagarme-payments.php",
   "dependencies": {},
   "devDependencies": {
     "grunt": "^1.0.1",

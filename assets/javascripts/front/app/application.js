@@ -1,11 +1,11 @@
-MONSTER( 'Mundipagg.Application', function(Model, $, utils) {
+MONSTER( 'Pagarme.Application', function(Model, $, utils) {
 
 	var createNames = [
 	];
 
 	Model.init = function(container) {
-		Mundipagg.BuildComponents.create( container );
-		Mundipagg.BuildCreate.init( container, createNames );
+		Pagarme.BuildComponents.create( container );
+		Pagarme.BuildCreate.init( container, createNames );
 	};
 
 });

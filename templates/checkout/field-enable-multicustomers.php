@@ -3,9 +3,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Customer;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Customer;
+use Woocommerce\Pagarme\Model\Setting;
 
 if ( ! is_user_logged_in() ) {
 	return;
@@ -28,6 +28,6 @@ echo $p ? '<p class="form-row form-row-first">' : '';
 			data-target="<?php echo esc_attr( $ref ); ?>"
 			value="1">
 
-		<?php esc_html_e( 'Fill other buyer data', 'woo-mundipagg-payments' ); ?>
+		<?php esc_html_e( 'Fill other buyer data', 'woo-pagarme-payments' ); ?>
 	</label>
 <?php echo $p ? '</p>' : ''; ?>

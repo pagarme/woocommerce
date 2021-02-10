@@ -1,4 +1,4 @@
-MONSTER( 'Mundipagg.Components.Settings', function(Model, $, Utils) {
+MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
 	var errorClass = Utils.addPrefix( 'field-error' );
 

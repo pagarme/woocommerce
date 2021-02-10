@@ -11,9 +11,9 @@
 	"sub"      : true,
 	"globals"  : {
 		"MONSTER" 		      : true,
-		"MundiPaggGlobalVars" : true,
-		"MundiCheckout"       : true,
-		"Mundipagg" 		  : true,
+	    "PagarmeGlobalVars"   : true,
+		"PagarmeCheckout"     : true,
+		"Pagarme" 		  	  : true,
 		"console" 		      : true,
 		"jQuery"  		      : true,
 		"Toastr"  		      : true,

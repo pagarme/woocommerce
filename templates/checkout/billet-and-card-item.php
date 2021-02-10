@@ -7,10 +7,10 @@ if ( ! $model->settings->is_active_billet_and_card() ) {
 	return;
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\View\Checkouts;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\View\Checkouts;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Setting;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
 $billet_and_card   = true;
@@ -29,7 +29,7 @@ $ref_card          = md5( rand( 1, 1000 ) );
 			<div class="form-row form-row-wide">
 				<p class="form-row form-row-first">
 					<label for="billet-value">
-						<?php esc_html_e( 'Value (Boleto)', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+						<?php esc_html_e( 'Value (Boleto)', 'woo-pagarme-payments' ); ?><span class="required">*</span>
 					</label>
 					<input id="billet-value"
 							name="billet_value"
@@ -53,7 +53,7 @@ $ref_card          = md5( rand( 1, 1000 ) );
 
 				<p class="form-row form-row-last">
 					<label for="card-order-value">
-						<?php esc_html_e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span>
+						<?php esc_html_e( 'Value (Credit Card)', 'woo-pagarme-payments' ); ?> <span class="required">*</span>
 					</label>
 					<input id="card-order-value"
 							name="card_order_value"
@@ -88,7 +88,7 @@ $ref_card          = md5( rand( 1, 1000 ) );
 			<p class="form-row form-row-first">
 
 				<label for="installments">
-					<?php esc_html_e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+					<?php esc_html_e( 'Installments quantity', 'woo-pagarme-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments"

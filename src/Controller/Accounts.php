@@ -1,23 +1,23 @@
 <?php
-namespace Woocommerce\Mundipagg\Controller;
+namespace Woocommerce\Pagarme\Controller;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Setting;
-use Woocommerce\Mundipagg\Model\Account;
-use Woocommerce\Mundipagg\Model\Customer;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Account;
+use Woocommerce\Pagarme\Model\Customer;
 
 class Accounts
 {
 	protected $wallet_endpoint;
 
-	const WALLET_ENDPOINT = 'wallet-mundipagg';
+	const WALLET_ENDPOINT = 'wallet-pagarme';
 
-	const OPT_WALLET_ENDPOINT = 'woocommerce_mundipagg_wallet_endpoint';
+	const OPT_WALLET_ENDPOINT = 'woocommerce_pagarme_wallet_endpoint';
 
 	public function __construct()
 	{
@@ -38,7 +38,7 @@ class Accounts
 
 		unset( $items[ $last_key ] );
 
-		$items[ $this->wallet_endpoint ] = __( 'Wallet', 'woo-mundipagg-payments' );
+		$items[ $this->wallet_endpoint ] = __( 'Wallet', 'woo-pagarme-payments' );
 		$items[ $last_key ]              = $last_value;
 
 		return $items;
@@ -61,8 +61,8 @@ class Accounts
 	public function settings_account( $settings )
 	{
 		$wallet = array(
-			'title'    => __( 'Wallet', 'woo-mundipagg-payments' ),
-			'desc'     => __( 'Your wallet for Mundipagg registered credit cards', 'woo-mundipagg-payments' ),
+			'title'    => __( 'Wallet', 'woo-pagarme-payments' ),
+			'desc'     => __( 'Your wallet for Pagar.me registered credit cards', 'woo-pagarme-payments' ),
 			'id'       => self::OPT_WALLET_ENDPOINT,
 			'type'     => 'text',
 			'default'  => $this->wallet_endpoint,
@@ -86,7 +86,7 @@ class Accounts
 		}
 
 		if ( ! is_user_logged_in() ) {
-			wp_send_json_error( __( 'User not loggedin.', 'woo-mundipagg-payments' ) );
+			wp_send_json_error( __( 'User not loggedin.', 'woo-pagarme-payments' ) );
 		}
 
 		$customer    = new Customer( get_current_user_id() );
@@ -94,13 +94,13 @@ class Accounts
 		$card_id     = Utils::post( 'card_id' );
 
 		if ( ! isset( $saved_cards[ $card_id ] ) ) {
-			wp_send_json_error( __( 'Card not found.', 'woo-mundipagg-payments' ) );
+			wp_send_json_error( __( 'Card not found.', 'woo-pagarme-payments' ) );
 		}
 
 		unset( $saved_cards[ $card_id ] );
 
 		$customer->cards = $saved_cards;
 
-		wp_send_json_success( __( 'Card removed successfully.', 'woo-mundipagg-payments' ) );
+		wp_send_json_success( __( 'Card removed successfully.', 'woo-pagarme-payments' ) );
 	}
 }

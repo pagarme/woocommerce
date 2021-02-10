@@ -9,12 +9,12 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
     public static $prefixLengthsPsr4 = array (
         'W' => 
         array (
-            'Woocommerce\\Mundipagg\\' => 22,
+            'Woocommerce\\Pagarme\\' => 20,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Woocommerce\\Mundipagg\\' => 
+        'Woocommerce\\Pagarme\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

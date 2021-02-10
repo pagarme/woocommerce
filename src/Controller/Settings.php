@@ -1,13 +1,13 @@
 <?php
-namespace Woocommerce\Mundipagg\Controller;
+namespace Woocommerce\Pagarme\Controller;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Setting;
 
 class Settings
 {
@@ -30,7 +30,7 @@ class Settings
 			sprintf(
 				'<a href="%s">%s</a>',
 				Core::get_page_link(),
-				__( 'Settings', 'woo-mundipagg-payments' )
+				__( 'Settings', 'woo-pagarme-payments' )
 			),
 		);
 

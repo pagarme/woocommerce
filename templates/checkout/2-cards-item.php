@@ -7,10 +7,10 @@ if ( ! $model->settings->is_active_2_cards() ) {
 	return;
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Setting;
-use Woocommerce\Mundipagg\View\Checkouts;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\View\Checkouts;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
 $ref1              = md5( rand( 1, 1000 ) );
@@ -29,7 +29,7 @@ $ref2              = md5( rand( 1, 1000 ) );
 
 			<p class="form-row form-row-first">
 
-				<label for="card-order-value"><?php esc_html_e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span></label>
+				<label for="card-order-value"><?php esc_html_e( 'Value (Credit Card)', 'woo-pagarme-payments' ); ?> <span class="required">*</span></label>
 
 				<input id="card-order-value" name="card_order_value"
 						data-element="card-order-value"
@@ -52,7 +52,7 @@ $ref2              = md5( rand( 1, 1000 ) );
 			<p class="form-row form-row-first">
 
 				<label for="installments">
-					<?php esc_html_e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+					<?php esc_html_e( 'Installments quantity', 'woo-pagarme-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments"
@@ -106,7 +106,7 @@ $ref2              = md5( rand( 1, 1000 ) );
 
 			<p class="form-row form-row-first">
 
-				<label for="card-order-value2"><?php esc_html_e( 'Value (Credit Card)', 'woo-mundipagg-payments' ); ?> <span class="required">*</span></label>
+				<label for="card-order-value2"><?php esc_html_e( 'Value (Credit Card)', 'woo-pagarme-payments' ); ?> <span class="required">*</span></label>
 
 				<input id="card-order-value2" name="card_order_value2"
 						data-element="card-order-value"
@@ -133,7 +133,7 @@ $ref2              = md5( rand( 1, 1000 ) );
 			<p class="form-row form-row-first">
 
 				<label for="installments2">
-					<?php esc_html_e( 'Installments quantity', 'woo-mundipagg-payments' ); ?><span class="required">*</span>
+					<?php esc_html_e( 'Installments quantity', 'woo-pagarme-payments' ); ?><span class="required">*</span>
 				</label>
 
 				<select id="installments2"
