@@ -1,27 +1,14 @@
-[![CircleCI](https://circleci.com/gh/mundipagg/woocommerce.svg?style=shield)](https://circleci.com/gh/mundipagg/woocommerce)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8d9b94c412e042aebc219f2f268cfd13)](https://www.codacy.com/app/mundipagg/woocommerce?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mundipagg/woocommerce&amp;utm_campaign=Badge_Grade)
-[![Maintainability](https://api.codeclimate.com/v1/badges/1f5b02d84d2d9fa288af/maintainability)](https://codeclimate.com/github/mundipagg/woocommerce/maintainability)
-
 # WooCommerce/Pagar.me Integration module
 This is the official WooCommerce module for Pagar.me integration
 
 # Documentation
 Refer to [module documentation](https://github.com/pagarme/woocommerce/wiki)
 
-# Plugin in Wordpres.org
-See in [https://wordpress.org/plugins/woo-pagarme-payments](https://wordpress.org/plugins/woo-pagarme-payments)
-
-# Installation
-
-### Method 1 - Using WP CLI
-
-`wp plugin install woo-pagarme-payments --activate --allow-root`
-
-### Method 2 - Upload Zip
+### Method 1 - Upload Zip
 * Upload [zip file](https://github.com/pagarme/woocommerce/releases) in wordpress
 * Activate plugin
 
-### Method 3 - Clone from GitHub
+### Method 2 - Clone from GitHub
 * Create and change directory to `wp-content/plugins/woo-pagarme-payments`
 * Run `git clone https://github.com/pagarme/woocommerce .`
 * Activate plugin in wordpress
