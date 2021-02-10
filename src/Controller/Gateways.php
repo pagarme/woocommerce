@@ -89,10 +89,10 @@ class Gateways extends WC_Payment_Gateway
 			'title'                             => $this->field_title(),
 			'description'                       => $this->field_description(),
 			'environment'                       => $this->field_environment(),
-			'sandbox_secret_key'                => $this->field_sandbox_secret_key(),
 			'sandbox_public_key'                => $this->field_sandbox_public_key(),
-			'production_secret_key'             => $this->field_production_secret_key(),
+			'sandbox_secret_key'                => $this->field_sandbox_secret_key(),
 			'production_public_key'             => $this->field_production_public_key(),
+			'production_secret_key'             => $this->field_production_secret_key(),
 			'section_payment_settings'          => $this->section_payment_settings(),
 			'enable_billet'                     => $this->field_enable_billet(),
 			'enable_credit_card'                => $this->field_enable_credit_card(),
@@ -183,7 +183,7 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'title'   => __( 'Description', 'woo-pagarme-payments' ),
-			'default' => __( 'Pay with Pagar.me', 'woo-pagarme-payments' ),
+			'default' => __( 'Pay with credit card or billet', 'woo-pagarme-payments' ),
 		);
 	}
 
