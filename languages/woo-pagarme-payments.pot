@@ -366,8 +366,8 @@ msgid "Settings"
 msgstr "Configurações"
 
 #. Plugin Name of the plugin/theme
-msgid "WooCommerce Pagar.me Payments"
-msgstr "WooCommerce Pagar.me Pagamentos"
+msgid "Pagar.me module for Woocommerce"
+msgstr "Pagar.me módulo para Woocommerce"
 
 #: src/Model/Gateway.php:85
 msgid "At sight"
