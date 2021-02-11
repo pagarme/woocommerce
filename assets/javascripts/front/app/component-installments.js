@@ -1,4 +1,4 @@
-MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
+MONSTER( 'Pagarme.Components.Installments', function(Model, $, utils) {
     Model.fn.start = function() {
 		this.lock  = false;
 		this.total = this.$el.data( 'total' );
@@ -7,16 +7,16 @@ MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
 
 	Model.fn.addEventListener = function() {
 		if ( this.$el.data( 'type' ) == 2 ) {
-			$( 'body' ).on( 'mundipaggChangeBrand', this.onChangeBrand.bind(this) );
-			$( 'body' ).on( 'mundipaggSelectOneClickBuy', this.onSelectOneClickBuy.bind(this) );
+			$( 'body' ).on( 'pagarmeChangeBrand', this.onChangeBrand.bind(this) );
+			$( 'body' ).on( 'pagarmeSelectOneClickBuy', this.onSelectOneClickBuy.bind(this) );
 		}
 
-		$( 'body' ).on( 'mundipaggBlurCardOrderValue', this.onBlurCardOrderValue.bind(this) );
+		$( 'body' ).on( 'pagarmeBlurCardOrderValue', this.onBlurCardOrderValue.bind(this) );
 	};
 
 	Model.fn.onChangeBrand = function(event, brand, cardNumberLength, wrapper) {
 		var cardOrderValue = wrapper.find( '[data-element=card-order-value]' );
-		
+
 		if ( cardOrderValue.length ) {
 			this.total = cardOrderValue.val();
 			this.total = this.total.replace( '.', '' );
@@ -45,7 +45,7 @@ MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
 			select.html( storage );
 			return false;
 		}
-		
+
 		if ( this.lock ) {
 			return;
 		}
@@ -92,4 +92,4 @@ MONSTER( 'Mundipagg.Components.Installments', function(Model, $, utils) {
 	Model.fn.removeLoader = function() {
 		$('#wcmp-checkout-form').unblock();
 	};
-});    
+});

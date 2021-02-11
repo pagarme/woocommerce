@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Woocommerce\\Mundipagg\\' => array($baseDir . '/src'),
+    'Woocommerce\\Pagarme\\' => array($baseDir . '/src'),
 );

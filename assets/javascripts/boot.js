@@ -1,9 +1,9 @@
 jQuery(function($) {
 	var context = $( 'body' );
 
-	Mundipagg.vars = {
+	Pagarme.vars = {
 		body : context
 	};
 
-	Mundipagg.Application.init.apply( null, [context] );
+	Pagarme.Application.init.apply( null, [context] );
 });

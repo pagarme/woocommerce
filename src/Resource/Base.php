@@ -1,20 +1,20 @@
 <?php
 
-namespace Woocommerce\Mundipagg\Resource;
+namespace Woocommerce\Pagarme\Resource;
 
 if (!function_exists('add_action')) {
 	exit(0);
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Setting;
 use Unirest\Request;
 
 abstract class Base
 {
 	/**
-	 * @var \Woocommerce\Mundipagg\Model\Setting
+	 * @var \Woocommerce\Pagarme\Model\Setting
 	 */
 	protected $settings;
 

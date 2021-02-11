@@ -1,12 +1,12 @@
 <?php
-namespace Woocommerce\Mundipagg\Helper;
+namespace Woocommerce\Pagarme\Helper;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Setting;
 
 class Utils
 {

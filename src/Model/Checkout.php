@@ -1,11 +1,11 @@
 <?php
-namespace Woocommerce\Mundipagg\Model;
+namespace Woocommerce\Pagarme\Model;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Helper\Utils;
+use Woocommerce\Pagarme\Helper\Utils;
 
 class Checkout
 {

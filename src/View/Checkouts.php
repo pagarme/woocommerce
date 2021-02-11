@@ -1,27 +1,27 @@
 <?php
-namespace Woocommerce\Mundipagg\View;
+namespace Woocommerce\Pagarme\View;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Order;
-use Woocommerce\Mundipagg\Model\Setting;
-use Woocommerce\Mundipagg\Model\Gateway;
-use Woocommerce\Mundipagg\Model\Charge;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Order;
+use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Charge;
 
 class Checkouts
 {
 	protected static function message_before()
 	{
-		echo '<p class="title">' . __( 'Your transaction has been processed.', 'woo-mundipagg-payments' ) . '</p>';
+		echo '<p class="title">' . __( 'Your transaction has been processed.', 'woo-pagarme-payments' ) . '</p>';
 	}
 
 	protected static function message_after()
 	{
-		echo '<p>' . __( 'If you have any questions regarding the transaction, please contact us.', 'woo-mundipagg-payments' ) . '</p>';
+		echo '<p>' . __( 'If you have any questions regarding the transaction, please contact us.', 'woo-pagarme-payments' ) . '</p>';
 	}
 
 	public static function handle_messages( Order $order )
@@ -53,11 +53,11 @@ class Checkouts
 
 		?>
 		<p>
-			<?php _e( 'If you have not yet received the boleto, please click the button below to print.', 'woo-mundipagg-payments' ); ?>
+			<?php _e( 'If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments' ); ?>
 		</p>
 
 		<a href="<?php echo esc_url( $transaction->pdf ); ?>" target="_blank" class="payment-link">
-			<?php _e( 'Print', 'woo-mundipagg-payments' ); ?>
+			<?php _e( 'Print', 'woo-pagarme-payments' ); ?>
 		</a>
 
 		<?php
@@ -83,7 +83,7 @@ class Checkouts
 		<?php
 			/** phpcs:disable */
 			printf(
-				__( 'The status of your transaction is %s.', 'woo-mundipagg-payments' ),
+				__( 'The status of your transaction is %s.', 'woo-pagarme-payments' ),
 				'<strong>' . strtoupper( $order->get_status_translate() ) . '</strong>'
 			);
 			/** phpcs:enable */
@@ -114,7 +114,7 @@ class Checkouts
 				echo '<p>';
 					/** phpcs:disable */
 					printf(
-						__( 'CREDIT CARD: The status of your transaction is %s.', 'woo-mundipagg-payments' ),
+						__( 'CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments' ),
 						'<strong>' . strtoupper( $order->get_status_translate() ) . '</strong>'
 					);
 					/** phpcs:enable */
@@ -124,11 +124,11 @@ class Checkouts
 			if ( $charge->payment_method == 'boleto' ) :
 				?>
 				<p>
-					<?php _e( 'BOLETO: If you have not yet received the boleto, please click the button below to print.', 'woo-mundipagg-payments' ); ?>
+					<?php _e( 'BOLETO: If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments' ); ?>
 				</p>
 
 				<a href="<?php echo esc_url( $charge->last_transaction->pdf ); ?>" target="_blank" class="payment-link">
-					<?php _e( 'Print', 'woo-mundipagg-payments' ); ?>
+					<?php _e( 'Print', 'woo-pagarme-payments' ); ?>
 				</a>
 				<?php
 			endif;
@@ -161,7 +161,7 @@ class Checkouts
 
 		?>
 		<section>
-			<h2><?php _e( 'Payment Data', 'woo-mundipagg-payments' ); ?></h2>
+			<h2><?php _e( 'Payment Data', 'woo-pagarme-payments' ); ?></h2>
 			<table class="woocommerce-table">
 			<?php
 			foreach ( $charges as $charge ) {
@@ -191,8 +191,8 @@ class Checkouts
 
 			?>
 			<tr>
-				<th><?php _e( 'Payment Type', 'woo-mundipagg-payments' ); ?>:</th>
-				<td><?php _e( 'Boleto', 'woo-mundipagg-payments' ); ?></td>
+				<th><?php _e( 'Payment Type', 'woo-pagarme-payments' ); ?>:</th>
+				<td><?php _e( 'Boleto', 'woo-pagarme-payments' ); ?></td>
 			</tr>
 			<tr>
 				<th>Link:</th>
@@ -203,19 +203,19 @@ class Checkouts
 				</td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Line Code', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Line Code', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo $charge->last_transaction->line; ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Due at', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Due at', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo $due_at->format( 'd/m/Y' ); ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Paid value', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Paid value', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo Utils::format_order_price_to_view( $charge->amount ); ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Status', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Status', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo $model_charge->get_i18n_status( $charge->status ); ?></td>
 			</tr>
 			<tr>
@@ -234,33 +234,33 @@ class Checkouts
 
 			?>
 			<tr>
-				<th><?php _e( 'Payment Type', 'woo-mundipagg-payments' ); ?>:</th>
-				<td><?php _e( 'Credit Card', 'woo-mundipagg-payments' ); ?></td>
+				<th><?php _e( 'Payment Type', 'woo-pagarme-payments' ); ?>:</th>
+				<td><?php _e( 'Credit Card', 'woo-pagarme-payments' ); ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Card Holder Name', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Card Holder Name', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo $charge->last_transaction->card->holder_name; ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Flag', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Flag', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo $charge->last_transaction->card->brand; ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Card number', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Card number', 'woo-pagarme-payments' ); ?>:</th>
 				<td>
 					**** **** **** <?php echo $charge->last_transaction->card->last_four_digits; ?>
 				</td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Installments', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Installments', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo $charge->last_transaction->installments; ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Paid value', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Paid value', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo Utils::format_order_price_to_view( $charge->amount ); ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Status', 'woo-mundipagg-payments' ); ?>:</th>
+				<th><?php _e( 'Status', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo $model_charge->get_i18n_status( $charge->status ); ?></td>
 			</tr>
 			<tr>

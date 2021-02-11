@@ -1,13 +1,15 @@
 <?php
 /*
- * Plugin Name: WooCommerce MundiPagg Payments
+ * Plugin Name: WooCommerce Pagar.me Payments
  * Version:     beta-1.0.27
- * Author:      Mundipagg
- * Author URI:  https://mundipagg.com
- * Text Domain: woo-mundipagg-payments
+ * Author:      Pagar.me
+ * Author URI:  https://pagar.me
+ * Text Domain: woo-pagarme-payments
  * Domain Path: /languages
  * License:     GPL2
- * Description: Enable MundiPagg Gateway for WooCommerce
+ * Description: Enable Pagar.me Gateway for WooCommerce
+ * WC requires at least: 2.6.0
+ * WC tested up to: 4.9.2
  */
 
 if ( ! function_exists( 'add_action' ) ) {
@@ -20,7 +22,7 @@ function wcmp_render_admin_notice_html( $message, $type = 'error' ) {
 ?>
 	<div class="<?php echo esc_html( $type ); ?> notice is-dismissible">
 		<p>
-			<strong><?php esc_html_e( 'WooCommerce MundiPagg Payments', 'woo-mundipagg-payments' ); ?>: </strong>
+			<strong><?php esc_html_e( 'WooCommerce Pagar.me Payments', 'woo-pagarme-payments' ); ?>: </strong>
 
 			<?php echo /*phpcs:ignore*/ $message; ?>
 		</p>
@@ -32,7 +34,7 @@ if ( version_compare( PHP_VERSION, '5.5', '<' ) ) {
 
 	function wcmp_admin_notice_php_version() {
 		wcmp_render_admin_notice_html(
-			__( 'Your PHP version is not supported. Required >= 5.5.', 'woo-mundipagg-payments' )
+			__( 'Your PHP version is not supported. Required >= 5.5.', 'woo-pagarme-payments' )
 		);
 	}
 
@@ -42,13 +44,13 @@ if ( version_compare( PHP_VERSION, '5.5', '<' ) ) {
 
 function wcmp_admin_notice_error() {
 	wcmp_render_admin_notice_html(
-		__( 'WooCoomerce plugin is required.', 'woo-mundipagg-payments' )
+		__( 'WooCoomerce plugin is required.', 'woo-pagarme-payments' )
 	);
 }
 
 function wcmp_admin_notice_error_wecffb() {
 	wcmp_render_admin_notice_html(
-		__( 'WooCoomerce Extra Checkout Fields For Brazil plugin is required.', 'woo-mundipagg-payments'
+		__( 'WooCoomerce Extra Checkout Fields For Brazil plugin is required.', 'woo-pagarme-payments'
 		)
 	);
 }
@@ -60,7 +62,7 @@ function _wcmp_load_notice( $name ) {
 function _wcmp_load_instances() {
 	require_once 'vendor/autoload.php';
 
-	Woocommerce\Mundipagg\Core::instance();
+	Woocommerce\Pagarme\Core::instance();
 
 	do_action( 'wcmp_init' );
 }
@@ -103,7 +105,7 @@ function wcmp_create_charges_table() {
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 	$charset    = $wpdb->get_charset_collate();
-	$table_name = $wpdb->prefix . 'woocommerce_mundipagg_charges';
+	$table_name = $wpdb->prefix . 'woocommerce_pagarme_charges';
 	$query      = "
 		CREATE TABLE IF NOT EXISTS {$table_name} (
 			id         		BIGINT(20)   UNSIGNED NOT NULL AUTO_INCREMENT,

@@ -1,14 +1,14 @@
 <?php
-namespace Woocommerce\Mundipagg\Controller;
+namespace Woocommerce\Pagarme\Controller;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Order;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Order;
+use Woocommerce\Pagarme\Model\Setting;
 
 class Orders
 {
@@ -19,9 +19,9 @@ class Orders
 		$this->settings = Setting::get_instance();
 		$this->debug    = $this->settings->is_enabled_logs();
 
-		add_action( 'on_mundipagg_order_paid', array( $this, 'set_order_paid' ), 20, 2 );
-		add_action( 'on_mundipagg_order_created', array( $this, 'set_order_created' ), 20, 2 );
-		add_action( 'on_mundipagg_order_canceled', array( $this, 'set_order_canceled' ), 20, 2 );
+		add_action( 'on_pagarme_order_paid', array( $this, 'set_order_paid' ), 20, 2 );
+		add_action( 'on_pagarme_order_created', array( $this, 'set_order_created' ), 20, 2 );
+		add_action( 'on_pagarme_order_canceled', array( $this, 'set_order_canceled' ), 20, 2 );
 		add_action( 'add_meta_boxes', array( $this, 'add_capture_metabox' ) );
 	}
 
@@ -43,9 +43,9 @@ class Orders
 	public function add_capture_metabox()
 	{
 		add_meta_box(
-			'woo-mundipagg-capture',
-			'MundiPagg - Captura/Cancelamento',
-			array( 'Woocommerce\Mundipagg\View\Orders', 'render_capture_metabox' ),
+			'woo-pagarme-capture',
+			'Pagar.me - Captura/Cancelamento',
+			array( 'Woocommerce\Pagarme\View\Orders', 'render_capture_metabox' ),
 			'shop_order',
 			'advanced',
 			'high'

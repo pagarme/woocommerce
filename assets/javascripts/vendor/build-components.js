@@ -1,4 +1,4 @@
-MONSTER( 'Mundipagg.BuildComponents', function(Model, $, utils) {
+MONSTER( 'Pagarme.BuildComponents', function(Model, $, utils) {
 
 	Model.create = function(container) {
 		var components    = '[data-' + utils.addPrefix( 'component' ) + ']'
@@ -9,7 +9,7 @@ MONSTER( 'Mundipagg.BuildComponents', function(Model, $, utils) {
 	};
 
 	Model._start = function(components) {
-		if ( typeof Mundipagg.Components === 'undefined' ) {
+		if ( typeof Pagarme.Components === 'undefined' ) {
 			return;
 		}
 
@@ -37,7 +37,7 @@ MONSTER( 'Mundipagg.BuildComponents', function(Model, $, utils) {
 	};
 
 	Model._callback = function(name, component) {
-		var callback = Mundipagg.Components[name];
+		var callback = Pagarme.Components[name];
 
 		if ( typeof callback == 'function' ) {
 			callback.call( null, component );

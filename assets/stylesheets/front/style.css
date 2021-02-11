@@ -30,7 +30,7 @@
     transform: rotate(360deg);
   }
 }
-.mundipagg-spinner {
+.pagarme-spinner {
   position: absolute;
   -webkit-animation-name: spinner;
   -webkit-animation-duration: 700ms;
@@ -949,13 +949,13 @@ body .swal2-animate-x-mark {
   display: none;
 }
 
-.woocommerce-message .mundipagg-response, .woocommerce-error .mundipagg-response {
+.woocommerce-message .pagarme-response, .woocommerce-error .pagarme-response {
   text-align: center;
 }
-.woocommerce-message .mundipagg-response .title, .woocommerce-error .mundipagg-response .title {
+.woocommerce-message .pagarme-response .title, .woocommerce-error .pagarme-response .title {
   font-weight: bold;
 }
-.woocommerce-message .mundipagg-response .payment-link, .woocommerce-error .mundipagg-response .payment-link {
+.woocommerce-message .pagarme-response .payment-link, .woocommerce-error .pagarme-response .payment-link {
   background: #333;
   border-radius: 4px;
   cursor: pointer;
@@ -971,7 +971,7 @@ body .swal2-animate-x-mark {
   display: none;
 }
 
-.payment_method_woo-mundipagg-payments img {
+.payment_method_woo-pagarme-payments img {
   max-height: 1.618em !important;
 }
 

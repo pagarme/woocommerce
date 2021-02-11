@@ -1,12 +1,12 @@
 <?php
-namespace Woocommerce\Mundipagg\Model;
+namespace Woocommerce\Pagarme\Model;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
 
 abstract class Meta
 {
@@ -63,6 +63,6 @@ abstract class Meta
 
 	private function get_meta_key( $prop_name )
 	{
-		return isset( $this->with_prefix[ $prop_name ] ) ? "_mundipagg_{$prop_name}" : "_{$prop_name}";
+		return isset( $this->with_prefix[ $prop_name ] ) ? "_pagarme_{$prop_name}" : "_{$prop_name}";
 	}
 }

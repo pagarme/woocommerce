@@ -1,4 +1,4 @@
-MONSTER( 'Mundipagg.BuildCreate', function(Model, $, utils) {
+MONSTER( 'Pagarme.BuildCreate', function(Model, $, utils) {
 
 	Model.init = function(container, names) {
 		if ( !names.length ) {
@@ -10,7 +10,7 @@ MONSTER( 'Mundipagg.BuildCreate', function(Model, $, utils) {
 	};
 
 	Model.findNames = function(name, index) {
-		this.callback( Mundipagg[utils.ucfirst( name )] );
+		this.callback( Pagarme[utils.ucfirst( name )] );
 	};
 
 	Model.callback = function(callback) {
