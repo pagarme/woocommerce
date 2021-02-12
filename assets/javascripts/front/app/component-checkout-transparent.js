@@ -50,12 +50,6 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 			return false;
 		}
 
-		$( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
-
-		if ( $('input[name=payment_method]').val() === 'billet' ) {
-			this.loadSwal();
-		}
-
 		$( 'body' ).on( 'onPagarmeCheckoutDone', function(){
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
 				return;
@@ -69,6 +63,12 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 			}
 			window.Pagarme2Cards = 0;
 		}.bind(this));
+
+		$( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
+
+		if ( $('input[name=payment_method]').val() === 'billet' ) {
+			this.loadSwal();
+		}
 	};
 
 	Model.fn._onClickTab = function(event) {
