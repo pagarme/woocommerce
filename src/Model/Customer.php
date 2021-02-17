@@ -1,11 +1,11 @@
 <?php
-namespace Woocommerce\Mundipagg\Model;
+namespace Woocommerce\Pagarme\Model;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Helper\Utils;
+use Woocommerce\Pagarme\Helper\Utils;
 
 class Customer
 {
@@ -15,7 +15,7 @@ class Customer
 
 	private $save_credit_card;
 
-	public $prefix = '_mundipagg_wc_';
+	public $prefix = '_pagarme_wc_';
 
 	/** phpcs:disable */
 	public function __construct( $ID )

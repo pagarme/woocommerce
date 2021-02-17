@@ -1,24 +1,24 @@
 <?php
-namespace Woocommerce\Mundipagg\Model;
+namespace Woocommerce\Pagarme\Model;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Charge;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Charge;
 
 // WooCommerce
 use WC_Order;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Model\Setting;
 
 class Order extends Meta
 {
 	protected $response_data;
 	protected $payment_method;
-	protected $mundipagg_status;
-	protected $mundipagg_id;
+	protected $pagarme_status;
+	protected $pagarme_id;
 	protected $wc_order;
 	protected $settings;
 
@@ -52,8 +52,8 @@ class Order extends Meta
 	public $with_prefix = array(
 		'payment_method'   => 1,
 		'response_data'    => 1,
-		'mundipagg_status' => 1,
-		'mundipagg_id'     => 1,
+		'pagarme_status' => 1,
+		'pagarme_id'     => 1,
 	);
 
 	/** phpcs:disable */
@@ -68,12 +68,12 @@ class Order extends Meta
 
 	public function get_status_translate()
 	{
-		$status = strtolower( $this->__get( 'mundipagg_status' ) );
+		$status = strtolower( $this->__get( 'pagarme_status' ) );
 		$texts  = array(
-			'paid'     => __( 'Paid', 'woo-mundipagg-payments' ),
-			'pending'  => __( 'Pending', 'woo-mundipagg-payments' ),
-			'canceled' => __( 'Canceled', 'woo-mundipagg-payments' ),
-			'failed'   => __( 'Failed', 'woo-mundipagg-payments' ),
+			'paid'     => __( 'Paid', 'woo-pagarme-payments' ),
+			'pending'  => __( 'Pending', 'woo-pagarme-payments' ),
+			'canceled' => __( 'Canceled', 'woo-pagarme-payments' ),
+			'failed'   => __( 'Failed', 'woo-pagarme-payments' ),
 		);
 
 		return isset( $texts[ $status ] ) ? $texts[ $status ] : false;
@@ -84,7 +84,7 @@ class Order extends Meta
 		$current_status = $this->wc_order->get_status();
 
 		if ( ! in_array( $current_status, [ 'on-hold', 'completed', 'canceled', 'cancelled', 'processing' ] ) ) {
-			$this->wc_order->update_status( 'on-hold', __( 'MundiPagg: Awaiting payment confirmation.', 'woo-mundipagg-payments' ) );
+			$this->wc_order->update_status( 'on-hold', __( 'Pagar.me: Awaiting payment confirmation.', 'woo-pagarme-payments' ) );
 			wc_reduce_stock_levels( $this->wc_order->get_order_number() );
 
 		}
@@ -102,7 +102,7 @@ class Order extends Meta
 		$current_status = $this->wc_order->get_status();
 
 		if ( ! in_array( $current_status, [ 'completed', 'processing' ] ) ) {
-			$this->wc_order->add_order_note( __( 'Mundipagg: Payment has already been confirmed.', 'woo-mundipagg-payments' ) );
+			$this->wc_order->add_order_note( __( 'Pagar.me: Payment has already been confirmed.', 'woo-pagarme-payments' ) );
 			$this->wc_order->payment_complete();
 		}
 
@@ -119,7 +119,7 @@ class Order extends Meta
 		$current_status = $this->wc_order->get_status();
 
 		if ( ! in_array( $current_status, [ 'cancelled', 'canceled' ] ) ) {
-			$this->wc_order->update_status( 'cancelled', __( 'Mundipagg: Payment canceled.', 'woo-mundipagg-payments' ) );
+			$this->wc_order->update_status( 'cancelled', __( 'Pagar.me: Payment canceled.', 'woo-pagarme-payments' ) );
 		}
 
         $statusArray = [
@@ -130,9 +130,9 @@ class Order extends Meta
         $this->log($statusArray);
 	}
 
-	public function update_by_mundipagg_status( $mundipagg_status )
+	public function update_by_pagarme_status( $pagarme_status )
 	{
-		switch ( $mundipagg_status ) {
+		switch ( $pagarme_status ) {
 			case 'pending':
 				$this->payment_on_hold();
 				break;
@@ -203,7 +203,7 @@ class Order extends Meta
 
     private function log($content) {
 
-	    $file = 'woo-mundipagg';
+	    $file = 'woo-pagarme';
         $message =
             'ORDER STATUS UPDATE: #' .
             $this->wc_order->get_id() .

@@ -1,10 +1,10 @@
-MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
+MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.start = function() {
 		this.lock = false;
 		this.addEventListener();
 
-		Mundipagg.CheckoutErrors.create( this );
+		Pagarme.CheckoutErrors.create( this );
 
 		if ( typeof $().select2 === 'function' ) {
 			this.applySelect2();
@@ -50,25 +50,25 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 			return false;
 		}
 
-		$( 'body' ).trigger( 'onMundiPaggSubmit', [ e ] )
-
-		if ( $('input[name=payment_method]').val() === 'billet' ) {
-			this.loadSwal();
-		}
-
-		$( 'body' ).on( 'onMundiPaggCheckoutDone', function(){
+		$( 'body' ).on( 'onPagarmeCheckoutDone', function(){
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
 				return;
 			}
 			this.loadSwal();
 		}.bind(this));
 
-		$( 'body' ).on( 'onMundiPagg2CardsDone', function(){
-			if ( window.MundiPagg2Cards === 2 ) {
+		$( 'body' ).on( 'onPagarme2CardsDone', function(){
+			if ( window.Pagarme2Cards === 2 ) {
 				this.loadSwal();
 			}
-			window.MundiPagg2Cards = 0;
+			window.Pagarme2Cards = 0;
 		}.bind(this));
+
+		$( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
+
+		if ( $('input[name=payment_method]').val() === 'billet' ) {
+			this.loadSwal();
+		}
 	};
 
 	Model.fn._onClickTab = function(event) {
@@ -95,7 +95,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 
 			var brand = wrapper.find( '[data-element="choose-credit-card"]' ).find( 'option:selected' ).data( 'brand' );
 
-			$( 'body' ).trigger( "mundipaggBlurCardOrderValue", [ brand, total, wrapper ] );
+			$( 'body' ).trigger( "pagarmeBlurCardOrderValue", [ brand, total, wrapper ] );
 		} else {
 			wrapper.find( '[data-element=installments]' ).html( option );
 		}
@@ -108,7 +108,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		} else {
 			this.successMessage();
 		}
-		
+
         var self = this;
 
 		if( response.data.status == "failed" ){
@@ -241,11 +241,11 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		var wrapper = select.closest( 'fieldset' );
 		var method  = event.currentTarget.value.trim() ? 'slideUp': 'slideDown';
 		var type    = method == 'slideUp' ? 'OneClickBuy': 'DefaultBuy';
-		var brandInput = wrapper.find( '[data-mundicheckout-element="brand-input"]' );
+		var brandInput = wrapper.find( '[data-pagarmecheckout-element="brand-input"]' );
 
 		$( '#wcmp-checkout-errors' ).hide();
 
-		$( 'body' ).trigger( "onMundipaggCardTypeChange", [ type, wrapper ] );
+		$( 'body' ).trigger( "onPagarmeCardTypeChange", [ type, wrapper ] );
 
 		var brand = select.find('option:selected').data('brand');
 		brandInput.val(brand);
@@ -253,7 +253,7 @@ MONSTER( 'Mundipagg.Components.CheckoutTransparent', function(Model, $, utils) {
 		if ( select.data( 'installments-type' ) == 2 ) {
 
 			if ( type == 'OneClickBuy' ) {
-				$( 'body' ).trigger( 'mundipaggSelectOneClickBuy', [ brand, wrapper ] );
+				$( 'body' ).trigger( 'pagarmeSelectOneClickBuy', [ brand, wrapper ] );
 			} else {
 				brandInput.val( '' );
 				var option = '<option value="">...</option>';

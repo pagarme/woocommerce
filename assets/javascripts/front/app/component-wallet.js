@@ -1,4 +1,4 @@
-MONSTER( 'Mundipagg.Components.Wallet', function(Model, $, utils) {
+MONSTER( 'Pagarme.Components.Wallet', function(Model, $, utils) {
 
 	Model.fn.start = function() {
 		this.addEventListener();

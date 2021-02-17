@@ -1,0 +1,24 @@
+{
+	"laxcomma" : true,
+	"latedef"  : true,
+	"browser"  : true,
+	"eqnull"   : true,
+	"curly"    : true,
+	"undef"    : true,
+	"noarg"    : true,
+	"immed"    : true,
+	"expr"     : true,
+	"sub"      : true,
+	"globals"  : {
+		"MONSTER" 		      : true,
+	    "PagarmeGlobalVars"   : true,
+		"PagarmeCheckout"     : true,
+		"Pagarme" 		  	  : true,
+		"console" 		      : true,
+		"jQuery"  		      : true,
+		"Toastr"  		      : true,
+		"swal"			      : true,
+		"wp"      		      : true,
+		"$"       		      : true
+	}
+}

@@ -1,4 +1,4 @@
-MONSTER( 'Mundipagg.Components.Capture', function(Model, $, Utils) {
+MONSTER( 'Pagarme.Components.Capture', function(Model, $, Utils) {
 
 	Model.fn.start = function() {
 		this.init();

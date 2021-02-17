@@ -1,12 +1,12 @@
 <?php
-namespace Woocommerce\Mundipagg;
+namespace Woocommerce\Pagarme;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Model\Setting;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Setting;
 
 class Core
 {
@@ -16,7 +16,7 @@ class Core
 
 	const PREFIX = WCMP_PREFIX;
 
-	const LOCALIZE_SCRIPT_ID = 'MundiPaggGlobalVars';
+	const LOCALIZE_SCRIPT_ID = 'PagarmeGlobalVars';
 
 	private function __construct()
 	{
@@ -144,7 +144,7 @@ class Core
 
 	public static function get_name()
 	{
-		return __( 'WooCommerce MundiPagg Payments', 'woo-mundipagg-payments' );
+		return __( 'WooCommerce Pagar.me Payments', 'woo-pagarme-payments' );
 	}
 
 	public static function plugin_dir_path( $path = '' )

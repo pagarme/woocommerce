@@ -1,4 +1,4 @@
-MONSTER( 'Mundipagg.CheckoutErrors', function(Model, $, utils) {
+MONSTER( 'Pagarme.CheckoutErrors', function(Model, $, utils) {
 
 	Model.create = function(context) {
 		this.context = context;
@@ -6,7 +6,7 @@ MONSTER( 'Mundipagg.CheckoutErrors', function(Model, $, utils) {
 	};
 
 	Model.init = function() {
-		$( 'body' ).on( 'onMundiPaggCheckoutFail', this.error.bind(this) );
+		$( 'body' ).on( 'onPagarmeCheckoutFail', this.error.bind(this) );
 	};
 
 	Model.error = function(event, errorThrown) {
@@ -36,9 +36,9 @@ MONSTER( 'Mundipagg.CheckoutErrors', function(Model, $, utils) {
 	Model.translateErrors = function( error, message ) {
 		error            = error.replace( 'request.', '' );
 		var output       = error + ': ' + message;
-		var ptBrMessages = MundiPaggGlobalVars.checkoutErrors.pt_BR;
-		
-		if ( MundiPaggGlobalVars.WPLANG != 'pt_BR' ) {
+		var ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
+
+		if ( PagarmeGlobalVars.WPLANG != 'pt_BR' ) {
 			return output;
 		}
 

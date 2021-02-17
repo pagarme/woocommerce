@@ -1,17 +1,17 @@
-MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
+MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 
-	window.MundiPagg2Cards = 0;
+	window.Pagarme2Cards = 0;
 
 	Model.fn.start = function() {
-		this.script           = $( '[data-mundicheckout-app-id]' );
-		this.form             = $( '[data-mundicheckout-form]' );
-		this.suffix           = this.$el.data( 'mundicheckoutSuffix' ) || 1;
-		this.creditCardNumber = this.$el.find( '[data-mundicheckout-element="number"]' );
-		this.creditCardBrand  = this.$el.find( '[data-mundicheckout-element="brand"]' );
-		this.brandInput       = this.$el.find( '[data-mundicheckout-element="brand-input"]' );
+		this.script           = $( '[data-pagarmecheckout-app-id]' );
+		this.form             = $( '[data-pagarmecheckout-form]' );
+		this.suffix           = this.$el.data( 'pagarmecheckoutSuffix' ) || 1;
+		this.creditCardNumber = this.$el.find( '[data-pagarmecheckout-element="number"]' );
+		this.creditCardBrand  = this.$el.find( '[data-pagarmecheckout-element="brand"]' );
+		this.brandInput       = this.$el.find( '[data-pagarmecheckout-element="brand-input"]' );
 		this.chooseCreditCard = this.$el.closest( 'fieldset' ).find( '[data-element="choose-credit-card"]' );
-		this.cvv              = this.$el.find( '[data-mundicheckout-element="cvv"]' );
-		this.appId            = this.script.data( 'mundicheckoutAppId' );
+		this.cvv              = this.$el.find( '[data-pagarmecheckout-element="cvv"]' );
+		this.appId            = this.script.data( 'pagarmecheckoutAppId' );
 		this.apiURL           = 'https://api.mundipagg.com/core/v1/tokens?appId=' + this.appId;
 
 		this.addEventListener();
@@ -19,7 +19,7 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 
 	Model.fn.addEventListener = function() {
 		this.creditCardNumber.on( 'keyup', this.keyEventHandlerCard.bind(this) );
-		$('body').on( 'onMundiPaggSubmit', this.onSubmit.bind(this) );
+		$('body').on( 'onPagarmeSubmit', this.onSubmit.bind(this) );
 	};
 
 	Model.fn.hasCardId = function() {
@@ -36,17 +36,17 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 			prop, key;
 		obj['type'] = 'credit_card';
 		for (i = 0; i < length; i += 1) {
-			if (fields[i].getAttribute('data-mundicheckout-element') === 'exp_date') {
-				var sep = fields[i].getAttribute('data-mundicheckout-separator') ? fields[i].getAttribute('data-mundicheckout-separator') : '/';
+			if (fields[i].getAttribute('data-pagarmecheckout-element') === 'exp_date') {
+				var sep = fields[i].getAttribute('data-pagarmecheckout-separator') ? fields[i].getAttribute('data-pagarmecheckout-separator') : '/';
 				var values = fields[i].value.split(sep);
 				obj['exp_month'] = values[0];
 				obj['exp_year'] = values[1];
 			} else {
-				prop = fields[i].getAttribute('data-mundicheckout-element');
+				prop = fields[i].getAttribute('data-pagarmecheckout-element');
 				key = fields[i].value;
 
 				if ( prop == 'brand' ) {
-					key = fields[i].getAttribute('data-mundicheckout-brand' );
+					key = fields[i].getAttribute('data-pagarmecheckout-brand' );
 				}
 			}
 			obj[prop] = key;
@@ -121,15 +121,15 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 		var $img = $('img', $brand)[0];
 		var src;
 
-		$brand.setAttribute('data-mundicheckout-brand', brand);
+		$brand.setAttribute('data-pagarmecheckout-brand', brand);
 		this.brandInput.val( brand );
 
-		jQuery('body').trigger( 'mundipaggChangeBrand', [brand, cardNumberLength, wrapper] );
+		jQuery('body').trigger( 'pagarmeChangeBrand', [brand, cardNumberLength, wrapper] );
 
 		if (brand === '') {
 			$brand.innerHTML = '';
 		} else {
-			if ($brand.getAttribute('data-mundicheckout-brand-image') !== null) {
+			if ($brand.getAttribute('data-pagarmecheckout-brand-image') !== null) {
 				src = imageSrc + brand + '.min.png';
 				if (!$img) {
 					var $newImg = document.createElement('img');
@@ -281,23 +281,23 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 	Model.fn.onSubmit = function(e) {
 
 		if ( this.hasCardId() ) {
-			$( 'body' ).trigger( 'onMundiPaggCheckoutDone' );
+			$( 'body' ).trigger( 'onPagarmeCheckoutDone' );
 
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
-				window.MundiPagg2Cards = window.MundiPagg2Cards + 1;
-				if ( window.MundiPagg2Cards === 2 ) {
-					$( 'body' ).trigger( 'onMundiPagg2CardsDone' );
+				window.Pagarme2Cards = window.Pagarme2Cards + 1;
+				if ( window.Pagarme2Cards === 2 ) {
+					$( 'body' ).trigger( 'onPagarme2CardsDone' );
 				}
 			}
 			return;
 		}
 
 		var $this = this;
-		var markedInputs = this.$el.find( '[data-mundicheckout-element]' );
-		var notMarkedInputs = this.$el.find( 'input:not([data-mundicheckout-element])' );
+		var markedInputs = this.$el.find( '[data-pagarmecheckout-element]' );
+		var notMarkedInputs = this.$el.find( 'input:not([data-pagarmecheckout-element])' );
 		var checkoutObj = this.createCheckoutObj(markedInputs);
 		var callbackObj = {};
-		var $hidden = this.$el.find( '[name="munditoken' + this.suffix + '"]' );
+		var $hidden = this.$el.find( '[name="pagarmetoken' + this.suffix + '"]' );
 		var cb;
 
 		if ( $hidden ) {
@@ -324,9 +324,9 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 
 				$hidden = document.createElement('input');
 				$hidden.setAttribute('type', 'hidden');
-				$hidden.setAttribute('name', 'munditoken' + $this.suffix );
+				$hidden.setAttribute('name', 'pagarmetoken' + $this.suffix );
 				$hidden.setAttribute('value', objJSON.id);
-				$hidden.setAttribute('data-munditoken', $this.suffix );
+				$hidden.setAttribute('data-pagarmetoken', $this.suffix );
 
 				$this.$el.append($hidden);
 
@@ -334,7 +334,7 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 					callbackObj[notMarkedInputs[i]['name']] = notMarkedInputs[i]['value'];
 				}
 
-				callbackObj['munditoken'] = objJSON.id;
+				callbackObj['pagarmetoken'] = objJSON.id;
 				cb = $this._onDone.call(null, callbackObj, suffix);
 
 				if ( typeof cb === 'boolean' && !cb ) {
@@ -359,16 +359,16 @@ MONSTER( 'Mundipagg.Components.MundipaggCheckout', function(Model, $, utils) {
 	};
 
 	Model.fn._onFail = function(error, suffix) {
-		$( 'body' ).trigger( 'onMundiPaggCheckoutFail', [ error ] );
+		$( 'body' ).trigger( 'onPagarmeCheckoutFail', [ error ] );
 	};
 
 	Model.fn._onDone = function(data, suffix) {
-		$( 'body' ).trigger( 'onMundiPaggCheckoutDone', [ data ] );
+		$( 'body' ).trigger( 'onPagarmeCheckoutDone', [ data ] );
 
 		if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
-			window.MundiPagg2Cards = window.MundiPagg2Cards + 1;
-			if ( window.MundiPagg2Cards === 2 ) {
-				$( 'body' ).trigger( 'onMundiPagg2CardsDone' );
+			window.Pagarme2Cards = window.Pagarme2Cards + 1;
+			if ( window.Pagarme2Cards === 2 ) {
+				$( 'body' ).trigger( 'onPagarme2CardsDone' );
 			}
 		}
 	};

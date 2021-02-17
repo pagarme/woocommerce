@@ -1,14 +1,14 @@
 <?php
-namespace Woocommerce\Mundipagg\Controller;
+namespace Woocommerce\Pagarme\Controller;
 
 if ( ! function_exists( 'add_action' ) ) {
 	exit( 0 );
 }
 
-use Woocommerce\Mundipagg\Helper\Utils;
-use Woocommerce\Mundipagg\Core;
-use Woocommerce\Mundipagg\Model\Charge;
-use Woocommerce\Mundipagg\Resource\Charges as Charges_Resource;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Charge;
+use Woocommerce\Pagarme\Resource\Charges as Charges_Resource;
 
 class Charges
 {
@@ -89,7 +89,7 @@ class Charges
 		);
 
 		foreach ($events as $event) {
-			add_action("on_mundipagg_{$event}", array($this, 'handle_actions'));
+			add_action("on_pagarme_{$event}", array($this, 'handle_actions'));
 		}
 
 		$eventsNotes = array(
@@ -100,7 +100,7 @@ class Charges
 		);
 
 		foreach ($eventsNotes as $event) {
-			add_action("on_mundipagg_notes_{$event}", array($this, 'handle_actions_add_notes'));
+			add_action("on_pagarme_notes_{$event}", array($this, 'handle_actions_add_notes'));
 		}
 	}
 }
