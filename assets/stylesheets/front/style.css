@@ -979,4 +979,10 @@ body .swal2-animate-x-mark {
 	margin-top: 40px;
 }
 
+@media only screen and (max-width: 1023px) {
+	.select2-container--open .select2-dropdown--below{
+		margin-top: 50px;
+	}
+  }
+
 /*# sourceMappingURL=assets/stylesheets/front/style.css.map */
