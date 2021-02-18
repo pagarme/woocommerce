@@ -975,4 +975,8 @@ body .swal2-animate-x-mark {
   max-height: 1.618em !important;
 }
 
+.select2-container--open .select2-dropdown--below{
+	margin-top: 40px;
+}
+
 /*# sourceMappingURL=assets/stylesheets/front/style.css.map */
