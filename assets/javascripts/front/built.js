@@ -2609,14 +2609,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			return false;
 		}
 
-		jQuery('#wcmp-submit').attr('disabled', 'disabled');
-
-		$( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
-
-		if ( $('input[name=payment_method]').val() === 'billet' ) {
-			this.loadSwal();
-		}
-
 		$( 'body' ).on( 'onPagarmeCheckoutDone', function(){
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
 				return;
@@ -2630,6 +2622,16 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			}
 			window.Pagarme2Cards = 0;
 		}.bind(this));
+
+		jQuery('#wcmp-submit').attr('disabled', 'disabled');
+
+		$( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
+
+		if ( $('input[name=payment_method]').val() === 'billet' ) {
+			this.loadSwal();
+		}
+
+
 	};
 
 	Model.fn._onClickTab = function(event) {
