@@ -1,6 +1,6 @@
 {
     "name": "woocommerce-pagarme-payments",
-    "description": "WooCommerce Pagar.me Payments",
+    "description": "Pagar.me module for Woocommerce",
     "type": "wordpress-plugin",
     "license": "GPL",
     "autoload": {

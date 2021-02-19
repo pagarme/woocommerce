@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: WooCommerce Pagar.me Payments
+ * Plugin Name: Pagar.me module for Woocommerce
  * Version:     beta-1.0.27
  * Author:      Pagar.me
  * Author URI:  https://pagar.me
@@ -22,7 +22,7 @@ function wcmp_render_admin_notice_html( $message, $type = 'error' ) {
 ?>
 	<div class="<?php echo esc_html( $type ); ?> notice is-dismissible">
 		<p>
-			<strong><?php esc_html_e( 'WooCommerce Pagar.me Payments', 'woo-pagarme-payments' ); ?>: </strong>
+			<strong><?php esc_html_e( 'Pagar.me module for Woocommerce', 'woo-pagarme-payments' ); ?>: </strong>
 
 			<?php echo /*phpcs:ignore*/ $message; ?>
 		</p>
