@@ -3103,7 +3103,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 				var prefix = current_type.prefixes[j].toString();
 				if (bin.indexOf(prefix) === 0 && oldPrefix.length < prefix.length) {
 					oldPrefix = prefix;
-					currentBrand = current_type.brand;
+					currentBrand = current_type.brandName;
 				}
 			}
 		}
@@ -3169,7 +3169,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn.getCardTypes = function() {
 		return [{
 			brand: 'vr',
-			brandName: 'VR',
+			brandName: 'Vr',
 			gaps: [4, 8, 12],
 			lenghts: [16],
 			mask: '/(\\d{1,4})/g',
