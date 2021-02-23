@@ -3120,13 +3120,14 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		var $img = $('img', $brand)[0];
 		var src;
 
+		$brand.setAttribute('data-pagarmecheckout-brand', brand['brand'] ?? "");
+		this.brandInput.val( brand['brand'] ?? "" );
+
+		jQuery('body').trigger( 'pagarmeChangeBrand', [brand['brand'] ?? "", cardNumberLength, wrapper] );
+
 		if (brand === '') {
 			$brand.innerHTML = '';
 		} else {
-			$brand.setAttribute('data-pagarmecheckout-brand', brand['brand']);
-			this.brandInput.val( brand['brand'] );
-
-			jQuery('body').trigger( 'pagarmeChangeBrand', [brand['brand'], cardNumberLength, wrapper] );
 			if ($brand.getAttribute('data-pagarmecheckout-brand-image') !== null) {
 				src = imageSrc + brand['brandName'] + '.min.png';
 				if (!$img) {
