@@ -3103,7 +3103,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 				var prefix = current_type.prefixes[j].toString();
 				if (bin.indexOf(prefix) === 0 && oldPrefix.length < prefix.length) {
 					oldPrefix = prefix;
-					currentBrand = current_type.brand
+					currentBrand = current_type.brand;
 				}
 			}
 		}
