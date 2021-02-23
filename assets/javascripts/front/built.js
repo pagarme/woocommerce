@@ -3103,7 +3103,10 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 				var prefix = current_type.prefixes[j].toString();
 				if (bin.indexOf(prefix) === 0 && oldPrefix.length < prefix.length) {
 					oldPrefix = prefix;
-					currentBrand = current_type.brandName;
+					currentBrand = {
+						"brand" : current_type.brand,
+						"brandName" : current_type.brandName
+					};
 				}
 			}
 		}
@@ -3117,16 +3120,15 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		var $img = $('img', $brand)[0];
 		var src;
 
-		$brand.setAttribute('data-pagarmecheckout-brand', brand);
-		this.brandInput.val( brand );
-
-		jQuery('body').trigger( 'pagarmeChangeBrand', [brand, cardNumberLength, wrapper] );
-
 		if (brand === '') {
 			$brand.innerHTML = '';
 		} else {
+			$brand.setAttribute('data-pagarmecheckout-brand', brand['brand']);
+			this.brandInput.val( brand['brand'] );
+
+			jQuery('body').trigger( 'pagarmeChangeBrand', [brand['brand'], cardNumberLength, wrapper] );
 			if ($brand.getAttribute('data-pagarmecheckout-brand-image') !== null) {
-				src = imageSrc + brand + '.min.png';
+				src = imageSrc + brand['brandName'] + '.min.png';
 				if (!$img) {
 					var $newImg = document.createElement('img');
 					$newImg.setAttribute('src', src);
