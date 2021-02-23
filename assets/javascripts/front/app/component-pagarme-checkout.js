@@ -107,10 +107,7 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 				var prefix = current_type.prefixes[j].toString();
 				if (bin.indexOf(prefix) === 0 && oldPrefix.length < prefix.length) {
 					oldPrefix = prefix;
-					currentBrand = {
-						'brand': current_type.brand,
-						'brandName':current_type.brandName
-					};
+					currentBrand = current_type.brand;
 				}
 			}
 		}
@@ -120,20 +117,20 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 	Model.fn.changeBrand = function (brand, cardNumberLength) {
 		var $brand = this.creditCardBrand.get(0);
 		var wrapper = this.creditCardBrand.closest( 'fieldset' );
-		var imageSrc = 'https://checkout.mundipagg.com/images/brands/';
+		var imageSrc = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
 		var $img = $('img', $brand)[0];
 		var src;
 
-		$brand.setAttribute('data-pagarmecheckout-brand', brand['brand'] ?? "");
-		this.brandInput.val( brand['brand'] ?? "" );
+		$brand.setAttribute('data-pagarmecheckout-brand', brand);
+		this.brandInput.val( brand );
 
-		jQuery('body').trigger( 'pagarmeChangeBrand', [brand['brand'] ?? "", cardNumberLength, wrapper] );
+		jQuery('body').trigger( 'pagarmeChangeBrand', [brand, cardNumberLength, wrapper] );
 
 		if (brand === '') {
 			$brand.innerHTML = '';
 		} else {
 			if ($brand.getAttribute('data-pagarmecheckout-brand-image') !== null) {
-				src = imageSrc + brand['brandName'] + '.min.png';
+				src = imageSrc + brand + '.png';
 				if (!$img) {
 					var $newImg = document.createElement('img');
 					$newImg.setAttribute('src', src);
