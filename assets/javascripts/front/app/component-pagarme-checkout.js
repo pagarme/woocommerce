@@ -173,7 +173,7 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 	Model.fn.getCardTypes = function() {
 		return [{
 			brand: 'vr',
-			brandName: 'Vr',
+			brandName: 'VR',
 			gaps: [4, 8, 12],
 			lenghts: [16],
 			mask: '/(\\d{1,4})/g',
