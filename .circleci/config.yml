@@ -14,7 +14,7 @@ jobs:
        - run:
           name: Install PHP extensions
           command: |
-            docker-php-ext-install pdo 
+            docker-php-ext-install pdo
             docker-php-ext-install zip
        - run:
           name: Install Composer
@@ -77,12 +77,12 @@ jobs:
              docker exec -it newimage mysql -u root -D wordpress -e "INSERT INTO wp_options (option_name,option_value) VALUES ('${PLUGIN_META_NAME}','${PLUGIN_CONFIG}');"
              docker exec -it newimage mysql -u root -D wordpress -e "UPDATE wp_options SET option_value = 'https://${STAGING_URL}' WHERE option_name IN ('siteurl','home');"
              docker exec -i newimage curl -X GET "http://localhost/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php?url=${STAGING_URL}"
-             docker exec -it newimage rm /app/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php 
+             docker exec -it newimage rm /app/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php
       - run:
           name: Clear useless files
           command: |
              docker exec -it newimage cd /app/wp-content/plugins/${PLUGIN_NAME} && \
-                    rm -rf .github .circleci .plugin-data .git .gitignore .editorconfig && \ 
+                    rm -rf .github .circleci .plugin-data .git .gitignore .editorconfig && \
                     rm -rf Dockerfile update-wp-config.php wait-for-mysql.sh LICENSE *.MD
       - deploy:
           name: Commit and push Docker image
@@ -94,7 +94,7 @@ jobs:
              docker tag ${DOCKER_ACCOUNT}/${PROJECT_NAME} "${DOCKER_ACCOUNT}/${PROJECT_NAME}:${CIRCLE_BRANCH}"
              docker tag ${DOCKER_ACCOUNT}/${PROJECT_NAME} "${DOCKER_ACCOUNT}/${PROJECT_NAME}:${CIRCLE_SHA1:0:8}"
              docker push "${DOCKER_ACCOUNT}/${PROJECT_NAME}"
-             
+
   deploy_staging:
     machine: true
     steps:
@@ -103,7 +103,7 @@ jobs:
           command: |
             BODY='{"push_data":{"tag":"'"${CIRCLE_BRANCH}"'"},"repository":{"repo_name":"'"${DOCKER_ACCOUNT}/${PROJECT_NAME}"'"}}'
             curl -X POST ${RANCHER_STG_DEPLOY_URL} -H 'Content-Type: application/json' -d "${BODY}"
- 
+
   deploy_wordpress:
     working_directory: /
     docker:
@@ -117,19 +117,19 @@ jobs:
           command: |
             mkdir /svn && cd /svn
             svn co https://plugins.svn.wordpress.org/${PLUGIN_NAME} --username ${SVN_USER} --password ${SVN_PASS}
-      - run: 
+      - run:
           name: Clear release and update plugin assets
           command: |
             cp -ar /app /app-released
             cd /app-released
-            rm -rf .github .circleci .git .gitignore .editorconfig 
-            rm -rf update-wp-config.php wait-for-mysql.sh LICENSE *.MD      
+            rm -rf .github .circleci .git .gitignore .editorconfig
+            rm -rf update-wp-config.php wait-for-mysql.sh LICENSE *.MD
             cp /app-released/.plugin-data/README.md /app-released/README.md
             rm -rf /svn/${PLUGIN_NAME}/assets
             cp -ar /app-released/.plugin-data/assets /svn/${PLUGIN_NAME}/assets
             rm -rf /app-released/.plugin-data
       - run:
-          name: Add release files 
+          name: Add release files
           command: |
             cd /app-released
             VERSION_TAG="$(cat ${PLUGIN_NAME}.php | grep -i 'Version:' | cut -c12- | xargs)"
@@ -138,9 +138,9 @@ jobs:
             if [ -d "tags/${VERSION_TAG}" ]; then rm -rf tags/${VERSION_TAG}; fi
             cp -ar /app-released tags/${VERSION_TAG}
             rm -rf trunk
-            cp -ar /app-released trunk            
+            cp -ar /app-released trunk
       - deploy:
-          name: Commit and push changes 
+          name: Commit and push changes
           command: |
             cd /app-released
             VERSION_TAG="$(cat ${PLUGIN_NAME}.php | grep -i 'Version:' | cut -c12- | xargs)"
@@ -150,7 +150,7 @@ jobs:
             if [ ! -z  ${removed// } ]; then svn rm $(svn status | sed -e '/^!/!d' -e 's/^!//'); fi
             svn add --force * --auto-props --parents --depth infinity -q
             svn commit . --force-log -m "Auto generate release ${VERSION_TAG}" --no-auth-cache --username ${SVN_USER} --password ${SVN_PASS}
-            
+
 workflows:
   version: 2
   build_publish_deploy:
@@ -162,13 +162,13 @@ workflows:
             - build
           filters:
             branches:
-              only: master
+              only: develop
       - deploy_staging:
           requires:
             - publish
           filters:
             branches:
-              only: master
+              only: develop
       - deploy_wordpress:
           requires:
             - publish
