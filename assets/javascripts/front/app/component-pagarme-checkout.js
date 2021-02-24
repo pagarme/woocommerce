@@ -117,7 +117,7 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 	Model.fn.changeBrand = function (brand, cardNumberLength) {
 		var $brand = this.creditCardBrand.get(0);
 		var wrapper = this.creditCardBrand.closest( 'fieldset' );
-		var imageSrc = 'https://checkout.mundipagg.com/images/brands/';
+		var imageSrc = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
 		var $img = $('img', $brand)[0];
 		var src;
 
@@ -130,7 +130,7 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 			$brand.innerHTML = '';
 		} else {
 			if ($brand.getAttribute('data-pagarmecheckout-brand-image') !== null) {
-				src = imageSrc + brand + '.min.png';
+				src = imageSrc + brand + '.png';
 				if (!$img) {
 					var $newImg = document.createElement('img');
 					$newImg.setAttribute('src', src);
