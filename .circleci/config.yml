@@ -104,53 +104,6 @@ jobs:
             BODY='{"push_data":{"tag":"'"${CIRCLE_BRANCH}"'"},"repository":{"repo_name":"'"${DOCKER_ACCOUNT}/${PROJECT_NAME}"'"}}'
             curl -X POST ${RANCHER_STG_DEPLOY_URL} -H 'Content-Type: application/json' -d "${BODY}"
 
-  deploy_wordpress:
-    working_directory: /
-    docker:
-      - image: aneesv/svn-client
-    steps:
-      - setup_remote_docker
-      - attach_workspace:
-          at: /
-      - run:
-          name: Get SVN repo
-          command: |
-            mkdir /svn && cd /svn
-            svn co https://plugins.svn.wordpress.org/${PLUGIN_NAME} --username ${SVN_USER} --password ${SVN_PASS}
-      - run:
-          name: Clear release and update plugin assets
-          command: |
-            cp -ar /app /app-released
-            cd /app-released
-            rm -rf .github .circleci .git .gitignore .editorconfig
-            rm -rf update-wp-config.php wait-for-mysql.sh LICENSE *.MD
-            cp /app-released/.plugin-data/README.md /app-released/README.md
-            rm -rf /svn/${PLUGIN_NAME}/assets
-            cp -ar /app-released/.plugin-data/assets /svn/${PLUGIN_NAME}/assets
-            rm -rf /app-released/.plugin-data
-      - run:
-          name: Add release files
-          command: |
-            cd /app-released
-            VERSION_TAG="$(cat ${PLUGIN_NAME}.php | grep -i 'Version:' | cut -c12- | xargs)"
-            echo "Release Number: ${VERSION_TAG}"
-            cd /svn/${PLUGIN_NAME}
-            if [ -d "tags/${VERSION_TAG}" ]; then rm -rf tags/${VERSION_TAG}; fi
-            cp -ar /app-released tags/${VERSION_TAG}
-            rm -rf trunk
-            cp -ar /app-released trunk
-      - deploy:
-          name: Commit and push changes
-          command: |
-            cd /app-released
-            VERSION_TAG="$(cat ${PLUGIN_NAME}.php | grep -i 'Version:' | cut -c12- | xargs)"
-            cd /svn/${PLUGIN_NAME}
-            svn cleanup .
-            removed=$(svn status | sed -e '/^!/!d' -e 's/^!//')
-            if [ ! -z  ${removed// } ]; then svn rm $(svn status | sed -e '/^!/!d' -e 's/^!//'); fi
-            svn add --force * --auto-props --parents --depth infinity -q
-            svn commit . --force-log -m "Auto generate release ${VERSION_TAG}" --no-auth-cache --username ${SVN_USER} --password ${SVN_PASS}
-
 workflows:
   version: 2
   build_publish_deploy:
@@ -169,9 +122,3 @@ workflows:
           filters:
             branches:
               only: develop
-      - deploy_wordpress:
-          requires:
-            - publish
-          filters:
-            branches:
-              only: master
