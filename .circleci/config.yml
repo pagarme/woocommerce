@@ -110,7 +110,6 @@ workflows:
     jobs:
       - build
       - publish:
-          context: DockerRegistry
           requires:
             - build
           filters:
