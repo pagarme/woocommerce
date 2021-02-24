@@ -112,9 +112,6 @@ workflows:
       - publish:
           requires:
             - build
-          filters:
-            branches:
-              only: develop
       - deploy_staging:
           requires:
             - publish
