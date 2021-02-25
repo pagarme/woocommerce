@@ -81,7 +81,7 @@ jobs:
       - run:
           name: Clear useless files
           command: |
-             docker exec -it newimage cd /app/wp-content/plugins/${PLUGIN_NAME} && \
+             docker exec -it newimage sh -c "cd /app/wp-content/plugins/${PLUGIN_NAME}" && \
                     rm -rf .github .circleci .plugin-data .git .gitignore .editorconfig && \
                     rm -rf Dockerfile update-wp-config.php wait-for-mysql.sh LICENSE *.MD
       - deploy:
