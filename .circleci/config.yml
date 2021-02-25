@@ -110,7 +110,7 @@ workflows:
     jobs:
       - build
       - publish:
-          context: dockerhub
+          context: acceptance
           requires:
             - build
       - deploy_staging:
