@@ -39,6 +39,9 @@ $swal_data   = array(
 		<div class="woocommerce-tabs">
 			<ul class="tabs">
 
+			<li class="wcmp-tab-woocommerce-compatibility" style="display: none;">
+			</li>
+
 			<?php
 			if ( $this->model->settings->is_active_credit_card() ) :
 				$tab_credit_card = true;
