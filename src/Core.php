@@ -144,7 +144,7 @@ class Core
 
 	public static function get_name()
 	{
-		return __( 'WooCommerce Pagar.me Payments', 'woo-pagarme-payments' );
+		return __( 'Pagar.me module for Woocommerce', 'woo-pagarme-payments' );
 	}
 
 	public static function plugin_dir_path( $path = '' )
