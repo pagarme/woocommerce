@@ -78,6 +78,7 @@ jobs:
              docker exec -it newimage mysql -u root -D wordpress -e "UPDATE wp_options SET option_value = 'https://${STAGING_URL}' WHERE option_name IN ('siteurl','home');"
              docker exec -i newimage curl -X GET "http://localhost/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php?url=${STAGING_URL}"
              docker exec -it newimage rm /app/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php
+             docker exec -it newimage touch test.txt
       - run:
           name: Clear useless files
           command: |
