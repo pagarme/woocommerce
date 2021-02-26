@@ -438,10 +438,10 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'type'              => 'multiselect',
-			'title'             => __( 'Flags', 'woo-pagarme-payments' ),
+			'title'             => __( 'Card Brands', 'woo-pagarme-payments' ),
 			'select_buttons'    => false,
 			'class'             => 'wc-enhanced-select',
-			'desc_tip'          => __( 'Select one or more flags', 'woo-pagarme-payments' ),
+			'desc_tip'          => __( 'Select one or more card brands', 'woo-pagarme-payments' ),
 			'options'           => $this->model->settings->get_flags_list(),
 			'custom_attributes' => array(
 				'data-element' => 'flags-select',
@@ -460,7 +460,7 @@ class Gateways extends WC_Payment_Gateway
 			'default' => 1,
 			'options' => array(
 				Gateway::CC_TYPE_SINGLE  => __( 'Single installment', 'woo-pagarme-payments' ),
-				Gateway::CC_TYPE_BY_FLAG => __( 'Installment by flags', 'woo-pagarme-payments' ),
+				Gateway::CC_TYPE_BY_FLAG => __( 'Installment by card brands', 'woo-pagarme-payments' ),
 			),
 			'custom_attributes' => array(
 				'data-element' => 'installments-type-select',
@@ -524,7 +524,7 @@ class Gateways extends WC_Payment_Gateway
 		);
 
 		$installments['flags'] = array(
-			'title' => __( 'Settings by flag', 'woo-pagarme-payments' ),
+			'title' => __( 'Settings by card brand', 'woo-pagarme-payments' ),
 			'type'  => 'installments_by_flag',
 		);
 
@@ -626,7 +626,7 @@ class Gateways extends WC_Payment_Gateway
 
 					</br><p class="description">
 						<strong><?php _e( 'Columns', 'woo-pagarme-payments' ); ?>:</strong>
-						<?php _e( 'Flag', 'woo-pagarme-payments' ); ?>,
+						<?php _e( 'Card Brand', 'woo-pagarme-payments' ); ?>,
 						<?php _e( 'Max installment', 'woo-pagarme-payments' ); ?>,
 						<?php _e( 'No interest', 'woo-pagarme-payments' ); ?>,
 						<?php _e( 'Initial interest', 'woo-pagarme-payments' ); ?>,

@@ -65,7 +65,7 @@ msgid "The sum of the two credits cards is greater than the total"
 msgstr "A soma dos dois cartões é maior do que o total"
 
 #: src/Controller/Checkout.php:238 src/Controller/Checkout.php:242
-msgid "The flag <b>%s</b> is not supported."
+msgid "The card brand <b>%s</b> is not supported."
 msgstr "A bandeira <b>%s</b> não é suportada."
 
 #: src/Controller/Gateways.php:30
@@ -234,7 +234,7 @@ msgid "Maximum of 13 characters"
 msgstr "Máximo de 13 caracteres"
 
 #: src/Controller/Gateways.php:393
-msgid "It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer's invoice, next to the shop identification, respecting the length of the flags."
+msgid "It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer's invoice, next to the shop identification, respecting the length of the card brands."
 msgstr "Permite que o lojista envie um texto de até 13 caracteres que será impresso na fatura do portador, ao lado da identificação da loja, respeitando o comprimento das bandeiras."
 
 #: src/Controller/Gateways.php:398
@@ -270,11 +270,11 @@ msgid "Enable Manual Capture"
 msgstr "Habilitar Captura Manual"
 
 #: src/Controller/Gateways.php:441
-msgid "Flags"
+msgid "Card Brands"
 msgstr "Bandeiras"
 
 #: src/Controller/Gateways.php:444
-msgid "Select one or more flags"
+msgid "Select one or more card brands"
 msgstr "Selecione uma ou mais bandeiras"
 
 #: src/Controller/Gateways.php:456
@@ -290,7 +290,7 @@ msgid "Single installment"
 msgstr "Parcelamento único"
 
 #: src/Controller/Gateways.php:463
-msgid "Installment by flags"
+msgid "Installment by card brands"
 msgstr "Parcelamento por bandeiras"
 
 #: src/Controller/Gateways.php:477
@@ -326,11 +326,11 @@ msgid "Interest to be increamented for each installment."
 msgstr "Juros incrementados em cada parcela."
 
 #: src/Controller/Gateways.php:528
-msgid "Settings by flag"
+msgid "Settings by card brand"
 msgstr "Configurações por bandeira"
 
 #: src/Controller/Gateways.php:530
-msgid "Defines the settings for each flag."
+msgid "Defines the settings for each card brand."
 msgstr "Define as configurações para cada bandeira."
 
 #: src/Controller/Gateways.php:631
@@ -338,7 +338,7 @@ msgid "Columns"
 msgstr "Colunas"
 
 #: src/Controller/Gateways.php:632 src/View/Checkouts.php:241
-msgid "Flag"
+msgid "Card Brand"
 msgstr "Bandeira"
 
 #: src/Controller/Gateways.php:633
@@ -378,7 +378,7 @@ msgid "%dx of %s (%s)"
 msgstr "%dx de %s (%s)"
 
 #: src/Model/Gateway.php:142
-msgid "This flag not is allowed on checkout."
+msgid "This card brand not is allowed on checkout."
 msgstr "Essa bandeira não é permitda no checkout."
 
 #: src/Model/Order.php:66
@@ -686,9 +686,6 @@ msgstr "Habilita o gateway de pagamento Pagar.me para o WooCommerce"
 #. Author URI of the plugin/theme
 msgid "https://pagarme.me"
 msgstr ""
-
-#~ msgid "The flag %s is not supported."
-#~ msgstr "A bandeira %s não é suportada."
 
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."

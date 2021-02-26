@@ -242,7 +242,7 @@ class Checkouts
 				<td><?php echo $charge->last_transaction->card->holder_name; ?></td>
 			</tr>
 			<tr>
-				<th><?php _e( 'Flag', 'woo-pagarme-payments' ); ?>:</th>
+				<th><?php _e( 'Card Brand', 'woo-pagarme-payments' ); ?>:</th>
 				<td><?php echo $charge->last_transaction->card->brand; ?></td>
 			</tr>
 			<tr>

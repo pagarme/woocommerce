@@ -140,7 +140,7 @@ class Gateway
 		extract( $params );
 
 		if ( ! $flag || ! isset( $settings_by_flag['max_installment'][ $flag ] ) ) {
-			return sprintf( '<option value="">%s</option>', __( 'This flag not is allowed on checkout.', Core::SLUG ) );
+			return sprintf( '<option value="">%s</option>', __( 'This card brand not is allowed on checkout.', Core::SLUG ) );
 		}
 
 		$max_installments  = intval( $settings_by_flag['max_installment'][ $flag ] );
