@@ -210,7 +210,7 @@ msgid "Number of Days"
 msgstr "Número de Dias"
 
 #: src/Controller/Gateways.php:362
-msgid "Days of expiry of the billet after printed."
+msgid "Expiration days of the billet after printing."
 msgstr "Dias de expiração do boleto depois de impresso."
 
 #: src/Controller/Gateways.php:372
@@ -524,7 +524,7 @@ msgid "Saved credit card"
 msgstr "Escolha um cartão"
 
 #: templates/checkout/common-card-item.php:53
-msgid "Expiry (MM/YY)"
+msgid "Expires (MM/YY)"
 msgstr "Validade (MM/AA)"
 
 #: templates/checkout/common-card-item.php:61

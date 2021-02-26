@@ -359,7 +359,7 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'title'       => __( 'Number of Days', 'woo-pagarme-payments' ),
-			'description' => __( 'Days of expiry of the billet after printed.', 'woo-pagarme-payments' ),
+			'description' => __( '"Expiration days of the billet after printing."', 'woo-pagarme-payments' ),
 			'desc_tip'    => true,
 			'placeholder' => 5,
 			'default'     => 5,
