@@ -370,7 +370,7 @@ msgid "Pagar.me module for Woocommerce"
 msgstr "Pagar.me módulo para Woocommerce"
 
 #: src/Model/Gateway.php:85
-msgid "At sight"
+msgid "1x"
 msgstr "À vista"
 
 #: src/Model/Gateway.php:110

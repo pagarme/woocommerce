@@ -83,7 +83,7 @@ class Gateway
 	{
 		$output = sprintf(
 			'<option value="1">%1$s</option>',
-			__( 'At sight', 'woo-pagarme-payments' ) . ' (' . wc_price( $total ) . ')'
+			__( '1x', 'woo-pagarme-payments' ) . ' (' . wc_price( $total ) . ')'
 		);
 
 		$interest_base = $interest;
