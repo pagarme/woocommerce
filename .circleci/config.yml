@@ -114,5 +114,6 @@ workflows:
           requires:
             - build
       - deploy_staging:
+          context: acceptance
           requires:
             - publish
