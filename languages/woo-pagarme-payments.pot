@@ -110,7 +110,7 @@ msgid "Description"
 msgstr "Descrição"
 
 #: src/Controller/Gateways.php:186
-msgid "Pay with credit card or billet"
+msgid "Pay with credit card or boleto"
 msgstr "Pague com cartão de crédito ou boleto"
 
 #: src/Controller/Gateways.php:194
@@ -154,11 +154,11 @@ msgid "Enable Credit Card"
 msgstr "Ativar Cartão de Crédito"
 
 #: src/Controller/Gateways.php:271
-msgid "Multimethods </br>(Billet + Credit Card)"
+msgid "Multimethods </br>(Boleto + Credit Card)"
 msgstr "Multimeios </br>(Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:273
-msgid "Enable Multimethods (Billet + Credit Card)"
+msgid "Enables Multimethods (Boleto + Credit Card)"
 msgstr "Habilitar multimeios (Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:281
@@ -194,7 +194,7 @@ msgid "Minimum anti-fraud value"
 msgstr "Valor mínimo para ativar o antifraude"
 
 #: src/Controller/Gateways.php:334
-msgid "Billet settings"
+msgid "Boleto settings"
 msgstr "Configurações de Boleto"
 
 #: src/Controller/Gateways.php:343
@@ -210,7 +210,7 @@ msgid "Number of Days"
 msgstr "Número de Dias"
 
 #: src/Controller/Gateways.php:362
-msgid "Expiration days of the billet after printing."
+msgid "Expiration days of the boleto after printing."
 msgstr "Dias de expiração do boleto depois de impresso."
 
 #: src/Controller/Gateways.php:372
@@ -218,7 +218,7 @@ msgid "Instructions"
 msgstr "Instruções"
 
 #: src/Controller/Gateways.php:374
-msgid "Instructions for the billet."
+msgid "Instructions for the boleto."
 msgstr "Instruções para o boleto."
 
 #: src/Controller/Gateways.php:382
