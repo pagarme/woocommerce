@@ -248,11 +248,11 @@ class Checkout
 		}
 
 		if ( $brand1 && ! in_array( $brand1, $flags ) ) {
-			wp_send_json_error( sprintf( __( 'The flag <b>%s</b> is not supported.', 'woo-pagarme-payments' ), $brand1 ) );
+			wp_send_json_error( sprintf( __( 'The card brand <b>%s</b> is not supported.', 'woo-pagarme-payments' ), $brand1 ) );
 		}
 
 		if ( $brand2 && ! in_array( $brand2, $flags ) ) {
-			wp_send_json_error( sprintf( __( 'The flag <b>%s</b> is not supported.', 'woo-pagarme-payments' ), $brand2 ) );
+			wp_send_json_error( sprintf( __( 'The card brand <b>%s</b> is not supported.', 'woo-pagarme-payments' ), $brand2 ) );
 		}
 	}
 }

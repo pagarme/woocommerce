@@ -50,7 +50,7 @@ $setting = Setting::get_instance();
 	<p class="form-row form-row-first">
 
 		<label for="card-expiry">
-			<?php esc_html_e( 'Expiry (MM/YY)', 'woo-pagarme-payments' ); ?>
+			<?php esc_html_e( 'Expiration Date (MM/YY)', 'woo-pagarme-payments' ); ?>
 			<span class="required">*</span>
 		</label>
 

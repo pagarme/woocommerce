@@ -65,7 +65,7 @@ msgid "The sum of the two credits cards is greater than the total"
 msgstr "A soma dos dois cartões é maior do que o total"
 
 #: src/Controller/Checkout.php:238 src/Controller/Checkout.php:242
-msgid "The flag <b>%s</b> is not supported."
+msgid "The card brand <b>%s</b> is not supported."
 msgstr "A bandeira <b>%s</b> não é suportada."
 
 #: src/Controller/Gateways.php:30
@@ -110,7 +110,7 @@ msgid "Description"
 msgstr "Descrição"
 
 #: src/Controller/Gateways.php:186
-msgid "Pay with credit card or billet"
+msgid "Pay with credit card or boleto"
 msgstr "Pague com cartão de crédito ou boleto"
 
 #: src/Controller/Gateways.php:194
@@ -154,11 +154,11 @@ msgid "Enable Credit Card"
 msgstr "Ativar Cartão de Crédito"
 
 #: src/Controller/Gateways.php:271
-msgid "Multimethods </br>(Billet + Credit Card)"
+msgid "Multimethods </br>(Boleto + Credit Card)"
 msgstr "Multimeios </br>(Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:273
-msgid "Enable Multimethods (Billet + Credit Card)"
+msgid "Enables Multimethods (Boleto + Credit Card)"
 msgstr "Habilitar multimeios (Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:281
@@ -194,7 +194,7 @@ msgid "Minimum anti-fraud value"
 msgstr "Valor mínimo para ativar o antifraude"
 
 #: src/Controller/Gateways.php:334
-msgid "Billet settings"
+msgid "Boleto settings"
 msgstr "Configurações de Boleto"
 
 #: src/Controller/Gateways.php:343
@@ -210,7 +210,7 @@ msgid "Number of Days"
 msgstr "Número de Dias"
 
 #: src/Controller/Gateways.php:362
-msgid "Days of expiry of the billet after printed."
+msgid "Expiration days of the boleto after printing."
 msgstr "Dias de expiração do boleto depois de impresso."
 
 #: src/Controller/Gateways.php:372
@@ -218,7 +218,7 @@ msgid "Instructions"
 msgstr "Instruções"
 
 #: src/Controller/Gateways.php:374
-msgid "Instructions for the billet."
+msgid "Instructions for the boleto."
 msgstr "Instruções para o boleto."
 
 #: src/Controller/Gateways.php:382
@@ -234,7 +234,7 @@ msgid "Maximum of 13 characters"
 msgstr "Máximo de 13 caracteres"
 
 #: src/Controller/Gateways.php:393
-msgid "It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer's invoice, next to the shop identification, respecting the length of the flags."
+msgid "It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer's invoice, next to the shop identification, respecting the length of the card brands."
 msgstr "Permite que o lojista envie um texto de até 13 caracteres que será impresso na fatura do portador, ao lado da identificação da loja, respeitando o comprimento das bandeiras."
 
 #: src/Controller/Gateways.php:398
@@ -274,7 +274,7 @@ msgid "Flags"
 msgstr "Bandeiras"
 
 #: src/Controller/Gateways.php:444
-msgid "Select one or more flags"
+msgid "Select one or more card brands"
 msgstr "Selecione uma ou mais bandeiras"
 
 #: src/Controller/Gateways.php:456
@@ -290,7 +290,7 @@ msgid "Single installment"
 msgstr "Parcelamento único"
 
 #: src/Controller/Gateways.php:463
-msgid "Installment by flags"
+msgid "Installment by card brands"
 msgstr "Parcelamento por bandeiras"
 
 #: src/Controller/Gateways.php:477
@@ -326,11 +326,11 @@ msgid "Interest to be increamented for each installment."
 msgstr "Juros incrementados em cada parcela."
 
 #: src/Controller/Gateways.php:528
-msgid "Settings by flag"
+msgid "Settings by card brand"
 msgstr "Configurações por bandeira"
 
 #: src/Controller/Gateways.php:530
-msgid "Defines the settings for each flag."
+msgid "Defines the settings for each card brand."
 msgstr "Define as configurações para cada bandeira."
 
 #: src/Controller/Gateways.php:631
@@ -370,7 +370,7 @@ msgid "Pagar.me module for Woocommerce"
 msgstr "Pagar.me módulo para Woocommerce"
 
 #: src/Model/Gateway.php:85
-msgid "At sight"
+msgid "1x"
 msgstr "À vista"
 
 #: src/Model/Gateway.php:110
@@ -378,7 +378,7 @@ msgid "%dx of %s (%s)"
 msgstr "%dx de %s (%s)"
 
 #: src/Model/Gateway.php:142
-msgid "This flag not is allowed on checkout."
+msgid "This card brand not is allowed on checkout."
 msgstr "Essa bandeira não é permitda no checkout."
 
 #: src/Model/Order.php:66
@@ -524,7 +524,7 @@ msgid "Saved credit card"
 msgstr "Escolha um cartão"
 
 #: templates/checkout/common-card-item.php:53
-msgid "Expiry (MM/YY)"
+msgid "Expiration Date (MM/YY)"
 msgstr "Validade (MM/AA)"
 
 #: templates/checkout/common-card-item.php:61
