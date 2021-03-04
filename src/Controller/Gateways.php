@@ -183,7 +183,7 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'title'   => __( 'Description', 'woo-pagarme-payments' ),
-			'default' => __( 'Pay with credit card or billet', 'woo-pagarme-payments' ),
+			'default' => __( 'Pay with credit card or boleto', 'woo-pagarme-payments' ),
 		);
 	}
 
@@ -248,9 +248,9 @@ class Gateways extends WC_Payment_Gateway
 	public function field_enable_billet()
 	{
 		return array(
-			'title'   => __( 'Billet Banking', 'woo-pagarme-payments' ),
+			'title'   => __( 'Boleto Bancário', 'woo-pagarme-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Billet Banking', 'woo-pagarme-payments' ),
+			'label'   => __( 'Enables Boleto Bancário', 'woo-pagarme-payments' ),
 			'default' => 'yes',
 		);
 	}
@@ -268,9 +268,9 @@ class Gateways extends WC_Payment_Gateway
 	public function field_multimethods_billet_card()
 	{
 		return array(
-			'title'   => __( 'Multimethods </br>(Billet + Credit Card)', 'woo-pagarme-payments' ),
+			'title'   => __( 'Multimethods </br>(Boleto + Credit Card)', 'woo-pagarme-payments' ),
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Multimethods (Billet + Credit Card)', 'woo-pagarme-payments' ),
+			'label'   => __( 'Enables Multimethods (Boleto + Credit Card)', 'woo-pagarme-payments' ),
 			'default' => 'no',
 		);
 	}
@@ -331,7 +331,7 @@ class Gateways extends WC_Payment_Gateway
 	public function section_billet()
 	{
 		return array(
-			'title' => __( 'Billet settings', 'woo-pagarme-payments' ),
+			'title' => __( 'Boleto settings', 'woo-pagarme-payments' ),
 			'type'  => 'title',
 		);
 	}
@@ -359,7 +359,7 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'title'       => __( 'Number of Days', 'woo-pagarme-payments' ),
-			'description' => __( 'Days of expiry of the billet after printed.', 'woo-pagarme-payments' ),
+			'description' => __( '"Expiration days of the boleto after printing."', 'woo-pagarme-payments' ),
 			'desc_tip'    => true,
 			'placeholder' => 5,
 			'default'     => 5,
@@ -371,7 +371,7 @@ class Gateways extends WC_Payment_Gateway
 		return array(
 			'title'       => __( 'Instructions', 'woo-pagarme-payments' ),
 			'type'        => 'text',
-			'description' => __( 'Instructions for the billet.', 'woo-pagarme-payments' ),
+			'description' => __( 'Instructions for the boleto.', 'woo-pagarme-payments' ),
 			'desc_tip'    => true,
 		);
 	}
@@ -438,10 +438,10 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'type'              => 'multiselect',
-			'title'             => __( 'Flags', 'woo-pagarme-payments' ),
+			'title'             => __( 'Card Brands', 'woo-pagarme-payments' ),
 			'select_buttons'    => false,
 			'class'             => 'wc-enhanced-select',
-			'desc_tip'          => __( 'Select one or more flags', 'woo-pagarme-payments' ),
+			'desc_tip'          => __( 'Select one or more card brands', 'woo-pagarme-payments' ),
 			'options'           => $this->model->settings->get_flags_list(),
 			'custom_attributes' => array(
 				'data-element' => 'flags-select',
@@ -460,7 +460,7 @@ class Gateways extends WC_Payment_Gateway
 			'default' => 1,
 			'options' => array(
 				Gateway::CC_TYPE_SINGLE  => __( 'Single installment', 'woo-pagarme-payments' ),
-				Gateway::CC_TYPE_BY_FLAG => __( 'Installment by flags', 'woo-pagarme-payments' ),
+				Gateway::CC_TYPE_BY_FLAG => __( 'Installment by card brands', 'woo-pagarme-payments' ),
 			),
 			'custom_attributes' => array(
 				'data-element' => 'installments-type-select',
@@ -524,7 +524,7 @@ class Gateways extends WC_Payment_Gateway
 		);
 
 		$installments['flags'] = array(
-			'title' => __( 'Settings by flag', 'woo-pagarme-payments' ),
+			'title' => __( 'Settings by card brand', 'woo-pagarme-payments' ),
 			'type'  => 'installments_by_flag',
 		);
 
@@ -626,7 +626,7 @@ class Gateways extends WC_Payment_Gateway
 
 					</br><p class="description">
 						<strong><?php _e( 'Columns', 'woo-pagarme-payments' ); ?>:</strong>
-						<?php _e( 'Flag', 'woo-pagarme-payments' ); ?>,
+						<?php _e( 'Card Brand', 'woo-pagarme-payments' ); ?>,
 						<?php _e( 'Max installment', 'woo-pagarme-payments' ); ?>,
 						<?php _e( 'No interest', 'woo-pagarme-payments' ); ?>,
 						<?php _e( 'Initial interest', 'woo-pagarme-payments' ); ?>,

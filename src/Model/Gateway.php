@@ -83,7 +83,7 @@ class Gateway
 	{
 		$output = sprintf(
 			'<option value="1">%1$s</option>',
-			__( 'At sight', 'woo-pagarme-payments' ) . ' (' . wc_price( $total ) . ')'
+			__( '1x', 'woo-pagarme-payments' ) . ' (' . wc_price( $total ) . ')'
 		);
 
 		$interest_base = $interest;
@@ -140,7 +140,7 @@ class Gateway
 		extract( $params );
 
 		if ( ! $flag || ! isset( $settings_by_flag['max_installment'][ $flag ] ) ) {
-			return sprintf( '<option value="">%s</option>', __( 'This flag not is allowed on checkout.', Core::SLUG ) );
+			return sprintf( '<option value="">%s</option>', __( 'This card brand not is allowed on checkout.', Core::SLUG ) );
 		}
 
 		$max_installments  = intval( $settings_by_flag['max_installment'][ $flag ] );
