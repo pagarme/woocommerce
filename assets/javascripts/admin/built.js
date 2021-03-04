@@ -4107,6 +4107,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		this.handleEnvironmentFieldsVisibility( this.elements.environmentSelect.val() );
 		this.handleInstallmentFieldsVisibility( this.elements.installmentsTypeSelect.val() );
+		this.handleBilletBankRequirement();
 
 		this.setInstallmentsByFlags( null, true );
 
@@ -4117,6 +4118,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		this.on( 'keyup', 'soft-descriptor' );
 		this.on( 'change', 'environment' );
 		this.on( 'change', 'installments-type' );
+		this.on( 'change', 'enable-billet' );
+		this.on( 'change', 'enable-multimethods-billet-card' );
 
 		this.elements.flagsSelect.on( 'select2:unselecting', this._onChangeFlags.bind(this) );
 		this.elements.flagsSelect.on( 'select2:selecting', this._onChangeFlags.bind(this) );
@@ -4148,6 +4151,14 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn._onChangeInstallmentsType = function( event ) {
 		this.handleInstallmentFieldsVisibility( event.currentTarget.value );
+	};
+
+	Model.fn._onChangeEnableBillet = function() {
+		this.handleBilletBankRequirement();
+	};
+
+	Model.fn._onChangeEnableMultimethodsBilletCard = function() {
+		this.handleBilletBankRequirement();
 	};
 
 	Model.fn._onChangeFlags = function( event ) {
@@ -4226,6 +4237,26 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			installmentsWithoutInterestContainer.hide();
 		}
 	};
+
+	Model.fn.handleBilletBankRequirement = function() {
+		let bankRequirementFields = $( '[data-requires-field="billet-bank"]' );
+		let billetBankElementId = '#woocommerce_woo-pagarme-payments_billet_bank';
+		let billetBankIsRequired = false;
+
+		bankRequirementFields.each(function() {
+			if ( $( this ).prop( "checked" ) ) {
+				billetBankIsRequired = true;
+				return false;
+			}
+		});
+
+		if ( billetBankIsRequired ) {
+			$( billetBankElementId ).attr( 'required', true );
+			return;
+		}
+
+		$( billetBankElementId ).attr( 'required', false );
+  };
 
 	Model.fn.setInstallmentsByFlags = function( event, firstLoad ) {
 		var flags        = this.elements.flagsSelect.val() || [];
