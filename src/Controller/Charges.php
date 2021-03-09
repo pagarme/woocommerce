@@ -37,7 +37,7 @@ class Charges
 		}
 
 		$charge_id = Utils::post( 'charge_id', false );
-		$amount    = Utils::post( 'amount', 0, 'intval' );
+		$amount    = Utils::post( 'amount', 0 );
 		$mode      = Utils::post( 'mode', false );
 
 		if ( ! $charge_id ) {
@@ -53,7 +53,7 @@ class Charges
 		}
 
 		$resource = new Charges_Resource();
-		$response = $resource->{$mode}( $charge_id, Utils::format_order_price( $amount ) );
+		$response = $resource->{$mode}( $charge_id, Utils::format_desnormalized_order_price( $amount ) );
 
 		error_log( print_r( $response, true ) );
 
