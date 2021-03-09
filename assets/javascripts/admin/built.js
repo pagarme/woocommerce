@@ -4035,7 +4035,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		$( '.modal' ).iziModal({
 			padding: 20,
 			onOpening: function (modal) {
-				var amount = self.$el.find( '[data-element=amount]' );
+				var amount = modal.$element.find( '[data-element=amount]' );
 				amount.mask( "#.##0,00", { reverse: true } );
 				modal.$element.on( 'click', '[data-action=capture]', self.onClickCapture.bind(self) );
 				modal.$element.on( 'click', '[data-action=cancel]', self.onClickCancel.bind(self) );
