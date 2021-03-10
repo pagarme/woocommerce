@@ -2878,6 +2878,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			return;
 		}
 
+    if (nextInput.data('installments-updated')) {
+      nextInput.removeData('installments-updated');
+      return;
+    }
+
 		value = value.replace('.', '');
 		value = parseFloat( value.replace(',', '.') );
 
@@ -2897,6 +2902,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		nextValue = nextValue.replace('.',',');
 
 		nextInput.val(nextValue);
+    input.data('installments-updated', true);
+    nextInput.trigger('blur');
 	};
 
 });
