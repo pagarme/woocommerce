@@ -252,6 +252,10 @@ class Gateways extends WC_Payment_Gateway
 			'type'    => 'checkbox',
 			'label'   => __( 'Enables Boleto Bancário', 'woo-pagarme-payments' ),
 			'default' => 'yes',
+			'custom_attributes' => array(
+				'data-action'  => 'enable-billet',
+				'data-requires-field' => 'billet-bank',
+			),
 		);
 	}
 
@@ -272,6 +276,10 @@ class Gateways extends WC_Payment_Gateway
 			'type'    => 'checkbox',
 			'label'   => __( 'Enables Multimethods (Boleto + Credit Card)', 'woo-pagarme-payments' ),
 			'default' => 'no',
+			'custom_attributes' => array(
+				'data-action'  => 'enable-multimethods-billet-card',
+				'data-requires-field' => 'billet-bank',
+			),
 		);
 	}
 
@@ -359,7 +367,7 @@ class Gateways extends WC_Payment_Gateway
 	{
 		return array(
 			'title'       => __( 'Number of Days', 'woo-pagarme-payments' ),
-			'description' => __( '"Expiration days of the boleto after printing."', 'woo-pagarme-payments' ),
+			'description' => __( 'Expiration days of the boleto after printing.', 'woo-pagarme-payments' ),
 			'desc_tip'    => true,
 			'placeholder' => 5,
 			'default'     => 5,

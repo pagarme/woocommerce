@@ -92,7 +92,7 @@ class Orders
 			<p><b>PARCIALMENTE CAPTURADO: </b><?php echo $paid_amount; ?></p>
 			<p><b>STATUS: </b><?php echo strtoupper( $item->charge_status ); ?></p>
 			<p>
-				<label>Valor a ser capturado:
+				<label>Valor a ser capturado: R$
 					<input data-element="amount" type="text"/>
 				</label>
 			</p>
@@ -127,7 +127,7 @@ class Orders
 			<p><b>PARCIALMENTE CANCELADO: </b><?php echo $canceled_amount ? Utils::format_order_price_to_view( $canceled_amount ) : '-'; ?></p>
 			<p><b>STATUS: </b><?php echo strtoupper( $item->charge_status ); ?></p>
 			<p>
-				<label>Valor a ser cancelado:
+				<label>Valor a ser cancelado: R$
 					<input data-element="amount" type="text" value="<?php echo $value_to_cancel; ?>"
 					<?php echo $item->charge_status == 'pending' ? 'disabled=disabled' : ''; ?>/>
 				</label>

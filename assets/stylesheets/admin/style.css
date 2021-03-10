@@ -64,7 +64,8 @@
   top: 3px;
 }
 
-#mainform .pagarme-field-error {
+#mainform .pagarme-field-error, 
+#mainform select:invalid[id*="woo-pagarme-payments"] + .select2-container > span.selection > span.select2-selection:focus {
   background-color: #f2dede;
   border-color: #ebccd1;
   box-shadow: 1px 1px #ebccd1;

@@ -21,6 +21,7 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
 		this.handleEnvironmentFieldsVisibility( this.elements.environmentSelect.val() );
 		this.handleInstallmentFieldsVisibility( this.elements.installmentsTypeSelect.val() );
+		this.handleBilletBankRequirement();
 
 		this.setInstallmentsByFlags( null, true );
 
@@ -31,6 +32,8 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 		this.on( 'keyup', 'soft-descriptor' );
 		this.on( 'change', 'environment' );
 		this.on( 'change', 'installments-type' );
+		this.on( 'change', 'enable-billet' );
+    	this.on( 'change', 'enable-multimethods-billet-card' );
 
 		this.elements.flagsSelect.on( 'select2:unselecting', this._onChangeFlags.bind(this) );
 		this.elements.flagsSelect.on( 'select2:selecting', this._onChangeFlags.bind(this) );
@@ -62,6 +65,14 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
 	Model.fn._onChangeInstallmentsType = function( event ) {
 		this.handleInstallmentFieldsVisibility( event.currentTarget.value );
+	};
+
+	Model.fn._onChangeEnableBillet = function() {
+		this.handleBilletBankRequirement();
+	};
+
+	Model.fn._onChangeEnableMultimethodsBilletCard = function() {
+		this.handleBilletBankRequirement();
 	};
 
 	Model.fn._onChangeFlags = function( event ) {
@@ -140,6 +151,26 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 			installmentsWithoutInterestContainer.hide();
 		}
 	};
+
+	Model.fn.handleBilletBankRequirement = function() {    
+		let bankRequirementFields = $( '[data-requires-field="billet-bank"]' );    
+		let billet_bank_element_id = '#woocommerce_woo-pagarme-payments_billet_bank';
+		let billetBankIsRequired = false;
+
+		bankRequirementFields.each(function() {
+			if ( $( this ).prop( "checked" ) ) {
+				billetBankIsRequired = true;
+				return false;
+			}
+		});
+
+		if ( billetBankIsRequired ) {
+			$( billetBankElementId ).attr( 'required', true );
+			return;
+		}
+
+		$( billetBankElementId ).attr( 'required', false );
+	}; 	
 
 	Model.fn.setInstallmentsByFlags = function( event, firstLoad ) {
 		var flags        = this.elements.flagsSelect.val() || [];
