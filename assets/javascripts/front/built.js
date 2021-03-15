@@ -2892,11 +2892,17 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			nextInput.val('');
 			return;
 		}
+		this._onBlurCardOrderValue(event);
 
 		nextValue = nextValue.toFixed(2);
 		nextValue = nextValue.replace('.',',');
 
 		nextInput.val(nextValue);
+
+		event.currentTarget = nextInput[0];
+		event.target = nextInput[0];
+
+		this._onBlurCardOrderValue(event);
 	};
 
 });
@@ -2948,14 +2954,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			return false;
 		}
 
-		if ( this.lock ) {
-			return;
-		}
-
-		this.lock = true;
-
-		this.showLoader();
-
 		var ajax = $.ajax({
 			'url': MONSTER.utils.getAjaxUrl(),
 			'data' : {
@@ -2967,6 +2965,15 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		ajax.done( $.proxy( this._done, this, select, storageName ) );
 		ajax.fail( this._fail.bind(this) );
+
+		if ( this.lock ) {
+			return;
+		}
+
+		this.lock = true;
+
+		this.showLoader();
+
 	};
 
 	Model.fn._done = function(select, storageName, response) {
