@@ -2867,6 +2867,32 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		swal.showLoading();
 	};
 
+	Model.fn.isTwoCardsPayment = function(firstInput, secondInput){
+		return firstInput.id.includes("card") && secondInput.id.includes("card");
+	};
+
+	Model.fn.isBilletAndCardPayment = function(firstInput, secondInput){
+		return (firstInput.id.includes("card") && secondInput.id.includes("billet")) ||
+		(firstInput.id.includes("billet") && secondInput.id.includes("card"));
+	};
+
+	Model.fn.refreshBothInstallmentsSelects = function(event, secondInput){
+		this._onBlurCardOrderValue(event);
+		event.currentTarget = secondInput;
+		event.target = secondInput;
+
+		this._onBlurCardOrderValue(event);
+	};
+
+	Model.fn.refreshCardInstallmentSelect = function(event, secondInput){
+		const targetInput = event.target.id.includes("card") ? event.target : secondInput;
+
+		event.currentTarget = targetInput;
+		event.target = targetInput;
+
+		this._onBlurCardOrderValue(event);
+	}
+
 	Model.fn.fillAnotherInput = function(event) {
 		var input = $(event.currentTarget);
 		var nextIndex = input.data('value') == 2 ? 1 : 2;
@@ -2892,17 +2918,23 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			nextInput.val('');
 			return;
 		}
-		this._onBlurCardOrderValue(event);
 
 		nextValue = nextValue.toFixed(2);
 		nextValue = nextValue.replace('.',',');
 
+		value = value.toFixed(2);
+		value = value.replace('.', ',');
+
 		nextInput.val(nextValue);
+		input.val(value);
 
-		event.currentTarget = nextInput[0];
-		event.target = nextInput[0];
+		if ( this.isTwoCardsPayment(event.target, nextInput[0]) ){
+			this.refreshBothInstallmentsSelects(event, nextInput[0]);
+		}
 
-		this._onBlurCardOrderValue(event);
+		if( this.isBilletAndCardPayment(event.target, nextInput[0]) ){
+			this.refreshCardInstallmentSelect(event, nextInput[0]);
+		}
 	};
 
 });
