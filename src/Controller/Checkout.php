@@ -55,10 +55,13 @@ class Checkout
 		$this->validate_amount_2_cards( $fields, $wc_order );
 		$this->validate_brands( $fields );
 
+		$userLoggedIn = new Customer( get_current_user_id() );
+
 		$response = $this->api->create_order(
 			$wc_order,
+			$userLoggedIn,
 			$fields['payment_method'],
-			$fields
+			$fields,
 		);
 
 		if ( ! $response || $response->code != 200 ) {
@@ -147,6 +150,7 @@ class Checkout
 		}
 
 		$customer->cards = $cards;
+		$customer->customer_id = $body['customer']['id'];
 	}
 
 	private function prepare_fields( $form_data )

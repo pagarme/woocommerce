@@ -71,10 +71,18 @@ class Api
 		}
 	}
 
-	public function create_order( WC_Order $wc_order, $payment_method, $form_fields )
+	public function create_order(
+		WC_Order $wc_order,
+		Customer $userLoggedIn,
+		$payment_method,
+		$form_fields
+	)
 	{
-        $file = 'woo-pagarme';
-		$customer = $this->create_customer($wc_order);
+		$file = 'woo-pagarme';
+
+		$customer = $userLoggedIn->customer_id
+			? $userLoggedIn->customer_id
+			: $this->create_customer($wc_order);
 
 		if ( ! $customer ) {
 			return;
@@ -95,7 +103,6 @@ class Api
 			}
 
 			$hash = $customer->document;
-
 			$idempotencyKey = md5("{$hash}-{$wc_order_id}");
 
 			$params = array(
@@ -109,7 +116,12 @@ class Api
 				'idempotencyKey'    => $idempotencyKey
 			);
 
-            if (!empty($this->settings)) {
+			if( is_string( $customer ) ) {
+				$params['customer_id'] = $params['customer'];
+				unset($params['customer']);
+			}
+
+            if ( ! empty( $this->settings ) ) {
                 $previous_status = $wc_order->get_status();
 
                 //LOG ORDER REQUEST
@@ -120,9 +132,10 @@ class Api
                     json_encode($params, JSON_PRETTY_PRINT)
                 );
             }
+
 			$response = $orders->create($params);
 
-			if (!empty($this->settings)) {
+			if ( ! empty( $this->settings ) ) {
 
 			    //LOG ORDER RESPONSE
 				$this->settings->log()->add(

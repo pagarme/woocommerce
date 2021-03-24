@@ -2846,6 +2846,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		wrapper.find( '[data-element="fields-cc-data"]' )[method]();
 		wrapper.find( '[data-element="save-cc-check"]' )[method]();
+		wrapper.find( '[data-element="enable-multicustomers-check"]' )[method]();
+		wrapper.find( '[data-element="enable-multicustomers-label-card"]' )[method]();
 	};
 
 	Model.fn.hasCardId = function(wrapper) {
