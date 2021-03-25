@@ -75,14 +75,13 @@ class Api
 	{
 		$file = 'woo-pagarme';
 		$userLoggedIn = new Customer( get_current_user_id() );
+		$customer = $userLoggedIn->customer_id;
 
-		if ( $userLoggedIn->customer_id ) {
-			$customer = $userLoggedIn->customer_id;
-		} else {
+		if (! $customer) {
 			$customer = $this->create_customer($wc_order);
 		}
 
-		if ( ! $customer ) {
+		if (! $customer) {
 			return;
 		}
 
@@ -96,7 +95,7 @@ class Api
 			$amount      = $this->get_amount_total( $payments );
 
 
-			if ( ! is_array( $payments ) ) {
+			if (! is_array($payments)) {
 				return $payments;
 			}
 
@@ -114,12 +113,12 @@ class Api
 				'idempotencyKey'    => $idempotencyKey
 			);
 
-			if ( is_string( $customer ) ) {
+			if ( is_string($customer)) {
 				$params['customer_id'] = $params['customer'];
 				unset($params['customer']);
 			}
 
-            if ( ! empty( $this->settings ) ) {
+            if (! empty($this->settings)) {
                 $previous_status = $wc_order->get_status();
 
                 //LOG ORDER REQUEST
@@ -133,7 +132,7 @@ class Api
 
 			$response = $orders->create($params);
 
-			if ( ! empty( $this->settings ) ) {
+			if (! empty($this->settings)) {
 
 			    //LOG ORDER RESPONSE
 				$this->settings->log()->add(
@@ -159,7 +158,7 @@ class Api
 			return $response;
 
 		} catch ( Exception $e ) {
-			if (!empty($this->settings)) {
+			if (! empty($this->settings)) {
 				$this->settings->log()->add( 'woo-pagarme', 'CREATE ORDER ERROR: ' . $e->__toString() );
 			}
 			error_log( $e->__toString() );

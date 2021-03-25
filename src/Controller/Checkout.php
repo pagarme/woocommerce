@@ -147,7 +147,10 @@ class Checkout
 		}
 
 		$customer->cards = $cards;
-		$customer->customer_id = $body['customer']['id'];
+
+		if (isset($body['customer']['id'])) {
+			$customer->customer_id = $body['customer']['id'];
+		}
 	}
 
 	private function prepare_fields( $form_data )
