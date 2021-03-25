@@ -75,7 +75,12 @@ class Api
 	{
 		$file = 'woo-pagarme';
 		$userLoggedIn = new Customer( get_current_user_id() );
-		$customer = $userLoggedIn->customer_id ? $userLoggedIn->customer_id : $this->create_customer($wc_order);
+
+		if ( $userLoggedIn->customer_id ) {
+			$customer = $userLoggedIn->customer_id;
+		} else {
+			$customer = $this->create_customer($wc_order);
+		}
 
 		if ( ! $customer ) {
 			return;
