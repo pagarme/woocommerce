@@ -55,11 +55,8 @@ class Checkout
 		$this->validate_amount_2_cards( $fields, $wc_order );
 		$this->validate_brands( $fields );
 
-		$userLoggedIn = new Customer( get_current_user_id() );
-
 		$response = $this->api->create_order(
 			$wc_order,
-			$userLoggedIn,
 			$fields['payment_method'],
 			$fields,
 		);

@@ -71,18 +71,11 @@ class Api
 		}
 	}
 
-	public function create_order(
-		WC_Order $wc_order,
-		Customer $userLoggedIn,
-		$payment_method,
-		$form_fields
-	)
+	public function create_order( WC_Order $wc_order, $payment_method, $form_fields )
 	{
 		$file = 'woo-pagarme';
-
-		$customer = $userLoggedIn->customer_id
-			? $userLoggedIn->customer_id
-			: $this->create_customer($wc_order);
+		$userLoggedIn = new Customer( get_current_user_id() );
+		$customer = $userLoggedIn->customer_id ? $userLoggedIn->customer_id : $this->create_customer($wc_order);
 
 		if ( ! $customer ) {
 			return;
@@ -116,7 +109,7 @@ class Api
 				'idempotencyKey'    => $idempotencyKey
 			);
 
-			if( is_string( $customer ) ) {
+			if ( is_string( $customer ) ) {
 				$params['customer_id'] = $params['customer'];
 				unset($params['customer']);
 			}
