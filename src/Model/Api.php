@@ -113,7 +113,7 @@ class Api
 				'idempotencyKey'    => $idempotencyKey
 			);
 
-			if ( is_string($customer)) {
+			if (is_string($customer)) {
 				$params['customer_id'] = $params['customer'];
 				unset($params['customer']);
 			}
