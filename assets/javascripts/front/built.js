@@ -2867,6 +2867,32 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		swal.showLoading();
 	};
 
+	Model.fn.isTwoCardsPayment = function(firstInput, secondInput){
+		return firstInput.id.includes("card") && secondInput.id.includes("card");
+	};
+
+	Model.fn.isBilletAndCardPayment = function(firstInput, secondInput){
+		return (firstInput.id.includes("card") && secondInput.id.includes("billet")) ||
+		(firstInput.id.includes("billet") && secondInput.id.includes("card"));
+	};
+
+	Model.fn.refreshBothInstallmentsSelects = function(event, secondInput){
+		this._onBlurCardOrderValue(event);
+		event.currentTarget = secondInput;
+		event.target = secondInput;
+
+		this._onBlurCardOrderValue(event);
+	};
+
+	Model.fn.refreshCardInstallmentSelect = function(event, secondInput){
+		const targetInput = event.target.id.includes("card") ? event.target : secondInput;
+
+		event.currentTarget = targetInput;
+		event.target = targetInput;
+
+		this._onBlurCardOrderValue(event);
+	}
+
 	Model.fn.fillAnotherInput = function(event) {
 		var input = $(event.currentTarget);
 		var nextIndex = input.data('value') == 2 ? 1 : 2;
@@ -2896,7 +2922,19 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		nextValue = nextValue.toFixed(2);
 		nextValue = nextValue.replace('.',',');
 
+		value = value.toFixed(2);
+		value = value.replace('.', ',');
+
 		nextInput.val(nextValue);
+		input.val(value);
+
+		if ( this.isTwoCardsPayment(event.target, nextInput[0]) ){
+			this.refreshBothInstallmentsSelects(event, nextInput[0]);
+		}
+
+		if( this.isBilletAndCardPayment(event.target, nextInput[0]) ){
+			this.refreshCardInstallmentSelect(event, nextInput[0]);
+		}
 	};
 
 });
@@ -2948,14 +2986,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			return false;
 		}
 
-		if ( this.lock ) {
-			return;
-		}
-
-		this.lock = true;
-
-		this.showLoader();
-
 		var ajax = $.ajax({
 			'url': MONSTER.utils.getAjaxUrl(),
 			'data' : {
@@ -2967,6 +2997,15 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		ajax.done( $.proxy( this._done, this, select, storageName ) );
 		ajax.fail( this._fail.bind(this) );
+
+		if ( this.lock ) {
+			return;
+		}
+
+		this.lock = true;
+
+		this.showLoader();
+
 	};
 
 	Model.fn._done = function(select, storageName, response) {
