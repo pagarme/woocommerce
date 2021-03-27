@@ -75,9 +75,10 @@ class Api
 	{
 		$file = 'woo-pagarme';
 		$userLoggedIn = new Customer( get_current_user_id() );
-		$customer = $userLoggedIn->customer_id;
+		$customer = new \stdClass();
+		$customer->id = $userLoggedIn->customer_id;
 
-		if (! $customer) {
+		if (! $customer->id) {
 			$customer = $this->create_customer($wc_order);
 		}
 
@@ -94,29 +95,28 @@ class Api
 			$shipping    = $this->build_shipping( $wc_order );
 			$amount      = $this->get_amount_total( $payments );
 
-
 			if (! is_array($payments)) {
 				return $payments;
 			}
 
-			$hash = $customer->document;
+			$hash = $customer->id;
 			$idempotencyKey = md5("{$hash}-{$wc_order_id}");
 
 			$params = array(
 				'amount'            => $amount,
 				'code'              => $wc_order_id,
 				'items'             => $items,
-				'customer'          => $customer,
 				'shipping'          => $shipping,
 				'payments'          => $payments,
 				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method ),
 				'idempotencyKey'    => $idempotencyKey
 			);
 
-			if (is_string($customer)) {
-				$params['customer_id'] = $params['customer'];
-				unset($params['customer']);
+			if (! $userLoggedIn->customer_id) {
+				$params['customer'] = $customer;
 			}
+
+			$params['customer_id'] = $customer->id;
 
             if (! empty($this->settings)) {
                 $previous_status = $wc_order->get_status();
