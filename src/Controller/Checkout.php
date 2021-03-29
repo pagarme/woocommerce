@@ -58,7 +58,7 @@ class Checkout
 		$response = $this->api->create_order(
 			$wc_order,
 			$fields['payment_method'],
-			$fields,
+			$fields
 		);
 
 		if ( ! $response || $response->code != 200 ) {
