@@ -58,7 +58,7 @@ class Checkout
 		$response = $this->api->create_order(
 			$wc_order,
 			$fields['payment_method'],
-			$fields
+			$fields,
 		);
 
 		if ( ! $response || $response->code != 200 ) {
@@ -147,6 +147,10 @@ class Checkout
 		}
 
 		$customer->cards = $cards;
+
+		if (isset($body['customer']['id'])) {
+			$customer->customer_id = $body['customer']['id'];
+		}
 	}
 
 	private function prepare_fields( $form_data )

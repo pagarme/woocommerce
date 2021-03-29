@@ -73,10 +73,16 @@ class Api
 
 	public function create_order( WC_Order $wc_order, $payment_method, $form_fields )
 	{
-        $file = 'woo-pagarme';
-		$customer = $this->create_customer($wc_order);
+		$file = 'woo-pagarme';
+		$userLoggedIn = new Customer( get_current_user_id() );
+		$customer = new \stdClass();
+		$customer->id = $userLoggedIn->customer_id;
 
-		if ( ! $customer ) {
+		if (! $customer->id) {
+			$customer = $this->create_customer($wc_order);
+		}
+
+		if (! $customer) {
 			return;
 		}
 
@@ -89,27 +95,30 @@ class Api
 			$shipping    = $this->build_shipping( $wc_order );
 			$amount      = $this->get_amount_total( $payments );
 
-
-			if ( ! is_array( $payments ) ) {
+			if (! is_array($payments)) {
 				return $payments;
 			}
 
-			$hash = $customer->document;
-
+			$hash = $customer->id;
 			$idempotencyKey = md5("{$hash}-{$wc_order_id}");
 
 			$params = array(
 				'amount'            => $amount,
 				'code'              => $wc_order_id,
 				'items'             => $items,
-				'customer'          => $customer,
 				'shipping'          => $shipping,
 				'payments'          => $payments,
 				'antifraud_enabled' => $this->is_enabled_antifraud( $wc_order, $payment_method ),
 				'idempotencyKey'    => $idempotencyKey
 			);
 
-            if (!empty($this->settings)) {
+			if (! $userLoggedIn->customer_id) {
+				$params['customer'] = $customer;
+			}
+
+			$params['customer_id'] = $customer->id;
+
+            if (! empty($this->settings)) {
                 $previous_status = $wc_order->get_status();
 
                 //LOG ORDER REQUEST
@@ -120,9 +129,10 @@ class Api
                     json_encode($params, JSON_PRETTY_PRINT)
                 );
             }
+
 			$response = $orders->create($params);
 
-			if (!empty($this->settings)) {
+			if (! empty($this->settings)) {
 
 			    //LOG ORDER RESPONSE
 				$this->settings->log()->add(
@@ -148,7 +158,7 @@ class Api
 			return $response;
 
 		} catch ( Exception $e ) {
-			if (!empty($this->settings)) {
+			if (! empty($this->settings)) {
 				$this->settings->log()->add( 'woo-pagarme', 'CREATE ORDER ERROR: ' . $e->__toString() );
 			}
 			error_log( $e->__toString() );
