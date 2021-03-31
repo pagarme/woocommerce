@@ -197,19 +197,35 @@ class Payment
 	 *
 	 * @return array
 	 */
-	private function pay_credit_card_base( $wc_order, $form_fields, $customer, $is_second_card = false )
+	private function pay_credit_card_base($wc_order, $form_fields, $customer, $is_second_card = false)
 	{
 		$suffix    = $is_second_card ? '2' : '';
 		$card_data = array(
 			'payment_method' => 'credit_card',
 			'credit_card'    => array(
-				'installments'         => Utils::get_value_by( $form_fields, "installments{$suffix}" ),
+				'installments'         => Utils::get_value_by($form_fields, "installments{$suffix}"),
 				'statement_descriptor' => $this->settings->cc_soft_descriptor,
 				'capture'              => $this->settings->is_active_capture(),
+				'card' => array(
+					'billing_address' => $this->get_billing_address_from_customer($customer)
+				)
 			),
 		);
 
-		return $this->handle_credit_card_type( $form_fields, $card_data, $suffix );
+		return $this->handle_credit_card_type($form_fields, $card_data, $suffix);
+	}
+
+	private function get_billing_address_from_customer($customer)
+	{
+		return array(
+			'street' => $customer->address->street,
+			'number' => $customer->address->number,
+			'zip_code' => $customer->address->zip_code,
+			'neighborhood' => $customer->address->neighborhood,
+			'city' => $customer->address->city,
+			'state' => $customer->address->state,
+			'country' => $customer->address->country
+		);
 	}
 
 	/**
