@@ -223,6 +223,7 @@ class Payment
 	{
 		return array(
 			'street' => $customer->address->street,
+			'complement' => $customer->address->complement,
 			'number' => $customer->address->number,
 			'zip_code' => $customer->address->zip_code,
 			'neighborhood' => $customer->address->neighborhood,
