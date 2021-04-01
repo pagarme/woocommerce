@@ -13,6 +13,8 @@ class Customer
 
 	private $cards;
 
+	private $customer_id;
+
 	private $save_credit_card;
 
 	public $prefix = '_pagarme_wc_';
