@@ -10,6 +10,7 @@ use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Order;
+use Woocommerce\Pagarme\Model\Api;
 use Woocommerce\Pagarme\Resource\Tokens;
 
 class Payment
@@ -225,7 +226,7 @@ class Payment
 		$addressArray = (array) $customer->address;
 
 		if (empty($addressArray)){
-			$addressArray = $this->get_address_from_wc_order_shipping($wc_order);
+			$addressArray = $this->get_customer_address_from_wc_order($wc_order);
 		}
 
 		return array(
@@ -240,21 +241,11 @@ class Payment
 		);
 	}
 
-	private function get_address_from_wc_order_shipping($wc_order){
-		$address = [];
+	private function get_customer_address_from_wc_order($wc_order){
 		$order = new Order($wc_order->get_order_number());
-		$shipping = $order->get_shipping_info();
 
-		$address["street"] = $shipping["address_1"];
-		$address["complement"] = $shipping["address_2"];
-		$address["number"] = $shipping["number"];
-		$address["zip_code"] = str_replace("-", "", $shipping["postcode"]);
-		$address["neighborhood"] = $shipping["neighborhood"];
-		$address["city"] = $shipping["city"];
-		$address["state"] = $shipping["state"];
-		$address["country"] = "BR";
-
-		return $address;
+		$api = Api::get_instance();
+		return $api->get_customer_address($order);
 	}
 
 	/**
