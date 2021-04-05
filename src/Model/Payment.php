@@ -101,6 +101,10 @@ class Payment
 			$card['customer'] = $multicustomer;
 		}
 
+		if (! $multicustomer && ! empty($customer->email)) {
+			$card['customer'] = $customer;
+		}
+
 		return $card;
 	}
 
