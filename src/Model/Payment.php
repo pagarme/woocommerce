@@ -9,6 +9,7 @@ use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Resource\Tokens;
 
 class Payment
@@ -211,7 +212,7 @@ class Payment
 				'statement_descriptor' => $this->settings->cc_soft_descriptor,
 				'capture'              => $this->settings->is_active_capture(),
 				'card' => array(
-					'billing_address' => $this->get_billing_address_from_customer($customer)
+					'billing_address' => $this->get_billing_address_from_customer($customer, $wc_order)
 				)
 			),
 		);
@@ -219,18 +220,41 @@ class Payment
 		return $this->handle_credit_card_type($form_fields, $card_data, $suffix);
 	}
 
-	private function get_billing_address_from_customer($customer)
+	private function get_billing_address_from_customer($customer, $wc_order)
 	{
+		$addressArray = (array) $customer->address;
+
+		if (empty($addressArray)){
+			$addressArray = $this->get_address_from_wc_order_shipping($wc_order);
+		}
+
 		return array(
-			'street' => $customer->address->street,
-			'complement' => $customer->address->complement,
-			'number' => $customer->address->number,
-			'zip_code' => $customer->address->zip_code,
-			'neighborhood' => $customer->address->neighborhood,
-			'city' => $customer->address->city,
-			'state' => $customer->address->state,
-			'country' => $customer->address->country
+			'street' => $addressArray["street"],
+			'complement' => $addressArray["complement"],
+			'number' => $addressArray["number"],
+			'zip_code' => $addressArray["zip_code"],
+			'neighborhood' => $addressArray["neighborhood"],
+			'city' => $addressArray["city"],
+			'state' => $addressArray["state"],
+			'country' => $addressArray["country"]
 		);
+	}
+
+	private function get_address_from_wc_order_shipping($wc_order){
+		$address = [];
+		$order = new Order($wc_order->get_order_number());
+		$shipping = $order->get_shipping_info();
+
+		$address["street"] = $shipping["address_1"];
+		$address["complement"] = $shipping["address_2"];
+		$address["number"] = $shipping["number"];
+		$address["zip_code"] = str_replace("-", "", $shipping["postcode"]);
+		$address["neighborhood"] = $shipping["neighborhood"];
+		$address["city"] = $shipping["city"];
+		$address["state"] = $shipping["state"];
+		$address["country"] = "BR";
+
+		return $address;
 	}
 
 	/**
