@@ -31,7 +31,7 @@ class Api
 		try {
 			$model    = new Order( $wc_order->get_order_number() );
 			$document = $this->get_document_by_person_type( $model );
-			$address  = $this->get_customer_address($model);
+			$address  = $this->build_customer_address_from_order($model);
 
 			$name = "{$model->billing_first_name} {$model->billing_last_name}";
 
@@ -62,15 +62,15 @@ class Api
 		}
 	}
 
-	public function get_customer_address($model){
+	public function build_customer_address_from_order($order){
 		return array(
-			'street'       => substr($model->billing_address_1, 0, 64),
-			'number'       => substr($model->billing_number, 0, 15),
-			'complement'   => substr($model->billing_address_2, 0, 64),
-			'zip_code'     => preg_replace( '/[^\d]+/', '', $model->billing_postcode ),
-			'neighborhood' => substr($model->billing_neighborhood, 0, 64),
-			'city'         => substr($model->billing_city, 0, 64),
-			'state'        => substr($model->billing_state, 0, 2),
+			'street'       => substr($order->billing_address_1, 0, 64),
+			'number'       => substr($order->billing_number, 0, 15),
+			'complement'   => substr($order->billing_address_2, 0, 64),
+			'zip_code'     => preg_replace( '/[^\d]+/', '', $order->billing_postcode ),
+			'neighborhood' => substr($order->billing_neighborhood, 0, 64),
+			'city'         => substr($order->billing_city, 0, 64),
+			'state'        => substr($order->billing_state, 0, 2),
 			'country'      => 'BR'
 		);
 	}
