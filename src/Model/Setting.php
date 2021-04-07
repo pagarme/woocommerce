@@ -256,6 +256,13 @@ class Setting
 		}
 	}
 
+  public function get_operation_type()
+  {
+      $operation_type = $this->__get( 'cc_operation_type' );
+
+      return intval( $operation_type ) === 1 ? 'auth_only' : 'auth_and_capture';
+  }
+
 	public static function get_instance( $settings = false )
 	{
 		if ( is_null( self::$_instance ) ) {
