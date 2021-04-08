@@ -9,6 +9,8 @@ use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Order;
+use Woocommerce\Pagarme\Model\Api;
 use Woocommerce\Pagarme\Resource\Tokens;
 
 class Payment
@@ -201,19 +203,49 @@ class Payment
 	 *
 	 * @return array
 	 */
-	private function pay_credit_card_base( $wc_order, $form_fields, $customer, $is_second_card = false )
+	private function pay_credit_card_base($wc_order, $form_fields, $customer, $is_second_card = false)
 	{
 		$suffix    = $is_second_card ? '2' : '';
 		$card_data = array(
 			'payment_method' => 'credit_card',
 			'credit_card'    => array(
-				'installments'         => Utils::get_value_by( $form_fields, "installments{$suffix}" ),
+				'installments'         => Utils::get_value_by($form_fields, "installments{$suffix}"),
 				'statement_descriptor' => $this->settings->cc_soft_descriptor,
 				'capture'              => $this->settings->is_active_capture(),
+				'card' => array(
+					'billing_address' => $this->get_billing_address_from_customer($customer, $wc_order)
+				)
 			),
 		);
 
-		return $this->handle_credit_card_type( $form_fields, $card_data, $suffix );
+		return $this->handle_credit_card_type($form_fields, $card_data, $suffix);
+	}
+
+	private function get_billing_address_from_customer($customer, $wc_order)
+	{
+		$addressArray = (array) $customer->address;
+
+		if (empty($addressArray)){
+			$addressArray = $this->get_customer_address_from_wc_order($wc_order);
+		}
+
+		return array(
+			'street' => $addressArray["street"],
+			'complement' => $addressArray["complement"],
+			'number' => $addressArray["number"],
+			'zip_code' => $addressArray["zip_code"],
+			'neighborhood' => $addressArray["neighborhood"],
+			'city' => $addressArray["city"],
+			'state' => $addressArray["state"],
+			'country' => $addressArray["country"]
+		);
+	}
+
+	private function get_customer_address_from_wc_order($wc_order){
+		$order = new Order($wc_order->get_order_number());
+
+		$api = Api::get_instance();
+		return $api->build_customer_address_from_order($order);
 	}
 
 	/**
