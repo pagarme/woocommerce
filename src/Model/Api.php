@@ -1,4 +1,5 @@
 <?php
+
 namespace Woocommerce\Pagarme\Model;
 
 if ( ! function_exists( 'add_action' ) ) {
