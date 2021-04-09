@@ -62,7 +62,7 @@ final class WoocommerceSavedCardAdapter
 
     public function getCardId()
     {
-        return $this->adaptee->getMundipaggId()->getValue();
+        return $this->adaptee->getPagarmeId()->getValue();
     }
 
     /**

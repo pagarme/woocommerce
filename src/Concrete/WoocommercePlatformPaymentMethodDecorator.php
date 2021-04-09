@@ -9,7 +9,6 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
     const CREDIT_CARD = 'credit_card';
     const BOLETO = 'billet';
     const BOLETO_CREDIT_CARD = 'billet_and_card';
-    const TWO_CARDS = '2_cards';
     const VOUCHER = 'voucher';
     const DEBIT = "debit";
     const PIX = "pix";
@@ -43,7 +42,7 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
 
     private function twocreditcards()
     {
-        return self::TWO_CARDS;
+        return self::CREDIT_CARD;
     }
 
     private function billetcreditcard()

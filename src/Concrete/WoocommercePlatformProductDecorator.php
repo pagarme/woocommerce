@@ -3,11 +3,11 @@
 namespace Woocommerce\Pagarme\Concrete;
 
 use Pagarme\Core\Kernel\Interfaces\PlatformProductInterface;
-use WC_Product_Simple;
+use WC_Product;
 
 class WoocommercePlatformProductDecorator implements PlatformProductInterface
 {
-    private WC_Product_Simple $platformProduct;
+    private WC_Product $platformProduct;
 
     public function __construct($platformProduct)
     {
@@ -51,7 +51,7 @@ class WoocommercePlatformProductDecorator implements PlatformProductInterface
 
     public function loadByEntityId($entityId)
     {
-        $product = new \WC_Product_Simple($entityId);
+        $product = wc_get_product_object($entityId);
         $this->platformProduct = $product;
     }
 

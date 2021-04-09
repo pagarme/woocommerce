@@ -57,7 +57,7 @@ final class WoocommerceDatabaseDecorator extends AbstractDatabaseDecorator
     {
         global $wpdb;
         $wpdb->query($query);
-        return $wpdb->insert_id;
+        $wpdb->insert_id;
     }
 
     protected function formatResults($queryResult)
@@ -88,7 +88,7 @@ final class WoocommerceDatabaseDecorator extends AbstractDatabaseDecorator
 
     protected function setTablePrefix()
     {
-        //Woocommerce getTableName method already retrieves the table with the prefix.
+        // The getTableName method already retrieves the table with the prefix.
         $this->tablePrefix = '';
     }
 
