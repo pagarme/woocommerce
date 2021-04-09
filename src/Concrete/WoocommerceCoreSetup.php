@@ -34,7 +34,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
     {
         $version = ' Wordpress/' . get_bloginfo('version');
 
-        if ( defined( 'WC_VERSION' ) ) {
+        if (defined('WC_VERSION')) {
             $version .= ' Woocommerce/' . WC_VERSION;
         }
 
@@ -43,7 +43,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     protected function setLogPath()
     {
-        $uploadPath = wp_upload_dir( null, false );
+        $uploadPath = wp_upload_dir(null, false);
         $wcLogsPath = $uploadPath['basedir'] . '/wc-logs/';
 
         self::$logPath = [
@@ -98,18 +98,20 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $storeConfig = Setting::get_instance();
         $configData = new \stdClass();
 
-        self::fillWithGeneralConfig($configData, $storeConfig);
-        self::fillWithPagarmeKeys($configData, $storeConfig);
-        self::fillWithCardConfig($configData, $storeConfig);
-        self::fillWithBoletoConfig($configData, $storeConfig);
-        //		self::fillWithPixConfig($configData, $storeConfig);
-        self::fillWithBoletoCreditCardConfig($configData, $storeConfig);
-        self::fillWithTwoCreditCardsConfig($configData, $storeConfig);
-        //		self::fillWithVoucherConfig($configData, $storeConfig);
-        //		self::fillWithDebitConfig($configData, $storeConfig);
-        self::fillWithAddressConfig($configData, $storeConfig);
-        self::fillWithMultiBuyerConfig($configData, $storeConfig);
-        //		self::fillWithRecurrenceConfig($configData, $storeConfig);
+        $configData = self::fillWithGeneralConfig($configData, $storeConfig);
+        $configData = self::fillWithPagarmeKeys($configData, $storeConfig);
+        $configData = self::fillWithCardConfig($configData, $storeConfig);
+        $configData = self::fillWithBoletoConfig($configData, $storeConfig);
+        $configData = self::fillWithBoletoCreditCardConfig($configData, $storeConfig);
+        $configData = self::fillWithTwoCreditCardsConfig($configData, $storeConfig);
+        $configData = self::fillWithMultiBuyerConfig($configData, $storeConfig);
+        // These method calls are commented for now because they are not implemented yet:
+        // $configData = self::fillWithAddressConfig($configData, $storeConfig);
+        // $configData = self::fillWithPixConfig($configData, $storeConfig);
+        // $configData = self::fillWithVoucherConfig($configData, $storeConfig);
+        // $configData = self::fillWithDebitConfig($configData, $storeConfig);
+        // $configData = self::fillWithRecurrenceConfig($configData, $storeConfig);
+        $configData->hubInstallId = null;
 
         $configurationFactory = new ConfigurationFactory();
         $config = $configurationFactory->createFromJsonData(
@@ -124,31 +126,28 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return true;
     }
 
-    static private function fillWithVoucherConfig(&$dataObj, $storeConfig)
+    static private function fillWithVoucherConfig($dataObj, $storeConfig)
     {
         // Not implemented on Woocommerce because there is no voucher config
     }
 
-    static private function fillWithDebitConfig(&$dataObj, $storeConfig)
+    static private function fillWithDebitConfig($dataObj, $storeConfig)
     {
         // Not implemented on Woocommerce because there is no debit config
     }
 
-    static private function fillWithCardConfig(&$dataObj, $storeConfig)
+    static private function fillWithCardConfig($dataObj, $storeConfig)
     {
         $moneyService = new MoneyService();
-        $options = new \stdClass();
 
-        $options->creditCardEnabled = $storeConfig->is_active_credit_card();
-        $options->installmentsEnabled = true;
-        $options->cardOperation = $storeConfig->get_operation_type();
-        $options->cardStatementDescriptor = false;
-        $options->antifraudEnabled = $storeConfig->__get( 'antifraud_enabled' ) === 'yes' ? true : false;
-        $options->antifraudMinAmount = intval( $storeConfig->__get( 'antifraud_min_value' ) );
-        $options->saveCards = $storeConfig->is_allowed_save_credit_card();
-        $options->installmentsDefaultConfig = true;
-
-        $dataObj = $options;
+        $dataObj->creditCardEnabled = $storeConfig->is_active_credit_card();
+        $dataObj->installmentsEnabled = true;
+        $dataObj->cardOperation = $storeConfig->getCardOperationForCore();
+        $dataObj->cardStatementDescriptor = $storeConfig->isCardStatementDescriptor();
+        $dataObj->antifraudEnabled = $storeConfig->isAntifraudEnabled();
+        $dataObj->antifraudMinAmount = intval($storeConfig->antifraud_min_value);
+        $dataObj->saveCards = $storeConfig->is_allowed_save_credit_card();
+        $dataObj->installmentsDefaultConfig = $storeConfig->isInstallmentsDefaultConfig();
 
         $dataObj->antifraudMinAmount =
         $moneyService->floatToCents(
@@ -165,75 +164,66 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         // Not implemented on Woocommerce because there is no pix config
     }
 
-    static private function fillWithBoletoConfig(&$dataObj, $storeConfig)
+    static private function fillWithBoletoConfig($dataObj, $storeConfig)
     {
-        $options = new \stdClass();
+        $dataObj->boletoEnabled = $storeConfig->is_active_billet();
+        $dataObj->boletoInstructions = $storeConfig->billet_instructions;
+        $dataObj->boletoDueDays = $storeConfig->billet_deadline_days;
+        $dataObj->boletoBankCode = $storeConfig->billet_bank;
 
-        $options->boletoEnabled = $storeConfig->is_active_billet();
-        $options->boletoInstructions = $storeConfig->__get('billet_instructions');
-        $options->boletoDueDays = $storeConfig->__get('billet_deadline_days');
-        $options->boletoBankCode = $storeConfig->__get('billet_bank');
-
-        $dataObj = $options;
+        return $dataObj;
     }
 
-    static private function fillWithBoletoCreditCardConfig(&$dataObj, $storeConfig)
+    static private function fillWithBoletoCreditCardConfig($dataObj, $storeConfig)
     {
-        $options = new \stdClass();
+        $dataObj->boletoCreditCardEnabled = $storeConfig->is_active_billet_and_card();
 
-        $options->boletoCreditCardEnabled = $storeConfig->is_active_billet_and_card();
-
-        $dataObj = $options;
+        return $dataObj;
     }
 
-    static private function fillWithTwoCreditCardsConfig(&$dataObj, $storeConfig)
+    static private function fillWithTwoCreditCardsConfig($dataObj, $storeConfig)
     {
-        $options = new \stdClass();
+        $dataObj->twoCreditCardsEnabled = $storeConfig->is_active_2_cards();
 
-        $options->twoCreditCardsEnabled = $storeConfig->is_active_2_cards();
-
-        $dataObj = $options;
+        return $dataObj;
     }
 
-    static private function fillWithMultiBuyerConfig(&$dataObj, $storeConfig)
+    static private function fillWithMultiBuyerConfig($dataObj, $storeConfig)
     {
-        $options = new \stdClass();
+        $dataObj->multibuyer = $storeConfig->is_active_multicustomers();
 
-        $options->multibuyer = $storeConfig->is_active_multicustomers();
-
-        $dataObj = $options;
+        return $dataObj;
     }
 
-    static private function fillWithPagarmeKeys(&$dataObj, $storeConfig)
+    static private function fillWithPagarmeKeys($dataObj, $storeConfig)
     {
         $options = [
-            Configuration::KEY_SECRET => $storeConfig->__get( 'production_secret_key' ),
-            Configuration::KEY_PUBLIC => $storeConfig->__get( 'production_public_key' )
+            Configuration::KEY_SECRET => $storeConfig->production_secret_key,
+            Configuration::KEY_PUBLIC => $storeConfig->production_public_key
         ];
 
         if ($dataObj->testMode) {
-            $options[Configuration::KEY_SECRET] .= $storeConfig->__get( 'sandbox_secret_key' );
-            $options[Configuration::KEY_PUBLIC] .= $storeConfig->__get( 'sandbox_public_key' );
+            $options[Configuration::KEY_SECRET] .= $storeConfig->sandbox_secret_key;
+            $options[Configuration::KEY_PUBLIC] .= $storeConfig->sandbox_public_key;
         }
 
         $options = (object) $options;
-
         $dataObj->keys = $options;
+
+        return $dataObj;
     }
 
-    static private function fillWithGeneralConfig(&$dataObj, $storeConfig)
+    static private function fillWithGeneralConfig($dataObj, $storeConfig)
     {
-        $options = new \stdClass();
+        $dataObj->enabled = $storeConfig->is_enabled();
+        $dataObj->testMode = $storeConfig->is_sandbox();
+        $dataObj->sendMail = false;
+        $dataObj->createOrder = false;
 
-        $options->enabled = $storeConfig->is_enabled();
-        $options->testMode = $storeConfig->is_sandbox();
-        $options->sendMail = false;
-        $options->createOrder = false;
-
-        $dataObj = $options;
+        return $dataObj;
     }
 
-    static private function fillWithAddressConfig(&$dataObj, $storeConfig)
+    static private function fillWithAddressConfig($dataObj, $storeConfig)
     {
         // Not implemented on Woocommerce because there is no address config
     }
@@ -254,24 +244,30 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
             if ($adapted !== false) {
                 $brand = "_" . strtolower($adapted);
-                $brandMethod = str_replace('_','', $brand);
+                $brandMethod = str_replace('_', '', $brand);
             }
 
             if ($brandMethod == '') {
                 $brandMethod = 'nobrand';
             }
 
-            $max = $storeConfig->__get( 'cc_installments_maximum' );
+            $settingsByBrand = $storeConfig->cc_installments_by_flag;
+            $max = intval($settingsByBrand['max_installment'][$brand]);
+
+            if (!empty($max)) {
+                $initial = Utils::str_to_float($settingsByBrand['interest'][$brand]);
+                $incremental = Utils::str_to_float($settingsByBrand['interest_increase'][$brand]);
+                $maxWithout = intval($settingsByBrand['no_interest'][$brand]);
+            }
 
             if (empty($max)) {
-                $max = $storeConfig->__get( 'cc_installments_maximum' );
+                $max = $storeConfig->cc_installments_maximum;
+                $initial = $storeConfig->cc_installments_interest;
+                $incremental = $storeConfig->cc_installments_interest_increase;
+                $maxWithout = $storeConfig->cc_installments_without_interest;
             }
 
             $minValue = null;
-            $initial =  $storeConfig->__get( 'cc_installments_interest' );
-            $incremental = $storeConfig->__get( 'cc_installments_interest_increase' );
-            $maxWithout =  $storeConfig->__get( 'cc_installments_without_interest' );
-
             $cardConfigs[] = new CardConfig(
                 true,
                 CardBrand::$brandMethod(),

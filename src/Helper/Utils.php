@@ -315,16 +315,17 @@ class Utils
 	/**
 	 * Format order price with a currency symbol
 	 *
+	 * @since 1.0
 	 * @param Mixed String|Float|Int $price
 	 * @return string
 	 */
-	public static function format_order_price_with_currency_symbol( $price )
+	public static function format_order_price_with_currency_symbol($price)
 	{
-		if ( empty( $price ) ) {
+		if (empty($price)) {
 			return;
 		}
 
-		return 'R$' . @(string)number_format( $price, 2, ',', '.' );
+		return 'R$' . (string)number_format($price, 2, ',', '.');
 	}
 
 	/**
