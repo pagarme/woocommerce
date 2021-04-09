@@ -8,8 +8,8 @@
  * Domain Path: /languages
  * License:     GPL2
  * Description: Enable Pagar.me Gateway for WooCommerce
- * WC requires at least: 2.6.0
- * WC tested up to: 4.9.2
+ * WC requires at least: 3.9.0
+ * WC tested up to: 5.1.0
  */
 
 if ( ! function_exists( 'add_action' ) ) {
