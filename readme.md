@@ -1,12 +1,12 @@
 # Pagar.me módulo para WooCommerce #
 **Contributors:** [Pagar.me](https://profiles.wordpress.org/pagarme)
 **Tags:** ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, pagarme, payments, creditcard
-**Requires at least:** 4.4
-**Tested up to:** 5.6
+**Requires at least:** 5.0
+**Tested up to:** 5.7
 **Stable tag:** beta-1.0.27
-**Requires PHP:** 5.6
+**Requires PHP:** 7.1
 **License:** MIT
-**License URI:** https://github.com/pagarme/woocommerce/blob/master/LICENS
+**License URI:** https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
 Módulo de integração da Pagar.me com o WooCommerce. Aceite pagamentos de cartão de crédito, boleto, multimeios e aumente a sua conversão.
 
@@ -18,8 +18,8 @@ Pagamentos tem que ser fáceis. São muitos passos por trás de uma simples tran
 
 ## Compatibilidade ##
 
-- Requer WooCommerce 2.6 ou posterior para funcionar.
-- Requer versão do PHP maior ou igual a 5.6.
+- Requer WooCommerce 3.9 ou posterior para funcionar.
+- Requer versão do PHP maior ou igual a 7.1.
 
 ## Instalação do plugin: ##
 

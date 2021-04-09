@@ -14,8 +14,8 @@ Refer to [module documentation](https://github.com/pagarme/woocommerce/wiki)
 * Activate plugin in wordpress
 
 # Compatibility / Dependencies
-* PHP >= 5.6
-* [WooCommerce](https://wordpress.org/plugins/woocommerce/) >= 2.6
+* PHP >= 7.1
+* [WooCommerce](https://wordpress.org/plugins/woocommerce/) >= 3.9
 * [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/)  >= 3.6.0
 
 # Configuration
