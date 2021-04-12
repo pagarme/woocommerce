@@ -59,17 +59,14 @@ class WoocommercePlatformProductDecorator implements PlatformProductInterface
     {
         $quantityAndStock = $this->platformProduct->get_stock_quantity();
         $stock = $quantityAndStock['qty'];
-        $isInStock = $quantityAndStock['is_in_stock'];
 
         $newStockQty = $stock - $quantity;
 
         if ($newStockQty <= 0) {
             $newStockQty = 0;
-            $isInStock = false;
         }
 
         $this->platformProduct->set_stock_quantity($newStockQty);
-        $this->platformProduct->set_status($isInStock);
         $this->platformProduct->save();
     }
 }
