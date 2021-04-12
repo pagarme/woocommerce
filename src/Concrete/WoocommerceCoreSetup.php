@@ -18,7 +18,6 @@ use Woocommerce\Pagarme\Concrete\WoocommercePlatformOrderDecorator;
 use Woocommerce\Pagarme\Concrete\WoocommercePlatformPaymentMethodDecorator;
 use Woocommerce\Pagarme\Concrete\WoocommercePlatformProductDecorator;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Enum\CreditCardBrandEnum;
 use Woocommerce\Pagarme\Model\Setting;
 
 final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
@@ -238,14 +237,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $cardConfigs = [];
 
         foreach ($brands as $brand) {
-            $brand = "_" . strtolower($brand);
-            $brandMethod = str_replace('_', '', $brand);
-            $adapted = self::getBrandAdapter(strtoupper($brandMethod));
-
-            if ($adapted !== false) {
-                $brand = "_" . strtolower($adapted);
-                $brandMethod = str_replace('_', '', $brand);
-            }
+            $brandMethod = $brand;
 
             if ($brandMethod == '') {
                 $brandMethod = 'nobrand';
@@ -280,19 +272,6 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         }
 
         return $cardConfigs;
-    }
-
-    private static function getBrandAdapter($brand)
-    {
-        $fromTo = [
-            'VI' => CreditCardBrandEnum::VISA,
-            'MC' => CreditCardBrandEnum::MASTERCARD,
-            'AE' => CreditCardBrandEnum::AMEX,
-            'DI' => CreditCardBrandEnum::DISCOVER,
-            'DN' => CreditCardBrandEnum::DINERS,
-        ];
-
-        return (isset($fromTo[$brand])) ? $fromTo[$brand] : false;
     }
 
     protected function _formatToCurrency($price)
