@@ -313,6 +313,22 @@ class Utils
 	}
 
 	/**
+	 * Format order price with a currency symbol
+	 *
+	 * @since 1.0
+	 * @param Mixed String|Float|Int $price
+	 * @return string
+	 */
+	public static function format_order_price_with_currency_symbol($price)
+	{
+		if (empty($price)) {
+			return;
+		}
+
+		return 'R$' . (string)number_format($price, 2, ',', '.');
+	}
+
+	/**
 	 * Format desnormalized order price with amount
 	 *
 	 * @since 1.0
