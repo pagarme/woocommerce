@@ -5,6 +5,7 @@ namespace Woocommerce\Pagarme\Concrete;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
 use Woocommerce\Pagarme\Model\Api;
+use Woocommerce\Pagarme\Model\Payment as WCModelPayment;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use Pagarme\Core\Kernel\Abstractions\AbstractPlatformOrderDecorator;
 use Pagarme\Core\Kernel\Aggregates\Charge;
@@ -33,7 +34,6 @@ use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use Pagarme\Core\Payment\ValueObjects\CustomerPhones;
 use Pagarme\Core\Payment\ValueObjects\CustomerType;
 use Pagarme\Core\Payment\ValueObjects\Phone;
-use Pagarme\Core\Recurrence\Aggregates\Plan;
 use Pagarme\Core\Recurrence\Services\RecurrenceService;
 use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Kernel\Services\LogService;
@@ -46,17 +46,14 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     /** @var WC_Order */
     protected $platformOrder;
 
-    private $quote;
     private $i18n;
+    private $formData;
 
-    /**
-     * @var OrderService
-     */
-    private $orderService;
 
-    public function __construct()
+    public function __construct($formData)
     {
         $this->i18n = new LocalizationService();
+        $this->formData = $formData;
         $this->orderService = new OrderService();
         parent::__construct();
     }
@@ -456,25 +453,15 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getItemCollection()
     {
         $moneyService = new MoneyService();
-        $quote = $this->getQuote();
-        $itemCollection = $quote->getItemsCollection();
-        $items = [];
-        foreach ($itemCollection as $quoteItem) {
+        $itemCollection = $this->getPlatformOrder()->get_items();
+
+        foreach ($itemCollection as $woocommerceItem) {
             //adjusting price.
-            $price = $quoteItem->getPrice();
+            $woocommerceProduct = $woocommerceItem->get_product();
+            $price = $woocommerceProduct->get_price();
             $price = $price > 0 ? $price : "0.01";
 
             if ($price === null) {
-                continue;
-            }
-
-            /**
-             * Bundle product
-             */
-            if (
-                !empty($quoteItem->getParentItemId()) &&
-                $quoteItem->getProductType() === 'simple'
-            ) {
                 continue;
             }
 
@@ -483,23 +470,19 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
                 $moneyService->floatToCents($price)
             );
 
-            if ($quoteItem->getProductId()) {
-                $item->setCode($quoteItem->getProductId());
+            if (!empty($item['product_id'])) {
+                $item->setCode($item['product_id']);
             }
 
-            $item->setQuantity($quoteItem->getQty());
+            $itemQuantity = absint($item['qty']);
+            $itemName = sanitize_title($item['name']);
+
+            $item->setQuantity($itemQuantity);
             $item->setDescription(
-                $quoteItem->getName() . ' : ' .
-                    $quoteItem->getDescription()
+                $itemName . ' x ' . $itemQuantity
             );
 
-            $item->setName($quoteItem->getName());
-
-            $helper = new RecurrenceProductHelper();
-            $selectedRepetition = $helper->getSelectedRepetition($quoteItem);
-            $item->setSelectedOption($selectedRepetition);
-
-            $this->setRecurrenceInfo($item, $quoteItem);
+            $item->setName($itemName);
 
             $items[] = $item;
         }
@@ -508,30 +491,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function setRecurrenceInfo($item, $quoteItem)
     {
-        $recurrenceService = $this->getRecurrenceService();
-        $productId = $quoteItem->getProduct()->getId();
-
-        $coreProduct =
-            $recurrenceService->getRecurrenceProductByProductId(
-                $productId
-            );
-
-        if (!$coreProduct) {
-            return null;
-        }
-
-        $type = $coreProduct->getRecurrenceType();
-
-        if ($type == Plan::RECURRENCE_TYPE) {
-            $item->setPagarmeId($coreProduct->getPagarmeId());
-            $item->setType($type);
-            return $item;
-        }
-
-        if (!empty($item->getSelectedOption())) {
-            $item->setType($type);
-        }
-
         return $item;
     }
 
@@ -542,15 +501,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function getQuote()
     {
-        if ($this->quote === null) {
-            $quoteId = $this->platformOrder->getQuoteId();
-
-            $objectManager = ObjectManager::getInstance();
-            $quoteFactory = $objectManager->get(QuoteFactory::class);
-            $this->quote = $quoteFactory->create()->load($quoteId);
-        }
-
-        return $this->quote;
+        // woocommerce doesnt have a quote concept;
+        return null;
     }
 
     /** @return AbstractPayment[] */
@@ -559,12 +511,18 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $payments = $this->getPaymentCollection();
 
         if (empty($payments)) {
-            $baseNewPayment = $this->platformOrder->getPayment();
+            $payment = new WCModelPayment($this->formData['payment_method']);
+            $pagarmeCustomer = $this->getCustomer();
 
-            $newPayment = [];
-            $newPayment['method'] = $baseNewPayment->getMethod();
-            $newPayment['additional_information'] =
-                $baseNewPayment->getAdditionalInformation();
+            $customer = new \stdClass();
+            $customer->id = $pagarmeCustomer->getPagarmeId()->getValue();
+
+            $newPayment = $payment->get_payment_data(
+                $this->getPlatformOrder(),
+                $this->formData,
+                $customer
+            );
+
             $payments = [$newPayment];
         }
 
@@ -958,31 +916,18 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getShipping()
     {
         $moneyService = new MoneyService();
-        /** @var Shipping $shipping */
-        $shipping = null;
-        $quote = $this->getQuote();
-        /** @var \Magento\Quote\Model\Quote\Address $platformShipping */
-        $platformShipping = $quote->getShippingAddress();
 
-        $shippingMethod = $platformShipping->getShippingMethod();
-        if ($shippingMethod === null) { //this is a order without a shipping.
-            return null;
-        }
+        $api = Api::get_instance();
+        $platformShipping = $api->build_shipping($this->getPlatformOrder());
 
         $shipping = new Shipping();
 
         $shipping->setAmount(
-            $moneyService->floatToCents($platformShipping->getShippingAmount())
+            $moneyService->floatToCents($platformShipping["amount"])
         );
-        $shipping->setDescription($platformShipping->getShippingDescription());
-        $shipping->setRecipientName($platformShipping->getName());
+        $shipping->setDescription($platformShipping["description"]);
 
-        $telephone = $platformShipping->getTelephone();
-        $phone = new Phone($telephone);
-
-        $shipping->setRecipientPhone($phone);
-
-        $address = $this->getAddress($platformShipping);
+        $address = $this->getAddress($platformShipping["address"]);
         $shipping->setAddress($address);
 
         return $shipping;
@@ -995,7 +940,13 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             MPSetup::getModuleConfiguration()->getAddressAttributes();
 
         $addressAttributes = json_decode(json_encode($addressAttributes), true);
-        $allStreetLines = $platformAddress->getStreet();
+
+        $allStreetLines = [
+            $platformAddress["street"],
+            $platformAddress["number"],
+            $platformAddress["neighborhood"],
+            $platformAddress["complement"]
+        ];
 
         $this->validateAddress($allStreetLines);
         $this->validateAddressConfiguration($addressAttributes);
@@ -1020,22 +971,14 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
                 continue;
             }
 
-            $address->$setter($platformAddress->getStreet()[$value]);
+            $address->$setter($allStreetLines[$value]);
         }
 
-        $address->setCity($platformAddress->getCity());
-        $address->setCountry($platformAddress->getCountryId());
-        $address->setZipCode($platformAddress->getPostcode());
+        $address->setCity($platformAddress["city"]);
+        $address->setCountry($platformAddress["country"]);
+        $address->setZipCode($platformAddress["zip_code"]);
 
-        $_regionFactory = ObjectManager::getInstance()->get('Magento\Directory\Model\RegionFactory');
-        $regionId = $platformAddress->getRegionId();
-
-        if (is_numeric($regionId)) {
-            $shipperRegion = $_regionFactory->create()->load($regionId);
-            if ($shipperRegion->getId()) {
-                $address->setState($shipperRegion->getCode());
-            }
-        }
+        $address->setState($platformAddress["state"]);
 
         return $address;
     }
@@ -1075,6 +1018,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function getTotalCanceled()
     {
-        return $this->platformOrder->getTotalCanceled();
+        return $this->getPlatformOrder()->get_total_refunded();
     }
 }
