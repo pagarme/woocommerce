@@ -381,7 +381,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $fullName = preg_replace("/  /", " ", $fullName);
 
         $customer->setName($fullName);
-        $customer->setEmail(substr($order->billing_email, 0, 64),);
+        $customer->setEmail(substr($order->billing_email, 0, 64));
 
         $cleanDocument = preg_replace(
             '/\D/',
@@ -412,38 +412,41 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     private function getGuestCustomer()
     {
-        $guestAddress = $quote->getBillingAddress();
+        $order = new Order($this->getPlatformOrder()->get_order_number());
+        $api = Api::get_instance();
+
+        $address = $api->build_customer_address_from_order($order);
+        $document = $api->get_document_by_person_type($order);
+        $phones = $api->get_phones($order);
+
+        $fullName = "{$order->billing_first_name} {$order->billing_last_name}";
+        $fullName = substr($fullName, 0, 64);
+        $fullName = preg_replace("/  /", " ", $fullName);
+
+        $email = substr($order->billing_email, 0, 64);
 
         $customer = new Customer();
 
-        $customer->setName($guestAddress->getName());
-        $customer->setEmail($guestAddress->getEmail());
+        $customer->setName($fullName);
+        $customer->setEmail($email);
 
         $cleanDocument = preg_replace(
             '/\D/',
             '',
-            $guestAddress->getVatId()
+            $document
         );
-
-        if (empty($cleanDocument)) {
-            $cleanDocument = preg_replace(
-                '/\D/',
-                '',
-                $quote->getCustomerTaxvat()
-            );
-        }
 
         $customer->setDocument($cleanDocument);
         $customer->setType(CustomerType::individual());
 
-        $telephone = $guestAddress->getTelephone();
+        $telephone = $phones["home_phone"]["number"];
         $phone = new Phone($telephone);
 
         $customer->setPhones(
             CustomerPhones::create([$phone, $phone])
         );
 
-        $address = $this->getAddress($guestAddress);
+        $address = $this->getAddress($address);
         $customer->setAddress($address);
 
         return $customer;
