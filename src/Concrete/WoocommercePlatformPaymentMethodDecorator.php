@@ -7,7 +7,7 @@ use Pagarme\Core\Kernel\Interfaces\PlatformPaymentMethodInterface;
 class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethodInterface
 {
     const CREDIT_CARD = 'credit_card';
-    const BOLETO = 'billet';
+    const BOLETO = 'boleto';
     const BOLETO_CREDIT_CARD = 'billet_and_card';
     const VOUCHER = 'voucher';
     const DEBIT = "debit";
@@ -17,7 +17,7 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
 
     public function setPaymentMethod($platformOrder)
     {
-        $paymentMethod = $platformOrder->get_payment_method();
+        $paymentMethod = $platformOrder->getPaymentMethodPlatform();
         $this->paymentMethod = $this->{$paymentMethod}();
     }
 

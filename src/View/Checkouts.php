@@ -1,8 +1,9 @@
 <?php
+
 namespace Woocommerce\Pagarme\View;
 
-if ( ! function_exists( 'add_action' ) ) {
-	exit( 0 );
+if (!function_exists('add_action')) {
+    exit(0);
 }
 
 use Woocommerce\Pagarme\Core;
@@ -14,265 +15,271 @@ use Woocommerce\Pagarme\Model\Charge;
 
 class Checkouts
 {
-	protected static function message_before()
-	{
-		echo '<p class="title">' . __( 'Your transaction has been processed.', 'woo-pagarme-payments' ) . '</p>';
-	}
+    protected static function message_before()
+    {
+        echo '<p class="title">' . __('Your transaction has been processed.', 'woo-pagarme-payments') . '</p>';
+    }
 
-	protected static function message_after()
-	{
-		echo '<p>' . __( 'If you have any questions regarding the transaction, please contact us.', 'woo-pagarme-payments' ) . '</p>';
-	}
+    protected static function message_after()
+    {
+        echo '<p>' . __('If you have any questions regarding the transaction, please contact us.', 'woo-pagarme-payments') . '</p>';
+    }
 
-	public static function handle_messages( Order $order )
-	{
-		switch ( $order->payment_method ) {
-			case 'billet':
-				return self::billet_message( $order );
+    public static function handle_messages(Order $order)
+    {
+        switch ($order->payment_method) {
+            case 'billet':
+                return self::billet_message($order);
 
-			case 'credit_card':
-				return self::credit_card_message( $order );
+            case 'credit_card':
+                return self::credit_card_message($order);
 
-			case 'billet_and_card':
-				return self::billet_and_card_message( $order );
+            case 'billet_and_card':
+                return self::billet_and_card_message($order);
 
-			case '2_cards':
-				return self::credit_card_message( $order );
-		}
-	}
+            case '2_cards':
+                return self::credit_card_message($order);
+        }
+    }
 
-	public static function billet_message( $order )
-	{
-		$charges     = $order->response_data->charges;
-		$charge      = array_shift( $charges );
-		$transaction = $charge->last_transaction;
+    public static function billet_message($order)
+    {
+        $response_data = $order->response_data;
 
-		ob_start();
+        if (is_string($response_data)) {
+            $response_data = json_decode($response_data);
+        }
 
-		self::message_before();
+        $charges     = $response_data->charges;
+        $charge      = array_shift($charges);
+        $transaction = array_shift($charge->transactions);
 
-		?>
-		<p>
-			<?php _e( 'If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments' ); ?>
-		</p>
+        ob_start();
 
-		<a href="<?php echo esc_url( $transaction->pdf ); ?>" target="_blank" class="payment-link">
-			<?php _e( 'Print', 'woo-pagarme-payments' ); ?>
-		</a>
+        self::message_before();
 
-		<?php
+?>
+        <p>
+            <?php _e('If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments'); ?>
+        </p>
 
-		echo self::message_after();
+        <a href="<?php echo esc_url($transaction->boletoUrl); ?>" target="_blank" class="payment-link">
+            <?php _e('Print', 'woo-pagarme-payments'); ?>
+        </a>
 
-		$message = ob_get_contents();
+    <?php
 
-		ob_end_clean();
+        echo self::message_after();
 
-		return $message;
-	}
+        $message = ob_get_contents();
 
-	public static function credit_card_message( $order )
-	{
+        ob_end_clean();
 
-		ob_start();
+        return $message;
+    }
 
-		self::message_before();
+    public static function credit_card_message($order)
+    {
 
-		?>
-		<p>
-		<?php
-			/** phpcs:disable */
-			printf(
-				__( 'The status of your transaction is %s.', 'woo-pagarme-payments' ),
-				'<strong>' . strtoupper( $order->get_status_translate() ) . '</strong>'
-			);
-			/** phpcs:enable */
-		?>
-		</p>
-		<?php
+        ob_start();
 
-		self::message_after();
+        self::message_before();
 
-		$message = ob_get_contents();
+    ?>
+        <p>
+            <?php
+            /** phpcs:disable */
+            printf(
+                __('The status of your transaction is %s.', 'woo-pagarme-payments'),
+                '<strong>' . strtoupper($order->get_status_translate()) . '</strong>'
+            );
+            /** phpcs:enable */
+            ?>
+        </p>
+        <?php
 
-		ob_end_clean();
+        self::message_after();
 
-		return $message;
-	}
+        $message = ob_get_contents();
 
-	public static function billet_and_card_message( $order )
-	{
-		$charges = $order->response_data->charges;
+        ob_end_clean();
 
-		ob_start();
+        return $message;
+    }
 
-		self::message_before();
+    public static function billet_and_card_message($order)
+    {
+        $charges = $order->response_data->charges;
 
-		foreach ( $charges as $charge ) :
+        ob_start();
 
-			if ( $charge->payment_method == 'credit_card' ) :
-				echo '<p>';
-					/** phpcs:disable */
-					printf(
-						__( 'CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments' ),
-						'<strong>' . strtoupper( $order->get_status_translate() ) . '</strong>'
-					);
-					/** phpcs:enable */
-				echo '</p>';
-			endif;
+        self::message_before();
 
-			if ( $charge->payment_method == 'boleto' ) :
-				?>
-				<p>
-					<?php _e( 'BOLETO: If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments' ); ?>
-				</p>
+        foreach ($charges as $charge) :
 
-				<a href="<?php echo esc_url( $charge->last_transaction->pdf ); ?>" target="_blank" class="payment-link">
-					<?php _e( 'Print', 'woo-pagarme-payments' ); ?>
-				</a>
-				<?php
-			endif;
+            if ($charge->payment_method == 'credit_card') :
+                echo '<p>';
+                /** phpcs:disable */
+                printf(
+                    __('CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments'),
+                    '<strong>' . strtoupper($order->get_status_translate()) . '</strong>'
+                );
+                /** phpcs:enable */
+                echo '</p>';
+            endif;
 
-		endforeach;
+            if ($charge->payment_method == 'boleto') :
+        ?>
+                <p>
+                    <?php _e('BOLETO: If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments'); ?>
+                </p>
 
-		echo self::message_after();
+                <a href="<?php echo esc_url($charge->last_transaction->pdf); ?>" target="_blank" class="payment-link">
+                    <?php _e('Print', 'woo-pagarme-payments'); ?>
+                </a>
+        <?php
+            endif;
 
-		$message = ob_get_contents();
+        endforeach;
 
-		ob_end_clean();
+        echo self::message_after();
 
-		return $message;
-	}
+        $message = ob_get_contents();
 
-	public static function render_payment_details( $order_id )
-	{
-		$order   = new Order( $order_id );
-		$charges = $order->get_charges();
+        ob_end_clean();
 
-		if ( ! $charges ) {
-			$charges = isset( $order->response_data->charges ) ? $order->response_data->charges : false;
-		}
+        return $message;
+    }
 
-		if ( empty( $charges ) ) {
-			return;
-		}
+    public static function render_payment_details($order_id)
+    {
+        $order   = new Order($order_id);
+        $charges = $order->get_charges();
 
-		$model_charge = new Charge();
+        if (!$charges) {
+            $charges = isset($order->response_data->charges) ? $order->response_data->charges : false;
+        }
 
-		?>
-		<section>
-			<h2><?php _e( 'Payment Data', 'woo-pagarme-payments' ); ?></h2>
-			<table class="woocommerce-table">
-			<?php
-			foreach ( $charges as $charge ) {
-				echo self::get_payment_detail( $charge, $model_charge );
-			}
-			?>
-			</table>
-		</section>
-		<?php
-	}
+        if (empty($charges)) {
+            return;
+        }
 
-	public static function render_installments( $wc_order )
-	{
-		$gateway = new Gateway();
-		$total   = $wc_order->get_total();
+        $model_charge = new Charge();
 
-		echo $gateway->get_installments_by_type( $total );
-	}
+        ?>
+        <section>
+            <h2><?php _e('Payment Data', 'woo-pagarme-payments'); ?></h2>
+            <table class="woocommerce-table">
+                <?php
+                foreach ($charges as $charge) {
+                    echo self::get_payment_detail($charge, $model_charge);
+                }
+                ?>
+            </table>
+        </section>
+        <?php
+    }
 
-	private static function get_payment_detail( $charge, Charge $model_charge )
-	{
-		if ( $charge->payment_method == 'boleto' ) {
+    public static function render_installments($wc_order)
+    {
+        $gateway = new Gateway();
+        $total   = $wc_order->get_total();
 
-			$due_at = new \DateTime( $charge->last_transaction->due_at );
+        echo $gateway->get_installments_by_type($total);
+    }
 
-			ob_start()
+    private static function get_payment_detail($charge, Charge $model_charge)
+    {
+        if ($charge->payment_method == 'boleto') {
 
-			?>
-			<tr>
-				<th><?php _e( 'Payment Type', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php _e( 'Boleto', 'woo-pagarme-payments' ); ?></td>
-			</tr>
-			<tr>
-				<th>Link:</th>
-				<td>
-					<a href="<?php echo $charge->last_transaction->pdf; ?>">
-						<?php echo $charge->last_transaction->pdf; ?>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Line Code', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php echo $charge->last_transaction->line; ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Due at', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php echo $due_at->format( 'd/m/Y' ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Paid value', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php echo Utils::format_order_price_to_view( $charge->amount ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Status', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php echo $model_charge->get_i18n_status( $charge->status ); ?></td>
-			</tr>
-			<tr>
-				<td></td>
-			</tr>
-			<?php
+            $due_at = new \DateTime($charge->last_transaction->due_at);
 
-			$html = ob_get_contents();
+            ob_start()
 
-			ob_end_clean();
-		}
+        ?>
+            <tr>
+                <th><?php _e('Payment Type', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php _e('Boleto', 'woo-pagarme-payments'); ?></td>
+            </tr>
+            <tr>
+                <th>Link:</th>
+                <td>
+                    <a href="<?php echo $charge->last_transaction->pdf; ?>">
+                        <?php echo $charge->last_transaction->pdf; ?>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th><?php _e('Line Code', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php echo $charge->last_transaction->line; ?></td>
+            </tr>
+            <tr>
+                <th><?php _e('Due at', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php echo $due_at->format('d/m/Y'); ?></td>
+            </tr>
+            <tr>
+                <th><?php _e('Paid value', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php echo Utils::format_order_price_to_view($charge->amount); ?></td>
+            </tr>
+            <tr>
+                <th><?php _e('Status', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php echo $model_charge->get_i18n_status($charge->status); ?></td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+        <?php
 
-		if ( $charge->payment_method == 'credit_card' ) {
+            $html = ob_get_contents();
 
-			ob_start()
+            ob_end_clean();
+        }
 
-			?>
-			<tr>
-				<th><?php _e( 'Payment Type', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php _e( 'Credit Card', 'woo-pagarme-payments' ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Card Holder Name', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php echo $charge->last_transaction->card->holder_name; ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Card Brand', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php echo $charge->last_transaction->card->brand; ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Card number', 'woo-pagarme-payments' ); ?>:</th>
-				<td>
-					**** **** **** <?php echo $charge->last_transaction->card->last_four_digits; ?>
-				</td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Installments', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php echo $charge->last_transaction->installments; ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Paid value', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php echo Utils::format_order_price_to_view( $charge->amount ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Status', 'woo-pagarme-payments' ); ?>:</th>
-				<td><?php echo $model_charge->get_i18n_status( $charge->status ); ?></td>
-			</tr>
-			<tr>
-				<td></td>
-			</tr>
-			<?php
+        if ($charge->payment_method == 'credit_card') {
 
-			$html = ob_get_contents();
+            ob_start()
 
-			ob_end_clean();
-		}
+        ?>
+            <tr>
+                <th><?php _e('Payment Type', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php _e('Credit Card', 'woo-pagarme-payments'); ?></td>
+            </tr>
+            <tr>
+                <th><?php _e('Card Holder Name', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php echo $charge->last_transaction->card->holder_name; ?></td>
+            </tr>
+            <tr>
+                <th><?php _e('Card Brand', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php echo $charge->last_transaction->card->brand; ?></td>
+            </tr>
+            <tr>
+                <th><?php _e('Card number', 'woo-pagarme-payments'); ?>:</th>
+                <td>
+                    **** **** **** <?php echo $charge->last_transaction->card->last_four_digits; ?>
+                </td>
+            </tr>
+            <tr>
+                <th><?php _e('Installments', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php echo $charge->last_transaction->installments; ?></td>
+            </tr>
+            <tr>
+                <th><?php _e('Paid value', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php echo Utils::format_order_price_to_view($charge->amount); ?></td>
+            </tr>
+            <tr>
+                <th><?php _e('Status', 'woo-pagarme-payments'); ?>:</th>
+                <td><?php echo $model_charge->get_i18n_status($charge->status); ?></td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+<?php
 
-		return $html;
-	}
+            $html = ob_get_contents();
+
+            ob_end_clean();
+        }
+
+        return $html;
+    }
 }
