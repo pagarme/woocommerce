@@ -986,7 +986,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         ];
 
         foreach ($requiredFields as $requiredField) {
-            if (!array_key_exists($requiredField, $platformAddress)) {
+            $fieldIsNotSet = !array_key_exists($requiredField, $platformAddress)
+                || empty($platformAddress[$requiredField]);
+
+            if ($fieldIsNotSet) {
                 $message = "Missing $requiredField in customer address";
                 $ExceptionMessage = $this->i18n->getDashboard($message);
                 $exception = new \Exception($ExceptionMessage);
