@@ -96,7 +96,98 @@ function wcmp_on_activation() {
 
 	wcmp_create_charges_table();
 
+    wcmp_create_core_customer_table();
+    wcmp_create_core_charge_table();
+    wcmp_create_core_order_table();
+    wcmp_create_core_saved_card_table();
+
 	register_uninstall_hook( __FILE__, 'wcmp_on_uninstall' );
+}
+
+function wcmp_create_core_customer_table(){
+    global $wpdb;
+
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+	$charset    = $wpdb->get_charset_collate();
+    $table_name = $wpdb->prefix . 'pagarme_module_core_customer';
+
+    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    (
+        id         int unsigned auto_increment comment 'ID' primary key,
+        code       varchar(100) not null comment 'platform customer id',
+        pagarme_id varchar(20)  not null comment 'format: cus_xxxxxxxxxxxxxxxx'
+    ) comment 'Customer Table' {$charset};";
+
+	dbDelta( $query );
+}
+
+function wcmp_create_core_charge_table(){
+    global $wpdb;
+
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+	$charset    = $wpdb->get_charset_collate();
+    $table_name = $wpdb->prefix . 'pagarme_module_core_charge';
+
+    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    (
+        id              int unsigned auto_increment comment 'ID' primary key,
+        pagarme_id      varchar(19)  not null comment 'format: ch_xxxxxxxxxxxxxxxx',
+        order_id        varchar(19)  not null comment 'format: or_xxxxxxxxxxxxxxxx',
+        code            varchar(100) not null comment 'Code',
+        amount          int unsigned not null comment 'amount',
+        paid_amount     int unsigned not null comment 'Paid Amount',
+        canceled_amount int unsigned not null comment 'Canceled Amount',
+        refunded_amount int unsigned not null comment 'Refunded Amount',
+        status          varchar(30)  not null comment 'Status',
+        metadata        text         null comment 'Charge metadata',
+        customer_id     varchar(50)  null comment 'Charge customer id'
+    ) comment 'Charge Table' {$charset};";
+
+	dbDelta( $query );
+}
+
+function wcmp_create_core_order_table(){
+    global $wpdb;
+
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+	$charset    = $wpdb->get_charset_collate();
+    $table_name = $wpdb->prefix . 'pagarme_module_core_order';
+
+    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    (
+        id           int unsigned auto_increment comment 'ID' primary key,
+        pagarme_id   varchar(19)  not null comment 'format: or_xxxxxxxxxxxxxxxx',
+        code         varchar(100) not null comment 'Code',
+        status       varchar(30)  not null comment 'Status'
+    ) comment 'Order Table' {$charset};";
+
+	dbDelta( $query );
+}
+
+function wcmp_create_core_saved_card_table(){
+    global $wpdb;
+
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+	$charset    = $wpdb->get_charset_collate();
+    $table_name = $wpdb->prefix . 'pagarme_module_core_saved_card';
+
+    $query = "CREATE TABLE IF NOT EXISTS ${$table_name}
+    (
+        id               int unsigned auto_increment comment 'ID' primary key,
+        pagarme_id       varchar(21) not null comment 'format: card_xxxxxxxxxxxxxxxx',
+        owner_id         varchar(21) not null comment 'format: cus_xxxxxxxxxxxxxxxx',
+        first_six_digits varchar(6)  not null comment 'card first six digits',
+        last_four_digits varchar(4)  not null comment 'card last four digits',
+        brand            varchar(30) not null comment 'card brand',
+        owner_name       varchar(50) null comment 'Card owner name',
+        created_at       datetime    not null comment 'Card createdAt'
+    ) comment 'Saved Card Table' charset = {$charset};";
+
+	dbDelta( $query );
 }
 
 function wcmp_create_charges_table() {
