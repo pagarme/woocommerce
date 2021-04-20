@@ -105,7 +105,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithTwoCreditCardsConfig($configData, $storeConfig);
         $configData = self::fillWithMultiBuyerConfig($configData, $storeConfig);
         // These method calls are commented for now because they are not implemented yet:
-        $configData = self::fillWithAddressConfig($configData, $storeConfig);
+        //$configData = self::fillWithAddressConfig($configData, $storeConfig);
         // $configData = self::fillWithPixConfig($configData, $storeConfig);
         // $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
@@ -224,14 +224,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     static private function fillWithAddressConfig($dataObj, $storeConfig)
     {
-        $addressAttributes = new \stdClass();
-        $addressAttributes->street = 'street_1';
-        $addressAttributes->number = 'street_2';
-        $addressAttributes->neighborhood = 'street_3';
-        $addressAttributes->complement = 'street_4';
-
-        $dataObj->addressAttributes = $addressAttributes;
-        return $dataObj;
+        // Not implemented on Woocommerce because there is no address configuration
     }
 
     static private function getBrandConfig($storeConfig)

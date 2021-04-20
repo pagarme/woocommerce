@@ -110,7 +110,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function loadByIncrementId($incrementId)
     {
-        $this->setPlatformOrder(new WC_Order($incrementId));
+        $wcOrder = new WC_Order($incrementId);
+        $this->setPlatformOrder($wcOrder);
     }
 
     /**
@@ -148,7 +149,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     public function setAdditionalInformation($name, $value)
     {
-        throw new \Exception("Not implemented");
+        return null;
     }
 
     /**
@@ -157,7 +158,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     public function extractAdditionalChargeInformation(array $charges)
     {
-        throw new \Exception("Not implemented");
+        return null;
     }
 
     /**
@@ -515,6 +516,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function setRecurrenceInfo($item, $quoteItem)
     {
+        // we didn't have recurrence in woocommmerce;
         return $item;
     }
 
@@ -959,43 +961,13 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     protected function getAddress($platformAddress)
     {
         $address = new Address();
-        $addressAttributes =
-            PagarmeSetup::getModuleConfiguration()->getAddressAttributes();
 
-        $addressAttributes = json_decode(json_encode($addressAttributes), true);
+        $this->verifyAddressFields($platformAddress);
 
-        $allStreetLines = [
-            $platformAddress["street"],
-            $platformAddress["number"],
-            $platformAddress["neighborhood"],
-            $platformAddress["complement"]
-        ];
-
-        $this->validateAddress($allStreetLines);
-        $this->validateAddressConfiguration($addressAttributes);
-
-        if (count($allStreetLines) < 4) {
-            $addressAttributes['neighborhood'] = "street_3";
-            $addressAttributes['complement'] = "street_4";
-        }
-
-        foreach ($addressAttributes as $attribute => $value) {
-            $value = $value === null ? 1 : $value;
-
-            $street = explode("_", $value);
-            if (count($street) > 1) {
-                $value = intval($street[1]) - 1;
-            }
-
-            $setter = 'set' . ucfirst($attribute);
-
-            if (!isset($allStreetLines[$value])) {
-                $address->$setter('');
-                continue;
-            }
-
-            $address->$setter($allStreetLines[$value]);
-        }
+        $address->setStreet($platformAddress["street"]);
+        $address->setNumber($platformAddress["number"]);
+        $address->setNeighborhood($platformAddress["neighborhood"]);
+        $address->setComplement($platformAddress["complement"]);
 
         $address->setCity($platformAddress["city"]);
         $address->setCountry($platformAddress["country"]);
@@ -1006,36 +978,24 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $address;
     }
 
-    protected function validateAddress($allStreetLines)
+    private function verifyAddressFields($platformAddress)
     {
-        if (
-            !is_array($allStreetLines) ||
-            count($allStreetLines) < 3
-        ) {
-            $message = "Invalid address. Please fill the street lines and try again.";
-            $ExceptionMessage = $this->i18n->getDashboard($message);
+        $requiredFields = [
+            'street', 'number', 'neighborhood',
+            'city', 'country', 'zip_code', 'state'
+        ];
 
-            $exception = new \Exception($ExceptionMessage);
-            $log = new LogService('Order', true);
-            $log->exception($exception);
+        foreach ($requiredFields as $requiredField) {
+            if (!array_key_exists($requiredField, $platformAddress)) {
+                $message = "Missing $requiredField in customer address";
+                $ExceptionMessage = $this->i18n->getDashboard($message);
+                $exception = new \Exception($ExceptionMessage);
 
-            throw $exception;
-        }
-    }
+                $log = new LogService('Order', true);
+                $log->exception($exception);
 
-    protected function validateAddressConfiguration($addressAttributes)
-    {
-        $arrayFiltered = array_filter($addressAttributes);
-        if (empty($arrayFiltered)) {
-            $message = "Invalid address configuration. Please fill the address configuration on admin panel.";
-            $ExceptionMessage = $this->i18n->getDashboard($message);
-            $exception = new \Exception($ExceptionMessage);
-
-            $log = new LogService('Order', true);
-            $log->exception($exception);
-
-
-            throw $exception;
+                throw $exception;
+            }
         }
     }
 
