@@ -100,6 +100,7 @@ function wcmp_on_activation() {
     wcmp_create_core_charge_table();
     wcmp_create_core_order_table();
     wcmp_create_core_saved_card_table();
+    wcmp_create_core_transaction_table();
 
 	register_uninstall_hook( __FILE__, 'wcmp_on_uninstall' );
 }
@@ -163,6 +164,37 @@ function wcmp_create_core_order_table(){
         code         varchar(100) not null comment 'Code',
         status       varchar(30)  not null comment 'Status'
     ) comment 'Order Table' {$charset};";
+
+	dbDelta( $query );
+}
+
+function wcmp_create_core_transaction_table(){
+    global $wpdb;
+
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+	$charset    = $wpdb->get_charset_collate();
+    $table_name = $wpdb->prefix . 'pagarme_module_core_transaction';
+
+    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    (
+        id                 int unsigned auto_increment comment 'ID' primary key,
+        pagarme_id         varchar(21)  not null comment 'format: tran_xxxxxxxxxxxxxxxx',
+        charge_id          varchar(19)  not null comment 'format: ch_xxxxxxxxxxxxxxxx',
+        amount             int unsigned not null comment 'amount',
+        paid_amount        int unsigned not null comment 'paid amount',
+        acquirer_tid       text         null,
+        acquirer_nsu       text         null,
+        acquirer_auth_code text         null,
+        acquirer_name      text         not null comment 'Type',
+        acquirer_message   text         not null comment 'Type',
+        type               varchar(30)  not null comment 'Type',
+        status             varchar(30)  not null comment 'Status',
+        created_at         datetime     not null comment 'Created At',
+        boleto_url         text         null comment 'Boleto url',
+        card_data          text         null comment 'Card data',
+        transaction_data   text         null comment 'Transaction Data'
+    ) comment 'Transaction Table' {$charset};";
 
 	dbDelta( $query );
 }
