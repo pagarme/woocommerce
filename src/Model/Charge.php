@@ -198,13 +198,14 @@ class Charge
 
     public function is_allowed_capture($charge)
     {
-        $data = maybe_unserialize($charge->charge_data);
+        $transaction = array_shift($charge->getTransactions());
+        $method = $transaction->getTransactionType()->getType();
 
-        if ($data->payment_method == 'boleto') {
+        if ($method == 'boleto') {
             return false;
         }
 
-        if ($charge->charge_status == 'pending') {
+        if ($method == 'pending') {
             return true;
         }
 
@@ -213,10 +214,9 @@ class Charge
 
     public function is_allowed_cancel($charge)
     {
-        $data   = maybe_unserialize($charge->charge_data);
-        $status = $data->status;
-        $transaction = array_shift($data->transactions);
-        $method = $transaction->type;
+        $status = $charge->getStatus()->getStatus();
+        $transaction = array_shift($charge->getTransactions());
+        $method = $transaction->getTransactionType()->getType();
 
         if ($method == 'boleto' && in_array($status, ['pending'])) {
             return true;

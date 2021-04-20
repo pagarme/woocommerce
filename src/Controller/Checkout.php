@@ -62,13 +62,7 @@ class Checkout
             $fields
         );
 
-        $chargeArray = json_decode(
-            json_encode($response->getCharges()),
-            true
-        );
-
         $order  = new Order($wc_order->get_order_number());
-        $charge = new Charge();
 
         $order->payment_method   = $fields['payment_method'];
         $order->pagarme_id     = $response->getPagarmeId()->getValue();
@@ -76,7 +70,6 @@ class Checkout
         $order->response_data    = json_encode($response);
 
         $order->update_by_pagarme_status($response->getStatus()->getStatus());
-        $charge->create_from_order($response->getPagarmeId()->getValue(), $chargeArray);
 
         WC()->cart->empty_cart();
 

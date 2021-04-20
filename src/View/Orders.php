@@ -49,25 +49,24 @@ class Orders
                     </tr>
                 </thead>
                 <tbody class="items">
-                    <?php foreach ($charges as $item) : ?>
+                    <?php foreach ($charges as $charge) : ?>
                         <tr <?php echo Utils::get_component('capture'); ?>>
                             <?php
-                            $charge = json_decode($item->charge_data);
-                            $transaction = array_shift($charge->transactions);
-                            $paid_amount = isset($charge->paidAmount) ? Utils::format_order_price_to_view($transaction->paidAmount) : ' - ';
-                            $canceled_amount = isset($charge->canceledAmount) ? Utils::format_order_price_to_view($charge->canceledAmount) : ' - ';
+                            $transaction = array_shift($charge->getTransactions());
+                            $paid_amount = !empty($charge->getPaidAmount()) ? Utils::format_order_price_to_view($charge->getPaidAmount()) : ' - ';
+                            $canceled_amount = !empty($charge->getCanceledAmount()) ? Utils::format_order_price_to_view($charge->getCanceledAmount()) : ' - ';
                             ?>
-                            <td><?php echo $charge->pagarmeId; ?></td>
-                            <td><?php echo strtoupper($transaction->type); ?></td>
-                            <td><?php echo Utils::format_order_price_to_view($charge->amount); ?></td>
+                            <td><?php echo $charge->getPagarmeId()->getValue(); ?></td>
+                            <td><?php echo strtoupper($transaction->getTransactionType()->getType()); ?></td>
+                            <td><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></td>
                             <td><?php echo $paid_amount; ?></td>
                             <td><?php echo $canceled_amount; ?></td>
-                            <td><?php echo strtoupper($charge->status); ?></td>
+                            <td><?php echo strtoupper($charge->getStatus()->getStatus()); ?></td>
                             <td style="width:150px; padding-top:12px; text-align:center;">
-                                <button data-type="cancel" data-ref="<?php echo $charge->pagarmeId; ?>" <?php echo !$charge_model->is_allowed_cancel($item) ? 'disabled=disabled' : ''; ?> class="button-primary">Cancelar</button>
+                                <button data-type="cancel" data-ref="<?php echo $charge->getPagarmeId()->getValue(); ?>" <?php echo !$charge_model->is_allowed_cancel($charge) ? 'disabled=disabled' : ''; ?> class="button-primary">Cancelar</button>
 
-                                <?php if ($transaction->type == 'credit_card') : ?>
-                                    <button data-type="capture" data-ref="<?php echo $charge->pagarmeId; ?>" <?php echo !$charge_model->is_allowed_capture($item) ? 'disabled=disabled' : ''; ?> class="button-primary">Capturar</button>
+                                <?php if ($transaction->getTransactionType()->getType() == 'credit_card') : ?>
+                                    <button data-type="capture" data-ref="<?php echo $charge->getPagarmeId()->getValue(); ?>" <?php echo !$charge_model->is_allowed_capture($charge) ? 'disabled=disabled' : ''; ?> class="button-primary">Capturar</button>
                                 <?php endif; ?>
                             </td>
                             <?php self::render_capture_modal($charge, $transaction); ?>
@@ -82,16 +81,16 @@ class Orders
 
     private static function render_capture_modal($charge, $transaction)
     {
-        $paid_amount = isset($charge->paidAmount) ? Utils::format_order_price_to_view($charge->paidAmount) : ' - ';
+        $paid_amount = !empty($charge->getPaidAmount()) ? Utils::format_order_price_to_view($charge->getPaidAmount()) : ' - ';
 
     ?>
-        <div data-charge-action="<?php echo $charge->pagarmeId; ?>-capture" data-charge="<?php echo $charge->pagarmeId; ?>" class="modal">
+        <div data-charge-action="<?php echo $charge->getPagarmeId()->getValue(); ?>-capture" data-charge="<?php echo $charge->getPagarmeId()->getValue(); ?>" class="modal">
             <h2>Pagar.me - Captura</h2>
-            <p><b>CHARGE ID: </b><?php echo $charge->pagarmeId; ?></p>
-            <p><b>TIPO: </b><?php echo strtoupper($transaction->type); ?></p>
-            <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->amount); ?></p>
+            <p><b>CHARGE ID: </b><?php echo $charge->getPagarmeId()->getValue(); ?></p>
+            <p><b>TIPO: </b><?php echo strtoupper($transaction->getTransactionType()->getType()); ?></p>
+            <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></p>
             <p><b>PARCIALMENTE CAPTURADO: </b><?php echo $paid_amount; ?></p>
-            <p><b>STATUS: </b><?php echo strtoupper($charge->status); ?></p>
+            <p><b>STATUS: </b><?php echo strtoupper($charge->getStatus()->getStatus()); ?></p>
             <p>
                 <label>Valor a ser capturado: R$
                     <input data-element="amount" type="text" />
@@ -107,9 +106,9 @@ class Orders
 
     private static function render_cancel_modal($charge, $transaction)
     {
-        $canceled_amount = isset($charge->canceledAmount) ? $charge->canceledAmount : 0;
-        $paid_amount     = isset($charge->paidAmount) ? $charge->paidAmount : 0;
-        $value_to_cancel = $charge->amount;
+        $canceled_amount = !empty($charge->getCanceledAmount()) ? $charge->getCanceledAmount() : 0;
+        $paid_amount     = !empty($charge->getPaidAmount()) ? $charge->getPaidAmount() : 0;
+        $value_to_cancel = $charge->getAmount();
 
         if ($paid_amount) {
             $value_to_cancel = $paid_amount;
@@ -120,16 +119,16 @@ class Orders
         }
 
     ?>
-        <div data-charge-action="<?php echo $charge->pagarmeId; ?>-cancel" data-charge="<?php echo $charge->pagarmeId; ?>" class="modal">
+        <div data-charge-action="<?php echo $charge->getPagarmeId()->getValue(); ?>-cancel" data-charge="<?php echo $charge->getPagarmeId()->getValue(); ?>" class="modal">
             <h2>Pagar.me - Cancelamento</h2>
-            <p><b>CHARGE ID: </b><?php echo $charge->pagarmeId; ?></p>
-            <p><b>TIPO: </b><?php echo strtoupper($transaction->type); ?></p>
-            <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->amount); ?></p>
+            <p><b>CHARGE ID: </b><?php echo $charge->getPagarmeId()->getValue(); ?></p>
+            <p><b>TIPO: </b><?php echo strtoupper($transaction->getTransactionType()->getType()); ?></p>
+            <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></p>
             <p><b>PARCIALMENTE CANCELADO: </b><?php echo $canceled_amount ? Utils::format_order_price_to_view($canceled_amount) : '-'; ?></p>
-            <p><b>STATUS: </b><?php echo strtoupper($charge->status); ?></p>
+            <p><b>STATUS: </b><?php echo strtoupper($charge->getStatus()->getStatus()); ?></p>
             <p>
                 <label>Valor a ser cancelado: R$
-                    <input data-element="amount" type="text" value="<?php echo $value_to_cancel; ?>" <?php echo $charge->status == 'pending' ? 'disabled=disabled' : ''; ?> />
+                    <input data-element="amount" type="text" value="<?php echo $value_to_cancel; ?>" <?php echo $charge->getStatus()->getStatus() == 'pending' ? 'disabled=disabled' : ''; ?> />
                 </label>
             </p>
             <p>
