@@ -645,12 +645,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $newPaymentData->amount = $amount;
 
-        /*if ($additionalInformation['cc_buyer_checkbox']) {
+        if ($this->formData["enable_multicustomers_card"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
-                'cc',
-                $additionalInformation
+                'card'
             );
-        }*/
+        }
 
         return $newPaymentData;
     }
