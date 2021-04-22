@@ -66,9 +66,12 @@ final class WoocommerceDatabaseDecorator extends AbstractDatabaseDecorator
         $retn->num_rows = count($queryResult);
         $retn->row = array();
         if (!empty($queryResult)) {
-            $retn->row = $queryResult[0];
+            $retn->row = (array) $queryResult[0];
         }
-        $retn->rows = $queryResult;
+        $retn->rows = json_decode(
+            json_encode($queryResult),
+            true
+        );
         return $retn;
     }
 
