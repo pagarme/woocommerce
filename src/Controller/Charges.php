@@ -7,16 +7,17 @@ if ( ! function_exists( 'add_action' ) ) {
 
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Core;
+use Pagarme\Core\Kernel\Services\ChargeService;
 use Woocommerce\Pagarme\Model\Charge;
 use Woocommerce\Pagarme\Resource\Charges as Charges_Resource;
-
+use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
 class Charges
 {
 	public function __construct()
 	{
 		$this->model = new Charge();
 		$this->build_actions();
-
+        WoocommerceCoreSetup::bootstrap();
 		add_action( 'wp_ajax_STW3dqRT6E', array( $this, 'handle_ajax_operations' ) );
 	}
 
@@ -52,26 +53,19 @@ class Charges
 			exit( 1 );
 		}
 
-		$resource = new Charges_Resource();
-		$response = $resource->{$mode}( $charge_id, Utils::format_desnormalized_order_price( $amount ) );
+		$chargeService = new ChargeService();
+
+        if ($mode === 'cancel'){
+            $response = $chargeService->cancelById($charge_id);
+        }
 
 		error_log( print_r( $response, true ) );
 
-		if ( $response->code != 200 ) {
+		if ( !$response->isSuccess() ) {
 			http_response_code( 412 );
 			Utils::error_server_json( 'operation_error', 'Não foi possível efetuar esta operação!' );
 			exit( 1 );
 		}
-
-		$this->model->update(
-			array(
-				'charge_status' => esc_sql( $response->body->status ),
-				'charge_data'   => maybe_serialize( $response->body ),
-			),
-			array(
-				'charge_id' => $charge_id,
-			)
-		);
 
 		wp_send_json_success([
 			'mode'    => $mode,
