@@ -52,15 +52,27 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private $paymentMethod;
     private $customerDetailsFactory;
 
-
     public function __construct($formData = null, $paymentMethod = null)
     {
         $this->i18n = new LocalizationService();
         $this->formData = $formData;
-        $this->paymentMethod = $paymentMethod;
+        $this->paymentMethod = $this->formatPaymentMethod($paymentMethod);
         $this->customerDetailsFactory = new CustomerDetailsFactory();
         $this->orderService = new OrderService();
         parent::__construct();
+    }
+
+    private function formatPaymentMethod($paymentMethod){
+        $paymentMethodParts = explode('_', $paymentMethod);
+        $formatedPaymentMethod = '';
+
+        foreach ($paymentMethodParts as $part) {
+            $formatedPaymentMethod .= ucfirst($part);
+        }
+
+        $formatedPaymentMethod = lcfirst($formatedPaymentMethod);
+
+        return $formatedPaymentMethod;
     }
 
     public function save()
@@ -572,14 +584,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $paymentMethods;
     }
 
-    private function extractPaymentDataFromPagarmeCreditCard(
-        $additionalInformation,
-        &$paymentData,
-        $payment
+    private function extractPaymentDataFromCreditCard(
+        &$paymentData
     ) {
-        $newPaymentData = $this->extractBasePaymentData(
-            $additionalInformation
-        );
+        $newPaymentData = $this->extractBasePaymentData();
 
         $creditCardDataIndex = AbstractCreditCardPayment::getBaseCode();
         if (!isset($paymentData[$creditCardDataIndex])) {
@@ -593,9 +601,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         &$paymentData,
         $payment
     ) {
-        $newPaymentData = $this->extractBasePaymentData(
-            $additionalInformation
-        );
+        $newPaymentData = $this->extractBasePaymentData();
 
         $creditCardDataIndex = NewVoucherPayment::getBaseCode();
         if (!isset($paymentData[$creditCardDataIndex])) {
@@ -609,9 +615,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         &$paymentData,
         $payment
     ) {
-        $newPaymentData = $this->extractBasePaymentData(
-            $additionalInformation
-        );
+        $newPaymentData = $this->extractBasePaymentData();
 
         $creditCardDataIndex = NewDebitCardPayment::getBaseCode();
         if (!isset($paymentData[$creditCardDataIndex])) {
@@ -620,53 +624,19 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $paymentData[$creditCardDataIndex][] = $newPaymentData;
     }
 
-    private function extractBasePaymentData($additionalInformation)
+    private function extractBasePaymentData()
     {
-        $moneyService = new MoneyService();
-        $identifier = null;
-        $customerId = null;
-        $brand = null;
-
-        try {
-            $brand = strtolower($additionalInformation['cc_type']);
-        } catch (\Exception $e) {
-            // do nothing
-        } catch (\Throwable $e) {
-            // do nothing
-        }
-
-        if (isset($additionalInformation['cc_token_credit_card'])) {
-            $identifier = $additionalInformation['cc_token_credit_card'];
-        }
-        if (
-            !empty($additionalInformation['cc_saved_card']) &&
-            $additionalInformation['cc_saved_card'] !== null
-        ) {
-            $identifier = null;
-        }
-
-        if ($identifier === null) {
-            $objectManager = ObjectManager::getInstance();
-            $cardRepo = $objectManager->get(CardsRepository::class);
-            $cardId = $additionalInformation['cc_saved_card'];
-            $card = $cardRepo->getById($cardId);
-
-            $identifier = $card->getCardToken();
-            $customerId = $card->getCardId();
-        }
+        $identifier = $this->formData["pagarmetoken1"];
+        $customerId = $this->getCustomer()->getPagarmeId()->getValue();
+        $brand = $this->formData["brand"];
 
         $newPaymentData = new \stdClass();
         $newPaymentData->customerId = $customerId;
         $newPaymentData->brand = $brand;
         $newPaymentData->identifier = $identifier;
-        $newPaymentData->installments = $additionalInformation['cc_installments'];
+        $newPaymentData->installments = intval($this->formData["installments"]);
         $newPaymentData->saveOnSuccess =
-            isset($additionalInformation['cc_savecard']) &&
-            $additionalInformation['cc_savecard'] === '1';
-
-        if (isset($additionalInformation['cc_cvv_card']) && !empty($additionalInformation['cc_cvv_card'])) {
-            $newPaymentData->cvvCard = $additionalInformation['cc_cvv_card'];
-        }
+            isset($this->formData["save_credit_card"]);
 
         $amount = $this->getGrandTotal() - $this->getBaseTaxAmount();
         $amount = number_format($amount, 2, '.', '');
@@ -675,12 +645,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $newPaymentData->amount = $amount;
 
-        if ($additionalInformation['cc_buyer_checkbox']) {
+        /*if ($additionalInformation['cc_buyer_checkbox']) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'cc',
                 $additionalInformation
             );
-        }
+        }*/
 
         return $newPaymentData;
     }

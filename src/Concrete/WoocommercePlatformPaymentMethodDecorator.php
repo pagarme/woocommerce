@@ -6,7 +6,7 @@ use Pagarme\Core\Kernel\Interfaces\PlatformPaymentMethodInterface;
 
 class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethodInterface
 {
-    const CREDIT_CARD = 'credit_card';
+    const CREDIT_CARD = 'creditCard';
     const BOLETO = 'boleto';
     const BOLETO_CREDIT_CARD = 'billet_and_card';
     const VOUCHER = 'voucher';
