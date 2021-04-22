@@ -200,12 +200,13 @@ class Charge
     {
         $transaction = array_shift($charge->getTransactions());
         $method = $transaction->getTransactionType()->getType();
+        $chargeStatus = $charge->getStatus()->getStatus();
 
         if ($method == 'boleto') {
             return false;
         }
 
-        if ($method == 'pending') {
+        if ($chargeStatus == 'pending') {
             return true;
         }
 

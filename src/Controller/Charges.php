@@ -8,6 +8,7 @@ if ( ! function_exists( 'add_action' ) ) {
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Core;
 use Pagarme\Core\Kernel\Services\ChargeService;
+use Pagarme\Core\Kernel\Services\MoneyService;
 use Woocommerce\Pagarme\Model\Charge;
 use Woocommerce\Pagarme\Resource\Charges as Charges_Resource;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
@@ -53,11 +54,8 @@ class Charges
 			exit( 1 );
 		}
 
-		$chargeService = new ChargeService();
-
-        if ($mode === 'cancel'){
-            $response = $chargeService->cancelById($charge_id);
-        }
+        $method = "handle_charge_". $mode;
+        $response = $this->$method($charge_id, $amount);
 
 		error_log( print_r( $response, true ) );
 
@@ -72,6 +70,21 @@ class Charges
 			'message' => 'Operação efetuada com sucesso!',
 		]);
 	}
+
+    private function handle_charge_cancel($charge_id, $amount){
+		$chargeService = new ChargeService();
+        return $chargeService->cancelById($charge_id);
+    }
+
+    private function handle_charge_capture($charge_id, $amount){
+		$chargeService = new ChargeService();
+        $moneyService = new MoneyService();
+
+        $amount = $moneyService->removeSeparators($amount);
+        $amount = $moneyService->floatToCents($amount / 100);
+
+        return $chargeService->captureById($charge_id, $amount);
+    }
 
 	private function build_actions()
 	{
