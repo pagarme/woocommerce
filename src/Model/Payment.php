@@ -12,6 +12,7 @@ use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Api;
 use Woocommerce\Pagarme\Resource\Tokens;
+use Woocommerce\Pagarme\Factories\CustomerDetailsFactory;
 
 class Payment
 {
@@ -244,8 +245,8 @@ class Payment
 	private function get_customer_address_from_wc_order($wc_order){
 		$order = new Order($wc_order->get_order_number());
 
-		$api = Api::get_instance();
-		return $api->build_customer_address_from_order($order);
+		$customerDetailsFactory = new CustomerDetailsFactory();
+		return $customerDetailsFactory->build_customer_address_from_order($order);
 	}
 
 	/**
