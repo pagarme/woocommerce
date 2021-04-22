@@ -94,8 +94,6 @@ function wcmp_on_activation() {
 
 	add_option( WCMP_OPTION_ACTIVATE, true );
 
-	wcmp_create_charges_table();
-
     wcmp_create_core_customer_table();
     wcmp_create_core_charge_table();
     wcmp_create_core_order_table();
@@ -218,29 +216,6 @@ function wcmp_create_core_saved_card_table(){
         owner_name       varchar(50) null comment 'Card owner name',
         created_at       datetime    not null comment 'Card createdAt'
     ) comment 'Saved Card Table' charset = {$charset};";
-
-	dbDelta( $query );
-}
-
-function wcmp_create_charges_table() {
-	global $wpdb;
-
-	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
-	$charset    = $wpdb->get_charset_collate();
-	$table_name = $wpdb->prefix . 'woocommerce_pagarme_charges';
-	$query      = "
-		CREATE TABLE IF NOT EXISTS {$table_name} (
-			id         		BIGINT(20)   UNSIGNED NOT NULL AUTO_INCREMENT,
-			wc_order_id    	BIGINT(20)   NOT NULL DEFAULT 0,
-			order_id    	TEXT   		 NOT NULL,
-			charge_id  		TEXT   		 NOT NULL,
-			charge_data  	LONGTEXT 	 NOT NULL,
-			charge_status   VARCHAR(20)  NOT NULL,
-			updated_at 		TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
-			primary key (id)
-		) {$charset};
-	";
 
 	dbDelta( $query );
 }
