@@ -6,6 +6,7 @@ use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
 use Woocommerce\Pagarme\Model\Api;
 use Woocommerce\Pagarme\Model\Payment as WCModelPayment;
+use Woocommerce\Pagarme\Factories\CustomerDetailsFactory;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as PagarmeSetup;
 use Pagarme\Core\Kernel\Abstractions\AbstractPlatformOrderDecorator;
 use Pagarme\Core\Kernel\Aggregates\Charge;
@@ -49,6 +50,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private $i18n;
     private $formData;
     private $paymentMethod;
+    private $customerDetailsFactory;
 
 
     public function __construct($formData = null, $paymentMethod = null)
@@ -56,6 +58,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $this->i18n = new LocalizationService();
         $this->formData = $formData;
         $this->paymentMethod = $paymentMethod;
+        $this->customerDetailsFactory = new CustomerDetailsFactory();
         $this->orderService = new OrderService();
         parent::__construct();
     }
@@ -365,11 +368,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $pagarmeCustomerId = new CustomerId($pagarmeCustomer->customer_id);
 
         $order = new Order($this->getPlatformOrder()->get_order_number());
-        $api = Api::get_instance();
 
-        $address = $api->build_customer_address_from_order($order);
-        $document = $api->get_document_by_person_type($order);
-        $phones = $api->get_phones($order);
+        $address = $this->customerDetailsFactory->build_customer_address_from_order($order);
+        $document = $this->customerDetailsFactory->build_document_from_order($order);
+        $phones = $this->customerDetailsFactory->build_customer_phones_from_order($order);
 
         $homeNumber = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
@@ -432,11 +434,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private function getGuestCustomer()
     {
         $order = new Order($this->getPlatformOrder()->get_order_number());
-        $api = Api::get_instance();
 
-        $address = $api->build_customer_address_from_order($order);
-        $document = $api->get_document_by_person_type($order);
-        $phones = $api->get_phones($order);
+        $address = $this->customerDetailsFactory->build_customer_address_from_order($order);
+        $document = $this->customerDetailsFactory->build_document_from_order($order);
+        $phones = $this->customerDetailsFactory->build_customer_phones_from_order($order);
 
         $homeNumber = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
@@ -772,8 +773,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $multibuyer = new \stdClass();
 
-        $api = Api::get_instance();
-        $phones = $api->get_phones($order);
+        $phones = $this->customerDetailsFactory->build_customer_phones_from_order($order);
         $homeNumber = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
@@ -938,8 +938,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $moneyService = new MoneyService();
 
-        $api = Api::get_instance();
-        $platformShipping = $api->build_shipping($this->getPlatformOrder());
+        $platformShipping = $this->customerDetailsFactory
+            ->build_customer_shipping_from_wc_order(
+                $this->getPlatformOrder()
+            );
 
         $shipping = new Shipping();
 
