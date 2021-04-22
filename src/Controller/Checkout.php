@@ -6,15 +6,11 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Woocommerce\Pagarme\Model\Api;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer;
 use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Model\Charge;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\View;
 use Woocommerce\Pagarme\Model;
 
 use WC_Order;
@@ -25,7 +21,7 @@ class Checkout
 
     public function __construct()
     {
-        $this->api = Api::get_instance();
+        $this->ordersController = new Orders();
 
         add_action('woocommerce_api_' . Model\Checkout::API_REQUEST, array($this, 'process_checkout_transparent'));
         add_action('woocommerce_view_order', array('Woocommerce\Pagarme\View\Checkouts', 'render_payment_details'));
@@ -56,7 +52,7 @@ class Checkout
         $this->validate_amount_2_cards($fields, $wc_order);
         $this->validate_brands($fields);
 
-        $response = $this->api->create_order(
+        $response = $this->ordersController->create_order(
             $wc_order,
             $fields['payment_method'],
             $fields
