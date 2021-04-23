@@ -10,46 +10,46 @@ final class WoocommerceDatabaseDecorator extends AbstractDatabaseDecorator
     {
         $this->tableArray = [
             AbstractDatabaseDecorator::TABLE_MODULE_CONFIGURATION =>
-                $this->getTableName('pagarme_module_core_configuration'),
+            $this->getTableName('pagarme_module_core_configuration'),
 
             AbstractDatabaseDecorator::TABLE_WEBHOOK =>
-                $this->getTableName('pagarme_module_core_webhook'),
+            $this->getTableName('pagarme_module_core_webhook'),
 
             AbstractDatabaseDecorator::TABLE_ORDER =>
-                $this->getTableName('pagarme_module_core_order'),
+            $this->getTableName('pagarme_module_core_order'),
 
             AbstractDatabaseDecorator::TABLE_CHARGE =>
-                $this->getTableName('pagarme_module_core_charge'),
+            $this->getTableName('pagarme_module_core_charge'),
 
             AbstractDatabaseDecorator::TABLE_TRANSACTION =>
-                $this->getTableName('pagarme_module_core_transaction'),
+            $this->getTableName('pagarme_module_core_transaction'),
 
             AbstractDatabaseDecorator::TABLE_SAVED_CARD =>
-                $this->getTableName('pagarme_module_core_saved_card'),
+            $this->getTableName('pagarme_module_core_saved_card'),
 
             AbstractDatabaseDecorator::TABLE_CUSTOMER =>
-                $this->getTableName('pagarme_module_core_customer'),
+            $this->getTableName('pagarme_module_core_customer'),
 
             AbstractDatabaseDecorator::TABLE_RECURRENCE_PRODUCTS_PLAN =>
-                $this->getTableName('pagarme_module_core_recurrence_products_plan'),
+            $this->getTableName('pagarme_module_core_recurrence_products_plan'),
 
             AbstractDatabaseDecorator::TABLE_RECURRENCE_PRODUCTS_SUBSCRIPTION =>
-                $this->getTableName('pagarme_module_core_recurrence_products_subscription'),
+            $this->getTableName('pagarme_module_core_recurrence_products_subscription'),
 
-            AbstractDatabaseDecorator::TABLE_RECURRENCE_SUB_PRODUCTS=>
-                $this->getTableName('pagarme_module_core_recurrence_sub_products'),
+            AbstractDatabaseDecorator::TABLE_RECURRENCE_SUB_PRODUCTS =>
+            $this->getTableName('pagarme_module_core_recurrence_sub_products'),
 
             AbstractDatabaseDecorator::TABLE_RECURRENCE_CHARGE =>
-                $this->getTableName('pagarme_module_core_recurrence_charge'),
+            $this->getTableName('pagarme_module_core_recurrence_charge'),
 
             AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION =>
-                $this->getTableName('pagarme_module_core_recurrence_subscription'),
+            $this->getTableName('pagarme_module_core_recurrence_subscription'),
 
             AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION_REPETITIONS =>
-                $this->getTableName('pagarme_module_core_recurrence_subscription_repetitions'),
+            $this->getTableName('pagarme_module_core_recurrence_subscription_repetitions'),
 
             AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION_ITEM =>
-                $this->getTableName('pagarme_module_core_recurrence_subscription_items')
+            $this->getTableName('pagarme_module_core_recurrence_subscription_items')
         ];
     }
 
@@ -87,7 +87,7 @@ final class WoocommerceDatabaseDecorator extends AbstractDatabaseDecorator
         global $wpdb;
 
         return $wpdb->insert_id;
-}
+    }
 
     protected function setTablePrefix()
     {

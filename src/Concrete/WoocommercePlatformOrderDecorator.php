@@ -62,7 +62,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         parent::__construct();
     }
 
-    private function formatPaymentMethod($paymentMethod){
+    private function formatPaymentMethod($paymentMethod)
+    {
         $paymentMethodParts = explode('_', $paymentMethod);
         $formatedPaymentMethod = '';
 
@@ -391,7 +392,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $savedCustomer = $customerRepository->findByCode($woocommerceCustomerId);
 
         $customer = new Customer;
-        if ($savedCustomer){
+        if ($savedCustomer) {
             $customer = $savedCustomer;
         }
 
@@ -614,7 +615,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $identifier = $this->formData["pagarmetoken1"];
 
-        if (!$identifier){
+        if (!$identifier) {
             $identifier = $this->formData["card_id"];
         }
         $customerId = $this->getCustomer()->getPagarmeId() ?
