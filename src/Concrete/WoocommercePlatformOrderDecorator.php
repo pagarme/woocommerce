@@ -617,7 +617,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (!$identifier){
             $identifier = $this->formData["card_id"];
         }
-        $customerId = $this->getCustomer()->getPagarmeId()->getValue();
+        $customerId = $this->getCustomer()->getPagarmeId() ?
+            $this->getCustomer()->getPagarmeId()->getValue() : null;
         $brand = $this->formData["brand"];
 
         $newPaymentData = new \stdClass();
