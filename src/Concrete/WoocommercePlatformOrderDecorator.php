@@ -361,10 +361,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     /** @return Customer */
     public function getCustomer()
     {
-        $customer = new PagarmeCustomer(get_current_user_id());
+        $customerId = get_current_user_id();
 
-        if (!empty($customer->customer_id)) {
-            return $this->getRegisteredCustomer($customer);
+        if (!empty($customerId)) {
+            return $this->getRegisteredCustomer($customerId);
         }
 
         return $this->getGuestCustomer();
@@ -375,10 +375,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      * @return Customer
      * @throws \Exception
      */
-    private function getRegisteredCustomer($pagarmeCustomer)
+    private function getRegisteredCustomer($woocommerceCustomerId)
     {
-        $pagarmeCustomerId = new CustomerId($pagarmeCustomer->customer_id);
-
         $order = new Order($this->getPlatformOrder()->get_order_number());
 
         $address = $this->customerDetailsFactory->build_customer_address_from_order($order);
@@ -389,24 +387,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
         $customerRepository = new CoreCustomerRepository();
-        try {
 
-            $savedCustomer = $customerRepository->findByPagarmeId($pagarmeCustomerId);
+        $savedCustomer = $customerRepository->findByCode($woocommerceCustomerId);
 
-            $customer = new Customer;
-            $customer->setCode($savedCustomer->getId());
-
-            $customer->setPagarmeId($pagarmeCustomerId);
-        } catch (\Throwable $e) {
-        }
-
-        if (empty($savedCustomer)) {
-            $coreCustomer = $customerRepository->findByCode(
-                $pagarmeCustomerId
-            );
-            if ($coreCustomer !== null) {
-                $customer->setPagarmeId($coreCustomer->getPagarmeId());
-            }
+        $customer = new Customer;
+        if ($savedCustomer){
+            $customer = $savedCustomer;
         }
 
         $fullName = "{$order->billing_first_name} {$order->billing_last_name}";
