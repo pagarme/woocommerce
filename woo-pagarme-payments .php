@@ -205,7 +205,7 @@ function wcmp_create_core_saved_card_table(){
 	$charset    = $wpdb->get_charset_collate();
     $table_name = $wpdb->prefix . 'pagarme_module_core_saved_card';
 
-    $query = "CREATE TABLE IF NOT EXISTS ${$table_name}
+    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
     (
         id               int unsigned auto_increment comment 'ID' primary key,
         pagarme_id       varchar(21) not null comment 'format: card_xxxxxxxxxxxxxxxx',
@@ -215,7 +215,7 @@ function wcmp_create_core_saved_card_table(){
         brand            varchar(30) not null comment 'card brand',
         owner_name       varchar(50) null comment 'Card owner name',
         created_at       datetime    not null comment 'Card createdAt'
-    ) comment 'Saved Card Table' charset = {$charset};";
+    ) comment 'Saved Card Table' {$charset};";
 
 	dbDelta( $query );
 }
