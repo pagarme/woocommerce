@@ -6,6 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use Woocommerce\Pagarme\Helper\Utils;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository as CoreSavedCardRepository;
+use Pagarme\Core\Payment\Repositories\CustomerRepository as CoreCustomerRepository;
 
 class Customer
 {
@@ -19,10 +21,15 @@ class Customer
 
 	public $prefix = '_pagarme_wc_';
 
+    private $customerRepository;
+    private $cardRepository;
+
 	/** phpcs:disable */
 	public function __construct( $ID )
 	{
 		$this->ID = (int) $ID;
+        $this->cardRepository = new CoreSavedCardRepository();
+        $this->customerRepository = new CoreCustomerRepository();
 	}
 
 	public function __get( $prop_name )
@@ -62,6 +69,20 @@ class Customer
 				return $value;
 		}
 	}
+
+    public function get_cards(){
+        if ($this->cards){
+            return $this->cards;
+        }
+        $coreCustomer = $this->customerRepository->findByCode($this->ID);
+
+        $this->cards =
+            $this->cardRepository->findByOwnerId(
+                $coreCustomer->getPagarmeId()
+            );
+
+        return $this->cards;
+    }
 
 	public function get_meta_key( $name )
 	{

@@ -21,7 +21,8 @@ if ( ! $setting->is_allowed_save_credit_card() ) {
 $customer = new Customer( get_current_user_id() );
 $suffix   = isset( $suffix ) ? $suffix : '';
 
-if ( ! $customer->cards ) {
+$cards = $customer->get_cards();
+if ( ! $cards ) {
 	return;
 }
 
@@ -40,13 +41,13 @@ if ( ! $customer->cards ) {
 		</option>
 
 		<?php
-		foreach ( $customer->cards as $id => $card ) :
+		foreach ( $cards as $card ) :
 			printf(
 				'<option data-brand="%3$s" value="%2$s">(%1$s) •••• •••• •••• %4$s</option>',
-				esc_html( strtoupper( $card['brand'] ) ),
-				esc_attr( $id ),
-				esc_html( strtolower( $card['brand'] ) ),
-				esc_html( $card['last_four_digits'] )
+				esc_html( strtoupper( $card->getBrand()->getName() ) ),
+				esc_attr( $card->getPagarmeId()->getValue() ),
+				esc_html( strtolower( $card->getBrand()->getName() ) ),
+				esc_html( $card->getLastFourDigits()->getValue() )
 			);
 		endforeach;
 		?>
