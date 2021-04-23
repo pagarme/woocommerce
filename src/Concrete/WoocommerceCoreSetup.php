@@ -149,9 +149,9 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $dataObj->installmentsDefaultConfig = $storeConfig->isInstallmentsDefaultConfig();
 
         $dataObj->antifraudMinAmount =
-            $moneyService->floatToCents(
-                $dataObj->antifraudMinAmount * 1
-            );
+        $moneyService->floatToCents(
+            $dataObj->antifraudMinAmount * 1
+        );
 
         $dataObj->cardConfigs = self::getBrandConfig($storeConfig);
 
