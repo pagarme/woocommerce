@@ -613,6 +613,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private function extractBasePaymentData()
     {
         $identifier = $this->formData["pagarmetoken1"];
+
+        if (!$identifier){
+            $identifier = $this->formData["card_id"];
+        }
         $customerId = $this->getCustomer()->getPagarmeId()->getValue();
         $brand = $this->formData["brand"];
 
