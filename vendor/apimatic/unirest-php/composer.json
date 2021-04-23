@@ -1,0 +1,46 @@
+{
+  "name": "apimatic/unirest-php",
+  "description": "Unirest PHP",
+  "keywords": [
+    "rest",
+    "curl",
+    "http",
+    "https",
+    "client"
+  ],
+  "type": "library",
+  "homepage": "https://github.com/apimatic/unirest-php",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mashape",
+      "email": "opensource@mashape.com",
+      "homepage": "https://www.mashape.com",
+      "role": "Developer"
+    },
+    {
+      "name": "APIMATIC",
+      "email": "opensource@apimatic.io",
+      "homepage": "https://www.apimatic.io",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "ext-curl": "*"
+  },
+  "suggest": {
+    "ext-json": "Allows using JSON Bodies for sending and parsing requests"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5 || ^6 || ^7"
+  },
+  "autoload": {
+    "psr-0": {
+      "Unirest\\": "src/"
+    }
+  },
+  "support": {
+    "email": "opensource@apimatic.io"
+  }
+}
