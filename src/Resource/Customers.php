@@ -1,8 +1,9 @@
 <?php
+
 namespace Woocommerce\Pagarme\Resource;
 
-if ( ! function_exists( 'add_action' ) ) {
-	exit( 0 );
+if (!function_exists('add_action')) {
+    exit(0);
 }
 
 use Woocommerce\Pagarme\Core;
@@ -12,30 +13,30 @@ use Unirest\Request\Body;
 
 class Customers extends Base
 {
-	const PATH = 'customers';
+    const PATH = 'customers';
 
-	/**
-	 * Create a new customer
-	 *
-	 * @param array $data fields to send
-	 *
-	 * @return object Unirest\Response
-	 */
-	public function create( array $data )
-	{
-		$fields = array(
-			'name',
-			'email',
-			'document',
-			'phones',
-			'type',
-			'address',
-			'code',
-			'birthdate',
-		);
+    /**
+     * Create a new customer
+     *
+     * @param array $data fields to send
+     *
+     * @return object Unirest\Response
+     */
+    public function create(array $data)
+    {
+        $fields = array(
+            'name',
+            'email',
+            'document',
+            'phones',
+            'type',
+            'address',
+            'code',
+            'birthdate',
+        );
 
-		$args = $this->get_args( $fields, $data );
+        $args = $this->get_args($fields, $data);
 
-		return Request::post( Base::URL . self::PATH, $this->get_headers(), Body::Json( $args ) );
-	}
+        return Request::post(Base::URL . self::PATH, $this->get_headers(), Body::Json($args));
+    }
 }
