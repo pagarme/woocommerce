@@ -1,0 +1,4 @@
+/.idea/
+/vendor/
+/tests/report
+/tests/mock/db_test.sqlite

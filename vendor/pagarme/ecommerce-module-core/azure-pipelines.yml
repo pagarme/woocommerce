@@ -1,0 +1,99 @@
+# PHP
+# Test and package your PHP project.
+# Add steps that run tests, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/php
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-16.04'
+
+variables:
+- group: Ecommerce_module_core_STG
+- name: phpCurrentVersion
+  value: 7.2
+- name: phpOldVersion
+  value: 5.6
+
+stages:
+- stage: Build_PHP_Seven
+  jobs:    
+  - job: Build
+    steps:          
+    
+    - script: |     
+        sudo update-alternatives --set php /usr/bin/php$(phpCurrentVersion)
+        sudo update-alternatives --set phar /usr/bin/phar$(phpCurrentVersion)
+        sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpCurrentVersion)
+        sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpCurrentVersion)
+        sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpCurrentVersion)
+        sudo apt-get install php-xdebug
+        php -version        
+      displayName: Build PHP Version $(phpCurrentVersion)  
+
+    - script: |     
+        sudo apt-get install php-xdebug
+        php -version             
+      displayName: Install PHP extensions
+    
+    - script: |             
+        sudo composer self-update --1
+        composer        
+      displayName: Update Composer     
+
+    - script: |             
+        composer install --no-interaction --prefer-dist 
+      displayName: Install dependecy
+
+    - script: |                                     
+        export XDEBUG_MODE=coverage        
+        vendor/bin/phpunit --coverage-clover $(System.DefaultWorkingDirectory)/artifact/clover.xml
+      displayName: UnitTests             
+    - task: PublishPipelineArtifact@1
+      displayName: Download Artifact
+      inputs:
+        path: '$(System.DefaultWorkingDirectory)/artifact'
+        artifact: artifact
+  - job: SonarCloud
+    dependsOn: 
+    - Build
+    condition: succeeded()
+    steps: 
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        artifact: artifact
+        
+    - script: |
+        export SONAR_SCANNER_VERSION=4.4.0.2170
+        export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
+        curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
+        unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+        export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+        export SONAR_SCANNER_OPTS="-server"    
+        export SONAR_TOKEN="$(sonarcloud_token)"
+        sonar-scanner   -Dsonar.organization=$(organization)   -Dsonar.projectKey=$(projectKey)   -Dsonar.sources=.   -Dsonar.host.url=https://sonarcloud.io -Dsonar.php.coverage.reportPaths="$(Pipeline.Workspace)/clover.xml"
+      displayName: Send to SonarCloud          
+
+- stage: Build_PHP_Five
+  jobs:    
+  - job: Build
+    steps:          
+    
+    - script: |     
+        sudo update-alternatives --set php /usr/bin/php$(phpOldVersion)
+        sudo update-alternatives --set phar /usr/bin/phar$(phpOldVersion)
+        sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpOldVersion)
+        sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpOldVersion)
+        sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpOldVersion)      
+        php -version        
+      displayName: Build PHP Version $(phpOldVersion)  
+
+    - script: |             
+        composer install --no-interaction --prefer-dist 
+      displayName: Install dependecy
+
+    - script: |                             
+        cd control-media-backend             
+        vendor/bin/phpunit
+      displayName: UnitTests      
