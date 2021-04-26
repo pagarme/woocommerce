@@ -104,6 +104,7 @@ function wcmp_on_activation()
 
     add_option(WCMP_OPTION_ACTIVATE, true);
 
+    // TODO: Create configuration table: wp_pagarme_module_core_configuration
     wcmp_create_core_customer_table();
     wcmp_create_core_charge_table();
     wcmp_create_core_order_table();
