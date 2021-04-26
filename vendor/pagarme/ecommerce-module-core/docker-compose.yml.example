@@ -1,0 +1,12 @@
+version: '3.2'
+
+services:
+  ecommerce_module_core:
+    build: "./"
+    container_name: php_ecommerce_module_core
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - "8100:8100"
+    working_dir: /var/www/html
+    tty: true

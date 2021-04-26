@@ -50,7 +50,7 @@ final class WoocommerceSavedCardAdapter
         $firstSix = $this->getFirstSixDigits();
         $lastFour = $this->getLastFourNumbers();
 
-        $firstSix = number_format($firstSix/100, 2, '.', '');
+        $firstSix = number_format($firstSix / 100, 2, '.', '');
 
         return $firstSix . '**.****.' . $lastFour;
     }

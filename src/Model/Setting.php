@@ -1,8 +1,9 @@
 <?php
+
 namespace Woocommerce\Pagarme\Model;
 
-if ( ! function_exists( 'add_action' ) ) {
-	exit( 0 );
+if (!function_exists('add_action')) {
+    exit(0);
 }
 
 use Woocommerce\Pagarme\Core;
@@ -53,62 +54,62 @@ class Setting
         'enable_logs'                       => array(),
     );
 
-    private function __construct( $settings )
+    private function __construct($settings)
     {
-        $this->set_settings( $settings );
+        $this->set_settings($settings);
     }
 
-    public function __get( $key )
+    public function __get($key)
     {
-        if ( isset( $this->{$key} ) ) {
+        if (isset($this->{$key})) {
             return $this->{$key};
         }
 
-        return $this->_get_property( $key );
+        return $this->_get_property($key);
     }
 
-    public function set( $key, $value )
+    public function set($key, $value)
     {
-        if ( ! $this->is_valid_key( $key ) ) {
+        if (!$this->is_valid_key($key)) {
             return;
         }
 
         $settings = $this->get_settings();
 
-        $settings[ $key ] = Utils::rm_tags( $value );
+        $settings[$key] = Utils::rm_tags($value);
 
-        $this->update_settings( $settings );
+        $this->update_settings($settings);
     }
 
-    public function delete( $key )
+    public function delete($key)
     {
         $settings = $this->get_settings();
 
-        if ( ! isset( $settings[ $key ] ) ) {
+        if (!isset($settings[$key])) {
             return;
         }
 
-        unset( $settings[ $key ] );
+        unset($settings[$key]);
 
-        $this->update_settings( $settings );
+        $this->update_settings($settings);
     }
 
-    private function _get_property( $key )
+    private function _get_property($key)
     {
-        if ( ! $this->is_valid_key( $key ) ) {
+        if (!$this->is_valid_key($key)) {
             return false;
         }
 
-        $sanitize     = Utils::get_value_by( $this->_fields[ $key ], 'sanitize' );
-        $value        = Utils::get_value_by( $this->get_settings(), $key );
-        $this->{$key} = Utils::sanitize( $value, $sanitize );
+        $sanitize     = Utils::get_value_by($this->_fields[$key], 'sanitize');
+        $value        = Utils::get_value_by($this->get_settings(), $key);
+        $this->{$key} = Utils::sanitize($value, $sanitize);
 
         return $this->{$key};
     }
 
     public function get_option_key()
     {
-        return Core::tag_name( 'settings' );
+        return Core::tag_name('settings');
     }
 
     public function get_flags_list()
@@ -137,21 +138,21 @@ class Setting
         );
     }
 
-    public function set_settings( $settings )
+    public function set_settings($settings)
     {
-        $this->_settings = ( $settings ) ? $settings : get_option( $this->get_option_key() );
+        $this->_settings = ($settings) ? $settings : get_option($this->get_option_key());
     }
 
     public function get_settings()
     {
-        return empty( $this->_settings ) ? array() : $this->_settings;
+        return empty($this->_settings) ? array() : $this->_settings;
     }
 
-    public function update_settings( array $settings )
+    public function update_settings(array $settings)
     {
-        update_option( $this->get_option_key(), $settings );
+        update_option($this->get_option_key(), $settings);
 
-        $this->set_settings( $settings );
+        $this->set_settings($settings);
     }
 
     public function log()
@@ -161,54 +162,54 @@ class Setting
 
     public function is_enabled()
     {
-        return ( 'yes' === $this->__get( 'enabled' ) );
+        return ('yes' === $this->__get('enabled'));
     }
 
     public function is_enabled_logs()
     {
-        return ( 'yes' === $this->__get( 'enable_logs' ) );
+        return ('yes' === $this->__get('enable_logs'));
     }
 
     public function is_active_credit_card()
     {
-        return ( 'yes' === $this->__get( 'enable_credit_card' ) );
+        return ('yes' === $this->__get('enable_credit_card'));
     }
 
     public function is_allowed_save_credit_card()
     {
-        return ( 'yes' === $this->__get( 'cc_allow_save' ) );
+        return ('yes' === $this->__get('cc_allow_save'));
     }
 
     public function is_active_billet()
     {
-        return ( 'yes' === $this->__get( 'enable_billet' ) );
+        return ('yes' === $this->__get('enable_billet'));
     }
 
     public function is_active_billet_and_card()
     {
-        return ( 'yes' === $this->__get( 'multimethods_billet_card' ) );
+        return ('yes' === $this->__get('multimethods_billet_card'));
     }
 
     public function is_active_2_cards()
     {
-        return ( 'yes' === $this->__get( 'multimethods_2_cards' ) );
+        return ('yes' === $this->__get('multimethods_2_cards'));
     }
 
     public function is_active_capture()
     {
-        $operation_type = $this->__get( 'cc_operation_type' );
+        $operation_type = $this->__get('cc_operation_type');
 
-        return intval( $operation_type ) === 1 ? false : true;
+        return intval($operation_type) === 1 ? false : true;
     }
 
     public function is_active_multicustomers()
     {
-        return ( 'yes' === $this->__get( 'multicustomers' ) );
+        return ('yes' === $this->__get('multicustomers'));
     }
 
-    public function is_valid_key( $key )
+    public function is_valid_key($key)
     {
-        return isset( $this->_fields[ $key ] );
+        return isset($this->_fields[$key]);
     }
 
     public function isAntifraudEnabled()
@@ -233,7 +234,7 @@ class Setting
      */
     public function get_secret_key()
     {
-        return $this->__get( $this->is_sandbox() ? 'sandbox_secret_key' : 'production_secret_key' );
+        return $this->__get($this->is_sandbox() ? 'sandbox_secret_key' : 'production_secret_key');
     }
 
     /**
@@ -243,17 +244,17 @@ class Setting
      */
     public function get_public_key()
     {
-        return $this->__get( $this->is_sandbox() ? 'sandbox_public_key' : 'production_public_key' );
+        return $this->__get($this->is_sandbox() ? 'sandbox_public_key' : 'production_public_key');
     }
 
     public function is_sandbox()
     {
-        return ( $this->__get( 'environment' ) === 'sandbox' );
+        return ($this->__get('environment') === 'sandbox');
     }
 
     public function get_active_tab()
     {
-        switch ( Utils::get( 'tab' ) ) {
+        switch (Utils::get('tab')) {
             case 'creditCard':
                 return 1;
 
@@ -276,10 +277,10 @@ class Setting
         return ($this->is_active_capture() ? 'auth_and_capture' : 'auth_only');
     }
 
-    public static function get_instance( $settings = false )
+    public static function get_instance($settings = false)
     {
-        if ( is_null( self::$_instance ) ) {
-            self::$_instance = new self( $settings );
+        if (is_null(self::$_instance)) {
+            self::$_instance = new self($settings);
         }
 
         return self::$_instance;

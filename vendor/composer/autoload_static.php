@@ -7,16 +7,60 @@ namespace Composer\Autoload;
 class ComposerStaticInitbb567e266966327c41fd47379c4c230d
 {
     public static $prefixLengthsPsr4 = array (
+        'a' => 
+        array (
+            'apimatic\\jsonmapper\\' => 20,
+        ),
         'W' => 
         array (
             'Woocommerce\\Pagarme\\' => 20,
         ),
+        'P' => 
+        array (
+            'Psr\\Log\\' => 8,
+            'Pagarme\\Core\\Test\\Mock\\' => 23,
+            'Pagarme\\Core\\Test\\' => 18,
+            'Pagarme\\Core\\' => 13,
+        ),
+        'M' => 
+        array (
+            'MundiAPILib\\' => 12,
+            'Monolog\\' => 8,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'apimatic\\jsonmapper\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/apimatic/jsonmapper/src',
+        ),
         'Woocommerce\\Pagarme\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Pagarme\\Core\\Test\\Mock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pagarme/ecommerce-module-core/tests/mock',
+        ),
+        'Pagarme\\Core\\Test\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pagarme/ecommerce-module-core/tests',
+        ),
+        'Pagarme\\Core\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pagarme/ecommerce-module-core/src',
+        ),
+        'MundiAPILib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mundipagg/mundiapi/src',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
     );
 
@@ -25,7 +69,8 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         array (
             'Unirest\\' => 
             array (
-                0 => __DIR__ . '/..' . '/mashape/unirest-php/src',
+                0 => __DIR__ . '/..' . '/apimatic/unirest-php/src',
+                1 => __DIR__ . '/..' . '/mashape/unirest-php/src',
             ),
         ),
     );

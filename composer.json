@@ -10,6 +10,6 @@
     },
     "require": {
         "mashape/unirest-php": "^3.0",
-        "pagarme/ecommerce-module-core": "1.0.0"
+        "pagarme/ecommerce-module-core": "^1.0"
     }
 }
