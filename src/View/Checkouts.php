@@ -109,7 +109,8 @@ class Checkouts
 
     public static function billet_and_card_message($order)
     {
-        $charges = $order->response_data->charges;
+        $response = json_decode($order->response_data);
+        $charges = $response->charges;
 
         ob_start();
 
@@ -117,7 +118,9 @@ class Checkouts
 
         foreach ($charges as $charge) :
 
-            if ($charge->payment_method == 'credit_card') :
+            $transaction = array_shift($charge->transactions);
+            $transactionType = $transaction->type;
+            if ($transactionType == 'credit_card') :
                 echo '<p>';
                 /** phpcs:disable */
                 printf(
@@ -128,13 +131,13 @@ class Checkouts
                 echo '</p>';
             endif;
 
-            if ($charge->payment_method == 'boleto') :
+            if ($transactionType == 'boleto') :
         ?>
                 <p>
                     <?php _e('BOLETO: If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments'); ?>
                 </p>
 
-                <a href="<?php echo esc_url($charge->last_transaction->pdf); ?>" target="_blank" class="payment-link">
+                <a href="<?php echo esc_url($transaction->boletoUrl); ?>" target="_blank" class="payment-link">
                     <?php _e('Print', 'woo-pagarme-payments'); ?>
                 </a>
         <?php

@@ -78,6 +78,10 @@ class Customer
         }
         $coreCustomer = $this->customerRepository->findByCode($this->ID);
 
+        if (!$coreCustomer) {
+            return null;
+        }
+
         $this->cards =
             $this->cardRepository->findByOwnerId(
                 $coreCustomer->getPagarmeId()

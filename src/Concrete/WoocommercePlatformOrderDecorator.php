@@ -628,7 +628,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $newPaymentData->saveOnSuccess =
             isset($this->formData["save_credit_card"]);
 
-        $amount = $this->getGrandTotal() - $this->getBaseTaxAmount();
+        $amount = isset($this->formData["card_order_value"]) ?
+            $this->formData["card_order_value"] :
+            $this->getGrandTotal() - $this->getBaseTaxAmount();
+
         $amount = number_format($amount, 2, '.', '');
         $amount = str_replace('.', '', $amount);
         $amount = str_replace(',', '', $amount);
@@ -851,8 +854,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $moneyService = new MoneyService();
         $newPaymentData = new \stdClass();
+
+        $amount = isset($this->formData["billet_value"]) ?
+            $this->formData["billet_value"] : $this->getGrandTotal();
+
         $newPaymentData->amount =
-            $moneyService->floatToCents($this->getGrandTotal());
+            $moneyService->floatToCents($amount);
 
         $boletoDataIndex = BoletoPayment::getBaseCode();
         if (!isset($paymentData[$boletoDataIndex])) {
