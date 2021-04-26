@@ -76,7 +76,7 @@ class Charges
     private function handle_charge_cancel($charge_id, $amount)
     {
         $chargeService = new ChargeService();
-        return $chargeService->cancelById($charge_id);
+        return $chargeService->cancelById($charge_id, $amount);
     }
 
     private function handle_charge_capture($charge_id, $amount)

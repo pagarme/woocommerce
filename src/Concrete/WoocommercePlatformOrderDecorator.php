@@ -6,7 +6,7 @@ use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
 use Woocommerce\Pagarme\Model\Api;
 use Woocommerce\Pagarme\Model\Payment as WCModelPayment;
-use Woocommerce\Pagarme\Factories\CustomerDetailsFactory;
+use Woocommerce\Pagarme\Helper\Utils;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as PagarmeSetup;
 use Pagarme\Core\Kernel\Abstractions\AbstractPlatformOrderDecorator;
 use Pagarme\Core\Kernel\Aggregates\Charge;
@@ -50,14 +50,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private $i18n;
     private $formData;
     private $paymentMethod;
-    private $customerDetailsFactory;
 
     public function __construct($formData = null, $paymentMethod = null)
     {
         $this->i18n = new LocalizationService();
         $this->formData = $formData;
         $this->paymentMethod = $this->formatPaymentMethod($paymentMethod);
-        $this->customerDetailsFactory = new CustomerDetailsFactory();
         $this->orderService = new OrderService();
         parent::__construct();
     }
@@ -136,7 +134,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     public function sendEmail($message)
     {
-        // we didnt have the email functionallity in woocommerce module
+        // we don't have the email functionallity in woocommerce module
         return null;
     }
 
@@ -380,9 +378,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $order = new Order($this->getPlatformOrder()->get_order_number());
 
-        $address = $this->customerDetailsFactory->build_customer_address_from_order($order);
-        $document = $this->customerDetailsFactory->build_document_from_order($order);
-        $phones = $this->customerDetailsFactory->build_customer_phones_from_order($order);
+        $address = Utils::build_customer_address_from_order($order);
+        $document = Utils::build_document_from_order($order);
+        $phones = Utils::build_customer_phones_from_order($order);
 
         $homeNumber = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
@@ -434,9 +432,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $order = new Order($this->getPlatformOrder()->get_order_number());
 
-        $address = $this->customerDetailsFactory->build_customer_address_from_order($order);
-        $document = $this->customerDetailsFactory->build_document_from_order($order);
-        $phones = $this->customerDetailsFactory->build_customer_phones_from_order($order);
+        $address = Utils::build_customer_address_from_order($order);
+        $document = Utils::build_document_from_order($order);
+        $phones = Utils::build_customer_phones_from_order($order);
 
         $homeNumber = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
@@ -516,7 +514,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function setRecurrenceInfo($item, $quoteItem)
     {
-        // we didn't have recurrence in woocommmerce;
+        // we don't have recurrence in woocommmerce;
         return $item;
     }
 
@@ -734,7 +732,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $multibuyer = new \stdClass();
 
-        $phones = $this->customerDetailsFactory->build_customer_phones_from_order($order);
+        $phones = Utils::build_customer_phones_from_order($order);
         $homeNumber = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
@@ -899,10 +897,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $moneyService = new MoneyService();
 
-        $platformShipping = $this->customerDetailsFactory
-            ->build_customer_shipping_from_wc_order(
-                $this->getPlatformOrder()
-            );
+        $platformShipping = Utils::build_customer_shipping_from_wc_order(
+            $this->getPlatformOrder()
+        );
 
         $shipping = new Shipping();
 
@@ -925,7 +922,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $address = new Address();
 
-        $this->verifyAddressFields($platformAddress);
+        $this->validateAddressFields($platformAddress);
 
         $address->setStreet($platformAddress["street"]);
         $address->setNumber($platformAddress["number"]);
@@ -941,11 +938,16 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $address;
     }
 
-    private function verifyAddressFields($platformAddress)
+    private function validateAddressFields($platformAddress)
     {
         $requiredFields = [
-            'street', 'number', 'neighborhood',
-            'city', 'country', 'zip_code', 'state'
+            'street',
+            'number',
+            'neighborhood',
+            'city',
+            'country',
+            'zip_code',
+            'state'
         ];
 
         foreach ($requiredFields as $requiredField) {

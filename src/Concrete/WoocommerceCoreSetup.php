@@ -105,7 +105,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithTwoCreditCardsConfig($configData, $storeConfig);
         $configData = self::fillWithMultiBuyerConfig($configData, $storeConfig);
         // These method calls are commented for now because they are not implemented yet:
-        //$configData = self::fillWithAddressConfig($configData, $storeConfig);
+        // $configData = self::fillWithAddressConfig($configData, $storeConfig);
         // $configData = self::fillWithPixConfig($configData, $storeConfig);
         // $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);

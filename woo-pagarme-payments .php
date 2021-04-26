@@ -31,12 +31,12 @@ function wcmp_render_admin_notice_html($message, $type = 'error')
 <?php
 }
 
-if (version_compare(PHP_VERSION, '5.5', '<')) {
+if (version_compare(PHP_VERSION, '7.1', '<')) {
 
     function wcmp_admin_notice_php_version()
     {
         wcmp_render_admin_notice_html(
-            __('Your PHP version is not supported. Required >= 5.5.', 'woo-pagarme-payments')
+            __('Your PHP version is not supported. Required >= 7.1.', 'woo-pagarme-payments')
         );
     }
 

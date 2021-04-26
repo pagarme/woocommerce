@@ -8,7 +8,6 @@ if (!function_exists('add_action')) {
 
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
 use Pagarme\Core\Kernel\Services\OrderService;
 
 // WooCommerce
@@ -62,7 +61,6 @@ class Order extends Meta
     public function __construct($ID = false)
     {
         parent::__construct($ID);
-        WoocommerceCoreSetup::bootstrap();
         $this->wc_order = new WC_Order($this->ID);
         $this->settings = Setting::get_instance();
     }

@@ -12,8 +12,8 @@ if (!is_user_logged_in()) {
     return;
 }
 
+// TODO: Get this configuration from core.
 $setting = Setting::get_instance();
-
 if (!$setting->is_allowed_save_credit_card()) {
     return;
 }

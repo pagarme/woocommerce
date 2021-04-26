@@ -12,6 +12,7 @@ use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model;
+use Woocommerce\Pagarme\Controller\Orders;
 
 use WC_Order;
 
@@ -82,6 +83,7 @@ class Checkout
         $total = Utils::get('total', false);
 
         $gateway = new Gateway();
+        // TODO: get installments from core's installment service;
         $html    = $gateway->get_installments_by_type($total, $flag);
 
         echo $html;
