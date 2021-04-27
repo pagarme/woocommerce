@@ -678,11 +678,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             } catch (\Throwable $e) {
             }
 
-            $identifier = $this->formData["pagarmetoken{$index}"];
-
-            if (empty($identifier) && isset($this->formData["pagarmetoken1"])) {
-                $identifier = $this->formData["pagarmetoken1"];
-            }
+            $cardTokenFlag = empty($index) ? "pagarmetoken1" : "pagarmetoken2";
+            $identifier = $this->formData[$cardTokenFlag];
 
             if (empty($identifier) && isset($this->formData["card_id{$index}"])) {
                 $identifier = $this->formData["card_id{$index}"];
