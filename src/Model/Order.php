@@ -8,7 +8,7 @@ if (!function_exists('add_action')) {
 
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Charge;
+use Pagarme\Core\Kernel\Services\OrderService;
 
 // WooCommerce
 use WC_Order;
@@ -61,7 +61,6 @@ class Order extends Meta
     public function __construct($ID = false)
     {
         parent::__construct($ID);
-
         $this->wc_order = new WC_Order($this->ID);
         $this->settings = Setting::get_instance();
     }
@@ -73,6 +72,7 @@ class Order extends Meta
         $texts  = array(
             'paid'     => __('Paid', 'woo-pagarme-payments'),
             'pending'  => __('Pending', 'woo-pagarme-payments'),
+            'processing'  => __('Pending', 'woo-pagarme-payments'),
             'canceled' => __('Canceled', 'woo-pagarme-payments'),
             'failed'   => __('Failed', 'woo-pagarme-payments'),
         );
@@ -148,28 +148,21 @@ class Order extends Meta
         }
     }
 
-    public function get_charges($full_data = false)
+    public function get_charges()
     {
-        $model = new Charge();
-        $items = $model->find_by_wc_order($this->ID);
+        $orderService = new OrderService();
 
-        if (!$items) {
+        $order = $orderService->getOrderByPlatformId(
+            strval($this->ID)
+        );
+
+        $charges = $order->getCharges();
+
+        if (!$charges) {
             return false;
         }
 
-        if ($full_data) {
-            return $items;
-        }
-
-        $list = [];
-
-        foreach ($items as $item) {
-            $charge = new \stdClass();
-            $charge = maybe_unserialize($item->charge_data);
-            $list[] = $charge;
-        }
-
-        return $list;
+        return $charges;
     }
 
     /**

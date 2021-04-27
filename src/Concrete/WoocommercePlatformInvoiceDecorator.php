@@ -25,17 +25,17 @@ class WoocommercePlatformInvoiceDecorator extends AbstractInvoiceDecorator imple
         // Not necessary to be implemented on Woocommerce, there is no Invoice concept
     }
 
-    public function prepareFor()
+    public function prepareFor(PlatformOrderInterface $order)
     {
         // Not necessary to be implemented on Woocommerce, there is no Invoice concept
     }
 
-    public function createFor()
+    public function createFor(PlatformOrderInterface $order)
     {
         // Not necessary to be implemented on Woocommerce, there is no Invoice concept
     }
 
-    public function setState()
+    public function setState(InvoiceState $state)
     {
         // Not necessary to be implemented on Woocommerce, there is no Invoice concept
     }

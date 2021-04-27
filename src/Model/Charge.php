@@ -130,22 +130,22 @@ class Charge
         }
 
         foreach ($charges as $charge) {
-            if (!$this->is_exists($charge->id)) {
+            if (!$this->is_exists($charge["pagarmeId"])) {
                 $this->insert([
-                    'wc_order_id'   => $charge->code,
+                    'wc_order_id'   => $charge["code"],
                     'order_id'      => $order_id,
-                    'charge_id'     => $charge->id,
-                    'charge_data'   => $charge,
-                    'charge_status' => $charge->status,
+                    'charge_id'     => $charge["pagarmeId"],
+                    'charge_data'   => json_encode($charge),
+                    'charge_status' => $charge["status"],
                 ]);
             } else {
                 $this->update(
                     array(
-                        'charge_status' => esc_sql($charge->status),
-                        'charge_data'   => maybe_serialize($charge),
+                        'charge_status' => esc_sql($charge["status"]),
+                        'charge_data'   => json_encode($charge),
                     ),
                     array(
-                        'charge_id' => esc_sql($charge->id),
+                        'charge_id' => esc_sql($charge["pagarmeId"]),
                     )
                 );
             }
@@ -198,13 +198,15 @@ class Charge
 
     public function is_allowed_capture($charge)
     {
-        $data = maybe_unserialize($charge->charge_data);
+        $transaction = array_shift($charge->getTransactions());
+        $method = $transaction->getTransactionType()->getType();
+        $chargeStatus = $charge->getStatus()->getStatus();
 
-        if ($data->payment_method == 'boleto') {
+        if ($method == 'boleto') {
             return false;
         }
 
-        if ($charge->charge_status == 'pending') {
+        if ($chargeStatus == 'pending') {
             return true;
         }
 
@@ -213,9 +215,9 @@ class Charge
 
     public function is_allowed_cancel($charge)
     {
-        $data   = maybe_unserialize($charge->charge_data);
-        $status = $charge->charge_status;
-        $method = $data->payment_method;
+        $status = $charge->getStatus()->getStatus();
+        $transaction = array_shift($charge->getTransactions());
+        $method = $transaction->getTransactionType()->getType();
 
         if ($method == 'boleto' && in_array($status, ['pending'])) {
             return true;

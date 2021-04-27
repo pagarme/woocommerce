@@ -224,7 +224,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     static private function fillWithAddressConfig($dataObj, $storeConfig)
     {
-        // Not implemented on Woocommerce because there is no address config
+        // Not implemented on Woocommerce because there is no address configuration
     }
 
     static private function getBrandConfig($storeConfig)

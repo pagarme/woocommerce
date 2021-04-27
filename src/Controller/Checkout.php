@@ -6,16 +6,13 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Woocommerce\Pagarme\Model\Api;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer;
 use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Model\Charge;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\View;
 use Woocommerce\Pagarme\Model;
+use Woocommerce\Pagarme\Controller\Orders;
 
 use WC_Order;
 
@@ -25,7 +22,7 @@ class Checkout
 
     public function __construct()
     {
-        $this->api = Api::get_instance();
+        $this->ordersController = new Orders();
 
         add_action('woocommerce_api_' . Model\Checkout::API_REQUEST, array($this, 'process_checkout_transparent'));
         add_action('woocommerce_view_order', array('Woocommerce\Pagarme\View\Checkouts', 'render_payment_details'));
@@ -56,38 +53,24 @@ class Checkout
         $this->validate_amount_2_cards($fields, $wc_order);
         $this->validate_brands($fields);
 
-        $response = $this->api->create_order(
+        $response = $this->ordersController->create_order(
             $wc_order,
             $fields['payment_method'],
             $fields
         );
 
-        if (!$response || $response->code != 200) {
-            wp_send_json_error(Utils::get_errors($response->body->errors));
-        }
-
-        if ((int) Utils::get_value_by($fields, 'save_credit_card') === 1) {
-            $this->save_customer_card($response->raw_body, 1);
-        }
-
-        if ((int) Utils::get_value_by($fields, 'save_credit_card2') === 1) {
-            $this->save_customer_card($response->raw_body, 2);
-        }
-
         $order  = new Order($wc_order->get_order_number());
-        $charge = new Charge();
 
         $order->payment_method   = $fields['payment_method'];
-        $order->pagarme_id     = $response->body->id;
-        $order->pagarme_status = $response->body->status;
-        $order->response_data    = $response->body;
+        $order->pagarme_id     = $response->getPagarmeId()->getValue();
+        $order->pagarme_status = $response->getStatus()->getStatus();
+        $order->response_data    = json_encode($response);
 
-        $order->update_by_pagarme_status($response->body->status);
-        $charge->create_from_order($response->body->id, $response->body->charges);
+        $order->update_by_pagarme_status($response->getStatus()->getStatus());
 
         WC()->cart->empty_cart();
 
-        wp_send_json_success($response->body);
+        wp_send_json_success($response);
     }
 
     public function build_installments()
@@ -100,6 +83,7 @@ class Checkout
         $total = Utils::get('total', false);
 
         $gateway = new Gateway();
+        // TODO: get installments from core's installment service;
         $html    = $gateway->get_installments_by_type($total, $flag);
 
         echo $html;

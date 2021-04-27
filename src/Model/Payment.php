@@ -246,8 +246,7 @@ class Payment
     {
         $order = new Order($wc_order->get_order_number());
 
-        $api = Api::get_instance();
-        return $api->build_customer_address_from_order($order);
+        return Utils::build_customer_address_from_order($order);
     }
 
     /**
