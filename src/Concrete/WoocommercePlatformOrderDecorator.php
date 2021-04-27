@@ -553,20 +553,35 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $paymentData = [];
 
-        foreach ($payments as $payment) {
-            $handler = explode('_', $payment['payment_method']);
-            array_walk($handler, function (&$part) {
-                $part = ucfirst($part);
-            });
-            $handler = 'extractPaymentDataFrom' . implode('', $handler);
-            $this->$handler($paymentData);
-        }
+        $handler = 'extractPaymentDataFrom' . $this->getPaymentHandler($payments);
+        $this->$handler($paymentData);
 
         $paymentFactory = new PaymentFactory();
         $paymentMethods = $paymentFactory->createFromJson(
             json_encode($paymentData)
         );
         return $paymentMethods;
+    }
+
+    private function getPaymentHandler($payments)
+    {
+        if (count($payments) > 1) {
+            foreach ($payments as $payment) {
+                if ($payment['payment_method'] === 'boleto') {
+                    return 'BilletCreditCard';
+                }
+            }
+            return 'TwoCreditCards';
+        }
+
+
+        $payment = $payments[0];
+
+        if ($payment['payment_method'] == 'boleto') {
+            return 'Boleto';
+        }
+
+        return 'CreditCard';
     }
 
     private function extractPaymentDataFromCreditCard(
@@ -580,6 +595,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
         $paymentData[$creditCardDataIndex][] = $newPaymentData;
     }
+
 
     private function extractPaymentDataFromPagarmeVoucher(
         $additionalInformation,
@@ -647,65 +663,64 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $newPaymentData;
     }
 
-    private function extractPaymentDataFromPagarmeTwoCreditCard($additionalInformation, &$paymentData, $payment)
+    private function extractPaymentDataFromTwoCreditCards(&$paymentData)
     {
         $moneyService = new MoneyService();
-        $indexes = ['first', 'second'];
+        $indexes = ['', '2'];
         foreach ($indexes as $index) {
             $identifier = null;
-            $customerId = null;
+            $customerId = $this->getCustomer()->getPagarmeId() ?
+                $this->getCustomer()->getPagarmeId()->getValue() : null;
 
             $brand = null;
             try {
-                $brand = strtolower($additionalInformation["cc_type_{$index}"]);
+                $brand = strtolower($this->formData["brand{$index}"]);
             } catch (\Throwable $e) {
             }
 
-            if (isset($additionalInformation["cc_token_credit_card_{$index}"])) {
-                $identifier = $additionalInformation["cc_token_credit_card_{$index}"];
+            $identifier = $this->formData["pagarmetoken{$index}"];
+
+            if (empty($identifier) && isset($this->formData["pagarmetoken1"])) {
+                $identifier = $this->formData["pagarmetoken1"];
             }
 
-            if (
-                !empty($additionalInformation["cc_saved_card_{$index}"]) &&
-                $additionalInformation["cc_saved_card_{$index}"] !== null
-            ) {
-                $identifier = null;
-            }
-
-            if ($identifier === null) {
-                $objectManager = ObjectManager::getInstance();
-                $cardRepo = $objectManager->get(CardsRepository::class);
-                $cardId = $additionalInformation["cc_saved_card_{$index}"];
-                $card = $cardRepo->getById($cardId);
-
-                $identifier = $card->getCardToken();
-                $customerId = $card->getCardId();
+            if (empty($identifier) && isset($this->formData["card_id{$index}"])) {
+                $identifier = $this->formData["card_id{$index}"];
             }
 
             $newPaymentData = new \stdClass();
             $newPaymentData->customerId = $customerId;
             $newPaymentData->identifier = $identifier;
             $newPaymentData->brand = $brand;
-            $newPaymentData->installments = $additionalInformation["cc_installments_{$index}"];
-            $newPaymentData->customer = $this->extractMultibuyerData(
-                'cc',
-                $additionalInformation,
-                $index
-            );
+            $newPaymentData->installments = intval($this->formData["installments{$index}"]);
+
 
             $amount = $moneyService->removeSeparators(
-                $additionalInformation["cc_{$index}_card_amount"]
+                $this->formData["card_order_value{$index}"]
             );
 
             $newPaymentData->amount = $moneyService->floatToCents($amount / 100);
+
             $newPaymentData->saveOnSuccess =
-                isset($additionalInformation["cc_savecard_{$index}"]) &&
-                $additionalInformation["cc_savecard_{$index}"] === '1';
+                isset($this->formData["save_credit_card${index}"]);
 
             $creditCardDataIndex = AbstractCreditCardPayment::getBaseCode();
             if (!isset($paymentData[$creditCardDataIndex])) {
                 $paymentData[$creditCardDataIndex] = [];
             }
+
+            $multiCustomerFlag = empty($index) ? "enable_multicustomers_card1"
+                : "enable_multicustomers_card2";
+            if ($this->formData[$multiCustomerFlag]) {
+                $card = array_pop(
+                    explode("_", $multiCustomerFlag)
+                );
+
+                $newPaymentData->customer = $this->extractMultibuyerData(
+                    $card
+                );
+            }
+
             $paymentData[$creditCardDataIndex][] = $newPaymentData;
         }
     }
@@ -759,57 +774,40 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $multibuyer;
     }
 
-    private function extractPaymentDataFromPagarmeBilletCreditcard(
-        $additionalInformation,
-        &$paymentData,
-        $payment
-    ) {
+    private function extractPaymentDataFromBilletCreditcard(&$paymentData)
+    {
         $moneyService = new MoneyService();
         $identifier = null;
-        $customerId = null;
+        $customerId = $this->getCustomer()->getPagarmeId() ?
+            $this->getCustomer()->getPagarmeId()->getValue() : null;
 
         $brand = null;
         try {
-            $brand = strtolower($additionalInformation['cc_type']);
+            $brand = strtolower($this->formData["brand"]);
         } catch (\Throwable $e) {
         }
 
-        if (isset($additionalInformation['cc_token_credit_card'])) {
-            $identifier = $additionalInformation['cc_token_credit_card'];
-        }
+        $identifier = $this->formData['pagarmetoken1'];
 
-        if (
-            !empty($additionalInformation['cc_saved_card']) &&
-            $additionalInformation['cc_saved_card'] !== null
-        ) {
-            $identifier = null;
-        }
-
-        if ($identifier === null) {
-            $objectManager = ObjectManager::getInstance();
-            $cardRepo = $objectManager->get(CardsRepository::class);
-            $cardId = $additionalInformation['cc_saved_card'];
-            $card = $cardRepo->getById($cardId);
-
-            $identifier = $card->getCardToken();
-            $customerId = $card->getCardId();
+        if (!$identifier) {
+            $identifier = $this->formData["card_id"];
         }
 
         $newPaymentData = new \stdClass();
         $newPaymentData->identifier = $identifier;
         $newPaymentData->customerId = $customerId;
         $newPaymentData->brand = $brand;
-        $newPaymentData->installments = $additionalInformation['cc_installments'];
+        $newPaymentData->installments = intval($this->formData['installments']);
 
         $newPaymentData->saveOnSuccess =
-            isset($additionalInformation["cc_savecard"]) &&
-            $additionalInformation["cc_savecard"] === '1';
+            isset($this->formData["save_credit_card"]);
 
         $amount = str_replace(
             ['.', ','],
             "",
-            $additionalInformation["cc_cc_amount"]
+            $this->formData["card_order_value"]
         );
+
         $newPaymentData->amount = $moneyService->floatToCents($amount / 100);
 
         $creditCardDataIndex = AbstractCreditCardPayment::getBaseCode();
@@ -817,10 +815,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $paymentData[$creditCardDataIndex] = [];
         }
 
-        $newPaymentData->customer = $this->extractMultibuyerData(
-            'cc',
-            $additionalInformation
-        );
+        if ($this->formData["enable_multicustomers_card"]) {
+            $newPaymentData->customer = $this->extractMultibuyerData(
+                'card'
+            );
+        }
 
         $paymentData[$creditCardDataIndex][] = $newPaymentData;
 
@@ -831,7 +830,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $amount = str_replace(
             ['.', ','],
             "",
-            $additionalInformation["cc_billet_amount"]
+            $this->formData["billet_value"]
         );
 
         $newPaymentData->amount =
@@ -842,10 +841,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $paymentData[$boletoDataIndex] = [];
         }
 
-        $newPaymentData->customer = $this->extractMultibuyerData(
-            'billet',
-            $additionalInformation
-        );
+        if ($this->formData["enable_multicustomers_billet"]) {
+            $newPaymentData->customer = $this->extractMultibuyerData(
+                'billet'
+            );
+        }
 
         $paymentData[$boletoDataIndex][] = $newPaymentData;
     }
