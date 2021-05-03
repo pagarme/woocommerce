@@ -581,7 +581,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $secondPaymentMethod === 'credit_card';
     }
 
-    private function isBoletoPayment($payments)
+    private function isBilletPayment($payments)
     {
         if (count($payments) > 1) {
             return false;
@@ -614,7 +614,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             }
         }
 
-        if ($this->isBoletoPayment($payments)) {
+        if ($this->isBilletPayment($payments)) {
             return 'Billet';
         }
 
