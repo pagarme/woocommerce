@@ -563,25 +563,66 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $paymentMethods;
     }
 
+    private function isBilletAndCreditCardPayment($payments)
+    {
+        $firstPaymentMethod = $payments[0]['payment_method'];
+        $secondPaymentMethod = $payments[1]['payment_method'];
+
+        return ($firstPaymentMethod === 'boleto' && $secondPaymentMethod === 'credit_card')
+            || ($firstPaymentMethod === 'credit_card' && $secondPaymentMethod === 'boleto');
+    }
+
+    private function isTwoCreditCardPayment($payments)
+    {
+        $firstPaymentMethod = $payments[0]['payment_method'];
+        $secondPaymentMethod = $payments[1]['payment_method'];
+
+        return $firstPaymentMethod === 'credit_card' &&
+            $secondPaymentMethod === 'credit_card';
+    }
+
+    private function isBoletoPayment($payments)
+    {
+        if (count($payments) > 1) {
+            return false;
+        }
+
+        $payment = $payments[0];
+        return $payment['payment_method'] === 'boleto';
+    }
+
+    private function isCreditCardPayment($payments)
+    {
+        if (count($payments) > 1) {
+            return false;
+        }
+
+        $payment = $payments[0];
+        return $payment['payment_method'] === 'credit_card';
+    }
+
     private function getPaymentHandler($payments)
     {
         if (count($payments) > 1) {
-            foreach ($payments as $payment) {
-                if ($payment['payment_method'] === 'boleto') {
-                    return 'BilletCreditCard';
-                }
+
+            if ($this->isBilletAndCreditCardPayment($payments)) {
+                return 'BilletCreditCard';
             }
-            return 'TwoCreditCards';
+
+            if ($this->isTwoCreditCardPayment($payments)) {
+                return 'TwoCreditCards';
+            }
         }
 
-
-        $payment = $payments[0];
-
-        if ($payment['payment_method'] == 'boleto') {
-            return 'Boleto';
+        if ($this->isBoletoPayment($payments)) {
+            return 'Billet';
         }
 
-        return 'CreditCard';
+        if ($this->isCreditCardPayment($payments)) {
+            return 'CreditCard';
+        }
+
+        return null;
     }
 
     private function extractPaymentDataFromCreditCard(
@@ -847,7 +888,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $paymentData[$boletoDataIndex][] = $newPaymentData;
     }
 
-    private function extractPaymentDataFromBoleto(&$paymentData)
+    private function extractPaymentDataFromBillet(&$paymentData)
     {
         $moneyService = new MoneyService();
         $newPaymentData = new \stdClass();
