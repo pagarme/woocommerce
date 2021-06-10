@@ -31,6 +31,8 @@ class Setting
         'account_id'                        => array(),
         'section_payment_settings'          => array(),
         'enable_billet'                     => array(),
+        'enable_pix'                        => array(),
+        'pix_qrcode_expiration_time'        => array(),
         'enable_credit_card'                => array(),
         'multimethods_billet_card'          => array(),
         'multimethods_2_cards'              => array(),
@@ -193,6 +195,11 @@ class Setting
     public function is_active_2_cards()
     {
         return ('yes' === $this->__get('multimethods_2_cards'));
+    }
+
+    public function is_active_pix()
+    {
+        return ('yes' === $this->__get('enable_pix'));
     }
 
     public function is_active_capture()

@@ -96,6 +96,7 @@ class Gateways extends WC_Payment_Gateway
             'production_secret_key'             => $this->field_production_secret_key(),
             'section_payment_settings'          => $this->section_payment_settings(),
             'enable_billet'                     => $this->field_enable_billet(),
+            'enable_pix'                        => $this->field_enable_pix(),
             'enable_credit_card'                => $this->field_enable_credit_card(),
             'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
             'multimethods_2_cards'              => $this->field_multimethods_2_cards(),
@@ -119,6 +120,8 @@ class Gateways extends WC_Payment_Gateway
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
             'cc_installments_by_flag'           => $this->field_cc_installment_fields('flags'),
             'section_tools'                     => $this->section_tools(),
+            'section_pix'                       => $this->section_pix(),
+            'pix_qrcode_expiration_time'        => $this->field_qrcode_expiration_time(),
             'enable_logs'                       => $this->field_enabled_logs(),
         );
     }
@@ -257,6 +260,16 @@ class Gateways extends WC_Payment_Gateway
                 'data-action'  => 'enable-billet',
                 'data-requires-field' => 'billet-bank',
             ),
+        );
+    }
+
+    public function field_enable_pix()
+    {
+        return array(
+            'title'   => __('Pix', 'woo-pagarme-payments'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable Pix', 'woo-pagarme-payments'),
+            'default' => 'no'
         );
     }
 
@@ -643,6 +656,25 @@ class Gateways extends WC_Payment_Gateway
     public function validate_installments_by_flag_field($key, $value)
     {
         return $value;
+    }
+
+    public function section_pix()
+    {
+        return array(
+            'title' => __('Pix settings', 'woo-pagarme-payments'),
+            'type'  => 'title',
+        );
+    }
+
+    public function field_qrcode_expiration_time()
+    {
+        return array(
+            'title'       => __('QRCode Expiration Time', 'woo-pagarme-payments'),
+            'description' => __('Expiration time in seconds of the pix qrcore after generated.', 'woo-pagarme-payments'),
+            'desc_tip'    => true,
+            'placeholder' => 3500,
+            'default'     => 3500,
+        );
     }
 
     public function section_tools()
