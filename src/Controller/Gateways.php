@@ -122,6 +122,7 @@ class Gateways extends WC_Payment_Gateway
             'section_tools'                     => $this->section_tools(),
             'section_pix'                       => $this->section_pix(),
             'pix_qrcode_expiration_time'        => $this->field_qrcode_expiration_time(),
+            'pix_additional_data'               => $this->field_additional_data(),
             'enable_logs'                       => $this->field_enabled_logs(),
         );
     }
@@ -578,6 +579,39 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
+    public function generate_additional_data_html($key, $data)
+    {
+        $field_key = $this->get_field_key($key);
+
+        $value = (array) $this->get_option($key, array());
+        ob_start();
+
+?>
+        <style>
+            .woocommerce table.form-table fieldset.pix-additional-data input.small-input-pix {
+                width: 198px;
+            }
+        </style>
+
+        <tr valign="top">
+            <th scope="row" class="titledesc">
+                <label for="<?php echo $field_key; ?>">
+                    <?php echo $this->get_tooltip_html($data); ?>
+                    <?php echo $data["title"]; ?>
+                </label>
+            </th>
+            <td class="forminp">
+                <fieldset class="pix-additional-data" data-field="additional-data">
+                    <input name="<?php echo esc_attr($field_key); ?>[key]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["key"]; ?>" placeholder="Additional Data Key" />
+                    <input name="<?php echo esc_attr($field_key); ?>[value]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["value"]; ?>" placeholder="Additional Data Value" />
+                </fieldset>
+            </td>
+        </tr>
+    <?php
+
+        return ob_get_clean();
+    }
+
     public function generate_installments_by_flag_html($key, $data)
     {
         $field_key = $this->get_field_key($key);
@@ -599,7 +633,7 @@ class Gateways extends WC_Payment_Gateway
 
         ob_start();
 
-?>
+    ?>
         <style>
             .woocommerce table.form-table p.flag input.small-input {
                 width: 150px;
@@ -658,6 +692,11 @@ class Gateways extends WC_Payment_Gateway
         return $value;
     }
 
+    public function validate_additional_data_field($key, $value)
+    {
+        return $value;
+    }
+
     public function section_pix()
     {
         return array(
@@ -674,6 +713,14 @@ class Gateways extends WC_Payment_Gateway
             'desc_tip'    => true,
             'placeholder' => 3500,
             'default'     => 3500,
+        );
+    }
+
+    public function field_additional_data()
+    {
+        return array(
+            'title'       => __('Pix Additional Data', 'woo-pagarme-payments'),
+            'type'        => 'additional_data',
         );
     }
 

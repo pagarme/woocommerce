@@ -33,6 +33,7 @@ class Setting
         'enable_billet'                     => array(),
         'enable_pix'                        => array(),
         'pix_qrcode_expiration_time'        => array(),
+        'pix_additional_data'               => array(),
         'enable_credit_card'                => array(),
         'multimethods_billet_card'          => array(),
         'multimethods_2_cards'              => array(),
