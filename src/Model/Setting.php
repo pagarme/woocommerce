@@ -269,13 +269,13 @@ class Setting
             case 'boleto':
                 return 2;
 
-            case 'billetAndCard':
+            case 'pix':
                 return 3;
 
-            case '2cards':
+            case 'billetAndCard':
                 return 4;
 
-            case 'pix':
+            case '2cards':
                 return 5;
 
             default:
