@@ -136,6 +136,36 @@ class Checkouts
             <?php _e('Copy Code', 'woo-pagarme-payments'); ?>
         </a>
 
+        <div class="pix-qr-code-instruction">
+            <?php _e('1. Point your phone at this screen to capture the code.', 'woo-pagarme-payments'); ?>
+        </div>
+        <div class="pix-qr-code-instruction">
+            <?php _e('2. Open your payments application.', 'woo-pagarme-payments'); ?>
+        </div>
+        <div class="pix-qr-code-instruction">
+            <?php _e('3. Confirm the data and finalize payment for the application.', 'woo-pagarme-payments'); ?>
+        </div>
+        <div class="pix-qr-code-instruction">
+            <?php _e('4. We will send you a purchase confirmation.', 'woo-pagarme-payments'); ?>
+        </div>
+
+
+        <div id="pix-image-attention-container">
+            <?php
+            printf(
+                '<img id="pix-image-attention" class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
+                esc_url(Core::plugins_url('assets/images/pix-checkout-attention.svg')),
+                esc_html__('pix attention icon', 'woo-pagarme-payments')
+            );
+            ?>
+        </div>
+
+        <div class="pix-qr-code-instruction pix-attention-instruction">
+            <?php _e('You can also finalize payment by copying and pasting the code into your app.', 'woo-pagarme-payments'); ?>
+        </div>
+
+
+
         <?php
 
         echo self::message_after();
