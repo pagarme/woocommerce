@@ -275,6 +275,9 @@ class Setting
             case '2cards':
                 return 4;
 
+            case 'pix':
+                return 5;
+
             default:
                 return 0;
         }

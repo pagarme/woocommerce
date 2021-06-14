@@ -25,8 +25,8 @@ $swal_data   = array(
 </div>
 
 <form method="post" id="wcmp-checkout-form" data-return-url="<?php echo esc_url($this->get_return_url($wc_order)); ?>" data-payment-url="<?php echo esc_url($payment_url); ?>" data-api-request="<?php echo esc_url($wc_api); ?>" data-order="<?php echo esc_attr($wc_order->get_order_number()); ?>" data-order-total="<?php echo esc_html($wc_order->get_total()); ?>" data-swal='<?php echo wp_json_encode($swal_data, JSON_HEX_APOS); ?>' data-pagarmecheckout-form <?php echo
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        /** phpcs:ignore */
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Utils::get_component('checkout-transparent'); ?>>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        /** phpcs:ignore */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Utils::get_component('checkout-transparent'); ?>>
 
     <div class="product">
         <div class="woocommerce-tabs">
@@ -83,6 +83,17 @@ $swal_data   = array(
 
                 <?php endif; ?>
 
+                <?php
+                if ($this->model->settings->is_active_pix()) :
+                    $tab_pix = true;
+                ?>
+                    <li class="<?php echo ($tab_num === 5) ? 'active' : ''; ?>">
+                        <a data-action="tab" data-ref="pix" href="#tab-pix">
+                            <?php esc_html_e('Pay with pix', 'woo-pagarme-payments'); ?>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
             </ul>
 
             <div id="payment">
@@ -130,7 +141,17 @@ $swal_data   = array(
                             )
                         );
                     endif;
+                    if (isset($tab_pix) && ($tab_num === 5 || !isset($active_tab) && $tab_num === 0)) :
+                        $active_tab = true;
+
+                        Utils::get_template(
+                            'templates/checkout/pix-item',
+                            array('model' => $this->model)
+                        );
+                    endif;
                     ?>
+
+
                 </ul>
             </div>
         </div>
