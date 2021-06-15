@@ -119,10 +119,10 @@ class Gateways extends WC_Payment_Gateway
             'cc_installments_interest'          => $this->field_cc_installment_fields('interest'),
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
             'cc_installments_by_flag'           => $this->field_cc_installment_fields('flags'),
-            'section_tools'                     => $this->section_tools(),
             'section_pix'                       => $this->section_pix(),
             'pix_qrcode_expiration_time'        => $this->field_qrcode_expiration_time(),
             'pix_additional_data'               => $this->field_additional_data(),
+            'section_tools'                     => $this->section_tools(),
             'enable_logs'                       => $this->field_enabled_logs(),
         );
     }
@@ -602,8 +602,8 @@ class Gateways extends WC_Payment_Gateway
             </th>
             <td class="forminp">
                 <fieldset class="pix-additional-data" data-field="additional-data">
-                    <input name="<?php echo esc_attr($field_key); ?>[name]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["name"]; ?>" placeholder="Additional Data Name" />
-                    <input name="<?php echo esc_attr($field_key); ?>[value]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["value"]; ?>" placeholder="Additional Data Value" />
+                    <input name="<?php echo esc_attr($field_key); ?>[name]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["name"]; ?>" placeholder="Additional Information Name" />
+                    <input name="<?php echo esc_attr($field_key); ?>[value]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["value"]; ?>" placeholder="Additional Information Value" />
                 </fieldset>
             </td>
         </tr>
@@ -708,8 +708,8 @@ class Gateways extends WC_Payment_Gateway
     public function field_qrcode_expiration_time()
     {
         return array(
-            'title'       => __('QRCode Expiration Time', 'woo-pagarme-payments'),
-            'description' => __('Expiration time in seconds of the pix qrcore after generated.', 'woo-pagarme-payments'),
+            'title'       => __('QR code expiration time', 'woo-pagarme-payments'),
+            'description' => __('Expiration time in seconds of the generated pix QR code', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'placeholder' => 3500,
             'default'     => 3500,
@@ -719,7 +719,9 @@ class Gateways extends WC_Payment_Gateway
     public function field_additional_data()
     {
         return array(
-            'title'       => __('Pix Additional Data', 'woo-pagarme-payments'),
+            'title'       => __('Additional information', 'woo-pagarme-payments'),
+            'description' => __('Set of key and value used to add information to the generated pix. This will be visible to the buyer during payment', 'woo-pagarme-payments'),
+            'desc_tip'    => true,
             'type'        => 'additional_data',
         );
     }
