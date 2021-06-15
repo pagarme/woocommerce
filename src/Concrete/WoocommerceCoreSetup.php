@@ -164,7 +164,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $pixConfig->enabled = $storeConfig->is_active_pix();
         $pixConfig->expirationQrCode = $storeConfig->pix_qrcode_expiration_time;
         $pixConfig->bankType = 'Pagar.me';
-        $pixConfig->additionalInformation = $storeConfig->pix_additional_data;
+        $pixConfig->additionalInformation = [$storeConfig->pix_additional_data];
 
         $dataObj->pixConfig = $pixConfig;
 
