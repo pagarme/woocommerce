@@ -227,6 +227,10 @@ class Charge
             return true;
         }
 
+        if ($method == 'pix' && in_array($status, ['pending', 'paid'])) {
+            return true;
+        }
+
         return false;
     }
 
