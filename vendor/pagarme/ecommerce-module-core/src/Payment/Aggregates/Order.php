@@ -4,6 +4,7 @@ namespace Pagarme\Core\Payment\Aggregates;
 
 use MundiAPILib\Models\CreateOrderRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
+use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Payment\Aggregates\Payments\AbstractPayment;
 use Pagarme\Core\Payment\Aggregates\Payments\SavedCreditCardPayment;
 use Pagarme\Core\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
@@ -163,16 +164,19 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
      */
     private function blockOverPaymentAttempt(AbstractPayment $payment)
     {
+        $i18n = new LocalizationService();
+
         $currentAmount = $payment->getAmount();
         foreach ($this->payments as $currentPayment) {
             $currentAmount += $currentPayment->getAmount();
         }
 
         if ($currentAmount > $this->amount) {
-            throw new \Exception(
-                'The sum of payment amounts is bigger than the amount of the order!',
-                400
+            $message = $i18n->getDashboard(
+                "The sum of payments is greater than the order amount! " .
+                "Review the information and try again."
             );
+            throw new \Exception($message, 400);
         }
     }
 

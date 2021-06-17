@@ -82,17 +82,11 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
      */
     public function setEmail($email)
     {
-        $this->email = substr($email, 0, 64);
+        $email = trim($email);
+        $email = substr($email, 0, 64);
 
-        if (empty($this->email)) {
-
-            $message = $this->i18n->getDashboard(
-                "The %s should not be empty!",
-                "email"
-            );
-
-            throw new \Exception($message, 400);
-        }
+        $this->validateEmail($email);
+        $this->email = $email;
 
         return $this;
     }
@@ -240,5 +234,26 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
         $customerRequest->phones = $this->getPhonesToSDK();
 
         return $customerRequest;
+    }
+
+    private function validateEmail($email)
+    {
+        if (empty($email)) {
+            $message = $this->i18n->getDashboard(
+                "The %s should not be empty!",
+                "email"
+            );
+
+            throw new \Exception($message, 400);
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $message = $this->i18n->getDashboard(
+                "The %s is invalid!",
+                "email"
+            );
+
+            throw new \Exception($message, 400);
+        }
     }
 }

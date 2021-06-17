@@ -9,31 +9,31 @@ class TransactionStatusTest extends TestCase
 {
     protected $validStatuses = [
         'CAPTURED' => [
-            'method' => 'captured', 
+            'method' => 'captured',
             'value' => "captured"
         ],
         'PARTIAL_CAPTURE' => [
-            'method' => 'partialCapture', 
+            'method' => 'partialCapture',
             'value' => "partial_capture"
         ],
         'AUTHORIZED_PENDING_CAPTURE' => [
-            'method' => 'authorizedPendingCapture', 
+            'method' => 'authorizedPendingCapture',
             'value' => 'authorized_pending_capture'
         ],
         'VOIDED' => [
-            'method' => 'voided', 
+            'method' => 'voided',
             'value' => 'voided'
         ],
         'REFUNDED' => [
-            'method' => 'refunded', 
+            'method' => 'refunded',
             'value' => 'refunded'
         ],
         'PARTIAL_VOID' => [
-            'method' => 'partialVoid', 
+            'method' => 'partialVoid',
             'value' => 'partial_void'
         ],
         'WITH_ERROR' => [
-            'method' => 'withError', 
+            'method' => 'withError',
             'value' => 'withError'
         ],
         'NOT_AUTHORIZED' => [
@@ -41,19 +41,19 @@ class TransactionStatusTest extends TestCase
             'value' => 'notAuthorized'
         ],
         'FAILED' => [
-            'method' => 'failed', 
+            'method' => 'failed',
             'value' => 'failed'
-        ],        
+        ],
         'GENERATED' => [
-            'method' => 'generated', 
+            'method' => 'generated',
             'value' => 'generated'
         ],
         'UNDERPAID' => [
-            'method' => 'underpaid', 
+            'method' => 'underpaid',
             'value' => 'underpaid'
         ],
         'PAID' => [
-            'method' => 'paid', 
+            'method' => 'paid',
             'value' => 'paid'
         ],
         'OVERPAID' => [
@@ -75,6 +75,18 @@ class TransactionStatusTest extends TestCase
         'EXPIRED' => [
             'method' => 'expired',
             'value' => 'expired'
+        ],
+        'PENDING_REVIEW' => [
+            'method' => 'pendingReview',
+            'value' => 'pending_review'
+        ],
+        'ANALYZING' => [
+            'method' => 'analyzing',
+            'value' => 'analyzing'
+        ],
+        'WAITING_CAPTURE' => [
+            'method' => 'waitingCapture',
+            'value' => 'waiting_capture'
         ]
     ];
 

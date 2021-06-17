@@ -223,6 +223,7 @@ class APIService
 
     private function getMundiPaggApiClient()
     {
+        $i18n = new LocalizationService();
         $config = MPSetup::getModuleConfiguration();
 
         $secretKey = null;
@@ -230,6 +231,15 @@ class APIService
             $secretKey = $config->getSecretKey()->getValue();
         }
         $password = '';
+
+        if (empty($secretKey)) {
+            $message = $i18n->getDashboard(
+                "Can't connect to the payment service. " .
+                "Please contact the store administrator."
+            );
+
+            throw new \Exception($message, 400);
+        }
 
         Configuration::$basicAuthPassword = '';
 

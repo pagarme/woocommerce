@@ -24,10 +24,13 @@ final class TransactionStatus extends AbstractValueObject
     const WAITING_PAYMENT = 'waiting_payment';
     const PENDING_REFUND = 'pending_refund';
     const EXPIRED = 'expired';
+    const PENDING_REVIEW = 'pending_review';
+    const ANALYZING = 'analyzing';
+    const WAITING_CAPTURE = 'waiting_capture';
 
     /**
      *
-     * @var string 
+     * @var string
      */
     private $status;
 
@@ -124,6 +127,21 @@ final class TransactionStatus extends AbstractValueObject
     public static function expired()
     {
         return new self(self::EXPIRED);
+    }
+
+    public static function pendingReview()
+    {
+        return new self(self::PENDING_REVIEW);
+    }
+
+    public static function analyzing()
+    {
+        return new self(self::ANALYZING);
+    }
+
+    public static function waitingCapture()
+    {
+        return new self(self::WAITING_CAPTURE);
     }
 
     /**

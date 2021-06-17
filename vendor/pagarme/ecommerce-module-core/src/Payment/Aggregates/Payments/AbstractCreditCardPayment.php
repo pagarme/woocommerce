@@ -7,6 +7,7 @@ use MundiAPILib\Models\CreateCreditCardPaymentRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Kernel\Services\InstallmentService;
+use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\ValueObjects\CardBrand;
 use Pagarme\Core\Payment\ValueObjects\AbstractCardIdentifier;
@@ -88,6 +89,8 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
      */
     private function validateIfIsRealInstallment($installments)
     {
+        $i18n = new LocalizationService();
+
         //get valid installments for this brand.
         $installmentService = new InstallmentService();
         $validInstallments = $installmentService->getInstallmentsFor(
@@ -105,8 +108,10 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
 
         //invalid installment
         $moneyService = new MoneyService();
-        $exception = "The card brand '%s' or the amount %.2f doesn't allow the %dx installments!";
-        $exception = sprintf(
+        $exception =
+            "The card brand '%s' or the amount %.2f doesn't allow " .
+            "%d installment(s)! Please review the information and try again.";
+        $exception = $i18n->getDashboard(
             $exception,
             $this->brand->getName(),
             $moneyService->centsToFloat($this->amount),

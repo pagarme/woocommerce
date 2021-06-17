@@ -4,6 +4,7 @@ namespace Pagarme\Core\Kernel\Abstractions;
 
 use Pagarme\Core\Kernel\Aggregates\Configuration;
 use Pagarme\Core\Kernel\Repositories\ConfigurationRepository;
+use MundiAPILib\Configuration as MundiAPIConfiguration;
 use ReflectionClass;
 
 abstract class AbstractModuleCoreSetup
@@ -72,6 +73,15 @@ abstract class AbstractModuleCoreSetup
             static::$platformRoot = $platformRoot;
 
             static::updateModuleConfiguration();
+
+            static::$instance->setApiBaseUrl();
+        }
+    }
+
+    protected static function setApiBaseUrl()
+    {
+        if (static::$moduleConfig->isHubEnabled()) {
+            MundiAPIConfiguration::$BASEURI = 'https://hubapi.mundipagg.com/core/v1';
         }
     }
 
@@ -98,7 +108,7 @@ abstract class AbstractModuleCoreSetup
             static::$moduleConfig->setStoreId(static::getCurrentStoreId());
         }
 
-        if(
+        if (
             static::$moduleConfig->getStoreId() != static::getDefaultStoreId() &&
             $savedConfig === null
         ) {
@@ -241,7 +251,7 @@ abstract class AbstractModuleCoreSetup
 
     public static function setModuleConcreteDir($concreteModuleDir)
     {
-        if(!isset(self::$moduleConcreteDir)) {
+        if (!isset(self::$moduleConcreteDir)) {
             self::$moduleConcreteDir = $concreteModuleDir;
         }
     }
@@ -288,4 +298,3 @@ abstract class AbstractModuleCoreSetup
      */
     abstract protected function getPlatformStoreTimezone();
 }
-

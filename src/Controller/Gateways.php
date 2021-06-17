@@ -602,8 +602,8 @@ class Gateways extends WC_Payment_Gateway
             </th>
             <td class="forminp">
                 <fieldset class="pix-additional-data" data-field="additional-data">
-                    <input name="<?php echo esc_attr($field_key); ?>[name]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["name"]; ?>" placeholder="Additional Information Name" />
-                    <input name="<?php echo esc_attr($field_key); ?>[value]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["value"]; ?>" placeholder="Additional Information Value" />
+                    <input name="<?php echo esc_attr($field_key); ?>[name]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["name"]; ?>" placeholder="<?php _e('Additional Information Name', 'woo-pagarme-payments'); ?>" />
+                    <input name="<?php echo esc_attr($field_key); ?>[value]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["value"]; ?>" placeholder="<?php _e('Additional Information Value', 'woo-pagarme-payments'); ?>" />
                 </fieldset>
             </td>
         </tr>
