@@ -1,13 +1,14 @@
 <?php
+
 namespace Woocommerce\Pagarme\Model;
 
-if ( ! function_exists( 'add_action' ) ) {
-	exit( 0 );
+if (!function_exists('add_action')) {
+    exit(0);
 }
 
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Charge;
+use Pagarme\Core\Kernel\Services\OrderService;
 
 // WooCommerce
 use WC_Order;
@@ -15,96 +16,78 @@ use Woocommerce\Pagarme\Model\Setting;
 
 class Order extends Meta
 {
-	protected $response_data;
-	protected $payment_method;
-	protected $pagarme_status;
-	protected $pagarme_id;
-	protected $wc_order;
-	protected $settings;
+    protected $response_data;
+    protected $payment_method;
+    protected $pagarme_status;
+    protected $pagarme_id;
+    protected $wc_order;
+    protected $settings;
 
-	// == BEGIN WC ORDER ==
-	protected $billing_persontype;
-	protected $billing_cnpj;
-	protected $billing_first_name;
-	protected $billing_last_name;
-	protected $billing_email;
-	protected $billing_birthdate;
-	protected $billing_country;
-	protected $billing_phone;
-	protected $billing_cellphone;
-	protected $billing_address_1;
-	protected $billing_address_2;
-	protected $billing_number;
-	protected $billing_neighborhood;
-	protected $billing_city;
-	protected $billing_state;
-	protected $billing_postcode;
-	protected $billing_cpf;
-	protected $shipping_address_1;
-	protected $shipping_number;
-	protected $shipping_address_2;
-	protected $shipping_postcode;
-	protected $shipping_neighborhood;
-	protected $shipping_city;
-	protected $shipping_state;
-	// == END WC ORDER ==
+    // == BEGIN WC ORDER ==
+    protected $billing_persontype;
+    protected $billing_cnpj;
+    protected $billing_first_name;
+    protected $billing_last_name;
+    protected $billing_email;
+    protected $billing_birthdate;
+    protected $billing_country;
+    protected $billing_phone;
+    protected $billing_cellphone;
+    protected $billing_address_1;
+    protected $billing_address_2;
+    protected $billing_number;
+    protected $billing_neighborhood;
+    protected $billing_city;
+    protected $billing_state;
+    protected $billing_postcode;
+    protected $billing_cpf;
+    protected $shipping_address_1;
+    protected $shipping_number;
+    protected $shipping_address_2;
+    protected $shipping_postcode;
+    protected $shipping_neighborhood;
+    protected $shipping_city;
+    protected $shipping_state;
+    // == END WC ORDER ==
 
-	public $with_prefix = array(
-		'payment_method'   => 1,
-		'response_data'    => 1,
-		'pagarme_status' => 1,
-		'pagarme_id'     => 1,
-	);
+    public $with_prefix = array(
+        'payment_method'   => 1,
+        'response_data'    => 1,
+        'pagarme_status' => 1,
+        'pagarme_id'     => 1,
+    );
 
-	/** phpcs:disable */
-	public function __construct( $ID = false )
-	{
-		parent::__construct( $ID );
-
-		$this->wc_order = new WC_Order( $this->ID );
+    /** phpcs:disable */
+    public function __construct($ID = false)
+    {
+        parent::__construct($ID);
+        $this->wc_order = new WC_Order($this->ID);
         $this->settings = Setting::get_instance();
-	}
-	/** phpcs:enable */
+    }
+    /** phpcs:enable */
 
-	public function get_status_translate()
-	{
-		$status = strtolower( $this->__get( 'pagarme_status' ) );
-		$texts  = array(
-			'paid'     => __( 'Paid', 'woo-pagarme-payments' ),
-			'pending'  => __( 'Pending', 'woo-pagarme-payments' ),
-			'canceled' => __( 'Canceled', 'woo-pagarme-payments' ),
-			'failed'   => __( 'Failed', 'woo-pagarme-payments' ),
-		);
+    public function get_status_translate()
+    {
+        $status = strtolower($this->__get('pagarme_status'));
+        $texts  = array(
+            'paid'     => __('Paid', 'woo-pagarme-payments'),
+            'pending'  => __('Pending', 'woo-pagarme-payments'),
+            'processing'  => __('Pending', 'woo-pagarme-payments'),
+            'canceled' => __('Canceled', 'woo-pagarme-payments'),
+            'failed'   => __('Failed', 'woo-pagarme-payments'),
+        );
 
-		return isset( $texts[ $status ] ) ? $texts[ $status ] : false;
-	}
+        return isset($texts[$status]) ? $texts[$status] : false;
+    }
 
-	public function payment_on_hold()
-	{
-		$current_status = $this->wc_order->get_status();
+    public function payment_on_hold()
+    {
+        $current_status = $this->wc_order->get_status();
 
-		if ( ! in_array( $current_status, [ 'on-hold', 'completed', 'canceled', 'cancelled', 'processing' ] ) ) {
-			$this->wc_order->update_status( 'on-hold', __( 'Pagar.me: Awaiting payment confirmation.', 'woo-pagarme-payments' ) );
-			wc_reduce_stock_levels( $this->wc_order->get_order_number() );
-
-		}
-
-		$statusArray = [
-            'previous_status' => $current_status,
-            'new_status' => $this->wc_order->get_status()
-		];
-
-		$this->log($statusArray);
-	}
-
-	public function payment_paid()
-	{
-		$current_status = $this->wc_order->get_status();
-
-		if ( ! in_array( $current_status, [ 'completed', 'processing' ] ) ) {
-			$this->wc_order->add_order_note( __( 'Pagar.me: Payment has already been confirmed.', 'woo-pagarme-payments' ) );
-			$this->wc_order->payment_complete();
-		}
+        if (!in_array($current_status, ['on-hold', 'completed', 'canceled', 'cancelled', 'processing'])) {
+            $this->wc_order->update_status('on-hold', __('Pagar.me: Awaiting payment confirmation.', 'woo-pagarme-payments'));
+            wc_reduce_stock_levels($this->wc_order->get_order_number());
+        }
 
         $statusArray = [
             'previous_status' => $current_status,
@@ -112,15 +95,16 @@ class Order extends Meta
         ];
 
         $this->log($statusArray);
-	}
+    }
 
-	public function payment_canceled()
-	{
-		$current_status = $this->wc_order->get_status();
+    public function payment_paid()
+    {
+        $current_status = $this->wc_order->get_status();
 
-		if ( ! in_array( $current_status, [ 'cancelled', 'canceled' ] ) ) {
-			$this->wc_order->update_status( 'cancelled', __( 'Pagar.me: Payment canceled.', 'woo-pagarme-payments' ) );
-		}
+        if (!in_array($current_status, ['completed', 'processing'])) {
+            $this->wc_order->add_order_note(__('Pagar.me: Payment has already been confirmed.', 'woo-pagarme-payments'));
+            $this->wc_order->payment_complete();
+        }
 
         $statusArray = [
             'previous_status' => $current_status,
@@ -128,82 +112,92 @@ class Order extends Meta
         ];
 
         $this->log($statusArray);
-	}
+    }
 
-	public function update_by_pagarme_status( $pagarme_status )
-	{
-		switch ( $pagarme_status ) {
-			case 'pending':
-				$this->payment_on_hold();
-				break;
-			case 'paid':
-				$this->payment_paid();
-				break;
-			case 'failed':
-				$this->payment_canceled();
-				break;
-			case 'canceled':
-				$this->payment_canceled();
-				break;
-		}
-	}
+    public function payment_canceled()
+    {
+        $current_status = $this->wc_order->get_status();
 
-	public function get_charges( $full_data = false )
-	{
-		$model = new Charge();
-		$items = $model->find_by_wc_order( $this->ID );
+        if (!in_array($current_status, ['cancelled', 'canceled'])) {
+            $this->wc_order->update_status('cancelled', __('Pagar.me: Payment canceled.', 'woo-pagarme-payments'));
+        }
 
-		if ( ! $items ) {
-			return false;
-		}
+        $statusArray = [
+            'previous_status' => $current_status,
+            'new_status' => $this->wc_order->get_status()
+        ];
 
-		if ( $full_data ) {
-			return $items;
-		}
+        $this->log($statusArray);
+    }
 
-		$list = [];
+    public function update_by_pagarme_status($pagarme_status)
+    {
+        switch ($pagarme_status) {
+            case 'pending':
+                $this->payment_on_hold();
+                break;
+            case 'paid':
+                $this->payment_paid();
+                break;
+            case 'failed':
+                $this->payment_canceled();
+                break;
+            case 'canceled':
+                $this->payment_canceled();
+                break;
+        }
+    }
 
-		foreach ( $items as $item ) {
-			$charge = new \stdClass();
-			$charge = maybe_unserialize( $item->charge_data );
-			$list[] = $charge;
-		}
+    public function get_charges()
+    {
+        $orderService = new OrderService();
 
-		return $list;
-	}
+        $order = $orderService->getOrderByPlatformId(
+            strval($this->ID)
+        );
 
-	/**
-	 * Returns the shipping data. If it is empty then returns billing data as fallback.
-	 *
-	 * @return array
-	 */
-	public function get_shipping_info()
-	{
-		return array(
-			'address_1'    => $this->handle_shipping_properties( 'address_1' ),
-			'number'       => $this->handle_shipping_properties( 'number' ),
-			'address_2'    => $this->handle_shipping_properties( 'address_2' ),
-			'postcode'     => $this->handle_shipping_properties( 'postcode' ),
-			'neighborhood' => $this->handle_shipping_properties( 'neighborhood' ),
-			'city'         => $this->handle_shipping_properties( 'city' ),
-			'state'        => $this->handle_shipping_properties( 'state' ),
-		);
-	}
+        $charges = $order->getCharges();
 
-	private function handle_shipping_properties( $prop )
-	{
-		$shipping_prop = $this->__get( "shipping_{$prop}" );
+        if (!$charges) {
+            return false;
+        }
 
-		if ( empty( $shipping_prop ) ) {
-			return $this->__get( "billing_{$prop}" );
-		}
+        return $charges;
+    }
 
-		return $shipping_prop;
-	}
+    /**
+     * Returns the shipping data. If it is empty then returns billing data as fallback.
+     *
+     * @return array
+     */
+    public function get_shipping_info()
+    {
+        return array(
+            'address_1'    => $this->handle_shipping_properties('address_1'),
+            'number'       => $this->handle_shipping_properties('number'),
+            'address_2'    => $this->handle_shipping_properties('address_2'),
+            'postcode'     => $this->handle_shipping_properties('postcode'),
+            'neighborhood' => $this->handle_shipping_properties('neighborhood'),
+            'city'         => $this->handle_shipping_properties('city'),
+            'state'        => $this->handle_shipping_properties('state'),
+        );
+    }
 
-    private function log($content) {
+    private function handle_shipping_properties($prop)
+    {
+        $shipping_prop = $this->__get("shipping_{$prop}");
 
-	    $file = 'woo-pagarme';
+        if (empty($shipping_prop)) {
+            return $this->__get("billing_{$prop}");
+        }
+
+        return $shipping_prop;
+    }
+
+    private function log($content)
+    {
+
+        $file = 'woo-pagarme';
         $message =
             'ORDER STATUS UPDATE: #' .
             $this->wc_order->get_id() .

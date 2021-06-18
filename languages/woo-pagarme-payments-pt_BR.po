@@ -687,6 +687,45 @@ msgstr "Habilita o gateway de pagamento Pagar.me para o WooCommerce"
 msgid "https://pagarme.me"
 msgstr ""
 
+msgid "Copy Code"
+msgstr "Copiar Código"
+
+msgid "1. Point your phone at this screen to capture the code."
+msgstr "1. Aponte seu celular para essa tela para capturar o código."
+
+msgid "2. Open your payments app."
+msgstr "2. Abra seu aplicativo de pagamentos."
+
+msgid "3. Confirm the information and complete the payment on the app."
+msgstr "3. Confirme os dados e finalize o pagamento pelo aplicativo."
+
+msgid "4. We will send you a purchase confirmation."
+msgstr "4. Enviaremos uma confirmação de compra pra você."
+
+msgid "You can also complete the payment by copying and pasting the code into the app."
+msgstr "Você também pode finalizar o pagamento copiando e colando o código em seu aplicativo."
+
+msgid "Pix settings"
+msgstr "Configurações do Pix"
+
+msgid "QR code expiration time"
+msgstr "Tempo de exiração do QRCode"
+
+msgid "Expiration time in seconds of the generated pix QR code"
+msgstr "Tempo, em segundos, até o QRCode expirar depois de gerado"
+
+msgid "Additional information"
+msgstr "Informações adicionais"
+
+msgid "Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment process."
+msgstr "Conjunto de chave e valor para adicionar informações ao pix gerado. Isso ficará visível para o comprador durante o pagamento"
+
+msgid "Additional Information Name"
+msgstr "Nome da informação adicional"
+
+msgid "Additional Information Value"
+msgstr "Valor da informação adicional"
+
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
 

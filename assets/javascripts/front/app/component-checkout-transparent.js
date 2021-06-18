@@ -66,7 +66,9 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 
 		$( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
 
-		if ( $('input[name=payment_method]').val() === 'billet' ) {
+		if (
+            $('input[name=payment_method]').val() === 'billet'  ||
+            $('input[name=payment_method]').val() === 'pix' ) {
 			this.loadSwal();
 		}
 	};
