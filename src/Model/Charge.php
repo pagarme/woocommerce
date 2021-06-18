@@ -6,6 +6,8 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Pagarme\Core\Webhook\Factories\WebhookFactory;
+use Pagarme\Core\Webhook\Services\ChargeHandlerService;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Setting;
@@ -101,7 +103,10 @@ class Charge
         if (!$webhook_data) {
             return;
         }
-
+        /*
+            TODO: remove this insert and update calls. we need to use charge data
+            from core's table, and these methods updates the legacy charge table.
+        */
         if (!$this->is_exists($webhook_data->data->id)) {
             return $this->insert([
                 'wc_order_id'   => $webhook_data->data->order->code,
@@ -121,6 +126,21 @@ class Charge
                 'charge_id' => esc_sql($webhook_data->data->id),
             )
         );
+
+        $this->update_core_charge($webhook_data);
+    }
+
+    private function update_core_charge($webhook_data)
+    {
+        $webhook_data->data = json_decode(
+            json_encode($webhook_data->data),
+            true
+        );
+
+        $coreWebhookFactory = new WebhookFactory();
+        $coreChargeHandler = new ChargeHandlerService();
+        $coreWebhook = $coreWebhookFactory->createFromPostData($webhook_data);
+        $coreChargeHandler->handle($coreWebhook);
     }
 
     public function create_from_order($order_id, $charges)
@@ -224,6 +244,10 @@ class Charge
         }
 
         if ($method == 'credit_card' && in_array($status, ['pending', 'paid'])) {
+            return true;
+        }
+
+        if ($method == 'pix' && in_array($status, ['pending', 'paid'])) {
             return true;
         }
 

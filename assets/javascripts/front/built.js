@@ -2627,7 +2627,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		$( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
 
-		if ( $('input[name=payment_method]').val() === 'billet' ) {
+		if (
+            $('input[name=payment_method]').val() === 'billet' ||
+            $('input[name=payment_method]').val() === 'pix' ) {
 			this.loadSwal();
 		}
 
@@ -3038,6 +3040,26 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 });    ;MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 
 	window.Pagarme2Cards = 0;
+
+    window.pagarmeQrCodeCopy = function(){
+        const qrCodeElement = document.getElementById("pagarme-qr-code");
+
+        if (!qrCodeElement){
+            return;
+        }
+
+        const rawCode = qrCodeElement.getAttribute("rawCode");
+
+        const input =document.createElement('input');
+        document.body.appendChild(input)
+        input.value = rawCode;
+        input.select();
+        document.execCommand('copy',false);
+        input.remove();
+
+        alert("Código copiado.");
+
+    }
 
 	Model.fn.start = function() {
 		this.script           = $( '[data-pagarmecheckout-app-id]' );

@@ -979,6 +979,31 @@ body .swal2-animate-x-mark {
 	margin-top: 40px;
 }
 
+.pagarme-response .pix-qr-code-instruction{
+    max-width: 70%;
+    margin: auto;
+    padding: 5px;
+    text-align: left;
+}
+
+#pix-image-attention{
+    margin: auto;
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+#pix-image-attention-container{
+    width: 20px;
+    height: 30px;
+    display: inline-block;
+    margin: 0;
+}
+
+.pagarme-response .pix-attention-instruction{
+    display: inline-block;
+}
+
 @media only screen and (max-width: 1023px) {
 	.select2-container--open .select2-dropdown--below{
 		margin-top: 50px;

@@ -17,7 +17,7 @@ use Woocommerce\Pagarme\Resource\Tokens;
 class Payment
 {
     /**
-     * Payment methods : billet, billet_and_card, 2_cards, credit_card
+     * Payment methods : billet, billet_and_card, 2_cards, credit_card, pix
      * @var string
      */
     public $payment_method;
@@ -80,6 +80,24 @@ class Payment
         }
 
         return $billet;
+    }
+
+    /**
+     * Return payment data for "pix"
+     *
+     * @return array
+     */
+    public function pay_pix($wc_order, $form_fields)
+    {
+        $pix           = $this->pay_pix_base();
+        $pix['amount'] = Utils::format_order_price($wc_order->get_total());
+        $multicustomer    = $this->get_multicustomer_data('pix', $form_fields);
+
+        if ($multicustomer) {
+            $pix['customer'] = $multicustomer;
+        }
+
+        return $pix;
     }
 
     /**
@@ -270,6 +288,18 @@ class Payment
                 'instructions' => $this->settings->billet_instructions,
                 'due_at'       => $expiration_date->format('c'),
             ),
+        );
+    }
+
+    /**
+     * Return payment data for "boleto"
+     *
+     * @return array
+     */
+    private function pay_pix_base()
+    {
+        return array(
+            'payment_method' => 'pix'
         );
     }
 

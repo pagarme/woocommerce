@@ -27,6 +27,17 @@ class PixConfigFactory implements FactoryCreateFromDbDataInterface
             $pixConfig->setExpirationQrCode($data->expirationQrCode);
         }
 
+        if (!empty($data->additionalInformation)) {
+            $additionalInformationArray = json_decode(
+                json_encode($data->additionalInformation),
+                true
+            );
+
+            $pixConfig->setAdditionalInformation(
+                $additionalInformationArray
+            );
+        }
+
         if (!empty($data->bankType)) {
             $pixConfig->setBankType(
                 $data->bankType

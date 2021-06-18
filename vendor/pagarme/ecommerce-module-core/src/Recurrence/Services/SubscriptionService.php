@@ -81,7 +81,10 @@ final class SubscriptionService
             $forceCreateOrder = MPSetup::getModuleConfiguration()->isCreateOrderEnabled();
 
             if ($subscriptionResponse === null) {
-                $message = $i18n->getDashboard("Can't create order.");
+                $message = $i18n->getDashboard(
+                    "Can't create payment. " .
+                    "Please review the information and try again."
+                );
                 throw new \Exception($message, 400);
             }
 
@@ -103,7 +106,10 @@ final class SubscriptionService
                 }
 
                 if (!$forceCreateOrder) {
-                    $message = $i18n->getDashboard("Can't create order.");
+                    $message = $i18n->getDashboard(
+                        "Can't create payment. " .
+                        "Please review the information and try again."
+                    );
                     throw new \Exception($message, 400);
                 }
             }
@@ -122,7 +128,10 @@ final class SubscriptionService
                 $forceCreateOrder &&
                 !$this->checkResponseStatus($originalSubscriptionResponse)
             ) {
-                $message = $i18n->getDashboard("Can't create order.");
+                $message = $i18n->getDashboard(
+                    "Can't create payment. " .
+                    "Please review the information and try again."
+                );
                 throw new \Exception($message, 400);
             }
 

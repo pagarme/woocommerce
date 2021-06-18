@@ -117,8 +117,7 @@ final class PaymentFactory
         $cardData,
         $cardDataIndex,
         $config
-    )
-    {
+    ) {
         $payment = $this->createBaseCardPayment($cardData, $cardDataIndex);
 
         if ($payment === null) {
@@ -190,8 +189,7 @@ final class PaymentFactory
     private function getAmountWithInterestForCreditCard(
         AbstractCreditCardPayment $payment,
         $config
-    )
-    {
+    ) {
         $installmentService = new InstallmentService();
 
         $validInstallments = $installmentService->getInstallmentsFor(
@@ -266,6 +264,13 @@ final class PaymentFactory
                 $payment->setCustomer($customer);
             }
 
+            $additionalInformation =
+                $this->moduleConfig->getPixConfig()->getAdditionalInformation();
+
+            if (!empty($additionalInformation)) {
+                $payment->setAdditionalInformation($additionalInformation);
+            }
+
             $payment->setAmount($value->amount);
 
             $payments[] = $payment;
@@ -290,10 +295,8 @@ final class PaymentFactory
                 $payment->setSaveOnSuccess($data->saveOnSuccess);
             }
             return $payment;
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
         } catch (\Throwable $e) {
-
         }
 
         try {
@@ -309,10 +312,8 @@ final class PaymentFactory
             $payment->setOwner($owner);
 
             return $payment;
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
         } catch (\Throwable $e) {
-
         }
 
         return null;

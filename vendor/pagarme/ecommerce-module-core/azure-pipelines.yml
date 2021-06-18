@@ -28,12 +28,12 @@ stages:
         sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpCurrentVersion)
         sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpCurrentVersion)
         sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpCurrentVersion)
-        sudo apt-get install php-xdebug
+        sudo apt-get install php7.2-xdebug
         php -version        
       displayName: Build PHP Version $(phpCurrentVersion)  
 
     - script: |     
-        sudo apt-get install php-xdebug
+        sudo apt-get install php7.2-xdebug
         php -version             
       displayName: Install PHP extensions
     

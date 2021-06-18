@@ -31,6 +31,9 @@ class Setting
         'account_id'                        => array(),
         'section_payment_settings'          => array(),
         'enable_billet'                     => array(),
+        'enable_pix'                        => array(),
+        'pix_qrcode_expiration_time'        => array(),
+        'pix_additional_data'               => array(),
         'enable_credit_card'                => array(),
         'multimethods_billet_card'          => array(),
         'multimethods_2_cards'              => array(),
@@ -195,6 +198,11 @@ class Setting
         return ('yes' === $this->__get('multimethods_2_cards'));
     }
 
+    public function is_active_pix()
+    {
+        return ('yes' === $this->__get('enable_pix'));
+    }
+
     public function is_active_capture()
     {
         $operation_type = $this->__get('cc_operation_type');
@@ -261,11 +269,14 @@ class Setting
             case 'boleto':
                 return 2;
 
-            case 'billetAndCard':
+            case 'pix':
                 return 3;
 
-            case '2cards':
+            case 'billetAndCard':
                 return 4;
+
+            case '2cards':
+                return 5;
 
             default:
                 return 0;

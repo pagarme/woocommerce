@@ -104,9 +104,9 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithBoletoCreditCardConfig($configData, $storeConfig);
         $configData = self::fillWithTwoCreditCardsConfig($configData, $storeConfig);
         $configData = self::fillWithMultiBuyerConfig($configData, $storeConfig);
+        $configData = self::fillWithPixConfig($configData, $storeConfig);
         // These method calls are commented for now because they are not implemented yet:
         // $configData = self::fillWithAddressConfig($configData, $storeConfig);
-        // $configData = self::fillWithPixConfig($configData, $storeConfig);
         // $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
         // $configData = self::fillWithRecurrenceConfig($configData, $storeConfig);
@@ -158,9 +158,17 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return $dataObj;
     }
 
-    private static function fillWithPixConfig()
+    private static function fillWithPixConfig($dataObj, $storeConfig)
     {
-        // Not implemented on Woocommerce because there is no pix config
+        $pixConfig = new \stdClass();
+        $pixConfig->enabled = $storeConfig->is_active_pix();
+        $pixConfig->expirationQrCode = $storeConfig->pix_qrcode_expiration_time;
+        $pixConfig->bankType = 'Pagar.me';
+        $pixConfig->additionalInformation = [$storeConfig->pix_additional_data];
+
+        $dataObj->pixConfig = $pixConfig;
+
+        return $dataObj;
     }
 
     static private function fillWithBoletoConfig($dataObj, $storeConfig)

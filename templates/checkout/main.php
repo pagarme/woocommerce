@@ -25,8 +25,8 @@ $swal_data   = array(
 </div>
 
 <form method="post" id="wcmp-checkout-form" data-return-url="<?php echo esc_url($this->get_return_url($wc_order)); ?>" data-payment-url="<?php echo esc_url($payment_url); ?>" data-api-request="<?php echo esc_url($wc_api); ?>" data-order="<?php echo esc_attr($wc_order->get_order_number()); ?>" data-order-total="<?php echo esc_html($wc_order->get_total()); ?>" data-swal='<?php echo wp_json_encode($swal_data, JSON_HEX_APOS); ?>' data-pagarmecheckout-form <?php echo
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        /** phpcs:ignore */
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Utils::get_component('checkout-transparent'); ?>>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        /** phpcs:ignore */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Utils::get_component('checkout-transparent'); ?>>
 
     <div class="product">
         <div class="woocommerce-tabs">
@@ -60,10 +60,22 @@ $swal_data   = array(
                 <?php endif; ?>
 
                 <?php
+                if ($this->model->settings->is_active_pix()) :
+                    $tab_pix = true;
+                ?>
+                    <li class="<?php echo ($tab_num === 3) ? 'active' : ''; ?>">
+                        <a data-action="tab" data-ref="pix" href="#tab-pix">
+                            <?php esc_html_e('Pay with pix', 'woo-pagarme-payments'); ?>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+
+                <?php
                 if ($this->model->settings->is_active_billet_and_card()) :
                     $tab_billet_and_card = true;
                 ?>
-                    <li class="<?php echo ($tab_num === 3) ? 'active' : ''; ?>">
+                    <li class="<?php echo ($tab_num === 4) ? 'active' : ''; ?>">
                         <a data-action="tab" data-ref="billetAndCard" href="#tab-billet-and-card">
                             <?php esc_html_e('Pay with boleto and credit card', 'woo-pagarme-payments'); ?>
                         </a>
@@ -75,7 +87,7 @@ $swal_data   = array(
                 if ($this->model->settings->is_active_2_cards()) :
                     $tab_two_cards = true;
                 ?>
-                    <li class="<?php echo ($tab_num === 4) ? 'active' : ''; ?>">
+                    <li class="<?php echo ($tab_num === 5) ? 'active' : ''; ?>">
                         <a data-action="tab" data-ref="2cards" href="#tab-2-cards">
                             <?php esc_html_e('Pay with 2 cards', 'woo-pagarme-payments'); ?>
                         </a>
@@ -109,7 +121,16 @@ $swal_data   = array(
                         );
                     endif;
 
-                    if (isset($tab_billet_and_card) && ($tab_num === 3 || !isset($active_tab) && $tab_num === 0)) :
+                    if (isset($tab_pix) && ($tab_num === 3 || !isset($active_tab) && $tab_num === 0)) :
+                        $active_tab = true;
+
+                        Utils::get_template(
+                            'templates/checkout/pix-item',
+                            array('model' => $this->model)
+                        );
+                    endif;
+
+                    if (isset($tab_billet_and_card) && ($tab_num === 4 || !isset($active_tab) && $tab_num === 0)) :
                         $active_tab = true;
 
                         Utils::get_template(
@@ -121,7 +142,7 @@ $swal_data   = array(
                         );
                     endif;
 
-                    if (isset($tab_two_cards) && ($tab_num === 4 || !isset($active_tab) && $tab_num === 0)) :
+                    if (isset($tab_two_cards) && ($tab_num === 5 || !isset($active_tab) && $tab_num === 0)) :
                         Utils::get_template(
                             'templates/checkout/2-cards-item',
                             array(
@@ -131,6 +152,8 @@ $swal_data   = array(
                         );
                     endif;
                     ?>
+
+
                 </ul>
             </div>
         </div>

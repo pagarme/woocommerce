@@ -49,8 +49,9 @@ final class HubIntegrationService
 
         $installToken = $tokenRepo->findByPagarmeId(new HubInstallToken($installToken));
 
-        if (is_a($installToken, InstallToken::class) 
-            && !$installToken->isExpired() 
+        if (
+            is_a($installToken, InstallToken::class)
+            && !$installToken->isExpired()
             && !$installToken->isUsed()
         ) {
             $body = [

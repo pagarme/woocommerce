@@ -3,6 +3,7 @@
 
 namespace Pagarme\Core\Test\Payment;
 
+use Pagarme\Core\Kernel\ValueObjects\AbstractValidString;
 use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
 use Pagarme\Core\Payment\Aggregates\Customer;
 use Pagarme\Core\Payment\ValueObjects\CustomerType;
@@ -31,5 +32,27 @@ class CustomerTests extends TestCase
 
 
         $this->assertEquals(2, $this->customer->getCode());
+    }
+
+    public function testEmailTrim()
+    {
+        $this->customer->setCode(3);
+        $this->customer->setEmail(' teste@teste.com ');
+        $this->assertEquals('teste@teste.com', $this->customer->getEmail());
+    }
+
+    public function testEmailRemoveCharactersAfterMaxLength()
+    {
+        $emailMaxLength = 64;
+        $newEmailLength = $emailMaxLength + 1;
+        $customerEmail = "teste@gmail.com";
+        $customerEmail = sprintf("%'a${newEmailLength}s", $customerEmail);
+
+        $this->customer->setCode(4);
+        $this->customer->setEmail($customerEmail);
+
+        $this->assertEquals(
+            $emailMaxLength, strlen($this->customer->getEmail())
+        );
     }
 }

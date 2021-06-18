@@ -48,7 +48,10 @@ class HubCommandFactory
         );
 
         $publicKeyClass = PublicKey::class;
-        if ($command->getType()->equals(CommandType::Sandbox())) {
+        if (
+            $command->getType()->equals(CommandType::Sandbox())
+            || $command->getType()->equals(CommandType::Development())
+        ) {
             $publicKeyClass = TestPublicKey::class;
         }
 

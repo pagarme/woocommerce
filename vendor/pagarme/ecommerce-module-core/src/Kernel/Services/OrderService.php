@@ -19,6 +19,7 @@ use Pagarme\Core\Kernel\Factories\OrderFactory;
 use Pagarme\Core\Kernel\Factories\ChargeFactory;
 use Pagarme\Core\Payment\Aggregates\Order as PaymentOrder;
 use Exception;
+use Pagarme\Core\Kernel\ValueObjects\ChargeStatus;
 
 final class OrderService
 {
@@ -100,6 +101,49 @@ final class OrderService
         $dataService->updateAcquirerData($order);
     }
 
+    private function chargeAlreadyCanceled($charge)
+    {
+        return
+            $charge->getStatus()->equals(ChargeStatus::canceled()) ||
+            $charge->getStatus()->equals(ChargeStatus::failed());
+    }
+
+    private function addReceivedChargeMessages($messages, $charge, $result)
+    {
+        if (!is_null($result)) {
+            $messages[$charge->getPagarmeId()->getValue()] = $result;
+        }
+
+        return $messages;
+    }
+
+    private function updateChargeInOrder($order, $charge)
+    {
+        if (!empty($order)) {
+            $order->updateCharge($charge);
+        }
+    }
+
+    public function cancelChargesAtPagarme(array $charges, Order $order = null)
+    {
+        $messages = [];
+        $APIService = new APIService();
+
+        foreach ($charges as $charge) {
+            if ($this->chargeAlreadyCanceled($charge)) {
+                continue;
+            }
+
+            $result = $APIService->cancelCharge($charge);
+
+            $messages = $this->addReceivedChargeMessages($messages, $charge, $result);
+
+            $this->updateChargeInOrder($order, $charge);
+        }
+
+        return $messages;
+    }
+
     public function cancelAtPagarme(Order $order)
     {
         $orderRepository = new OrderRepository();
@@ -112,21 +156,10 @@ final class OrderService
             return;
         }
 
-        $APIService = new APIService();
-
-        $charges = $order->getCharges();
-        $results = [];
-        foreach ($charges as $charge) {
-            $result = $APIService->cancelCharge($charge);
-            if ($result !== null) {
-                $results[$charge->getPagarmeId()->getValue()] = $result;
-            }
-            $order->updateCharge($charge);
-        }
-
-        $i18n = new LocalizationService();
+        $results = $this->cancelChargesAtPagarme($order->getCharges(), $order);
 
         if (empty($results)) {
+            $i18n = new LocalizationService();
             $order->setStatus(OrderStatus::canceled());
             $order->getPlatformOrder()->setStatus(OrderStatus::canceled());
 
@@ -155,15 +188,36 @@ final class OrderService
             return;
         }
 
+        $this->addMessagesToPlatformHistory($results, $order);
+    }
+
+    public function addMessagesToPlatformHistory($results, $order)
+    {
+        $i18n = new LocalizationService();
         $history = $i18n->getDashboard("Some charges couldn't be canceled at Pagarme. Reasons:");
         $history .= "<br /><ul>";
-        foreach ($results as $chargeId => $reason)
-        {
+        foreach ($results as $chargeId => $reason) {
             $history .= "<li>$chargeId : $reason</li>";
         }
         $history .= '</ul>';
         $order->getPlatformOrder()->addHistoryComment($history);
         $order->getPlatformOrder()->save();
+    }
+
+    public function addChargeMessagesToLog($platformOrder, $orderInfo, $errorMessages)
+    {
+
+        if (!empty($errorMessages)) {
+            return;
+        }
+
+        foreach ($errorMessages as $chargeId => $reason) {
+            $this->logService->orderInfo(
+                $platformOrder->getCode(),
+                "Charge $chargeId couldn't be canceled at Pagarme. Reason: $reason",
+                $orderInfo
+            );
+        }
     }
 
     public function cancelAtPagarmeByPlatformOrder(PlatformOrderInterface $platformOrder)
@@ -196,57 +250,68 @@ final class OrderService
                 'Creating order.',
                 $orderInfo
             );
+
             //set pending
             $platformOrder->setState(OrderState::stateNew());
             $platformOrder->setStatus(OrderStatus::pending());
 
             //build PaymentOrder based on platformOrder
-            $order =  $this->extractPaymentOrderFromPlatformOrder($platformOrder);
+            $paymentOrder =  $this->extractPaymentOrderFromPlatformOrder($platformOrder);
 
             $i18n = new LocalizationService();
 
-            //Send through the APIService to Pagarme
+            //Send through the APIService to pagarme
             $apiService = new APIService();
-            $response = $apiService->createOrder($order);
+            $response = $apiService->createOrder($paymentOrder);
 
-            $originalResponse = $response;
             $forceCreateOrder = MPSetup::getModuleConfiguration()->isCreateOrderEnabled();
 
-            if (!$forceCreateOrder && !$this->checkResponseStatus($response)) {
+            if (!$forceCreateOrder && !$this->wasOrderChargedSuccessfully($response)) {
                 $this->logService->orderInfo(
                     $platformOrder->getCode(),
                     "Can't create order. - Force Create Order: {$forceCreateOrder} | Order or charge status failed",
                     $orderInfo
                 );
+
+                $charges = $this->createChargesFromResponse($response);
+                $errorMessages = $this->cancelChargesAtPagarme($charges);
+
+                $this->addChargeMessagesToLog($platformOrder, $orderInfo, $errorMessages);
+
                 $this->persistListChargeFailed($response);
 
-                $message = $i18n->getDashboard("Can't create order.");
+                $message = $i18n->getDashboard(
+                    "Can't create payment. " .
+                    "Please review the information and try again."
+                );
                 throw new \Exception($message, 400);
             }
 
             $platformOrder->save();
 
             $orderFactory = new OrderFactory();
-            $response = $orderFactory->createFromPostData($response);
+            $order = $orderFactory->createFromPostData($response);
+            $order->setPlatformOrder($platformOrder);
 
-            $response->setPlatformOrder($platformOrder);
-
-            $handler = $this->getResponseHandler($response);
-            $handler->handle($response, $order);
+            $handler = $this->getResponseHandler($order);
+            $handler->handle($order, $paymentOrder);
 
             $platformOrder->save();
 
-            if ($forceCreateOrder && !$this->checkResponseStatus($originalResponse)) {
+            if (!$this->wasOrderChargedSuccessfully($response)) {
                 $this->logService->orderInfo(
                     $platformOrder->getCode(),
                     "Can't create order. - Force Create Order: {$forceCreateOrder} | Order or charge status failed",
                     $orderInfo
                 );
-                $message = $i18n->getDashboard("Can't create order.");
+                $message = $i18n->getDashboard(
+                    "Can't create payment. " .
+                    "Please review the information and try again."
+                );
                 throw new \Exception($message, 400);
             }
 
-            return [$response];
+            return [$order];
         } catch (\Exception $e) {
             $this->logService->orderInfo(
                 $platformOrder->getCode(),
@@ -278,6 +343,8 @@ final class OrderService
     public function extractPaymentOrderFromPlatformOrder(
         PlatformOrderInterface $platformOrder
     ) {
+        $i18n = new LocalizationService();
+
         $moduleConfig = MPSetup::getModuleConfiguration();
 
         $moneyService = new MoneyService();
@@ -301,14 +368,19 @@ final class OrderService
             $order->addPayment($payment);
         }
 
+        $orderInfo = $this->getOrderInfo($platformOrder);
+
         if (!$order->isPaymentSumCorrect()) {
-            $message = 'The sum of payments is different than the order amount!';
+            $message = $i18n->getDashboard(
+                "The sum of payments is different than the order amount! " .
+                "Review the information and try again."
+            );
             $this->logService->orderInfo(
                 $platformOrder->getCode(),
                 $message,
                 $orderInfo
             );
-            throw new \Exception($message,400);
+            throw new \Exception($message, 400);
         }
 
         $items = $platformOrder->getItemCollection();
@@ -337,17 +409,21 @@ final class OrderService
         return $orderInfo;
     }
 
+    private function responseHasNoChargesOrFailed($response)
+    {
+        return !isset($response['status']) ||
+            !isset($response['charges']) ||
+            $response['status'] == 'failed';
+    }
+
     /**
      * @param $response
      * @return boolean
      */
-    private function checkResponseStatus($response)
+    private function wasOrderChargedSuccessfully($response)
     {
-        if (
-            !isset($response['status']) ||
-            !isset($response['charges']) ||
-            $response['status'] == 'failed'
-        ) {
+
+        if ($this->responseHasNoChargesOrFailed($response)) {
             return false;
         }
 
@@ -371,8 +447,22 @@ final class OrderService
             return;
         }
 
-        $chargeFactory = new ChargeFactory();
+        $charges = $this->createChargesFromResponse($response);
         $chargeService = new ChargeService();
+
+        foreach ($charges as $charge) {
+            $chargeService->save($charge);
+        }
+    }
+
+    private function createChargesFromResponse($response)
+    {
+        if (empty($response['charges'])) {
+            return [];
+        }
+
+        $charges = [];
+        $chargeFactory = new ChargeFactory();
 
         foreach ($response['charges'] as $chargeResponse) {
             $order = ['order' => ['id' => $response['id']]];
@@ -380,8 +470,10 @@ final class OrderService
                 array_merge($chargeResponse, $order)
             );
 
-            $chargeService->save($charge);
+            $charges[] = $charge;
         }
+
+        return $charges;
     }
 
     /**

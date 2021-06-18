@@ -96,6 +96,7 @@ class Gateways extends WC_Payment_Gateway
             'production_secret_key'             => $this->field_production_secret_key(),
             'section_payment_settings'          => $this->section_payment_settings(),
             'enable_billet'                     => $this->field_enable_billet(),
+            'enable_pix'                        => $this->field_enable_pix(),
             'enable_credit_card'                => $this->field_enable_credit_card(),
             'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
             'multimethods_2_cards'              => $this->field_multimethods_2_cards(),
@@ -118,6 +119,9 @@ class Gateways extends WC_Payment_Gateway
             'cc_installments_interest'          => $this->field_cc_installment_fields('interest'),
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
             'cc_installments_by_flag'           => $this->field_cc_installment_fields('flags'),
+            'section_pix'                       => $this->section_pix(),
+            'pix_qrcode_expiration_time'        => $this->field_pix_qrcode_expiration_time(),
+            'pix_additional_data'               => $this->field_pix_additional_data(),
             'section_tools'                     => $this->section_tools(),
             'enable_logs'                       => $this->field_enabled_logs(),
         );
@@ -257,6 +261,16 @@ class Gateways extends WC_Payment_Gateway
                 'data-action'  => 'enable-billet',
                 'data-requires-field' => 'billet-bank',
             ),
+        );
+    }
+
+    public function field_enable_pix()
+    {
+        return array(
+            'title'   => __('Pix', 'woo-pagarme-payments'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable Pix', 'woo-pagarme-payments'),
+            'default' => 'no'
         );
     }
 
@@ -565,6 +579,39 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
+    public function generate_pix_additional_data_html($key, $data)
+    {
+        $field_key = $this->get_field_key($key);
+
+        $value = (array) $this->get_option($key, array());
+        ob_start();
+
+?>
+        <style>
+            .woocommerce table.form-table fieldset.pix-additional-data input.small-input-pix {
+                width: 198px;
+            }
+        </style>
+
+        <tr valign="top">
+            <th scope="row" class="titledesc">
+                <label for="<?php echo $field_key; ?>">
+                    <?php echo $this->get_tooltip_html($data); ?>
+                    <?php echo $data["title"]; ?>
+                </label>
+            </th>
+            <td class="forminp">
+                <fieldset class="pix-additional-data" data-field="additional-data">
+                    <input name="<?php echo esc_attr($field_key); ?>[name]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["name"]; ?>" placeholder="<?php _e('Additional Information Name', 'woo-pagarme-payments'); ?>" />
+                    <input name="<?php echo esc_attr($field_key); ?>[value]" id=" <?php echo esc_attr($field_key); ?>" class="small-input-pix" type="text" value="<?php echo $value["value"]; ?>" placeholder="<?php _e('Additional Information Value', 'woo-pagarme-payments'); ?>" />
+                </fieldset>
+            </td>
+        </tr>
+    <?php
+
+        return ob_get_clean();
+    }
+
     public function generate_installments_by_flag_html($key, $data)
     {
         $field_key = $this->get_field_key($key);
@@ -586,7 +633,7 @@ class Gateways extends WC_Payment_Gateway
 
         ob_start();
 
-?>
+    ?>
         <style>
             .woocommerce table.form-table p.flag input.small-input {
                 width: 150px;
@@ -643,6 +690,40 @@ class Gateways extends WC_Payment_Gateway
     public function validate_installments_by_flag_field($key, $value)
     {
         return $value;
+    }
+
+    public function validate_pix_additional_data_field($key, $value)
+    {
+        return $value;
+    }
+
+    public function section_pix()
+    {
+        return array(
+            'title' => __('Pix settings', 'woo-pagarme-payments'),
+            'type'  => 'title',
+        );
+    }
+
+    public function field_pix_qrcode_expiration_time()
+    {
+        return array(
+            'title'       => __('QR code expiration time', 'woo-pagarme-payments'),
+            'description' => __('Expiration time in seconds of the generated pix QR code', 'woo-pagarme-payments'),
+            'desc_tip'    => true,
+            'placeholder' => 3500,
+            'default'     => 3500,
+        );
+    }
+
+    public function field_pix_additional_data()
+    {
+        return array(
+            'title'       => __('Additional information', 'woo-pagarme-payments'),
+            'description' => __('Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment process.', 'woo-pagarme-payments'),
+            'desc_tip'    => true,
+            'type'        => 'pix_additional_data',
+        );
     }
 
     public function section_tools()

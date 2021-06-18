@@ -555,7 +555,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $handler = 'extractPaymentDataFrom' . $this->getPaymentHandler($payments);
         $this->$handler($paymentData);
-
         $paymentFactory = new PaymentFactory();
         $paymentMethods = $paymentFactory->createFromJson(
             json_encode($paymentData)
@@ -601,6 +600,16 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $payment['payment_method'] === 'credit_card';
     }
 
+    private function isPixPayment($payments)
+    {
+        if (count($payments) > 1) {
+            return false;
+        }
+
+        $payment = $payments[0];
+        return $payment['payment_method'] === 'pix';
+    }
+
     private function getPaymentHandler($payments)
     {
         if (count($payments) > 1) {
@@ -620,6 +629,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         if ($this->isCreditCardPayment($payments)) {
             return 'CreditCard';
+        }
+
+        if ($this->isPixPayment($payments)) {
+            return 'Pix';
         }
 
         return null;
@@ -913,25 +926,24 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $paymentData[$boletoDataIndex][] = $newPaymentData;
     }
 
-    private function extractPaymentDataFromPagarmePix(
-        $additionalInformation,
-        &$paymentData,
-        $payment
-    ) {
+    private function extractPaymentDataFromPix(&$paymentData)
+    {
         $moneyService = new MoneyService();
         $newPaymentData = new \stdClass();
+
+        $amount = $this->getGrandTotal();
+
         $newPaymentData->amount =
-            $moneyService->floatToCents($this->platformOrder->getGrandTotal());
+            $moneyService->floatToCents($amount);
 
         $pixDataIndex = PixPayment::getBaseCode();
         if (!isset($paymentData[$pixDataIndex])) {
             $paymentData[$pixDataIndex] = [];
         }
 
-        if (!empty($additionalInformation['pix_buyer_checkbox'])) {
+        if ($this->formData["enable_multicustomers_pix"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
-                'pix',
-                $additionalInformation
+                'pix'
             );
         }
 

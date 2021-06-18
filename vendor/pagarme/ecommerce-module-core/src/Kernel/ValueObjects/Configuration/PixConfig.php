@@ -23,6 +23,11 @@ class PixConfig extends AbstractValueObject
     private $bankType;
 
     /**
+     * @var array
+     */
+    private $additionalInformation;
+
+    /**
      * @return bool
      */
     public function isEnabled()
@@ -95,6 +100,24 @@ class PixConfig extends AbstractValueObject
     }
 
     /**
+     * @return array
+     */
+    public function getAdditionalInformation()
+    {
+        return $this->additionalInformation;
+    }
+
+    /**
+     * @param array $additionalInformation
+     * @return PixConfig
+     */
+    public function setAdditionalInformation($additionalInformation)
+    {
+        $this->additionalInformation = $additionalInformation;
+        return $this;
+    }
+
+    /**
      * To check the structural equality of value objects,
      * this method should be implemented in this class children.
      *
@@ -106,7 +129,8 @@ class PixConfig extends AbstractValueObject
         return
             $this->enabled === $object->isEnabled() &&
             $this->bankType === $object->getBankType() &&
-            $this->expirationQrCode === $object->getExpirationQrCode();
+            $this->expirationQrCode === $object->getExpirationQrCode() &&
+            $this->additionalInformation === $object->getAdditionalInformation();
     }
 
     /**
@@ -122,7 +146,8 @@ class PixConfig extends AbstractValueObject
             "enabled" => $this->enabled,
             "title" => $this->getTitle(),
             "bankType" => $this->getBankType(),
-            "expirationQrCode" => $this->getExpirationQrCode()
+            "expirationQrCode" => $this->getExpirationQrCode(),
+            "additionalInformation" => $this->getAdditionalInformation()
         ];
     }
 }
