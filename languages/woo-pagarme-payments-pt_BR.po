@@ -693,16 +693,16 @@ msgstr "Copiar Código"
 msgid "1. Point your phone at this screen to capture the code."
 msgstr "1. Aponte seu celular para essa tela para capturar o código."
 
-msgid "2. Open your payments application."
-msgstr "2. Abra seu aplicativo  de pagamentos."
+msgid "2. Open your payments app."
+msgstr "2. Abra seu aplicativo de pagamentos."
 
-msgid "3. Confirm the data and finalize payment for the application."
+msgid "3. Confirm the information and complete the payment on the app."
 msgstr "3. Confirme os dados e finalize o pagamento pelo aplicativo."
 
 msgid "4. We will send you a purchase confirmation."
 msgstr "4. Enviaremos uma confirmação de compra pra você."
 
-msgid "You can also finalize payment by copying and pasting the code into your app."
+msgid "You can also complete the payment by copying and pasting the code into the app."
 msgstr "Você também pode finalizar o pagamento copiando e colando o código em seu aplicativo."
 
 msgid "Pix settings"
@@ -717,7 +717,7 @@ msgstr "Tempo, em segundos, até o QRCode expirar depois de gerado"
 msgid "Additional information"
 msgstr "Informações adicionais"
 
-msgid "Set of key and value used to add information to the generated pix. This will be visible to the buyer during payment"
+msgid "Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment process."
 msgstr "Conjunto de chave e valor para adicionar informações ao pix gerado. Isso ficará visível para o comprador durante o pagamento"
 
 msgid "Additional Information Name"

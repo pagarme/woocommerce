@@ -140,10 +140,10 @@ class Checkouts
             <?php _e('1. Point your phone at this screen to capture the code.', 'woo-pagarme-payments'); ?>
         </div>
         <div class="pix-qr-code-instruction">
-            <?php _e('2. Open your payments application.', 'woo-pagarme-payments'); ?>
+            <?php _e('2. Open your payments app.', 'woo-pagarme-payments'); ?>
         </div>
         <div class="pix-qr-code-instruction">
-            <?php _e('3. Confirm the data and finalize payment for the application.', 'woo-pagarme-payments'); ?>
+            <?php _e('3. Confirm the information and complete the payment on the app.', 'woo-pagarme-payments'); ?>
         </div>
         <div class="pix-qr-code-instruction">
             <?php _e('4. We will send you a purchase confirmation.', 'woo-pagarme-payments'); ?>
@@ -161,7 +161,7 @@ class Checkouts
         </div>
 
         <div class="pix-qr-code-instruction pix-attention-instruction">
-            <?php _e('You can also finalize payment by copying and pasting the code into your app.', 'woo-pagarme-payments'); ?>
+            <?php _e('You can also complete the payment by copying and pasting the code into the app.', 'woo-pagarme-payments'); ?>
         </div>
 
 

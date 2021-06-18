@@ -103,7 +103,10 @@ class Charge
         if (!$webhook_data) {
             return;
         }
-
+        /*
+            TODO: remove this insert and update calls. we need to use charge data
+            from core's table, and these methods updates the legacy charge table.
+        */
         if (!$this->is_exists($webhook_data->data->id)) {
             return $this->insert([
                 'wc_order_id'   => $webhook_data->data->order->code,

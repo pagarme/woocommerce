@@ -120,8 +120,8 @@ class Gateways extends WC_Payment_Gateway
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
             'cc_installments_by_flag'           => $this->field_cc_installment_fields('flags'),
             'section_pix'                       => $this->section_pix(),
-            'pix_qrcode_expiration_time'        => $this->field_qrcode_expiration_time(),
-            'pix_additional_data'               => $this->field_additional_data(),
+            'pix_qrcode_expiration_time'        => $this->field_pix_qrcode_expiration_time(),
+            'pix_additional_data'               => $this->field_pix_additional_data(),
             'section_tools'                     => $this->section_tools(),
             'enable_logs'                       => $this->field_enabled_logs(),
         );
@@ -579,7 +579,7 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-    public function generate_additional_data_html($key, $data)
+    public function generate_pix_additional_data_html($key, $data)
     {
         $field_key = $this->get_field_key($key);
 
@@ -692,7 +692,7 @@ class Gateways extends WC_Payment_Gateway
         return $value;
     }
 
-    public function validate_additional_data_field($key, $value)
+    public function validate_pix_additional_data_field($key, $value)
     {
         return $value;
     }
@@ -705,7 +705,7 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-    public function field_qrcode_expiration_time()
+    public function field_pix_qrcode_expiration_time()
     {
         return array(
             'title'       => __('QR code expiration time', 'woo-pagarme-payments'),
@@ -716,13 +716,13 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-    public function field_additional_data()
+    public function field_pix_additional_data()
     {
         return array(
             'title'       => __('Additional information', 'woo-pagarme-payments'),
-            'description' => __('Set of key and value used to add information to the generated pix. This will be visible to the buyer during payment', 'woo-pagarme-payments'),
+            'description' => __('Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment process.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
-            'type'        => 'additional_data',
+            'type'        => 'pix_additional_data',
         );
     }
 
