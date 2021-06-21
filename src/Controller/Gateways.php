@@ -386,6 +386,10 @@ class Gateways extends WC_Payment_Gateway
             'desc_tip'    => true,
             'placeholder' => 5,
             'default'     => 5,
+            'custom_attributes' => array(
+                'data-mask'         => '##0',
+                'data-mask-reverse' => 'true',
+            ),
         );
     }
 
@@ -713,6 +717,10 @@ class Gateways extends WC_Payment_Gateway
             'desc_tip'    => true,
             'placeholder' => 3500,
             'default'     => 3500,
+            'custom_attributes' => array(
+                'data-mask'         => '##0',
+                'data-mask-reverse' => 'true',
+            ),
         );
     }
 

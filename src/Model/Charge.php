@@ -103,6 +103,8 @@ class Charge
         if (!$webhook_data) {
             return;
         }
+
+        $this->update_core_charge($webhook_data);
         /*
             TODO: remove this insert and update calls. we need to use charge data
             from core's table, and these methods updates the legacy charge table.
@@ -126,20 +128,20 @@ class Charge
                 'charge_id' => esc_sql($webhook_data->data->id),
             )
         );
-
-        $this->update_core_charge($webhook_data);
     }
 
     private function update_core_charge($webhook_data)
     {
-        $webhook_data->data = json_decode(
-            json_encode($webhook_data->data),
+        $webhook = clone $webhook_data;
+
+        $webhook->data = json_decode(
+            json_encode($webhook->data),
             true
         );
 
         $coreWebhookFactory = new WebhookFactory();
         $coreChargeHandler = new ChargeHandlerService();
-        $coreWebhook = $coreWebhookFactory->createFromPostData($webhook_data);
+        $coreWebhook = $coreWebhookFactory->createFromPostData($webhook);
         $coreChargeHandler->handle($coreWebhook);
     }
 
