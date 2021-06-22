@@ -76,6 +76,10 @@ class Charges
     private function handle_charge_cancel($charge_id, $amount)
     {
         $chargeService = new ChargeService();
+        $moneyService = new MoneyService();
+
+        $amount = $moneyService->removeSeparators($amount);
+        $amount = $moneyService->floatToCents($amount / 100);
         return $chargeService->cancelById($charge_id, $amount);
     }
 
@@ -96,6 +100,7 @@ class Charges
             'charge_created',
             'charge_updated',
             'charge_paid',
+            'charge_refunded',
             'charge_pending',
         );
 
