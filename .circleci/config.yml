@@ -1,4 +1,25 @@
-version: 2
+version: 2.1
+
+_run:
+  pull_sonar_image: &pull_sonar_image
+    name: Pull Docker sonar-scanner image
+    command: |
+      echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+      docker pull pagarme/sonar-scanner
+  pull_sonar_check_quality_gate_image: &pull_sonar_check_quality_gate_image
+    name: Pull Docker check-sonar-quality-gate image
+    command: |
+      echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+      docker pull pagarme/check-sonar-quality-gate
+
+parameters:
+  machine_image:
+    type: string
+    default: ubuntu-2004:202010-01
+  working_dir:
+    type: string
+    default: '~/woocommerce'
+
 jobs:
     build:
         working_directory: /app
@@ -41,6 +62,33 @@ jobs:
                   root: /
                   paths:
                       - app
+
+    sonar:
+        working_directory: << pipeline.parameters.working_dir >>
+        machine:
+            image: << pipeline.parameters.machine_image >>
+        steps:
+            - checkout
+            - run: *pull_sonar_image
+            - run:
+                name: Run Sonar
+                command: make sonar BRANCH=$CIRCLE_BRANCH
+            - persist_to_workspace:
+                root: << pipeline.parameters.working_dir >>
+                paths:
+                    - '*'
+
+    check_quality_gate_sonar:
+        working_directory: << pipeline.parameters.working_dir >>
+        machine:
+            image: << pipeline.parameters.machine_image >>
+        steps:
+            - attach_workspace:
+                at: << pipeline.parameters.working_dir >>
+            - run: *pull_sonar_check_quality_gate_image
+            - run:
+                name: Check quality gate
+                command: make sonar-check-quality-gate
 
     publish:
         working_directory: /
@@ -109,10 +157,22 @@ workflows:
     build_publish_deploy:
         jobs:
             - build
+            - sonar:
+                  context: dockerhub
+            - check_quality_gate_sonar:
+                  context: dockerhub
+                  requires:
+                      - sonar
+                  filters:
+                      branches:
+                          ignore:
+                              - master
+                              - develop
             - publish:
                   context: acceptance
                   requires:
                       - build
+                      - sonar
                   filters:
                       branches:
                           only: develop
