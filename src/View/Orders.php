@@ -44,6 +44,7 @@ class Orders
                         <th>Valor Total</th>
                         <th>Parcialmente Capturado</th>
                         <th>Parcialmente Cancelado</th>
+                        <th>Parcialmente Estornado</th>
                         <th>Status</th>
                         <th class="action">Ação</th>
                     </tr>
@@ -55,14 +56,18 @@ class Orders
                             $transaction = array_shift($charge->getTransactions());
                             $chargeId = $charge->getPagarmeId()->getValue();
                             $chargeStatus = $charge->getStatus()->getStatus();
+
                             $paid_amount = !empty($charge->getPaidAmount()) ? Utils::format_order_price_to_view($charge->getPaidAmount()) : ' - ';
                             $canceled_amount = !empty($charge->getCanceledAmount()) ? Utils::format_order_price_to_view($charge->getCanceledAmount()) : ' - ';
+                            $refunded_amount = !empty($charge->getRefundedAmount()) ? Utils::format_order_price_to_view($charge->getRefundedAmount()) : ' - ';
+
                             ?>
                             <td><?php echo $chargeId ?></td>
                             <td><?php echo strtoupper($transaction->getTransactionType()->getType()); ?></td>
                             <td><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></td>
                             <td><?php echo $paid_amount; ?></td>
                             <td><?php echo $canceled_amount; ?></td>
+                            <td><?php echo $refunded_amount; ?></td>
                             <td><?php echo strtoupper($chargeStatus); ?></td>
                             <td style="width:150px; padding-top:12px; text-align:center;">
                                 <button data-type="cancel" data-ref="<?php echo $chargeId ?>" <?php echo !$charge_model->is_allowed_cancel($charge) ? 'disabled=disabled' : ''; ?> class="button-primary">Cancelar</button>
@@ -111,6 +116,7 @@ class Orders
     private static function render_cancel_modal($charge, $transaction)
     {
         $canceled_amount = !empty($charge->getCanceledAmount()) ? $charge->getCanceledAmount() : 0;
+        $refunded_amount = !empty($charge->getRefundedAmount()) ? $charge->getRefundedAmount() : 0;
         $paid_amount     = !empty($charge->getPaidAmount()) ? $charge->getPaidAmount() : 0;
         $value_to_cancel = $charge->getAmount();
         $chargeId = $charge->getPagarmeId()->getValue();
@@ -122,6 +128,10 @@ class Orders
 
         if ($paid_amount && $canceled_amount) {
             $value_to_cancel = $paid_amount - $canceled_amount;
+        }
+
+        if ($paid_amount && $refunded_amount) {
+            $value_to_cancel = max(0, $paid_amount - $refunded_amount);
         }
 
     ?>
