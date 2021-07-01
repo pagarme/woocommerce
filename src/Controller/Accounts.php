@@ -102,8 +102,8 @@ class Accounts
                 wp_send_json_success(
                     __('Card removed successfully.', 'woo-pagarme-payments')
                 );
-                break;
                 $card_found = true;
+                break;
             }
         }
         if (!$card_found) {
