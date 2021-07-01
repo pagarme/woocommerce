@@ -360,8 +360,8 @@ class Gateways extends WC_Payment_Gateway
     {
         return array(
             'title'             => __('Soft descriptor', 'woo-pagarme-payments'),
-            'desc_tip'          => true,
-            'description'       => __('Description that appears on the credit card bill. Max length of 13 characters.', 'woo-pagarme-payments'),
+            'desc_tip'          => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
+            'description'     => __( 'Max length of <span id="max_length_span">13</span> characters.', 'woo-pagarme-payments' ),
             'custom_attributes' => array(
                 'data-field'     => 'soft-descriptor',
                 'data-action'    => 'soft-descriptor',
@@ -753,11 +753,10 @@ class Gateways extends WC_Payment_Gateway
                                     <td><input class="align" type="number" min="1" max="24" name="<?php echo esc_attr($field_key); ?>[max_installment][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>_max_installment_<?php echo $flag_key; ?>" value="<?php echo intval($max_installment); ?>" /></td>
                                     <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>_interest_<?php echo $flag_key; ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest) ?>" /></td>
                                     <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest_increase][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>_interest_increase_<?php echo $flag_key; ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest_increase) ?>" /></td>
-                                    <td><input class="align" type="number" min="1" max="24" name="<?php echo esc_attr($field_key); ?>[no_interest][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>_no_interest_<?php echo $flag_key; ?>" value="<?php echo intval($no_interest); ?>" /></td>
+                                    <td><input class="align" type="number" min="1" max="<?php echo intval($no_interest); ?>" name="<?php echo esc_attr($field_key); ?>[no_interest][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>_no_interest_<?php echo $flag_key; ?>" value="<?php echo intval($no_interest); ?>" /></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
-                        <?php echo $this->get_description_html($data); ?>
                     </table>
                 </fieldset>
             </td>
