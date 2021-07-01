@@ -171,6 +171,7 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
         } else {
             if ( this.elements.flagsSelect.val() ) {
                 installmentsByFlagContainer.show();
+                this.setInstallmentsByFlags(null, true);
             }
             installmentsMaxContainer.hide();
             installmentsInterestContainer.hide();
@@ -199,32 +200,27 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
         var maxInstallmentsLength = this.installmentsMax.children('option').length;
 
         for (let i = 13; i <= maxInstallmentsLength+1; i++) {
-            if (i === 24) {
-                installments += 'option[value="' + i + '"]';
-                continue;
-            }
-
             installments += 'option[value="' + i + '"], ';
         }
 
-        return installments;
+        return installments.slice(0, -2);
     };
 
-    Model.fn.setOriginalSelect = function($select) {
-        if ($select.data("originalHTML") === undefined) {
-            $select.data("originalHTML", $select.html());
+    Model.fn.setOriginalSelect = function(select) {
+        if (select.data("originalHTML") === undefined) {
+            select.data("originalHTML", select.html());
         }
     };
 
-    Model.fn.removeOptions = function($select, $options) {
-        this.setOriginalSelect($select);
-        $options.remove();
+    Model.fn.removeOptions = function(select, options) {
+        this.setOriginalSelect(select);
+        options.remove();
     };
 
-    Model.fn.restoreOptions = function($select) {
-        var originalgHTML = $select.data("originalHTML");
+    Model.fn.restoreOptions = function(select) {
+        var originalgHTML = select.data("originalHTML");
         if (originalgHTML !== undefined) {
-            $select.html(originalgHTML);
+            select.html(originalgHTML);
         }
     };
 
@@ -242,76 +238,103 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
             installmentsWithoutInterest.children('option').filter(function() {
                 return parseInt($(this).val()) <= installmentsMax;
             }).show();
+            installmentsWithoutInterest.val(installmentsMax).change();
         }
     };
 
     Model.fn.setMaxInstallmentsWithoutInterestBasedOnMaxInstallmentsByFlag = function () {
-        var installmentsWithoutInterestByFlagElement = this.installmentsWithoutInterestByFlag;
         var installmentsMaxElement = this.installmentsMaxByFlag;
 
-        setMaxInstallmentsWithoutInterest(installmentsMaxElement.val());
-
         installmentsMaxElement.on('change', function() {
-            setMaxInstallmentsWithoutInterest($(this).val());
+            setMaxInstallmentsWithoutInterest(
+                $(this).val(),
+                $(this).closest('tr').attr("data-flag")
+            );
         });
 
-        function setMaxInstallmentsWithoutInterest(installmentsMax) {
-            installmentsWithoutInterestByFlagElement.prop("max", installmentsMax);
+        function setMaxInstallmentsWithoutInterest(installmentsMax, brandName) {
+            var setMaxInstallmentsWithoutInterestOnFlag = $('[data-field="installments-by-flag"]')
+                .find('input[name*="cc_installments_by_flag[no_interest]['+ brandName +']"]');
+            setMaxInstallmentsWithoutInterestOnFlag.prop("max", installmentsMax);
         }
     };
 
-    Model.fn.handleGatewayIntegrationFieldsVisibility = function( value ) {
+    Model.fn.setupPSPOptions = function (
+        antifraudEnabled,
+        antifraudMinValue,
+        ccAllowSave,
+        billetBank
+    ) {
+        antifraudEnabled.hide();
+        antifraudMinValue.hide();
+        ccAllowSave.hide();
+        billetBank.hide();
+        this.antifraudSection.hide();
+
+        this.ccAllowSave.prop("checked", false);
+        var $optionsToRemove = this.ccBrands.find(this.getOnlyGatewayBrands());
+        this.removeOptions(this.ccBrands, $optionsToRemove);
+
+        $("#max_length_span").html("13");
+        this.softDescriptor.prop('maxlength', 13);
+
+        var $optionsToRemoveInstallments = this.installmentsMax.find(
+            this.getOnlyGatewayInstallments()
+        );
+        var $optionsToRemoveInstallmentsWithoutInterest = this.installmentsWithoutInterest.find(
+            this.getOnlyGatewayInstallments()
+        );
+        this.removeOptions(this.installmentsMax, $optionsToRemoveInstallments);
+        this.removeOptions(this.installmentsWithoutInterest, $optionsToRemoveInstallmentsWithoutInterest);
+
+        this.installmentsMaxByFlag.prop("max", 12);
+    };
+
+    Model.fn.setupGatewayOptions = function (
+        antifraudEnabled,
+        antifraudMinValue,
+        ccAllowSave,
+        billetBank
+    ) {
+        antifraudEnabled.show();
+        antifraudMinValue.show();
+        ccAllowSave.show();
+        billetBank.show();
+        this.antifraudSection.show();
+
+        this.restoreOptions(this.ccBrands);
+
+        $("#max_length_span").html("22");
+        this.softDescriptor.prop('maxlength', 22);
+
+        this.restoreOptions(this.installmentsMax);
+        this.restoreOptions(this.installmentsWithoutInterest);
+
+        this.installmentsMaxByFlag.prop("max", 24);
+    };
+
+    Model.fn.handleGatewayIntegrationFieldsVisibility = function(isGateway) {
         var antifraudEnabled  = this.antifraudEnabled.closest( 'tr' )
           , antifraudMinValue = this.antifraudMinValue.closest( 'tr' )
           , ccAllowSave = this.ccAllowSave.closest( 'tr' )
           , billetBank = this.billetBank.closest( 'tr' )
         ;
 
-        if (value == false) {
-            antifraudEnabled.hide();
-            antifraudMinValue.hide();
-            ccAllowSave.hide();
-            billetBank.hide();
-            this.antifraudSection.hide();
-
-            this.ccAllowSave.prop("checked", false);
-            var $optionsToRemove = this.ccBrands.find(this.getOnlyGatewayBrands());
-            this.removeOptions(this.ccBrands, $optionsToRemove);
-
-            this.softDescriptor.prop('maxlength', 13);
-
-            var $optionsToRemoveInstallments = this.installmentsMax.find(this.getOnlyGatewayInstallments());
-            var $optionsToRemoveInstallmentsWithoutInterest = this.installmentsWithoutInterest.find(this.getOnlyGatewayInstallments());
-            this.removeOptions(this.installmentsMax, $optionsToRemoveInstallments);
-            this.removeOptions(this.installmentsWithoutInterest, $optionsToRemoveInstallmentsWithoutInterest);
-
-            this.installmentsMaxByFlag.prop("max", 12);
-            this.installmentsWithoutInterestByFlag.prop("max", 12);
-
-            this.setMaxInstallmentsWithoutInterestBasedOnMaxInstallments();
-            this.setMaxInstallmentsWithoutInterestBasedOnMaxInstallmentsByFlag();
+        if (isGateway) {
+            return this.setupGatewayOptions(
+                antifraudEnabled,
+                antifraudMinValue,
+                ccAllowSave,
+                billetBank
+            );
         }
 
-        if (value == true) {
-            antifraudEnabled.show();
-            antifraudMinValue.show();
-            ccAllowSave.show();
-            billetBank.show();
-            this.antifraudSection.show();
-
-            this.restoreOptions(this.ccBrands);
-
-            this.softDescriptor.prop('maxlength', 22);
-
-            this.restoreOptions(this.installmentsMax);
-            this.restoreOptions(this.installmentsWithoutInterest);
-
-            this.installmentsMaxByFlag.prop("max", 24);
-            this.installmentsWithoutInterestByFlag.prop("max", 24);
-
-            this.setMaxInstallmentsWithoutInterestBasedOnMaxInstallments();
-            this.setMaxInstallmentsWithoutInterestBasedOnMaxInstallmentsByFlag();
-        }
+        return this.setupPSPOptions(
+            antifraudEnabled,
+            antifraudMinValue,
+            ccAllowSave,
+            billetBank
+        );
     };
 
     Model.fn.handleBilletBankRequirement = function() {
