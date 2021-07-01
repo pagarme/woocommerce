@@ -64,7 +64,7 @@ class Customer
 
         switch ($prop_name) {
             case 'cards':
-                return $this->filter_cards($value);
+                return $this->get_cards($value);
 
             default:
                 return $value;

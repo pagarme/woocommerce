@@ -65,7 +65,29 @@ MONSTER( 'Pagarme.Components.Capture', function(Model, $, Utils) {
 			padding: 20,
 			onOpening: function (modal) {
 				var amount = modal.$element.find( '[data-element=amount]' );
-				amount.mask( "#.##0,00", { reverse: true } );
+                const options = {
+                    reverse:true,
+                    onKeyPress: function(amountValue, event, field){
+                        if (!event.originalEvent){
+                            return;
+                        }
+
+                        amountValue = amountValue.replace(/^0+/, '')
+                        if (amountValue[0] === ','){
+                            amountValue = '0' + amountValue;
+                        }
+
+                        if (amountValue && amountValue.length <= 2){
+                            amountValue = ('000'+amountValue).slice(-3);
+                            field.val(amountValue);
+                            field.trigger('input');
+                            return;
+                        }
+
+                        field.val(amountValue);
+                    }
+                };
+                amount.mask( "#.##0,00", options );
 				modal.$element.on( 'click', '[data-action=capture]', self.onClickCapture.bind(self) );
 				modal.$element.on( 'click', '[data-action=cancel]', self.onClickCancel.bind(self) );
 			}

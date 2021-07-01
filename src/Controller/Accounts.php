@@ -6,15 +6,15 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Model\Account;
 use Woocommerce\Pagarme\Model\Customer;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository as CoreSavedCardRepository;
 
 class Accounts
 {
     protected $wallet_endpoint;
+    protected $card_repository;
 
     const WALLET_ENDPOINT = 'wallet-pagarme';
 
@@ -23,6 +23,7 @@ class Accounts
     public function __construct()
     {
         $this->wallet_endpoint = get_option(self::OPT_WALLET_ENDPOINT, self::WALLET_ENDPOINT);
+        $this->card_repository = new CoreSavedCardRepository();
 
         add_action('init', array($this, 'add_endpoints'));
         add_filter('woocommerce_account_settings', array($this, 'settings_account'));
@@ -93,15 +94,30 @@ class Accounts
         $customer    = new Customer(get_current_user_id());
         $saved_cards = $customer->cards;
         $card_id     = Utils::post('card_id');
-
-        if (!isset($saved_cards[$card_id])) {
+        $card_found = false;
+        foreach ($saved_cards as $saved_card) {
+            $saved_card_id = $saved_card->getPagarmeId()->getValue();
+            if ($saved_card_id === $card_id) {
+                $this->remove_core_card($customer, $saved_card);
+                wp_send_json_success(
+                    __('Card removed successfully.', 'woo-pagarme-payments')
+                );
+                $card_found = true;
+                break;
+            }
+        }
+        if (!$card_found) {
             wp_send_json_error(__('Card not found.', 'woo-pagarme-payments'));
         }
+    }
 
-        unset($saved_cards[$card_id]);
+    private function remove_core_card(&$customer, $saved_card)
+    {
+        $this->card_repository->delete($saved_card);
+        $updatedWallet = array_filter($customer->cards, function ($card) use ($saved_card) {
+            return $card->getPagarmeId() !== $saved_card->getPagarmeId();
+        });
 
-        $customer->cards = $saved_cards;
-
-        wp_send_json_success(__('Card removed successfully.', 'woo-pagarme-payments'));
+        $customer->cards = $updatedWallet;
     }
 }

@@ -156,6 +156,10 @@ class Order extends Meta
             strval($this->ID)
         );
 
+        if (!$order) {
+            return false;
+        }
+
         $charges = $order->getCharges();
 
         if (!$charges) {

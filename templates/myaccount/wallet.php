@@ -28,21 +28,18 @@ if ($customer->cards) :
 ?>
 
     <table class="woocommerce-wallet-table shop_table shop_table_responsive" data-swal='<?php echo wp_json_encode($swal_data, JSON_HEX_APOS); ?>' data-api-request="<?php echo esc_url($api_route); ?>" <?php echo
-                                                                                                                                                                                                            /** phpcs:ignore */
-                                                                                                                                                                                                            Utils::get_component('wallet'); ?>>
+                                                                                                                                                                                                        /** phpcs:ignore */
+                                                                                                                                                                                                        Utils::get_component('wallet'); ?>>
         <thead>
             <tr>
                 <th class="woocommerce-wallet-name">
                     <?php esc_html_e('Name', 'woo-pagarme-payments'); ?>
                 </th>
                 <th class="woocommerce-wallet-last-digits">
-                    <?php esc_html_e('Last digits', 'woo-pagarme-payments'); ?>
+                    <?php esc_html_e('Card', 'woo-pagarme-payments'); ?>
                 </th>
-                <th class="woocommerce-wallet-status">
-                    <?php esc_html_e('Status', 'woo-pagarme-payments'); ?>
-                </th>
-                <th class="woocommerce-wallet-expire">
-                    <?php esc_html_e('Expire', 'woo-pagarme-payments'); ?>
+                <th class="woocommerce-wallet-created-at">
+                    <?php esc_html_e('Created At', 'woo-pagarme-payments'); ?>
                 </th>
                 <th class="woocommerce-wallet-brand">
                     <?php esc_html_e('Brand', 'woo-pagarme-payments'); ?>
@@ -58,22 +55,19 @@ if ($customer->cards) :
 
                 <tr>
                     <td>
-                        <?php echo esc_html($card['holder_name']); ?>
+                        <?php echo esc_html($card->getOwnerName()); ?>
                     </td>
                     <td>
-                        <?php echo esc_html($card['last_four_digits']); ?>
+                        <?php echo esc_html("******" . $card->getLastFourDigits()->getValue()); ?>
                     </td>
                     <td>
-                        <?php echo esc_html($card['status']); ?>
+                        <?php echo esc_html($card->getCreatedAt()->format("m/Y")); ?>
                     </td>
                     <td>
-                        <?php printf('%s/%s', esc_html($card['exp_month']), esc_html($card['exp_year'])); ?>
+                        <?php echo esc_html($card->getBrand()->getName()); ?>
                     </td>
                     <td>
-                        <?php echo esc_html($card['brand']); ?>
-                    </td>
-                    <td>
-                        <button class="woocommerce-button button" data-action="remove-card" data-value="<?php echo esc_attr($card_id); ?>">
+                        <button class="woocommerce-button button" data-action="remove-card" data-value="<?php echo esc_attr($card->getPagarmeId()->getValue()); ?>">
                             <?php esc_html_e('Remove', 'woo-pagarme-payments'); ?>
                         </button>
                     </td>
