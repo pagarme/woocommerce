@@ -111,31 +111,20 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return OrderState::$state();
     }
 
-    private function getWoocommerceStatus($coreStatus)
+    private function getWoocommerceStatusFromCoreStatus($coreStatus)
     {
         $coreToWoocommerceStatus = array(
-            'paid' => 'paid',
-            'pending' => 'pending',
-            'processing' => 'processing',
-            'canceled' => 'cancelled',
-            'failed' => 'failed'
+            'canceled' => 'cancelled'
         );
 
         return array_key_exists($coreStatus, $coreToWoocommerceStatus) ?
             $coreToWoocommerceStatus[$coreStatus] : $coreStatus;
     }
 
-    private function getCoreStatus($woocommerceStatus)
+    private function getCoreStatusFromWoocommerceStatus($woocommerceStatus)
     {
         $woocommerceToCoreStatus = array(
-            'completed' => 'paid',
-            'pending' => 'pending',
-            'authentication-required' => 'pending',
-            'on-hold' => 'processing',
-            'processing' => 'processing',
-            'cancelled' => 'canceled',
-            'refunded' => 'canceled',
-            'failed' => 'failed'
+            'cancelled' => 'canceled'
         );
 
         return array_key_exists($woocommerceStatus, $woocommerceToCoreStatus) ?
@@ -145,14 +134,14 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function setStatusAfterLog(OrderStatus $status)
     {
         $stringCoreStatus = $status->getStatus();
-        $stringWoocommerceStatus = $this->getWoocommerceStatus($stringCoreStatus);
+        $stringWoocommerceStatus = $this->getWoocommerceStatusFromCoreStatus($stringCoreStatus);
         $this->getPlatformOrder()->set_status($stringWoocommerceStatus);
     }
 
     public function getStatus()
     {
         $woocommerceStatus = $this->getPlatformOrder()->get_status();
-        $coreStatus = $this->getCoreStatus($woocommerceStatus);
+        $coreStatus = $this->getCoreStatusFromWoocommerceStatus($woocommerceStatus);
         return $coreStatus;
     }
 
