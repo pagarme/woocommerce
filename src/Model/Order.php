@@ -66,20 +66,6 @@ class Order extends Meta
     }
     /** phpcs:enable */
 
-    public function get_status_translate()
-    {
-        $status = strtolower($this->__get('pagarme_status'));
-        $texts  = array(
-            'paid'     => __('Paid', 'woo-pagarme-payments'),
-            'pending'  => __('Pending', 'woo-pagarme-payments'),
-            'processing'  => __('Processing', 'woo-pagarme-payments'),
-            'canceled' => __('Canceled', 'woo-pagarme-payments'),
-            'failed'   => __('Failed', 'woo-pagarme-payments'),
-        );
-
-        return isset($texts[$status]) ? $texts[$status] : false;
-    }
-
     public function payment_on_hold()
     {
         $current_status = $this->wc_order->get_status();

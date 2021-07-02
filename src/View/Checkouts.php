@@ -83,6 +83,14 @@ class Checkouts
 
     public static function credit_card_message($order)
     {
+        $response_data = $order->response_data;
+
+        if (is_string($response_data)) {
+            $response_data = json_decode($response_data);
+        }
+
+        $charges     = $response_data->charges;
+        $charge      = array_shift($charges);
 
         ob_start();
 
@@ -94,7 +102,11 @@ class Checkouts
             /** phpcs:disable */
             printf(
                 __('The status of your transaction is %s.', 'woo-pagarme-payments'),
-                '<strong>' . strtoupper($order->get_status_translate()) . '</strong>'
+                '<strong>' . strtoupper(
+                    __(
+                        ucfirst($charge->status)
+                    )
+                ) . '</strong>'
             );
             /** phpcs:enable */
             ?>
@@ -195,7 +207,11 @@ class Checkouts
                 /** phpcs:disable */
                 printf(
                     __('CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments'),
-                    '<strong>' . strtoupper($order->get_status_translate()) . '</strong>'
+                    '<strong>' .  strtoupper(
+                        __(
+                            ucfirst($charge->status)
+                        )
+                    )  . '</strong>'
                 );
                 /** phpcs:enable */
                 echo '</p>';
