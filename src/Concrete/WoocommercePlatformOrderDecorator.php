@@ -390,6 +390,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $savedCustomer = $customerRepository->findByCode($woocommerceCustomerId);
 
         $customer = new Customer;
+        $customer->setCode($woocommerceCustomerId);
         if ($savedCustomer) {
             $customer = $savedCustomer;
         }
