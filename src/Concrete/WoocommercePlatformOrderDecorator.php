@@ -111,15 +111,49 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return OrderState::$state();
     }
 
+    private function getWoocommerceStatus($coreStatus)
+    {
+        $coreToWoocommerceStatus = array(
+            'paid' => 'paid',
+            'pending' => 'pending',
+            'processing' => 'processing',
+            'canceled' => 'cancelled',
+            'failed' => 'failed'
+        );
+
+        return array_key_exists($coreStatus, $coreToWoocommerceStatus) ?
+            $coreToWoocommerceStatus[$coreStatus] : $coreStatus;
+    }
+
+    private function getCoreStatus($woocommerceStatus)
+    {
+        $woocommerceToCoreStatus = array(
+            'completed' => 'paid',
+            'pending' => 'pending',
+            'authentication-required' => 'pending',
+            'on-hold' => 'processing',
+            'processing' => 'processing',
+            'cancelled' => 'canceled',
+            'refunded' => 'canceled',
+            'failed' => 'failed'
+        );
+
+        return array_key_exists($woocommerceStatus, $woocommerceToCoreStatus) ?
+            $woocommerceToCoreStatus[$woocommerceStatus] : $woocommerceStatus;
+    }
+
     public function setStatusAfterLog(OrderStatus $status)
     {
-        $stringStatus = $status->getStatus();
-        $this->getPlatformOrder()->set_status($stringStatus);
+        $stringCoreStatus = $status->getStatus();
+        $stringWoocommerceStatus = $this->getWoocommerceStatus($stringCoreStatus);
+        $this->getPlatformOrder()->set_status($stringWoocommerceStatus);
     }
 
     public function getStatus()
     {
-        return $this->getPlatformOrder()->get_status();
+        $woocommerceStatus = $this->getPlatformOrder()->get_status();
+        $coreStatus = $this->getCoreStatus($woocommerceStatus);
+        return $coreStatus;
     }
 
     public function loadByIncrementId($incrementId)
