@@ -281,7 +281,7 @@ class Gateways extends WC_Payment_Gateway
         return array(
             'title'   => __('Pix', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
-            'label'   => __('Enable Pix', 'woo-pagarme-payments'),
+            'label'   => __('Enable pix', 'woo-pagarme-payments'),
             'default' => 'no'
         );
     }
@@ -361,7 +361,7 @@ class Gateways extends WC_Payment_Gateway
         return array(
             'title'             => __('Soft descriptor', 'woo-pagarme-payments'),
             'desc_tip'          => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
-            'description'     => __( 'Max length of <span id="max_length_span">13</span> characters.', 'woo-pagarme-payments' ),
+            'description'     => __( "Max length of <span id='max_length_span'>13</span> characters.", 'woo-pagarme-payments' ),
             'custom_attributes' => array(
                 'data-field'     => 'soft-descriptor',
                 'data-action'    => 'soft-descriptor',
