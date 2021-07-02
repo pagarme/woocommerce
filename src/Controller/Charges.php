@@ -100,7 +100,6 @@ class Charges
             'charge_created',
             'charge_updated',
             'charge_paid',
-            'charge_refunded',
             'charge_pending',
         );
 

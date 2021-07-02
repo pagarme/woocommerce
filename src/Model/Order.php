@@ -72,7 +72,7 @@ class Order extends Meta
         $texts  = array(
             'paid'     => __('Paid', 'woo-pagarme-payments'),
             'pending'  => __('Pending', 'woo-pagarme-payments'),
-            'processing'  => __('Pending', 'woo-pagarme-payments'),
+            'processing'  => __('Processing', 'woo-pagarme-payments'),
             'canceled' => __('Canceled', 'woo-pagarme-payments'),
             'failed'   => __('Failed', 'woo-pagarme-payments'),
         );
