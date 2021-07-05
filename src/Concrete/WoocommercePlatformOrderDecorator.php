@@ -111,15 +111,38 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return OrderState::$state();
     }
 
+    private function getWoocommerceStatusFromCoreStatus($coreStatus)
+    {
+        $coreToWoocommerceStatus = array(
+            'canceled' => 'cancelled'
+        );
+
+        return array_key_exists($coreStatus, $coreToWoocommerceStatus) ?
+            $coreToWoocommerceStatus[$coreStatus] : $coreStatus;
+    }
+
+    private function getCoreStatusFromWoocommerceStatus($woocommerceStatus)
+    {
+        $woocommerceToCoreStatus = array(
+            'cancelled' => 'canceled'
+        );
+
+        return array_key_exists($woocommerceStatus, $woocommerceToCoreStatus) ?
+            $woocommerceToCoreStatus[$woocommerceStatus] : $woocommerceStatus;
+    }
+
     public function setStatusAfterLog(OrderStatus $status)
     {
-        $stringStatus = $status->getStatus();
-        $this->getPlatformOrder()->set_status($stringStatus);
+        $stringCoreStatus = $status->getStatus();
+        $stringWoocommerceStatus = $this->getWoocommerceStatusFromCoreStatus($stringCoreStatus);
+        $this->getPlatformOrder()->set_status($stringWoocommerceStatus);
     }
 
     public function getStatus()
     {
-        return $this->getPlatformOrder()->get_status();
+        $woocommerceStatus = $this->getPlatformOrder()->get_status();
+        $coreStatus = $this->getCoreStatusFromWoocommerceStatus($woocommerceStatus);
+        return $coreStatus;
     }
 
     public function loadByIncrementId($incrementId)
@@ -390,6 +413,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $savedCustomer = $customerRepository->findByCode($woocommerceCustomerId);
 
         $customer = new Customer;
+        $customer->setCode($woocommerceCustomerId);
         if ($savedCustomer) {
             $customer = $savedCustomer;
         }

@@ -41,7 +41,7 @@ class Checkouts
                 return self::billet_and_card_message($order);
 
             case '2_cards':
-                return self::credit_card_message($order);
+                return self::two_credit_card_message($order);
         }
     }
 
@@ -83,6 +83,14 @@ class Checkouts
 
     public static function credit_card_message($order)
     {
+        $response_data = $order->response_data;
+
+        if (is_string($response_data)) {
+            $response_data = json_decode($response_data);
+        }
+
+        $charges     = $response_data->charges;
+        $charge      = array_shift($charges);
 
         ob_start();
 
@@ -94,7 +102,58 @@ class Checkouts
             /** phpcs:disable */
             printf(
                 __('The status of your transaction is %s.', 'woo-pagarme-payments'),
-                '<strong>' . strtoupper($order->get_status_translate()) . '</strong>'
+                '<strong>' . strtoupper(
+                    __(
+                        ucfirst($charge->status)
+                    )
+                ) . '</strong>'
+            );
+            /** phpcs:enable */
+            ?>
+        </p>
+    <?php
+
+        self::message_after();
+
+        $message = ob_get_contents();
+
+        ob_end_clean();
+
+        return $message;
+    }
+
+    public static function two_credit_card_message($order)
+    {
+        $response_data = $order->response_data;
+
+        if (is_string($response_data)) {
+            $response_data = json_decode($response_data);
+        }
+
+        $charges           = $response_data->charges;
+        $first_charge      = array_shift($charges);
+        $second_charge     = array_shift($charges);
+
+        ob_start();
+
+        self::message_before();
+
+    ?>
+        <p>
+            <?php
+            /** phpcs:disable */
+            printf(
+                __('The status of your credit cards transactions are %s and %s', 'woo-pagarme-payments'),
+                '<strong>' . strtoupper(
+                    __(
+                        ucfirst($first_charge->status)
+                    )
+                ) . '</strong>',
+                '<strong>' . strtoupper(
+                    __(
+                        ucfirst($second_charge->status)
+                    )
+                ) . '</strong>'
             );
             /** phpcs:enable */
             ?>
@@ -195,7 +254,11 @@ class Checkouts
                 /** phpcs:disable */
                 printf(
                     __('CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments'),
-                    '<strong>' . strtoupper($order->get_status_translate()) . '</strong>'
+                    '<strong>' .  strtoupper(
+                        __(
+                            ucfirst($charge->status)
+                        )
+                    )  . '</strong>'
                 );
                 /** phpcs:enable */
                 echo '</p>';
