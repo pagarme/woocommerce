@@ -5,7 +5,7 @@ Contributors: pagarme
 Tags: ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, pagarme, payments, creditcard
 Requires at least: 5.0
 Tested up to: 5.7
-Stable tag: beta-1.0.27
+Stable tag: 1.0.0
 Requires PHP: 7.1
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
