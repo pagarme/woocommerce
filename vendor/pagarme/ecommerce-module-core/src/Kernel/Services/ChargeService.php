@@ -120,7 +120,9 @@ class ChargeService
 
             $orderHandlerService = new OrderHandler();
 
-            $order->setCustomer($charge->getCustomer());
+            if (!empty($charge->getCustomer())) {
+                $order->setCustomer($charge->getCustomer());
+            }
 
             $orderHandlerService->handle($order);
 
@@ -215,8 +217,7 @@ class ChargeService
             $listCharge,
             function (Charge $charge) {
                 return (
-                    ($charge->getStatus()->getStatus() == 'failed')
-                );
+                    ($charge->getStatus()->getStatus() == 'failed'));
             }
         );
 
@@ -224,12 +225,11 @@ class ChargeService
             $listChargesPaid = array_filter(
                 $listCharge,
                 function (Charge $charge) {
-                    return (
-                        $charge->getStatus()->getStatus() == 'paid' ||
+                    return ($charge->getStatus()->getStatus() == 'paid' ||
                         $charge->getStatus()->getStatus() == 'underpaid' ||
-                        $charge->getStatus()->getStatus() == 'pending'
-                    );
-                });
+                        $charge->getStatus()->getStatus() == 'pending');
+                }
+            );
         }
 
         return $listChargesPaid;
@@ -255,16 +255,16 @@ class ChargeService
             $extraValue = $charge->getPaidAmount() - $charge->getAmount();
             if ($extraValue > 0) {
                 $history .= ". " . $i18n->getDashboard(
-                        "Extra amount paid: %.2f",
-                        $moneyService->centsToFloat($extraValue)
-                    );
+                    "Extra amount paid: %.2f",
+                    $moneyService->centsToFloat($extraValue)
+                );
             }
 
             if ($extraValue < 0) {
                 $history .= ". " . $i18n->getDashboard(
-                        "Remaining amount: %.2f",
-                        $moneyService->centsToFloat(abs($extraValue))
-                    );
+                    "Remaining amount: %.2f",
+                    $moneyService->centsToFloat(abs($extraValue))
+                );
             }
 
             $refundedAmount = $charge->getRefundedAmount();
@@ -297,9 +297,9 @@ class ChargeService
         );
 
         $history .= ' ' . $i18n->getDashboard(
-                'Refunded amount: %.2f',
-                $amountInCurrency
-            );
+            'Refunded amount: %.2f',
+            $amountInCurrency
+        );
 
         $history .= " (" . $i18n->getDashboard('until now') . ")";
 

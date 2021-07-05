@@ -124,6 +124,10 @@ class ConfigurationFactory implements FactoryInterface
             );
         }
 
+        if (!empty($data->hubEnvironment)) {
+            $config->setHubEnvironment($data->hubEnvironment);
+        }
+
         if (!empty($data->keys) ) {
             if (!isset($data->publicKey)) {
                 $index = Configuration::KEY_PUBLIC;

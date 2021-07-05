@@ -62,6 +62,12 @@ final class Configuration extends AbstractEntity
      */
     private $hubInstallId;
 
+    /**
+     *
+     * @var string
+     */
+    private $hubEnvironment;
+
     /** @var string */
     private $cardOperation;
 
@@ -313,6 +319,16 @@ final class Configuration extends AbstractEntity
     public function getHubInstallId()
     {
         return $this->hubInstallId;
+    }
+
+    public function setHubEnvironment($hubEnvironment)
+    {
+        $this->hubEnvironment = $hubEnvironment;
+    }
+
+    public function getHubEnvironment()
+    {
+        return $this->hubEnvironment;
     }
 
     /**
@@ -711,6 +727,7 @@ final class Configuration extends AbstractEntity
             "boletoCreditCardEnabled" => $this->boletoCreditCardEnabled,
             "testMode" => $this->testMode,
             "hubInstallId" => $this->isHubEnabled() ? $this->hubInstallId->getValue() : null,
+            "hubEnvironment" => $this->hubEnvironment,
             "addressAttributes" => $this->getAddressAttributes(),
             "keys" => $this->keys,
             "cardOperation" => $this->cardOperation,

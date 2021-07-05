@@ -2,7 +2,7 @@
   "name": "pagarme/ecommerce-module-core",
   "description": "Core component for Pagar.me e-commerce platform modules.",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "authors": [
     {
       "name":"Open Source Team"
