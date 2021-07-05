@@ -104,7 +104,8 @@ class Checkouts
                 __('The status of your transaction is %s.', 'woo-pagarme-payments'),
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($charge->status)
+                        ucfirst($charge->status),
+                        'woo-pagarme-payments'
                     )
                 ) . '</strong>'
             );
@@ -146,12 +147,14 @@ class Checkouts
                 __('The status of your credit cards transactions are %s and %s', 'woo-pagarme-payments'),
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($first_charge->status)
+                        ucfirst($first_charge->status),
+                        'woo-pagarme-payments'
                     )
                 ) . '</strong>',
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($second_charge->status)
+                        ucfirst($second_charge->status),
+                        'woo-pagarme-payments'
                     )
                 ) . '</strong>'
             );
@@ -256,7 +259,8 @@ class Checkouts
                     __('CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments'),
                     '<strong>' .  strtoupper(
                         __(
-                            ucfirst($charge->status)
+                            ucfirst($charge->status),
+                            'woo-pagarme-payments'
                         )
                     )  . '</strong>'
                 );
