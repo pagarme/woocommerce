@@ -282,7 +282,7 @@ final class OrderService
 
                 $message = $i18n->getDashboard(
                     "Can't create payment. " .
-                    "Please review the information and try again."
+                        "Please review the information and try again."
                 );
                 throw new \Exception($message, 400);
             }
@@ -306,7 +306,7 @@ final class OrderService
                 );
                 $message = $i18n->getDashboard(
                     "Can't create payment. " .
-                    "Please review the information and try again."
+                        "Please review the information and try again."
                 );
                 throw new \Exception($message, 400);
             }
@@ -370,10 +370,13 @@ final class OrderService
 
         $orderInfo = $this->getOrderInfo($platformOrder);
 
+        /*
+        This block was commented out because this validation is still problematic in the woocommerce module.
+        TODO: we will need to make the module work with this code block.
         if (!$order->isPaymentSumCorrect()) {
             $message = $i18n->getDashboard(
                 "The sum of payments is different than the order amount! " .
-                "Review the information and try again."
+                    "Review the information and try again."
             );
             $this->logService->orderInfo(
                 $platformOrder->getCode(),
@@ -381,7 +384,7 @@ final class OrderService
                 $orderInfo
             );
             throw new \Exception($message, 400);
-        }
+        }*/
 
         $items = $platformOrder->getItemCollection();
         foreach ($items as $item) {
