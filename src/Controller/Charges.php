@@ -1,106 +1,122 @@
 <?php
+
 namespace Woocommerce\Pagarme\Controller;
 
-if ( ! function_exists( 'add_action' ) ) {
-	exit( 0 );
+if (!function_exists('add_action')) {
+    exit(0);
 }
 
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Core;
+use Pagarme\Core\Kernel\Services\ChargeService;
+use Pagarme\Core\Kernel\Services\MoneyService;
 use Woocommerce\Pagarme\Model\Charge;
 use Woocommerce\Pagarme\Resource\Charges as Charges_Resource;
+use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
 
 class Charges
 {
-	public function __construct()
-	{
-		$this->model = new Charge();
-		$this->build_actions();
+    public function __construct()
+    {
+        $this->model = new Charge();
+        $this->build_actions();
+        WoocommerceCoreSetup::bootstrap();
+        add_action('wp_ajax_STW3dqRT6E', array($this, 'handle_ajax_operations'));
+    }
 
-		add_action( 'wp_ajax_STW3dqRT6E', array( $this, 'handle_ajax_operations' ) );
-	}
+    public function handle_actions_add_notes($body)
+    {
+        $this->model->add_notes($body);
+    }
 
-	public function handle_actions_add_notes($body)
-	{
-		$this->model->add_notes($body);
-	}
+    public function handle_actions($body)
+    {
+        $this->model->create_from_webhook($body);
+    }
 
-	public function handle_actions( $body )
-	{
-		$this->model->create_from_webhook( $body );
-	}
+    public function handle_ajax_operations()
+    {
+        if (!Utils::is_request_ajax()) {
+            exit(0);
+        }
 
-	public function handle_ajax_operations()
-	{
-		if ( ! Utils::is_request_ajax() ) {
-			exit( 0 );
-		}
+        $charge_id = Utils::post('charge_id', false);
+        $amount    = Utils::post('amount', 0);
+        $mode      = Utils::post('mode', false);
 
-		$charge_id = Utils::post( 'charge_id', false );
-		$amount    = Utils::post( 'amount', 0 );
-		$mode      = Utils::post( 'mode', false );
+        if (!$charge_id) {
+            http_response_code(412);
+            Utils::error_server_json('empty_charge_id', 'É necessário informar o ID da charge.');
+            exit(1);
+        }
 
-		if ( ! $charge_id ) {
-			http_response_code( 412 );
-			Utils::error_server_json( 'empty_charge_id', 'É necessário informar o ID da charge.' );
-			exit( 1 );
-		}
+        if (!in_array($mode, ['capture', 'cancel'])) {
+            http_response_code(412);
+            Utils::error_server_json('invalid_mode', 'Operação inválida!');
+            exit(1);
+        }
 
-		if ( ! in_array( $mode, [ 'capture', 'cancel' ] ) ) {
-			http_response_code( 412 );
-			Utils::error_server_json( 'invalid_mode', 'Operação inválida!' );
-			exit( 1 );
-		}
+        $method = "handle_charge_" . $mode;
+        $response = $this->$method($charge_id, $amount);
 
-		$resource = new Charges_Resource();
-		$response = $resource->{$mode}( $charge_id, Utils::format_desnormalized_order_price( $amount ) );
+        error_log(print_r($response, true));
 
-		error_log( print_r( $response, true ) );
+        if (!$response->isSuccess()) {
+            http_response_code(412);
+            Utils::error_server_json('operation_error', 'Não foi possível efetuar esta operação!');
+            exit(1);
+        }
 
-		if ( $response->code != 200 ) {
-			http_response_code( 412 );
-			Utils::error_server_json( 'operation_error', 'Não foi possível efetuar esta operação!' );
-			exit( 1 );
-		}
+        wp_send_json_success([
+            'mode'    => $mode,
+            'message' => 'Operação efetuada com sucesso!',
+        ]);
+    }
 
-		$this->model->update(
-			array(
-				'charge_status' => esc_sql( $response->body->status ),
-				'charge_data'   => maybe_serialize( $response->body ),
-			),
-			array(
-				'charge_id' => $charge_id,
-			)
-		);
+    private function handle_charge_cancel($charge_id, $amount)
+    {
+        $chargeService = new ChargeService();
+        $moneyService = new MoneyService();
 
-		wp_send_json_success([
-			'mode'    => $mode,
-			'message' => 'Operação efetuada com sucesso!',
-		]);
-	}
+        $amount = $moneyService->removeSeparators($amount);
+        $amount = $moneyService->floatToCents($amount / 100);
+        return $chargeService->cancelById($charge_id, $amount);
+    }
 
-	private function build_actions()
-	{
-		$events = array(
-			'charge_created',
-			'charge_updated',
-			'charge_paid',
-			'charge_pending',
-		);
+    private function handle_charge_capture($charge_id, $amount)
+    {
+        $chargeService = new ChargeService();
+        $moneyService = new MoneyService();
 
-		foreach ($events as $event) {
-			add_action("on_pagarme_{$event}", array($this, 'handle_actions'));
-		}
+        $amount = $moneyService->removeSeparators($amount);
+        $amount = $moneyService->floatToCents($amount / 100);
 
-		$eventsNotes = array(
-			'charge_antifraud_approved',
-			'charge_antifraud_manual',
-			'charge_antifraud_pending',
-			'charge_antifraud_reproved',
-		);
+        return $chargeService->captureById($charge_id, $amount);
+    }
 
-		foreach ($eventsNotes as $event) {
-			add_action("on_pagarme_notes_{$event}", array($this, 'handle_actions_add_notes'));
-		}
-	}
+    private function build_actions()
+    {
+        $events = array(
+            'charge_created',
+            'charge_updated',
+            'charge_paid',
+            'charge_refunded',
+            'charge_pending',
+        );
+
+        foreach ($events as $event) {
+            add_action("on_pagarme_{$event}", array($this, 'handle_actions'));
+        }
+
+        $eventsNotes = array(
+            'charge_antifraud_approved',
+            'charge_antifraud_manual',
+            'charge_antifraud_pending',
+            'charge_antifraud_reproved',
+        );
+
+        foreach ($eventsNotes as $event) {
+            add_action("on_pagarme_notes_{$event}", array($this, 'handle_actions_add_notes'));
+        }
+    }
 }

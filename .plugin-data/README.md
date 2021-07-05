@@ -3,10 +3,10 @@ Plugin Name: Pagar.me WooCommerce Module
 Plugin URI: https://github.com/pagarme/woocommerce
 Contributors: pagarme
 Tags: ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, pagarme, payments, creditcard
-Requires at least: 4.4
-Tested up to: 5.6
+Requires at least: 5.0
+Tested up to: 5.7
 Stable tag: beta-1.0.27
-Requires PHP: 5.6
+Requires PHP: 7.1
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 

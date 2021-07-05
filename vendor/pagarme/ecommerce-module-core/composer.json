@@ -1,0 +1,41 @@
+{
+  "name": "pagarme/ecommerce-module-core",
+  "description": "Core component for Pagar.me e-commerce platform modules.",
+  "license": "MIT",
+  "version": "1.1.0",
+  "authors": [
+    {
+      "name":"Open Source Team"
+    }
+  ],
+  "type": "library",
+  "require": {
+    "php": ">=7.1",
+    "monolog/monolog": "~1.6",
+    "mundipagg/mundiapi": "^3.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "mockery/mockery": "1.2.4",
+    "nesbot/carbon": "1.39.0",
+    "ext-pdo": "*",
+    "phpunit/phpunit": "5.7.27"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pagarme\\Core\\": "src",
+      "Pagarme\\Core\\Test\\": "tests",
+      "Pagarme\\Core\\Test\\Mock\\": "tests\\mock"
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "cp 'hooks/pre-commit' '.git/hooks/pre-commit'"
+    ],
+    "post-update-cmd": [
+      "cp 'hooks/pre-commit' '.git/hooks/pre-commit'"
+    ],
+    "tests": "vendor/bin/phpunit --colors=always",
+    "tests-coverage": "vendor/bin/phpunit --colors=always --coverage-html ./tests/report"
+  }
+}
