@@ -385,6 +385,9 @@ msgstr "Essa bandeira não é permitda no checkout."
 msgid "Paid"
 msgstr "Pago"
 
+msgid "Processing"
+msgstr "Processando"
+
 #: src/Model/Order.php:67
 msgid "Pending"
 msgstr "Pendente"
@@ -570,6 +573,12 @@ msgstr "Pagar com boleto bancário"
 #: templates/checkout/main.php:72
 msgid "Pay with boleto and credit card"
 msgstr "Pagar com boleto e cartão"
+
+msgid "Pay with pix"
+msgstr "Pagar com pix"
+
+msgid "The status of your credit cards transactions are %s and %s"
+msgstr "O status das suas transações de cartão de crédito são %s e %s"
 
 #: templates/checkout/main.php:84
 msgid "Pay with 2 cards"
