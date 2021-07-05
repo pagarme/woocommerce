@@ -361,7 +361,7 @@ class Gateways extends WC_Payment_Gateway
         return array(
             'title'             => __('Soft descriptor', 'woo-pagarme-payments'),
             'desc_tip'          => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
-            'description'       => sprintf(__( "Max length of <span id='max_length_span'>%s</span> characters.", 'woo-pagarme-payments' ), 13),
+            'description'       => sprintf(__( "Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments' ), 13),
             'custom_attributes' => array(
                 'data-field'     => 'soft-descriptor',
                 'data-action'    => 'soft-descriptor',

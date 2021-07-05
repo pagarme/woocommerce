@@ -813,8 +813,8 @@ msgstr "Habilitar pix"
 msgid "Enable boleto"
 msgstr "Habilitar boleto"
 
-msgid "Max length of <span id='max_length_span'>%s</span> characters."
-msgstr "Tamanho máximo de <span id='max_length_span'>%s</span> caracteres."
+msgid "Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters."
+msgstr "Tamanho máximo de <span id='woo-pagarme-payments_max_length_span'>%s</span> caracteres."
 
 msgid "Enable anti fraud"
 msgstr "Habilitar antifraude"

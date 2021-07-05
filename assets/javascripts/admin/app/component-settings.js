@@ -181,7 +181,6 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
     };
 
     Model.fn.getOnlyGatewayBrands = function() {
-        this.aleloBrand = $( 'select[id*="woo-pagarme-payments_cc_flags"]' ).find('option[value="alelo"]');
         return 'option[value="credz"], ' +
             'option[value="sodexoalimentacao"], ' +
             'option[value="sodexocultura"], ' +
@@ -218,9 +217,9 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
     };
 
     Model.fn.restoreOptions = function(select) {
-        var originalgHTML = select.data("originalHTML");
-        if (originalgHTML !== undefined) {
-            select.html(originalgHTML);
+        var originalHTML = select.data("originalHTML");
+        if (originalHTML !== undefined) {
+            select.html(originalHTML);
         }
     };
 
@@ -275,7 +274,7 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
         var $optionsToRemove = this.ccBrands.find(this.getOnlyGatewayBrands());
         this.removeOptions(this.ccBrands, $optionsToRemove);
 
-        $("#max_length_span").html("13");
+        $("#woo-pagarme-payments_max_length_span").html("13");
         this.softDescriptor.prop('maxlength', 13);
 
         var $optionsToRemoveInstallments = this.installmentsMax.find(
@@ -304,7 +303,7 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
         this.restoreOptions(this.ccBrands);
 
-        $("#max_length_span").html("22");
+        $("#woo-pagarme-payments_max_length_span").html("22");
         this.softDescriptor.prop('maxlength', 22);
 
         this.restoreOptions(this.installmentsMax);
