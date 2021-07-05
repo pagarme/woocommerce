@@ -18,6 +18,8 @@ class InstallCommand extends AbstractCommand
 
         $moduleConfig->setHubInstallId($this->getInstallId());
 
+        $moduleConfig->setHubEnvironment($this->getType());
+
         $moduleConfig->setPublicKey(
             $this->getAccountPublicKey()
         );

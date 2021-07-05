@@ -30,4 +30,24 @@ class ConfigurationTests extends TestCase
         $this->assertInternalType('bool', $this->configuration->isEnabled());
         $this->assertEquals(false, $this->configuration->isEnabled());
     }
+
+    public function testHubEnvironmentStartsNull()
+    {
+        $this->assertInternalType('null', $this->configuration->getHubEnvironment());
+        $this->assertEquals('', $this->configuration->getHubEnvironment());
+    }
+
+    public function testHubEnvironmentIsSandbox()
+    {
+        $this->configuration->setHubEnvironment('Sandbox');
+        $this->assertInternalType('string', $this->configuration->getHubEnvironment());
+        $this->assertEquals('Sandbox', $this->configuration->getHubEnvironment());
+    }
+
+    public function testHubEnvironmentIsProduction()
+    {
+        $this->configuration->setHubEnvironment('Production');
+        $this->assertInternalType('string', $this->configuration->getHubEnvironment());
+        $this->assertEquals('Production', $this->configuration->getHubEnvironment());
+    }
 }

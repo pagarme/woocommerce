@@ -43,7 +43,11 @@ final class OrderHandler extends AbstractResponseHandler
         $orderRepository->save($createdOrder);
 
         $customerService = new CustomerService();
-        $customerService->saveCustomer($createdOrder->getCustomer());
+        if (!empty($createdOrder->getCustomer())) {
+            $customerService->saveCustomer(
+                $createdOrder->getCustomer()
+            );
+        }
 
         return $this->$statusHandler($createdOrder);
     }
@@ -64,7 +68,7 @@ final class OrderHandler extends AbstractResponseHandler
         $platformOrder->addHistoryComment(
             $i18n->getDashboard(
                 'Order waiting for online retries at Pagarme.' .
-                ' PagarmeId: ' . $order->getPagarmeId()->getValue()
+                    ' PagarmeId: ' . $order->getPagarmeId()->getValue()
             ),
             $sender
         );
@@ -176,7 +180,7 @@ final class OrderHandler extends AbstractResponseHandler
 
         $platformOrder->addHistoryComment(
             $i18n->getDashboard('Order paid.') .
-            ' PagarmeId: ' . $order->getPagarmeId()->getValue(),
+                ' PagarmeId: ' . $order->getPagarmeId()->getValue(),
             $sender
         );
     }
@@ -243,7 +247,6 @@ final class OrderHandler extends AbstractResponseHandler
             $acquirerMessages .=
                 "{$charge->getPagarmeId()->getValue()} => '{$lastTransaction->getAcquirerMessage()}', ";
             $historyData[$charge->getPagarmeId()->getValue()] = $lastTransaction->getAcquirerMessage();
-
         }
         $acquirerMessages = rtrim($acquirerMessages, ', ');
 

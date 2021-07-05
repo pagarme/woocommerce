@@ -31,8 +31,8 @@ class HubCommandFactory
 
         /**
          *
- * @var AbstractCommand $command 
-*/
+        * @var AbstractCommand $command
+        */
         $command = new $commandClass();
 
         $command->setAccessToken(
