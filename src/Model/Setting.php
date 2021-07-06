@@ -29,6 +29,7 @@ class Setting
         'production_public_key'             => array(),
         'account_management_key'            => array(),
         'account_id'                        => array(),
+        'is_gateway_integration_type'       => array(),
         'section_payment_settings'          => array(),
         'enable_billet'                     => array(),
         'enable_pix'                        => array(),
@@ -117,6 +118,7 @@ class Setting
 
     public function get_flags_list()
     {
+        //Some brands are hidden for PSP
         return array(
             'visa'              => 'Visa',
             'mastercard'        => 'MasterCard',
@@ -166,6 +168,11 @@ class Setting
     public function is_enabled()
     {
         return ('yes' === $this->__get('enabled'));
+    }
+
+    public function is_gateway_integration_type()
+    {
+        return ('yes' === $this->__get('is_gateway_integration_type'));
     }
 
     public function is_enabled_logs()
