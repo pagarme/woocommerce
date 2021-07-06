@@ -4036,7 +4036,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			padding: 20,
 			onOpening: function (modal) {
 				var amount = modal.$element.find( '[data-element=amount]' );
-				const options = {
+                const options = {
                     reverse:true,
                     onKeyPress: function(amountValue, event, field){
                         if (!event.originalEvent){
@@ -4307,7 +4307,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         var maxInstallmentsLength = this.installmentsMax.children('option').length;
 
         for (let i = 13; i <= maxInstallmentsLength+1; i++) {
-            installments += 'option[value="' + i + '"], ';
+            installments += `option[value="${i}"], `;
         }
 
         return installments.slice(0, -2);
@@ -4361,7 +4361,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         function setMaxInstallmentsWithoutInterest(installmentsMax, brandName) {
             var setMaxInstallmentsWithoutInterestOnFlag = $('[data-field="installments-by-flag"]')
-                .find('input[name*="cc_installments_by_flag[no_interest]['+ brandName +']"]');
+                .find(`input[name*="cc_installments_by_flag[no_interest][${brandName}]"]`);
             setMaxInstallmentsWithoutInterestOnFlag.prop("max", installmentsMax);
         }
     };
@@ -4445,8 +4445,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
     };
 
     Model.fn.handleBilletBankRequirement = function() {
+        const billetBankElementId = '#woocommerce_woo-pagarme-payments_billet_bank';
         let bankRequirementFields = $( '[data-requires-field="billet-bank"]' );
-        let billetBankElementId = '#woocommerce_woo-pagarme-payments_billet_bank';
         let billetBankIsRequired = false;
 
         bankRequirementFields.each(function() {

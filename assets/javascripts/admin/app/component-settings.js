@@ -199,7 +199,7 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
         var maxInstallmentsLength = this.installmentsMax.children('option').length;
 
         for (let i = 13; i <= maxInstallmentsLength+1; i++) {
-            installments += 'option[value="' + i + '"], ';
+            installments += `option[value="${i}"], `;
         }
 
         return installments.slice(0, -2);
@@ -253,7 +253,7 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
         function setMaxInstallmentsWithoutInterest(installmentsMax, brandName) {
             var setMaxInstallmentsWithoutInterestOnFlag = $('[data-field="installments-by-flag"]')
-                .find('input[name*="cc_installments_by_flag[no_interest]['+ brandName +']"]');
+                .find(`input[name*="cc_installments_by_flag[no_interest][${brandName}]"]`);
             setMaxInstallmentsWithoutInterestOnFlag.prop("max", installmentsMax);
         }
     };
@@ -337,8 +337,8 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
     };
 
     Model.fn.handleBilletBankRequirement = function() {
+        const billetBankElementId = '#woocommerce_woo-pagarme-payments_billet_bank';
         let bankRequirementFields = $( '[data-requires-field="billet-bank"]' );
-        let billetBankElementId = '#woocommerce_woo-pagarme-payments_billet_bank';
         let billetBankIsRequired = false;
 
         bankRequirementFields.each(function() {
