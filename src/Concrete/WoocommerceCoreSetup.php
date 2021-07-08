@@ -257,7 +257,9 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
             }
 
             $settingsByBrand = $storeConfig->cc_installments_by_flag;
-            $max = empty($settingsByBrand) ? null : intval($settingsByBrand['max_installment'][$brand]);
+            $max = empty($settingsByBrand)
+                ? null
+                : intval($settingsByBrand['max_installment'][$brand]);
 
             if (!empty($max)) {
                 $initial = Utils::str_to_float($settingsByBrand['interest'][$brand]);
