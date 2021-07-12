@@ -158,7 +158,7 @@ class Gateways extends WC_Payment_Gateway
     public function section_payment_settings()
     {
         return array(
-            'title' => __('Payment settings', 'woo-pagarme-payments'),
+            'title' => __('Payment methods', 'woo-pagarme-payments'),
             'type'  => 'title',
         );
     }
@@ -303,9 +303,9 @@ class Gateways extends WC_Payment_Gateway
     public function field_multimethods_2_cards()
     {
         return array(
-            'title'   => __('Multi-means </br>(2 Credit Cards)', 'woo-pagarme-payments'),
+            'title'   => __('Multi-means </br>(2 Credit cards)', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
-            'label'   => __('Enable multi-means (2 Credit Cards)', 'woo-pagarme-payments'),
+            'label'   => __('Enable multi-means (2 Credit cards)', 'woo-pagarme-payments'),
             'default' => 'no',
         );
     }
@@ -313,9 +313,9 @@ class Gateways extends WC_Payment_Gateway
     public function field_multimethods_billet_card()
     {
         return array(
-            'title'   => __('Multi-means </br>(Boleto + Credit Card)', 'woo-pagarme-payments'),
+            'title'   => __('Multi-means </br>(Boleto + Credit card)', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
-            'label'   => __('Enable multi-means (Boleto + Credit Card)', 'woo-pagarme-payments'),
+            'label'   => __('Enable multi-means (Boleto + Credit card)', 'woo-pagarme-payments'),
             'default' => 'no',
             'custom_attributes' => array(
                 'data-action'  => 'enable-multimethods-billet-card',
@@ -337,7 +337,7 @@ class Gateways extends WC_Payment_Gateway
     public function section_credit_card()
     {
         return array(
-            'title' => __('Credit Card settings', 'woo-pagarme-payments'),
+            'title' => __('Credit card settings', 'woo-pagarme-payments'),
             'type'  => 'title',
         );
     }
@@ -555,7 +555,7 @@ class Gateways extends WC_Payment_Gateway
     public function field_billet_deadline_days()
     {
         return array(
-            'title'       => __('Default expiration day', 'woo-pagarme-payments'),
+            'title'       => __('Default expiration days', 'woo-pagarme-payments'),
             'description' => __('Number of days until the expiration date of the generated boleto.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'placeholder' => 5,
@@ -580,7 +580,7 @@ class Gateways extends WC_Payment_Gateway
     public function section_antifraud()
     {
         return array(
-            'title' => __('Anti-fraud settings', 'woo-pagarme-payments'),
+            'title' => __('Anti fraud settings', 'woo-pagarme-payments'),
             'type'  => 'title',
             'custom_attributes' => array(
                 'data-field' => 'antifraud-section',
@@ -734,7 +734,7 @@ class Gateways extends WC_Payment_Gateway
                         <thead>
                         <tr>
                             <th class="align"><?php _e('Card Brand', 'woo-pagarme-payments'); ?></th>
-                            <th class="align"><?php _e('Max number of installment', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Max number of installments', 'woo-pagarme-payments'); ?></th>
                             <th class="align"><?php _e('Initial interest rate (%)', 'woo-pagarme-payments'); ?></th>
                             <th class="align"><?php _e('Incremental interest rate (%)', 'woo-pagarme-payments'); ?></th>
                             <th class="align"><?php _e('Number of installments<br/>without interest', 'woo-pagarme-payments'); ?></th>

@@ -4173,7 +4173,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             return;
         }
 
-        if (isGatewayIntegrationType && event.currentTarget.value.length > 24) {
+        if (isGatewayIntegrationType && event.currentTarget.value.length > 22) {
             $(event.currentTarget).addClass(errorClass);
             return;
         }
@@ -4216,9 +4216,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
     Model.fn._eachValidate = function( index, field ) {
         var rect;
-        var element = $( field )
-          , empty   = element.isEmptyValue()
-          , func    = empty ? 'addClass' : 'removeClass'
+        var element          = $( field )
+          , empty            = element.isEmptyValue()
+          , invalidMaxLength = element.val().length > element.prop("maxLength")
+          , isFieldInvalid   = empty || invalidMaxLength
+          , func             = isFieldInvalid ? 'addClass' : 'removeClass'
         ;
 
         if ( ! element.is( ':visible' ) ) {
@@ -4227,9 +4229,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         element[func]( errorClass );
 
-        this.items[index] = empty;
+        this.items[index] = isFieldInvalid;
 
-        if ( ! empty ) {
+        if (!isFieldInvalid) {
             return;
         }
 
@@ -4333,7 +4335,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
     Model.fn.setMaxInstallmentsWithoutInterestBasedOnMaxInstallments = function () {
         var installmentsMaxElement = this.installmentsMax;
-        setMaxInstallmentsWithoutInterest(installmentsMaxElement.val());
 
         installmentsMaxElement.on('change', function() {
             setMaxInstallmentsWithoutInterest($(this).val());
