@@ -13,7 +13,9 @@ class InstallCommand extends AbstractCommand
         $moduleConfig = MPSetup::getModuleConfiguration();
 
         if ($moduleConfig->isHubEnabled()) {
-            throw new Exception("Hub already installed!");
+            $exception = new Exception("Hub already installed!");
+            $this->logService->exception($exception);
+            throw $exception;
         }
 
         $moduleConfig->setHubInstallId($this->getInstallId());

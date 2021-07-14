@@ -4,6 +4,7 @@ namespace Pagarme\Core\Hub\Commands;
 
 
 use Pagarme\Core\Kernel\Interfaces\CommandInterface;
+use Pagarme\Core\Kernel\Services\LogService;
 use Pagarme\Core\Kernel\ValueObjects\Id\AccountId;
 use Pagarme\Core\Kernel\ValueObjects\Id\MerchantId;
 use Pagarme\Core\Kernel\ValueObjects\Id\GUID;
@@ -15,34 +16,41 @@ abstract class AbstractCommand implements CommandInterface
 {
     /**
      *
-     * @var HubAccessTokenKey 
+     * @var HubAccessTokenKey
      */
     protected $accessToken;
     /**
      *
-     * @var AccountId 
+     * @var AccountId
      */
     protected $accountId;
     /**
      *
-     * @var PublicKey|TestPublicKey 
+     * @var PublicKey|TestPublicKey
      */
     protected $accountPublicKey;
     /**
      *
-     * @var GUID 
+     * @var GUID
      */
     protected $installId;
     /**
      *
-     * @var MerchantId 
+     * @var MerchantId
      */
     protected $merchantId;
     /**
      *
-     * @var CommandType 
+     * @var CommandType
      */
     protected $type;
+
+    private $logService;
+
+    public function __construct()
+    {
+        $this->logService = new LogService('Hub', true);
+    }
 
     /**
      *
