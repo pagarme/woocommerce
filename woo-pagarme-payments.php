@@ -104,7 +104,7 @@ function wcmp_on_activation()
 
     add_option(WCMP_OPTION_ACTIVATE, true);
 
-    // TODO: Create configuration table: wp_pagarme_module_core_configuration
+    wcmp_create_core_configuration_table();
     wcmp_create_core_customer_table();
     wcmp_create_core_charge_table();
     wcmp_create_core_order_table();
@@ -113,6 +113,25 @@ function wcmp_on_activation()
     wcmp_create_core_hub_install_token();
 
     register_uninstall_hook(__FILE__, 'wcmp_on_uninstall');
+}
+
+function wcmp_create_core_configuration_table()
+{
+    global $wpdb;
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+    $charset    = $wpdb->get_charset_collate();
+    $table_name = $wpdb->prefix . 'pagarme_module_core_configuration';
+
+    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    (
+        id       int unsigned auto_increment comment 'ID' primary key,
+        data     text not null comment 'data',
+        store_id varchar(50)  not null comment 'Store id'
+    ) comment 'Configuration Table' {$charset};";
+
+    dbDelta($query);
 }
 
 function wcmp_create_core_customer_table()
