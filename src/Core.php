@@ -59,6 +59,7 @@ class Core
             'Settings',
             'Checkout',
             'Webhooks',
+            'Hub',
             'Orders',
             'Charges',
             'Accounts',
@@ -221,6 +222,11 @@ class Core
     public static function get_webhook_name()
     {
         return Utils::add_prefix('-webhook');
+    }
+
+    public static function get_hub_url()
+    {
+        return sprintf('%s/wc-api/%s/', Utils::get_site_url(), Utils::add_prefix('-hub'));
     }
 
     public static function credit_card_errors_pt_br()

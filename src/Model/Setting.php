@@ -22,6 +22,8 @@ class Setting
         'enabled'                           => array(),
         'title'                             => array(),
         'description'                       => array(),
+        'hub_install_id'                    => array(),
+        'hub_environment'                   => array(),        
         'environment'                       => array(),
         'sandbox_secret_key'                => array(),
         'sandbox_public_key'                => array(),
@@ -240,6 +242,11 @@ class Setting
     public function isCardStatementDescriptor()
     {
         return $this->__get('cc_soft_descriptor');
+    }
+
+    public function isHubEnabled()
+    {
+        return !empty($this->__get('hub_install_id'));
     }
 
     /**
