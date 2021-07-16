@@ -2,6 +2,7 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.start = function() {
 		this.lock = false;
+
 		this.addEventListener();
 
 		Pagarme.CheckoutErrors.create( this );
@@ -47,6 +48,7 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 		e.preventDefault();
 
 		if ( ! this.validate() ) {
+			jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
 			return false;
 		}
 
@@ -64,13 +66,17 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 			window.Pagarme2Cards = 0;
 		}.bind(this));
 
+		jQuery('#wcmp-submit').attr('disabled', 'disabled');
+
 		$( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
 
 		if (
-            $('input[name=payment_method]').val() === 'billet'  ||
+            $('input[name=payment_method]').val() === 'billet' ||
             $('input[name=payment_method]').val() === 'pix' ) {
 			this.loadSwal();
 		}
+
+
 	};
 
 	Model.fn._onClickTab = function(event) {
@@ -106,7 +112,9 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 	Model.fn._done = function(response) {
 		this.lock = false;
 		if ( ! response.success ) {
-			this.failMessage( response.data );
+		    this.failMessage(
+				this.getFailMessage(response.data)
+			);
 		} else {
 			this.successMessage();
 		}
@@ -116,7 +124,7 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 		if( response.data.status == "failed" ){
             swal({
                 type : 'error',
-                html : this.data.swal.text_default
+                html : this.getFailMessage()
             }).then(function(){
                 window.location.href = self.data.returnUrl;
             });
@@ -126,6 +134,14 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 	Model.fn._fail = function(jqXHR, textStatus, errorThrown) {
 		this.lock = false;
 		this.failMessage();
+	};
+
+	Model.fn.getFailMessage = function (message = "") {
+		if (!message) {
+			return "Transação não autorizada."
+		}
+
+		return message;
 	};
 
 	Model.fn.failMessage = function(message) {
@@ -220,8 +236,8 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 		});
 	};
 
-	Model.fn._onOpenSwal = function() {
-		if ( this.lock ) {
+	Model.fn._onOpenSwal = function () {
+		if (this.lock) {
 			return;
 		}
 
@@ -229,11 +245,21 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 
 		swal.showLoading();
 
-	    this.ajax({
-	    	url  : this.data.apiRequest,
-			data : {
-				order  : this.data.order,
-				fields : this.$el.serializeArray()
+		var inputsSubmit = this.$el.serializeArray();
+
+		this.ajax({
+			url: this.data.apiRequest,
+			data: {
+				order: this.data.order,
+				fields: inputsSubmit
+			},
+			success: function (data) {
+				if (data.success == false) {
+					jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
+				}
+			},
+			fail: function (data) {
+				jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
 			}
 		});
 	};
@@ -265,6 +291,8 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 
 		wrapper.find( '[data-element="fields-cc-data"]' )[method]();
 		wrapper.find( '[data-element="save-cc-check"]' )[method]();
+		wrapper.find( '[data-element="enable-multicustomers-check"]' )[method]();
+		wrapper.find( '[data-element="enable-multicustomers-label-card"]' )[method]();
 	};
 
 	Model.fn.hasCardId = function(wrapper) {
@@ -285,6 +313,32 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 		});
 		swal.showLoading();
 	};
+
+	Model.fn.isTwoCardsPayment = function(firstInput, secondInput){
+		return firstInput.id.includes("card") && secondInput.id.includes("card");
+	};
+
+	Model.fn.isBilletAndCardPayment = function(firstInput, secondInput){
+		return (firstInput.id.includes("card") && secondInput.id.includes("billet")) ||
+		(firstInput.id.includes("billet") && secondInput.id.includes("card"));
+	};
+
+	Model.fn.refreshBothInstallmentsSelects = function(event, secondInput){
+		this._onBlurCardOrderValue(event);
+		event.currentTarget = secondInput;
+		event.target = secondInput;
+
+		this._onBlurCardOrderValue(event);
+	};
+
+	Model.fn.refreshCardInstallmentSelect = function(event, secondInput){
+		const targetInput = event.target.id.includes("card") ? event.target : secondInput;
+
+		event.currentTarget = targetInput;
+		event.target = targetInput;
+
+		this._onBlurCardOrderValue(event);
+	}
 
 	Model.fn.fillAnotherInput = function(event) {
 		var input = $(event.currentTarget);
@@ -315,7 +369,19 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 		nextValue = nextValue.toFixed(2);
 		nextValue = nextValue.replace('.',',');
 
+		value = value.toFixed(2);
+		value = value.replace('.', ',');
+
 		nextInput.val(nextValue);
+		input.val(value);
+
+		if ( this.isTwoCardsPayment(event.target, nextInput[0]) ){
+		    this.refreshBothInstallmentsSelects(event, nextInput[0]);
+		}
+
+		if( this.isBilletAndCardPayment(event.target, nextInput[0]) ){
+		    this.refreshCardInstallmentSelect(event, nextInput[0]);
+		}
 	};
 
 });
