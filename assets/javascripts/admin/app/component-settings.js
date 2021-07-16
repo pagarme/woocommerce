@@ -65,7 +65,7 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
             return;
         }
 
-        if (isGatewayIntegrationType && event.currentTarget.value.length > 24) {
+        if (isGatewayIntegrationType && event.currentTarget.value.length > 22) {
             $(event.currentTarget).addClass(errorClass);
             return;
         }
@@ -108,9 +108,11 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
     Model.fn._eachValidate = function( index, field ) {
         var rect;
-        var element = $( field )
-          , empty   = element.isEmptyValue()
-          , func    = empty ? 'addClass' : 'removeClass'
+        var element          = $( field )
+          , empty            = element.isEmptyValue()
+          , invalidMaxLength = element.val().length > element.prop("maxLength")
+          , isFieldInvalid   = empty || invalidMaxLength
+          , func             = isFieldInvalid ? 'addClass' : 'removeClass'
         ;
 
         if ( ! element.is( ':visible' ) ) {
@@ -119,9 +121,9 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
         element[func]( errorClass );
 
-        this.items[index] = empty;
+        this.items[index] = isFieldInvalid;
 
-        if ( ! empty ) {
+        if (!isFieldInvalid) {
             return;
         }
 
@@ -225,7 +227,6 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
     Model.fn.setMaxInstallmentsWithoutInterestBasedOnMaxInstallments = function () {
         var installmentsMaxElement = this.installmentsMax;
-        setMaxInstallmentsWithoutInterest(installmentsMaxElement.val());
 
         installmentsMaxElement.on('change', function() {
             setMaxInstallmentsWithoutInterest($(this).val());

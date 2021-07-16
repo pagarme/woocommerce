@@ -151,22 +151,22 @@ msgstr "Cartão de crédito"
 
 #: src/Controller/Gateways.php:263
 msgid "Enable credit card"
-msgstr "Ativar cartão de crédito"
+msgstr "Habilitar cartão de crédito"
 
 #: src/Controller/Gateways.php:271
-msgid "Multi-means </br>(Boleto + Credit Card)"
+msgid "Multi-means </br>(Boleto + Credit card)"
 msgstr "Multimeios </br>(Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:273
-msgid "Enable multi-means (Boleto + Credit Card)"
+msgid "Enable multi-means (Boleto + Credit card)"
 msgstr "Habilitar multimeios (Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:281
-msgid "Multi-means </br>(2 Credit Cards)"
+msgid "Multi-means </br>(2 Credit cards)"
 msgstr "Multimeios </br>(2 Cartões de crédito)"
 
 #: src/Controller/Gateways.php:283
-msgid "Enable multi-means (2 Credit Cards)"
+msgid "Enable multi-means (2 Credit cards)"
 msgstr "Habilitar multimeios (2 Cartões de crédito)"
 
 #: src/Controller/Gateways.php:291
@@ -178,11 +178,11 @@ msgid "Enable multi-buyers"
 msgstr "Habilitar multicompradores"
 
 #: src/Controller/Gateways.php:301
-msgid "Anti-fraud settings"
+msgid "Anti fraud settings"
 msgstr "Configurações de Antifraude"
 
 #: src/Controller/Gateways.php:311
-msgid "Enable anti-fraud"
+msgid "Enable anti fraud"
 msgstr "Habilitar antifraude"
 
 #: src/Controller/Gateways.php:319
@@ -190,7 +190,7 @@ msgid "Minimum value"
 msgstr "Valor mínimo"
 
 #: src/Controller/Gateways.php:321
-msgid "Minimum anti-fraud value"
+msgid "Minimum anti fraud value"
 msgstr "Valor mínimo para ativar o antifraude"
 
 #: src/Controller/Gateways.php:334
@@ -222,8 +222,8 @@ msgid "Instructions for the boleto."
 msgstr "Instruções para o boleto."
 
 #: src/Controller/Gateways.php:382
-msgid "Credit Card settings"
-msgstr "Configurações de Cartão de Crédito"
+msgid "Credit card settings"
+msgstr "Configurações de Cartão de crédito"
 
 #: src/Controller/Gateways.php:390
 msgid "Soft descriptor"
@@ -504,7 +504,7 @@ msgstr "Parcelamento"
 #: templates/checkout/2-cards-item.php:32
 #: templates/checkout/2-cards-item.php:106
 #: templates/checkout/billet-and-card-item.php:52
-msgid "Value (Credit Card)"
+msgid "Value (Credit card)"
 msgstr "Valor (Cartão de crédito)"
 
 #: templates/checkout/2-cards-item.php:55
@@ -718,7 +718,7 @@ msgid "Pix settings"
 msgstr "Configurações do Pix"
 
 msgid "QR code expiration time"
-msgstr "Tempo de exiração do QRCode"
+msgstr "Tempo de expiração do QRCode"
 
 msgid "Expiration time in seconds of the generated pix QR code"
 msgstr "Tempo, em segundos, até o QRCode expirar depois de gerado"
@@ -739,7 +739,7 @@ msgid "Enable Pagar.me"
 msgstr "Habilitar Pagar.me"
 
 msgid "Checkout title"
-msgstr "Título do checkout"
+msgstr "Título no checkout"
 
 msgid "Advanced settings"
 msgstr "Configurações avançadas"
@@ -786,8 +786,11 @@ msgstr "Taxa de juros adicionada para cada parcela com juros."
 msgid "Number of installments without interest"
 msgstr "Quantidade de parcelas sem juros"
 
-msgid "Default expiration day"
-msgstr "Dia de expiração padrão"
+msgid "Number of installments<br/>without interest"
+msgstr "Quantidade de parcelas<br/>sem juros"
+
+msgid "Default expiration days"
+msgstr "Número padrão de dias para a expiração"
 
 msgid "Payment instructions"
 msgstr "Instruções de pagamento"
@@ -802,7 +805,7 @@ msgid "Minimum amount"
 msgstr "Valor mínimo"
 
 msgid "Minimum order amount to send it to the anti fraud"
-msgstr "Valor mínimo do pedido para enviá-lo ao anti-fraude"
+msgstr "Valor mínimo do pedido para enviá-lo ao antifraude"
 
 msgid "Expiration time in seconds of the generated pix QR code."
 msgstr "Tempo de expiração em segundos do QRCode gerado."
@@ -816,8 +819,11 @@ msgstr "Habilitar boleto"
 msgid "Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters."
 msgstr "Tamanho máximo de <span id='woo-pagarme-payments_max_length_span'>%s</span> caracteres."
 
-msgid "Enable anti fraud"
-msgstr "Habilitar antifraude"
+msgid "Name shown to the customer in the checkout page."
+msgstr "Nome mostrado ao cliente na página de checkout."
+
+msgid "Description shown below the title in the checkout page."
+msgstr "Descrição mostrada abaixo do título na página de checkout."
 
 msgid "Integration environment"
 msgstr "Ambiente de integração"

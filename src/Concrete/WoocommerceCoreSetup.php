@@ -164,7 +164,12 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $pixConfig->enabled = $storeConfig->is_active_pix();
         $pixConfig->expirationQrCode = $storeConfig->pix_qrcode_expiration_time;
         $pixConfig->bankType = 'Pagar.me';
-        $pixConfig->additionalInformation = [$storeConfig->pix_additional_data];
+
+        if (count(array_filter($storeConfig->pix_additional_data))
+            == count($storeConfig->pix_additional_data)
+        ) {
+            $pixConfig->additionalInformation = [$storeConfig->pix_additional_data];
+        }
 
         $dataObj->pixConfig = $pixConfig;
 
@@ -252,7 +257,9 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
             }
 
             $settingsByBrand = $storeConfig->cc_installments_by_flag;
-            $max = intval($settingsByBrand['max_installment'][$brand]);
+            $max = empty($settingsByBrand)
+                ? null
+                : intval($settingsByBrand['max_installment'][$brand]);
 
             if (!empty($max)) {
                 $initial = Utils::str_to_float($settingsByBrand['interest'][$brand]);
@@ -271,11 +278,11 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
             $cardConfigs[] = new CardConfig(
                 true,
                 CardBrand::$brandMethod(),
-                ($max !== null ? $max : 1),
-                ($maxWithout !== null ? $maxWithout : 1),
+                (!empty($max) ? $max : 1),
+                (!empty($maxWithout) ? $maxWithout : 1),
                 $initial,
                 $incremental,
-                ($minValue !== null ? $minValue : 0) * 100
+                (!empty($minValue) ? $minValue : 0) * 100
             );
         }
 

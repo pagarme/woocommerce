@@ -49,6 +49,7 @@ class Gateway
     public function get_installment_options()
     {
         return array(
+            1  => 1,
             2  => 2,
             3  => 3,
             4  => 4,

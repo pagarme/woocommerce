@@ -26,6 +26,8 @@ MONSTER( 'Pagarme.CheckoutErrors', function(Model, $, utils) {
 
 		rect = element.get(0).getBoundingClientRect();
 
+		jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
+
 		window.scrollTo( 0, ( rect.top + window.scrollY ) - 40 );
 	};
 
