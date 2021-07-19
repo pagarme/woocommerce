@@ -192,64 +192,6 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-    public function field_environment()
-    {
-        return array(
-            'type'    => 'select',
-            'title'   => __('Environment', 'woo-pagarme-payments'),
-            'class'   => 'wc-enhanced-select',
-            'default' => 'sandbox',
-            'options' => array(
-                'sandbox'    => 'Sandbox',
-                'production' => __('Production', 'woo-pagarme-payments'),
-            ),
-            'custom_attributes' => array(
-                'data-action'  => 'environment',
-                'data-element' => 'environment-select',
-            ),
-        );
-    }
-
-    public function field_sandbox_secret_key()
-    {
-        return array(
-            'title'             => __('Sandbox secret key', 'woo-pagarme-payments'),
-            'custom_attributes' => array(
-                'data-field' => 'sandbox-secret-key',
-            ),
-        );
-    }
-
-    public function field_sandbox_public_key()
-    {
-        return array(
-            'title'             => __('Sandbox public key', 'woo-pagarme-payments'),
-            'custom_attributes' => array(
-                'data-field' => 'sandbox-public-key',
-            ),
-        );
-    }
-
-    public function field_production_secret_key()
-    {
-        return array(
-            'title'             => __('Production secret key', 'woo-pagarme-payments'),
-            'custom_attributes' => array(
-                'data-field' => 'production-secret-key',
-            ),
-        );
-    }
-
-    public function field_production_public_key()
-    {
-        return array(
-            'title'             => __('Production public key', 'woo-pagarme-payments'),
-            'custom_attributes' => array(
-                'data-field' => 'production-public-key',
-            ),
-        );
-    }
-
 	public function field_is_gateway_integration_type()
 	{
 		return array(
