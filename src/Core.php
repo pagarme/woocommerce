@@ -229,6 +229,11 @@ class Core
         return sprintf('%s/wc-api/%s/', Utils::get_site_url(), Utils::add_prefix('-hub'));
     }
 
+    public static function get_hub_name()
+    {
+        return Utils::add_prefix('-hub');
+    }
+
     public static function credit_card_errors_pt_br()
     {
         return array(

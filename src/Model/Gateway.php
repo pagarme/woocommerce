@@ -9,6 +9,8 @@ if (!function_exists('add_action')) {
 // Exeption
 use Exception;
 
+use Pagarme\Core\Hub\Services\HubIntegrationService;
+use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Setting;
@@ -165,4 +167,59 @@ class Gateway
 
         return $this->render_installments_options($total, $max_installments, $interest, $interest_increase, $no_interest);
     }
+
+    public function get_hub_button_text($hub_install_id)
+    {
+        return !empty($hub_install_id)
+            ? __('View Integration', 'woo-pagarme-payments') 
+            : __('Integrate With Pagar.me', 'woo-pagarme-payments');
+    }
+
+    public function get_hub_url($hub_install_id)
+    {
+        return !empty($hub_install_id)
+            ? $this->get_hub_view_integration_url($hub_install_id)
+            : $this->get_hub_integrate_url();
+    }
+
+    private function get_hub_app_id()
+    {
+        return CoreSetup::getHubAppPublicAppKey();
+    }
+
+    private function get_hub_integrate_url()
+    {
+        $baseUrl = sprintf(
+            'https://hub.pagar.me/apps/%s/authorize',
+            $this->get_hub_app_id()
+        );
+
+        $params = sprintf(
+            '?redirect=%s?install_token=%s',
+            Core::get_hub_url(),
+            $this->get_hub_install_token()
+        );
+        
+        return $baseUrl . $params;
+    }
+
+    private function get_hub_view_integration_url($hub_install_id)
+    {
+        return sprintf(
+            'https://hub.pagar.me/apps/%s/edit/%s',
+            $this->get_hub_app_id(),
+            $hub_install_id
+        );
+    }
+
+    private function get_hub_install_token()
+    {
+        $installSeed = uniqid();
+        $hubIntegrationService = new HubIntegrationService();
+        $installToken = $hubIntegrationService
+            ->startHubIntegration($installSeed);
+
+        return $installToken->getValue();
+    }
+
 }

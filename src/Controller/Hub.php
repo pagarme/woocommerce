@@ -19,7 +19,7 @@ class Hub
     public function __construct()
     {
         $this->settings = Setting::get_instance();
-        add_action('woocommerce_api_pagarme-hub', array($this, 'handle_requests'));
+        add_action('woocommerce_api_' . Core::get_hub_name(), array($this, 'handle_requests'));
     }
 
     public function handle_requests()

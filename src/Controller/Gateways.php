@@ -467,8 +467,8 @@ class Gateways extends WC_Payment_Gateway
     public function field_hub_button_integration()
     {
         return array(
-            'title'       => __('Hub integration', 'woo-pagarme-payments'),
-            'type'        => 'hub_button_integration',
+            'title' => __('Hub integration', 'woo-pagarme-payments'),
+            'type'  => 'hub_button_integration',
         );
     }
 
@@ -654,26 +654,8 @@ class Gateways extends WC_Payment_Gateway
     public function generate_hub_button_integration_html($key, $data)
     {
         $hub_install_id = $this->model->settings->hub_install_id;
-        $app_id = CoreSetup::getHubAppPublicAppKey();
-
-        if (!empty($hub_install_id)) {
-            $button_label = __('View Integration', 'woo-pagarme-payments');
-            $url_hub = sprintf(
-                'https://hub.pagar.me/apps/%s/edit/%s',
-                $app_id,
-                $hub_install_id
-            );
-        } else {
-            $button_label = __('Integrate With Pagar.me', 'woo-pagarme-payments');
-            $url_hub = sprintf(
-                'https://hub.pagar.me/apps/%s/authorize',
-                $app_id
-            );
-            $HubIntegrationService = new HubIntegrationService();
-            $token = $HubIntegrationService->startHubIntegration(uniqid());
-            $url_redirect = Core::get_hub_url() .'?install_token=' . $token;
-            $url_hub .= '?redirect=' . $url_redirect;
-        }
+        $button_label = $this->model->get_hub_button_text($hub_install_id);
+        $url_hub = $this->model->get_hub_url($hub_install_id);
 
         ob_start();
     ?>
@@ -698,7 +680,7 @@ class Gateways extends WC_Payment_Gateway
     ?>
         <tr valign="top">
             <th scope="row" class="titledesc">
-                <?php __('Integration environment', 'woo-pagarme-payments'); ?>
+                <?php echo __('Integration environment', 'woo-pagarme-payments'); ?>
             </th>
             <td class="forminp">
                 <?php echo $this->model->settings->hub_environment; ?>
