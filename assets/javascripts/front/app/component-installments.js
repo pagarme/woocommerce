@@ -46,14 +46,6 @@ MONSTER( 'Pagarme.Components.Installments', function(Model, $, utils) {
 			return false;
 		}
 
-		if ( this.lock ) {
-			return;
-		}
-
-		this.lock = true;
-
-		this.showLoader();
-
 		var ajax = $.ajax({
 			'url': MONSTER.utils.getAjaxUrl(),
 			'data' : {
@@ -65,6 +57,15 @@ MONSTER( 'Pagarme.Components.Installments', function(Model, $, utils) {
 
 		ajax.done( $.proxy( this._done, this, select, storageName ) );
 		ajax.fail( this._fail.bind(this) );
+
+		if ( this.lock ) {
+		    return;
+		}
+
+		this.lock = true;
+
+		this.showLoader();
+
 	};
 
 	Model.fn._done = function(select, storageName, response) {

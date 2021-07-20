@@ -122,19 +122,19 @@ msgid "Production"
 msgstr "Produção"
 
 #: src/Controller/Gateways.php:211
-msgid "Sandbox Secret Key"
+msgid "Sandbox secret key"
 msgstr "Chave secreta Sandbox"
 
 #: src/Controller/Gateways.php:221
-msgid "Sandbox Public Key"
+msgid "Sandbox public key"
 msgstr "Chave pública Sandbox"
 
 #: src/Controller/Gateways.php:231
-msgid "Production Secret Key"
+msgid "Production secret key"
 msgstr "Chave secreta Produção"
 
 #: src/Controller/Gateways.php:241
-msgid "Production Public Key"
+msgid "Production public key"
 msgstr "Chave pública Produção"
 
 #: src/Controller/Gateways.php:251
@@ -146,43 +146,43 @@ msgid "Enables Boleto Bancário"
 msgstr "Ativar Boleto Bancário"
 
 #: src/Controller/Gateways.php:261 src/View/Checkouts.php:234
-msgid "Credit Card"
-msgstr "Cartão de Crédito"
+msgid "Credit card"
+msgstr "Cartão de crédito"
 
 #: src/Controller/Gateways.php:263
-msgid "Enable Credit Card"
-msgstr "Ativar Cartão de Crédito"
+msgid "Enable credit card"
+msgstr "Habilitar cartão de crédito"
 
 #: src/Controller/Gateways.php:271
-msgid "Multimethods </br>(Boleto + Credit Card)"
+msgid "Multi-means </br>(Boleto + Credit card)"
 msgstr "Multimeios </br>(Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:273
-msgid "Enables Multimethods (Boleto + Credit Card)"
+msgid "Enable multi-means (Boleto + Credit card)"
 msgstr "Habilitar multimeios (Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:281
-msgid "Multimethods </br>(2 Credit Cards)"
+msgid "Multi-means </br>(2 Credit cards)"
 msgstr "Multimeios </br>(2 Cartões de crédito)"
 
 #: src/Controller/Gateways.php:283
-msgid "Enable Multimethods (2 Credit Cards)"
+msgid "Enable multi-means (2 Credit cards)"
 msgstr "Habilitar multimeios (2 Cartões de crédito)"
 
 #: src/Controller/Gateways.php:291
-msgid "Multicustomers"
+msgid "Multi-buyers"
 msgstr "Multicompradores"
 
 #: src/Controller/Gateways.php:293
-msgid "Enable Multicustomers"
+msgid "Enable multi-buyers"
 msgstr "Habilitar multicompradores"
 
 #: src/Controller/Gateways.php:301
-msgid "Anti-fraud settings"
+msgid "Anti fraud settings"
 msgstr "Configurações de Antifraude"
 
 #: src/Controller/Gateways.php:311
-msgid "Enable anti-fraud"
+msgid "Enable anti fraud"
 msgstr "Habilitar antifraude"
 
 #: src/Controller/Gateways.php:319
@@ -190,7 +190,7 @@ msgid "Minimum value"
 msgstr "Valor mínimo"
 
 #: src/Controller/Gateways.php:321
-msgid "Minimum anti-fraud value"
+msgid "Minimum anti fraud value"
 msgstr "Valor mínimo para ativar o antifraude"
 
 #: src/Controller/Gateways.php:334
@@ -222,12 +222,12 @@ msgid "Instructions for the boleto."
 msgstr "Instruções para o boleto."
 
 #: src/Controller/Gateways.php:382
-msgid "Credit Card settings"
-msgstr "Configurações de Cartão de Crédito"
+msgid "Credit card settings"
+msgstr "Configurações de Cartão de crédito"
 
 #: src/Controller/Gateways.php:390
-msgid "Soft Descriptor"
-msgstr "Soft Descriptor"
+msgid "Soft descriptor"
+msgstr "Soft descriptor"
 
 #: src/Controller/Gateways.php:392
 msgid "Maximum of 13 characters"
@@ -504,7 +504,7 @@ msgstr "Parcelamento"
 #: templates/checkout/2-cards-item.php:32
 #: templates/checkout/2-cards-item.php:106
 #: templates/checkout/billet-and-card-item.php:52
-msgid "Value (Credit Card)"
+msgid "Value (Credit card)"
 msgstr "Valor (Cartão de crédito)"
 
 #: templates/checkout/2-cards-item.php:55
@@ -718,7 +718,7 @@ msgid "Pix settings"
 msgstr "Configurações do Pix"
 
 msgid "QR code expiration time"
-msgstr "Tempo de exiração do QRCode"
+msgstr "Tempo de expiração do QRCode"
 
 msgid "Expiration time in seconds of the generated pix QR code"
 msgstr "Tempo, em segundos, até o QRCode expirar depois de gerado"
@@ -734,6 +734,96 @@ msgstr "Nome da informação adicional"
 
 msgid "Additional Information Value"
 msgstr "Valor da informação adicional"
+
+msgid "Enable Pagar.me"
+msgstr "Habilitar Pagar.me"
+
+msgid "Checkout title"
+msgstr "Título no checkout"
+
+msgid "Advanced settings"
+msgstr "Configurações avançadas"
+
+msgid "Enable advanced settings"
+msgstr "Habilitar configurações avançadas"
+
+msgid "Configurations that only works for Gateway customers, who have a direct contract with an acquirer."
+msgstr "Configurações que só funcionam para clientes Gateway que têm contrato direto com um adquirente."
+
+msgid "Enable card wallet"
+msgstr "Habilitar card wallet"
+
+msgid "Description that appears on the credit card bill."
+msgstr "Descrição que aparece na fatura do cartão de crédito."
+
+msgid "Installment configuration"
+msgstr "Configuração de parcelamento"
+
+msgid "For all card brands"
+msgstr "Para todas as bandeiras de cartão"
+
+msgid "By card brand"
+msgstr "Por cada bandeira de cartão"
+
+msgid "Max number of installments"
+msgstr "Número máximo de parcelas"
+
+msgid "Initial interest rate (%)"
+msgstr "Taxa de juros inicial (%)"
+
+msgid "Incremental interest rate (%)"
+msgstr "Taxa de juros incremental (%)"
+
+msgid "Allows for cards to be saved for future purchases."
+msgstr "Permite que os cartões sejam salvos para compras futuras."
+
+msgid "Interest rate applied starting with the first installment with interest."
+msgstr "Taxa de juros aplicada a partir da primeira parcela com juros."
+
+msgid "Interest rate added for each installment with interest."
+msgstr "Taxa de juros adicionada para cada parcela com juros."
+
+msgid "Number of installments without interest"
+msgstr "Quantidade de parcelas sem juros"
+
+msgid "Number of installments<br/>without interest"
+msgstr "Quantidade de parcelas<br/>sem juros"
+
+msgid "Default expiration days"
+msgstr "Número padrão de dias para a expiração"
+
+msgid "Payment instructions"
+msgstr "Instruções de pagamento"
+
+msgid "Number of days until the expiration date of the generated boleto."
+msgstr "Número de dias até a data de vencimento do boleto gerado."
+
+msgid "Instructions printed on the boleto."
+msgstr "Instruções impressas no boleto."
+
+msgid "Minimum amount"
+msgstr "Valor mínimo"
+
+msgid "Minimum order amount to send it to the anti fraud"
+msgstr "Valor mínimo do pedido para enviá-lo ao antifraude"
+
+msgid "Expiration time in seconds of the generated pix QR code."
+msgstr "Tempo de expiração em segundos do QRCode gerado."
+
+msgid "Enable pix"
+msgstr "Habilitar pix"
+
+msgid "Enable boleto"
+msgstr "Habilitar boleto"
+
+msgid "Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters."
+msgstr "Tamanho máximo de <span id='woo-pagarme-payments_max_length_span'>%s</span> caracteres."
+
+msgid "Name shown to the customer in the checkout page."
+msgstr "Nome mostrado ao cliente na página de checkout."
+
+msgid "Description shown below the title in the checkout page."
+msgstr "Descrição mostrada abaixo do título na página de checkout."
 
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."

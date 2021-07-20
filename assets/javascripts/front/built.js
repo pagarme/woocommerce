@@ -2669,7 +2669,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn._done = function(response) {
 		this.lock = false;
 		if ( ! response.success ) {
-			this.failMessage(
+		    this.failMessage(
 				this.getFailMessage(response.data)
 			);
 		} else {
@@ -2933,11 +2933,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		input.val(value);
 
 		if ( this.isTwoCardsPayment(event.target, nextInput[0]) ){
-			this.refreshBothInstallmentsSelects(event, nextInput[0]);
+		    this.refreshBothInstallmentsSelects(event, nextInput[0]);
 		}
 
 		if( this.isBilletAndCardPayment(event.target, nextInput[0]) ){
-			this.refreshCardInstallmentSelect(event, nextInput[0]);
+		    this.refreshCardInstallmentSelect(event, nextInput[0]);
 		}
 	};
 
@@ -3003,7 +3003,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		ajax.fail( this._fail.bind(this) );
 
 		if ( this.lock ) {
-			return;
+		    return;
 		}
 
 		this.lock = true;
@@ -3037,7 +3037,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn.removeLoader = function() {
 		$('#wcmp-checkout-form').unblock();
 	};
-});    ;MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
+});
+;MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 
 	window.Pagarme2Cards = 0;
 

@@ -4036,7 +4036,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			padding: 20,
 			onOpening: function (modal) {
 				var amount = modal.$element.find( '[data-element=amount]' );
-				const options = {
+                const options = {
                     reverse:true,
                     onKeyPress: function(amountValue, event, field){
                         if (!event.originalEvent){
@@ -4108,232 +4108,419 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 });
 ;MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
 
-	var errorClass = Utils.addPrefix( 'field-error' );
+    var errorClass = Utils.addPrefix( 'field-error' );
 
-	Model.fn.start = function() {
-		this.init();
-	};
+    Model.fn.start = function() {
+        this.init();
+    };
 
-	Model.fn.init = function() {
-		this.sandboxSecretKey             = $( '[data-field="sandbox-secret-key"]' );
-		this.sandboxPublicKey             = $( '[data-field="sandbox-public-key"]' );
-		this.productionSecretKey          = $( '[data-field="production-secret-key"]' );
-		this.productionPublicKey          = $( '[data-field="production-public-key"]' );
-		this.installments                 = $( '[data-field="installments"]' );
-		this.billet                       = $( '[data-field="billet"]' );
-		this.installmentsMax              = $( '[data-field="installments-maximum"]' );
-		this.installmentsInterest         = $( '[data-field="installments-interest"]' );
-		this.installmentsByFlag           = $( '[data-field="installments-by-flag"]' );
-		this.installmentsWithoutInterest  = $( '[data-field="installments-without-interest"]' );
-		this.installmentsInterestIncrease = $( '[data-field="installments-interest-increase"]' );
+    Model.fn.init = function() {
+        this.sandboxSecretKey             = $( '[data-field="sandbox-secret-key"]' );
+        this.sandboxPublicKey             = $( '[data-field="sandbox-public-key"]' );
+        this.productionSecretKey          = $( '[data-field="production-secret-key"]' );
+        this.productionPublicKey          = $( '[data-field="production-public-key"]' );
+        this.installments                 = $( '[data-field="installments"]' );
+        this.billet                       = $( '[data-field="billet"]' );
+        this.installmentsMax              = $( '[data-field="installments-maximum"]' );
+        this.installmentsInterest         = $( '[data-field="installments-interest"]' );
+        this.installmentsByFlag           = $( '[data-field="installments-by-flag"]' );
+        this.installmentsWithoutInterest  = $( '[data-field="installments-without-interest"]' );
+        this.installmentsInterestIncrease = $( '[data-field="installments-interest-increase"]' );
+        this.antifraudSection             = $( 'h3[id*="woo-pagarme-payments_section_antifraud"]' );
+        this.antifraudEnabled             = $( '[data-field="antifraud-enabled"]' );
+        this.antifraudMinValue            = $( '[data-field="antifraud-min-value"]' );
+        this.ccBrands                     = $( '[data-field="flags-select"]' );
+        this.ccAllowSave                  = $( '[data-field="cc-allow-save"]' );
+        this.billetBank                   = $( '[data-field="billet-bank"]' );
+        this.softDescriptor               = $( '[data-field="soft-descriptor"]' );
 
-		this.handleEnvironmentFieldsVisibility( this.elements.environmentSelect.val() );
-		this.handleInstallmentFieldsVisibility( this.elements.installmentsTypeSelect.val() );
-		this.handleBilletBankRequirement();
+        this.isGatewayIntegrationType = $('input[id*="woo-pagarme-payments_is_gateway_integration_type"]').prop("checked");
+        this.installmentsMaxByFlag = this.installmentsByFlag.find('input[name*="cc_installments_by_flag[max_installment]"]');
+        this.installmentsWithoutInterestByFlag = this.installmentsByFlag.find('input[name*="cc_installments_by_flag[no_interest]"]');
 
-		this.setInstallmentsByFlags( null, true );
+        this.handleEnvironmentFieldsVisibility(this.elements.environmentSelect.val());
+        this.handleInstallmentFieldsVisibility(this.elements.installmentsTypeSelect.val());
+        this.handleGatewayIntegrationFieldsVisibility(this.isGatewayIntegrationType);
+        this.handleBilletBankRequirement();
 
-		this.addEventListener();
-	};
+        this.setMaxInstallmentsWithoutInterestBasedOnMaxInstallments();
+        this.setMaxInstallmentsWithoutInterestBasedOnMaxInstallmentsByFlag();
 
-	Model.fn.addEventListener = function() {
-		this.on( 'keyup', 'soft-descriptor' );
-		this.on( 'change', 'environment' );
-		this.on( 'change', 'installments-type' );
-		this.on( 'change', 'enable-billet' );
-		this.on( 'change', 'enable-multimethods-billet-card' );
+        this.setInstallmentsByFlags( null, true );
 
-		this.elements.flagsSelect.on( 'select2:unselecting', this._onChangeFlags.bind(this) );
-		this.elements.flagsSelect.on( 'select2:selecting', this._onChangeFlags.bind(this) );
+        this.addEventListener();
+    };
 
-		$( '#mainform' ).on( 'submit', this._onSubmitForm.bind( this ) );
-	};
+    Model.fn.addEventListener = function() {
+        this.on( 'keyup', 'soft-descriptor' );
+        this.on( 'change', 'environment' );
+        this.on( 'change', 'installments-type' );
+        this.on( 'change', 'is-gateway-integration-type' );
+        this.on( 'change', 'enable-billet' );
+        this.on( 'change', 'enable-multimethods-billet-card' );
 
-	Model.fn._onKeyupSoftDescriptor = function( event ) {
-		if ( event.currentTarget.value.length > 13 ) {
-			$( event.currentTarget ).addClass( errorClass );
-			return;
-		}
+        this.elements.flagsSelect.on( 'select2:unselecting', this._onChangeFlags.bind(this) );
+        this.elements.flagsSelect.on( 'select2:selecting', this._onChangeFlags.bind(this) );
 
-		$( event.currentTarget ).removeClass( errorClass );
-	};
+        $( '#mainform' ).on( 'submit', this._onSubmitForm.bind( this ) );
+    };
 
-	Model.fn._onSubmitForm = function( event ) {
-		this.toTop = false;
-		this.items = [];
+    Model.fn._onKeyupSoftDescriptor = function( event ) {
+        var isGatewayIntegrationType = $('input[id*="woo-pagarme-payments_is_gateway_integration_type"]').prop("checked");
 
-		this.elements.validate.each( this._eachValidate.bind( this ) );
+        if (!isGatewayIntegrationType && event.currentTarget.value.length > 13) {
+            $(event.currentTarget).addClass(errorClass);
+            return;
+        }
 
-		return !~this.items.indexOf( true );
-	};
+        if (isGatewayIntegrationType && event.currentTarget.value.length > 22) {
+            $(event.currentTarget).addClass(errorClass);
+            return;
+        }
 
-	Model.fn._onChangeEnvironment = function( event ) {
-		this.handleEnvironmentFieldsVisibility( event.currentTarget.value );
-	};
+        $( event.currentTarget ).removeClass( errorClass );
+    };
 
-	Model.fn._onChangeInstallmentsType = function( event ) {
-		this.handleInstallmentFieldsVisibility( event.currentTarget.value );
-	};
+    Model.fn._onSubmitForm = function( event ) {
+        this.toTop = false;
+        this.items = [];
 
-	Model.fn._onChangeEnableBillet = function() {
-		this.handleBilletBankRequirement();
-	};
+        this.elements.validate.each( this._eachValidate.bind( this ) );
 
-	Model.fn._onChangeEnableMultimethodsBilletCard = function() {
-		this.handleBilletBankRequirement();
-	};
+        return !~this.items.indexOf( true );
+    };
 
-	Model.fn._onChangeFlags = function( event ) {
-		this.setInstallmentsByFlags( event, false );
-	};
+    Model.fn._onChangeEnvironment = function( event ) {
+        this.handleEnvironmentFieldsVisibility( event.currentTarget.value );
+    };
 
-	Model.fn._eachValidate = function( index, field ) {
-		var rect;
-		var element = $( field )
-		  , empty   = element.isEmptyValue()
-		  , func    = empty ? 'addClass' : 'removeClass'
-		;
+    Model.fn._onChangeInstallmentsType = function( event ) {
+        this.handleInstallmentFieldsVisibility( event.currentTarget.value );
+    };
 
-		if ( ! element.is( ':visible' ) ) {
-			return;
-		}
+    Model.fn._onChangeIsGatewayIntegrationType = function(event) {
+        this.handleGatewayIntegrationFieldsVisibility(event.currentTarget.checked);
+    };
 
-		element[func]( errorClass );
+    Model.fn._onChangeEnableBillet = function() {
+        this.handleBilletBankRequirement();
+    };
 
-		this.items[index] = empty;
+    Model.fn._onChangeEnableMultimethodsBilletCard = function() {
+        this.handleBilletBankRequirement();
+    };
 
-		if ( ! empty ) {
-			return;
-		}
+    Model.fn._onChangeFlags = function( event ) {
+        this.setInstallmentsByFlags( event, false );
+    };
 
-		field.placeholder = field.dataset.errorMsg;
+    Model.fn._eachValidate = function( index, field ) {
+        var rect;
+        var element          = $( field )
+          , empty            = element.isEmptyValue()
+          , invalidMaxLength = element.val().length > element.prop("maxLength")
+          , isFieldInvalid   = empty || invalidMaxLength
+          , func             = isFieldInvalid ? 'addClass' : 'removeClass'
+        ;
 
-		if ( ! this.toTop ) {
-			this.toTop = true;
-			rect       = field.getBoundingClientRect();
-			window.scrollTo( 0, ( rect.top + window.scrollY ) - 32 );
-		}
-	};
+        if ( ! element.is( ':visible' ) ) {
+            return;
+        }
 
-	Model.fn.handleEnvironmentFieldsVisibility = function( value ) {
-		var sandboxPublicKeyContainer    = this.sandboxPublicKey.closest( 'tr' )
-		  , sandboxSecretKeyContainer 	 = this.sandboxSecretKey.closest( 'tr' )
-		  , productionPublicKeyContainer = this.productionPublicKey.closest( 'tr' )
-		  , productionSecretKeyContainer = this.productionSecretKey.closest( 'tr' )
-		;
+        element[func]( errorClass );
 
-		if ( value == 'sandbox' ) {
-			sandboxPublicKeyContainer.show();
-			sandboxSecretKeyContainer.show();
-			productionPublicKeyContainer.hide();
-			productionSecretKeyContainer.hide();
-		} else {
-			productionPublicKeyContainer.show();
-			productionSecretKeyContainer.show();
-			sandboxPublicKeyContainer.hide();
-			sandboxSecretKeyContainer.hide();
-		}
-	};
+        this.items[index] = isFieldInvalid;
 
-	Model.fn.handleInstallmentFieldsVisibility = function( value ) {
-		var installmentsMaxContainer      		  = this.installmentsMax.closest( 'tr' )
-		  , installmentsInterestContainer 		  = this.installmentsInterest.closest( 'tr' )
-		  , installmentsByFlagContainer   		  = this.installmentsByFlag.closest( 'tr' )
-		  , installmentsWithoutInterestContainer  = this.installmentsWithoutInterest.closest( 'tr' )
-		  , installmentsInterestIncreaseContainer = this.installmentsInterestIncrease.closest( 'tr' )
-		;
+        if (!isFieldInvalid) {
+            return;
+        }
 
-		if ( value == 1 ) {
-			installmentsMaxContainer.show();
-			installmentsInterestContainer.show();
-			installmentsInterestIncreaseContainer.show();
-			installmentsWithoutInterestContainer.show();
-			installmentsByFlagContainer.hide();
-		} else {
-			if ( this.elements.flagsSelect.val() ) {
-				installmentsByFlagContainer.show();
-			}
-			installmentsMaxContainer.hide();
-			installmentsInterestContainer.hide();
-			installmentsInterestIncreaseContainer.hide();
-			installmentsWithoutInterestContainer.hide();
-		}
-	};
+        field.placeholder = field.dataset.errorMsg;
 
-	Model.fn.handleBilletBankRequirement = function() {
-		let bankRequirementFields = $( '[data-requires-field="billet-bank"]' );
-		let billetBankElementId = '#woocommerce_woo-pagarme-payments_billet_bank';
-		let billetBankIsRequired = false;
+        if ( ! this.toTop ) {
+            this.toTop = true;
+            rect       = field.getBoundingClientRect();
+            window.scrollTo( 0, ( rect.top + window.scrollY ) - 32 );
+        }
+    };
 
-		bankRequirementFields.each(function() {
-			if ( $( this ).prop( "checked" ) ) {
-				billetBankIsRequired = true;
-				return false;
-			}
-		});
+    Model.fn.handleEnvironmentFieldsVisibility = function( value ) {
+        var sandboxPublicKeyContainer    = this.sandboxPublicKey.closest( 'tr' )
+          , sandboxSecretKeyContainer 	 = this.sandboxSecretKey.closest( 'tr' )
+          , productionPublicKeyContainer = this.productionPublicKey.closest( 'tr' )
+          , productionSecretKeyContainer = this.productionSecretKey.closest( 'tr' )
+        ;
 
-		if ( billetBankIsRequired ) {
-			$( billetBankElementId ).attr( 'required', true );
-			return;
-		}
+        if ( value == 'sandbox' ) {
+            sandboxPublicKeyContainer.show();
+            sandboxSecretKeyContainer.show();
+            productionPublicKeyContainer.hide();
+            productionSecretKeyContainer.hide();
+        } else {
+            productionPublicKeyContainer.show();
+            productionSecretKeyContainer.show();
+            sandboxPublicKeyContainer.hide();
+            sandboxSecretKeyContainer.hide();
+        }
+    };
 
-		$( billetBankElementId ).attr( 'required', false );
-  };
+    Model.fn.handleInstallmentFieldsVisibility = function( value ) {
+        var installmentsMaxContainer      		  = this.installmentsMax.closest( 'tr' )
+          , installmentsInterestContainer 		  = this.installmentsInterest.closest( 'tr' )
+          , installmentsByFlagContainer   		  = this.installmentsByFlag.closest( 'tr' )
+          , installmentsWithoutInterestContainer  = this.installmentsWithoutInterest.closest( 'tr' )
+          , installmentsInterestIncreaseContainer = this.installmentsInterestIncrease.closest( 'tr' )
+        ;
 
-	Model.fn.setInstallmentsByFlags = function( event, firstLoad ) {
-		var flags        = this.elements.flagsSelect.val() || [];
-		var flagsWrapper = this.installmentsByFlag.closest( 'tr' );
-		var allFlags = $('[data-flag]');
+        if ( value == 1 ) {
+            installmentsMaxContainer.show();
+            installmentsInterestContainer.show();
+            installmentsInterestIncreaseContainer.show();
+            installmentsWithoutInterestContainer.show();
+            installmentsByFlagContainer.hide();
+        } else {
+            if ( this.elements.flagsSelect.val() ) {
+                installmentsByFlagContainer.show();
+                this.setInstallmentsByFlags(null, true);
+            }
+            installmentsMaxContainer.hide();
+            installmentsInterestContainer.hide();
+            installmentsInterestIncreaseContainer.hide();
+            installmentsWithoutInterestContainer.hide();
+        }
+    };
 
-		if ( parseInt( this.elements.installmentsTypeSelect.val() ) !== 2 ) {
-			allFlags.hide();
-			flagsWrapper.hide();
-			return;
-		}
+    Model.fn.getOnlyGatewayBrands = function() {
+        return 'option[value="credz"], ' +
+            'option[value="sodexoalimentacao"], ' +
+            'option[value="sodexocultura"], ' +
+            'option[value="sodexogift"], ' +
+            'option[value="sodexopremium"], ' +
+            'option[value="sodexorefeicao"], ' +
+            'option[value="sodexocombustivel"], ' +
+            'option[value="vr"], ' +
+            'option[value="alelo"], ' +
+            'option[value="banese"], ' +
+            'option[value="cabal"]';
+    };
 
-		if ( ! firstLoad ) {
-			var selectedItem = event.params.args.data.id;
-			var filtered     = flags;
+    Model.fn.getOnlyGatewayInstallments = function() {
+        var installments = '';
+        var maxInstallmentsLength = this.installmentsMax.children('option').length;
 
-			flagsWrapper.show();
+        for (let i = 13; i <= maxInstallmentsLength+1; i++) {
+            installments += `option[value="${i}"], `;
+        }
 
-			if ( event.params.name == 'unselect' ) {
-				filtered = flags.filter(function(i) {
-					return i != selectedItem;
-				});
+        return installments.slice(0, -2);
+    };
 
-				if ( filtered.length == 0 ) {
-					this.installmentsByFlag.closest( 'tr' ).hide();
-				}
-			} else {
-				filtered.push( selectedItem );
-			}
+    Model.fn.setOriginalSelect = function(select) {
+        if (select.data("originalHTML") === undefined) {
+            select.data("originalHTML", select.html());
+        }
+    };
 
-			allFlags.hide();
+    Model.fn.removeOptions = function(select, options) {
+        this.setOriginalSelect(select);
+        options.remove();
+    };
 
-			filtered.map(function(item) {
-				var element = $( '[data-flag=' + item + ']' );
-				element.show();
-			});
-		} else {
-			if ( flags.length === 0 ) {
-				allFlags.hide();
-				flagsWrapper.hide();
-				return;
-			}
+    Model.fn.restoreOptions = function(select) {
+        var originalHTML = select.data("originalHTML");
+        if (originalHTML !== undefined) {
+            select.html(originalHTML);
+        }
+    };
 
-			allFlags.each(function(index, item) {
-				item = $(item);
-				if ( ! flags.includes( item.data( 'flag' ) ) ) {
-					item.hide();
-				} else {
-					item.show();
-				}
-			});
-		}
-	};
+    Model.fn.setMaxInstallmentsWithoutInterestBasedOnMaxInstallments = function () {
+        var installmentsMaxElement = this.installmentsMax;
+
+        installmentsMaxElement.on('change', function() {
+            setMaxInstallmentsWithoutInterest($(this).val());
+        });
+
+        function setMaxInstallmentsWithoutInterest(installmentsMax) {
+            var installmentsWithoutInterest = $('[data-field="installments-without-interest"]');
+            installmentsWithoutInterest.children('option').hide();
+            installmentsWithoutInterest.children('option').filter(function() {
+                return parseInt($(this).val()) <= installmentsMax;
+            }).show();
+            installmentsWithoutInterest.val(installmentsMax).change();
+        }
+    };
+
+    Model.fn.setMaxInstallmentsWithoutInterestBasedOnMaxInstallmentsByFlag = function () {
+        var installmentsMaxElement = this.installmentsMaxByFlag;
+
+        installmentsMaxElement.on('change', function() {
+            setMaxInstallmentsWithoutInterest(
+                $(this).val(),
+                $(this).closest('tr').attr("data-flag")
+            );
+        });
+
+        function setMaxInstallmentsWithoutInterest(installmentsMax, brandName) {
+            var setMaxInstallmentsWithoutInterestOnFlag = $('[data-field="installments-by-flag"]')
+                .find(`input[name*="cc_installments_by_flag[no_interest][${brandName}]"]`);
+            setMaxInstallmentsWithoutInterestOnFlag.prop("max", installmentsMax);
+        }
+    };
+
+    Model.fn.setupPSPOptions = function (
+        antifraudEnabled,
+        antifraudMinValue,
+        ccAllowSave,
+        billetBank
+    ) {
+        antifraudEnabled.hide();
+        antifraudMinValue.hide();
+        ccAllowSave.hide();
+        billetBank.hide();
+        this.antifraudSection.hide();
+
+        this.ccAllowSave.prop("checked", false);
+        var $optionsToRemove = this.ccBrands.find(this.getOnlyGatewayBrands());
+        this.removeOptions(this.ccBrands, $optionsToRemove);
+
+        $("#woo-pagarme-payments_max_length_span").html("13");
+        this.softDescriptor.prop('maxlength', 13);
+
+        var $optionsToRemoveInstallments = this.installmentsMax.find(
+            this.getOnlyGatewayInstallments()
+        );
+        var $optionsToRemoveInstallmentsWithoutInterest = this.installmentsWithoutInterest.find(
+            this.getOnlyGatewayInstallments()
+        );
+        this.removeOptions(this.installmentsMax, $optionsToRemoveInstallments);
+        this.removeOptions(this.installmentsWithoutInterest, $optionsToRemoveInstallmentsWithoutInterest);
+
+        this.installmentsMaxByFlag.prop("max", 12);
+    };
+
+    Model.fn.setupGatewayOptions = function (
+        antifraudEnabled,
+        antifraudMinValue,
+        ccAllowSave,
+        billetBank
+    ) {
+        antifraudEnabled.show();
+        antifraudMinValue.show();
+        ccAllowSave.show();
+        billetBank.show();
+        this.antifraudSection.show();
+
+        this.restoreOptions(this.ccBrands);
+
+        $("#woo-pagarme-payments_max_length_span").html("22");
+        this.softDescriptor.prop('maxlength', 22);
+
+        this.restoreOptions(this.installmentsMax);
+        this.restoreOptions(this.installmentsWithoutInterest);
+
+        this.installmentsMaxByFlag.prop("max", 24);
+    };
+
+    Model.fn.handleGatewayIntegrationFieldsVisibility = function(isGateway) {
+        var antifraudEnabled  = this.antifraudEnabled.closest( 'tr' )
+          , antifraudMinValue = this.antifraudMinValue.closest( 'tr' )
+          , ccAllowSave = this.ccAllowSave.closest( 'tr' )
+          , billetBank = this.billetBank.closest( 'tr' )
+        ;
+
+        if (isGateway) {
+            return this.setupGatewayOptions(
+                antifraudEnabled,
+                antifraudMinValue,
+                ccAllowSave,
+                billetBank
+            );
+        }
+
+        return this.setupPSPOptions(
+            antifraudEnabled,
+            antifraudMinValue,
+            ccAllowSave,
+            billetBank
+        );
+    };
+
+    Model.fn.handleBilletBankRequirement = function() {
+        const billetBankElementId = '#woocommerce_woo-pagarme-payments_billet_bank';
+        let bankRequirementFields = $( '[data-requires-field="billet-bank"]' );
+        let billetBankIsRequired = false;
+
+        bankRequirementFields.each(function() {
+            if ( $( this ).prop( "checked" ) ) {
+                billetBankIsRequired = true;
+                return false;
+            }
+        });
+
+        if ( billetBankIsRequired ) {
+            $( billetBankElementId ).attr( 'required', true );
+            return;
+        }
+
+        $( billetBankElementId ).attr( 'required', false );
+    };
+
+    Model.fn.setInstallmentsByFlags = function( event, firstLoad ) {
+        var flags        = this.elements.flagsSelect.val() || [];
+        var flagsWrapper = this.installmentsByFlag.closest( 'tr' );
+        var allFlags = $('[data-flag]');
+
+        if ( parseInt( this.elements.installmentsTypeSelect.val() ) !== 2 ) {
+            allFlags.hide();
+            flagsWrapper.hide();
+            return;
+        }
+
+        if ( ! firstLoad ) {
+            var selectedItem = event.params.args.data.id;
+            var filtered     = flags;
+
+            flagsWrapper.show();
+
+            if ( event.params.name == 'unselect' ) {
+                filtered = flags.filter(function(i) {
+                    return i != selectedItem;
+                });
+
+                if ( filtered.length == 0 ) {
+                    this.installmentsByFlag.closest( 'tr' ).hide();
+                }
+            } else {
+                filtered.push( selectedItem );
+            }
+
+            allFlags.hide();
+
+            filtered.map(function(item) {
+                var element = $( '[data-flag=' + item + ']' );
+                element.show();
+            });
+        } else {
+            if ( flags.length === 0 ) {
+                allFlags.hide();
+                flagsWrapper.hide();
+                return;
+            }
+
+            allFlags.each(function(index, item) {
+                item = $(item);
+                if ( ! flags.includes( item.data( 'flag' ) ) ) {
+                    item.hide();
+                } else {
+                    item.show();
+                }
+            });
+        }
+    };
 
 });
+
+
 ;jQuery(function($) {
 	var context = $( 'body' );
 

@@ -9,10 +9,8 @@ if (!function_exists('add_action')) {
 //WooCommerce
 use WC_Payment_Gateway;
 use WC_Order;
-use WC_Payment_Gateway_CC;
 
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Gateway;
 
@@ -94,34 +92,35 @@ class Gateways extends WC_Payment_Gateway
             'sandbox_secret_key'                => $this->field_sandbox_secret_key(),
             'production_public_key'             => $this->field_production_public_key(),
             'production_secret_key'             => $this->field_production_secret_key(),
+            'is_gateway_integration_type'       => $this->field_is_gateway_integration_type(),
             'section_payment_settings'          => $this->section_payment_settings(),
-            'enable_billet'                     => $this->field_enable_billet(),
-            'enable_pix'                        => $this->field_enable_pix(),
             'enable_credit_card'                => $this->field_enable_credit_card(),
-            'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
+            'enable_pix'                        => $this->field_enable_pix(),
+            'enable_billet'                     => $this->field_enable_billet(),
             'multimethods_2_cards'              => $this->field_multimethods_2_cards(),
+            'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
             'multicustomers'                    => $this->field_multicustomers(),
-            'section_antifraud'                 => $this->section_antifraud(),
-            'antifraud_enabled'                 => $this->antifraud_enabled(),
-            'antifraud_min_value'               => $this->antifraud_min_value(),
-            'section_billet'                    => $this->section_billet(),
-            'billet_bank'                       => $this->field_billet_bank(),
-            'billet_deadline_days'              => $this->field_billet_deadline_days(),
-            'billet_instructions'               => $this->field_billet_instructions(),
             'section_credit_card'               => $this->section_credit_card(),
-            'cc_soft_descriptor'                => $this->field_cc_soft_descriptor(),
             'cc_operation_type'                 => $this->field_cc_operation_type(),
-            'cc_allow_save'                     => $this->field_cc_allow_save(),
+            'cc_soft_descriptor'                => $this->field_cc_soft_descriptor(),
             'cc_flags'                          => $this->field_cc_flags(),
+            'cc_allow_save'                     => $this->field_cc_allow_save(),
             'cc_installment_type'               => $this->field_cc_installment_type(),
             'cc_installments_maximum'           => $this->field_cc_installment_fields('maximum'),
-            'cc_installments_without_interest'  => $this->field_cc_installment_fields('without_interest'),
             'cc_installments_interest'          => $this->field_cc_installment_fields('interest'),
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
+            'cc_installments_without_interest'  => $this->field_cc_installment_fields('without_interest'),
             'cc_installments_by_flag'           => $this->field_cc_installment_fields('flags'),
             'section_pix'                       => $this->section_pix(),
             'pix_qrcode_expiration_time'        => $this->field_pix_qrcode_expiration_time(),
             'pix_additional_data'               => $this->field_pix_additional_data(),
+            'section_billet'                    => $this->section_billet(),
+            'billet_bank'                       => $this->field_billet_bank(),
+            'billet_deadline_days'              => $this->field_billet_deadline_days(),
+            'billet_instructions'               => $this->field_billet_instructions(),
+            'section_antifraud'                 => $this->section_antifraud(),
+            'antifraud_enabled'                 => $this->antifraud_enabled(),
+            'antifraud_min_value'               => $this->antifraud_min_value(),
             'section_tools'                     => $this->section_tools(),
             'enable_logs'                       => $this->field_enabled_logs(),
         );
@@ -159,7 +158,7 @@ class Gateways extends WC_Payment_Gateway
     public function section_payment_settings()
     {
         return array(
-            'title' => __('Payment settings', 'woo-pagarme-payments'),
+            'title' => __('Payment methods', 'woo-pagarme-payments'),
             'type'  => 'title',
         );
     }
@@ -169,7 +168,7 @@ class Gateways extends WC_Payment_Gateway
         return array(
             'title'   => __('Enable', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
-            'label'   => __('Enable payment', 'woo-pagarme-payments'),
+            'label'   => __('Enable Pagar.me', 'woo-pagarme-payments'),
             'default' => 'no',
         );
     }
@@ -177,8 +176,8 @@ class Gateways extends WC_Payment_Gateway
     public function field_title()
     {
         return array(
-            'title'       => __('Title', 'woo-pagarme-payments'),
-            'description' => __('This the title which the user sees during checkout.', 'woo-pagarme-payments'),
+            'title'       => __('Checkout title', 'woo-pagarme-payments'),
+            'description' => __('Name shown to the customer in the checkout page.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'default'     => __('Pagar.me', 'woo-pagarme-payments'),
         );
@@ -188,6 +187,8 @@ class Gateways extends WC_Payment_Gateway
     {
         return array(
             'title'   => __('Description', 'woo-pagarme-payments'),
+            'description' => __('Description shown below the title in the checkout page.', 'woo-pagarme-payments'),
+            'desc_tip'    => true,
             'default' => __('Pay with credit card or boleto', 'woo-pagarme-payments'),
         );
     }
@@ -213,7 +214,7 @@ class Gateways extends WC_Payment_Gateway
     public function field_sandbox_secret_key()
     {
         return array(
-            'title'             => __('Sandbox Secret Key', 'woo-pagarme-payments'),
+            'title'             => __('Sandbox secret key', 'woo-pagarme-payments'),
             'custom_attributes' => array(
                 'data-field' => 'sandbox-secret-key',
             ),
@@ -223,7 +224,7 @@ class Gateways extends WC_Payment_Gateway
     public function field_sandbox_public_key()
     {
         return array(
-            'title'             => __('Sandbox Public Key', 'woo-pagarme-payments'),
+            'title'             => __('Sandbox public key', 'woo-pagarme-payments'),
             'custom_attributes' => array(
                 'data-field' => 'sandbox-public-key',
             ),
@@ -233,7 +234,7 @@ class Gateways extends WC_Payment_Gateway
     public function field_production_secret_key()
     {
         return array(
-            'title'             => __('Production Secret Key', 'woo-pagarme-payments'),
+            'title'             => __('Production secret key', 'woo-pagarme-payments'),
             'custom_attributes' => array(
                 'data-field' => 'production-secret-key',
             ),
@@ -243,24 +244,35 @@ class Gateways extends WC_Payment_Gateway
     public function field_production_public_key()
     {
         return array(
-            'title'             => __('Production Public Key', 'woo-pagarme-payments'),
+            'title'             => __('Production public key', 'woo-pagarme-payments'),
             'custom_attributes' => array(
                 'data-field' => 'production-public-key',
             ),
         );
     }
 
-    public function field_enable_billet()
+	public function field_is_gateway_integration_type()
+	{
+		return array(
+			'title'   => __('Advanced settings', 'woo-pagarme-payments'),
+			'type'    => 'checkbox',
+			'label'   => __('Enable advanced settings', 'woo-pagarme-payments'),
+			'default' => 'no',
+            'description' => __('Configurations that only works for Gateway customers, who have a direct contract with an acquirer.', 'woo-pagarme-payments'),
+            'desc_tip'    => true,
+			'custom_attributes' => array(
+				'data-action'  => 'is-gateway-integration-type',
+			),
+		);
+	}
+
+    public function field_enable_credit_card()
     {
         return array(
-            'title'   => __('Boleto Bancário', 'woo-pagarme-payments'),
+            'title'   => __('Credit card', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
-            'label'   => __('Enables Boleto Bancário', 'woo-pagarme-payments'),
+            'label'   => __('Enable credit card', 'woo-pagarme-payments'),
             'default' => 'yes',
-            'custom_attributes' => array(
-                'data-action'  => 'enable-billet',
-                'data-requires-field' => 'billet-bank',
-            ),
         );
     }
 
@@ -269,30 +281,20 @@ class Gateways extends WC_Payment_Gateway
         return array(
             'title'   => __('Pix', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
-            'label'   => __('Enable Pix', 'woo-pagarme-payments'),
+            'label'   => __('Enable pix', 'woo-pagarme-payments'),
             'default' => 'no'
         );
     }
 
-    public function field_enable_credit_card()
+	public function field_enable_billet()
     {
         return array(
-            'title'   => __('Credit Card', 'woo-pagarme-payments'),
+            'title'   => __('Boleto', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
-            'label'   => __('Enable Credit Card', 'woo-pagarme-payments'),
+            'label'   => __('Enable boleto', 'woo-pagarme-payments'),
             'default' => 'yes',
-        );
-    }
-
-    public function field_multimethods_billet_card()
-    {
-        return array(
-            'title'   => __('Multimethods </br>(Boleto + Credit Card)', 'woo-pagarme-payments'),
-            'type'    => 'checkbox',
-            'label'   => __('Enables Multimethods (Boleto + Credit Card)', 'woo-pagarme-payments'),
-            'default' => 'no',
             'custom_attributes' => array(
-                'data-action'  => 'enable-multimethods-billet-card',
+                'data-action'  => 'enable-billet',
                 'data-requires-field' => 'billet-bank',
             ),
         );
@@ -301,53 +303,223 @@ class Gateways extends WC_Payment_Gateway
     public function field_multimethods_2_cards()
     {
         return array(
-            'title'   => __('Multimethods </br>(2 Credit Cards)', 'woo-pagarme-payments'),
+            'title'   => __('Multi-means </br>(2 Credit cards)', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
-            'label'   => __('Enable Multimethods (2 Credit Cards)', 'woo-pagarme-payments'),
+            'label'   => __('Enable multi-means (2 Credit cards)', 'woo-pagarme-payments'),
             'default' => 'no',
+        );
+    }
+
+    public function field_multimethods_billet_card()
+    {
+        return array(
+            'title'   => __('Multi-means </br>(Boleto + Credit card)', 'woo-pagarme-payments'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable multi-means (Boleto + Credit card)', 'woo-pagarme-payments'),
+            'default' => 'no',
+            'custom_attributes' => array(
+                'data-action'  => 'enable-multimethods-billet-card',
+                'data-requires-field' => 'billet-bank',
+            ),
         );
     }
 
     public function field_multicustomers()
     {
         return array(
-            'title'   => __('Multicustomers', 'woo-pagarme-payments'),
+            'title'   => __('Multi-buyers', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
-            'label'   => __('Enable Multicustomers', 'woo-pagarme-payments'),
+            'label'   => __('Enable multi-buyers', 'woo-pagarme-payments'),
             'default' => 'no',
         );
     }
 
-    public function section_antifraud()
+    public function section_credit_card()
     {
         return array(
-            'title' => __('Anti-fraud settings', 'woo-pagarme-payments'),
+            'title' => __('Credit card settings', 'woo-pagarme-payments'),
             'type'  => 'title',
         );
     }
 
-    public function antifraud_enabled()
+    public function field_cc_operation_type()
     {
         return array(
-            'title'   => __('Enable', 'woo-pagarme-payments'),
-            'type'    => 'checkbox',
-            'label'   => __('Enable anti-fraud', 'woo-pagarme-payments'),
-            'default' => 'no',
+            'type'    => 'select',
+            'title'   => __('Operation Type', 'woo-pagarme-payments'),
+            'class'   => 'wc-enhanced-select',
+            'default' => 1,
+            'options' => array(
+                1 => __('Authorize', 'woo-pagarme-payments'),
+                2 => __('Authorize and Capture', 'woo-pagarme-payments'),
+            ),
         );
     }
 
-    public function antifraud_min_value()
+    public function field_cc_soft_descriptor()
     {
         return array(
-            'title'             => __('Minimum value', 'woo-pagarme-payments'),
-            'type'              => 'text',
-            'description'       => __('Minimum anti-fraud value', 'woo-pagarme-payments'),
-            'desc_tip'          => true,
-            'placeholder'       => 'Ex.: 100,00',
+            'title'             => __('Soft descriptor', 'woo-pagarme-payments'),
+            'desc_tip'          => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
+            'description'       => sprintf(__( "Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments' ), 13),
             'custom_attributes' => array(
-                'data-mask'         => '#.##0,00',
+                'data-field'     => 'soft-descriptor',
+                'data-action'    => 'soft-descriptor',
+                'data-element'   => 'validate',
+                'maxlength'      => 13,
+                'data-error-msg' => __('This field is required.', 'woo-pagarme-payments'),
+            ),
+        );
+    }
+
+    public function field_cc_allow_save()
+    {
+        return array(
+            'title'   => __('Card wallet', 'woo-pagarme-payments'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable card wallet', 'woo-pagarme-payments'),
+            'default' => 'no',
+            'description' => __('Allows for cards to be saved for future purchases.', 'woo-pagarme-payments'),
+            'desc_tip' => true,
+            'custom_attributes' => array(
+                'data-field' => 'cc-allow-save',
+            ),
+        );
+    }
+
+    public function field_cc_flags()
+    {
+        return array(
+            'type'              => 'multiselect',
+            'title'             => __('Card Brands', 'woo-pagarme-payments'),
+            'select_buttons'    => false,
+            'class'             => 'wc-enhanced-select',
+            'options'           => $this->model->settings->get_flags_list(),
+            'custom_attributes' => array(
+                'data-field'   => 'flags-select',
+                'data-element' => 'flags-select',
+                'data-action'  => 'flags',
+            ),
+        );
+    }
+
+    public function field_cc_manual_capture()
+    {
+        return array(
+            'title'   => __('Manual Capture', 'woo-pagarme-payments'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable Manual Capture', 'woo-pagarme-payments'),
+            'default' => 'yes',
+        );
+    }
+
+    public function field_cc_installment_type()
+    {
+        return array(
+            'title'   => __('Installment configuration', 'woo-pagarme-payments'),
+            'type'    => 'select',
+            'class'   => 'wc-enhanced-select',
+            'label'   => __('Choose the installment configuration', 'woo-pagarme-payments'),
+            'default' => 1,
+            'options' => array(
+                Gateway::CC_TYPE_SINGLE  => __('For all card brands', 'woo-pagarme-payments'),
+                Gateway::CC_TYPE_BY_FLAG => __('By card brand', 'woo-pagarme-payments'),
+            ),
+            'custom_attributes' => array(
+                'data-element' => 'installments-type-select',
+                'data-action'  => 'installments-type',
+            ),
+        );
+    }
+
+    public function field_cc_installment_fields($field)
+    {
+        $installments = array();
+
+        $installments['maximum'] = array(
+            'title'             => __('Max number of installments', 'woo-pagarme-payments'),
+            'type'              => 'select',
+            'default'           => 12,
+            'options'           => $this->model->get_installment_options(),
+            'custom_attributes' => array(
+                'data-field' => 'installments-maximum',
+            ),
+        );
+
+        $installments['interest'] = array(
+            'title'             => __('Initial interest rate (%)', 'woo-pagarme-payments'),
+            'type'              => 'text',
+            'description'       => __('Interest rate applied starting with the first installment with interest.', 'woo-pagarme-payments'),
+            'desc_tip'          => true,
+            'placeholder'       => '0,00',
+            'custom_attributes' => array(
+                'data-field'        => 'installments-interest',
+                'data-mask'         => '##0,00',
                 'data-mask-reverse' => 'true',
             ),
+        );
+
+        $installments['interest_increase'] = array(
+            'title'             => __('Incremental interest rate (%)', 'woo-pagarme-payments'),
+            'type'              => 'text',
+            'description'       => __('Interest rate added for each installment with interest.', 'woo-pagarme-payments'),
+            'desc_tip'          => true,
+            'placeholder'       => '0,00',
+            'custom_attributes' => array(
+                'data-field'        => 'installments-interest-increase',
+                'data-mask'         => '##0,00',
+                'data-mask-reverse' => 'true',
+            ),
+        );
+
+        $installments['without_interest'] = array(
+            'title'             => __('Number of installments without interest', 'woo-pagarme-payments'),
+            'type'              => 'select',
+            'default'           => 3,
+            'options'           => $this->model->get_installment_options(),
+            'custom_attributes' => array(
+                'data-field' => 'installments-without-interest',
+            ),
+        );
+
+        $installments['flags'] = array(
+            'title' => __('Settings by card brand', 'woo-pagarme-payments'),
+            'type'  => 'installments_by_flag',
+        );
+
+        return $installments[$field];
+    }
+
+    public function section_pix()
+    {
+        return array(
+            'title' => __('Pix settings', 'woo-pagarme-payments'),
+            'type'  => 'title',
+        );
+    }
+
+    public function field_pix_qrcode_expiration_time()
+    {
+        return array(
+            'title'       => __('QR code expiration time', 'woo-pagarme-payments'),
+            'description' => __('Expiration time in seconds of the generated pix QR code.', 'woo-pagarme-payments'),
+            'desc_tip'    => true,
+            'placeholder' => 3500,
+            'default'     => 3500,
+            'custom_attributes' => array(
+                'data-mask'         => '##0',
+                'data-mask-reverse' => 'true',
+            ),
+        );
+    }
+
+    public function field_pix_additional_data()
+    {
+        return array(
+            'title'       => __('Additional information', 'woo-pagarme-payments'),
+            'description' => __('Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment process.', 'woo-pagarme-payments'),
+            'desc_tip'    => true,
+            'type'        => 'pix_additional_data',
         );
     }
 
@@ -367,22 +539,24 @@ class Gateways extends WC_Payment_Gateway
             'class'   => 'wc-enhanced-select',
             'default' => 0,
             'options' => array(
-                ''    => __('Select a bank', 'woo-pagarme-payments'),
-                '341' => 'Banco Itaú S.A.',
                 '237' => 'Banco Bradesco S.A.',
+                '341' => 'Banco Itaú S.A.',
                 '033' => 'Banco Santander S.A.',
                 '745' => 'Banco Citibank S.A.',
                 '001' => 'Banco do Brasil S.A.',
                 '104' => 'Caixa Econômica Federal',
             ),
+            'custom_attributes' => array(
+                'data-field' => 'billet-bank',
+            )
         );
     }
 
     public function field_billet_deadline_days()
     {
         return array(
-            'title'       => __('Number of Days', 'woo-pagarme-payments'),
-            'description' => __('Expiration days of the boleto after printing.', 'woo-pagarme-payments'),
+            'title'       => __('Default expiration days', 'woo-pagarme-payments'),
+            'description' => __('Number of days until the expiration date of the generated boleto.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'placeholder' => 5,
             'default'     => 5,
@@ -396,166 +570,70 @@ class Gateways extends WC_Payment_Gateway
     public function field_billet_instructions()
     {
         return array(
-            'title'       => __('Instructions', 'woo-pagarme-payments'),
+            'title'       => __('Payment instructions', 'woo-pagarme-payments'),
             'type'        => 'text',
-            'description' => __('Instructions for the boleto.', 'woo-pagarme-payments'),
+            'description' => __('Instructions printed on the boleto.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
         );
     }
 
-    public function section_credit_card()
+    public function section_antifraud()
     {
         return array(
-            'title' => __('Credit Card settings', 'woo-pagarme-payments'),
+            'title' => __('Anti fraud settings', 'woo-pagarme-payments'),
+            'type'  => 'title',
+            'custom_attributes' => array(
+                'data-field' => 'antifraud-section',
+            )
+        );
+    }
+
+    public function antifraud_enabled()
+    {
+        return array(
+            'title'   => __('Enable', 'woo-pagarme-payments'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable anti fraud', 'woo-pagarme-payments'),
+            'default' => 'no',
+            'custom_attributes' => array(
+                'data-field' => 'antifraud-enabled',
+            )
+        );
+    }
+
+    public function antifraud_min_value()
+    {
+        return array(
+            'title'             => __('Minimum amount', 'woo-pagarme-payments'),
+            'type'              => 'text',
+            'description'       => __('Minimum order amount to send it to the anti fraud', 'woo-pagarme-payments'),
+            'desc_tip'          => true,
+            'placeholder'       => '100,00',
+            'custom_attributes' => array(
+                'data-mask'         => '#.##0,00',
+                'data-mask-reverse' => 'true',
+                'data-field'        => 'antifraud-min-value',
+            ),
+        );
+    }
+
+    public function section_tools()
+    {
+        return array(
+            'title' => __('Tools', 'woo-pagarme-payments'),
             'type'  => 'title',
         );
     }
 
-    public function field_cc_soft_descriptor()
+    public function field_enabled_logs()
     {
         return array(
-            'title'             => __('Soft Descriptor', 'woo-pagarme-payments'),
-            'desc_tip'          => true,
-            'placeholder'       => __('Maximum of 13 characters', 'woo-pagarme-payments'),
-            'description'       => __('It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer\'s invoice, next to the shop identification, respecting the length of the flags.', 'woo-pagarme-payments'),
-            'custom_attributes' => array(
-                'data-action'    => 'soft-descriptor',
-                'data-element'   => 'validate',
-                'maxlength'      => 13,
-                'data-error-msg' => __('This field is required.', 'woo-pagarme-payments'),
-            ),
+            'title'       => __('Logs', 'woo-pagarme-payments'),
+            'type'        => 'checkbox',
+            'label'       => __('Enable', 'woo-pagarme-payments'),
+            'default'     => 'no',
+            'description' => __('Log Pagar.me events, you can check this log in WooCommerce>Status>Logs.', 'woo-pagarme-payments'),
         );
-    }
-
-    public function field_cc_operation_type()
-    {
-        return array(
-            'type'    => 'select',
-            'title'   => __('Operation Type', 'woo-pagarme-payments'),
-            'class'   => 'wc-enhanced-select',
-            'default' => 1,
-            'options' => array(
-                1 => __('Authorize', 'woo-pagarme-payments'),
-                2 => __('Authorize and Capture', 'woo-pagarme-payments'),
-            ),
-        );
-    }
-
-    public function field_cc_allow_save()
-    {
-        return array(
-            'title'   => __('Enable storage', 'woo-pagarme-payments'),
-            'type'    => 'checkbox',
-            'label'   => __('Allow card salvage for future purchases', 'woo-pagarme-payments'),
-            'default' => 'yes',
-        );
-    }
-
-    public function field_cc_manual_capture()
-    {
-        return array(
-            'title'   => __('Manual Capture', 'woo-pagarme-payments'),
-            'type'    => 'checkbox',
-            'label'   => __('Enable Manual Capture', 'woo-pagarme-payments'),
-            'default' => 'yes',
-        );
-    }
-
-    public function field_cc_flags()
-    {
-        return array(
-            'type'              => 'multiselect',
-            'title'             => __('Card Brands', 'woo-pagarme-payments'),
-            'select_buttons'    => false,
-            'class'             => 'wc-enhanced-select',
-            'desc_tip'          => __('Select one or more card brands', 'woo-pagarme-payments'),
-            'options'           => $this->model->settings->get_flags_list(),
-            'custom_attributes' => array(
-                'data-element' => 'flags-select',
-                'data-action'  => 'flags',
-            ),
-        );
-    }
-
-    public function field_cc_installment_type()
-    {
-        return array(
-            'title'   => __('Installment type', 'woo-pagarme-payments'),
-            'type'    => 'select',
-            'class'   => 'wc-enhanced-select',
-            'label'   => __('Choose the installment type', 'woo-pagarme-payments'),
-            'default' => 1,
-            'options' => array(
-                Gateway::CC_TYPE_SINGLE  => __('Single installment', 'woo-pagarme-payments'),
-                Gateway::CC_TYPE_BY_FLAG => __('Installment by card brands', 'woo-pagarme-payments'),
-            ),
-            'custom_attributes' => array(
-                'data-element' => 'installments-type-select',
-                'data-action'  => 'installments-type',
-            ),
-        );
-    }
-
-    public function field_cc_installment_fields($field)
-    {
-        $installments = array();
-
-        $installments['maximum'] = array(
-            'title'             => __('Maximum installments number', 'woo-pagarme-payments'),
-            'type'              => 'select',
-            'description'       => __('Force a maximum number of installments for payment.', 'woo-pagarme-payments'),
-            'desc_tip'          => true,
-            'default'           => 12,
-            'options'           => $this->model->get_installment_options(),
-            'custom_attributes' => array(
-                'data-field' => 'installments-maximum',
-            ),
-        );
-
-        $installments['without_interest'] = array(
-            'title'             => __('Without Interest', 'woo-pagarme-payments'),
-            'type'              => 'select',
-            'description'       => __('Defines which installment will have no interest.', 'woo-pagarme-payments'),
-            'desc_tip'          => true,
-            'default'           => 3,
-            'options'           => $this->model->get_installment_options(),
-            'custom_attributes' => array(
-                'data-field' => 'installments-without-interest',
-            ),
-        );
-
-        $installments['interest'] = array(
-            'title'             => __('Initial interest', 'woo-pagarme-payments'),
-            'type'              => 'text',
-            'description'       => __('Interest to be applied to the installment.', 'woo-pagarme-payments'),
-            'desc_tip'          => true,
-            'placeholder'       => '0,00',
-            'custom_attributes' => array(
-                'data-field'        => 'installments-interest',
-                'data-mask'         => '##0,00',
-                'data-mask-reverse' => 'true',
-            ),
-        );
-
-        $installments['interest_increase'] = array(
-            'title'             => __('Interest increase', 'woo-pagarme-payments'),
-            'type'              => 'text',
-            'description'       => __('Interest to be increamented for each installment.', 'woo-pagarme-payments'),
-            'desc_tip'          => true,
-            'placeholder'       => '0,00',
-            'custom_attributes' => array(
-                'data-field'        => 'installments-interest-increase',
-                'data-mask'         => '##0,00',
-                'data-mask-reverse' => 'true',
-            ),
-        );
-
-        $installments['flags'] = array(
-            'title' => __('Settings by card brand', 'woo-pagarme-payments'),
-            'type'  => 'installments_by_flag',
-        );
-
-        return $installments[$field];
     }
 
     /**
@@ -590,7 +668,7 @@ class Gateways extends WC_Payment_Gateway
         $value = (array) $this->get_option($key, array());
         ob_start();
 
-?>
+    ?>
         <style>
             .woocommerce table.form-table fieldset.pix-additional-data input.small-input-pix {
                 width: 198px;
@@ -639,8 +717,10 @@ class Gateways extends WC_Payment_Gateway
 
     ?>
         <style>
-            .woocommerce table.form-table p.flag input.small-input {
-                width: 150px;
+            .woocommerce table.form-table p.flag input.small-input { width: 150px; }
+            th.align, input.align {
+                text-align: center;
+                vertical-align: middle;
             }
         </style>
         <tr valign="top">
@@ -650,39 +730,34 @@ class Gateways extends WC_Payment_Gateway
             </th>
             <td class="forminp">
                 <fieldset data-field="installments-by-flag">
-                    <?php
-                    foreach ($flags as $flag_key => $flag_name) :
-                        $interest          = isset($value['interest'][$flag_key]) ? $value['interest'][$flag_key] : '';
-                        $interest_increase = isset($value['interest_increase'][$flag_key]) ? $value['interest_increase'][$flag_key] : '';
-                        $max_installment   = isset($value['max_installment'][$flag_key]) ? $value['max_installment'][$flag_key] : 12;
-                        $no_interest       = isset($value['no_interest'][$flag_key]) ? $value['no_interest'][$flag_key] : 1;
-                    ?>
-                        <p class="flag" data-flag="<?php echo $flag_key; ?>">
-
-                            <input class="small-input" type="text" value="<?php echo $flag_name; ?>" <?php disabled(1, true); ?> />
-
-                            <input class="small-input" type="number" min="1" max="12" name="<?php echo esc_attr($field_key); ?>[max_installment][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>" value="<?php echo intval($max_installment); ?>" />
-
-                            <input class="small-input" type="number" min="1" max="12" name="<?php echo esc_attr($field_key); ?>[no_interest][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>" value="<?php echo intval($no_interest); ?>" />
-
-                            <input class="small-input" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest) ?>" />%
-
-                            <input class="small-input" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest_increase][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest_increase) ?>" />%
-                        </p>
-                    <?php endforeach; ?>
-
-                    <?php echo $this->get_description_html($data); ?>
-
-                    </br>
-                    <p class="description">
-                        <strong><?php _e('Columns', 'woo-pagarme-payments'); ?>:</strong>
-                        <?php _e('Card Brand', 'woo-pagarme-payments'); ?>,
-                        <?php _e('Max installment', 'woo-pagarme-payments'); ?>,
-                        <?php _e('No interest', 'woo-pagarme-payments'); ?>,
-                        <?php _e('Initial interest', 'woo-pagarme-payments'); ?>,
-                        <?php _e('Interest increase', 'woo-pagarme-payments'); ?>
-                    </p>
-
+                    <table class="widefat wc_input_table sortable">
+                        <thead>
+                        <tr>
+                            <th class="align"><?php _e('Card Brand', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Max number of installments', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Initial interest rate (%)', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Incremental interest rate (%)', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Number of installments<br/>without interest', 'woo-pagarme-payments'); ?></th>
+                        </tr>
+                        </thead>
+                        <tbody class="accounts ui-sortable">
+                            <?php
+                            foreach ($flags as $flag_key => $flag_name) :
+                                $interest          = isset($value['interest'][$flag_key]) ? $value['interest'][$flag_key] : '';
+                                $interest_increase = isset($value['interest_increase'][$flag_key]) ? $value['interest_increase'][$flag_key] : '';
+                                $max_installment   = isset($value['max_installment'][$flag_key]) ? $value['max_installment'][$flag_key] : 12;
+                                $no_interest       = isset($value['no_interest'][$flag_key]) ? $value['no_interest'][$flag_key] : 1;
+                            ?>
+                                <tr class="account ui-sortable-handle flag" data-flag="<?php echo $flag_key; ?>">
+                                    <td><input class="align" type="text" value="<?php echo $flag_name; ?>" <?php disabled(1, true); ?> /></td>
+                                    <td><input class="align" type="number" min="1" max="24" name="<?php echo esc_attr($field_key); ?>[max_installment][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>_max_installment_<?php echo $flag_key; ?>" value="<?php echo intval($max_installment); ?>" /></td>
+                                    <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>_interest_<?php echo $flag_key; ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest) ?>" /></td>
+                                    <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest_increase][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>_interest_increase_<?php echo $flag_key; ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest_increase) ?>" /></td>
+                                    <td><input class="align" type="number" min="1" max="<?php echo intval($no_interest); ?>" name="<?php echo esc_attr($field_key); ?>[no_interest][<?php echo $flag_key; ?>]" id="<?php echo esc_attr($field_key); ?>_no_interest_<?php echo $flag_key; ?>" value="<?php echo intval($no_interest); ?>" /></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </fieldset>
             </td>
         </tr>
@@ -699,57 +774,5 @@ class Gateways extends WC_Payment_Gateway
     public function validate_pix_additional_data_field($key, $value)
     {
         return $value;
-    }
-
-    public function section_pix()
-    {
-        return array(
-            'title' => __('Pix settings', 'woo-pagarme-payments'),
-            'type'  => 'title',
-        );
-    }
-
-    public function field_pix_qrcode_expiration_time()
-    {
-        return array(
-            'title'       => __('QR code expiration time', 'woo-pagarme-payments'),
-            'description' => __('Expiration time in seconds of the generated pix QR code', 'woo-pagarme-payments'),
-            'desc_tip'    => true,
-            'placeholder' => 3500,
-            'default'     => 3500,
-            'custom_attributes' => array(
-                'data-mask'         => '##0',
-                'data-mask-reverse' => 'true',
-            ),
-        );
-    }
-
-    public function field_pix_additional_data()
-    {
-        return array(
-            'title'       => __('Additional information', 'woo-pagarme-payments'),
-            'description' => __('Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment process.', 'woo-pagarme-payments'),
-            'desc_tip'    => true,
-            'type'        => 'pix_additional_data',
-        );
-    }
-
-    public function section_tools()
-    {
-        return array(
-            'title' => __('Tools', 'woo-pagarme-payments'),
-            'type'  => 'title',
-        );
-    }
-
-    public function field_enabled_logs()
-    {
-        return array(
-            'title'       => __('Logs', 'woo-pagarme-payments'),
-            'type'        => 'checkbox',
-            'label'       => __('Enable', 'woo-pagarme-payments'),
-            'default'     => 'no',
-            'description' => __('Log Pagar.me events, you can check this log in WooCommerce>Status>Logs.', 'woo-pagarme-payments'),
-        );
     }
 }

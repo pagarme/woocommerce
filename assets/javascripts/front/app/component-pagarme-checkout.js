@@ -2,6 +2,26 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 
 	window.Pagarme2Cards = 0;
 
+    window.pagarmeQrCodeCopy = function(){
+        const qrCodeElement = document.getElementById("pagarme-qr-code");
+
+        if (!qrCodeElement){
+            return;
+        }
+
+        const rawCode = qrCodeElement.getAttribute("rawCode");
+
+        const input =document.createElement('input');
+        document.body.appendChild(input)
+        input.value = rawCode;
+        input.select();
+        document.execCommand('copy',false);
+        input.remove();
+
+        alert("Código copiado.");
+
+    }
+
 	Model.fn.start = function() {
 		this.script           = $( '[data-pagarmecheckout-app-id]' );
 		this.form             = $( '[data-pagarmecheckout-form]' );
@@ -279,7 +299,6 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 	};
 
 	Model.fn.onSubmit = function(e) {
-
 		if ( this.hasCardId() ) {
 			$( 'body' ).trigger( 'onPagarmeCheckoutDone' );
 
