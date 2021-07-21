@@ -7,10 +7,6 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
     };
 
     Model.fn.init = function() {
-        this.sandboxSecretKey             = $( '[data-field="sandbox-secret-key"]' );
-        this.sandboxPublicKey             = $( '[data-field="sandbox-public-key"]' );
-        this.productionSecretKey          = $( '[data-field="production-secret-key"]' );
-        this.productionPublicKey          = $( '[data-field="production-public-key"]' );
         this.installments                 = $( '[data-field="installments"]' );
         this.billet                       = $( '[data-field="billet"]' );
         this.installmentsMax              = $( '[data-field="installments-maximum"]' );
@@ -30,7 +26,6 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
         this.installmentsMaxByFlag = this.installmentsByFlag.find('input[name*="cc_installments_by_flag[max_installment]"]');
         this.installmentsWithoutInterestByFlag = this.installmentsByFlag.find('input[name*="cc_installments_by_flag[no_interest]"]');
 
-        this.handleEnvironmentFieldsVisibility(this.elements.environmentSelect.val());
         this.handleInstallmentFieldsVisibility(this.elements.installmentsTypeSelect.val());
         this.handleGatewayIntegrationFieldsVisibility(this.isGatewayIntegrationType);
         this.handleBilletBankRequirement();
@@ -82,10 +77,6 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
         return !~this.items.indexOf( true );
     };
 
-    Model.fn._onChangeEnvironment = function( event ) {
-        this.handleEnvironmentFieldsVisibility( event.currentTarget.value );
-    };
-
     Model.fn._onChangeInstallmentsType = function( event ) {
         this.handleInstallmentFieldsVisibility( event.currentTarget.value );
     };
@@ -133,26 +124,6 @@ MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
             this.toTop = true;
             rect       = field.getBoundingClientRect();
             window.scrollTo( 0, ( rect.top + window.scrollY ) - 32 );
-        }
-    };
-
-    Model.fn.handleEnvironmentFieldsVisibility = function( value ) {
-        var sandboxPublicKeyContainer    = this.sandboxPublicKey.closest( 'tr' )
-          , sandboxSecretKeyContainer 	 = this.sandboxSecretKey.closest( 'tr' )
-          , productionPublicKeyContainer = this.productionPublicKey.closest( 'tr' )
-          , productionSecretKeyContainer = this.productionSecretKey.closest( 'tr' )
-        ;
-
-        if ( value == 'sandbox' ) {
-            sandboxPublicKeyContainer.show();
-            sandboxSecretKeyContainer.show();
-            productionPublicKeyContainer.hide();
-            productionSecretKeyContainer.hide();
-        } else {
-            productionPublicKeyContainer.show();
-            productionSecretKeyContainer.show();
-            sandboxPublicKeyContainer.hide();
-            sandboxSecretKeyContainer.hide();
         }
     };
 

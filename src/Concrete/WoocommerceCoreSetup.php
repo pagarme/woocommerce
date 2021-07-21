@@ -79,7 +79,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     protected static function getPlatformHubAppPublicAppKey()
     {
-        // Not implemented on Woocommerce because there is no hub implementation
+        return 'TBD';
     }
 
     public function _getDashboardLanguage()
@@ -110,7 +110,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         // $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
         // $configData = self::fillWithRecurrenceConfig($configData, $storeConfig);
-        $configData->hubInstallId = null;
+        $configData = self::fillWithHubConfig($configData, $storeConfig);
 
         $configurationFactory = new ConfigurationFactory();
         $config = $configurationFactory->createFromJsonData(
@@ -313,4 +313,16 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
     {
         // Not implemented on Woocommerce because there is no recurrence config
     }
+
+    static private function fillWithHubConfig($dataObj, $storeConfig)
+    {
+        $dataObj->hubInstallId = null;
+        $dataObj->hubEnvironment = null;
+        if ($storeConfig->isHubEnabled()) {
+            $dataObj->hubInstallId = $storeConfig->hub_install_id;
+            $dataObj->hubEnvironment = $storeConfig->hub_environment;
+        }
+        return $dataObj;
+    }
+
 }
