@@ -31,7 +31,7 @@ class Hub
                 $hubIntegrationService->endHubIntegration(
                     $params['install_token'],
                     $params['authorization_code'],
-                    Core::get_hub_url(),
+                    Core::get_hub_command_url(),
                     Core::get_webhook_url()
                 );
                 $this->updateConfig();
@@ -70,5 +70,4 @@ class Hub
         $this->settings->set('sandbox_public_key', null);
         $this->settings->set('environment', null);
     }
-
 }
