@@ -79,7 +79,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     protected static function getPlatformHubAppPublicAppKey()
     {
-        return 'TBD';
+        return '1e9c3c13-f8ea-4fdd-b2a0-8795b5593397';
     }
 
     public function _getDashboardLanguage()
@@ -165,7 +165,8 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $pixConfig->expirationQrCode = $storeConfig->pix_qrcode_expiration_time;
         $pixConfig->bankType = 'Pagar.me';
 
-        if (count(array_filter($storeConfig->pix_additional_data))
+        if (
+            count(array_filter($storeConfig->pix_additional_data))
             == count($storeConfig->pix_additional_data)
         ) {
             $pixConfig->additionalInformation = [$storeConfig->pix_additional_data];
@@ -324,5 +325,4 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         }
         return $dataObj;
     }
-
 }
