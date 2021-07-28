@@ -60,6 +60,7 @@ class Core
             'Checkout',
             'Webhooks',
             'Hub',
+            'HubCommand',
             'Orders',
             'Charges',
             'Accounts',
@@ -224,9 +225,29 @@ class Core
         return Utils::add_prefix('-webhook');
     }
 
+    public static function get_hub_command_url($custom_url = false)
+    {
+        $url = !$custom_url ? Utils::get_site_url() : $custom_url;
+
+        return sprintf(
+            '%s/wc-api/%s/',
+            $url,
+            self::get_hub_command_name()
+        );
+    }
+
+    public static function get_hub_command_name()
+    {
+        return Utils::add_prefix('-hubcommand');
+    }
+
     public static function get_hub_url()
     {
-        return sprintf('%s/wc-api/%s/', Utils::get_site_url(), Utils::add_prefix('-hub'));
+        return sprintf(
+            '%s/wc-api/%s/',
+            Utils::get_site_url(),
+            self::get_hub_name()
+        );
     }
 
     public static function get_hub_name()

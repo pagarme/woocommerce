@@ -87,10 +87,10 @@ class Gateways extends WC_Payment_Gateway
     {
         $this->form_fields = array(
             'enabled'                           => $this->field_enabled(),
-            'title'                             => $this->field_title(),
-            'description'                       => $this->field_description(),
             'hub_button_integration'            => $this->field_hub_button_integration(),
             'hub_environment'                   => $this->field_hub_environment(),
+            'title'                             => $this->field_title(),
+            'description'                       => $this->field_description(),
             'is_gateway_integration_type'       => $this->field_is_gateway_integration_type(),
             'section_payment_settings'          => $this->section_payment_settings(),
             'enable_credit_card'                => $this->field_enable_credit_card(),
@@ -192,20 +192,20 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-	public function field_is_gateway_integration_type()
-	{
-		return array(
-			'title'   => __('Advanced settings', 'woo-pagarme-payments'),
-			'type'    => 'checkbox',
-			'label'   => __('Enable advanced settings', 'woo-pagarme-payments'),
-			'default' => 'no',
+    public function field_is_gateway_integration_type()
+    {
+        return array(
+            'title'   => __('Advanced settings', 'woo-pagarme-payments'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable advanced settings', 'woo-pagarme-payments'),
+            'default' => 'no',
             'description' => __('Configurations that only works for Gateway customers, who have a direct contract with an acquirer.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
-			'custom_attributes' => array(
-				'data-action'  => 'is-gateway-integration-type',
-			),
-		);
-	}
+            'custom_attributes' => array(
+                'data-action'  => 'is-gateway-integration-type',
+            ),
+        );
+    }
 
     public function field_enable_credit_card()
     {
@@ -227,7 +227,7 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-	public function field_enable_billet()
+    public function field_enable_billet()
     {
         return array(
             'title'   => __('Boleto', 'woo-pagarme-payments'),
@@ -302,7 +302,7 @@ class Gateways extends WC_Payment_Gateway
         return array(
             'title'             => __('Soft descriptor', 'woo-pagarme-payments'),
             'desc_tip'          => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
-            'description'       => sprintf(__( "Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments' ), 13),
+            'description'       => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments'), 13),
             'custom_attributes' => array(
                 'data-field'     => 'soft-descriptor',
                 'data-action'    => 'soft-descriptor',
@@ -625,7 +625,7 @@ class Gateways extends WC_Payment_Gateway
         $value = (array) $this->get_option($key, array());
         ob_start();
 
-    ?>
+?>
         <style>
             .woocommerce table.form-table fieldset.pix-additional-data input.small-input-pix {
                 width: 198px;
@@ -713,8 +713,12 @@ class Gateways extends WC_Payment_Gateway
 
     ?>
         <style>
-            .woocommerce table.form-table p.flag input.small-input { width: 150px; }
-            th.align, input.align {
+            .woocommerce table.form-table p.flag input.small-input {
+                width: 150px;
+            }
+
+            th.align,
+            input.align {
                 text-align: center;
                 vertical-align: middle;
             }
@@ -728,13 +732,13 @@ class Gateways extends WC_Payment_Gateway
                 <fieldset data-field="installments-by-flag">
                     <table class="widefat wc_input_table sortable">
                         <thead>
-                        <tr>
-                            <th class="align"><?php _e('Card Brand', 'woo-pagarme-payments'); ?></th>
-                            <th class="align"><?php _e('Max number of installments', 'woo-pagarme-payments'); ?></th>
-                            <th class="align"><?php _e('Initial interest rate (%)', 'woo-pagarme-payments'); ?></th>
-                            <th class="align"><?php _e('Incremental interest rate (%)', 'woo-pagarme-payments'); ?></th>
-                            <th class="align"><?php _e('Number of installments<br/>without interest', 'woo-pagarme-payments'); ?></th>
-                        </tr>
+                            <tr>
+                                <th class="align"><?php _e('Card Brand', 'woo-pagarme-payments'); ?></th>
+                                <th class="align"><?php _e('Max number of installments', 'woo-pagarme-payments'); ?></th>
+                                <th class="align"><?php _e('Initial interest rate (%)', 'woo-pagarme-payments'); ?></th>
+                                <th class="align"><?php _e('Incremental interest rate (%)', 'woo-pagarme-payments'); ?></th>
+                                <th class="align"><?php _e('Number of installments<br/>without interest', 'woo-pagarme-payments'); ?></th>
+                            </tr>
                         </thead>
                         <tbody class="accounts ui-sortable">
                             <?php
