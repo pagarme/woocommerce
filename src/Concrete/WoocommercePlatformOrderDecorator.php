@@ -114,7 +114,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private function getWoocommerceStatusFromCoreStatus($coreStatus)
     {
         $coreToWoocommerceStatus = array(
-            'canceled' => 'cancelled'
+            'canceled' => 'cancelled',
+            'pending' => 'on-hold'
         );
 
         return array_key_exists($coreStatus, $coreToWoocommerceStatus) ?
@@ -124,7 +125,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private function getCoreStatusFromWoocommerceStatus($woocommerceStatus)
     {
         $woocommerceToCoreStatus = array(
-            'cancelled' => 'canceled'
+            'cancelled' => 'canceled',
+            'on-hold' => 'pending'
         );
 
         return array_key_exists($woocommerceStatus, $woocommerceToCoreStatus) ?
