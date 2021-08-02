@@ -154,6 +154,10 @@ MONSTER( 'Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 				if (!$img) {
 					var $newImg = document.createElement('img');
 					$newImg.setAttribute('src', src);
+                    $newImg.setAttribute('style', 'float: right;\n' +
+                        'border: 0;\n' +
+                        'padding: 0;\n' +
+                        'max-height: 1.618em;');
 					$brand.appendChild($newImg);
 				} else {
 					$img.setAttribute('src', src);

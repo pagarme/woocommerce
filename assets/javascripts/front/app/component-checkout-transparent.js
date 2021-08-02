@@ -165,7 +165,7 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 
 	Model.fn.applySelect2 = function() {
 		this.$el.byAction( 'select2' ).select2({
-			width: '400px',
+			width: '100%',
 			minimumResultsForSearch: 20
 		});
 
