@@ -44,7 +44,7 @@ $ref2              = md5(rand(1, 1000));
                 ?>
             </div>
 
-            <p class="form-row form-row-first">
+            <p class="form-row form-row-wide">
 
                 <label for="installments">
                     <?php esc_html_e('Installments quantity', 'woo-pagarme-payments'); ?><span class="required">*</span>
@@ -115,7 +115,7 @@ $ref2              = md5(rand(1, 1000));
                 ?>
             </div>
 
-            <p class="form-row form-row-first">
+            <p class="form-row form-row-wide">
 
                 <label for="installments2">
                     <?php esc_html_e('Installments quantity', 'woo-pagarme-payments'); ?><span class="required">*</span>

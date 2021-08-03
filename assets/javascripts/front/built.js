@@ -2722,7 +2722,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 	Model.fn.applySelect2 = function() {
 		this.$el.byAction( 'select2' ).select2({
-			width: '400px',
+			width: '100%',
 			minimumResultsForSearch: 20
 		});
 
@@ -3194,6 +3194,10 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 				if (!$img) {
 					var $newImg = document.createElement('img');
 					$newImg.setAttribute('src', src);
+					$newImg.setAttribute('style', 'float: right;\n' +
+						'border: 0;\n' +
+						'padding: 0;\n' +
+						'max-height: 1.618em;');
 					$brand.appendChild($newImg);
 				} else {
 					$img.setAttribute('src', src);
