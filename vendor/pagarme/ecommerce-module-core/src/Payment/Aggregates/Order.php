@@ -148,7 +148,8 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         }
 
         $sum = 0;
-        foreach ($this->payments as $payment) {
+        foreach ($this->payments as $payment)
+        {
             $sum += $payment->getAmount();
         }
 
@@ -175,7 +176,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         if ($currentAmount > $this->amount) {
             $message = $i18n->getDashboard(
                 "The sum of payments is greater than the order amount! " .
-                    "Review the information and try again."
+                "Review the information and try again."
             );
             throw new \Exception($message, 400);
         }*/
@@ -200,7 +201,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
     private function discoverPaymentMethod(AbstractPayment $payment)
     {
         $paymentClass = get_class($payment);
-        $paymentClass = explode('\\', $paymentClass);
+        $paymentClass = explode ('\\', $paymentClass);
         $paymentClass = end($paymentClass);
         return $paymentClass;
     }
@@ -210,7 +211,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         if ($this->customer === null) {
             throw new \Exception(
                 'To use a saved credit card payment in an order ' .
-                    'you must add a customer to it.',
+                'you must add a customer to it.',
                 400
             );
         }
