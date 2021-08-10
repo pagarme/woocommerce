@@ -79,7 +79,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     protected static function getPlatformHubAppPublicAppKey()
     {
-        // Not implemented on Woocommerce because there is no hub implementation
+        return '1e9c3c13-f8ea-4fdd-b2a0-8795b5593397';
     }
 
     public function _getDashboardLanguage()
@@ -110,7 +110,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         // $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
         // $configData = self::fillWithRecurrenceConfig($configData, $storeConfig);
-        $configData->hubInstallId = null;
+        $configData = self::fillWithHubConfig($configData, $storeConfig);
 
         $configurationFactory = new ConfigurationFactory();
         $config = $configurationFactory->createFromJsonData(
@@ -169,6 +169,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         if (!empty($pixAdditionalData)
             && count(array_filter($pixAdditionalData))
             == count($pixAdditionalData)
+
         ) {
             $pixConfig->additionalInformation = [$pixAdditionalData];
         }
@@ -314,5 +315,16 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
     static private function fillWithRecurrenceConfig(&$dataObj, $storeConfig)
     {
         // Not implemented on Woocommerce because there is no recurrence config
+    }
+
+    static private function fillWithHubConfig($dataObj, $storeConfig)
+    {
+        $dataObj->hubInstallId = null;
+        $dataObj->hubEnvironment = null;
+        if ($storeConfig->isHubEnabled()) {
+            $dataObj->hubInstallId = $storeConfig->hub_install_id;
+            $dataObj->hubEnvironment = $storeConfig->hub_environment;
+        }
+        return $dataObj;
     }
 }

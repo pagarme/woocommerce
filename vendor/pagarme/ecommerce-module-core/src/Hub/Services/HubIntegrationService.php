@@ -3,6 +3,7 @@
 namespace Pagarme\Core\Hub\Services;
 
 use Pagarme\Core\Hub\Aggregates\InstallToken;
+use Pagarme\Core\Kernel\Services\LogService;
 use Pagarme\Core\Hub\Factories\HubCommandFactory;
 use Pagarme\Core\Hub\Factories\InstallTokenFactory;
 use Pagarme\Core\Hub\Repositories\InstallTokenRepository;
@@ -12,6 +13,13 @@ use Unirest\Request;
 
 final class HubIntegrationService
 {
+    private $logService;
+
+    public function __construct()
+    {
+        $this->logService = new LogService('Hub', true);
+    }
+
     /**
      *
      * @param  $installSeed
@@ -49,43 +57,95 @@ final class HubIntegrationService
 
         $installToken = $tokenRepo->findByPagarmeId(new HubInstallToken($installToken));
 
-        if (
-            is_a($installToken, InstallToken::class)
+        $isValidToken = is_a($installToken, InstallToken::class)
             && !$installToken->isExpired()
-            && !$installToken->isUsed()
-        ) {
-            $body = [
-                "code" => $authorizationCode
-            ];
+            && !$installToken->isUsed();
 
-            if ($hubCallbackUrl) {
-                $body['hub_callback_url'] = $hubCallbackUrl;
-            }
+        if (!$isValidToken) {
+            $messageFormat = "Received an invalid installToken.
+            Is expired: %s | Is used: %s | Is a token: %s | Raw token: %s";
 
-            if ($webhookUrl) {
-                $body['webhook_url'] = $webhookUrl;
-            }
-
-            $url = 'https://hubapi.mundipagg.com/auth/apps/access-tokens';
-            $headers = [
-                'PublicAppKey' => MPSetup::getHubAppPublicAppKey(),
-                'Content-Type' => 'application/json'
-            ];
-
-            $result = Request::post(
-                $url,
-                $headers,
-                json_encode($body)
+            $message =  sprintf(
+                $messageFormat,
+                $installToken->isExpired() ? "true" : "false",
+                $installToken->isUsed() ? "true" : "false",
+                is_a($installToken, InstallToken::class) ? "true" : "false",
+                $installToken->getToken()->getValue()
             );
+            $exception = new \Exception($message);
 
-            if ($result->code === 201) {
-                $this->executeCommandFromPost($result->body);
-
-                //if its ok
-                $installToken->setUsed(true);
-                $tokenRepo->save($installToken);
-            }
+            $this->logService->exception($exception);
+            throw $exception;
         }
+
+        $body = [
+            "code" => $authorizationCode
+        ];
+
+        $this->logService->info(
+            sprintf(
+                'Valid install token received: %s',
+                $installToken->getToken()->getValue()
+            )
+        );
+
+        if ($hubCallbackUrl) {
+            $body['hub_callback_url'] = $hubCallbackUrl;
+        }
+
+        if ($webhookUrl) {
+            $body['webhook_url'] = $webhookUrl;
+        }
+
+        $url = 'https://hubapi.mundipagg.com/auth/apps/access-tokens';
+        $headers = [
+            'PublicAppKey' => MPSetup::getHubAppPublicAppKey(),
+            'Content-Type' => 'application/json'
+        ];
+
+        $this->logService->info(
+            sprintf(
+                'Sending request to %s;',
+                $url
+            ),
+            $body
+        );
+
+        $result = Request::post(
+            $url,
+            $headers,
+            json_encode($body)
+        );
+
+        if ($result->code === 201) {
+            $this->executeCommandFromPost($result->body);
+
+            //if its ok
+            $installToken->setUsed(true);
+            $tokenRepo->save($installToken);
+
+            $this->logService->info(
+                sprintf(
+                    "Hub successfully installed for authorization code: %s",
+                    $body["code"]
+                )
+            );
+            return;
+        }
+
+        $exception = new \Exception(
+            sprintf(
+                "Received unexpected response from hub. HTTP Code: %s",
+                $result->code
+            )
+        );
+
+        $this->logService->info(
+            $exception->getMessage(),
+            $result
+        );
+
+        throw $exception;
     }
 
     public function getHubStatus()

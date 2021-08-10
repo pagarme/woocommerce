@@ -15,12 +15,16 @@ class UninstallCommand extends AbstractCommand
         $moduleConfig = MPSetup::getModuleConfiguration();
 
         if (!$moduleConfig->isHubEnabled()) {
-            throw new Exception("Hub is not installed!");
+            $exception = new Exception("Hub is not installed!");
+            $this->logService->exception($exception);
+            throw $exception;
         }
 
         $hubKey = $moduleConfig->getSecretKey();
         if (!$hubKey->equals($this->getAccessToken())) {
-            throw new Exception("Access Denied.");
+            $exception =  new Exception("Access Denied.");
+            $this->logService->exception($exception);
+            throw $exception;
         }
 
         $cleanConfig = json_decode(json_encode($moduleConfig));
@@ -44,7 +48,7 @@ class UninstallCommand extends AbstractCommand
 
         $cleanConfig->setId($moduleConfig->getId());
         MPSetup::setModuleConfiguration($cleanConfig);
-        
+
         $configRepo = new ConfigurationRepository();
 
         $configRepo->save($cleanConfig);

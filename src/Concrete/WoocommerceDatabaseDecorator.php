@@ -49,7 +49,10 @@ final class WoocommerceDatabaseDecorator extends AbstractDatabaseDecorator
             $this->getTableName('pagarme_module_core_recurrence_subscription_repetitions'),
 
             AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION_ITEM =>
-            $this->getTableName('pagarme_module_core_recurrence_subscription_items')
+            $this->getTableName('pagarme_module_core_recurrence_subscription_items'),
+
+            AbstractDatabaseDecorator::TABLE_HUB_INSTALL_TOKEN =>
+            $this->getTableName('pagarme_module_core_hub_install_token')
         ];
     }
 
