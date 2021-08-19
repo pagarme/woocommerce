@@ -2580,7 +2580,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             if (this.$element[0].id !== undefined && this.$element[0].id !== '') {
                 this.id = this.$element[0].id;
             } else {
-                this.id = PLUGIN_NAME + Math.floor((Math.random() * 10000000) + 1);
+                let array = new Uint8Array(3);
+                window.crypto.getRandomValues(array);
+                this.id = PLUGIN_NAME + Math.floor((array[0] * array[1] * array[2]) + 1);
                 this.$element.attr('id', this.id);
             }
             this.classes = (this.$element.attr('class') !== undefined) ? this.$element.attr('class') : '';

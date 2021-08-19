@@ -14,8 +14,8 @@ use Woocommerce\Pagarme\Model\Setting;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
 $billet_and_card   = true;
-$ref_billet        = md5(rand(1, 1000));
-$ref_card          = md5(rand(1, 1000));
+$ref_billet        = md5(random_int(1, 1000));
+$ref_card          = md5(random_int(1, 1000));
 
 ?>
 
