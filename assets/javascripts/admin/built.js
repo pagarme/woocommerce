@@ -3697,10 +3697,13 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
     };
 
+    function escapeHash(hash) {
+        return '#' + encodeURIComponent(hash.substr(1));
+    }
 
     $window.off('load.' + PLUGIN_NAME).on('load.' + PLUGIN_NAME, function (e) {
 
-        var modalHash = document.location.hash;
+        var modalHash = escapeHash(document.location.hash);
 
         if (window.$iziModal.autoOpen === 0 && !$('.' + PLUGIN_NAME).is(":visible")) {
 
@@ -3718,7 +3721,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
     $window.off('hashchange.' + PLUGIN_NAME).on('hashchange.' + PLUGIN_NAME, function (e) {
 
-        var modalHash = document.location.hash;
+        var modalHash = escapeHash(document.location.hash);
         var data = $(modalHash).data();
 
         if (modalHash !== "") {
