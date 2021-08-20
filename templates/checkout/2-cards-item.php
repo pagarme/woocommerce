@@ -13,8 +13,8 @@ use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\View\Checkouts;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
-$ref1              = md5(random_int(1, 1000));
-$ref2              = md5(random_int(1, 1000));
+$ref1              = sha1(random_int(1, 1000));
+$ref2              = sha1(random_int(1, 1000));
 
 ?>
 
