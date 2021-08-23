@@ -554,7 +554,7 @@ class Utils
     public static function get_template($file, $args = array())
     {
         if ($args && is_array($args)) {
-            extract($args);
+            extract($args, EXTR_SKIP);
         }
 
         $locale = Core::plugin_dir_path() . $file . '.php';
