@@ -282,7 +282,7 @@ final class OrderService
 
                 $message = $i18n->getDashboard(
                     "Can't create payment. " .
-                        "Please review the information and try again."
+                    "Please review the information and try again."
                 );
                 throw new \Exception($message, 400);
             }
@@ -306,7 +306,7 @@ final class OrderService
                 );
                 $message = $i18n->getDashboard(
                     "Can't create payment. " .
-                        "Please review the information and try again."
+                    "Please review the information and try again."
                 );
                 throw new \Exception($message, 400);
             }
@@ -376,7 +376,7 @@ final class OrderService
         if (!$order->isPaymentSumCorrect()) {
             $message = $i18n->getDashboard(
                 "The sum of payments is different than the order amount! " .
-                    "Review the information and try again."
+                "Review the information and try again."
             );
             $this->logService->orderInfo(
                 $platformOrder->getCode(),
