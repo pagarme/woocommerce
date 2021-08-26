@@ -20,7 +20,7 @@ if (!$setting->is_allowed_save_credit_card()) {
 }
 
 ?>
-<p class="form-row form-row-first" data-element="save-cc-check">
+<p class="form-row form-row-wide" data-element="save-cc-check">
     <label for="save-credit-card<?php echo esc_html($suffix); ?>">
 
         <input type="checkbox" id="save-credit-card<?php echo esc_html($suffix); ?>" name="save_credit_card<?php echo esc_html($suffix); ?>" value="1" <?php checked($customer->save_credit_card, true); ?>>

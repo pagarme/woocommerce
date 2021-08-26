@@ -937,9 +937,6 @@ body .swal2-animate-x-mark {
 #wcmp-checkout-form label[for=save-credit-card] {
   cursor: pointer;
 }
-#wcmp-checkout-form .form-row-wide {
-  display: inline-block;
-}
 
 #wcmp-checkout-form #payment-type a {
   text-indent: 15px;

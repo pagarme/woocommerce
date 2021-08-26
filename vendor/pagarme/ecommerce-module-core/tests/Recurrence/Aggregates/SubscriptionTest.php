@@ -3,6 +3,8 @@
 namespace Pagarme\Core\Test\Recurrence\Aggregates;
 
 use Mockery;
+use MundiAPILib\Models\CreateAddressRequest;
+use MundiAPILib\Models\CreateCardRequest;
 use MundiAPILib\Models\CreateSubscriptionRequest;
 use Pagarme\Core\Kernel\Interfaces\PlatformOrderInterface;
 use Pagarme\Core\Kernel\ValueObjects\Id\ChargeId;
@@ -186,5 +188,53 @@ class SubscriptionTest extends TestCase
 
         $this->assertContainsOnlyInstancesOf(Charge::class, $this->subscription->getCharges());
         $this->assertCount(2, $this->subscription->getCharges());
+    }
+
+    public function testShouldReturnACreateSubscriptionRequestObjectWithCardBillingAddress()
+    {
+        $this->subscription->setCustomer(new Customer());
+        $this->subscription->setItems([new SubProduct]);
+        $this->subscription->getCustomer()->setAddress(new Address());
+        $this->subscription->setCardToken("cardToken");
+
+        $shipping = new Shipping;
+        $shipping->setRecipientPhone(new Phone("021999999999"));
+        $shipping->setAddress(new Address());
+
+        $this->subscription->setShipping($shipping);
+
+        $card = new CreateCardRequest();
+        $card->billingAddress = $this->subscription->getCustomer()
+            ->getAddress()->convertToSDKRequest();
+        $this->subscription->card = $card;
+
+        $sdkObject = $this->subscription->convertToSdkRequest();
+
+        $this->assertInstanceOf(CreateSubscriptionRequest::class, $sdkObject);
+        $this->assertNotNull($sdkObject->card->billingAddress);
+    }
+
+    public function testShouldReturnACreateSubscriptionRequestObjectWithSavedCardBillingAddress()
+    {
+        $this->subscription->setCustomer(new Customer());
+        $this->subscription->setItems([new SubProduct]);
+        $this->subscription->getCustomer()->setAddress(new Address());
+        $this->subscription->setCardId("cardId");
+
+        $shipping = new Shipping;
+        $shipping->setRecipientPhone(new Phone("021999999999"));
+        $shipping->setAddress(new Address());
+
+        $this->subscription->setShipping($shipping);
+
+        $card = new CreateCardRequest();
+        $card->billingAddress = $this->subscription->getCustomer()
+            ->getAddress()->convertToSDKRequest();
+        $this->subscription->card = $card;
+
+        $sdkObject = $this->subscription->convertToSdkRequest();
+
+        $this->assertInstanceOf(CreateSubscriptionRequest::class, $sdkObject);
+        $this->assertNotNull($sdkObject->card->billingAddress);
     }
 }

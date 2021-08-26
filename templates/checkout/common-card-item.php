@@ -51,7 +51,7 @@ $setting = Setting::get_instance();
             <?php esc_html_e('Card code', 'woo-pagarme-payments'); ?> <span class="required">*</span>
         </label>
 
-        <input id="card-cvc" data-element="card-cvc" data-mask="0000" class="input-text wc-credit-card-form-card-cvc" maxlength="4" placeholder="CVC" style="width:100px" data-required="true" data-pagarmecheckout-element="cvv">
+        <input id="card-cvc" data-element="card-cvc" data-mask="0000" class="input-text wc-credit-card-form-card-cvc" maxlength="4" placeholder="CVC" data-required="true" data-pagarmecheckout-element="cvv">
     </p>
 
 </div>
