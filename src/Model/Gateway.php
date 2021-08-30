@@ -1,4 +1,4 @@
-g<?php
+<?php
 
 namespace Woocommerce\Pagarme\Model;
 
