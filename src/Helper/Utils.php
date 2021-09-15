@@ -603,7 +603,10 @@ class Utils
 
         $settings = Setting::get_instance();
 
-        if (!hash_equals($signature, hash_hmac('sha256', $post_data, $settings->get_secret_key()))) {
+        if (!hash_equals(
+            $signature,
+            hash_hmac('sha256', $post_data, $settings->get_secret_key()))
+        ) {
             return false;
         }
 
