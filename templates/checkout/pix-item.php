@@ -10,7 +10,7 @@ if (!$model->settings->is_active_pix()) {
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 
-$ref  = md5(rand(1, 1000));
+$ref  = sha1(random_int(1, 1000));
 $type = 'pix';
 
 ?>

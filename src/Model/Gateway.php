@@ -145,7 +145,7 @@ class Gateway
 
     private function _calc_installments_1(array $params)
     {
-        extract($params);
+        extract($params, EXTR_SKIP);
 
         return $this->render_installments_options($total, $max_installments, $interest, $interest_increase, $no_interest);
     }
@@ -154,7 +154,7 @@ class Gateway
     {
         $settings_by_flag = $this->settings->cc_installments_by_flag;
 
-        extract($params);
+        extract($params, EXTR_SKIP);
 
         if (!$flag || !isset($settings_by_flag['max_installment'][$flag])) {
             return sprintf('<option value="">%s</option>', __('This card brand not is allowed on checkout.', Core::SLUG));
@@ -171,7 +171,7 @@ class Gateway
     public function get_hub_button_text($hub_install_id)
     {
         return !empty($hub_install_id)
-            ? __('View Integration', 'woo-pagarme-payments') 
+            ? __('View Integration', 'woo-pagarme-payments')
             : __('Integrate With Pagar.me', 'woo-pagarme-payments');
     }
 
@@ -199,7 +199,7 @@ class Gateway
             Core::get_hub_url(),
             $this->get_hub_install_token()
         );
-        
+
         return $baseUrl . $params;
     }
 
