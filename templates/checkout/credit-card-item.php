@@ -3,6 +3,10 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+global $woocommerce;
+
+$total = $woocommerce->cart->total;
+
 if (!$model->settings->is_active_credit_card()) {
     return;
 }
@@ -19,8 +23,10 @@ $type              = 'card';
 
 ?>
 
-<li>
-    <div id="tab-credit-card" class="payment_box panel entry-content">
+<li class="wc_payment_method pagarme-method">
+    <input id="credit-card" type="radio" class="input-radio" name="method" value="credit_card" data-order_button_text>
+    <label for="credit-card"><?php esc_html_e('Pay with credit card', 'woo-pagarme-payments'); ?></label>
+    <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
         <fieldset class="wc-credit-card-form wc-payment-form">
 
@@ -43,11 +49,11 @@ $type              = 'card';
 
                 <select id="installments" <?php echo
                                             /** phpcs:ignore */
-                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($wc_order->get_total()); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments">
+                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments">
 
                     <?php
                     if ($installments_type != 2) {
-                        Checkouts::render_installments($wc_order);
+                        Checkouts::render_installments($total);
                     } else {
                         echo '<option value="">...</option>';
                     };

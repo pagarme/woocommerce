@@ -12,14 +12,20 @@ use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\View\Checkouts;
 
+global $woocommerce;
+
+$total = $woocommerce->cart->total;
+
 $installments_type = Setting::get_instance()->cc_installment_type;
 $ref1              = sha1(random_int(1, 1000));
 $ref2              = sha1(random_int(1, 1000));
 
 ?>
 
-<li>
-    <div id="tab-2-cards" class="payment_box panel entry-content">
+<li class="wc_payment_method pagarme-method">
+    <input id="2-credit-card" type="radio" class="input-radio" name="method" value="2_cards" data-order_button_text>
+    <label for="2-credit-card"><?php esc_html_e('Pay with 2 cards', 'woo-pagarme-payments'); ?></label>
+    <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
         <fieldset class="wc-credit-card-form wc-payment-form">
 
@@ -52,11 +58,11 @@ $ref2              = sha1(random_int(1, 1000));
 
                 <select id="installments" <?php echo
                                             /** phpcs:ignore */
-                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($wc_order->get_total()); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments">
+                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments">
 
                     <?php
                     if ($installments_type != 2) {
-                        Checkouts::render_installments($wc_order);
+                        Checkouts::render_installments($total);
                     } else {
                         echo '<option value="">...</option>';
                     };
@@ -123,11 +129,11 @@ $ref2              = sha1(random_int(1, 1000));
 
                 <select id="installments2" <?php echo
                                             /** phpcs:ignore */
-                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($wc_order->get_total()); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments2">
+                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments2">
 
                     <?php
                     if ($installments_type != 2) {
-                        Checkouts::render_installments($wc_order);
+                        Checkouts::render_installments($total);
                     } else {
                         echo '<option value="">...</option>';
                     };

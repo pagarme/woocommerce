@@ -14,8 +14,10 @@ $ref  = sha1(random_int(1, 1000));
 $type = 'pix';
 
 ?>
-<li>
-    <div id="tab-pix" class="panel entry-content">
+<li class="wc_payment_method pagarme-method">
+    <input id="pix" type="radio" class="input-radio" name="method" value="pix" data-order_button_text="" />
+    <label for="pix"><?php esc_html_e('Pay with pix', 'woo-pagarme-payments'); ?></label>
+    <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
         <fieldset class="wc-credit-card-form wc-payment-form">
             <label>
                 <?php
