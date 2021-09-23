@@ -320,10 +320,9 @@ class Checkouts
         <?php
     }
 
-    public static function render_installments($wc_order)
+    public static function render_installments($total)
     {
         $gateway = new Gateway();
-        $total   = $wc_order->get_total();
 
         echo $gateway->get_installments_by_type($total);
     }

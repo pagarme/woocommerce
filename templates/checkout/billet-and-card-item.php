@@ -7,6 +7,10 @@ if (!$model->settings->is_active_billet_and_card()) {
     return;
 }
 
+global $woocommerce;
+
+$total = $woocommerce->cart->total;
+
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\View\Checkouts;
 use Woocommerce\Pagarme\Helper\Utils;
@@ -19,15 +23,17 @@ $ref_card          = sha1(random_int(1, 1000));
 
 ?>
 
-<li>
-    <div id="tab-billet-and-card" class="payment_box panel entry-content">
+<li class="wc_payment_method pagarme-method">
+    <input id="billet-and-card" type="radio" class="input-radio" name="method" value="billet-and-card" data-order_button_text="">
+    <label for="billet-and-card"><?php esc_html_e('Pay with boleto and credit card', 'woo-pagarme-payments'); ?></label>
+    <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
         <fieldset class="wc-credit-card-form wc-payment-form">
 
             <?php Utils::get_template('templates/checkout/choose-credit-card'); ?>
 
             <div class="form-row form-row-wide">
-                <p class="form-row form-row-first">
+                <div class="form-row form-row-first">
                     <label for="billet-value">
                         <?php esc_html_e('Value (Boleto)', 'woo-pagarme-payments'); ?><span class="required">*</span>
                     </label>
@@ -42,9 +48,10 @@ $ref_card          = sha1(random_int(1, 1000));
                         )
                     );
                     ?>
-                </p>
+                </div>
+                <br>
 
-                <p class="form-row form-row-last">
+                <div class="form-row form-row-last">
                     <label for="card-order-value">
                         <?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span>
                     </label>
@@ -59,7 +66,7 @@ $ref_card          = sha1(random_int(1, 1000));
                         )
                     );
                     ?>
-                </p>
+                </div>
             </div>
 
             <div class="wc-credit-card-info" data-element="fields-cc-data">
@@ -77,11 +84,11 @@ $ref_card          = sha1(random_int(1, 1000));
                     <?php esc_html_e('Installments quantity', 'woo-pagarme-payments'); ?><span class="required">*</span>
                 </label>
 
-                <select id="installments" <?php /*phpcs:ignore*/ echo Utils::get_component('installments'); ?> data-total="<?php echo esc_html($wc_order->get_total()); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments">
+                <select id="installments" <?php /*phpcs:ignore*/ echo Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments">
 
                     <?php
                     if ($installments_type != 2) {
-                        Checkouts::render_installments($wc_order);
+                        Checkouts::render_installments($total);
                     } else {
                         echo '<option value="">...</option>';
                     };

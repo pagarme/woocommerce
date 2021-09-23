@@ -1007,4 +1007,12 @@ body .swal2-animate-x-mark {
 	}
   }
 
+.payment_method_woo-pagarme-payments {
+    padding: 0 !important;
+}
+
+.pagarme-method {
+    border-top: 1px #ccc solid;
+}
+
 /*# sourceMappingURL=assets/stylesheets/front/style.css.map */

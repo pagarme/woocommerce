@@ -566,6 +566,23 @@ class Utils
         include $locale;
     }
 
+    public static function get_template_as_string($file, $args = array())
+    {
+        if ($args && is_array($args)) {
+            extract($args, EXTR_SKIP);
+        }
+
+        $locale = Core::plugin_dir_path() . $file . '.php';
+
+        if (!file_exists($locale)) {
+            return;
+        }
+
+        ob_start();
+        include $locale;
+        return ob_get_clean();
+    }
+
     public static function get_errors($data)
     {
         $messages = '';
