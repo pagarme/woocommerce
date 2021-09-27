@@ -38,21 +38,12 @@ class Gateways extends WC_Payment_Gateway
 
         $this->enabled     = $this->get_option('enabled', 'no');
         $this->title       = $this->get_option('title');
-//        $this->description = 'zzzzzzzz';
         $this->description = Utils::get_template_as_string(
             'templates/checkout/main',
             array(
                 'model'    => $this->model,
             )
         );
-//        var_dump(Utils::get_template_as_string(
-//            'templates/checkout/pix-item',
-//            array(
-//                'model'    => $this->model,
-//            )
-//        ));
-//        var_dump($this->description);
-//        exit();
 
         if (is_admin()) {
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
