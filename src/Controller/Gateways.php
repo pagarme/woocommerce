@@ -95,7 +95,6 @@ class Gateways extends WC_Payment_Gateway
             'hub_button_integration'            => $this->field_hub_button_integration(),
             'hub_environment'                   => $this->field_hub_environment(),
             'title'                             => $this->field_title(),
-            'description'                       => $this->field_description(),
             'is_gateway_integration_type'       => $this->field_is_gateway_integration_type(),
             'section_payment_settings'          => $this->section_payment_settings(),
             'enable_credit_card'                => $this->field_enable_credit_card(),
@@ -184,16 +183,6 @@ class Gateways extends WC_Payment_Gateway
             'description' => __('Name shown to the customer in the checkout page.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'default'     => __('Pagar.me', 'woo-pagarme-payments'),
-        );
-    }
-
-    public function field_description()
-    {
-        return array(
-            'title'   => __('Description', 'woo-pagarme-payments'),
-            'description' => __('Description shown below the title in the checkout page.', 'woo-pagarme-payments'),
-            'desc_tip'    => true,
-            'default' => __('Pay with credit card or boleto', 'woo-pagarme-payments'),
         );
     }
 

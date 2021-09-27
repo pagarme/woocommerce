@@ -822,9 +822,6 @@ msgstr "Tamanho máximo de <span id='woo-pagarme-payments_max_length_span'>%s</s
 msgid "Name shown to the customer in the checkout page."
 msgstr "Nome mostrado ao cliente na página de checkout."
 
-msgid "Description shown below the title in the checkout page."
-msgstr "Descrição mostrada abaixo do título na página de checkout."
-
 msgid "Integration environment"
 msgstr "Ambiente de integração"
 
