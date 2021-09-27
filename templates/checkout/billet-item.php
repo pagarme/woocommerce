@@ -19,6 +19,9 @@ $type = 'billet';
     <label for="billet"><?php esc_html_e('Pay with boleto', 'woo-pagarme-payments'); ?></label>
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
         <fieldset class="wc-credit-card-form wc-payment-form">
+            <p>
+                O Boleto bancário será exibido após a confirmação da compra e poderá ser pago em qualquer agência bancária, pelo seu smartphone ou computador através de serviços digitais de bancos.
+            </p>
             <label>
                 <?php
                 printf(
