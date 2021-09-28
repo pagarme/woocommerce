@@ -194,7 +194,7 @@ class Checkouts
             <img style="margin: auto;" src="<?php echo $qrCodeUrl; ?>" title="Link to QRCode" />
         </p>
 
-        <a id="pagarme-qr-code" rawCode="<?php echo esc_url($rawQrCode); ?>" onclick="pagarmeQrCodeCopy()" class="payment-link">
+        <a id="pagarme-qr-code" rawCode="<?php echo $rawQrCode; ?>" onclick="pagarmeQrCodeCopy()" class="payment-link">
             <?php _e('Copy Code', 'woo-pagarme-payments'); ?>
         </a>
 
