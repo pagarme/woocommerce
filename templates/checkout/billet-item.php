@@ -16,7 +16,7 @@ $type = 'billet';
 ?>
 <li class="wc_payment_method pagarme-method">
     <input id="billet" type="radio" class="input-radio" name="method" value="billet" data-order_button_text="" />
-    <label for="billet"><?php esc_html_e('Pay with boleto', 'woo-pagarme-payments'); ?></label>
+    <label for="billet"><?php esc_html_e('Boleto', 'woo-pagarme-payments'); ?></label>
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
         <fieldset class="wc-credit-card-form wc-payment-form">
             <p>

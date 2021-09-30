@@ -1012,7 +1012,17 @@ body .swal2-animate-x-mark {
 }
 
 .pagarme-method {
-    border-top: 1px #ccc solid;
+    border-bottom: 1px black solid !important;
 }
+
+#woo-pagarme-payment-methods ul li:first-child {
+    border-top: 1px black solid !important;
+}
+
+.pagarme-method label {
+    padding-top: 0.8em !important;
+    padding-bottom: 0.8em !important;
+}
+
 
 /*# sourceMappingURL=assets/stylesheets/front/style.css.map */

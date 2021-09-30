@@ -25,7 +25,7 @@ $type              = 'card';
 
 <li class="wc_payment_method pagarme-method">
     <input id="credit-card" type="radio" class="input-radio" name="method" value="credit_card" data-order_button_text>
-    <label for="credit-card"><?php esc_html_e('Pay with credit card', 'woo-pagarme-payments'); ?></label>
+    <label for="credit-card"><?php esc_html_e('Credit card', 'woo-pagarme-payments'); ?></label>
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
         <fieldset class="wc-credit-card-form wc-payment-form">

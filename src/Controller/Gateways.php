@@ -38,12 +38,7 @@ class Gateways extends WC_Payment_Gateway
 
         $this->enabled     = $this->get_option('enabled', 'no');
         $this->title       = $this->get_option('title');
-        $this->description = Utils::get_template_as_string(
-            'templates/checkout/main',
-            array(
-                'model'    => $this->model,
-            )
-        );
+        $this->has_fields = true;
 
         if (is_admin()) {
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
@@ -51,6 +46,18 @@ class Gateways extends WC_Payment_Gateway
 
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
         add_action('woocommerce_thankyou_' . $this->id, array($this, 'thank_you_page'));
+    }
+
+    public function payment_fields()
+    {
+        echo (
+            Utils::get_template_as_string(
+                'templates/checkout/main',
+                array(
+                    'model'    => $this->model,
+                )
+            )
+        );
     }
 
     /**
