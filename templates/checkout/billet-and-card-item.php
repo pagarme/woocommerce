@@ -25,7 +25,7 @@ $ref_card          = sha1(random_int(1, 1000));
 
 <li class="wc_payment_method pagarme-method">
     <input id="billet-and-card" type="radio" class="input-radio" name="method" value="billet-and-card" data-order_button_text="">
-    <label for="billet-and-card"><?php esc_html_e('Pay with boleto and credit card', 'woo-pagarme-payments'); ?></label>
+    <label for="billet-and-card"><?php esc_html_e('Credit card and Boleto', 'woo-pagarme-payments'); ?></label>
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
         <fieldset class="wc-credit-card-form wc-payment-form">

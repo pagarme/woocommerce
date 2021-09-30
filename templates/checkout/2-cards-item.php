@@ -24,7 +24,7 @@ $ref2              = sha1(random_int(1, 1000));
 
 <li class="wc_payment_method pagarme-method">
     <input id="2-credit-card" type="radio" class="input-radio" name="method" value="2_cards" data-order_button_text>
-    <label for="2-credit-card"><?php esc_html_e('Pay with 2 cards', 'woo-pagarme-payments'); ?></label>
+    <label for="2-credit-card"><?php esc_html_e('2 credit cards', 'woo-pagarme-payments'); ?></label>
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
         <fieldset class="wc-credit-card-form wc-payment-form">

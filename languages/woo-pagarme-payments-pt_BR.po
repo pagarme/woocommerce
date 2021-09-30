@@ -831,6 +831,12 @@ msgstr "Integrar com Pagar.me"
 msgid "View Integration"
 msgstr "Visualizar integração"
 
+msgid "2 credit cards"
+msgstr "2 cartões de crédito"
+
+msgid "Credit card and Boleto"
+msgstr "Cartão de crédito e Boleto"
+
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
 
