@@ -11,7 +11,6 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 			this.applySelect2();
 		}
 
-        $('div#woo-pagarme-payment-methods').attr('style', 'display:none');
         $('div#woo-pagarme-payment-methods > ul li input:first').attr('checked', 'checked');
         $('div#woo-pagarme-payment-methods > ul li:first').find('.payment_box').show();
 
