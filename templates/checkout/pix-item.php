@@ -30,7 +30,6 @@ $type = 'pix';
                     esc_html__('Pix', 'woo-pagarme-payments')
                 );
                 ?>
-                <input style="display:none;" data-element="pix" data-action="choose-payment" type="radio" name="payment_method" checked="checked" value="pix">
             </label>
             <?php Utils::get_template('templates/checkout/field-enable-multicustomers', compact('ref', 'type')); ?>
         </fieldset>
