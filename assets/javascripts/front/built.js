@@ -2588,7 +2588,10 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn.addEventListener = function() {
-		this.$el.on( 'submit', this._onSubmit.bind(this) );
+		// this.$el.on( 'submit', this._onSubmit.bind(this) );
+
+		$('#place_order').on('click', this._onSubmit.bind(this));
+
 		this.$el.find( '[data-value]' ).on( 'blur', this.fillAnotherInput.bind(this) );
 		this.click( 'tab' );
 		this.click( 'choose-payment' );
