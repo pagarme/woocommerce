@@ -2634,7 +2634,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
 				return;
 			}
-			this.loadSwal();
+			//this.loadSwal();
 		}.bind(this));
 
 		$( 'body' ).on( 'onPagarme2CardsDone', function(){
@@ -2803,16 +2803,16 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		return isValid;
 	};
 
-	Model.fn.loadSwal = function() {
-		swal.close();
-
-		swal({
-			title             : this.data.swal.title,
-			text              : this.data.swal.text,
-			allowOutsideClick : false,
-			onOpen            : this._onOpenSwal.bind( this )
-		});
-	};
+	// Model.fn.loadSwal = function() {
+	// 	swal.close();
+    //
+	// 	swal({
+	// 		title             : this.data.swal.title,
+	// 		text              : this.data.swal.text,
+	// 		allowOutsideClick : false,
+	// 		onOpen            : this._onOpenSwal.bind( this )
+	// 	});
+	// };
 
 	Model.fn._onOpenSwal = function () {
 		if (this.lock) {
@@ -3426,6 +3426,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 					return;
 				}
 
+                var form = $('form.checkout');
+                form.submit();
 			},
 			function (error, suffix) {
 				swal.close();

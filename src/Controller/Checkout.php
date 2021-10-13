@@ -74,7 +74,9 @@ class Checkout
 
         WC()->cart->empty_cart();
 
-        wp_send_json_success($response);
+        //wp_send_json_success($response);
+
+        return true;
     }
 
     public function build_installments()

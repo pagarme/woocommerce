@@ -37,16 +37,6 @@ Utils::get_component('checkout-transparent'); ?> >
             );
 
             Utils::get_template(
-                'templates/checkout/2-cards-item',
-                array('model' => $model)
-            );
-
-            Utils::get_template(
-                'templates/checkout/billet-and-card-item',
-                array('model' => $model)
-            );
-
-            Utils::get_template(
                 'templates/checkout/billet-item',
                 array('model' => $model)
             );

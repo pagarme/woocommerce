@@ -25,6 +25,7 @@ class Utils
     public static function request($type, $name, $default, $sanitize = 'rm_tags')
     {
         $request = filter_input_array($type, FILTER_SANITIZE_SPECIAL_CHARS);
+        $request = $_POST;
 
         if (!isset($request[$name]) || empty($request[$name])) {
             return $default;

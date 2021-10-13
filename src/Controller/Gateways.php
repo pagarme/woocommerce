@@ -139,11 +139,67 @@ class Gateways extends WC_Payment_Gateway
     public function process_payment($order_id)
     {
         $wc_order = new WC_Order($order_id);
+        $newPOST = array();
+        $newPOST['order'] = $order_id;
+        $newPOST['fields'] = array();
 
-        return array(
-            'result'   => 'success',
-            'redirect' => $wc_order->get_checkout_payment_url(true),
-        );
+        foreach ($_POST as $key => $postData) {
+
+            if (!strstr($key, 'billing_') && !strstr($key, 'payment_method')) {
+                array_push($newPOST['fields'], [
+                    "name" => $key,
+                    "value" => $postData
+                ]);
+            }
+
+            if (strstr($key, 'multicustomer_card')) {
+                $newPOST = $this->formatMulticustomerCardArray($postData, $newPOST);
+            }
+
+        }
+
+        $newPOST = $this->removeAndRenameFieldFromNewPost($newPOST);
+
+        $_POST = $newPOST;
+        $checkout = new Checkout();
+        $response = $checkout->process_checkout_transparent();
+
+        if ($response) {
+            return array(
+                'result'   => 'success',
+                'redirect' => $this->get_return_url($wc_order)
+            );
+        }
+
+        return false;
+    }
+
+    private function formatMulticustomerCardArray($postData, $newPOST)
+    {
+        foreach ($postData as $postDatakey => $postDataValue) {
+            array_push($newPOST['fields'], [
+                "name" => 'multicustomer_card[' . $postDatakey . ']',
+                "value" => $postDataValue
+            ]);
+        }
+
+        return $newPOST;
+    }
+
+    private function removeAndRenameFieldFromNewPost($newPOST)
+    {
+        foreach ($newPOST['fields'] as $arrayFieldKey => $field) {
+            if (in_array('method', $field)) {
+                $field['name'] = 'payment_method';
+                $newPOST['fields'][$arrayFieldKey] = $field;
+            }
+
+            if (in_array('multicustomer_card', $field)) {
+                unset($newPOST['fields'][$arrayFieldKey]);
+            }
+        }
+
+        return $newPOST;
     }
 
     public function receipt_page($order_id)
