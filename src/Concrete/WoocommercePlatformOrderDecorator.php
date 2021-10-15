@@ -987,7 +987,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $shipping = new Shipping();
 
         $shipping->setAmount(
-            $moneyService->floatToCents($platformShipping["amount"])
+            $platformShipping["amount"]
         );
         $shipping->setDescription($platformShipping["description"]);
 
