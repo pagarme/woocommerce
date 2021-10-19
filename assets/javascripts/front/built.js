@@ -2579,12 +2579,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             });
         });
 
-        $('input[name=method]').change(function(e) {
-            e.stopPropagation();
-            var li = e.target.closest('li');
-            $('.pagarme_methods').slideUp('slow');
-            $(li).find('.payment_box').slideDown('slow');
-        });
 	};
 
 	Model.fn.addEventListener = function() {
@@ -2612,10 +2606,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		if ( this.elements.cardNumber ) {
 			this.elements.cardNumber.on( 'keyup', this.updateInstallments );
 			this.elements.cardNumber.on( 'keydown', this.updateInstallments );
-		}
-
-		if ( this.elements.enableMulticustomers ) {
-			this.elements.enableMulticustomers.on( 'click', this.handleMultiCustomers )
 		}
 	};
 
@@ -2773,13 +2763,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			}
 		}
 	};
-
-	Model.fn.handleMultiCustomers = function(e) {
-		var input = $(e.currentTarget);
-		var method = input.is(':checked') ? 'slideDown' : 'slideUp';
-		var target = '[data-ref="' + input.data('target') + '"]';
-		$( target )[method]();
-	}
 
 	Model.fn.validate = function() {
 		var requiredFields = $( '[data-required=true]:visible' )
