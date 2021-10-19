@@ -69,6 +69,5 @@ $type              = 'card';
 
         <?php Utils::get_template('templates/checkout/multicustomers-form', compact('ref', 'type')); ?>
 
-        <input style="display:none;" data-element="credit-card" data-action="choose-payment" type="radio" name="payment_method" checked="checked" value="credit_card">
     </div>
 </li>
