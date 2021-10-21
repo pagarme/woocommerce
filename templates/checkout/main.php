@@ -25,26 +25,49 @@ $swal_data   = array(
     <ul class="woocommerce-error"></ul>
 </div>
 
-<div id="woo-pagarme-payment-methods"  <?php echo
-    /** phpcs:ignore */
-Utils::get_component('checkout-transparent'); ?> >
-    <ul class="wc_payment_methods payment_methods methods">
-        <?php
+<ul class="wc_payment_methods payment_methods methods" <?php echo
+                                                        /** phpcs:ignore */
+                                                        Utils::get_component('checkout-transparent'); ?>>
+    <?php
 
-            Utils::get_template(
-                'templates/checkout/credit-card-item',
-                array('model' => $model)
-            );
+    Utils::get_template(
+        'templates/checkout/credit-card-item',
+        array('model' => $model)
+    );
 
-            Utils::get_template(
-                'templates/checkout/billet-item',
-                array('model' => $model)
-            );
+    Utils::get_template(
+        'templates/checkout/2-cards-item',
+        array('model' => $model)
+    );
 
-            Utils::get_template(
-                'templates/checkout/pix-item',
-                array('model' => $model)
-            );
-        ?>
-    </ul>
-</div>
+    Utils::get_template(
+        'templates/checkout/billet-and-card-item',
+        array('model' => $model)
+    );
+
+    Utils::get_template(
+        'templates/checkout/billet-item',
+        array('model' => $model)
+    );
+
+    Utils::get_template(
+        'templates/checkout/pix-item',
+        array('model' => $model)
+    );
+    ?>
+</ul>
+<script>
+    jQuery('input[name=method]').change(function(e) {
+        e.stopPropagation();
+        var li = e.target.closest('li');
+        jQuery('.pagarme_methods').slideUp('slow');
+        jQuery(li).find('.payment_box').slideDown('slow');
+    });
+
+    jQuery('input[data-element=enable-multicustomers]').click(function(e) {
+        var input = jQuery(e.currentTarget);
+        var method = input.is(':checked') ? 'slideDown' : 'slideUp';
+        var target = '[data-ref="' + input.data('target') + '"]';
+        jQuery(target)[method]();
+    });
+</script>
