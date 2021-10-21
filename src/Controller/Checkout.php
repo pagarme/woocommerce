@@ -60,7 +60,7 @@ class Checkout
         );
 
         if (!$response) {
-            wp_send_json_error(__('Failed to create order', 'woo-pagarme-payments'));
+            wp_send_json_error(__('Can\'t create payment. Please review the information and try again.', 'woo-pagarme-payments'));
         }
 
         $order  = new Order($wc_order->get_order_number());
