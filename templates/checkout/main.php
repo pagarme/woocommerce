@@ -70,4 +70,10 @@ $swal_data   = array(
         var target = '[data-ref="' + input.data('target') + '"]';
         jQuery(target)[method]();
     });
+
+    jQuery(function($){
+        $( '#card-number' ).mask( '0000000000000000000' );
+        $( '#card-expiry' ).mask( '00/00' );
+        $( '#card-cvc' ).mask( '0000' );
+    });
 </script>
