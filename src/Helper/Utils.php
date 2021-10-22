@@ -597,18 +597,7 @@ class Utils
 
     public static function get_json_post_data()
     {
-        $signature = $_SERVER['HTTP_X_HUB_SIGNATURE'];
-
         $post_data = file_get_contents('php://input');
-
-        $settings = Setting::get_instance();
-
-        if (!hash_equals(
-            $signature,
-            hash_hmac('sha256', $post_data, $settings->get_secret_key()))
-        ) {
-            return false;
-        }
 
         return empty($post_data) ? false : json_decode($post_data);
     }
