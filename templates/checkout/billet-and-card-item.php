@@ -30,7 +30,7 @@ $ref_card          = sha1(random_int(1, 1000));
 
         <fieldset class="wc-credit-card-form wc-payment-form">
 
-            <?php Utils::get_template('templates/checkout/choose-credit-card'); ?>
+            <?php Utils::get_template('templates/checkout/choose-credit-card', ['suffix' => 4]); ?>
 
             <div class="form-row form-row-wide">
                 <div class="form-row form-row-first">
@@ -73,7 +73,9 @@ $ref_card          = sha1(random_int(1, 1000));
                 <?php
                 Utils::get_template(
                     'templates/checkout/common-card-item',
-                    compact('wc_order', 'installments_type')
+                    [
+                        'suffix' => 4,
+                    ]
                 );
                 ?>
             </div>

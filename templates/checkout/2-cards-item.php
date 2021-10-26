@@ -31,7 +31,7 @@ $ref2              = sha1(random_int(1, 1000));
 
             <h4>1º Cartão</h4>
 
-            <?php Utils::get_template('templates/checkout/choose-credit-card'); ?>
+            <?php Utils::get_template('templates/checkout/choose-credit-card', ['suffix' => 2]); ?>
 
             <p class="form-row form-row-first">
 
@@ -45,7 +45,9 @@ $ref2              = sha1(random_int(1, 1000));
                 <?php
                 Utils::get_template(
                     'templates/checkout/common-card-item',
-                    compact('wc_order', 'installments_type')
+                    [
+                        'suffix' => 2,
+                    ]
                 );
                 ?>
             </div>
@@ -98,7 +100,7 @@ $ref2              = sha1(random_int(1, 1000));
 
             <h4>2º Cartão</h4>
 
-            <?php Utils::get_template('templates/checkout/choose-credit-card', ['suffix' => 2]); ?>
+            <?php Utils::get_template('templates/checkout/choose-credit-card', ['suffix' => 3]); ?>
 
             <p class="form-row form-row-first">
 
@@ -113,9 +115,8 @@ $ref2              = sha1(random_int(1, 1000));
                 Utils::get_template(
                     'templates/checkout/common-card-item',
                     array(
-                        'wc_order'          => $wc_order,
                         'installments_type' => $installments_type,
-                        'suffix'            => 2,
+                        'suffix'            => 3,
                     )
                 );
                 ?>
