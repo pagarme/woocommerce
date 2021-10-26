@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Pagar.me module for Woocommerce
- * Version:     1.2.0
+ * Version:     1.2.2
  * Author:      Pagar.me
  * Author URI:  https://pagar.me
  * Text Domain: woo-pagarme-payments
