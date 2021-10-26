@@ -48,6 +48,10 @@ msgstr "Pedido inválido"
 msgid "Empty fields"
 msgstr "Campos vazios"
 
+#: src/Controller/Checkout.php:63
+msgid "Can't create payment. Please review the information and try again."
+msgstr "Não foi possível realizar o pagamento. Por favor revise os dados e tente novamente."
+
 #: src/Controller/Checkout.php:195
 msgid "The sum of boleto and credit card is less than the total"
 msgstr "A soma do boleto com o cartão é menor do que o total"

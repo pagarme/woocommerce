@@ -166,7 +166,8 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $pixConfig->bankType = 'Pagar.me';
         $pixAdditionalData = $storeConfig->pix_additional_data;
 
-        if (!empty($pixAdditionalData)
+        if (
+            !empty($pixAdditionalData)
             && count(array_filter($pixAdditionalData))
             == count($pixAdditionalData)
 
@@ -253,20 +254,15 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $cardConfigs = [];
 
         foreach ($brands as $brand) {
-            if (empty($brand)) {
-                continue;
-            }
             $brandMethod = $brand;
-            $brand = strtolower($brand);
 
             if ($brandMethod == '') {
                 $brandMethod = 'nobrand';
             }
 
             $settingsByBrand = $storeConfig->cc_installments_by_flag;
-            $max = empty($settingsByBrand)
-                ? null
-                : intval($settingsByBrand['max_installment'][$brand]);
+            $max = !empty($settingsByBrand) && array_key_exists($brand, $settingsByBrand['max_installment']) ?
+                $settingsByBrand['max_installment'][$brand] : 0;
 
             if (!empty($max)) {
                 $initial = Utils::str_to_float($settingsByBrand['interest'][$brand]);
