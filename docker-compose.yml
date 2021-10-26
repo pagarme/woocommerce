@@ -1,0 +1,18 @@
+version: '3'
+services:
+  woopagarme:
+    build:
+        context: ./
+        dockerfile: Dockerfile
+        args:
+            xdebug_host: 192.168.8.122
+            xdebug_idekey: my-xdebug
+    container_name: woopagarme
+    restart: always
+    ports:
+      - "80:80"
+      - 3306:3306
+    volumes:
+      - ./:/app/wp-content/plugins/woo-pagarme-payments
+      - ../wordpress/wp-content/
+#      - ../modman:/usr/local/bin/modman

@@ -36,7 +36,7 @@ $type              = 'card';
                 <?php
                 Utils::get_template(
                     'templates/checkout/common-card-item',
-                    compact('wc_order', 'installments_type')
+                    compact('installments_type')
                 );
                 ?>
             </div>
