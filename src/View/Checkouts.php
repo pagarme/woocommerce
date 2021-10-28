@@ -104,7 +104,7 @@ class Checkouts
                 __('The status of your transaction is %s.', 'woo-pagarme-payments'),
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($charge->status),
+                        $charge ? ucfirst($charge->status) : 'Failed',
                         'woo-pagarme-payments'
                     )
                 ) . '</strong>'

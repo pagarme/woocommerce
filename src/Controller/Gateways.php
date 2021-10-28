@@ -50,14 +50,12 @@ class Gateways extends WC_Payment_Gateway
 
     public function payment_fields()
     {
-        echo (
-            Utils::get_template_as_string(
-                'templates/checkout/main',
-                array(
-                    'model'    => $this->model,
-                )
+        echo (Utils::get_template_as_string(
+            'templates/checkout/main',
+            array(
+                'model'    => $this->model,
             )
-        );
+        ));
     }
 
     /**
@@ -155,23 +153,18 @@ class Gateways extends WC_Payment_Gateway
             if (strstr($key, 'multicustomer_card')) {
                 $newPOST = $this->formatMulticustomerCardArray($postData, $newPOST);
             }
-
         }
 
         $newPOST = $this->removeAndRenameFieldFromNewPost($newPOST);
 
         $_POST = $newPOST;
         $checkout = new Checkout();
-        $response = $checkout->process_checkout_transparent();
+        $checkout->process_checkout_transparent();
 
-        if ($response) {
-            return array(
-                'result'   => 'success',
-                'redirect' => $this->get_return_url($wc_order)
-            );
-        }
-
-        return false;
+        return array(
+            'result'   => 'success',
+            'redirect' => $this->get_return_url($wc_order)
+        );
     }
 
     private function formatMulticustomerCardArray($postData, $newPOST)
