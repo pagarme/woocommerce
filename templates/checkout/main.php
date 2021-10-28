@@ -76,6 +76,9 @@ $swal_data   = array(
         $( '.wc-credit-card-form-card-expiry' ).mask( '00/00' );
         $( '.wc-credit-card-form-card-cvc' ).mask( '0000' );
 
+        $('#credit-card').attr('checked', 'checked');
+        $('#payment > ul > li > div > ul > li:nth-child(1) > div').show();
+
         $('input[name=method]').change(function(e) {
             e.stopPropagation();
             const li = $(e.target.closest('li'));
@@ -102,6 +105,8 @@ $swal_data   = array(
             e.preventDefault();
             e.stopPropagation();
 
+            $("input[name=method]").val($('input[name=method]:checked').val());
+
             if ( ! validate() ) {
                 jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
                 return false;
@@ -121,16 +126,23 @@ $swal_data   = array(
 
             jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
-            $( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
 
-            if (
-                $('input[name=method]').val() === 'billet' ||
-                $('input[name=method]').val() === 'pix' ) {
+            if ($('input[name=method]').val() === 'billet' ||
+                $('input[name=method]').val() === 'pix') {
+                swal({
+                    title: 'Aguarde...',
+                    text: 'Nós estamos processando sua requisição.',
+                    allowOutsideClick: false
+                });
+
+                swal.showLoading();
+
+                var form = $('form.checkout');
+                return form.submit();
             }
+
+            $( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
         });
-
-
-
 
         const getAPIData = function (url, data, success, fail) {
             var xhr    = new XMLHttpRequest();
