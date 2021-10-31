@@ -154,19 +154,19 @@ msgid "Enable credit card"
 msgstr "Habilitar cartão de crédito"
 
 #: src/Controller/Gateways.php:271
-msgid "Multi-means </br>(Boleto + Credit card)"
+msgid "Multipayments </br>(Boleto + Credit card)"
 msgstr "Multimeios </br>(Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:273
-msgid "Enable multi-means (Boleto + Credit card)"
+msgid "Enable Multipayments (Boleto + Credit card)"
 msgstr "Habilitar multimeios (Boleto + Cartão de crédito)"
 
 #: src/Controller/Gateways.php:281
-msgid "Multi-means </br>(2 Credit cards)"
+msgid "Multipayments </br>(2 Credit cards)"
 msgstr "Multimeios </br>(2 Cartões de crédito)"
 
 #: src/Controller/Gateways.php:283
-msgid "Enable multi-means (2 Credit cards)"
+msgid "Enable Multipayments (2 Credit cards)"
 msgstr "Habilitar multimeios (2 Cartões de crédito)"
 
 #: src/Controller/Gateways.php:291
