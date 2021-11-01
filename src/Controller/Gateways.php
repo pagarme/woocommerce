@@ -50,12 +50,14 @@ class Gateways extends WC_Payment_Gateway
 
     public function payment_fields()
     {
-        echo (Utils::get_template_as_string(
-            'templates/checkout/main',
-            array(
-                'model'    => $this->model,
+        echo (
+            Utils::get_template_as_string(
+                'templates/checkout/main',
+                array(
+                    'model'    => $this->model,
+                )
             )
-        ));
+        );
     }
 
     /**
@@ -140,6 +142,7 @@ class Gateways extends WC_Payment_Gateway
         $newPOST = array();
         $newPOST['order'] = $order_id;
         $newPOST['fields'] = array();
+        $paymentMethod = $_POST['method'];
 
         foreach ($_POST as $key => $postData) {
 
@@ -150,16 +153,25 @@ class Gateways extends WC_Payment_Gateway
                 ]);
             }
 
-            if (strstr($key, 'multicustomer_card')) {
-                $newPOST = $this->formatMulticustomerCardArray($postData, $newPOST);
+            if ($paymentMethod == '2_cards' && strstr($key, 'multicustomer_card1')) {
+                $newPOST = $this->formatMulticustomerCardArray($postData, $newPOST, 'multicustomer_card1');
+            }
+
+            if ($paymentMethod == '2_cards' && strstr($key, 'multicustomer_card2')) {
+                $newPOST = $this->formatMulticustomerCardArray($postData, $newPOST, 'multicustomer_card2');
+            }
+
+            if ($paymentMethod !== '2_cards' && strstr($key, 'multicustomer_card')) {
+                $newPOST = $this->formatMulticustomerCardArray($postData, $newPOST, 'multicustomer_card');
             }
         }
 
         $newPOST = $this->removeAndRenameFieldFromNewPost($newPOST);
 
         $_POST = $newPOST;
+        $_REQUEST = $newPOST;
         $checkout = new Checkout();
-        $checkout->process_checkout_transparent();
+        $checkout->process_checkout_transparent($wc_order);
 
         return array(
             'result'   => 'success',
@@ -167,11 +179,11 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-    private function formatMulticustomerCardArray($postData, $newPOST)
+    private function formatMulticustomerCardArray($postData, $newPOST, $key)
     {
         foreach ($postData as $postDatakey => $postDataValue) {
             array_push($newPOST['fields'], [
-                "name" => 'multicustomer_card[' . $postDatakey . ']',
+                "name" => $key . '[' . $postDatakey . ']',
                 "value" => $postDataValue
             ]);
         }

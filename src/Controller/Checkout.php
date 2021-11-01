@@ -31,13 +31,11 @@ class Checkout
         add_filter('wcbcf_billing_fields', array($this, 'set_required_fields'));
     }
 
-    public function process_checkout_transparent()
+    public function process_checkout_transparent($wc_order)
     {
         if (!Utils::is_request_ajax() || Utils::server('REQUEST_METHOD') !== 'POST') {
             exit(0);
         }
-
-        $wc_order = wc_get_order(Utils::post('order', 0, 'intval'));
 
         if (!$wc_order) {
             wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));

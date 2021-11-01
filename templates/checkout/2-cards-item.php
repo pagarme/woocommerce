@@ -37,7 +37,7 @@ $ref2              = sha1(random_int(1, 1000));
 
                 <label for="card-order-value"><?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
 
-                <input id="card-order-value" name="card_order_value" data-element="card-order-value" data-required="true" data-value="1" data-mask="#.##0,00" data-mask-reverse="true" class="input-text wc-credit-card-form-card-expiry">
+                <input id="card-order-value" name="card_order_value" data-element="card-order-value" data-required="true" data-value="1" class="input-text">
             </p>
 
             <div class="wc-credit-card-info" data-element="fields-cc-data">
@@ -106,7 +106,7 @@ $ref2              = sha1(random_int(1, 1000));
 
                 <label for="card-order-value2"><?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
 
-                <input id="card-order-value2" name="card_order_value2" data-element="card-order-value" data-value="2" data-required="true" data-mask="#.##0,00" data-mask-reverse="true" class="input-text wc-credit-card-form-card-expiry">
+                <input id="card-order-value2" name="card_order_value2" data-element="card-order-value" data-value="2" data-required="true" class="input-text">
             </p>
 
             <div class="wc-credit-card-info" data-element="fields-cc-data">
@@ -166,6 +166,5 @@ $ref2              = sha1(random_int(1, 1000));
         );
         ?>
 
-        <input style="display:none;" data-action="choose-payment" data-element="2cards" type="radio" name="payment_method" value="2_cards">
     </div>
 </li>
