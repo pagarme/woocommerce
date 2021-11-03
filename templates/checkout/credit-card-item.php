@@ -36,7 +36,10 @@ $type              = 'card';
                 <?php
                 Utils::get_template(
                     'templates/checkout/common-card-item',
-                    compact('installments_type')
+                    [
+                        'suffix'            => 1,
+                        'installments_type' => $installments_type
+                    ]
                 );
                 ?>
             </div>
