@@ -57,23 +57,23 @@ $swal_data   = array(
     ?>
 </ul>
 <script type="application/javascript">
-    jQuery(function($){
+    jQuery(function($) {
 
         var ajaxUrl = "<?php echo admin_url('admin-ajax.php'); ?>";
         var cartTotal = <?php echo WC()->cart->total ?>;
 
-        const $el = $( 'body' );
+        const $el = $('body');
 
-        const script           = $( '[data-pagarmecheckout-app-id]' );
-        let suffix             = null;
-        let creditCardNumber   = null;
-        let creditCardBrand    = null;
-        let brandInput         = null;
-        const chooseCreditCard = $el.closest( 'fieldset' ).find( '[data-element="choose-credit-card"]' );
-        let cvv                = null;
-        const appId            = script.data( 'pagarmecheckoutAppId' );
-        const apiURL           = 'https://api.mundipagg.com/core/v1/tokens?appId=' + appId;
-        let errorList          = '';
+        const script = $('[data-pagarmecheckout-app-id]');
+        let suffix = null;
+        let creditCardNumber = null;
+        let creditCardBrand = null;
+        let brandInput = null;
+        const chooseCreditCard = $el.closest('fieldset').find('[data-element="choose-credit-card"]');
+        let cvv = null;
+        const appId = script.data('pagarmecheckoutAppId');
+        const apiURL = 'https://api.mundipagg.com/core/v1/tokens?appId=' + appId;
+        let errorList = '';
 
 
         $('.wc-credit-card-form-card-number').mask('0000000000000000');
@@ -83,16 +83,22 @@ $swal_data   = array(
         // pagarme-card-form-card-value
         // pagarme-card-form-card-expiry
 
-        $('#card-order-value').mask('#.##0,00', {reverse: true});
-        $('#card-order-value2').mask('#.##0,00', {reverse: true});
-        $('#billet-value').mask('#.##0,00', {reverse: true});
+        $('#card-order-value').mask('#.##0,00', {
+            reverse: true
+        });
+        $('#card-order-value2').mask('#.##0,00', {
+            reverse: true
+        });
+        $('#billet-value').mask('#.##0,00', {
+            reverse: true
+        });
 
 
         $('#credit-card').attr('checked', 'checked');
         $('#payment > ul > li > div > ul > li:nth-child(1) > div').show();
 
 
-        $('#card-order-value').on('blur', function (event) {
+        $('#card-order-value').on('blur', function(event) {
             fillAnotherInput(event)
         });
 
@@ -103,16 +109,16 @@ $swal_data   = array(
             var value = event.currentTarget.value;
             var total = parseFloat(cartTotal);
 
-            if ( ! value ) {
+            if (!value) {
                 return;
             }
 
             value = value.replace('.', '');
-            value = parseFloat( value.replace(',', '.') );
+            value = parseFloat(value.replace(',', '.'));
 
             var nextValue = total - value;
 
-            if ( value > total ) {
+            if (value > total) {
                 swal({
                     type: 'error',
                     text: 'O valor não pode ser maior que total do pedido!'
@@ -123,7 +129,7 @@ $swal_data   = array(
             }
 
             nextValue = nextValue.toFixed(2);
-            nextValue = nextValue.replace('.',',');
+            nextValue = nextValue.replace('.', ',');
 
             value = value.toFixed(2);
             value = value.replace('.', ',');
@@ -131,20 +137,20 @@ $swal_data   = array(
             nextInput.val(nextValue);
             input.val(value);
 
-            if (isTwoCardsPayment(event.target, nextInput[0])){
+            if (isTwoCardsPayment(event.target, nextInput[0])) {
                 refreshBothInstallmentsSelects(event, nextInput[0]);
             }
 
-            if(isBilletAndCardPayment(event.target, nextInput[0]) ){
+            if (isBilletAndCardPayment(event.target, nextInput[0])) {
                 refreshCardInstallmentSelect(event, nextInput[0]);
             }
         };
 
-        const isTwoCardsPayment = function(firstInput, secondInput){
+        const isTwoCardsPayment = function(firstInput, secondInput) {
             return firstInput.id.includes("card") && secondInput.id.includes("card");
         };
 
-        const refreshBothInstallmentsSelects = function(event, secondInput){
+        const refreshBothInstallmentsSelects = function(event, secondInput) {
             _onBlurCardOrderValue(event);
             event.currentTarget = secondInput;
             event.target = secondInput;
@@ -153,40 +159,40 @@ $swal_data   = array(
         };
 
         const _onBlurCardOrderValue = function(e) {
-            var option  = '<option value="">...</option>';
-            var wrapper = $( e.currentTarget ).closest( 'fieldset' );
+            var option = '<option value="">...</option>';
+            var wrapper = $(e.currentTarget).closest('fieldset');
 
             var total = e.target.value;
 
-            if ( total ) {
-                total = total.replace( '.', '' );
-                total = total.replace( ',', '.' );
+            if (total) {
+                total = total.replace('.', '');
+                total = total.replace(',', '.');
 
-                var brand = wrapper.find( '[data-element="choose-credit-card"]' ).find( 'option:selected' ).data( 'brand' );
+                var brand = wrapper.find('[data-element="choose-credit-card"]').find('option:selected').data('brand');
 
-                $( 'body' ).trigger( "pagarmeBlurCardOrderValue", [ brand, total, wrapper ] );
+                $('body').trigger("pagarmeBlurCardOrderValue", [brand, total, wrapper]);
             } else {
-                wrapper.find( '[data-element=installments]' ).html( option );
+                wrapper.find('[data-element=installments]').html(option);
             }
         };
 
         const onBlurCardOrderValue = function(event, brand, total, wrapper) {
-            request( brand, total, wrapper );
+            request(brand, total, wrapper);
         };
 
         const request = function(brand, total, wrapper) {
-            var storageName = btoa( brand + total );
-            var storage     = sessionStorage.getItem( storageName );
-            var select 		= wrapper.find( '[data-element=installments]' );
+            var storageName = btoa(brand + total);
+            var storage = sessionStorage.getItem(storageName);
+            var select = wrapper.find('[data-element=installments]');
 
-            if ( storage ) {
-                select.html( storage );
+            if (storage) {
+                select.html(storage);
                 return false;
             }
 
             var ajax = $.ajax({
                 'url': ajaxUrl,
-                'data' : {
+                'data': {
                     'action': 'xqRhBHJ5sW',
                     'flag': brand,
                     'total': total
@@ -223,12 +229,12 @@ $swal_data   = array(
             });
         };
 
-        const isBilletAndCardPayment = function(firstInput, secondInput){
+        const isBilletAndCardPayment = function(firstInput, secondInput) {
             return (firstInput.id.includes("card") && secondInput.id.includes("billet")) ||
                 (firstInput.id.includes("billet") && secondInput.id.includes("card"));
         };
 
-        const refreshCardInstallmentSelect = function(event, secondInput){
+        const refreshCardInstallmentSelect = function(event, secondInput) {
             const targetInput = event.target.id.includes("card") ? event.target : secondInput;
 
             event.currentTarget = targetInput;
@@ -242,21 +248,18 @@ $swal_data   = array(
             const li = $(e.target.closest('li'));
             $('.pagarme_methods').slideUp('slow');
             li.find('.payment_box').slideDown('slow');
-            $('body').on( 'onPagarmeSubmit', onSubmit )
-            $( 'body' ).on( 'pagarmeBlurCardOrderValue', onBlurCardOrderValue );
         });
 
-        $('input[data-element=pagarme-card-number]').on('blur', function (e) {
-            debugger;
+        $('input[data-element=pagarme-card-number]').on('blur', function(e) {
             console.log("teste");
 
             var cardNumberInput = $(e.currentTarget);
 
-            creditCardBrand  = cardNumberInput.siblings("span[name^='brand-image']");
+            creditCardBrand = cardNumberInput.siblings("span[name^='brand-image']");
 
             suffix = creditCardBrand.get(0).getAttribute('pagarme-suffix');
 
-            brandInput       = cardNumberInput.siblings("input[type='hidden']");
+            brandInput = cardNumberInput.siblings("input[type='hidden']");
 
             keyEventHandlerCard(e);
         });
@@ -272,23 +275,20 @@ $swal_data   = array(
             e.preventDefault();
             e.stopPropagation();
 
-            $("input[name=method]").val($('input[name=method]:checked').val());
-
-            if ( ! validate() ) {
+            if (!validate()) {
                 jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
                 return false;
             }
 
-            $( 'body' ).on( 'onPagarmeCheckoutDone', function(){
-                if ( $( 'input[name=method]' ).val() == '2_cards' ) {
+            $('body').on('onPagarmeCheckoutDone', function() {
+                if ($('input[name=method]').val() == '2_cards') {
                     return;
                 }
-               // loadSwal();
+                // loadSwal();
             });
 
-            $( 'body' ).on( 'onPagarme2CardsDone', function(){
-                if ( window.Pagarme2Cards === 2 ) {
-                }
+            $('body').on('onPagarme2CardsDone', function() {
+                if (window.Pagarme2Cards === 2) {}
                 window.Pagarme2Cards = 0;
             });
 
@@ -309,14 +309,27 @@ $swal_data   = array(
                 return form.submit();
             }
 
-            $( 'body' ).trigger( 'onPagarmeSubmit', [ e ] )
+            clearTokens();
+            onSubmit(e);
         });
 
-        const getAPIData = function (url, data, success, fail) {
-            var xhr    = new XMLHttpRequest();
+        const clearTokens = function() {
+            const possibleSuffixes = 5;
+
+            for (let i = 1; i <= possibleSuffixes; i++) {
+                const pagarmeTokenInputId = '#pagarmetoken' + i;
+                const htmlElement = $(pagarmeTokenInputId).get(0);
+                if (htmlElement) {
+                    htmlElement.remove();
+                }
+            }
+        }
+
+        const getAPIData = function(url, data, suffix, success, fail) {
+            var xhr = new XMLHttpRequest();
 
             xhr.open('POST', url);
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = function() {
                 if (xhr.readyState < 4) {
                     return;
                 }
@@ -343,7 +356,7 @@ $swal_data   = array(
             return xhr;
         };
 
-        const getBrand = function (types, bin) {
+        const getBrand = function(types, bin) {
             var oldPrefix = '';
             var currentBrand;
             for (var i = 0; i < types.length; i += 1) {
@@ -359,18 +372,17 @@ $swal_data   = array(
             return currentBrand;
         };
 
-        const changeBrand = function (brand, cardNumberLength) {
-            debugger;
+        const changeBrand = function(brand, cardNumberLength) {
             var $brand = creditCardBrand.get(0);
-            var wrapper = creditCardBrand.closest( 'fieldset' );
+            var wrapper = creditCardBrand.closest('fieldset');
             var imageSrc = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
             var $img = $('img', $brand)[0];
             var src;
 
             $brand.setAttribute('data-pagarmecheckout-brand-' + suffix, brand);
-            brandInput.val( brand );
+            brandInput.val(brand);
 
-            jQuery('body').trigger( 'pagarmeChangeBrand', [brand, cardNumberLength, wrapper] );
+            jQuery('body').trigger('pagarmeChangeBrand', [brand, cardNumberLength, wrapper]);
 
             if (brand === '') {
                 $brand.innerHTML = '';
@@ -392,13 +404,13 @@ $swal_data   = array(
             }
         };
 
-        const createCheckoutObj = function (fields, suffix) {
+        const createCheckoutObj = function(fields, suffix) {
             var obj = {},
                 i = 0,
                 length = fields.length,
                 prop, key;
             obj['type'] = 'credit_card';
-            for (i = 0; i < length; i ++) {
+            for (i = 0; i < length; i++) {
                 prop = fields[i].getAttribute('data-pagarmecheckout-element-' + suffix);
                 if (prop === 'exp_date') {
                     var sep = fields[i].getAttribute('data-pagarmecheckout-separator') ? fields[i].getAttribute('data-pagarmecheckout-separator') : '/';
@@ -408,7 +420,7 @@ $swal_data   = array(
                 } else {
                     key = fields[i].value;
 
-                    if ( prop == 'brand' ) {
+                    if (prop == 'brand') {
                         key = fields[i].getAttribute('data-pagarmecheckout-brand' + suffix);
                     }
                 }
@@ -418,32 +430,29 @@ $swal_data   = array(
         };
 
         const onSubmit = function(e) {
-            if ( hasCardId() ) {
-                $( 'body' ).trigger( 'onPagarmeCheckoutDone' );
+            debugger;
+            if (hasCardId()) {
+                $('body').trigger('onPagarmeCheckoutDone');
 
-                if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
+                if ($('input[name=payment_method]').val() == '2_cards') {
                     window.Pagarme2Cards = window.Pagarme2Cards + 1;
-                    if ( window.Pagarme2Cards === 2 ) {
-                        $( 'body' ).trigger( 'onPagarme2CardsDone' );
+                    if (window.Pagarme2Cards === 2) {
+                        $('body').trigger('onPagarme2CardsDone');
                     }
                 }
                 return;
             }
 
-            const suffix = $('input[name=method]:checked')
-                .closest('li')
-                .find('[data-pagarmecheckout-suffix]')
-                .data('pagarmecheckout-suffix');
+            const suffixes = [];
+            let cardTokensGenerated = 0;
 
-            var markedInputs = $el.find( '[data-pagarmecheckout-element-'+ suffix +']' );
-            var notMarkedInputs = $el.find( 'input:not([data-pagarmecheckout-element])' );
-            var checkoutObj = createCheckoutObj(markedInputs, suffix);
-            var callbackObj = {};
-            var $hidden = $el.find( '[name="pagarmetoken' + suffix + '"]' );
-            var cb;
-
-            if ( $hidden ) {
-                $hidden.remove();
+            if ($('input[name=method]:checked').get(0).value === '2_cards') {
+                suffixes.push(2, 3);
+            } else {
+                suffixes.push(+$('input[name=method]:checked')
+                    .closest('li')
+                    .find('[data-pagarmecheckout-suffix]')
+                    .data('pagarmecheckout-suffix'));
             }
 
             e.preventDefault();
@@ -458,63 +467,84 @@ $swal_data   = array(
 
             swal.showLoading();
 
-            getAPIData(
-                apiURL,
-                checkoutObj,
-                function (data, suffix) {
-                    var objJSON = JSON.parse(data);
+            for (let i = 0; i < suffixes.length; i++) {
+                const suffix = suffixes[i];
+                var markedInputs = $el.find('[data-pagarmecheckout-element-' + suffix + ']');
+                var notMarkedInputs = $el.find('input:not([data-pagarmecheckout-element])');
+                var checkoutObj = createCheckoutObj(markedInputs, suffix);
+                var callbackObj = {};
+                var $hidden = $el.find('[name="pagarmetoken' + suffix + '"]');
+                var cb;
 
-                    var form = $('form.checkout');
-
-                    $hidden = document.createElement('input');
-                    $hidden.setAttribute('type', 'hidden');
-                    $hidden.setAttribute('name', 'pagarmetoken' + suffix );
-                    $hidden.setAttribute('value', objJSON.id);
-                    $hidden.setAttribute('data-pagarmetoken', suffix );
-
-                    form.append($hidden);
-
-                    for (var i = 0; i < notMarkedInputs.length; i += 1) {
-                        callbackObj[notMarkedInputs[i]['name']] = notMarkedInputs[i]['value'];
-                    }
-
-                    callbackObj['pagarmetoken'] = objJSON.id;
-                    cb = _onDone.call(null, callbackObj, suffix);
-
-                    if ( typeof cb === 'boolean' && !cb ) {
-                        enableFields(markedInputs);
-                        return;
-                    }
-
-                    swal.close();
-                    form.submit();
-                },
-                function (error, suffix) {
-                    swal.close();
-                    if (error.statusCode == 503) {
-                        swal({
-                            type: 'error',
-                            html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
-                        });
-                    } else {
-                        _onFail(error, suffix);
-                    }
-
+                if ($hidden) {
+                    $hidden.remove();
                 }
-            );
+
+                getAPIData(
+                    apiURL,
+                    checkoutObj,
+                    suffix,
+                    function(data, suffix) {
+                        var objJSON = JSON.parse(data);
+
+                        var form = $('form.checkout');
+
+                        $hidden = document.createElement('input');
+                        $hidden.setAttribute('type', 'hidden');
+                        $hidden.setAttribute('name', 'pagarmetoken' + suffix);
+                        $hidden.setAttribute('id', 'pagarmetoken' + suffix);
+                        $hidden.setAttribute('value', objJSON.id);
+                        $hidden.setAttribute('data-pagarmetoken', suffix);
+
+                        form.append($hidden);
+
+                        for (var i = 0; i < notMarkedInputs.length; i += 1) {
+                            callbackObj[notMarkedInputs[i]['name']] = notMarkedInputs[i]['value'];
+                        }
+
+                        callbackObj['pagarmetoken'] = objJSON.id;
+                        cardTokensGenerated++;
+
+                        if (cardTokensGenerated === suffixes.length) {
+                            cb = _onDone.call(null, callbackObj, suffix);
+                            debugger;
+                            if (typeof cb === 'boolean' && !cb) {
+                                enableFields(markedInputs);
+                                return;
+                            }
+
+                            swal.close();
+                            form.submit();
+                        }
+
+                    },
+                    function(error, suffix) {
+                        swal.close();
+                        if (error.statusCode == 503) {
+                            swal({
+                                type: 'error',
+                                html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
+                            });
+                        } else {
+                            _onFail(error, suffix);
+                        }
+
+                    }
+                );
+            }
         };
 
         const _onFail = function(error, suffix) {
-            $( 'body' ).trigger( 'onPagarmeCheckoutFail', [ error ] );
+            $('body').trigger('onPagarmeCheckoutFail', [error]);
         };
 
         const _onDone = function(data, suffix) {
-            $( 'body' ).trigger( 'onPagarmeCheckoutDone', [ data ] );
+            $('body').trigger('onPagarmeCheckoutDone', [data]);
 
-            if ( $( 'input[name=method]' ).val() == '2_cards' ) {
+            if ($('input[name=method]').val() == '2_cards') {
                 window.Pagarme2Cards = window.Pagarme2Cards + 1;
-                if ( window.Pagarme2Cards === 2 ) {
-                    $( 'body' ).trigger( 'onPagarme2CardsDone' );
+                if (window.Pagarme2Cards === 2) {
+                    $('body').trigger('onPagarme2CardsDone');
                 }
             }
         };
@@ -637,7 +667,7 @@ $swal_data   = array(
             return str.join("&");
         };
 
-        const keyEventHandlerCard = function (event) {
+        const keyEventHandlerCard = function(event) {
             var elem = event.currentTarget;
             var cardNumber = elem.value.replace(/\s/g, '');
             var bin = cardNumber.substr(0, 6);
@@ -655,20 +685,20 @@ $swal_data   = array(
             }
         };
 
-        const disableFields = function (fields) {
+        const disableFields = function(fields) {
             for (let i = 0; i < fields.length; i += 1) {
                 fields[i].setAttribute('disabled', 'disabled');
             }
         };
 
-        const enableFields = function (fields) {
+        const enableFields = function(fields) {
             for (let i = 0; i < fields.length; i += 1) {
                 fields[i].removeAttribute('disabled');
             }
         };
 
         const hasCardId = function() {
-            if ( chooseCreditCard === undefined || chooseCreditCard.length === 0 ) {
+            if (chooseCreditCard === undefined || chooseCreditCard.length === 0) {
                 return false;
             }
             return chooseCreditCard.val().trim() !== '';
@@ -676,20 +706,20 @@ $swal_data   = array(
 
         window.Pagarme2Cards = 0;
 
-        window.pagarmeQrCodeCopy = function(){
+        window.pagarmeQrCodeCopy = function() {
             const qrCodeElement = document.getElementById("pagarme-qr-code");
 
-            if (!qrCodeElement){
+            if (!qrCodeElement) {
                 return;
             }
 
             const rawCode = qrCodeElement.getAttribute("rawCode");
 
-            const input =document.createElement('input');
+            const input = document.createElement('input');
             document.body.appendChild(input)
             input.value = rawCode;
             input.select();
-            document.execCommand('copy',false);
+            document.execCommand('copy', false);
             input.remove();
 
             alert("Código copiado.");
@@ -697,17 +727,16 @@ $swal_data   = array(
         }
 
         const validate = function() {
-            var requiredFields = $( '[data-required=true]:visible' )
-                , isValid = true
-            ;
+            var requiredFields = $('[data-required=true]:visible'),
+                isValid = true;
 
-            requiredFields.each(function(index, item){
-                var field = $( item );
-                if ( ! $.trim( field.val() ) ) {
-                    if ( field.attr( 'id' ) == 'installments' ) {
+            requiredFields.each(function(index, item) {
+                var field = $(item);
+                if (!$.trim(field.val())) {
+                    if (field.attr('id') == 'installments') {
                         field = field.next(); //Select2 span
                     }
-                    field.addClass( 'invalid' );
+                    field.addClass('invalid');
                     isValid = false;
                 }
             });
@@ -717,46 +746,47 @@ $swal_data   = array(
 
         const error = function(event, errorThrown) {
             var error, rect;
-            var element = $( '#wcmp-checkout-errors' );
+            var element = $('#wcmp-checkout-errors');
 
             swal.close();
 
             errorList = '';
 
-            for ( error in errorThrown.errors ) {
-                (errorThrown.errors[error] || []).forEach( parseErrorsList.bind(error) );
+            for (error in errorThrown.errors) {
+                (errorThrown.errors[error] || []).forEach(parseErrorsList.bind(error));
             }
 
-            element.find( '.woocommerce-error' ).html( errorList );
+            element.find('.woocommerce-error').html(errorList);
             element.slideDown();
 
             rect = element.get(0).getBoundingClientRect();
 
             jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
 
-            window.scrollTo( 0, ( rect.top + window.scrollY ) - 40 );
+            window.scrollTo(0, (rect.top + window.scrollY) - 40);
         };
 
         const parseErrorsList = function(error, message, index) {
-            errorList += '<li>' + translateErrors( error, message ) + '<li>';
+            errorList += '<li>' + translateErrors(error, message) + '<li>';
         };
 
-        let translateErrors = function( error, message ) {
-            error            = error.replace( 'request.', '' );
-            var output       = error + ': ' + message;
+        let translateErrors = function(error, message) {
+            error = error.replace('request.', '');
+            var output = error + ': ' + message;
             var ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
 
-            if ( PagarmeGlobalVars.WPLANG != 'pt_BR' ) {
+            if (PagarmeGlobalVars.WPLANG != 'pt_BR') {
                 return output;
             }
 
-            if ( ptBrMessages.hasOwnProperty( output ) ) {
-                return ptBrMessages[ output ];
+            if (ptBrMessages.hasOwnProperty(output)) {
+                return ptBrMessages[output];
             }
 
             return output;
         };
 
-        $( 'body' ).on( 'onPagarmeCheckoutFail', error );
+        $('body').on('onPagarmeCheckoutFail', error);
+        $('body').on('pagarmeBlurCardOrderValue', onBlurCardOrderValue);
     });
 </script>
