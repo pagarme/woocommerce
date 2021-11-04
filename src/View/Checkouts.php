@@ -89,8 +89,11 @@ class Checkouts
             $response_data = json_decode($response_data);
         }
 
-        $charges     = $response_data->charges;
-        $charge      = array_shift($charges);
+        $charge = null;
+        if (!empty($response_data)){
+            $charges = $response_data->charges;
+            $charge  = array_shift($charges);
+        }
 
         ob_start();
 
@@ -131,9 +134,13 @@ class Checkouts
             $response_data = json_decode($response_data);
         }
 
-        $charges           = $response_data->charges;
-        $first_charge      = array_shift($charges);
-        $second_charge     = array_shift($charges);
+        $first_charge = null;
+        $second_charge = null;
+        if (!empty($response_data)){
+            $charges = $response_data->charges;
+            $first_charge = array_shift($charges);
+            $second_charge = array_shift($charges);
+        }
 
         ob_start();
 
@@ -147,13 +154,13 @@ class Checkouts
                 __('The status of your credit cards transactions are %s and %s', 'woo-pagarme-payments'),
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($first_charge->status),
+                        $first_charge ? ucfirst($first_charge->status) : 'Failed',
                         'woo-pagarme-payments'
                     )
                 ) . '</strong>',
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($second_charge->status),
+                        $second_charge ? ucfirst($second_charge->status) : 'Failed',
                         'woo-pagarme-payments'
                     )
                 ) . '</strong>'
