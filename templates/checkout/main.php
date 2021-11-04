@@ -26,8 +26,8 @@ $swal_data   = array(
 </div>
 
 <ul class="wc_payment_methods payment_methods methods" <?php echo
-                                                        /** phpcs:ignore */
-                                                        Utils::get_component('checkout-transparent'); ?>>
+    /** phpcs:ignore */
+Utils::get_component('checkout-transparent'); ?>>
     <?php
 
     Utils::get_template(

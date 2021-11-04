@@ -52,10 +52,10 @@ $ref_card          = sha1(random_int(1, 1000));
                 <br>
 
                 <div class="form-row form-row-last">
-                    <label for="card-order-value">
+                    <label for="card-billet-order-value">
                         <?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span>
                     </label>
-                    <input id="card-order-value" name="card_order_value" data-element="card-order-value" data-value="2" data-required="true" data-mask="#.##0,00" data-mask-reverse="true" class="input-text">
+                    <input id="card-billet-order-value" name="card_billet_order_value" data-element="card-billet-order-value" data-value="2" data-required="true" data-mask="#.##0,00" data-mask-reverse="true" class="input-text">
                     <?php
                     Utils::get_template(
                         'templates/checkout/field-enable-multicustomers',
