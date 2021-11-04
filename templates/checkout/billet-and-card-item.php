@@ -49,7 +49,6 @@ $ref_card          = sha1(random_int(1, 1000));
                     );
                     ?>
                 </div>
-                <br>
 
                 <div class="form-row form-row-last">
                     <label for="card-billet-order-value">
@@ -86,7 +85,7 @@ $ref_card          = sha1(random_int(1, 1000));
                     <?php esc_html_e('Installments quantity', 'woo-pagarme-payments'); ?><span class="required">*</span>
                 </label>
 
-                <select id="installments" <?php /*phpcs:ignore*/ echo Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments">
+                <select id="installments" <?php /*phpcs:ignore*/ echo Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments" style="font-size: 1.41575em">
 
                     <?php
                     if ($installments_type != 2) {
@@ -123,6 +122,5 @@ $ref_card          = sha1(random_int(1, 1000));
         );
         ?>
 
-        <input style="display:none;" data-action="choose-payment" data-element="billet-and-card" type="radio" name="payment_method" value="billet_and_card">
     </div>
 </li>

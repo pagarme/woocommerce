@@ -199,74 +199,63 @@ class Gateways extends WC_Payment_Gateway
 
     private function dataToFilterFromPost($paymentMethod)
     {
-        if($paymentMethod == 'credit_card') {
-            return [
-                'brand1',
-                'pagarmetoken1',
-                'installments',
-                'multicustomer_card',
-                'method'
-            ];
-        }
-
-        if($paymentMethod == 'billet') {
-            return [
-                'multicustomer_card',
-                'method'
-            ];
-        }
-
-        if($paymentMethod == 'pix') {
-            return [
-                'multicustomer_card',
-                'method'
-            ];
-        }
-
-        if($paymentMethod == '2_cards') {
-            return [
-                'card_order_value',
-                'brand2',
-                'pagarmetoken2',
-                'installments',
-                'multicustomer_card1',
-                'card_order_value2',
-                'brand3',
-                'pagarmetoken3',
-                'installments2',
-                'multicustomer_card2',
-                'method'
-            ];
-        }
-
-        if($paymentMethod == 'billet-and-card') {
-            return [
-                'card_billet_order_value',
-                'installments',
-                'multicustomer_card',
-                'billet_value',
-                'brand4',
-                'pagarmetoken4',
-                'multicustomer_billet',
-                'method'
-            ];
+        switch ($paymentMethod) {
+            case 'credit_card':
+                return [
+                    'brand1',
+                    'pagarmetoken1',
+                    'installments_card',
+                    'multicustomer_card',
+                    'method'
+                ];
+            case '2_cards':
+                return [
+                    'card_order_value',
+                    'brand2',
+                    'pagarmetoken2',
+                    'installments',
+                    'multicustomer_card1',
+                    'card_order_value2',
+                    'brand3',
+                    'pagarmetoken3',
+                    'installments2',
+                    'multicustomer_card2',
+                    'method'
+                ];
+            case 'billet-and-card':
+                return [
+                    'card_billet_order_value',
+                    'installments',
+                    'multicustomer_card',
+                    'billet_value',
+                    'brand4',
+                    'pagarmetoken4',
+                    'multicustomer_billet',
+                    'method'
+                ];
+            case 'billet' || 'pix':
+                return [
+                    'multicustomer_card',
+                    'method'
+                ];
+            default:
+                return $_POST;
         }
     }
 
-    /**
-     * @param $filteredPostValue
-     * @param $formattedPost
-     * @param $filteredPostKey
-     * @return mixed
-     */
-    private function setDataInFormattedPost($filteredPostValue, $formattedPost, $filteredPostKey)
-    {
+
+    private function setDataInFormattedPost(
+        $filteredPostValue,
+        $formattedPost,
+        $filteredPostKey
+    ) {
         foreach ($filteredPostValue as $key => $value) {
             array_push($formattedPost['fields'], [
                 "name" => $filteredPostKey . '[' . $key . ']',
                 "value" => $value
             ]);
         }
+
         return $formattedPost;
     }
 
@@ -288,6 +277,11 @@ class Gateways extends WC_Payment_Gateway
             }
 
             if ($paymentMethod == 'credit_card') {
+                if (in_array('installments_card', $field)) {
+                    $field['name'] = 'installments';
+                    $formattedPost['fields'][$arrayFieldKey] = $field;
+                }
+
                 if (in_array('brand1', $field)) {
                     $field['name'] = 'brand';
                     $formattedPost['fields'][$arrayFieldKey] = $field;

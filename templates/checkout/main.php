@@ -297,8 +297,8 @@ Utils::get_component('checkout-transparent'); ?>>
             jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
 
-            if ($('input[name=method]').val() === 'billet' ||
-                $('input[name=method]').val() === 'pix') {
+            if ($('input[name=method]:checked').get(0).value === 'billet' ||
+                $('input[name=method]:checked').get(0).value === 'pix') {
                 swal({
                     title: 'Aguarde...',
                     text: 'Nós estamos processando sua requisição.',
@@ -432,7 +432,6 @@ Utils::get_component('checkout-transparent'); ?>>
         };
 
         const onSubmit = function(e) {
-            debugger;
             if (hasCardId()) {
                 $('body').trigger('onPagarmeCheckoutDone');
 
@@ -509,7 +508,6 @@ Utils::get_component('checkout-transparent'); ?>>
 
                         if (cardTokensGenerated === suffixes.length) {
                             cb = _onDone.call(null, callbackObj, suffix);
-                            debugger;
                             if (typeof cb === 'boolean' && !cb) {
                                 enableFields(markedInputs);
                                 return;
