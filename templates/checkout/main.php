@@ -98,14 +98,18 @@ Utils::get_component('checkout-transparent'); ?>>
         $('#payment > ul > li > div > ul > li:nth-child(1) > div').show();
 
 
-        $('#card-order-value').on('blur', function(event) {
+        $('form.checkout').find('[data-value]').on('blur', function(event) {
             fillAnotherInput(event)
         });
 
         const fillAnotherInput = function(event) {
             var input = $(event.currentTarget);
-            var nextIndex = input.data('value') == 2 ? 1 : 2;
-            var nextInput = $('[data-value=' + nextIndex + ']');
+            var nextInput = input.closest('fieldset').siblings('fieldset').find('input').filter(':visible:first');
+
+            if (nextInput.length === 0) {
+                nextInput = input.closest('div').siblings('div').find('input');
+            }
+
             var value = event.currentTarget.value;
             var total = parseFloat(cartTotal);
 
@@ -251,8 +255,6 @@ Utils::get_component('checkout-transparent'); ?>>
         });
 
         $('input[data-element=pagarme-card-number]').on('blur', function(e) {
-            console.log("teste");
-
             var cardNumberInput = $(e.currentTarget);
 
             creditCardBrand = cardNumberInput.siblings("span[name^='brand-image']");

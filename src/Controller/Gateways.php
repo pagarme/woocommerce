@@ -145,7 +145,7 @@ class Gateways extends WC_Payment_Gateway
 
         $formattedPost = $this->formatPOST($formattedPost, $paymentMethod);
         $_POST = $formattedPost;
-        
+
         $checkout = new Checkout();
         $checkout->process_checkout_transparent($wc_order);
 
@@ -161,7 +161,7 @@ class Gateways extends WC_Payment_Gateway
             $this->dataToFilterFromPost($paymentMethod)
         ));
 
-        $formattedPost = $this->setFilteredDataInFormattedPostArray($filteredPost, $formattedPost);
+        $formattedPost = $this->addsFilteredDataInFormattedPostArray($filteredPost, $formattedPost);
 
         $formattedPost = $this->formatMulticustomerCardArray($filteredPost, $formattedPost);
 
@@ -170,7 +170,7 @@ class Gateways extends WC_Payment_Gateway
         return $formattedPost;
     }
 
-    private function setFilteredDataInFormattedPostArray($filteredPost, $formattedPost)
+    private function addsFilteredDataInFormattedPostArray($filteredPost, $formattedPost)
     {
         foreach ($filteredPost as $key => $value) {
             array_push($formattedPost['fields'], [
@@ -199,6 +199,30 @@ class Gateways extends WC_Payment_Gateway
 
     private function dataToFilterFromPost($paymentMethod)
     {
+        if($paymentMethod == 'credit_card') {
+            return [
+                'brand1',
+                'pagarmetoken1',
+                'installments',
+                'multicustomer_card',
+                'method'
+            ];
+        }
+
+        if($paymentMethod == 'billet') {
+            return [
+                'multicustomer_card',
+                'method'
+            ];
+        }
+
+        if($paymentMethod == 'pix') {
+            return [
+                'multicustomer_card',
+                'method'
+            ];
+        }
+
         if($paymentMethod == '2_cards') {
             return [
                 'card_order_value',
@@ -211,6 +235,19 @@ class Gateways extends WC_Payment_Gateway
                 'pagarmetoken3',
                 'installments2',
                 'multicustomer_card2',
+                'method'
+            ];
+        }
+
+        if($paymentMethod == 'billet-and-card') {
+            return [
+                'card_billet_order_value',
+                'installments',
+                'multicustomer_card',
+                'billet_value',
+                'brand4',
+                'pagarmetoken4',
+                'multicustomer_billet',
                 'method'
             ];
         }
@@ -244,6 +281,39 @@ class Gateways extends WC_Payment_Gateway
 
             if (in_array('multicustomer_card', $field)) {
                 unset($formattedPost['fields'][$arrayFieldKey]);
+            }
+
+            if (in_array('multicustomer_billet', $field)) {
+                unset($formattedPost['fields'][$arrayFieldKey]);
+            }
+
+            if ($paymentMethod == 'credit_card') {
+                if (in_array('brand1', $field)) {
+                    $field['name'] = 'brand';
+                    $formattedPost['fields'][$arrayFieldKey] = $field;
+                }
+            }
+
+            if ($paymentMethod == 'billet-and-card') {
+                if (in_array('card_billet_order_value', $field)) {
+                    $field['name'] = 'card_order_value';
+                    $formattedPost['fields'][$arrayFieldKey] = $field;
+                }
+
+                if (in_array('brand4', $field)) {
+                    $field['name'] = 'brand';
+                    $formattedPost['fields'][$arrayFieldKey] = $field;
+                }
+
+                if (in_array('pagarmetoken4', $field)) {
+                    $field['name'] = 'pagarmetoken1';
+                    $formattedPost['fields'][$arrayFieldKey] = $field;
+                }
+
+                if (in_array('payment_method', $field)) {
+                    $field['value'] = 'billet_and_card';
+                    $formattedPost['fields'][$arrayFieldKey] = $field;
+                }
             }
 
             if ($paymentMethod == '2_cards') {
