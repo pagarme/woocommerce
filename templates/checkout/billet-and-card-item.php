@@ -24,7 +24,7 @@ $ref_card          = sha1(random_int(1, 1000));
 ?>
 
 <li class="wc_payment_method pagarme-method">
-    <input id="billet-and-card" type="radio" class="input-radio" name="method" value="billet-and-card" data-order_button_text="">
+    <input id="billet-and-card" type="radio" class="input-radio" name="pagarme_payment_method" value="billet-and-card" data-order_button_text="">
     <label for="billet-and-card"><?php esc_html_e('Credit card and Boleto', 'woo-pagarme-payments'); ?></label>
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
@@ -37,7 +37,7 @@ $ref_card          = sha1(random_int(1, 1000));
                     <label for="billet-value">
                         <?php esc_html_e('Value (Boleto)', 'woo-pagarme-payments'); ?><span class="required">*</span>
                     </label>
-                    <input id="billet-value" name="billet_value" data-element="billet-value" data-value="1" data-required="true" class="input-text">
+                    <input id="billet-value" name="billet_value" data-element="billet-value" data-value="1" data-required="true" class="input-text" style="font-size: 1.41575em">
                     <?php
                     Utils::get_template(
                         'templates/checkout/field-enable-multicustomers',
@@ -54,7 +54,7 @@ $ref_card          = sha1(random_int(1, 1000));
                     <label for="card-billet-order-value">
                         <?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span>
                     </label>
-                    <input id="card-billet-order-value" name="card_billet_order_value" data-element="card-billet-order-value" data-value="2" data-required="true" data-mask="#.##0,00" data-mask-reverse="true" class="input-text">
+                    <input id="card-billet-order-value" name="card_billet_order_value" data-element="card-billet-order-value" data-value="2" data-required="true" data-mask="#.##0,00" data-mask-reverse="true" class="input-text" style="font-size: 1.41575em">
                     <?php
                     Utils::get_template(
                         'templates/checkout/field-enable-multicustomers',

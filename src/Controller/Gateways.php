@@ -141,7 +141,7 @@ class Gateways extends WC_Payment_Gateway
         $wc_order = new WC_Order($order_id);
         $formattedPost['order'] = $order_id;
         $formattedPost['fields'] = array();
-        $paymentMethod = $_POST['method'];
+        $paymentMethod = $_POST['pagarme_payment_method'];
 
         $formattedPost = $this->formatPOST($formattedPost, $paymentMethod);
         $_POST = $formattedPost;
@@ -206,7 +206,7 @@ class Gateways extends WC_Payment_Gateway
                     'pagarmetoken1',
                     'installments_card',
                     'multicustomer_card',
-                    'method'
+                    'pagarme_payment_method'
                 ];
             case '2_cards':
                 return [
@@ -220,7 +220,7 @@ class Gateways extends WC_Payment_Gateway
                     'pagarmetoken3',
                     'installments2',
                     'multicustomer_card2',
-                    'method'
+                    'pagarme_payment_method'
                 ];
             case 'billet-and-card':
                 return [
@@ -231,12 +231,12 @@ class Gateways extends WC_Payment_Gateway
                     'brand4',
                     'pagarmetoken4',
                     'multicustomer_billet',
-                    'method'
+                    'pagarme_payment_method'
                 ];
             case 'billet' || 'pix':
                 return [
                     'multicustomer_card',
-                    'method'
+                    'pagarme_payment_method'
                 ];
             default:
                 return $_POST;
@@ -263,84 +263,143 @@ class Gateways extends WC_Payment_Gateway
     {
         foreach ($formattedPost['fields'] as $arrayFieldKey => $field) {
 
-            if (in_array('method', $field)) {
-                $field['name'] = 'payment_method';
-                $formattedPost['fields'][$arrayFieldKey] = $field;
-            }
-
-            if (in_array('multicustomer_card', $field)) {
-                unset($formattedPost['fields'][$arrayFieldKey]);
-            }
-
-            if (in_array('multicustomer_billet', $field)) {
-                unset($formattedPost['fields'][$arrayFieldKey]);
-            }
+            $formattedPost = $this->applyForAllFields(
+                $field,
+                $formattedPost,
+                $arrayFieldKey
+            );
 
             if ($paymentMethod == 'credit_card') {
-                if (in_array('installments_card', $field)) {
-                    $field['name'] = 'installments';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
-
-                if (in_array('brand1', $field)) {
-                    $field['name'] = 'brand';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
+                $formattedPost = $this->applyForCardCreditField(
+                    $field,
+                    $formattedPost,
+                    $arrayFieldKey
+                );
             }
 
             if ($paymentMethod == 'billet-and-card') {
-                if (in_array('card_billet_order_value', $field)) {
-                    $field['name'] = 'card_order_value';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
-
-                if (in_array('brand4', $field)) {
-                    $field['name'] = 'brand';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
-
-                if (in_array('pagarmetoken4', $field)) {
-                    $field['name'] = 'pagarmetoken1';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
-
-                if (in_array('payment_method', $field)) {
-                    $field['value'] = 'billet_and_card';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
+                $formattedPost = $this->applyForBilletAndCardField(
+                    $field,
+                    $formattedPost,
+                    $arrayFieldKey
+                );
             }
 
             if ($paymentMethod == '2_cards') {
-                if (in_array('multicustomer_card1', $field)) {
-                    unset($formattedPost['fields'][$arrayFieldKey]);
-                }
-
-                if (in_array('multicustomer_card2', $field)) {
-                    unset($formattedPost['fields'][$arrayFieldKey]);
-                }
-
-                if (in_array('brand2', $field)) {
-                    $field['name'] = 'brand';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
-
-                if (in_array('brand3', $field)) {
-                    $field['name'] = 'brand2';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
-
-                if (in_array('pagarmetoken2', $field)) {
-                    $field['name'] = 'pagarmetoken1';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
-
-                if (in_array('pagarmetoken3', $field)) {
-                    $field['name'] = 'pagarmetoken2';
-                    $formattedPost['fields'][$arrayFieldKey] = $field;
-                }
+                $formattedPost = $this->applyFor2CardField(
+                    $field,
+                    $formattedPost,
+                    $arrayFieldKey
+                );
             }
         }
 
+        return $formattedPost;
+    }
+
+    private function applyForAllFields(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    ) {
+        if (in_array('pagarme_payment_method', $field)) {
+            $field['name'] = 'payment_method';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('multicustomer_card', $field)) {
+            unset($formattedPost['fields'][$arrayFieldKey]);
+        }
+
+        if (in_array('multicustomer_billet', $field)) {
+            unset($formattedPost['fields'][$arrayFieldKey]);
+        }
+
+        return $formattedPost;
+    }
+
+    private function applyForCardCreditField(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    ) {
+
+        if (in_array('installments_card', $field)) {
+            $field['name'] = 'installments';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('brand1', $field)) {
+            $field['name'] = 'brand';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        return $formattedPost;
+    }
+
+    private function applyForBilletAndCardField(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    )
+    {
+        if (in_array('card_billet_order_value', $field)) {
+            $field['name'] = 'card_order_value';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('brand4', $field)) {
+            $field['name'] = 'brand';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('pagarmetoken4', $field)) {
+            $field['name'] = 'pagarmetoken1';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('pagarme_payment_method', $field)) {
+            $field['name'] = 'payment_method';
+            $field['value'] = 'billet_and_card';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        return $formattedPost;
+    }
+
+    private function applyFor2CardField(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    )
+    {
+        if (in_array('multicustomer_card1', $field)) {
+            unset($formattedPost['fields'][$arrayFieldKey]);
+        }
+
+        if (in_array('multicustomer_card2', $field)) {
+            unset($formattedPost['fields'][$arrayFieldKey]);
+        }
+
+        if (in_array('brand2', $field)) {
+            $field['name'] = 'brand';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('brand3', $field)) {
+            $field['name'] = 'brand2';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('pagarmetoken2', $field)) {
+            $field['name'] = 'pagarmetoken1';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('pagarmetoken3', $field)) {
+            $field['name'] = 'pagarmetoken2';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
 
         return $formattedPost;
     }

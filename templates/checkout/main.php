@@ -61,42 +61,20 @@ Utils::get_component('checkout-transparent'); ?>>
 
         var ajaxUrl = "<?php echo admin_url('admin-ajax.php'); ?>";
         var cartTotal = <?php echo WC()->cart->total ?>;
-
-        const $el = $('body');
-
-        const script = $('[data-pagarmecheckout-app-id]');
         let suffix = null;
-        let creditCardNumber = null;
         let creditCardBrand = null;
         let brandInput = null;
+        let errorList = '';
+        const $el = $('body');
+        const script = $('[data-pagarmecheckout-app-id]');
         const chooseCreditCard = $el.closest('fieldset').find('[data-element="choose-credit-card"]');
-        let cvv = null;
         const appId = script.data('pagarmecheckoutAppId');
         const apiURL = 'https://api.mundipagg.com/core/v1/tokens?appId=' + appId;
-        let errorList = '';
 
-
-        $('.wc-credit-card-form-card-number').mask('0000000000000000');
-        $('.wc-credit-card-form-card-expiry').mask('00/00');
-        $('.wc-credit-card-form-card-cvc').mask('0000');
-        // pagarme-card-form-card-cvc
-        // pagarme-card-form-card-value
-        // pagarme-card-form-card-expiry
-
-        $('#card-order-value').mask('#.##0,00', {
-            reverse: true
-        });
-        $('#card-order-value2').mask('#.##0,00', {
-            reverse: true
-        });
-        $('#billet-value').mask('#.##0,00', {
-            reverse: true
-        });
-
+        addsMask();
 
         $('#credit-card').attr('checked', 'checked');
         $('#payment > ul > li > div > ul > li:nth-child(1) > div').show();
-
 
         $('form.checkout').find('[data-value]').on('blur', function(event) {
             fillAnotherInput(event)
@@ -247,7 +225,7 @@ Utils::get_component('checkout-transparent'); ?>>
             _onBlurCardOrderValue(event);
         };
 
-        $('input[name=method]').change(function(e) {
+        $('input[name=pagarme_payment_method]').change(function(e) {
             e.stopPropagation();
             const li = $(e.target.closest('li'));
             $('.pagarme_methods').slideUp('slow');
@@ -283,10 +261,9 @@ Utils::get_component('checkout-transparent'); ?>>
             }
 
             $('body').on('onPagarmeCheckoutDone', function() {
-                if ($('input[name=method]').val() == '2_cards') {
+                if ($('input[name=pagarme_payment_method]').val() == '2_cards') {
                     return;
                 }
-                // loadSwal();
             });
 
             $('body').on('onPagarme2CardsDone', function() {
@@ -297,8 +274,8 @@ Utils::get_component('checkout-transparent'); ?>>
             jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
 
-            if ($('input[name=method]:checked').get(0).value === 'billet' ||
-                $('input[name=method]:checked').get(0).value === 'pix') {
+            if ($('input[name=pagarme_payment_method]:checked').get(0).value === 'billet' ||
+                $('input[name=pagarme_payment_method]:checked').get(0).value === 'pix') {
                 swal({
                     title: 'Aguarde...',
                     text: 'Nós estamos processando sua requisição.',
@@ -447,10 +424,10 @@ Utils::get_component('checkout-transparent'); ?>>
             const suffixes = [];
             let cardTokensGenerated = 0;
 
-            if ($('input[name=method]:checked').get(0).value === '2_cards') {
+            if ($('input[name=pagarme_payment_method]:checked').get(0).value === '2_cards') {
                 suffixes.push(2, 3);
             } else {
-                suffixes.push(+$('input[name=method]:checked')
+                suffixes.push(+$('input[name=pagarme_payment_method]:checked')
                     .closest('li')
                     .find('[data-pagarmecheckout-suffix]')
                     .data('pagarmecheckout-suffix'));
@@ -541,7 +518,7 @@ Utils::get_component('checkout-transparent'); ?>>
         const _onDone = function(data, suffix) {
             $('body').trigger('onPagarmeCheckoutDone', [data]);
 
-            if ($('input[name=method]').val() == '2_cards') {
+            if ($('input[name=pagarme_payment_method]').val() == '2_cards') {
                 window.Pagarme2Cards = window.Pagarme2Cards + 1;
                 if (window.Pagarme2Cards === 2) {
                     $('body').trigger('onPagarme2CardsDone');
@@ -785,6 +762,22 @@ Utils::get_component('checkout-transparent'); ?>>
 
             return output;
         };
+
+        function addsMask() {
+            $('.pagarme-card-form-card-number').mask('0000000000000000');
+            $('.pagarme-card-form-card-expiry').mask('00/00');
+            $('.pagarme-card-form-card-cvc').mask('0000');
+
+            $('#card-order-value').mask('#.##0,00', {
+                reverse: true
+            });
+            $('#card-order-value2').mask('#.##0,00', {
+                reverse: true
+            });
+            $('#billet-value').mask('#.##0,00', {
+                reverse: true
+            });
+        }
 
         $('body').on('onPagarmeCheckoutFail', error);
         $('body').on('pagarmeBlurCardOrderValue', onBlurCardOrderValue);
