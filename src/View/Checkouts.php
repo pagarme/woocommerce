@@ -49,6 +49,10 @@ class Checkouts
     {
         $response_data = $order->response_data;
 
+        if (!$response_data):
+            return self::render_failed_message();
+        endif;
+
         if (is_string($response_data)) {
             $response_data = json_decode($response_data);
         }
@@ -183,6 +187,10 @@ class Checkouts
     {
         $response_data = $order->response_data;
 
+        if (!$response_data):
+            return self::render_failed_message();
+        endif;
+
         if (is_string($response_data)) {
             $response_data = json_decode($response_data);
         }
@@ -249,6 +257,11 @@ class Checkouts
     public static function billet_and_card_message($order)
     {
         $response = json_decode($order->response_data);
+
+        if (!$response):
+            return self::render_failed_message();
+        endif;
+
         $charges = $response->charges;
 
         ob_start();
@@ -289,6 +302,36 @@ class Checkouts
 
         endforeach;
 
+        echo self::message_after();
+
+        $message = ob_get_contents();
+
+        ob_end_clean();
+
+        return $message;
+    }
+
+    private static function render_failed_message()
+    {
+        ob_start();
+
+        self::message_before();
+        ?>
+        <p>
+            <?php
+            printf(
+                __('The status of your transaction is %s.', 'woo-pagarme-payments'),
+                '<strong>' . strtoupper(
+                    __(
+                        'Failed',
+                        'woo-pagarme-payments'
+                    )
+                ) . '</strong>'
+            );
+            ?>
+        </p>
+
+        <?php
         echo self::message_after();
 
         $message = ob_get_contents();
