@@ -206,7 +206,8 @@ class Gateways extends WC_Payment_Gateway
                     'pagarmetoken1',
                     'installments_card',
                     'multicustomer_card',
-                    'pagarme_payment_method'
+                    'pagarme_payment_method',
+                    'enable_multicustomers_card'
                 ];
             case '2_cards':
                 return [
@@ -226,7 +227,7 @@ class Gateways extends WC_Payment_Gateway
                 return [
                     'card_billet_order_value',
                     'installments',
-                    'multicustomer_card',
+                    'multicustomer_card_billet',
                     'billet_value',
                     'brand4',
                     'pagarmetoken4',
@@ -345,6 +346,11 @@ class Gateways extends WC_Payment_Gateway
     {
         if (in_array('card_billet_order_value', $field)) {
             $field['name'] = 'card_order_value';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('multicustomer_card_billet', $field)) {
+            $field['name'] = 'multicustomer_card';
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
 
