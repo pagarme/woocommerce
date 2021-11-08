@@ -109,6 +109,7 @@ $ref_card          = sha1(random_int(1, 1000));
                 'ref'   => $ref_billet,
                 'type'  => 'billet',
                 'title' => 'Dados comprador (Boleto)',
+                'suffix' => '_card'
             )
         );
 

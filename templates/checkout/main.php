@@ -81,11 +81,12 @@ Utils::get_component('checkout-transparent'); ?>>
         });
 
         const fillAnotherInput = function(event) {
+            debugger;
             var input = $(event.currentTarget);
             var nextInput = input.closest('fieldset').siblings('fieldset').find('input').filter(':visible:first');
 
             if (nextInput.length === 0) {
-                nextInput = input.closest('div').siblings('div').find('input');
+                nextInput = input.closest('div').siblings('div').find('input').first();
             }
 
             var value = event.currentTarget.value;
@@ -491,6 +492,15 @@ Utils::get_component('checkout-transparent'); ?>>
                             }
 
                             swal.close();
+
+                            swal({
+                                title: 'Aguarde...',
+                                text: 'Nós estamos processando sua requisição.',
+                                allowOutsideClick: false
+                            });
+
+                            swal.showLoading();
+
                             form.submit();
                         }
 
@@ -777,6 +787,9 @@ Utils::get_component('checkout-transparent'); ?>>
             $('#billet-value').mask('#.##0,00', {
                 reverse: true
             });
+
+            $('input[name*=\\[cpf\\]]').mask('000.000.000-00');
+            $('input[name*=\\[zip_code\\]]').mask('00000-000');
         }
 
         $('body').on('onPagarmeCheckoutFail', error);

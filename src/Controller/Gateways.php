@@ -163,9 +163,9 @@ class Gateways extends WC_Payment_Gateway
 
         $formattedPost = $this->addsFilteredDataInFormattedPostArray($filteredPost, $formattedPost);
 
-        $formattedPost = $this->formatMulticustomerCardArray($filteredPost, $formattedPost);
+        $formattedPost = $this->renameFieldsFromFormattedPost($formattedPost, $paymentMethod);
 
-        $formattedPost = $this->removeAndRenameFieldsFromFormattedPost($formattedPost, $paymentMethod);
+        $formattedPost = $this->formatMulticustomerCardArray($formattedPost);
 
         return $formattedPost;
     }
@@ -182,14 +182,14 @@ class Gateways extends WC_Payment_Gateway
         return $formattedPost;
     }
 
-    private function formatMulticustomerCardArray($filteredPost, $formattedPost)
+    private function formatMulticustomerCardArray($formattedPost)
     {
-        foreach ($filteredPost as $filteredPostKey => $filteredPostValue) {
-            if (strstr($filteredPostKey, 'multicustomer_')) {
-                $formattedPost = $this->setDataInFormattedPost(
-                    $filteredPostValue,
-                    $formattedPost,
-                    $filteredPostKey
+        foreach ($formattedPost['fields'] as $fieldsValue) {
+            if (strstr($fieldsValue['name'], 'multicustomer_')) {
+                $formattedPost = $this->addsDataInFormattedPost(
+                    $fieldsValue['value'],
+                    $fieldsValue['name'],
+                    $formattedPost
                 );
             }
         }
@@ -221,7 +221,9 @@ class Gateways extends WC_Payment_Gateway
                     'pagarmetoken3',
                     'installments2',
                     'multicustomer_card2',
-                    'pagarme_payment_method'
+                    'pagarme_payment_method',
+                    'enable_multicustomers_card1',
+                    'enable_multicustomers_card2'
                 ];
             case 'billet-and-card':
                 return [
@@ -231,13 +233,22 @@ class Gateways extends WC_Payment_Gateway
                     'billet_value',
                     'brand4',
                     'pagarmetoken4',
-                    'multicustomer_billet',
-                    'pagarme_payment_method'
+                    'multicustomer_billet_card',
+                    'pagarme_payment_method',
+                    'enable_multicustomers_billet',
+                    'enable_multicustomers_card'
                 ];
-            case 'billet' || 'pix':
+            case 'billet':
                 return [
-                    'multicustomer_card',
-                    'pagarme_payment_method'
+                    'multicustomer_billet',
+                    'pagarme_payment_method',
+                    'enable_multicustomers_billet',
+                ];
+            case 'pix':
+                return [
+                    'multicustomer_pix',
+                    'pagarme_payment_method',
+                    'enable_multicustomers_pix',
                 ];
             default:
                 return $_POST;
@@ -245,14 +256,14 @@ class Gateways extends WC_Payment_Gateway
     }
 
 
-    private function setDataInFormattedPost(
-        $filteredPostValue,
-        $formattedPost,
-        $filteredPostKey
+    private function addsDataInFormattedPost(
+        $fieldValue,
+        $fieldValueName,
+        $formattedPost
     ) {
-        foreach ($filteredPostValue as $key => $value) {
+        foreach ($fieldValue as $key => $value) {
             array_push($formattedPost['fields'], [
-                "name" => $filteredPostKey . '[' . $key . ']',
+                "name" => $fieldValueName . '[' . $key . ']',
                 "value" => $value
             ]);
         }
@@ -260,7 +271,7 @@ class Gateways extends WC_Payment_Gateway
         return $formattedPost;
     }
 
-    private function removeAndRenameFieldsFromFormattedPost($formattedPost, $paymentMethod)
+    private function renameFieldsFromFormattedPost($formattedPost, $paymentMethod)
     {
         foreach ($formattedPost['fields'] as $arrayFieldKey => $field) {
 
@@ -308,14 +319,6 @@ class Gateways extends WC_Payment_Gateway
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
 
-        if (in_array('multicustomer_card', $field)) {
-            unset($formattedPost['fields'][$arrayFieldKey]);
-        }
-
-        if (in_array('multicustomer_billet', $field)) {
-            unset($formattedPost['fields'][$arrayFieldKey]);
-        }
-
         return $formattedPost;
     }
 
@@ -342,8 +345,7 @@ class Gateways extends WC_Payment_Gateway
         $field,
         $formattedPost,
         $arrayFieldKey
-    )
-    {
+    ) {
         if (in_array('card_billet_order_value', $field)) {
             $field['name'] = 'card_order_value';
             $formattedPost['fields'][$arrayFieldKey] = $field;
@@ -351,6 +353,11 @@ class Gateways extends WC_Payment_Gateway
 
         if (in_array('multicustomer_card_billet', $field)) {
             $field['name'] = 'multicustomer_card';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('multicustomer_billet_card', $field)) {
+            $field['name'] = 'multicustomer_billet';
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
 
@@ -377,16 +384,7 @@ class Gateways extends WC_Payment_Gateway
         $field,
         $formattedPost,
         $arrayFieldKey
-    )
-    {
-        if (in_array('multicustomer_card1', $field)) {
-            unset($formattedPost['fields'][$arrayFieldKey]);
-        }
-
-        if (in_array('multicustomer_card2', $field)) {
-            unset($formattedPost['fields'][$arrayFieldKey]);
-        }
-
+    ) {
         if (in_array('brand2', $field)) {
             $field['name'] = 'brand';
             $formattedPost['fields'][$arrayFieldKey] = $field;

@@ -79,7 +79,7 @@ $states       = $wc_countries->get_states('BR');
         <p class="form-row form-row-last">
             <label>
                 <?php esc_html_e('State', 'woo-pagarme-payments'); ?> <span class="required">*</span>
-                <select data-required="true" data-element="state" name="multicustomer_<?php echo $type; ?><?php echo isset($suffix) ? $suffix : ''; ?>[state]">
+                <select data-required="true" data-element="state" name="multicustomer_<?php echo $type; ?><?php echo isset($suffix) ? $suffix : ''; ?>[state]" style="padding: .6180469716em">
                     <?php
                     foreach ($states as $uf => $state) {
                         printf('<option value="%s">%s</option>', esc_html($uf), esc_html($state));
