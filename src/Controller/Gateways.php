@@ -226,6 +226,8 @@ class Gateways extends WC_Payment_Gateway
                     'pagarme_payment_method',
                     'enable_multicustomers_card1',
                     'enable_multicustomers_card2',
+                    'save_credit_card',
+                    'save_credit_card2',
                     'card_id2',
                     'card_id3'
                 ];
@@ -241,6 +243,7 @@ class Gateways extends WC_Payment_Gateway
                     'pagarme_payment_method',
                     'enable_multicustomers_billet',
                     'enable_multicustomers_card',
+                    'save_credit_card',
                     'card_id4'
                 ];
             case 'billet':
