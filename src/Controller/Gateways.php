@@ -207,7 +207,9 @@ class Gateways extends WC_Payment_Gateway
                     'installments_card',
                     'multicustomer_card',
                     'pagarme_payment_method',
-                    'enable_multicustomers_card'
+                    'enable_multicustomers_card',
+                    'save_credit_card',
+                    'card_id'
                 ];
             case '2_cards':
                 return [
@@ -223,7 +225,9 @@ class Gateways extends WC_Payment_Gateway
                     'multicustomer_card2',
                     'pagarme_payment_method',
                     'enable_multicustomers_card1',
-                    'enable_multicustomers_card2'
+                    'enable_multicustomers_card2',
+                    'card_id2',
+                    'card_id3'
                 ];
             case 'billet-and-card':
                 return [
@@ -236,7 +240,8 @@ class Gateways extends WC_Payment_Gateway
                     'multicustomer_billet_card',
                     'pagarme_payment_method',
                     'enable_multicustomers_billet',
-                    'enable_multicustomers_card'
+                    'enable_multicustomers_card',
+                    'card_id4'
                 ];
             case 'billet':
                 return [
@@ -371,6 +376,11 @@ class Gateways extends WC_Payment_Gateway
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
 
+        if (in_array('card_id4', $field)) {
+            $field['name'] = 'card_id';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
         if (in_array('pagarme_payment_method', $field)) {
             $field['name'] = 'payment_method';
             $field['value'] = 'billet_and_card';
@@ -402,6 +412,16 @@ class Gateways extends WC_Payment_Gateway
 
         if (in_array('pagarmetoken3', $field)) {
             $field['name'] = 'pagarmetoken2';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('card_id2', $field)) {
+            $field['name'] = 'card_id';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('card_id3', $field)) {
+            $field['name'] = 'card_id2';
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
 

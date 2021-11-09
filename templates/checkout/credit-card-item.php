@@ -28,7 +28,7 @@ $type              = 'card';
     <label for="credit-card"><?php esc_html_e('Credit card', 'woo-pagarme-payments'); ?></label>
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
-        <fieldset class="wc-credit-card-form wc-payment-form">
+        <fieldset id="pagarme-fieldset-credit-card" class="wc-credit-card-form wc-payment-form">
 
             <?php require_once dirname(__FILE__) . '/choose-credit-card.php'; ?>
 

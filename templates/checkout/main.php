@@ -65,23 +65,27 @@ Utils::get_component('checkout-transparent'); ?>>
         let creditCardBrand = null;
         let brandInput = null;
         let errorList = '';
+        let Pagarme2Cards = 0;
         const $el = $('body');
         const script = $('[data-pagarmecheckout-app-id]');
-        const chooseCreditCard = $el.closest('fieldset').find('[data-element="choose-credit-card"]');
+        let classNamePagarmeElement = 'credit-card';
+        let chooseCreditCard = $('fieldset#pagarme-fieldset-'+classNamePagarmeElement).find('[data-element="choose-credit-card"]');
         const appId = script.data('pagarmecheckoutAppId');
         const apiURL = 'https://api.mundipagg.com/core/v1/tokens?appId=' + appId;
 
         addsMask();
 
+        chooseCreditCard.on( 'change', function(event) {
+            _onChangeCreditCard(event)
+        });
+
         $('#credit-card').attr('checked', 'checked');
         $('#payment > ul > li > div > ul > li:nth-child(1) > div').show();
-
         $('form.checkout').find('[data-value]').on('blur', function(event) {
             fillAnotherInput(event)
         });
 
         const fillAnotherInput = function(event) {
-            debugger;
             var input = $(event.currentTarget);
             var nextInput = input.closest('fieldset').siblings('fieldset').find('input').filter(':visible:first');
 
@@ -228,6 +232,11 @@ Utils::get_component('checkout-transparent'); ?>>
 
         $('input[name=pagarme_payment_method]').change(function(e) {
             e.stopPropagation();
+            let classNamePagarmeElement = $('input[name=pagarme_payment_method]:checked').get(0).value;
+            chooseCreditCard = $('fieldset#pagarme-fieldset-'+classNamePagarmeElement).find('[data-element="choose-credit-card"]');
+            chooseCreditCard.on( 'change', function(event) {
+                _onChangeCreditCard(event)
+            });
             const li = $(e.target.closest('li'));
             $('.pagarme_methods').slideUp('slow');
             li.find('.payment_box').slideDown('slow');
@@ -256,11 +265,6 @@ Utils::get_component('checkout-transparent'); ?>>
             e.preventDefault();
             e.stopPropagation();
 
-            if (!validate()) {
-                jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
-                return false;
-            }
-
             $('body').on('onPagarmeCheckoutDone', function() {
                 if ($('input[name=pagarme_payment_method]').val() == '2_cards') {
                     return;
@@ -268,8 +272,8 @@ Utils::get_component('checkout-transparent'); ?>>
             });
 
             $('body').on('onPagarme2CardsDone', function() {
-                if (window.Pagarme2Cards === 2) {}
-                window.Pagarme2Cards = 0;
+                if (Pagarme2Cards === 2) {}
+                Pagarme2Cards = 0;
             });
 
             jQuery('#wcmp-submit').attr('disabled', 'disabled');
@@ -410,16 +414,18 @@ Utils::get_component('checkout-transparent'); ?>>
         };
 
         const onSubmit = function(e) {
+            teste = hasCardId();
             if (hasCardId()) {
                 $('body').trigger('onPagarmeCheckoutDone');
 
-                if ($('input[name=payment_method]').val() == '2_cards') {
-                    window.Pagarme2Cards = window.Pagarme2Cards + 1;
-                    if (window.Pagarme2Cards === 2) {
+                if ($('input[name=pagarme_payment_method]:checked').get(0).value === '2_cards') {
+                    Pagarme2Cards = Pagarme2Cards + 1;
+                    if (Pagarme2Cards === 2) {
                         $('body').trigger('onPagarme2CardsDone');
                     }
                 }
-                return;
+                var form = $('form.checkout');
+                return form.submit();
             }
 
             const suffixes = [];
@@ -529,8 +535,8 @@ Utils::get_component('checkout-transparent'); ?>>
             $('body').trigger('onPagarmeCheckoutDone', [data]);
 
             if ($('input[name=pagarme_payment_method]').val() == '2_cards') {
-                window.Pagarme2Cards = window.Pagarme2Cards + 1;
-                if (window.Pagarme2Cards === 2) {
+                Pagarme2Cards = Pagarme2Cards + 1;
+                if (Pagarme2Cards === 2) {
                     $('body').trigger('onPagarme2CardsDone');
                 }
             }
@@ -691,8 +697,6 @@ Utils::get_component('checkout-transparent'); ?>>
             return chooseCreditCard.val().trim() !== '';
         };
 
-        window.Pagarme2Cards = 0;
-
         window.pagarmeQrCodeCopy = function() {
             const qrCodeElement = document.getElementById("pagarme-qr-code");
 
@@ -771,6 +775,37 @@ Utils::get_component('checkout-transparent'); ?>>
             }
 
             return output;
+        };
+
+        const _onChangeCreditCard = function(event) {
+            var select  = $( event.currentTarget );
+            var wrapper = select.closest( 'fieldset' );
+            var method  = event.currentTarget.value.trim() ? 'slideUp': 'slideDown';
+            var type    = method == 'slideUp' ? 'OneClickBuy': 'DefaultBuy';
+            var brandInput = wrapper.find( '[type="hidden"]' );
+
+            $( '#wcmp-checkout-errors' ).hide();
+
+            $( 'body' ).trigger( "onPagarmeCardTypeChange", [ type, wrapper ] );
+
+            var brand = select.find('option:selected').data('brand');
+            brandInput.val(brand);
+
+            if ( select.data( 'installments-type' ) == 2 ) {
+
+                if ( type == 'OneClickBuy' ) {
+                    $( 'body' ).trigger( 'pagarmeSelectOneClickBuy', [ brand, wrapper ] );
+                } else {
+                    brandInput.val( '' );
+                    var option = '<option value="">...</option>';
+                    $( '[data-element=installments]' ).html( option );
+                }
+            }
+
+            wrapper.find( '[data-element="fields-cc-data"]' )[method]();
+            wrapper.find( '[data-element="save-cc-check"]' )[method]();
+            wrapper.find( '[data-element="enable-multicustomers-check"]' )[method]();
+            wrapper.find( '[data-element="enable-multicustomers-label-card"]' )[method]();
         };
 
         function addsMask() {

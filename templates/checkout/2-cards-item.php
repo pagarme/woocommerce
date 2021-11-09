@@ -27,7 +27,7 @@ $ref2              = sha1(random_int(1, 1000));
     <label for="2-credit-card"><?php esc_html_e('2 credit cards', 'woo-pagarme-payments'); ?></label>
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
-        <fieldset class="wc-credit-card-form wc-payment-form">
+        <fieldset id="pagarme-fieldset-2_cards" class="wc-credit-card-form wc-payment-form">
 
             <h4>1º Cartão</h4>
 
@@ -96,7 +96,7 @@ $ref2              = sha1(random_int(1, 1000));
         );
         ?>
 
-        <fieldset class="wc-credit-card-form wc-payment-form">
+        <fieldset id="pagarme-fieldset-2_cards" class="wc-credit-card-form wc-payment-form">
 
             <h4>2º Cartão</h4>
 

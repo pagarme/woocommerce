@@ -28,7 +28,7 @@ $ref_card          = sha1(random_int(1, 1000));
     <label for="billet-and-card"><?php esc_html_e('Credit card and Boleto', 'woo-pagarme-payments'); ?></label>
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
-        <fieldset class="wc-credit-card-form wc-payment-form">
+        <fieldset id="pagarme-fieldset-billet-and-card" class="wc-credit-card-form wc-payment-form">
 
             <?php Utils::get_template('templates/checkout/choose-credit-card', ['suffix' => 4]); ?>
 
