@@ -120,15 +120,13 @@ class Core
     {
         $id = "{$type}-script-" . self::SLUG;
 
-        if ($type != 'front') {
-            wp_enqueue_script(
-                $id,
-                self::plugins_url("assets/javascripts/{$type}/built.js"),
-                array_merge(array('jquery'), $deps),
-                self::filemtime("assets/javascripts/{$type}/built.js"),
-                true
-            );
-        }
+        wp_enqueue_script(
+            $id,
+            self::plugins_url("assets/javascripts/{$type}/built.js"),
+            array_merge(array('jquery'), $deps),
+            self::filemtime("assets/javascripts/{$type}/built.js"),
+            true
+        );
 
         if ($type == 'front') {
             wp_enqueue_script(
