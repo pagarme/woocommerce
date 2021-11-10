@@ -74,7 +74,7 @@ $ref2              = sha1(random_int(1, 1000));
             </p>
 
             <?php
-            Utils::get_template('templates/checkout/field-save-card');
+            Utils::get_template('templates/checkout/field-save-card', ['suffix' => 2]);
             Utils::get_template(
                 'templates/checkout/field-enable-multicustomers',
                 array(
@@ -144,7 +144,7 @@ $ref2              = sha1(random_int(1, 1000));
             </p>
 
             <?php
-            Utils::get_template('templates/checkout/field-save-card', ['suffix' => 2]);
+            Utils::get_template('templates/checkout/field-save-card', ['suffix' => 3]);
             Utils::get_template(
                 'templates/checkout/field-enable-multicustomers',
                 array(

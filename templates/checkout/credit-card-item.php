@@ -51,8 +51,8 @@ $type              = 'card';
                 </label>
 
                 <select id="installments_card" <?php echo
-                                            /** phpcs:ignore */
-                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments_card" name="installments_card" style="font-size: 1.41575em">
+                                                /** phpcs:ignore */
+                                                Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments_card" name="installments_card" style="font-size: 1.41575em">
 
                     <?php
                     if ($installments_type != 2) {
@@ -65,7 +65,7 @@ $type              = 'card';
                 </select>
             </p>
 
-            <?php Utils::get_template('templates/checkout/field-save-card'); ?>
+            <?php Utils::get_template('templates/checkout/field-save-card', ['suffix' => 1]); ?>
             <?php Utils::get_template('templates/checkout/field-enable-multicustomers', compact('ref', 'type')); ?>
 
         </fieldset>

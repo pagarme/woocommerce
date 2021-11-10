@@ -98,7 +98,7 @@ $ref_card          = sha1(random_int(1, 1000));
                 </select>
             </p>
 
-            <?php Utils::get_template('templates/checkout/field-save-card'); ?>
+            <?php Utils::get_template('templates/checkout/field-save-card', ['suffix' => 4]); ?>
 
         </fieldset>
 
