@@ -50,14 +50,12 @@ class Gateways extends WC_Payment_Gateway
 
     public function payment_fields()
     {
-        echo (
-            Utils::get_template_as_string(
-                'templates/checkout/main',
-                array(
-                    'model'    => $this->model,
-                )
+        echo (Utils::get_template_as_string(
+            'templates/checkout/main',
+            array(
+                'model'    => $this->model,
             )
-        );
+        ));
     }
 
     /**
@@ -208,7 +206,7 @@ class Gateways extends WC_Payment_Gateway
                     'multicustomer_card',
                     'pagarme_payment_method',
                     'enable_multicustomers_card',
-                    'save_credit_card',
+                    'save_credit_card1',
                     'card_id'
                 ];
             case '2_cards':
@@ -226,8 +224,8 @@ class Gateways extends WC_Payment_Gateway
                     'pagarme_payment_method',
                     'enable_multicustomers_card1',
                     'enable_multicustomers_card2',
-                    'save_credit_card',
                     'save_credit_card2',
+                    'save_credit_card3',
                     'card_id2',
                     'card_id3'
                 ];
@@ -243,7 +241,7 @@ class Gateways extends WC_Payment_Gateway
                     'pagarme_payment_method',
                     'enable_multicustomers_billet',
                     'enable_multicustomers_card',
-                    'save_credit_card',
+                    'save_credit_card4',
                     'card_id4'
                 ];
             case 'billet':
@@ -343,6 +341,11 @@ class Gateways extends WC_Payment_Gateway
 
         if (in_array('brand1', $field)) {
             $field['name'] = 'brand';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('save_credit_card1', $field)) {
+            $field['name'] = 'save_credit_card';
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
 
