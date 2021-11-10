@@ -393,6 +393,11 @@ class Gateways extends WC_Payment_Gateway
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
 
+        if (in_array('save_credit_card4', $field)) {
+            $field['name'] = 'save_credit_card';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
         return $formattedPost;
     }
 
@@ -428,6 +433,16 @@ class Gateways extends WC_Payment_Gateway
 
         if (in_array('card_id3', $field)) {
             $field['name'] = 'card_id2';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('save_credit_card2', $field)) {
+            $field['name'] = 'save_credit_card';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        if (in_array('save_credit_card3', $field)) {
+            $field['name'] = 'save_credit_card2';
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
 
