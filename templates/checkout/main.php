@@ -278,8 +278,7 @@ $swal_data   = array(
 
                 swal.showLoading();
 
-                var form = $('form.checkout');
-                return form.submit();
+                submitForm();
             }
 
             clearTokens();
@@ -402,11 +401,15 @@ $swal_data   = array(
             return obj;
         };
 
+        const submitForm = function() {
+            const form = $('form.checkout');
+            form.submit();
+        }
+
         const onSubmit = function(e) {
             const paymentMethod = $('input[name=pagarme_payment_method]:checked').get(0).value;
             if (hasCardId() && paymentMethod !== '2_cards') {
-                var form = $('form.checkout');
-                return form.submit();
+                submitForm()
             }
 
             const suffixes = [];
@@ -437,9 +440,11 @@ $swal_data   = array(
                 const suffix = suffixes[i];
                 const savedCardSelectName = 'card_id' + suffix;
                 const savedCardSelect = $(`[name=${savedCardSelectName}]`);
-                debugger;
                 if (savedCardSelect.val()) {
                     cardTokensGenerated++;
+                    if (cardTokensGenerated === suffixes.length) {
+                        submitForm();
+                    }
                     continue;
                 }
 
@@ -459,9 +464,9 @@ $swal_data   = array(
                     checkoutObj,
                     suffix,
                     function(data, suffix) {
-                        var objJSON = JSON.parse(data);
+                        const objJSON = JSON.parse(data);
 
-                        var form = $('form.checkout');
+                        const form = $('form.checkout');
 
                         $hidden = document.createElement('input');
                         $hidden.setAttribute('type', 'hidden');
