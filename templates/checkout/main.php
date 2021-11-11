@@ -814,5 +814,9 @@ $swal_data   = array(
 
         $('body').on('onPagarmeCheckoutFail', error);
         $('body').on('pagarmeBlurCardOrderValue', onBlurCardOrderValue);
+
+        $(".woocommerce-error").on('shown', function() {
+            swal.close();
+        });
     });
 </script>
