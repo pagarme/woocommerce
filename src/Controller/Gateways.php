@@ -334,19 +334,17 @@ class Gateways extends WC_Payment_Gateway
         $arrayFieldKey
     ) {
 
-        if (in_array('installments_card', $field)) {
-            $field['name'] = 'installments';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
+        $dictionary = [
+            'installments_card' => 'installments',
+            'brand1' => 'brand',
+            'save_credit_card1' => 'save_credit_card'
+        ];
 
-        if (in_array('brand1', $field)) {
-            $field['name'] = 'brand';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
-
-        if (in_array('save_credit_card1', $field)) {
-            $field['name'] = 'save_credit_card';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
+        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+            if (in_array($fieldKey, $field)) {
+                $field['name'] = $formatedPostKey;
+                $formattedPost['fields'][$arrayFieldKey] = $field;
+            }
         }
 
         return $formattedPost;
@@ -357,44 +355,27 @@ class Gateways extends WC_Payment_Gateway
         $formattedPost,
         $arrayFieldKey
     ) {
-        if (in_array('card_billet_order_value', $field)) {
-            $field['name'] = 'card_order_value';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
 
-        if (in_array('multicustomer_card_billet', $field)) {
-            $field['name'] = 'multicustomer_card';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
+        $dictionary = [
+            'card_billet_order_value' => 'card_order_value',
+            'multicustomer_card_billet' => 'multicustomer_card',
+            'multicustomer_billet_card' => 'multicustomer_billet',
+            'brand4' => 'brand',
+            'pagarmetoken4' => 'pagarmetoken1',
+            'card_id4' => 'card_id',
+            'save_credit_card4' => 'save_credit_card'
+        ];
 
-        if (in_array('multicustomer_billet_card', $field)) {
-            $field['name'] = 'multicustomer_billet';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
-
-        if (in_array('brand4', $field)) {
-            $field['name'] = 'brand';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
-
-        if (in_array('pagarmetoken4', $field)) {
-            $field['name'] = 'pagarmetoken1';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
-
-        if (in_array('card_id4', $field)) {
-            $field['name'] = 'card_id';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
+        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+            if (in_array($fieldKey, $field)) {
+                $field['name'] = $formatedPostKey;
+                $formattedPost['fields'][$arrayFieldKey] = $field;
+            }
         }
 
         if (in_array('pagarme_payment_method', $field)) {
             $field['name'] = 'payment_method';
             $field['value'] = 'billet_and_card';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
-
-        if (in_array('save_credit_card4', $field)) {
-            $field['name'] = 'save_credit_card';
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
 
@@ -406,44 +387,24 @@ class Gateways extends WC_Payment_Gateway
         $formattedPost,
         $arrayFieldKey
     ) {
-        if (in_array('brand2', $field)) {
-            $field['name'] = 'brand';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
 
-        if (in_array('brand3', $field)) {
-            $field['name'] = 'brand2';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
+        $dictionary = [
+            'brand2' => 'brand',
+            'brand3' => 'brand2',
+            'pagarmetoken2' => 'pagarmetoken1',
+            'pagarmetoken3' => 'pagarmetoken2',
+            'card_id2' => 'card_id',
+            'card_id3' => 'card_id2',
+            'save_credit_card2' => 'save_credit_card',
+            'save_credit_card3' => 'save_credit_card2'
 
-        if (in_array('pagarmetoken2', $field)) {
-            $field['name'] = 'pagarmetoken1';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
+        ];
 
-        if (in_array('pagarmetoken3', $field)) {
-            $field['name'] = 'pagarmetoken2';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
-
-        if (in_array('card_id2', $field)) {
-            $field['name'] = 'card_id';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
-
-        if (in_array('card_id3', $field)) {
-            $field['name'] = 'card_id2';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
-
-        if (in_array('save_credit_card2', $field)) {
-            $field['name'] = 'save_credit_card';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
-        }
-
-        if (in_array('save_credit_card3', $field)) {
-            $field['name'] = 'save_credit_card2';
-            $formattedPost['fields'][$arrayFieldKey] = $field;
+        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+            if (in_array($fieldKey, $field)) {
+                $field['name'] = $formatedPostKey;
+                $formattedPost['fields'][$arrayFieldKey] = $field;
+            }
         }
 
         return $formattedPost;
