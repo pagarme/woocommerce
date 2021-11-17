@@ -978,8 +978,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function getShipping()
     {
-        $moneyService = new MoneyService();
-
         $platformShipping = Utils::build_customer_shipping_from_wc_order(
             $this->getPlatformOrder()
         );

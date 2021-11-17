@@ -14,9 +14,14 @@ $ref  = sha1(random_int(1, 1000));
 $type = 'pix';
 
 ?>
-<li>
-    <div id="tab-pix" class="panel entry-content">
+<li class="wc_payment_method pagarme-method">
+    <input id="pix" type="radio" class="input-radio" name="pagarme_payment_method" value="pix" data-order_button_text="" />
+    <label for="pix"><?php esc_html_e('PIX', 'woo-pagarme-payments'); ?></label>
+    <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
         <fieldset class="wc-credit-card-form wc-payment-form">
+            <p>
+                O QR Code para seu pagamento através de PIX será gerado após a confirmação da compra. Aponte seu celular para a tela para capturar o código ou copie e cole o código em seu aplicativo de pagamentos.
+            </p>
             <label>
                 <?php
                 printf(
@@ -25,7 +30,6 @@ $type = 'pix';
                     esc_html__('Pix', 'woo-pagarme-payments')
                 );
                 ?>
-                <input data-element="pix" type="radio" name="payment_method" value="pix">
             </label>
             <?php Utils::get_template('templates/checkout/field-enable-multicustomers', compact('ref', 'type')); ?>
         </fieldset>

@@ -49,6 +49,10 @@ class Checkouts
     {
         $response_data = $order->response_data;
 
+        if (!$response_data):
+            return self::render_failed_message();
+        endif;
+
         if (is_string($response_data)) {
             $response_data = json_decode($response_data);
         }
@@ -89,8 +93,11 @@ class Checkouts
             $response_data = json_decode($response_data);
         }
 
-        $charges     = $response_data->charges;
-        $charge      = array_shift($charges);
+        $charge = null;
+        if (!empty($response_data)){
+            $charges = $response_data->charges;
+            $charge  = array_shift($charges);
+        }
 
         ob_start();
 
@@ -104,7 +111,7 @@ class Checkouts
                 __('The status of your transaction is %s.', 'woo-pagarme-payments'),
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($charge->status),
+                        $charge ? ucfirst($charge->status) : 'Failed',
                         'woo-pagarme-payments'
                     )
                 ) . '</strong>'
@@ -131,9 +138,13 @@ class Checkouts
             $response_data = json_decode($response_data);
         }
 
-        $charges           = $response_data->charges;
-        $first_charge      = array_shift($charges);
-        $second_charge     = array_shift($charges);
+        $first_charge = null;
+        $second_charge = null;
+        if (!empty($response_data)){
+            $charges = $response_data->charges;
+            $first_charge = array_shift($charges);
+            $second_charge = array_shift($charges);
+        }
 
         ob_start();
 
@@ -147,13 +158,13 @@ class Checkouts
                 __('The status of your credit cards transactions are %s and %s', 'woo-pagarme-payments'),
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($first_charge->status),
+                        $first_charge ? ucfirst($first_charge->status) : 'Failed',
                         'woo-pagarme-payments'
                     )
                 ) . '</strong>',
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($second_charge->status),
+                        $second_charge ? ucfirst($second_charge->status) : 'Failed',
                         'woo-pagarme-payments'
                     )
                 ) . '</strong>'
@@ -175,6 +186,10 @@ class Checkouts
     public static function pix_message($order)
     {
         $response_data = $order->response_data;
+
+        if (!$response_data):
+            return self::render_failed_message();
+        endif;
 
         if (is_string($response_data)) {
             $response_data = json_decode($response_data);
@@ -242,6 +257,11 @@ class Checkouts
     public static function billet_and_card_message($order)
     {
         $response = json_decode($order->response_data);
+
+        if (!$response):
+            return self::render_failed_message();
+        endif;
+
         $charges = $response->charges;
 
         ob_start();
@@ -291,6 +311,36 @@ class Checkouts
         return $message;
     }
 
+    private static function render_failed_message()
+    {
+        ob_start();
+
+        self::message_before();
+        ?>
+        <p>
+            <?php
+            printf(
+                __('The status of your transaction is %s.', 'woo-pagarme-payments'),
+                '<strong>' . strtoupper(
+                    __(
+                        'Failed',
+                        'woo-pagarme-payments'
+                    )
+                ) . '</strong>'
+            );
+            ?>
+        </p>
+
+        <?php
+        echo self::message_after();
+
+        $message = ob_get_contents();
+
+        ob_end_clean();
+
+        return $message;
+    }
+
     public static function render_payment_details($order_id)
     {
         $order   = new Order($order_id);
@@ -320,10 +370,9 @@ class Checkouts
         <?php
     }
 
-    public static function render_installments($wc_order)
+    public static function render_installments($total)
     {
         $gateway = new Gateway();
-        $total   = $wc_order->get_total();
 
         echo $gateway->get_installments_by_type($total);
     }

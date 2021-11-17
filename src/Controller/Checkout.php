@@ -31,13 +31,11 @@ class Checkout
         add_filter('wcbcf_billing_fields', array($this, 'set_required_fields'));
     }
 
-    public function process_checkout_transparent()
+    public function process_checkout_transparent($wc_order)
     {
         if (!Utils::is_request_ajax() || Utils::server('REQUEST_METHOD') !== 'POST') {
             exit(0);
         }
-
-        $wc_order = wc_get_order(Utils::post('order', 0, 'intval'));
 
         if (!$wc_order) {
             wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
@@ -59,22 +57,20 @@ class Checkout
             $fields
         );
 
-        if (!$response) {
-            wp_send_json_error(__('Can\'t create payment. Please review the information and try again.', 'woo-pagarme-payments'));
+        $order  = new Order($wc_order->get_order_number());
+        $order->payment_method   = $fields['payment_method'];
+        WC()->cart->empty_cart();
+        if ($response) {
+            $order->pagarme_id     = $response->getPagarmeId()->getValue();
+            $order->pagarme_status = $response->getStatus()->getStatus();
+            $order->response_data    = json_encode($response);
+            $order->update_by_pagarme_status($response->getStatus()->getStatus());
+            return true;
         }
 
-        $order  = new Order($wc_order->get_order_number());
-
-        $order->payment_method   = $fields['payment_method'];
-        $order->pagarme_id     = $response->getPagarmeId()->getValue();
-        $order->pagarme_status = $response->getStatus()->getStatus();
-        $order->response_data    = json_encode($response);
-
-        $order->update_by_pagarme_status($response->getStatus()->getStatus());
-
-        WC()->cart->empty_cart();
-
-        wp_send_json_success($response);
+        $order->pagarme_status = 'failed';
+        $order->update_by_pagarme_status('failed');
+        return false;
     }
 
     public function build_installments()

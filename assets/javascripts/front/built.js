@@ -2567,10 +2567,25 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		if ( typeof $().select2 === 'function' ) {
 			this.applySelect2();
 		}
+
+        $('div#woo-pagarme-payment-methods > ul li input:first').attr('checked', 'checked');
+        $('div#woo-pagarme-payment-methods > ul li:first').find('.payment_box').show();
+
+        $('input#payment_method_woo-pagarme-payments').click(function() {
+            $('div#woo-pagarme-payment-methods').removeAttr('style');
+
+            $('div#woo-pagarme-payment-methods > ul li').find(function() {
+                $('input:checked:last').nextAll().show();
+            });
+        });
+
 	};
 
 	Model.fn.addEventListener = function() {
-		this.$el.on( 'submit', this._onSubmit.bind(this) );
+		// this.$el.on( 'submit', this._onSubmit.bind(this) );
+
+		$('#place_order').on('click', this._onSubmit.bind(this));
+
 		this.$el.find( '[data-value]' ).on( 'blur', this.fillAnotherInput.bind(this) );
 		this.click( 'tab' );
 		this.click( 'choose-payment' );
@@ -2595,10 +2610,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			this.elements.cardNumber.on( 'keyup', this.updateInstallments );
 			this.elements.cardNumber.on( 'keydown', this.updateInstallments );
 		}
-
-		if ( this.elements.enableMulticustomers ) {
-			this.elements.enableMulticustomers.on( 'click', this.handleMultiCustomers )
-		}
 	};
 
 	Model.fn._onSubmit = function(e) {
@@ -2613,7 +2624,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
 				return;
 			}
-			this.loadSwal();
+			//this.loadSwal();
 		}.bind(this));
 
 		$( 'body' ).on( 'onPagarme2CardsDone', function(){
@@ -2727,9 +2738,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		});
 
 		this.$el.find('[data-element=state]').select2({
-			width: '300px',
+			width: '100%',
 			minimumResultsForSearch: 20
-		})
+		});
 	};
 
 	Model.fn.removeSpecialChars = function() {
@@ -2756,13 +2767,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		}
 	};
 
-	Model.fn.handleMultiCustomers = function(e) {
-		var input = $(e.currentTarget);
-		var method = input.is(':checked') ? 'slideDown' : 'slideUp';
-		var target = '[data-ref="' + input.data('target') + '"]';
-		$( target )[method]();
-	}
-
 	Model.fn.validate = function() {
 		var requiredFields = $( '[data-required=true]:visible' )
 		  , isValid = true
@@ -2782,16 +2786,16 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		return isValid;
 	};
 
-	Model.fn.loadSwal = function() {
-		swal.close();
-
-		swal({
-			title             : this.data.swal.title,
-			text              : this.data.swal.text,
-			allowOutsideClick : false,
-			onOpen            : this._onOpenSwal.bind( this )
-		});
-	};
+	// Model.fn.loadSwal = function() {
+	// 	swal.close();
+    //
+	// 	swal({
+	// 		title             : this.data.swal.title,
+	// 		text              : this.data.swal.text,
+	// 		allowOutsideClick : false,
+	// 		onOpen            : this._onOpenSwal.bind( this )
+	// 	});
+	// };
 
 	Model.fn._onOpenSwal = function () {
 		if (this.lock) {
@@ -3405,6 +3409,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 					return;
 				}
 
+                var form = $('form.checkout');
+                form.submit();
 			},
 			function (error, suffix) {
 				swal.close();
