@@ -554,7 +554,7 @@ class Utils
     public static function get_template($file, $args = array())
     {
         if ($args && is_array($args)) {
-            extract($args);
+            extract($args, EXTR_SKIP);
         }
 
         $locale = Core::plugin_dir_path() . $file . '.php';
@@ -597,12 +597,7 @@ class Utils
 
     public static function get_json_post_data()
     {
-        if (function_exists('phpversion') && version_compare(phpversion(), '5.6', '>=')) {
-            $post_data = file_get_contents('php://input');
-        } else {
-            global $HTTP_RAW_POST_DATA;
-            $post_data = $HTTP_RAW_POST_DATA;
-        }
+        $post_data = file_get_contents('php://input');
 
         return empty($post_data) ? false : json_decode($post_data);
     }

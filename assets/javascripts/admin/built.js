@@ -2580,7 +2580,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             if (this.$element[0].id !== undefined && this.$element[0].id !== '') {
                 this.id = this.$element[0].id;
             } else {
-                this.id = PLUGIN_NAME + Math.floor((Math.random() * 10000000) + 1);
+                let array = new Uint8Array(3);
+                window.crypto.getRandomValues(array);
+                this.id = PLUGIN_NAME + Math.floor((array[0] * array[1] * array[2]) + 1);
                 this.$element.attr('id', this.id);
             }
             this.classes = (this.$element.attr('class') !== undefined) ? this.$element.attr('class') : '';
@@ -3697,10 +3699,13 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
     };
 
+    function escapeHash(hash) {
+        return '#' + encodeURIComponent(hash.substr(1));
+    }
 
     $window.off('load.' + PLUGIN_NAME).on('load.' + PLUGIN_NAME, function (e) {
 
-        var modalHash = document.location.hash;
+        var modalHash = escapeHash(document.location.hash);
 
         if (window.$iziModal.autoOpen === 0 && !$('.' + PLUGIN_NAME).is(":visible")) {
 
@@ -3718,7 +3723,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
     $window.off('hashchange.' + PLUGIN_NAME).on('hashchange.' + PLUGIN_NAME, function (e) {
 
-        var modalHash = document.location.hash;
+        var modalHash = escapeHash(document.location.hash);
         var data = $(modalHash).data();
 
         if (modalHash !== "") {

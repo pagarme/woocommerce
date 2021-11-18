@@ -14,7 +14,7 @@ use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Helper\Utils;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
-$ref               = md5(rand(1, 1000));
+$ref               = sha1(random_int(1, 1000));
 $type              = 'card';
 
 ?>
