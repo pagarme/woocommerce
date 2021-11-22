@@ -278,7 +278,7 @@ $swal_data   = array(
 
                 swal.showLoading();
 
-                submitForm();
+                return submitForm();
             }
 
             clearTokens();
@@ -414,7 +414,6 @@ $swal_data   = array(
 
             const suffixes = [];
             let cardTokensGenerated = 0;
-
             if (paymentMethod === '2_cards') {
                 suffixes.push(2, 3);
             } else {
