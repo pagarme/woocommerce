@@ -67,11 +67,24 @@ $swal_data   = array(
         let errorList = '';
         let Pagarme2Cards = 0;
         const $el = $('body');
+        let isFirstLoad = true;
         const script = $('[data-pagarmecheckout-app-id]');
         let classNamePagarmeElement = 'credit-card';
         let chooseCreditCard = $('fieldset#pagarme-fieldset-' + classNamePagarmeElement).find('[data-element="choose-credit-card"]');
         const appId = script.data('pagarmecheckoutAppId');
         const apiURL = 'https://api.mundipagg.com/core/v1/tokens?appId=' + appId;
+        const openPaymentMethodDetails = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            let selectedPaymentMethod = $(e.target.closest('li'));
+            let paymentBox = selectedPaymentMethod.find('.payment_box');
+            if (e.isTrigger) {
+                return;
+            };
+            debugger;
+            $('.pagarme_methods').not(paymentBox).slideUp();
+            paymentBox.slideDown('slow');
+        };
 
         addsMask();
 
@@ -79,8 +92,6 @@ $swal_data   = array(
             _onChangeCreditCard(event)
         });
 
-        $('#credit-card').attr('checked', 'checked');
-        $('#payment > ul > li > div > ul > li:nth-child(1) > div').show();
         $('form.checkout').find('[data-value]').on('blur', function(event) {
             fillAnotherInput(event)
         });
@@ -230,17 +241,7 @@ $swal_data   = array(
             _onBlurCardOrderValue(event);
         };
 
-        $('input[name=pagarme_payment_method]').change(function(e) {
-            e.stopPropagation();
-            let classNamePagarmeElement = $('input[name=pagarme_payment_method]:checked').get(0).value;
-            chooseCreditCard = $('fieldset#pagarme-fieldset-' + classNamePagarmeElement).find('[data-element="choose-credit-card"]');
-            chooseCreditCard.on('change', function(event) {
-                _onChangeCreditCard(event)
-            });
-            const li = $(e.target.closest('li'));
-            $('.pagarme_methods').slideUp('slow');
-            li.find('.payment_box').slideDown('slow');
-        });
+        $('input[name=pagarme_payment_method]').change(openPaymentMethodDetails);
 
         $('input[data-element=pagarme-card-number]').on('blur', function(e) {
             var cardNumberInput = $(e.currentTarget);
@@ -817,5 +818,20 @@ $swal_data   = array(
         $('body').on('checkout_error', function() {
             swal.close();
         });
+
+
+        $('body').on('updated_checkout', function() {
+            if (isFirstLoad) {
+                isFirstLoad = false;
+                $('#credit-card').attr('checked', 'checked');
+            }
+            const changeEvent = new Event('click');
+            Object.defineProperty(changeEvent, 'target', {
+                writable: false,
+                value: $('input[name=pagarme_payment_method]:checked')
+            });
+            openPaymentMethodDetails(changeEvent);
+        });
+
     });
 </script>
