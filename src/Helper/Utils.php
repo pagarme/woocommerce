@@ -633,7 +633,7 @@ class Utils
             return $response;
         }
 
-        echo $response;
+        echo esc_attr($response);
     }
 
 

@@ -86,7 +86,7 @@ class Checkout
         // TODO: get installments from core's installment service;
         $html    = $gateway->get_installments_by_type($total, $flag);
 
-        echo $html;
+        echo esc_html($html);
 
         exit();
     }

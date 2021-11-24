@@ -19,11 +19,11 @@ if (!$setting->is_active_multicustomers()) {
 
 $p = isset($without_container) && $without_container ? false : true;
 
-echo $p ? '<p class="form-row form-row-wide" data-element="enable-multicustomers-check">' : '';
+echo esc_html($p ? '<p class="form-row form-row-wide" data-element="enable-multicustomers-check">' : '');
 ?>
 <label data-element="enable-multicustomers-label-<?php echo esc_attr($type); ?>">
     <input type="checkbox" name="enable_multicustomers_<?php echo esc_attr($type); ?>" data-element="enable-multicustomers" data-target="<?php echo esc_attr($ref); ?>" value="1" style="margin: 0;">
 
     <?php esc_html_e('Fill other buyer data', 'woo-pagarme-payments'); ?>
 </label>
-<?php echo $p ? '</p>' : ''; ?>
+<?php echo esc_html($p ? '</p>' : ''); ?>
