@@ -81,7 +81,6 @@ $swal_data   = array(
             if (e.isTrigger) {
                 return;
             };
-            debugger;
             $('.pagarme_methods').not(paymentBox).slideUp();
             paymentBox.slideDown('slow');
         };
@@ -410,7 +409,7 @@ $swal_data   = array(
         const onSubmit = function(e) {
             const paymentMethod = $('input[name=pagarme_payment_method]:checked').get(0).value;
             if (hasCardId() && paymentMethod !== '2_cards') {
-                submitForm()
+                return submitForm();
             }
 
             const suffixes = [];
@@ -443,7 +442,7 @@ $swal_data   = array(
                 if (savedCardSelect.val()) {
                     cardTokensGenerated++;
                     if (cardTokensGenerated === suffixes.length) {
-                        submitForm();
+                        return submitForm();
                     }
                     continue;
                 }
