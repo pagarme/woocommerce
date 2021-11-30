@@ -155,11 +155,15 @@ $swal_data   = array(
             _onBlurCardOrderValue(event);
         };
 
-        const _onBlurCardOrderValue = function(e) {
+        const _onBlurCardOrderValue = function(e, useTotal) {
             var option = '<option value="">...</option>';
             var wrapper = $(e.currentTarget).closest('fieldset');
 
             var total = e.target.value;
+
+            if (useTotal) {
+                total = '' + cartTotal;
+            }
 
             if (total) {
                 total = total.replace('.', '');
@@ -174,10 +178,10 @@ $swal_data   = array(
         };
 
         const onBlurCardOrderValue = function(event, brand, total, wrapper) {
-            request(brand, total, wrapper);
+            updateInstallmentsElement(brand, total, wrapper);
         };
 
-        const request = function(brand, total, wrapper) {
+        const updateInstallmentsElement = function(brand, total, wrapper) {
             var storageName = btoa(brand + total);
             var storage = sessionStorage.getItem(storageName);
             var select = wrapper.find('[data-element=installments]');
@@ -354,8 +358,6 @@ $swal_data   = array(
             $brand.setAttribute('data-pagarmecheckout-brand-' + suffix, brand);
             brandInput.val(brand);
 
-            jQuery('body').trigger('pagarmeChangeBrand', [brand, cardNumberLength, wrapper]);
-
             if (brand === '') {
                 $brand.innerHTML = '';
             } else {
@@ -372,6 +374,8 @@ $swal_data   = array(
                     } else {
                         $img.setAttribute('src', src);
                     }
+
+                    updateInstallmentsElement(brand, cartTotal, wrapper);
                 }
             }
         };
