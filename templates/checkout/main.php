@@ -822,7 +822,9 @@ $swal_data   = array(
         $('body').on('updated_checkout', function() {
             if (isFirstLoad) {
                 isFirstLoad = false;
-                $('#credit-card').attr('checked', 'checked');
+                const firstPaymentMethod = jQuery("[data-pagarme-component=checkout-transparent]").children().first();
+                const firstPaymentMethodInput = firstPaymentMethod.children('input');
+                firstPaymentMethodInput.attr('checked', 'checked');
             }
             const changeEvent = new Event('click');
             Object.defineProperty(changeEvent, 'target', {
