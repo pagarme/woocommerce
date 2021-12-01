@@ -2586,7 +2586,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		$('#place_order').on('click', this._onSubmit.bind(this));
 
-		this.$el.find( '[data-value]' ).on( 'blur', this.fillAnotherInput.bind(this) );
 		this.click( 'tab' );
 		this.click( 'choose-payment' );
 
@@ -2602,9 +2601,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		$( '[data-required=true]' ).on( 'keypress', this.setAsValid );
 		$( '[data-required=true]' ).on( 'blur', this.setAsValid );
 
-		if ( this.elements.cardOrderValue ) {
-			this.elements.cardOrderValue.on( 'blur', this._onBlurCardOrderValue.bind( this ) );
-		}
 
 		if ( this.elements.cardNumber ) {
 			this.elements.cardNumber.on( 'keyup', this.updateInstallments );
@@ -2657,24 +2653,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		forms.attr( 'disabled', true );
 		target.prev().removeAttr( 'disabled' );
-	};
-
-	Model.fn._onBlurCardOrderValue = function(e) {
-		var option  = '<option value="">...</option>';
-		var wrapper = $( e.currentTarget ).closest( 'fieldset' );
-
-		var total = e.target.value;
-
-		if ( total ) {
-			total = total.replace( '.', '' );
-			total = total.replace( ',', '.' );
-
-			var brand = wrapper.find( '[data-element="choose-credit-card"]' ).find( 'option:selected' ).data( 'brand' );
-
-			$( 'body' ).trigger( "pagarmeBlurCardOrderValue", [ brand, total, wrapper ] );
-		} else {
-			wrapper.find( '[data-element=installments]' ).html( option );
-		}
 	};
 
 	Model.fn._done = function(response) {
@@ -2885,11 +2863,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn.refreshBothInstallmentsSelects = function(event, secondInput){
-		this._onBlurCardOrderValue(event);
 		event.currentTarget = secondInput;
 		event.target = secondInput;
-
-		this._onBlurCardOrderValue(event);
 	};
 
 	Model.fn.refreshCardInstallmentSelect = function(event, secondInput){
@@ -2897,53 +2872,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		event.currentTarget = targetInput;
 		event.target = targetInput;
-
-		this._onBlurCardOrderValue(event);
 	}
-
-	Model.fn.fillAnotherInput = function(event) {
-		var input = $(event.currentTarget);
-		var nextIndex = input.data('value') == 2 ? 1 : 2;
-		var nextInput = $('[data-value=' + nextIndex + ']');
-		var value = event.currentTarget.value;
-		var total = parseFloat( this.data.orderTotal );
-
-		if ( ! value ) {
-			return;
-		}
-
-		value = value.replace('.', '');
-		value = parseFloat( value.replace(',', '.') );
-
-		var nextValue = total - value;
-
-		if ( value > total ) {
-			swal({
-				type: 'error',
-				text: 'O valor não pode ser maior que total do pedido!'
-			});
-			input.val('');
-			nextInput.val('');
-			return;
-		}
-
-		nextValue = nextValue.toFixed(2);
-		nextValue = nextValue.replace('.',',');
-
-		value = value.toFixed(2);
-		value = value.replace('.', ',');
-
-		nextInput.val(nextValue);
-		input.val(value);
-
-		if ( this.isTwoCardsPayment(event.target, nextInput[0]) ){
-		    this.refreshBothInstallmentsSelects(event, nextInput[0]);
-		}
-
-		if( this.isBilletAndCardPayment(event.target, nextInput[0]) ){
-		    this.refreshCardInstallmentSelect(event, nextInput[0]);
-		}
-	};
 
 });
 ;MONSTER( 'Pagarme.Components.Installments', function(Model, $, utils) {
