@@ -169,8 +169,8 @@ $swal_data   = array(
                 total = total.replace('.', '');
                 total = total.replace(',', '.');
 
-                var brand = wrapper.find('[data-element="choose-credit-card"]').find('option:selected').data('brand');
-
+                if (!creditCardBrand) return;
+                const brand = creditCardBrand.get(0).getAttribute('brand');
                 $('body').trigger("pagarmeBlurCardOrderValue", [brand, total, wrapper]);
             } else {
                 wrapper.find('[data-element=installments]').html(option);
@@ -182,6 +182,7 @@ $swal_data   = array(
         };
 
         const updateInstallmentsElement = function(brand, total, wrapper) {
+            if (!brand || !total) return;
             var storageName = btoa(brand + total);
             var storage = sessionStorage.getItem(storageName);
             var select = wrapper.find('[data-element=installments]');
@@ -351,11 +352,14 @@ $swal_data   = array(
         const changeBrand = function(brand, cardNumberLength) {
             var $brand = creditCardBrand.get(0);
             var wrapper = creditCardBrand.closest('fieldset');
+            const selectedPaymentMethod = $('input[name=pagarme_payment_method]:checked').get(0).value;
+
             var imageSrc = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
             var $img = $('img', $brand)[0];
             var src;
 
             $brand.setAttribute('data-pagarmecheckout-brand-' + suffix, brand);
+            $brand.setAttribute('brand', brand);
             brandInput.val(brand);
 
             if (brand === '') {
@@ -374,8 +378,16 @@ $swal_data   = array(
                     } else {
                         $img.setAttribute('src', src);
                     }
+                    let orderValue = cartTotal;
+                    debugger;
+                    if (selectedPaymentMethod === 'billet-and-card' || selectedPaymentMethod === '2_cards') {
+                        orderValue = creditCardBrand
+                            .closest('.wc-credit-card-form')
+                            .find('input[data-element=card-order-value]')
+                            .get(0).value;
+                    }
 
-                    updateInstallmentsElement(brand, cartTotal, wrapper);
+                    updateInstallmentsElement(brand, orderValue, wrapper);
                 }
             }
         };
