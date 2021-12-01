@@ -379,7 +379,6 @@ $swal_data   = array(
                         $img.setAttribute('src', src);
                     }
                     let orderValue = cartTotal;
-                    debugger;
                     if (selectedPaymentMethod === 'billet-and-card' || selectedPaymentMethod === '2_cards') {
                         orderValue = creditCardBrand
                             .closest('.wc-credit-card-form')
