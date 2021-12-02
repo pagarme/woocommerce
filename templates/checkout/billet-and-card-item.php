@@ -54,7 +54,7 @@ $ref_card          = sha1(random_int(1, 1000));
                     <label for="card-billet-order-value">
                         <?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span>
                     </label>
-                    <input id="card-billet-order-value" name="card_billet_order_value" data-element="card-billet-order-value" data-value="2" data-required="true" data-mask="#.##0,00" data-mask-reverse="true" class="input-text" style="font-size: 1.41575em">
+                    <input id="card-billet-order-value" name="card_billet_order_value" data-element="card-order-value" data-value="2" data-required="true" data-mask="#.##0,00" data-mask-reverse="true" class="input-text" style="font-size: 1.41575em">
                     <?php
                     Utils::get_template(
                         'templates/checkout/field-enable-multicustomers',
@@ -81,11 +81,11 @@ $ref_card          = sha1(random_int(1, 1000));
 
             <p class="form-row form-row-wide">
 
-                <label for="installments">
+                <label for="installments3">
                     <?php esc_html_e('Installments quantity', 'woo-pagarme-payments'); ?><span class="required">*</span>
                 </label>
 
-                <select id="installments" <?php /*phpcs:ignore*/ echo Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments" style="font-size: 1.41575em">
+                <select id="installments3" <?php /*phpcs:ignore*/ echo Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments3" style="font-size: 1.41575em">
 
                     <?php
                     if ($installments_type != 2) {

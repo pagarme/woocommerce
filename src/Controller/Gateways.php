@@ -232,7 +232,7 @@ class Gateways extends WC_Payment_Gateway
             case 'billet-and-card':
                 return [
                     'card_billet_order_value',
-                    'installments',
+                    'installments3',
                     'multicustomer_card_billet',
                     'billet_value',
                     'brand4',
@@ -361,6 +361,7 @@ class Gateways extends WC_Payment_Gateway
             'multicustomer_card_billet' => 'multicustomer_card',
             'multicustomer_billet_card' => 'multicustomer_billet',
             'brand4' => 'brand',
+            'installments3' => 'installments',
             'pagarmetoken4' => 'pagarmetoken1',
             'card_id4' => 'card_id',
             'save_credit_card4' => 'save_credit_card'
