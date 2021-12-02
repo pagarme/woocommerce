@@ -52,7 +52,7 @@ $type              = 'card';
 
                 <select id="installments_card" <?php echo
                                                 /** phpcs:ignore */
-                                                Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments_card" name="installments_card" style="font-size: 1.41575em">
+                                                Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments_card" style="font-size: 1.41575em">
 
                     <?php
                     if ($installments_type != 2) {
