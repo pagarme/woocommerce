@@ -839,7 +839,7 @@ $swal_data   = array(
                 isFirstLoad = false;
                 const firstPaymentMethod = jQuery("[data-pagarme-component=checkout-transparent]").children().first();
                 const firstPaymentMethodInput = firstPaymentMethod.children('input');
-                firstPaymentMethodInput.attr('checked', 'checked');
+                firstPaymentMethodInput.click();
             }
             const changeEvent = new Event('click');
             Object.defineProperty(changeEvent, 'target', {
