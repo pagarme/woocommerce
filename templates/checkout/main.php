@@ -380,10 +380,11 @@ $swal_data   = array(
                     }
                     let orderValue = cartTotal;
                     if (selectedPaymentMethod === 'billet-and-card' || selectedPaymentMethod === '2_cards') {
-                        orderValue = creditCardBrand
+                        const rawValue = creditCardBrand
                             .closest('.wc-credit-card-form')
                             .find('input[data-element=card-order-value]')
                             .get(0).value;
+                        orderValue = parseFloat(rawValue.replace(',', '.'));
                     }
 
                     updateInstallmentsElement(brand, orderValue, wrapper);
