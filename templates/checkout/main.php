@@ -87,7 +87,7 @@ $swal_data   = array(
 
         addsMask();
 
-        chooseCreditCard.on('change', function(event) {
+        $('select[data-element=choose-credit-card]').on('change', function(event) {
             _onChangeCreditCard(event)
         });
 

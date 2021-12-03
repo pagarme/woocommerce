@@ -2594,10 +2594,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			this.elements.cardHolderName.on( 'blur', this.removeSpecialChars );
 		}
 
-		if ( this.elements.chooseCreditCard ) {
-			this.elements.chooseCreditCard.on( 'change', this._onChangeCreditCard.bind( this ) );
-		}
-
 		$( '[data-required=true]' ).on( 'keypress', this.setAsValid );
 		$( '[data-required=true]' ).on( 'blur', this.setAsValid );
 
@@ -2801,37 +2797,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 				jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
 			}
 		});
-	};
-
-	Model.fn._onChangeCreditCard = function(event) {
-		var select  = $( event.currentTarget );
-		var wrapper = select.closest( 'fieldset' );
-		var method  = event.currentTarget.value.trim() ? 'slideUp': 'slideDown';
-		var type    = method == 'slideUp' ? 'OneClickBuy': 'DefaultBuy';
-		var brandInput = wrapper.find( '[data-pagarmecheckout-element="brand-input"]' );
-
-		$( '#wcmp-checkout-errors' ).hide();
-
-		$( 'body' ).trigger( "onPagarmeCardTypeChange", [ type, wrapper ] );
-
-		var brand = select.find('option:selected').data('brand');
-		brandInput.val(brand);
-
-		if ( select.data( 'installments-type' ) == 2 ) {
-
-			if ( type == 'OneClickBuy' ) {
-				$( 'body' ).trigger( 'pagarmeSelectOneClickBuy', [ brand, wrapper ] );
-			} else {
-				brandInput.val( '' );
-				var option = '<option value="">...</option>';
-				$( '[data-element=installments]' ).html( option );
-			}
-		}
-
-		wrapper.find( '[data-element="fields-cc-data"]' )[method]();
-		wrapper.find( '[data-element="save-cc-check"]' )[method]();
-		wrapper.find( '[data-element="enable-multicustomers-check"]' )[method]();
-		wrapper.find( '[data-element="enable-multicustomers-label-card"]' )[method]();
 	};
 
 	Model.fn.hasCardId = function(wrapper) {
