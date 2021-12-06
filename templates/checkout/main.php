@@ -91,6 +91,7 @@ $swal_data   = array(
             _onChangeCreditCard(event)
         });
 
+
         $('form.checkout').find('[data-value]').on('blur', function(event) {
             fillAnotherInput(event)
         });
@@ -181,6 +182,15 @@ $swal_data   = array(
             } else {
                 wrapper.find('[data-element=installments]').html(option);
             }
+        };
+
+        const onSelectOneClickBuy = function(event, brand, wrapper) {
+            const valueInput = wrapper.find('input[data-element=card-order-value]').val();
+            let value = cartTotal;
+            if (typeof(valueInput) === 'string') {
+                value = valueInput;
+            }
+            updateInstallmentsElement(brand, value, wrapper);
         };
 
         const onBlurCardOrderValue = function(event, brand, total, wrapper) {
@@ -835,6 +845,7 @@ $swal_data   = array(
 
         $('body').on('onPagarmeCheckoutFail', error);
         $('body').on('pagarmeBlurCardOrderValue', onBlurCardOrderValue);
+        $('body').on('pagarmeSelectOneClickBuy', onSelectOneClickBuy);
 
         $('body').on('checkout_error', function() {
             swal.close();
