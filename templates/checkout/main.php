@@ -158,7 +158,6 @@ $swal_data   = array(
         const _onBlurCardOrderValue = function(e, useTotal) {
             var option = '<option value="">...</option>';
             var wrapper = $(e.currentTarget).closest('fieldset');
-
             var total = e.target.value;
 
             if (useTotal) {
@@ -168,9 +167,16 @@ $swal_data   = array(
             if (total) {
                 total = total.replace('.', '');
                 total = total.replace(',', '.');
+                let brand = creditCardBrand && creditCardBrand.get(0).getAttribute('brand');
+                if (!creditCardBrand) {
+                    const cardId = wrapper.find('[data-element=choose-credit-card]') &&
+                        wrapper.find('[data-element=choose-credit-card]').get(0).value;
 
-                if (!creditCardBrand) return;
-                const brand = creditCardBrand.get(0).getAttribute('brand');
+                    if (!cardId) return;
+
+                    brand = wrapper.find('[data-element=choose-credit-card]').find("option:selected").attr('data-brand');
+                };
+
                 $('body').trigger("pagarmeBlurCardOrderValue", [brand, total, wrapper]);
             } else {
                 wrapper.find('[data-element=installments]').html(option);
