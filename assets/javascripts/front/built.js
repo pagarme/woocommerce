@@ -2850,7 +2850,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn.addEventListener = function() {
 		if ( this.$el.data( 'type' ) == 2 ) {
 			$( 'body' ).on( 'pagarmeChangeBrand', this.onChangeBrand.bind(this) );
-			$( 'body' ).on( 'pagarmeSelectOneClickBuy', this.onSelectOneClickBuy.bind(this) );
 		}
 
 		$( 'body' ).on( 'pagarmeBlurCardOrderValue', this.onBlurCardOrderValue.bind(this) );
@@ -2868,10 +2867,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		if ( cardNumberLength >= 13 && cardNumberLength <= 19 ) {
 			this.request( brand, this.total, wrapper );
 		}
-	};
-
-	Model.fn.onSelectOneClickBuy = function(event, brand, wrapper) {
-		this.request( brand, this.total, wrapper );
 	};
 
 	Model.fn.onBlurCardOrderValue = function(event, brand, total, wrapper) {

@@ -188,7 +188,7 @@ $swal_data   = array(
             const valueInput = wrapper.find('input[data-element=card-order-value]').val();
             let value = cartTotal;
             if (typeof(valueInput) === 'string') {
-                value = valueInput;
+                value = parseFloat(valueInput.replace(',', '.'));
             }
             updateInstallmentsElement(brand, value, wrapper);
         };
