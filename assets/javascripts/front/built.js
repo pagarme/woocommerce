@@ -2874,6 +2874,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn.request = function(brand, total, wrapper) {
+        return;
 		var storageName = btoa( brand + total );
 		var storage     = sessionStorage.getItem( storageName );
 		var select 		= wrapper.find( '[data-element=installments]' );
