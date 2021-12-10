@@ -15,4 +15,3 @@ services:
     volumes:
       - ./:/app/wp-content/plugins/woo-pagarme-payments
       - ../wordpress/wp-content/
-#      - ../modman:/usr/local/bin/modman

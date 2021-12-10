@@ -2582,7 +2582,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn.addEventListener = function() {
-		// this.$el.on( 'submit', this._onSubmit.bind(this) );
 
 		$('#place_order').on('click', this._onSubmit.bind(this));
 
@@ -2616,7 +2615,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
 				return;
 			}
-			//this.loadSwal();
 		}.bind(this));
 
 		$( 'body' ).on( 'onPagarme2CardsDone', function(){
@@ -2759,17 +2757,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		return isValid;
 	};
-
-	// Model.fn.loadSwal = function() {
-	// 	swal.close();
-    //
-	// 	swal({
-	// 		title             : this.data.swal.title,
-	// 		text              : this.data.swal.text,
-	// 		allowOutsideClick : false,
-	// 		onOpen            : this._onOpenSwal.bind( this )
-	// 	});
-	// };
 
 	Model.fn._onOpenSwal = function () {
 		if (this.lock) {
