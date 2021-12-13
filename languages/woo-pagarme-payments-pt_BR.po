@@ -48,6 +48,10 @@ msgstr "Pedido inválido"
 msgid "Empty fields"
 msgstr "Campos vazios"
 
+#: src/Controller/Checkout.php:63
+msgid "Can't create payment. Please review the information and try again."
+msgstr "Não foi possível realizar o pagamento. Por favor revise os dados e tente novamente."
+
 #: src/Controller/Checkout.php:195
 msgid "The sum of boleto and credit card is less than the total"
 msgstr "A soma do boleto com o cartão é menor do que o total"
@@ -822,9 +826,6 @@ msgstr "Tamanho máximo de <span id='woo-pagarme-payments_max_length_span'>%s</s
 msgid "Name shown to the customer in the checkout page."
 msgstr "Nome mostrado ao cliente na página de checkout."
 
-msgid "Description shown below the title in the checkout page."
-msgstr "Descrição mostrada abaixo do título na página de checkout."
-
 msgid "Integration environment"
 msgstr "Ambiente de integração"
 
@@ -833,6 +834,12 @@ msgstr "Integrar com Pagar.me"
 
 msgid "View Integration"
 msgstr "Visualizar integração"
+
+msgid "2 credit cards"
+msgstr "2 cartões de crédito"
+
+msgid "Credit card and Boleto"
+msgstr "Cartão de crédito e Boleto"
 
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."

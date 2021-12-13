@@ -32,7 +32,7 @@ if (!$cards) {
 
     <?php esc_html_e('Credit cards save', 'woo-pagarme-payments'); ?><br>
 
-    <select name="card_id<?php echo esc_html($suffix); ?>" id="field-choose-card" data-action="select2" data-installments-type="<?php echo intval(Setting::get_instance()->cc_installment_type); ?>" data-element="choose-credit-card">
+    <select name="card_id<?php echo esc_html($suffix); ?>" id="field-choose-card" data-action="select2" data-installments-type="<?php echo intval(Setting::get_instance()->cc_installment_type); ?>" data-element="choose-credit-card" style="font-size: 1.41575em">
         <option value="">
             <?php esc_html_e('Saved credit card', 'woo-pagarme-payments'); ?>
         </option>

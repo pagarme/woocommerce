@@ -38,7 +38,7 @@ class Gateways extends WC_Payment_Gateway
 
         $this->enabled     = $this->get_option('enabled', 'no');
         $this->title       = $this->get_option('title');
-        $this->description = $this->get_option('description');
+        $this->has_fields = true;
 
         if (is_admin()) {
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
@@ -46,6 +46,16 @@ class Gateways extends WC_Payment_Gateway
 
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
         add_action('woocommerce_thankyou_' . $this->id, array($this, 'thank_you_page'));
+    }
+
+    public function payment_fields()
+    {
+        echo (Utils::get_template_as_string(
+            'templates/checkout/main',
+            array(
+                'model'    => $this->model,
+            )
+        ));
     }
 
     /**
@@ -90,7 +100,6 @@ class Gateways extends WC_Payment_Gateway
             'hub_button_integration'            => $this->field_hub_button_integration(),
             'hub_environment'                   => $this->field_hub_environment(),
             'title'                             => $this->field_title(),
-            'description'                       => $this->field_description(),
             'is_gateway_integration_type'       => $this->field_is_gateway_integration_type(),
             'section_payment_settings'          => $this->section_payment_settings(),
             'enable_credit_card'                => $this->field_enable_credit_card(),
@@ -128,11 +137,278 @@ class Gateways extends WC_Payment_Gateway
     public function process_payment($order_id)
     {
         $wc_order = new WC_Order($order_id);
+        $formattedPost['order'] = $order_id;
+        $formattedPost['fields'] = array();
+        $paymentMethod = $_POST['pagarme_payment_method'];
+
+        $formattedPost = $this->formatPOST($formattedPost, $paymentMethod);
+        $_POST = $formattedPost;
+
+        $checkout = new Checkout();
+        $checkout->process_checkout_transparent($wc_order);
 
         return array(
             'result'   => 'success',
-            'redirect' => $wc_order->get_checkout_payment_url(true),
+            'redirect' => $this->get_return_url($wc_order)
         );
+    }
+
+    private function formatPOST($formattedPost, $paymentMethod)
+    {
+        $filteredPost = array_intersect_key($_POST, array_flip(
+            $this->dataToFilterFromPost($paymentMethod)
+        ));
+
+        $formattedPost = $this->addsFilteredDataInFormattedPostArray($filteredPost, $formattedPost);
+
+        $formattedPost = $this->renameFieldsFromFormattedPost($formattedPost, $paymentMethod);
+
+        $formattedPost = $this->formatMulticustomerCardArray($formattedPost);
+
+        return $formattedPost;
+    }
+
+    private function addsFilteredDataInFormattedPostArray($filteredPost, $formattedPost)
+    {
+        foreach ($filteredPost as $key => $value) {
+            array_push($formattedPost['fields'], [
+                "name" => $key,
+                "value" => $value
+            ]);
+        }
+
+        return $formattedPost;
+    }
+
+    private function formatMulticustomerCardArray($formattedPost)
+    {
+        foreach ($formattedPost['fields'] as $fieldsValue) {
+            if (strstr($fieldsValue['name'], 'multicustomer_')) {
+                $formattedPost = $this->addsDataInFormattedPost(
+                    $fieldsValue['value'],
+                    $fieldsValue['name'],
+                    $formattedPost
+                );
+            }
+        }
+
+        return $formattedPost;
+    }
+
+    private function dataToFilterFromPost($paymentMethod)
+    {
+        switch ($paymentMethod) {
+            case 'credit_card':
+                return [
+                    'brand1',
+                    'pagarmetoken1',
+                    'installments_card',
+                    'multicustomer_card',
+                    'pagarme_payment_method',
+                    'enable_multicustomers_card',
+                    'save_credit_card1',
+                    'card_id'
+                ];
+            case '2_cards':
+                return [
+                    'card_order_value',
+                    'brand2',
+                    'pagarmetoken2',
+                    'installments',
+                    'multicustomer_card1',
+                    'card_order_value2',
+                    'brand3',
+                    'pagarmetoken3',
+                    'installments2',
+                    'multicustomer_card2',
+                    'pagarme_payment_method',
+                    'enable_multicustomers_card1',
+                    'enable_multicustomers_card2',
+                    'save_credit_card2',
+                    'save_credit_card3',
+                    'card_id2',
+                    'card_id3'
+                ];
+            case 'billet-and-card':
+                return [
+                    'card_billet_order_value',
+                    'installments3',
+                    'multicustomer_card_billet',
+                    'billet_value',
+                    'brand4',
+                    'pagarmetoken4',
+                    'multicustomer_billet_card',
+                    'pagarme_payment_method',
+                    'enable_multicustomers_billet',
+                    'enable_multicustomers_card',
+                    'save_credit_card4',
+                    'card_id4'
+                ];
+            case 'billet':
+                return [
+                    'multicustomer_billet',
+                    'pagarme_payment_method',
+                    'enable_multicustomers_billet',
+                ];
+            case 'pix':
+                return [
+                    'multicustomer_pix',
+                    'pagarme_payment_method',
+                    'enable_multicustomers_pix',
+                ];
+            default:
+                return $_POST;
+        }
+    }
+
+
+    private function addsDataInFormattedPost(
+        $fieldValue,
+        $fieldValueName,
+        $formattedPost
+    ) {
+        foreach ($fieldValue as $key => $value) {
+            array_push($formattedPost['fields'], [
+                "name" => $fieldValueName . '[' . $key . ']',
+                "value" => $value
+            ]);
+        }
+
+        return $formattedPost;
+    }
+
+    private function renameFieldsFromFormattedPost($formattedPost, $paymentMethod)
+    {
+        foreach ($formattedPost['fields'] as $arrayFieldKey => $field) {
+
+            $formattedPost = $this->applyForAllFields(
+                $field,
+                $formattedPost,
+                $arrayFieldKey
+            );
+
+            if ($paymentMethod == 'credit_card') {
+                $formattedPost = $this->applyForCardCreditField(
+                    $field,
+                    $formattedPost,
+                    $arrayFieldKey
+                );
+            }
+
+            if ($paymentMethod == 'billet-and-card') {
+                $formattedPost = $this->applyForBilletAndCardField(
+                    $field,
+                    $formattedPost,
+                    $arrayFieldKey
+                );
+            }
+
+            if ($paymentMethod == '2_cards') {
+                $formattedPost = $this->applyFor2CardField(
+                    $field,
+                    $formattedPost,
+                    $arrayFieldKey
+                );
+            }
+        }
+
+        return $formattedPost;
+    }
+
+    private function applyForAllFields(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    ) {
+        if (in_array('pagarme_payment_method', $field)) {
+            $field['name'] = 'payment_method';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        return $formattedPost;
+    }
+
+    private function applyForCardCreditField(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    ) {
+
+        $dictionary = [
+            'installments_card' => 'installments',
+            'brand1' => 'brand',
+            'save_credit_card1' => 'save_credit_card'
+        ];
+
+        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+            if (in_array($fieldKey, $field)) {
+                $field['name'] = $formatedPostKey;
+                $formattedPost['fields'][$arrayFieldKey] = $field;
+            }
+        }
+
+        return $formattedPost;
+    }
+
+    private function applyForBilletAndCardField(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    ) {
+
+        $dictionary = [
+            'card_billet_order_value' => 'card_order_value',
+            'multicustomer_card_billet' => 'multicustomer_card',
+            'multicustomer_billet_card' => 'multicustomer_billet',
+            'brand4' => 'brand',
+            'installments3' => 'installments',
+            'pagarmetoken4' => 'pagarmetoken1',
+            'card_id4' => 'card_id',
+            'save_credit_card4' => 'save_credit_card'
+        ];
+
+        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+            if (in_array($fieldKey, $field)) {
+                $field['name'] = $formatedPostKey;
+                $formattedPost['fields'][$arrayFieldKey] = $field;
+            }
+        }
+
+        if (in_array('pagarme_payment_method', $field)) {
+            $field['name'] = 'payment_method';
+            $field['value'] = 'billet_and_card';
+            $formattedPost['fields'][$arrayFieldKey] = $field;
+        }
+
+        return $formattedPost;
+    }
+
+    private function applyFor2CardField(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    ) {
+
+        $dictionary = [
+            'brand2' => 'brand',
+            'brand3' => 'brand2',
+            'pagarmetoken2' => 'pagarmetoken1',
+            'pagarmetoken3' => 'pagarmetoken2',
+            'card_id2' => 'card_id',
+            'card_id3' => 'card_id2',
+            'save_credit_card2' => 'save_credit_card',
+            'save_credit_card3' => 'save_credit_card2'
+
+        ];
+
+        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+            if (in_array($fieldKey, $field)) {
+                $field['name'] = $formatedPostKey;
+                $formattedPost['fields'][$arrayFieldKey] = $field;
+            }
+        }
+
+        return $formattedPost;
     }
 
     public function receipt_page($order_id)
@@ -179,16 +455,6 @@ class Gateways extends WC_Payment_Gateway
             'description' => __('Name shown to the customer in the checkout page.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'default'     => __('Pagar.me', 'woo-pagarme-payments'),
-        );
-    }
-
-    public function field_description()
-    {
-        return array(
-            'title'   => __('Description', 'woo-pagarme-payments'),
-            'description' => __('Description shown below the title in the checkout page.', 'woo-pagarme-payments'),
-            'desc_tip'    => true,
-            'default' => __('Pay with credit card or boleto', 'woo-pagarme-payments'),
         );
     }
 

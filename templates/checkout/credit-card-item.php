@@ -3,6 +3,10 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+global $woocommerce;
+
+$total = $woocommerce->cart->total;
+
 if (!$model->settings->is_active_credit_card()) {
     return;
 }
@@ -19,10 +23,12 @@ $type              = 'card';
 
 ?>
 
-<li>
-    <div id="tab-credit-card" class="payment_box panel entry-content">
+<li class="wc_payment_method pagarme-method">
+    <input id="credit-card" type="radio" class="input-radio" name="pagarme_payment_method" value="credit_card" data-order_button_text>
+    <label for="credit-card"><?php esc_html_e('Credit card', 'woo-pagarme-payments'); ?></label>
+    <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
-        <fieldset class="wc-credit-card-form wc-payment-form">
+        <fieldset id="pagarme-fieldset-credit-card" class="wc-credit-card-form wc-payment-form">
 
             <?php require_once dirname(__FILE__) . '/choose-credit-card.php'; ?>
 
@@ -30,24 +36,27 @@ $type              = 'card';
                 <?php
                 Utils::get_template(
                     'templates/checkout/common-card-item',
-                    compact('wc_order', 'installments_type')
+                    [
+                        'suffix'            => 1,
+                        'installments_type' => $installments_type
+                    ]
                 );
                 ?>
             </div>
 
             <p class="form-row form-row-wide">
 
-                <label for="installments">
+                <label for="installments_card">
                     <?php esc_html_e('Installments quantity', 'woo-pagarme-payments'); ?><span class="required">*</span>
                 </label>
 
-                <select id="installments" <?php echo
-                                            /** phpcs:ignore */
-                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($wc_order->get_total()); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments">
+                <select id="installments_card" <?php echo
+                                                /** phpcs:ignore */
+                                                Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments_card" style="font-size: 1.41575em">
 
                     <?php
                     if ($installments_type != 2) {
-                        Checkouts::render_installments($wc_order);
+                        Checkouts::render_installments($total);
                     } else {
                         echo '<option value="">...</option>';
                     };
@@ -56,13 +65,12 @@ $type              = 'card';
                 </select>
             </p>
 
-            <?php Utils::get_template('templates/checkout/field-save-card'); ?>
+            <?php Utils::get_template('templates/checkout/field-save-card', ['suffix' => 1]); ?>
             <?php Utils::get_template('templates/checkout/field-enable-multicustomers', compact('ref', 'type')); ?>
 
         </fieldset>
 
         <?php Utils::get_template('templates/checkout/multicustomers-form', compact('ref', 'type')); ?>
 
-        <input style="display:none;" data-element="credit-card" data-action="choose-payment" type="radio" name="payment_method" checked="checked" value="credit_card">
     </div>
 </li>

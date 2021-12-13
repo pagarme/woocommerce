@@ -10,6 +10,24 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 		if ( typeof $().select2 === 'function' ) {
 			this.applySelect2();
 		}
+
+        $('div#woo-pagarme-payment-methods > ul li input:first').attr('checked', 'checked');
+        $('div#woo-pagarme-payment-methods > ul li:first').find('.payment_box').show();
+
+        $('input#payment_method_woo-pagarme-payments').click(function() {
+            $('div#woo-pagarme-payment-methods').removeAttr('style');
+
+            $('div#woo-pagarme-payment-methods > ul li').find(function() {
+                $('input:checked:last').nextAll().show();
+            });
+        });
+
+        $('input[name=method]').change(function(e) {
+            e.stopPropagation();
+            var li = e.target.closest('li');
+            $('.pagarme_methods').slideUp('slow');
+            $(li).find('.payment_box').slideDown('slow');
+        });
 	};
 
 	Model.fn.addEventListener = function() {
@@ -56,7 +74,6 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
 				return;
 			}
-			this.loadSwal();
 		}.bind(this));
 
 		$( 'body' ).on( 'onPagarme2CardsDone', function(){
@@ -170,9 +187,9 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 		});
 
 		this.$el.find('[data-element=state]').select2({
-			width: '300px',
+			width: '100%',
 			minimumResultsForSearch: 20
-		})
+		});
 	};
 
 	Model.fn.removeSpecialChars = function() {
@@ -223,17 +240,6 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 		});
 
 		return isValid;
-	};
-
-	Model.fn.loadSwal = function() {
-		swal.close();
-
-		swal({
-			title             : this.data.swal.title,
-			text              : this.data.swal.text,
-			allowOutsideClick : false,
-			onOpen            : this._onOpenSwal.bind( this )
-		});
 	};
 
 	Model.fn._onOpenSwal = function () {
