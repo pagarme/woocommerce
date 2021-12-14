@@ -17,12 +17,18 @@ class Checkouts
 {
     protected static function message_before()
     {
-        echo '<p class="title">' . __('Your transaction has been processed.', 'woo-pagarme-payments') . '</p>';
+        echo wp_kses(
+            '<p class="title">' . __('Your transaction has been processed.', 'woo-pagarme-payments') . '</p>',
+            array('p' => array('class' => true))
+        );
     }
 
     protected static function message_after()
     {
-        echo '<p>' . __('If you have any questions regarding the transaction, please contact us.', 'woo-pagarme-payments') . '</p>';
+        echo wp_kses(
+            '<p>' . __('If you have any questions regarding the transaction, please contact us.', 'woo-pagarme-payments') . '</p>',
+            array('p' => array())
+        );
     }
 
     public static function handle_messages(Order $order)
@@ -273,7 +279,7 @@ class Checkouts
             $transaction = array_shift($charge->transactions);
             $transactionType = $transaction->type;
             if ($transactionType == 'credit_card') :
-                echo '<p>';
+                echo wp_kses('<p>', array('p' => array()));
                 /** phpcs:disable */
                 printf(
                     __('CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments'),
@@ -285,7 +291,7 @@ class Checkouts
                     )  . '</strong>'
                 );
                 /** phpcs:enable */
-                echo '</p>';
+                echo wp_kses('</p>', array('p' => array()));;
             endif;
 
             if ($transactionType == 'boleto') :

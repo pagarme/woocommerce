@@ -21,7 +21,7 @@ class Orders
         $charge_model = new Charge();
 
         if (empty($charges)) {
-            echo '<p>Nenhum registro encontrado.</p>';
+            echo wp_kses('<p>Nenhum registro encontrado.</p>', array('p' => array()));
             return;
         }
 
@@ -96,10 +96,10 @@ class Orders
         <div data-charge-action="<?php echo esc_attr($chargeId); ?>-capture" data-charge="<?php echo esc_attr($chargeId); ?>" class="modal">
             <h2>Pagar.me - Captura</h2>
             <p><b>CHARGE ID: </b><?php echo esc_html($chargeId); ?></p>
-            <p><b>TIPO: </b><?php echo strtoupper($transaction->getTransactionType()->getType()); ?></p>
+            <p><b>TIPO: </b><?php echo esc_html(strtoupper($transaction->getTransactionType()->getType())); ?></p>
             <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></p>
             <p><b>PARCIALMENTE CAPTURADO: </b><?php echo esc_html($paid_amount); ?></p>
-            <p><b>STATUS: </b><?php echo strtoupper($chargeStatus); ?></p>
+            <p><b>STATUS: </b><?php echo esc_html(strtoupper($chargeStatus)); ?></p>
             <p>
                 <label>Valor a ser capturado: R$
                     <input data-element="amount" type="text" />
@@ -138,10 +138,10 @@ class Orders
         <div data-charge-action="<?php echo esc_attr($chargeId); ?>-cancel" data-charge="<?php echo esc_attr($chargeId); ?>" class="modal">
             <h2>Pagar.me - Cancelamento</h2>
             <p><b>CHARGE ID: </b><?php echo esc_html($chargeId); ?></p>
-            <p><b>TIPO: </b><?php echo strtoupper($transaction->getTransactionType()->getType()); ?></p>
+            <p><b>TIPO: </b><?php echo esc_html(strtoupper($transaction->getTransactionType()->getType())); ?></p>
             <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></p>
             <p><b>PARCIALMENTE CANCELADO: </b><?php echo esc_html($canceled_amount ? Utils::format_order_price_to_view($canceled_amount) : '-'); ?></p>
-            <p><b>STATUS: </b><?php echo strtoupper($chargeStatus); ?></p>
+            <p><b>STATUS: </b><?php echo esc_html(strtoupper($chargeStatus)); ?></p>
             <p>
                 <label>Valor a ser cancelado: R$
                     <input data-element="amount" type="text" value="<?php echo esc_attr($value_to_cancel); ?>" <?php echo esc_attr($chargeStatus == 'pending' ? 'disabled=disabled' : ''); ?> />

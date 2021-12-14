@@ -20,7 +20,7 @@ $states       = $wc_countries->get_states('BR');
 ?>
 
 <fieldset data-ref="<?php echo esc_attr($ref); ?>" style="display:none;">
-    <?php echo isset($title) ? "<h4>{$title}</h4>" : ''; ?>
+    <?php echo wp_kses(isset($title) ? "<h4>{$title}</h4>" : "", array('h4' => array())); ?>
     <div class="multicustomer">
         <p class="form-row form-row-wide">
             <label>
