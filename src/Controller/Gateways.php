@@ -139,7 +139,7 @@ class Gateways extends WC_Payment_Gateway
         $wc_order = new WC_Order($order_id);
         $formattedPost['order'] = $order_id;
         $formattedPost['fields'] = array();
-        $paymentMethod = $_POST['pagarme_payment_method'];
+        $paymentMethod = sanitize_text_field($_POST['pagarme_payment_method']);
 
         $formattedPost = $this->formatPOST($formattedPost, $paymentMethod);
         $_POST = $formattedPost;
@@ -172,8 +172,8 @@ class Gateways extends WC_Payment_Gateway
     {
         foreach ($filteredPost as $key => $value) {
             array_push($formattedPost['fields'], [
-                "name" => $key,
-                "value" => $value
+                "name" => sanitize_text_field($key),
+                "value" => sanitize_text_field($value)
             ]);
         }
 
