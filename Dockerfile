@@ -3,4 +3,3 @@ MAINTAINER Open Source Team
 
 COPY . /app/wp-content/plugins/woo-pagarme-payments
 WORKDIR /app
-
