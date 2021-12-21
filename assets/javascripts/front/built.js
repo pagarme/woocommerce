@@ -2567,11 +2567,24 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		if ( typeof $().select2 === 'function' ) {
 			this.applySelect2();
 		}
+
+        $('div#woo-pagarme-payment-methods > ul li input:first').attr('checked', 'checked');
+        $('div#woo-pagarme-payment-methods > ul li:first').find('.payment_box').show();
+
+        $('input#payment_method_woo-pagarme-payments').click(function() {
+            $('div#woo-pagarme-payment-methods').removeAttr('style');
+
+            $('div#woo-pagarme-payment-methods > ul li').find(function() {
+                $('input:checked:last').nextAll().show();
+            });
+        });
+
 	};
 
 	Model.fn.addEventListener = function() {
-		this.$el.on( 'submit', this._onSubmit.bind(this) );
-		this.$el.find( '[data-value]' ).on( 'blur', this.fillAnotherInput.bind(this) );
+
+		$('#place_order').on('click', this._onSubmit.bind(this));
+
 		this.click( 'tab' );
 		this.click( 'choose-payment' );
 
@@ -2580,24 +2593,13 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			this.elements.cardHolderName.on( 'blur', this.removeSpecialChars );
 		}
 
-		if ( this.elements.chooseCreditCard ) {
-			this.elements.chooseCreditCard.on( 'change', this._onChangeCreditCard.bind( this ) );
-		}
-
 		$( '[data-required=true]' ).on( 'keypress', this.setAsValid );
 		$( '[data-required=true]' ).on( 'blur', this.setAsValid );
 
-		if ( this.elements.cardOrderValue ) {
-			this.elements.cardOrderValue.on( 'blur', this._onBlurCardOrderValue.bind( this ) );
-		}
 
 		if ( this.elements.cardNumber ) {
 			this.elements.cardNumber.on( 'keyup', this.updateInstallments );
 			this.elements.cardNumber.on( 'keydown', this.updateInstallments );
-		}
-
-		if ( this.elements.enableMulticustomers ) {
-			this.elements.enableMulticustomers.on( 'click', this.handleMultiCustomers )
 		}
 	};
 
@@ -2613,7 +2615,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 			if ( $( 'input[name=payment_method]' ).val() == '2_cards' ) {
 				return;
 			}
-			this.loadSwal();
 		}.bind(this));
 
 		$( 'body' ).on( 'onPagarme2CardsDone', function(){
@@ -2646,24 +2647,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		forms.attr( 'disabled', true );
 		target.prev().removeAttr( 'disabled' );
-	};
-
-	Model.fn._onBlurCardOrderValue = function(e) {
-		var option  = '<option value="">...</option>';
-		var wrapper = $( e.currentTarget ).closest( 'fieldset' );
-
-		var total = e.target.value;
-
-		if ( total ) {
-			total = total.replace( '.', '' );
-			total = total.replace( ',', '.' );
-
-			var brand = wrapper.find( '[data-element="choose-credit-card"]' ).find( 'option:selected' ).data( 'brand' );
-
-			$( 'body' ).trigger( "pagarmeBlurCardOrderValue", [ brand, total, wrapper ] );
-		} else {
-			wrapper.find( '[data-element=installments]' ).html( option );
-		}
 	};
 
 	Model.fn._done = function(response) {
@@ -2727,9 +2710,9 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		});
 
 		this.$el.find('[data-element=state]').select2({
-			width: '300px',
+			width: '100%',
 			minimumResultsForSearch: 20
-		})
+		});
 	};
 
 	Model.fn.removeSpecialChars = function() {
@@ -2756,13 +2739,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		}
 	};
 
-	Model.fn.handleMultiCustomers = function(e) {
-		var input = $(e.currentTarget);
-		var method = input.is(':checked') ? 'slideDown' : 'slideUp';
-		var target = '[data-ref="' + input.data('target') + '"]';
-		$( target )[method]();
-	}
-
 	Model.fn.validate = function() {
 		var requiredFields = $( '[data-required=true]:visible' )
 		  , isValid = true
@@ -2780,17 +2756,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		});
 
 		return isValid;
-	};
-
-	Model.fn.loadSwal = function() {
-		swal.close();
-
-		swal({
-			title             : this.data.swal.title,
-			text              : this.data.swal.text,
-			allowOutsideClick : false,
-			onOpen            : this._onOpenSwal.bind( this )
-		});
 	};
 
 	Model.fn._onOpenSwal = function () {
@@ -2819,37 +2784,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 				jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
 			}
 		});
-	};
-
-	Model.fn._onChangeCreditCard = function(event) {
-		var select  = $( event.currentTarget );
-		var wrapper = select.closest( 'fieldset' );
-		var method  = event.currentTarget.value.trim() ? 'slideUp': 'slideDown';
-		var type    = method == 'slideUp' ? 'OneClickBuy': 'DefaultBuy';
-		var brandInput = wrapper.find( '[data-pagarmecheckout-element="brand-input"]' );
-
-		$( '#wcmp-checkout-errors' ).hide();
-
-		$( 'body' ).trigger( "onPagarmeCardTypeChange", [ type, wrapper ] );
-
-		var brand = select.find('option:selected').data('brand');
-		brandInput.val(brand);
-
-		if ( select.data( 'installments-type' ) == 2 ) {
-
-			if ( type == 'OneClickBuy' ) {
-				$( 'body' ).trigger( 'pagarmeSelectOneClickBuy', [ brand, wrapper ] );
-			} else {
-				brandInput.val( '' );
-				var option = '<option value="">...</option>';
-				$( '[data-element=installments]' ).html( option );
-			}
-		}
-
-		wrapper.find( '[data-element="fields-cc-data"]' )[method]();
-		wrapper.find( '[data-element="save-cc-check"]' )[method]();
-		wrapper.find( '[data-element="enable-multicustomers-check"]' )[method]();
-		wrapper.find( '[data-element="enable-multicustomers-label-card"]' )[method]();
 	};
 
 	Model.fn.hasCardId = function(wrapper) {
@@ -2881,11 +2815,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	};
 
 	Model.fn.refreshBothInstallmentsSelects = function(event, secondInput){
-		this._onBlurCardOrderValue(event);
 		event.currentTarget = secondInput;
 		event.target = secondInput;
-
-		this._onBlurCardOrderValue(event);
 	};
 
 	Model.fn.refreshCardInstallmentSelect = function(event, secondInput){
@@ -2893,53 +2824,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
 		event.currentTarget = targetInput;
 		event.target = targetInput;
-
-		this._onBlurCardOrderValue(event);
 	}
-
-	Model.fn.fillAnotherInput = function(event) {
-		var input = $(event.currentTarget);
-		var nextIndex = input.data('value') == 2 ? 1 : 2;
-		var nextInput = $('[data-value=' + nextIndex + ']');
-		var value = event.currentTarget.value;
-		var total = parseFloat( this.data.orderTotal );
-
-		if ( ! value ) {
-			return;
-		}
-
-		value = value.replace('.', '');
-		value = parseFloat( value.replace(',', '.') );
-
-		var nextValue = total - value;
-
-		if ( value > total ) {
-			swal({
-				type: 'error',
-				text: 'O valor não pode ser maior que total do pedido!'
-			});
-			input.val('');
-			nextInput.val('');
-			return;
-		}
-
-		nextValue = nextValue.toFixed(2);
-		nextValue = nextValue.replace('.',',');
-
-		value = value.toFixed(2);
-		value = value.replace('.', ',');
-
-		nextInput.val(nextValue);
-		input.val(value);
-
-		if ( this.isTwoCardsPayment(event.target, nextInput[0]) ){
-		    this.refreshBothInstallmentsSelects(event, nextInput[0]);
-		}
-
-		if( this.isBilletAndCardPayment(event.target, nextInput[0]) ){
-		    this.refreshCardInstallmentSelect(event, nextInput[0]);
-		}
-	};
 
 });
 ;MONSTER( 'Pagarme.Components.Installments', function(Model, $, utils) {
@@ -2952,7 +2837,6 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 	Model.fn.addEventListener = function() {
 		if ( this.$el.data( 'type' ) == 2 ) {
 			$( 'body' ).on( 'pagarmeChangeBrand', this.onChangeBrand.bind(this) );
-			$( 'body' ).on( 'pagarmeSelectOneClickBuy', this.onSelectOneClickBuy.bind(this) );
 		}
 
 		$( 'body' ).on( 'pagarmeBlurCardOrderValue', this.onBlurCardOrderValue.bind(this) );
@@ -2972,15 +2856,12 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 		}
 	};
 
-	Model.fn.onSelectOneClickBuy = function(event, brand, wrapper) {
-		this.request( brand, this.total, wrapper );
-	};
-
 	Model.fn.onBlurCardOrderValue = function(event, brand, total, wrapper) {
 		this.request( brand, total, wrapper );
 	};
 
 	Model.fn.request = function(brand, total, wrapper) {
+        return;
 		var storageName = btoa( brand + total );
 		var storage     = sessionStorage.getItem( storageName );
 		var select 		= wrapper.find( '[data-element=installments]' );
@@ -3405,6 +3286,8 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 					return;
 				}
 
+                var form = $('form.checkout');
+                form.submit();
 			},
 			function (error, suffix) {
 				swal.close();

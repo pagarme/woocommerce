@@ -128,6 +128,16 @@ class Core
             true
         );
 
+        if ($type == 'front') {
+            wp_enqueue_script(
+                'sweetalert2',
+                self::plugins_url("assets/javascripts/vendor/sweetalert2.js"),
+                array_merge(array('jquery'), $deps),
+                self::filemtime("assets/javascripts/vendor/sweetalert2.js"),
+                true
+            );
+        }
+
         wp_localize_script(
             $id,
             self::LOCALIZE_SCRIPT_ID,

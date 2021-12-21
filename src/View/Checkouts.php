@@ -17,12 +17,18 @@ class Checkouts
 {
     protected static function message_before()
     {
-        echo '<p class="title">' . __('Your transaction has been processed.', 'woo-pagarme-payments') . '</p>';
+        echo wp_kses(
+            '<p class="title">' . __('Your transaction has been processed.', 'woo-pagarme-payments') . '</p>',
+            array('p' => array('class' => true))
+        );
     }
 
     protected static function message_after()
     {
-        echo '<p>' . __('If you have any questions regarding the transaction, please contact us.', 'woo-pagarme-payments') . '</p>';
+        echo wp_kses(
+            '<p>' . __('If you have any questions regarding the transaction, please contact us.', 'woo-pagarme-payments') . '</p>',
+            array('p' => array())
+        );
     }
 
     public static function handle_messages(Order $order)
@@ -48,6 +54,10 @@ class Checkouts
     public static function billet_message($order)
     {
         $response_data = $order->response_data;
+
+        if (!$response_data) :
+            return self::render_failed_message();
+        endif;
 
         if (is_string($response_data)) {
             $response_data = json_decode($response_data);
@@ -89,8 +99,11 @@ class Checkouts
             $response_data = json_decode($response_data);
         }
 
-        $charges     = $response_data->charges;
-        $charge      = array_shift($charges);
+        $charge = null;
+        if (!empty($response_data)) {
+            $charges = $response_data->charges;
+            $charge  = array_shift($charges);
+        }
 
         ob_start();
 
@@ -104,7 +117,7 @@ class Checkouts
                 __('The status of your transaction is %s.', 'woo-pagarme-payments'),
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($charge->status),
+                        $charge ? ucfirst($charge->status) : 'Failed',
                         'woo-pagarme-payments'
                     )
                 ) . '</strong>'
@@ -131,9 +144,13 @@ class Checkouts
             $response_data = json_decode($response_data);
         }
 
-        $charges           = $response_data->charges;
-        $first_charge      = array_shift($charges);
-        $second_charge     = array_shift($charges);
+        $first_charge = null;
+        $second_charge = null;
+        if (!empty($response_data)) {
+            $charges = $response_data->charges;
+            $first_charge = array_shift($charges);
+            $second_charge = array_shift($charges);
+        }
 
         ob_start();
 
@@ -147,13 +164,13 @@ class Checkouts
                 __('The status of your credit cards transactions are %s and %s', 'woo-pagarme-payments'),
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($first_charge->status),
+                        $first_charge ? ucfirst($first_charge->status) : 'Failed',
                         'woo-pagarme-payments'
                     )
                 ) . '</strong>',
                 '<strong>' . strtoupper(
                     __(
-                        ucfirst($second_charge->status),
+                        $second_charge ? ucfirst($second_charge->status) : 'Failed',
                         'woo-pagarme-payments'
                     )
                 ) . '</strong>'
@@ -176,6 +193,10 @@ class Checkouts
     {
         $response_data = $order->response_data;
 
+        if (!$response_data) :
+            return self::render_failed_message();
+        endif;
+
         if (is_string($response_data)) {
             $response_data = json_decode($response_data);
         }
@@ -191,10 +212,10 @@ class Checkouts
 
     ?>
         <p>
-            <img style="margin: auto;" src="<?php echo $qrCodeUrl; ?>" title="Link to QRCode" />
+            <img style="margin: auto;" src="<?php echo esc_url($qrCodeUrl); ?>" title="Link to QRCode" />
         </p>
 
-        <a id="pagarme-qr-code" rawCode="<?php echo $rawQrCode; ?>" onclick="pagarmeQrCodeCopy()" class="payment-link">
+        <a id="pagarme-qr-code" rawCode="<?php echo esc_attr($rawQrCode); ?>" onclick="pagarmeQrCodeCopy()" class="payment-link">
             <?php _e('Copy Code', 'woo-pagarme-payments'); ?>
         </a>
 
@@ -242,6 +263,11 @@ class Checkouts
     public static function billet_and_card_message($order)
     {
         $response = json_decode($order->response_data);
+
+        if (!$response) :
+            return self::render_failed_message();
+        endif;
+
         $charges = $response->charges;
 
         ob_start();
@@ -253,7 +279,7 @@ class Checkouts
             $transaction = array_shift($charge->transactions);
             $transactionType = $transaction->type;
             if ($transactionType == 'credit_card') :
-                echo '<p>';
+                echo wp_kses('<p>', array('p' => array()));
                 /** phpcs:disable */
                 printf(
                     __('CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments'),
@@ -265,7 +291,7 @@ class Checkouts
                     )  . '</strong>'
                 );
                 /** phpcs:enable */
-                echo '</p>';
+                echo wp_kses('</p>', array('p' => array()));;
             endif;
 
             if ($transactionType == 'boleto') :
@@ -291,6 +317,36 @@ class Checkouts
         return $message;
     }
 
+    private static function render_failed_message()
+    {
+        ob_start();
+
+        self::message_before();
+        ?>
+        <p>
+            <?php
+            printf(
+                __('The status of your transaction is %s.', 'woo-pagarme-payments'),
+                '<strong>' . strtoupper(
+                    __(
+                        'Failed',
+                        'woo-pagarme-payments'
+                    )
+                ) . '</strong>'
+            );
+            ?>
+        </p>
+
+    <?php
+        echo self::message_after();
+
+        $message = ob_get_contents();
+
+        ob_end_clean();
+
+        return $message;
+    }
+
     public static function render_payment_details($order_id)
     {
         $order   = new Order($order_id);
@@ -306,7 +362,7 @@ class Checkouts
 
         $model_charge = new Charge();
 
-        ?>
+    ?>
         <section>
             <h2><?php _e('Payment Data', 'woo-pagarme-payments'); ?></h2>
             <table class="woocommerce-table">
@@ -320,12 +376,11 @@ class Checkouts
         <?php
     }
 
-    public static function render_installments($wc_order)
+    public static function render_installments($total)
     {
         $gateway = new Gateway();
-        $total   = $wc_order->get_total();
 
-        echo $gateway->get_installments_by_type($total);
+        echo esc_html($gateway->get_installments_by_type($total));
     }
 
     private static function get_payment_detail($charge, Charge $model_charge)
@@ -344,26 +399,26 @@ class Checkouts
             <tr>
                 <th>Link:</th>
                 <td>
-                    <a href="<?php echo $charge->last_transaction->pdf; ?>">
-                        <?php echo $charge->last_transaction->pdf; ?>
+                    <a href="<?php echo esc_url($charge->last_transaction->pdf); ?>">
+                        <?php echo esc_url($charge->last_transaction->pdf); ?>
                     </a>
                 </td>
             </tr>
             <tr>
                 <th><?php _e('Line Code', 'woo-pagarme-payments'); ?>:</th>
-                <td><?php echo $charge->last_transaction->line; ?></td>
+                <td><?php echo esc_html($charge->last_transaction->line); ?></td>
             </tr>
             <tr>
                 <th><?php _e('Due at', 'woo-pagarme-payments'); ?>:</th>
-                <td><?php echo $due_at->format('d/m/Y'); ?></td>
+                <td><?php echo esc_html($due_at->format('d/m/Y')); ?></td>
             </tr>
             <tr>
                 <th><?php _e('Paid value', 'woo-pagarme-payments'); ?>:</th>
-                <td><?php echo Utils::format_order_price_to_view($charge->amount); ?></td>
+                <td><?php echo esc_html(Utils::format_order_price_to_view($charge->amount)); ?></td>
             </tr>
             <tr>
                 <th><?php _e('Status', 'woo-pagarme-payments'); ?>:</th>
-                <td><?php echo $model_charge->get_i18n_status($charge->status); ?></td>
+                <td><?php echo esc_html($model_charge->get_i18n_status($charge->status)); ?></td>
             </tr>
             <tr>
                 <td></td>
@@ -386,29 +441,29 @@ class Checkouts
             </tr>
             <tr>
                 <th><?php _e('Card Holder Name', 'woo-pagarme-payments'); ?>:</th>
-                <td><?php echo $charge->last_transaction->card->holder_name; ?></td>
+                <td><?php echo esc_html($charge->last_transaction->card->holder_name); ?></td>
             </tr>
             <tr>
                 <th><?php _e('Card Brand', 'woo-pagarme-payments'); ?>:</th>
-                <td><?php echo $charge->last_transaction->card->brand; ?></td>
+                <td><?php echo esc_html($charge->last_transaction->card->brand); ?></td>
             </tr>
             <tr>
                 <th><?php _e('Card number', 'woo-pagarme-payments'); ?>:</th>
                 <td>
-                    **** **** **** <?php echo $charge->last_transaction->card->last_four_digits; ?>
+                    **** **** **** <?php echo esc_html($charge->last_transaction->card->last_four_digits); ?>
                 </td>
             </tr>
             <tr>
                 <th><?php _e('Installments', 'woo-pagarme-payments'); ?>:</th>
-                <td><?php echo $charge->last_transaction->installments; ?></td>
+                <td><?php echo esc_html($charge->last_transaction->installments); ?></td>
             </tr>
             <tr>
                 <th><?php _e('Paid value', 'woo-pagarme-payments'); ?>:</th>
-                <td><?php echo Utils::format_order_price_to_view($charge->amount); ?></td>
+                <td><?php echo esc_html(Utils::format_order_price_to_view($charge->amount)); ?></td>
             </tr>
             <tr>
                 <th><?php _e('Status', 'woo-pagarme-payments'); ?>:</th>
-                <td><?php echo $model_charge->get_i18n_status($charge->status); ?></td>
+                <td><?php echo esc_html($model_charge->get_i18n_status($charge->status)); ?></td>
             </tr>
             <tr>
                 <td></td>

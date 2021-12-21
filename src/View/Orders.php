@@ -21,7 +21,7 @@ class Orders
         $charge_model = new Charge();
 
         if (empty($charges)) {
-            echo '<p>Nenhum registro encontrado.</p>';
+            echo wp_kses('<p>Nenhum registro encontrado.</p>', array('p' => array()));
             return;
         }
 
@@ -62,18 +62,18 @@ class Orders
                             $refunded_amount = !empty($charge->getRefundedAmount()) ? Utils::format_order_price_to_view($charge->getRefundedAmount()) : ' - ';
 
                             ?>
-                            <td><?php echo $chargeId ?></td>
-                            <td><?php echo strtoupper($transaction->getTransactionType()->getType()); ?></td>
-                            <td><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></td>
-                            <td><?php echo $paid_amount; ?></td>
-                            <td><?php echo $canceled_amount; ?></td>
-                            <td><?php echo $refunded_amount; ?></td>
-                            <td><?php echo strtoupper($chargeStatus); ?></td>
+                            <td><?php echo esc_html($chargeId); ?></td>
+                            <td><?php echo esc_html(strtoupper($transaction->getTransactionType()->getType())); ?></td>
+                            <td><?php echo esc_html(Utils::format_order_price_to_view($charge->getAmount())); ?></td>
+                            <td><?php echo esc_html($paid_amount); ?></td>
+                            <td><?php echo esc_html($canceled_amount); ?></td>
+                            <td><?php echo esc_html($refunded_amount); ?></td>
+                            <td><?php echo esc_html(strtoupper($chargeStatus)); ?></td>
                             <td style="width:150px; padding-top:12px; text-align:center;">
-                                <button data-type="cancel" data-ref="<?php echo $chargeId ?>" <?php echo !$charge_model->is_allowed_cancel($charge) ? 'disabled=disabled' : ''; ?> class="button-primary">Cancelar</button>
+                                <button data-type="cancel" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr(!$charge_model->is_allowed_cancel($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Cancelar</button>
 
                                 <?php if ($transaction->getTransactionType()->getType() == 'credit_card') : ?>
-                                    <button data-type="capture" data-ref="<?php echo $chargeId ?>" <?php echo !$charge_model->is_allowed_capture($charge) ? 'disabled=disabled' : ''; ?> class="button-primary">Capturar</button>
+                                    <button data-type="capture" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr($charge_model->is_allowed_capture($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Capturar</button>
                                 <?php endif; ?>
                             </td>
                             <?php self::render_capture_modal($charge, $transaction); ?>
@@ -93,13 +93,13 @@ class Orders
         $chargeStatus = $charge->getStatus()->getStatus();
 
     ?>
-        <div data-charge-action="<?php echo $chargeId ?>-capture" data-charge="<?php echo $chargeId ?>" class="modal">
+        <div data-charge-action="<?php echo esc_attr($chargeId); ?>-capture" data-charge="<?php echo esc_attr($chargeId); ?>" class="modal">
             <h2>Pagar.me - Captura</h2>
-            <p><b>CHARGE ID: </b><?php echo $chargeId ?></p>
-            <p><b>TIPO: </b><?php echo strtoupper($transaction->getTransactionType()->getType()); ?></p>
+            <p><b>CHARGE ID: </b><?php echo esc_html($chargeId); ?></p>
+            <p><b>TIPO: </b><?php echo esc_html(strtoupper($transaction->getTransactionType()->getType())); ?></p>
             <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></p>
-            <p><b>PARCIALMENTE CAPTURADO: </b><?php echo $paid_amount; ?></p>
-            <p><b>STATUS: </b><?php echo strtoupper($chargeStatus); ?></p>
+            <p><b>PARCIALMENTE CAPTURADO: </b><?php echo esc_html($paid_amount); ?></p>
+            <p><b>STATUS: </b><?php echo esc_html(strtoupper($chargeStatus)); ?></p>
             <p>
                 <label>Valor a ser capturado: R$
                     <input data-element="amount" type="text" />
@@ -135,16 +135,16 @@ class Orders
         }
 
     ?>
-        <div data-charge-action="<?php echo $chargeId ?>-cancel" data-charge="<?php echo $chargeId ?>" class="modal">
+        <div data-charge-action="<?php echo esc_attr($chargeId); ?>-cancel" data-charge="<?php echo esc_attr($chargeId); ?>" class="modal">
             <h2>Pagar.me - Cancelamento</h2>
-            <p><b>CHARGE ID: </b><?php echo $chargeId ?></p>
-            <p><b>TIPO: </b><?php echo strtoupper($transaction->getTransactionType()->getType()); ?></p>
+            <p><b>CHARGE ID: </b><?php echo esc_html($chargeId); ?></p>
+            <p><b>TIPO: </b><?php echo esc_html(strtoupper($transaction->getTransactionType()->getType())); ?></p>
             <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></p>
-            <p><b>PARCIALMENTE CANCELADO: </b><?php echo $canceled_amount ? Utils::format_order_price_to_view($canceled_amount) : '-'; ?></p>
-            <p><b>STATUS: </b><?php echo strtoupper($chargeStatus); ?></p>
+            <p><b>PARCIALMENTE CANCELADO: </b><?php echo esc_html($canceled_amount ? Utils::format_order_price_to_view($canceled_amount) : '-'); ?></p>
+            <p><b>STATUS: </b><?php echo esc_html(strtoupper($chargeStatus)); ?></p>
             <p>
                 <label>Valor a ser cancelado: R$
-                    <input data-element="amount" type="text" value="<?php echo $value_to_cancel; ?>" <?php echo $chargeStatus == 'pending' ? 'disabled=disabled' : ''; ?> />
+                    <input data-element="amount" type="text" value="<?php echo esc_attr($value_to_cancel); ?>" <?php echo esc_attr($chargeStatus == 'pending' ? 'disabled=disabled' : ''); ?> />
                 </label>
             </p>
             <p>
