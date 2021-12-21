@@ -60,13 +60,13 @@ $ref2              = sha1(random_int(1, 1000));
 
                 <select id="installments" <?php echo
                                             /** phpcs:ignore */
-                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments" style="font-size: 1.41575em">
+                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo esc_attr(intval($installments_type)); ?>" data-action="select2" data-required="true" data-element="installments" name="installments" style="font-size: 1.41575em">
 
                     <?php
                     if ($installments_type != 2) {
                         Checkouts::render_installments($total);
                     } else {
-                        echo '<option value="">...</option>';
+                        echo wp_kses('<option value="">...</option>', array('option' => array('value' => true)));
                     };
                     ?>
 
@@ -130,13 +130,13 @@ $ref2              = sha1(random_int(1, 1000));
 
                 <select id="installments2" <?php echo
                                             /** phpcs:ignore */
-                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments2" style="font-size: 1.41575em">
+                                            Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo esc_attr(intval($installments_type)); ?>" data-action="select2" data-required="true" data-element="installments" name="installments2" style="font-size: 1.41575em">
 
                     <?php
                     if ($installments_type != 2) {
                         Checkouts::render_installments($total);
                     } else {
-                        echo '<option value="">...</option>';
+                        echo wp_kses('<option value="">...</option>', array('option' => array('value' => true)));;
                     };
                     ?>
 

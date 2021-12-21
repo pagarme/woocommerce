@@ -232,7 +232,7 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 			var field = $( item );
 			if ( ! $.trim( field.val() ) ) {
 				if ( field.attr( 'id' ) == 'installments' ) {
-					field = field.next(); //Select2 span
+					field = field.next();
 				}
 				field.addClass( 'invalid' );
 				isValid = false;

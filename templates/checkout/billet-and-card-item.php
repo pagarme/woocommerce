@@ -85,13 +85,13 @@ $ref_card          = sha1(random_int(1, 1000));
                     <?php esc_html_e('Installments quantity', 'woo-pagarme-payments'); ?><span class="required">*</span>
                 </label>
 
-                <select id="installments3" <?php /*phpcs:ignore*/ echo Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo intval($installments_type); ?>" data-action="select2" data-required="true" data-element="installments" name="installments3" style="font-size: 1.41575em">
+                <select id="installments3" <?php /*phpcs:ignore*/ echo Utils::get_component('installments'); ?> data-total="<?php echo esc_html($total); ?>" data-type="<?php echo esc_attr(intval($installments_type)); ?>" data-action="select2" data-required="true" data-element="installments" name="installments3" style="font-size: 1.41575em">
 
                     <?php
                     if ($installments_type != 2) {
                         Checkouts::render_installments($total);
                     } else {
-                        echo '<option value="">...</option>';
+                        echo wp_kses('<option value="">...</option>', array('option' => array('value' => true)));;
                     };
                     ?>
 

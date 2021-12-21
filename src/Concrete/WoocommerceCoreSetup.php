@@ -2,8 +2,6 @@
 
 namespace Woocommerce\Pagarme\Concrete;
 
-require_once WP_PLUGIN_DIR . '/woo-pagarme-payments/constants.php';
-
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup;
 use Pagarme\Core\Kernel\Aggregates\Configuration;
 use Pagarme\Core\Kernel\Factories\ConfigurationFactory;

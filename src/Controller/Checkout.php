@@ -41,7 +41,7 @@ class Checkout
             wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
         }
 
-        $fields = $this->prepare_fields($_POST['fields']);
+        $fields = $this->prepare_fields();
 
         if (empty($fields)) {
             wp_send_json_error(__('Empty fields', 'woo-pagarme-payments'));
@@ -86,7 +86,7 @@ class Checkout
         // TODO: get installments from core's installment service;
         $html    = $gateway->get_installments_by_type($total, $flag);
 
-        echo $html;
+        echo wp_kses_no_null($html);
 
         exit();
     }
@@ -138,15 +138,15 @@ class Checkout
         }
     }
 
-    private function prepare_fields($form_data)
+    private function prepare_fields()
     {
-        if (empty($form_data)) {
+        if (empty($_POST['fields'])) {
             return false;
         }
 
         $fields = array();
 
-        foreach ($form_data as $data) {
+        foreach ($_POST['fields'] as $data) {
             if (!isset($data['name']) || !isset($data['value'])) {
                 continue;
             }
@@ -155,17 +155,20 @@ class Checkout
                 continue;
             }
 
-            $fields[$data['name']] = Utils::rm_tags($data['value'], true);
+            $name = sanitize_text_field($data['name']);
+            $value = sanitize_text_field($data['value']);
 
-            if ($data['name'] == 'card_number' || $data['name'] == 'card_number2') {
-                $fields[$data['name']] = Utils::format_document($data['value']);
+            $fields[$name] = Utils::rm_tags($value, true);
+
+            if ($name == 'card_number' || $name == 'card_number2') {
+                $fields[$name] = Utils::format_document($value);
             }
 
-            if ($data['name'] == 'card_expiry') {
+            if ($name == 'card_expiry') {
                 $this->prepare_expiry_field($data, $fields);
             }
 
-            if ($data['name'] == 'card_expiry2') {
+            if ($name == 'card_expiry2') {
                 $this->prepare_expiry_field($data, $fields, 2);
             }
         }

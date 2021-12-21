@@ -31,8 +31,8 @@ $setting = Setting::get_instance();
         <label for="card-number"><?php esc_html_e('Card number', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
 
         <input id="card-number" data-element="pagarme-card-number" class="input-text wc-credit-card-form-card-number pagarme-card-form-card-number" data-mask="0000000000000000000" placeholder="•••• •••• •••• ••••" data-required="true" data-pagarmecheckout-element-<?php echo !$suffix ? 1 : esc_html($suffix); ?>="number" style="background-image: none">
-        <input type="hidden" name="brand<?php echo esc_html($suffix); ?>" data-pagarmecheckout-element-<?php echo !$suffix ? 1 : esc_html($suffix); ?>="brand-input" />
-        <span name="brand-image-<?php echo !$suffix ? 1 : esc_html($suffix); ?>" pagarme-suffix=<?php echo $suffix; ?> data-pagarmecheckout-element-<?php echo !$suffix ? 1 : esc_html($suffix); ?>="brand" data-pagarmecheckout-brand-image-<?php echo !$suffix ? 1 : esc_html($suffix); ?> data-pagarmecheckout-brand-<?php echo !$suffix ? 1 : esc_html($suffix); ?>></span>
+        <input type="hidden" name="brand<?php echo esc_attr($suffix); ?>" data-pagarmecheckout-element-<?php echo !$suffix ? 1 : esc_html($suffix); ?>="brand-input" />
+        <span name="brand-image-<?php echo esc_attr(!$suffix ? 1 : $suffix); ?>" pagarme-suffix=<?php echo esc_attr($suffix); ?> data-pagarmecheckout-element-<?php echo !$suffix ? 1 : esc_html($suffix); ?>="brand" data-pagarmecheckout-brand-image-<?php echo !$suffix ? 1 : esc_html($suffix); ?> data-pagarmecheckout-brand-<?php echo !$suffix ? 1 : esc_html($suffix); ?>></span>
     </p>
 
     <p class="form-row form-row-first">
