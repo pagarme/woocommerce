@@ -76,7 +76,7 @@ class Orders
                                 <button data-type="cancel" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr(!$charge_model->is_allowed_cancel($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Cancelar</button>
 
                                 <?php if ($transaction->getTransactionType()->getType() == 'credit_card') : ?>
-                                    <button data-type="capture" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr($charge_model->is_allowed_capture($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Capturar</button>
+                                    <button data-type="capture" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr(!$charge_model->is_allowed_capture($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Capturar</button>
                                 <?php endif; ?>
                             </td>
                             <?php self::render_capture_modal($charge, $transaction); ?>
