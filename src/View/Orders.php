@@ -64,16 +64,19 @@ class Orders
                             ?>
                             <td><?php echo esc_html($chargeId); ?></td>
                             <td><?php echo esc_html(strtoupper($transaction->getTransactionType()->getType())); ?></td>
-                            <td><?php echo esc_html(Utils::format_order_price_to_view($charge->getAmount())); ?></td>
-                            <td><?php echo esc_html($paid_amount); ?></td>
-                            <td><?php echo esc_html($canceled_amount); ?></td>
-                            <td><?php echo esc_html($refunded_amount); ?></td>
+                            <td><?php echo wp_kses(Utils::format_order_price_to_view($charge->getAmount()), ['span' => array('class' => true)]); ?></td>
+                            <td><?php echo wp_kses($paid_amount, ['span' => array('class' => true)]);
+                                ?></td>
+                            <td><?php echo wp_kses($canceled_amount, ['span' => array('class' => true)]);
+                                ?></td>
+                            <td><?php echo wp_kses($refunded_amount, ['span' => array('class' => true)]);
+                                ?></td>
                             <td><?php echo esc_html(strtoupper($chargeStatus)); ?></td>
                             <td style="width:150px; padding-top:12px; text-align:center;">
                                 <button data-type="cancel" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr(!$charge_model->is_allowed_cancel($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Cancelar</button>
 
                                 <?php if ($transaction->getTransactionType()->getType() == 'credit_card') : ?>
-                                    <button data-type="capture" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr($charge_model->is_allowed_capture($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Capturar</button>
+                                    <button data-type="capture" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr(!$charge_model->is_allowed_capture($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Capturar</button>
                                 <?php endif; ?>
                             </td>
                             <?php self::render_capture_modal($charge, $transaction); ?>
