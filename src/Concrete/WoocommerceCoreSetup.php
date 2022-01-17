@@ -252,6 +252,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $cardConfigs = [];
 
         foreach ($brands as $brand) {
+            $brand = strtolower($brand);
             $brandMethod = $brand;
 
             if ($brandMethod == '') {
