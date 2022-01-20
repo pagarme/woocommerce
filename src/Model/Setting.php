@@ -50,7 +50,7 @@ class Setting
         'cc_operation_type'                 => array(),
         'cc_flags'                          => array(),
         'cc_allow_save'                     => array(),
-        'cc_installment_type'               => array(),
+        'cc_installment_type'               => ['sanitize' => 'intval'],
         'cc_installments_maximum'           => array(),
         'cc_installments_without_interest'  => array(),
         'cc_installments_interest'          => array(),

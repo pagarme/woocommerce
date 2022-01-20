@@ -64,16 +64,19 @@ class Orders
                             ?>
                             <td><?php echo esc_html($chargeId); ?></td>
                             <td><?php echo esc_html(strtoupper($transaction->getTransactionType()->getType())); ?></td>
-                            <td><?php echo esc_html(Utils::format_order_price_to_view($charge->getAmount())); ?></td>
-                            <td><?php echo esc_html($paid_amount); ?></td>
-                            <td><?php echo esc_html($canceled_amount); ?></td>
-                            <td><?php echo esc_html($refunded_amount); ?></td>
+                            <td><?php echo wp_kses(Utils::format_order_price_to_view($charge->getAmount()), ['span' => array('class' => true)]); ?></td>
+                            <td><?php echo wp_kses($paid_amount, ['span' => array('class' => true)]);
+                                ?></td>
+                            <td><?php echo wp_kses($canceled_amount, ['span' => array('class' => true)]);
+                                ?></td>
+                            <td><?php echo wp_kses($refunded_amount, ['span' => array('class' => true)]);
+                                ?></td>
                             <td><?php echo esc_html(strtoupper($chargeStatus)); ?></td>
                             <td style="width:150px; padding-top:12px; text-align:center;">
                                 <button data-type="cancel" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr(!$charge_model->is_allowed_cancel($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Cancelar</button>
 
                                 <?php if ($transaction->getTransactionType()->getType() == 'credit_card') : ?>
-                                    <button data-type="capture" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr($charge_model->is_allowed_capture($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Capturar</button>
+                                    <button data-type="capture" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr(!$charge_model->is_allowed_capture($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Capturar</button>
                                 <?php endif; ?>
                             </td>
                             <?php self::render_capture_modal($charge, $transaction); ?>
@@ -98,7 +101,7 @@ class Orders
             <p><b>CHARGE ID: </b><?php echo esc_html($chargeId); ?></p>
             <p><b>TIPO: </b><?php echo esc_html(strtoupper($transaction->getTransactionType()->getType())); ?></p>
             <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></p>
-            <p><b>PARCIALMENTE CAPTURADO: </b><?php echo esc_html($paid_amount); ?></p>
+            <p><b>PARCIALMENTE CAPTURADO: </b><?php echo wp_kses($paid_amount, ['span' => array('class' => true)]); ?></p>
             <p><b>STATUS: </b><?php echo esc_html(strtoupper($chargeStatus)); ?></p>
             <p>
                 <label>Valor a ser capturado: R$
@@ -118,6 +121,7 @@ class Orders
         $canceled_amount = !empty($charge->getCanceledAmount()) ? $charge->getCanceledAmount() : 0;
         $refunded_amount = !empty($charge->getRefundedAmount()) ? $charge->getRefundedAmount() : 0;
         $paid_amount     = !empty($charge->getPaidAmount()) ? $charge->getPaidAmount() : 0;
+
         $value_to_cancel = $charge->getAmount();
         $chargeId = $charge->getPagarmeId()->getValue();
         $chargeStatus = $charge->getStatus()->getStatus();
@@ -134,13 +138,14 @@ class Orders
             $value_to_cancel = max(0, $paid_amount - $refunded_amount);
         }
 
+        $canceled_amount = !empty($canceled_amount) ? Utils::format_order_price_to_view($canceled_amount) : '-';
     ?>
         <div data-charge-action="<?php echo esc_attr($chargeId); ?>-cancel" data-charge="<?php echo esc_attr($chargeId); ?>" class="modal">
             <h2>Pagar.me - Cancelamento</h2>
             <p><b>CHARGE ID: </b><?php echo esc_html($chargeId); ?></p>
             <p><b>TIPO: </b><?php echo esc_html(strtoupper($transaction->getTransactionType()->getType())); ?></p>
             <p><b>VALOR TOTAL: </b><?php echo Utils::format_order_price_to_view($charge->getAmount()); ?></p>
-            <p><b>PARCIALMENTE CANCELADO: </b><?php echo esc_html($canceled_amount ? Utils::format_order_price_to_view($canceled_amount) : '-'); ?></p>
+            <p><b>PARCIALMENTE CANCELADO: </b><?php echo wp_kses($canceled_amount, ['span' => array('class' => true)]); ?></p>
             <p><b>STATUS: </b><?php echo esc_html(strtoupper($chargeStatus)); ?></p>
             <p>
                 <label>Valor a ser cancelado: R$
