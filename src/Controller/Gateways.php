@@ -901,7 +901,7 @@ class Gateways extends WC_Payment_Gateway
         <tr valign="top">
             <th scope="row" class="titledesc">
                 <label for="<?php echo esc_attr($field_key); ?>">
-                    <?php echo esc_html($this->get_tooltip_html($data)); ?>
+                    <?php echo wp_kses($this->get_tooltip_html($data), ['span' => array('class' => true, 'data-tip' => true)]); ?>
                     <?php echo esc_attr($data["title"]); ?>
                 </label>
             </th>
