@@ -658,10 +658,10 @@ class Gateways extends WC_Payment_Gateway
             'type'              => 'text',
             'description'       => __('Interest rate applied starting with the first installment with interest.', 'woo-pagarme-payments'),
             'desc_tip'          => true,
-            'placeholder'       => '0,00',
+            'placeholder'       => '0.00',
             'custom_attributes' => array(
                 'data-field'        => 'installments-interest',
-                'data-mask'         => '##0,00',
+                'data-mask'         => '##0.00',
                 'data-mask-reverse' => 'true',
             ),
         );
@@ -671,10 +671,10 @@ class Gateways extends WC_Payment_Gateway
             'type'              => 'text',
             'description'       => __('Interest rate added for each installment with interest.', 'woo-pagarme-payments'),
             'desc_tip'          => true,
-            'placeholder'       => '0,00',
+            'placeholder'       => '0.00',
             'custom_attributes' => array(
                 'data-field'        => 'installments-interest-increase',
-                'data-mask'         => '##0,00',
+                'data-mask'         => '##0.00',
                 'data-mask-reverse' => 'true',
             ),
         );
