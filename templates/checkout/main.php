@@ -418,12 +418,15 @@ $swal_data   = array(
                 prop = fields[i].getAttribute('data-pagarmecheckout-element-' + suffix);
                 if (prop === 'exp_date') {
                     var sep = fields[i].getAttribute('data-pagarmecheckout-separator') ? fields[i].getAttribute('data-pagarmecheckout-separator') : '/';
-                    var values = fields[i].value.split(sep);
+                    var values = fields[i].value.replace(/\s/g, '').split(sep);
                     obj['exp_month'] = values[0];
                     obj['exp_year'] = values[1];
                 } else {
                     key = fields[i].value;
 
+                    if (prop == 'number') {
+                        key = key.replace(/\s/g, '');
+                    }
                     if (prop == 'brand') {
                         key = fields[i].getAttribute('data-pagarmecheckout-brand' + suffix);
                     }
@@ -825,8 +828,8 @@ $swal_data   = array(
         };
 
         function addsMask() {
-            $('.pagarme-card-form-card-number').mask('0000000000000000');
-            $('.pagarme-card-form-card-expiry').mask('00/00');
+            $('.pagarme-card-form-card-number').mask('0000 0000 0000 0000');
+            $('.pagarme-card-form-card-expiry').mask('00 / 00');
             $('.pagarme-card-form-card-cvc').mask('0000');
 
             $('#card-order-value').mask('#.##0,00', {
