@@ -340,9 +340,9 @@ class Gateways extends WC_Payment_Gateway
             'save_credit_card1' => 'save_credit_card'
         ];
 
-        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+        foreach ($dictionary as $fieldKey => $formattedPostKey) {
             if (in_array($fieldKey, $field)) {
-                $field['name'] = $formatedPostKey;
+                $field['name'] = $formattedPostKey;
                 $formattedPost['fields'][$arrayFieldKey] = $field;
             }
         }
@@ -367,9 +367,9 @@ class Gateways extends WC_Payment_Gateway
             'save_credit_card4' => 'save_credit_card'
         ];
 
-        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+        foreach ($dictionary as $fieldKey => $formattedPostKey) {
             if (in_array($fieldKey, $field)) {
-                $field['name'] = $formatedPostKey;
+                $field['name'] = $formattedPostKey;
                 $formattedPost['fields'][$arrayFieldKey] = $field;
             }
         }
@@ -401,9 +401,9 @@ class Gateways extends WC_Payment_Gateway
 
         ];
 
-        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+        foreach ($dictionary as $fieldKey => $formattedPostKey) {
             if (in_array($fieldKey, $field)) {
-                $field['name'] = $formatedPostKey;
+                $field['name'] = $formattedPostKey;
                 $formattedPost['fields'][$arrayFieldKey] = $field;
             }
         }
