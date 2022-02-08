@@ -58,9 +58,7 @@ $swal_data   = array(
 </ul>
 
 <script type="application/javascript">
-    jQuery(function($) {
-        var ajaxUrl = "<?= admin_url('admin-ajax.php'); ?>";
-        var cartTotal = <?= WC()->cart->total ?>;
-    });
+    var ajaxUrl = "<?= admin_url('admin-ajax.php'); ?>";
+    var cartTotal = <?= WC()->cart->total ?>;
 </script>
 <script src="<?= esc_url(Core::plugins_url('assets/javascripts/front/main.js')); ?>" type="application/javascript"> </script>
