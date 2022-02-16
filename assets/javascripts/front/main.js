@@ -227,6 +227,7 @@ jQuery(function ($) {
 
         e.preventDefault();
         e.stopPropagation();
+        
         jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
         if (isBilletOrPix()) {
@@ -247,7 +248,6 @@ jQuery(function ($) {
         return $('input[name=pagarme_payment_method]:checked').get(0).value === 'billet' ||
             $('input[name=pagarme_payment_method]:checked').get(0).value === 'pix' ? true : false;
     }
-
 
     const clearTokens = function () {
         const possibleSuffixes = 5;
