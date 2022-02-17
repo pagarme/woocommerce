@@ -221,28 +221,33 @@ jQuery(function ($) {
     });
 
     $('#place_order').on('click', function (e) {
+        if (!$('input#payment_method_woo-pagarme-payments').is(":checked")) {
+            return submitForm(e);
+        }
+
         e.preventDefault();
         e.stopPropagation();
-
+        
         jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
-
-        if ($('input[name=pagarme_payment_method]:checked').get(0).value === 'billet' ||
-            $('input[name=pagarme_payment_method]:checked').get(0).value === 'pix') {
+        if (isBilletOrPix()) {
             swal({
                 title: 'Aguarde...',
                 text: 'Nós estamos processando sua requisição.',
                 allowOutsideClick: false
             });
-
             swal.showLoading();
-
             return submitForm();
         }
 
         clearTokens();
         onSubmit(e);
     });
+
+    const isBilletOrPix = function () {
+        return $('input[name=pagarme_payment_method]:checked').get(0).value === 'billet' ||
+            $('input[name=pagarme_payment_method]:checked').get(0).value === 'pix' ? true : false;
+    }
 
     const clearTokens = function () {
         const possibleSuffixes = 5;
