@@ -1,43 +1,38 @@
-# Pagar.me módulo para WooCommerce #
-**Contributors:** [Pagar.me](https://profiles.wordpress.org/pagarme)
-**Tags:** ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, pagarme, payments, creditcard
-**Requires at least:** 5.0
-**Tested up to:** 5.7
-**Stable tag:** 2.0.4
-**Requires PHP:** 7.1
-**License:** MIT
-**License URI:** https://github.com/pagarme/woocommerce/blob/master/LICENSE
+# WooCommerce/Pagar.me Integration module
+This is the official WooCommerce module for Pagar.me integration
 
-Módulo de integração da Pagar.me com o WooCommerce. Aceite pagamentos de cartão de crédito, boleto, multimeios e aumente a sua conversão.
+# Documentation
+Refer to [module documentation](https://github.com/pagarme/woocommerce/wiki)
 
-## Descrição ##
+### Method 1 - Upload Zip
+* Upload [zip file](https://github.com/pagarme/woocommerce/releases) in wordpress
+* Activate plugin
 
-A inteligência do seu pagamento - Soluções focadas em aumentar sua conversão!
+### Method 2 - Clone from GitHub
+* Create and change directory to `wp-content/plugins/woo-pagarme-payments`
+* Run `git clone https://github.com/pagarme/woocommerce .`
+* Activate plugin in wordpress
 
-Pagamentos tem que ser fáceis. São muitos passos por trás de uma simples transação financeira. Mas o seu consumidor não precisa saber disso. Nossas soluções estão disponíveis para ajuda-lo a aumentar sua conversão e oferecer a melhor experiência no momento do pagamento para o seu cliente.
+# Compatibility / Dependencies
+* PHP >= 7.1
+* [WooCommerce](https://wordpress.org/plugins/woocommerce/) >= 3.9
+* [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/)  >= 3.6.0
 
-## Compatibilidade ##
+# Configuration
 
-- Requer WooCommerce 3.9 ou posterior para funcionar.
-- Requer versão do PHP maior ou igual a 7.1.
+After installation has completed go to **WooCommerce** > **Settings** > **Checkout** > **Pagar.me Payments**.
 
-## Instalação do plugin: ##
+To learn more about how detailad configure the module, see our [wiki](https://github.com/pagarme/woocommerce/wiki)
 
-- Envie os arquivos do plugin para a pasta wp-content/plugins, ou instale usando o instalador de plugins do WordPress.
-- Ative o plugin.
+# Business/Technical Support
 
-## Requerimentos: ##
+Please, send a e-mail to [relacionamento@pagar.me](mailto:relacionamento@pagar.me)
 
-- [Conta na Pagar.me] (http://www.pagar.me/)
-- [WooCommerce] (https://wordpress.org/plugins/woocommerce/)
-- [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/) em sua última versão
+# How can I contribute?
+Please, refer to [CONTRIBUTING](.github/CONTRIBUTING.md)
 
-## Configurações ##
+# Found something strange or need a new feature?
+Open a new Issue following our issue template [ISSUE-TEMPLATE](.github/ISSUE-TEMPLATE.md)
 
-- Após a instalação e ativação do plugin acesse o menu WooCommerce > Configurações > Finalizar Compra > Pagar.me Pagamentos
-- Habilite o pagamento
-- Selecione o ambiente (Produção ou Sandbox)
-- Insira as chaves (pública e privada)
-- Em seguida selecione quais meios de pagamento deseja utilizar
-
-
+# Changelog
+See in [releases](https://github.com/pagarme/woocommerce/releases)
