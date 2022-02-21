@@ -1,1 +1,1 @@
-../docs/readme.md
+../docs/README.md

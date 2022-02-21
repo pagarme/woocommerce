@@ -36,3 +36,4 @@ Open a new Issue following our issue template [ISSUE-TEMPLATE](.github/ISSUE-TEM
 
 # Changelog
 See in [releases](https://github.com/pagarme/woocommerce/releases)
+
