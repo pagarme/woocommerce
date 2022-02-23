@@ -3,7 +3,7 @@
 **Tags:** ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, pagarme, payments, creditcard
 **Requires at least:** 5.0
 **Tested up to:** 5.7
-**Stable tag:** 2.0.3
+**Stable tag:** 2.0.4
 **Requires PHP:** 7.1
 **License:** MIT
 **License URI:** https://github.com/pagarme/woocommerce/blob/master/LICENSE
@@ -39,5 +39,3 @@ Pagamentos tem que ser fáceis. São muitos passos por trás de uma simples tran
 - Selecione o ambiente (Produção ou Sandbox)
 - Insira as chaves (pública e privada)
 - Em seguida selecione quais meios de pagamento deseja utilizar
-
-
