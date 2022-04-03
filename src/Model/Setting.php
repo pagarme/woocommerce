@@ -35,6 +35,7 @@ class Setting
         'section_payment_settings'          => array(),
         'enable_billet'                     => array(),
         'enable_pix'                        => array(),
+        'enable_voucher'                    => array(),
         'pix_qrcode_expiration_time'        => array(),
         'pix_additional_data'               => array(),
         'enable_credit_card'                => array(),
@@ -210,6 +211,11 @@ class Setting
     public function is_active_pix()
     {
         return ('yes' === $this->__get('enable_pix'));
+    }
+
+    public function is_active_voucher()
+    {
+        return ('yes' === $this->__get('enable_voucher'));
     }
 
     public function is_active_capture()

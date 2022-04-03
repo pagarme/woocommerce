@@ -105,7 +105,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithPixConfig($configData, $storeConfig);
         // These method calls are commented for now because they are not implemented yet:
         // $configData = self::fillWithAddressConfig($configData, $storeConfig);
-        // $configData = self::fillWithVoucherConfig($configData, $storeConfig);
+        $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
         // $configData = self::fillWithRecurrenceConfig($configData, $storeConfig);
         $configData = self::fillWithHubConfig($configData, $storeConfig);
@@ -125,7 +125,8 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     static private function fillWithVoucherConfig($dataObj, $storeConfig)
     {
-        // Not implemented on Woocommerce because there is no voucher config
+        $dataObj->voucherEnabled = $storeConfig->is_active_voucher();
+        return $dataObj;
     }
 
     static private function fillWithDebitConfig($dataObj, $storeConfig)

@@ -104,6 +104,7 @@ class Gateways extends WC_Payment_Gateway
             'section_payment_settings'          => $this->section_payment_settings(),
             'enable_credit_card'                => $this->field_enable_credit_card(),
             'enable_pix'                        => $this->field_enable_pix(),
+            'enable_voucher'                    => $this->field_enable_voucher(),
             'enable_billet'                     => $this->field_enable_billet(),
             'multimethods_2_cards'              => $this->field_multimethods_2_cards(),
             'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
@@ -489,6 +490,16 @@ class Gateways extends WC_Payment_Gateway
             'title'   => __('Pix', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
             'label'   => __('Enable pix', 'woo-pagarme-payments'),
+            'default' => 'no'
+        );
+    }
+
+    public function field_enable_voucher()
+    {
+        return array(
+            'title'   => __('Voucher', 'woo-pagarme-payments'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable voucher', 'woo-pagarme-payments'),
             'default' => 'no'
         );
     }

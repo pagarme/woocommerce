@@ -2,7 +2,6 @@
 if (!function_exists('add_action')) {
     exit(0);
 }
-
 global $woocommerce;
 
 use Woocommerce\Pagarme\Core;
