@@ -109,6 +109,9 @@ class Gateways extends WC_Payment_Gateway
             'multimethods_2_cards'              => $this->field_multimethods_2_cards(),
             'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
             'multicustomers'                    => $this->field_multicustomers(),
+            'section_voucher'                   => $this->section_voucher(),
+            'voucher_soft_descriptor'           => $this->field_voucher_soft_descriptor(),
+            'field_voucher_flags'               => $this->field_voucher_flags(),
             'section_credit_card'               => $this->section_credit_card(),
             'cc_operation_type'                 => $this->field_cc_operation_type(),
             'cc_soft_descriptor'                => $this->field_cc_soft_descriptor(),
@@ -549,6 +552,50 @@ class Gateways extends WC_Payment_Gateway
             'type'    => 'checkbox',
             'label'   => __('Enable multi-buyers', 'woo-pagarme-payments'),
             'default' => 'no',
+        );
+    }
+
+    public function section_voucher()
+    {
+        return array(
+            'title' => __('Voucher settings', 'woo-pagarme-payments'),
+            'type'  => 'title',
+        );
+    }
+
+    public function field_voucher_soft_descriptor()
+    {
+        return array(
+            'title'             => __('Soft descriptor', 'woo-pagarme-payments'),
+            'desc_tip'          => __('Description that appears on the voucher bill.', 'woo-pagarme-payments'),
+            'description'       => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments'), 13),
+            'custom_attributes' => array(
+                'data-field'     => 'voucher-soft-descriptor',
+                'data-action'    => 'voucher-soft-descriptor',
+                'data-element'   => 'validate',
+                'maxlength'      => 13,
+                'data-error-msg' => __('This field is required.', 'woo-pagarme-payments'),
+            ),
+        );
+    }
+
+    public function field_voucher_flags()
+    {
+        return array(
+            'type'              => 'multiselect',
+            'title'             => __('Card Brands', 'woo-pagarme-payments'),
+            'select_buttons'    => false,
+            'class'             => 'wc-enhanced-select',
+            'options'           => array(
+                'alelo'  => 'Alelo',
+                'sodexo' => 'Sodexo',
+                'vr'     => 'VR',
+            ),
+            'custom_attributes' => array(
+                'data-field'   => 'flags-select',
+                'data-element' => 'flags-select',
+                'data-action'  => 'flags',
+            ),
         );
     }
 

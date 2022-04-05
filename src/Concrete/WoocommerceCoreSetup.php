@@ -103,12 +103,13 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithTwoCreditCardsConfig($configData, $storeConfig);
         $configData = self::fillWithMultiBuyerConfig($configData, $storeConfig);
         $configData = self::fillWithPixConfig($configData, $storeConfig);
+        $configData = self::fillWithVoucherConfig($configData, $storeConfig);
+        $configData = self::fillWithHubConfig($configData, $storeConfig);
+
         // These method calls are commented for now because they are not implemented yet:
         // $configData = self::fillWithAddressConfig($configData, $storeConfig);
-        $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
         // $configData = self::fillWithRecurrenceConfig($configData, $storeConfig);
-        $configData = self::fillWithHubConfig($configData, $storeConfig);
 
         $configurationFactory = new ConfigurationFactory();
         $config = $configurationFactory->createFromJsonData(

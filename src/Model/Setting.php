@@ -146,6 +146,21 @@ class Setting
         );
     }
 
+    public function get_voucher_flags_list()
+    {
+        return array(
+            'alelo'             => 'Alelo',
+            'sodexoalimentacao' => 'SodexoAlimentacao',
+            'sodexocultura'     => 'SodexoCultura',
+            'sodexogift'        => 'SodexoGift',
+            'sodexopremium'     => 'SodexoPremium',
+            'sodexorefeicao'    => 'SodexoRefeicao',
+            'sodexocombustivel' => 'SodexoCombustivel',
+            'vr'                => 'VR'
+
+        );
+    }
+
     public function set_settings($settings)
     {
         $this->_settings = ($settings) ? $settings : get_option($this->get_option_key());

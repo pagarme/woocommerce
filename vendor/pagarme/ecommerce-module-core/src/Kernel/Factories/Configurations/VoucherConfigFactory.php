@@ -11,7 +11,7 @@ use Pagarme\Core\Kernel\ValueObjects\Configuration\VoucherConfig;
 class VoucherConfigFactory implements FactoryCreateFromDbDataInterface
 {
     /**
-     * @param array $data
+     * @param object $data
      * @return VoucherConfig
      * @throws InvalidParamException
      */
