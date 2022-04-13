@@ -222,7 +222,7 @@ jQuery(function ($) {
 
     $('#place_order').on('click', function (e) {
         if (!$('input#payment_method_woo-pagarme-payments').is(":checked")) {
-            return submitForm(e);
+            return submitForm();
         }
 
         e.preventDefault();
