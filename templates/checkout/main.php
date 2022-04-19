@@ -53,6 +53,12 @@ $swal_data   = array(
         'templates/checkout/pix-item',
         array('model' => $model)
     );
+
+    Utils::get_template(
+        'templates/checkout/voucher-item',
+        array('model' => $model)
+    );
+
     ?>
 </ul>
 

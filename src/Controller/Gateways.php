@@ -112,6 +112,7 @@ class Gateways extends WC_Payment_Gateway
             'section_voucher'                   => $this->section_voucher(),
             'voucher_soft_descriptor'           => $this->field_voucher_soft_descriptor(),
             'field_voucher_flags'               => $this->field_voucher_flags(),
+            'card_wallet'                       => $this->field_card_wallet(),
             'section_credit_card'               => $this->section_credit_card(),
             'cc_operation_type'                 => $this->field_cc_operation_type(),
             'cc_soft_descriptor'                => $this->field_cc_soft_descriptor(),
@@ -507,6 +508,17 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
+    public function field_card_wallet()
+    {
+        return array(
+            'title'    => __('Card Wallet', 'woo-pagarme-payments'),
+            'desc_tip' => __('Enable Card Wallet', 'woo-pagarme-payments'),
+            'type'     => 'checkbox',
+            'label'    => __('Card Wallet', 'woo-pagarme-payments'),
+            'default'  => 'no'
+        );
+    }
+
     public function field_enable_billet()
     {
         return array(
@@ -566,7 +578,7 @@ class Gateways extends WC_Payment_Gateway
     public function field_voucher_soft_descriptor()
     {
         return array(
-            'title'             => __('Soft descriptor', 'woo-pagarme-payments'),
+            'title'             => __('Voucher Soft descriptor', 'woo-pagarme-payments'),
             'desc_tip'          => __('Description that appears on the voucher bill.', 'woo-pagarme-payments'),
             'description'       => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments'), 13),
             'custom_attributes' => array(
@@ -583,7 +595,7 @@ class Gateways extends WC_Payment_Gateway
     {
         return array(
             'type'              => 'multiselect',
-            'title'             => __('Card Brands', 'woo-pagarme-payments'),
+            'title'             => __('Voucher Card Brands', 'woo-pagarme-payments'),
             'select_buttons'    => false,
             'class'             => 'wc-enhanced-select',
             'options'           => array(
@@ -592,8 +604,8 @@ class Gateways extends WC_Payment_Gateway
                 'vr'     => 'VR',
             ),
             'custom_attributes' => array(
-                'data-field'   => 'flags-select',
-                'data-element' => 'flags-select',
+                'data-field'   => 'voucher-flags-select',
+                'data-element' => 'voucher-flags-select',
                 'data-action'  => 'flags',
             ),
         );
