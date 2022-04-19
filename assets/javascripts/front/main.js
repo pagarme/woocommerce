@@ -55,10 +55,18 @@ jQuery(function ($) {
         var nextValue = total - value;
 
         if (value > total) {
-            swal({
-                type: 'error',
-                text: 'O valor não pode ser maior que total do pedido!'
-            });
+            try {
+                swal({
+                    type: 'error',
+                    text: 'O valor não pode ser maior que total do pedido!'
+                });
+            } catch (e) {
+                new swal({
+                    type: 'error',
+                    text: 'O valor não pode ser maior que total do pedido!'
+                });
+            }
+
             input.val('');
             nextInput.val('');
             return;
@@ -231,11 +239,19 @@ jQuery(function ($) {
         jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
         if (isBilletOrPix()) {
-            swal({
-                title: 'Aguarde...',
-                text: 'Nós estamos processando sua requisição.',
-                allowOutsideClick: false
-            });
+            try {
+                swal({
+                    title: 'Aguarde...',
+                    text: 'Nós estamos processando sua requisição.',
+                    allowOutsideClick: false
+                });
+            } catch (e) {
+                new swal({
+                    title: 'Aguarde...',
+                    text: 'Nós estamos processando sua requisição.',
+                    allowOutsideClick: false
+                });
+            }
             swal.showLoading();
             return submitForm();
         }
@@ -412,11 +428,19 @@ jQuery(function ($) {
 
         swal.close();
 
-        swal({
-            title: '',
-            text: 'Gerando transação segura...',
-            allowOutsideClick: false
-        });
+        try {
+            swal({
+                title: '',
+                text: 'Gerando transação segura...',
+                allowOutsideClick: false
+            });
+        } catch (e) {
+            new swal({
+                title: '',
+                text: 'Gerando transação segura...',
+                allowOutsideClick: false
+            });
+        }
 
         swal.showLoading();
 
@@ -477,11 +501,19 @@ jQuery(function ($) {
 
                         swal.close();
 
-                        swal({
-                            title: 'Aguarde...',
-                            text: 'Nós estamos processando sua requisição.',
-                            allowOutsideClick: false
-                        });
+                        try {
+                            swal({
+                                title: 'Aguarde...',
+                                text: 'Nós estamos processando sua requisição.',
+                                allowOutsideClick: false
+                            });
+                        } catch (e) {
+                            new swal({
+                                title: 'Aguarde...',
+                                text: 'Nós estamos processando sua requisição.',
+                                allowOutsideClick: false
+                            });
+                        }
 
                         swal.showLoading();
 
@@ -492,10 +524,17 @@ jQuery(function ($) {
                 function (error, suffix) {
                     swal.close();
                     if (error.statusCode == 503) {
-                        swal({
-                            type: 'error',
-                            html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
-                        });
+                        try {
+                            swal({
+                                type: 'error',
+                                html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
+                            });
+                        } catch (e) {
+                            new swal({
+                                type: 'error',
+                                html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
+                            });
+                        }
                     } else {
                         _onFail(error, suffix);
                     }
