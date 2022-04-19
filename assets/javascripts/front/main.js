@@ -222,7 +222,7 @@ jQuery(function ($) {
 
     $('#place_order').on('click', function (e) {
         if (!$('input#payment_method_woo-pagarme-payments').is(":checked")) {
-            return submitForm(e);
+            return submitForm();
         }
 
         e.preventDefault();
@@ -385,6 +385,13 @@ jQuery(function ($) {
     }
 
     const onSubmit = function (e) {
+
+        // Bail if payment method isn't Pagar.me
+        if( $( 'input[name=payment_method]:checked' ).val() !== 'woo-pagarme-payments' ) {
+            // Submit form normally
+            return submitForm();
+        }
+        
         const paymentMethod = $('input[name=pagarme_payment_method]:checked').get(0).value;
         if (hasCardId() && paymentMethod !== '2_cards') {
             return submitForm();
