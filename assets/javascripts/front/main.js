@@ -55,16 +55,15 @@ jQuery(function ($) {
         var nextValue = total - value;
 
         if (value > total) {
+            const message = {
+                type: 'error',
+                text: 'O valor não pode ser maior que total do pedido!'
+            };
+
             try {
-                swal({
-                    type: 'error',
-                    text: 'O valor não pode ser maior que total do pedido!'
-                });
+                swal(message);
             } catch (e) {
-                new swal({
-                    type: 'error',
-                    text: 'O valor não pode ser maior que total do pedido!'
-                });
+                new swal(message);
             }
 
             input.val('');
@@ -239,18 +238,16 @@ jQuery(function ($) {
         jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
         if (isBilletOrPix()) {
+            const message = {
+                title: 'Aguarde...',
+                text: 'Nós estamos processando sua requisição.',
+                allowOutsideClick: false
+            };
+
             try {
-                swal({
-                    title: 'Aguarde...',
-                    text: 'Nós estamos processando sua requisição.',
-                    allowOutsideClick: false
-                });
+                swal(message);
             } catch (e) {
-                new swal({
-                    title: 'Aguarde...',
-                    text: 'Nós estamos processando sua requisição.',
-                    allowOutsideClick: false
-                });
+                new swal(message);
             }
             swal.showLoading();
             return submitForm();
@@ -428,18 +425,16 @@ jQuery(function ($) {
 
         swal.close();
 
+        const message = {
+            title: '',
+            text: 'Gerando transação segura...',
+            allowOutsideClick: false
+        };
+
         try {
-            swal({
-                title: '',
-                text: 'Gerando transação segura...',
-                allowOutsideClick: false
-            });
+            swal(message);
         } catch (e) {
-            new swal({
-                title: '',
-                text: 'Gerando transação segura...',
-                allowOutsideClick: false
-            });
+            new swal(message);
         }
 
         swal.showLoading();
@@ -500,19 +495,17 @@ jQuery(function ($) {
                         }
 
                         swal.close();
+                        
+                        const message = {
+                            title: 'Aguarde...',
+                            text: 'Nós estamos processando sua requisição.',
+                            allowOutsideClick: false
+                        }; 
 
                         try {
-                            swal({
-                                title: 'Aguarde...',
-                                text: 'Nós estamos processando sua requisição.',
-                                allowOutsideClick: false
-                            });
+                            swal(message);
                         } catch (e) {
-                            new swal({
-                                title: 'Aguarde...',
-                                text: 'Nós estamos processando sua requisição.',
-                                allowOutsideClick: false
-                            });
+                            new swal(message);
                         }
 
                         swal.showLoading();
@@ -524,16 +517,15 @@ jQuery(function ($) {
                 function (error, suffix) {
                     swal.close();
                     if (error.statusCode == 503) {
+                        const message = {
+                            type: 'error',
+                            html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
+                        };
+
                         try {
-                            swal({
-                                type: 'error',
-                                html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
-                            });
+                            swal(message);
                         } catch (e) {
-                            new swal({
-                                type: 'error',
-                                html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
-                            });
+                            new swal(message);
                         }
                     } else {
                         _onFail(error, suffix);
