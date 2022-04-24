@@ -3399,7 +3399,6 @@ jQuery(function($) {
 });
 
 jQuery(function($) {
-
     $('#billing_cpf').change(function() {
         $('input[name="voucher-document-holder"]').empty();
         $('input[name="voucher-document-holder"]').val($('#billing_cpf').val()).mask("999.999.999-99").trigger('input');

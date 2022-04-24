@@ -47,11 +47,11 @@ $setting = Setting::get_instance();
 
     <p class="form-row form-row-last">
 
-        <label for="card-cvc">
+        <label for="voucher-card-cvc">
             <?php esc_html_e('Card code', 'woo-pagarme-payments'); ?> <span class="required">*</span>
         </label>
 
-        <input id="card-cvc" data-element="card-cvc" data-mask="0000" class="input-text wc-credit-card-form-card-cvc pagarme-card-form-card-cvc" maxlength="4" placeholder="CVC" data-required="true" data-pagarmecheckout-element-<?php echo !$suffix ? 1 : esc_html($suffix); ?>="cvv">
+        <input id="voucher-card-cvc" data-element="voucher-card-cvc" data-mask="0000" class="input-text wc-credit-card-form-card-cvc pagarme-card-form-card-cvc" maxlength="4" placeholder="CVC" data-required="true" data-pagarmecheckout-element-<?php echo !$suffix ? 1 : esc_html($suffix); ?>="cvv">
     </p>
 
     <p class="form-row form-row-wide">

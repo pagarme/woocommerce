@@ -4133,10 +4133,13 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
         this.antifraudEnabled = $('[data-field="antifraud-enabled"]');
         this.antifraudMinValue = $('[data-field="antifraud-min-value"]');
         this.ccBrands = $('[data-field="flags-select"]');
-        this.VoucherccBrands = $('[data-field="voucher-flags-select"]');
         this.ccAllowSave = $('[data-field="cc-allow-save"]');
         this.billetBank = $('[data-field="billet-bank"]');
         this.softDescriptor = $('[data-field="soft-descriptor"]');
+        this.voucherSection = $('h3[id*="woo-pagarme-payments_section_voucher"]');
+        this.voucherSoftDescriptor = $('[data-field="voucher-soft-descriptor"]');
+        this.VoucherccBrands = $('[data-field="voucher-flags-select"]');
+        this.cardWallet = $('[data-field="card-wallet"]');
 
         this.isGatewayIntegrationType = $('input[id*="woo-pagarme-payments_is_gateway_integration_type"]').prop("checked");
         this.installmentsMaxByFlag = this.installmentsByFlag.find('input[name*="cc_installments_by_flag[max_installment]"]');
@@ -4348,13 +4351,20 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
         antifraudEnabled,
         antifraudMinValue,
         ccAllowSave,
-        billetBank
+        billetBank,
+        voucherSoftDescriptor,
+        VoucherccBrands,
+        cardWallet
     ) {
         antifraudEnabled.hide();
         antifraudMinValue.hide();
         ccAllowSave.hide();
         billetBank.hide();
         this.antifraudSection.hide();
+        this.voucherSection.hide();
+        voucherSoftDescriptor.hide();
+        VoucherccBrands.hide();
+        cardWallet.hide();
 
         this.ccAllowSave.prop("checked", false);
         var $optionsToRemove = this.ccBrands.find(this.getOnlyGatewayBrands());
@@ -4379,13 +4389,20 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
         antifraudEnabled,
         antifraudMinValue,
         ccAllowSave,
-        billetBank
+        billetBank,
+        voucherSoftDescriptor,
+        VoucherccBrands,
+        cardWallet
     ) {
         antifraudEnabled.show();
         antifraudMinValue.show();
         ccAllowSave.show();
         billetBank.show();
         this.antifraudSection.show();
+        this.voucherSection.show();
+        voucherSoftDescriptor.show();
+        VoucherccBrands.show();
+        cardWallet.show();
 
         this.restoreOptions(this.ccBrands);
 
@@ -4399,25 +4416,36 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
     };
 
     Model.fn.handleGatewayIntegrationFieldsVisibility = function(isGateway) {
+
         var antifraudEnabled = this.antifraudEnabled.closest('tr'),
             antifraudMinValue = this.antifraudMinValue.closest('tr'),
             ccAllowSave = this.ccAllowSave.closest('tr'),
-            billetBank = this.billetBank.closest('tr');
+            billetBank = this.billetBank.closest('tr'),
+            voucherSoftDescriptor = this.voucherSoftDescriptor.closest('tr'),
+            VoucherccBrands = this.VoucherccBrands.closest('tr'),
+            cardWallet = this.cardWallet.closest('tr')
 
         if (isGateway) {
             return this.setupGatewayOptions(
                 antifraudEnabled,
                 antifraudMinValue,
                 ccAllowSave,
-                billetBank
+                billetBank,
+                voucherSoftDescriptor,
+                VoucherccBrands,
+                cardWallet
             );
+
         }
 
         return this.setupPSPOptions(
             antifraudEnabled,
             antifraudMinValue,
             ccAllowSave,
-            billetBank
+            billetBank,
+            voucherSoftDescriptor,
+            VoucherccBrands,
+            cardWallet
         );
     };
 

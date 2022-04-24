@@ -104,15 +104,11 @@ class Gateways extends WC_Payment_Gateway
             'section_payment_settings'          => $this->section_payment_settings(),
             'enable_credit_card'                => $this->field_enable_credit_card(),
             'enable_pix'                        => $this->field_enable_pix(),
-            'enable_voucher'                    => $this->field_enable_voucher(),
             'enable_billet'                     => $this->field_enable_billet(),
+            'enable_voucher'                    => $this->field_enable_voucher(),
             'multimethods_2_cards'              => $this->field_multimethods_2_cards(),
             'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
             'multicustomers'                    => $this->field_multicustomers(),
-            'section_voucher'                   => $this->section_voucher(),
-            'voucher_soft_descriptor'           => $this->field_voucher_soft_descriptor(),
-            'field_voucher_flags'               => $this->field_voucher_flags(),
-            'card_wallet'                       => $this->field_card_wallet(),
             'section_credit_card'               => $this->section_credit_card(),
             'cc_operation_type'                 => $this->field_cc_operation_type(),
             'cc_soft_descriptor'                => $this->field_cc_soft_descriptor(),
@@ -131,6 +127,10 @@ class Gateways extends WC_Payment_Gateway
             'billet_bank'                       => $this->field_billet_bank(),
             'billet_deadline_days'              => $this->field_billet_deadline_days(),
             'billet_instructions'               => $this->field_billet_instructions(),
+            'section_voucher'                   => $this->section_voucher(),
+            'voucher_soft_descriptor'           => $this->field_voucher_soft_descriptor(),
+            'field_voucher_flags'               => $this->field_voucher_flags(),
+            'card_wallet'                       => $this->field_card_wallet(),
             'section_antifraud'                 => $this->section_antifraud(),
             'antifraud_enabled'                 => $this->antifraud_enabled(),
             'antifraud_min_value'               => $this->antifraud_min_value(),
@@ -515,7 +515,10 @@ class Gateways extends WC_Payment_Gateway
             'desc_tip' => __('Enable Card Wallet', 'woo-pagarme-payments'),
             'type'     => 'checkbox',
             'label'    => __('Card Wallet', 'woo-pagarme-payments'),
-            'default'  => 'no'
+            'default'  => 'no',
+            'custom_attributes' => array(
+                'data-field'   => 'card-wallet',
+            ),
         );
     }
 
@@ -572,13 +575,16 @@ class Gateways extends WC_Payment_Gateway
         return array(
             'title' => __('Voucher settings', 'woo-pagarme-payments'),
             'type'  => 'title',
+            'custom_attributes' => array(
+                'data-field' => 'voucher-section',
+            )
         );
     }
 
     public function field_voucher_soft_descriptor()
     {
         return array(
-            'title'             => __('Voucher Soft descriptor', 'woo-pagarme-payments'),
+            'title'             => __('Soft descriptor', 'woo-pagarme-payments'),
             'desc_tip'          => __('Description that appears on the voucher bill.', 'woo-pagarme-payments'),
             'description'       => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments'), 13),
             'custom_attributes' => array(
