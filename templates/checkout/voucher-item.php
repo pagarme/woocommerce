@@ -19,7 +19,7 @@ use Woocommerce\Pagarme\Helper\Utils;
 
 $installments_type = Setting::get_instance()->cc_installment_type;
 $ref               = sha1(random_int(1, 1000));
-$type              = 'card';
+$type              = 'voucher';
 
 ?>
 
@@ -30,9 +30,7 @@ $type              = 'card';
 
         <fieldset id="pagarme-fieldset-voucher" class="wc-voucher-form wc-payment-form">
 
-            <?php require_once dirname(__FILE__) . '/choose-voucher.php'; ?>
-
-            <div class="wc-voucher-info" data-element="fields-cc-data">
+            <div class="wc-voucher-info" data-element="fields-voucher-data">
                 <?php
                 Utils::get_template(
                     'templates/checkout/common-voucher-item',
@@ -43,9 +41,6 @@ $type              = 'card';
                 );
                 ?>
             </div>
-
-            <?php Utils::get_template('templates/checkout/field-save-card', ['suffix' => 1]); ?>
-
         </fieldset>
     </div>
 </li>

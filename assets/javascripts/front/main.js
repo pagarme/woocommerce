@@ -1,4 +1,4 @@
-jQuery(function ($) {
+jQuery(function($) {
     let suffix = null;
     let creditCardBrand = null;
     let brandInput = null;
@@ -11,7 +11,7 @@ jQuery(function ($) {
     let chooseCreditCard = $('fieldset#pagarme-fieldset-' + classNamePagarmeElement).find('[data-element="choose-credit-card"]');
     const appId = script.data('pagarmecheckoutAppId');
     const apiURL = 'https://api.mundipagg.com/core/v1/tokens?appId=' + appId;
-    const openPaymentMethodDetails = function (e) {
+    const openPaymentMethodDetails = function(e) {
         e.preventDefault();
         e.stopPropagation();
         let selectedPaymentMethod = $(e.target.closest('li'));
@@ -25,16 +25,16 @@ jQuery(function ($) {
 
     addsMask();
 
-    $('select[data-element=choose-credit-card]').on('change', function (event) {
+    $('select[data-element=choose-credit-card]').on('change', function(event) {
         _onChangeCreditCard(event)
     });
 
 
-    $('form.checkout').find('[data-value]').on('blur', function (event) {
+    $('form.checkout').find('[data-value]').on('blur', function(event) {
         fillAnotherInput(event)
     });
 
-    const fillAnotherInput = function (event) {
+    const fillAnotherInput = function(event) {
         var input = $(event.currentTarget);
         var nextInput = input.closest('fieldset').siblings('fieldset').find('input').filter(':visible:first');
 
@@ -82,11 +82,11 @@ jQuery(function ($) {
         }
     };
 
-    const isTwoCardsPayment = function (firstInput, secondInput) {
+    const isTwoCardsPayment = function(firstInput, secondInput) {
         return firstInput.id.includes("card") && secondInput.id.includes("card");
     };
 
-    const refreshBothInstallmentsSelects = function (event, secondInput) {
+    const refreshBothInstallmentsSelects = function(event, secondInput) {
         _onBlurCardOrderValue(event);
         event.currentTarget = secondInput;
         event.target = secondInput;
@@ -94,7 +94,7 @@ jQuery(function ($) {
         _onBlurCardOrderValue(event);
     };
 
-    const _onBlurCardOrderValue = function (e, useTotal) {
+    const _onBlurCardOrderValue = function(e, useTotal) {
         var option = '<option value="">...</option>';
         var wrapper = $(e.currentTarget).closest('fieldset');
         var total = e.target.value;
@@ -122,20 +122,20 @@ jQuery(function ($) {
         }
     };
 
-    const onSelectOneClickBuy = function (event, brand, wrapper) {
+    const onSelectOneClickBuy = function(event, brand, wrapper) {
         const valueInput = wrapper.find('input[data-element=card-order-value]').val();
         let value = cartTotal;
-        if (typeof (valueInput) === 'string') {
+        if (typeof(valueInput) === 'string') {
             value = parseFloat(valueInput.replace(',', '.'));
         }
         updateInstallmentsElement(brand, value, wrapper);
     };
 
-    const onBlurCardOrderValue = function (event, brand, total, wrapper) {
+    const onBlurCardOrderValue = function(event, brand, total, wrapper) {
         updateInstallmentsElement(brand, total, wrapper);
     };
 
-    const updateInstallmentsElement = function (brand, total, wrapper) {
+    const updateInstallmentsElement = function(brand, total, wrapper) {
         if (!brand || !total) return;
         var storageName = btoa(brand + total);
         var storage = sessionStorage.getItem(storageName);
@@ -161,21 +161,21 @@ jQuery(function ($) {
         showLoader();
     };
 
-    const _done = function (select, storageName, response) {
+    const _done = function(select, storageName, response) {
         select.html(response);
         sessionStorage.setItem(storageName, response);
         removeLoader();
     };
 
-    const _fail = function () {
+    const _fail = function() {
         removeLoader();
     };
 
-    const removeLoader = function () {
+    const removeLoader = function() {
         $('#wcmp-checkout-form').unblock();
     };
 
-    const showLoader = function () {
+    const showLoader = function() {
         $('#wcmp-checkout-form').block({
             message: null,
             overlayCSS: {
@@ -185,12 +185,12 @@ jQuery(function ($) {
         });
     };
 
-    const isBilletAndCardPayment = function (firstInput, secondInput) {
+    const isBilletAndCardPayment = function(firstInput, secondInput) {
         return (firstInput.id.includes("card") && secondInput.id.includes("billet")) ||
             (firstInput.id.includes("billet") && secondInput.id.includes("card"));
     };
 
-    const refreshCardInstallmentSelect = function (event, secondInput) {
+    const refreshCardInstallmentSelect = function(event, secondInput) {
         const targetInput = event.target.id.includes("card") ? event.target : secondInput;
 
         event.currentTarget = targetInput;
@@ -201,7 +201,7 @@ jQuery(function ($) {
 
     $('input[name=pagarme_payment_method]').change(openPaymentMethodDetails);
 
-    $('input[data-element=pagarme-card-number]').on('blur', function (e) {
+    $('input[data-element=pagarme-card-number]').on('blur', function(e) {
         var cardNumberInput = $(e.currentTarget);
 
         creditCardBrand = cardNumberInput.siblings("span[name^='brand-image']");
@@ -213,21 +213,21 @@ jQuery(function ($) {
         keyEventHandlerCard(e);
     });
 
-    $('input[data-element=enable-multicustomers]').click(function (e) {
+    $('input[data-element=enable-multicustomers]').click(function(e) {
         var input = $(e.currentTarget);
         var method = input.is(':checked') ? 'slideDown' : 'slideUp';
         var target = '[data-ref="' + input.data('target') + '"]';
         $(target)[method]();
     });
 
-    $('#place_order').on('click', function (e) {
+    $('#place_order').on('click', function(e) {
         if (!$('input#payment_method_woo-pagarme-payments').is(":checked")) {
             return submitForm();
         }
 
         e.preventDefault();
         e.stopPropagation();
-        
+
         jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
         if (isBilletOrPix()) {
@@ -244,12 +244,12 @@ jQuery(function ($) {
         onSubmit(e);
     });
 
-    const isBilletOrPix = function () {
+    const isBilletOrPix = function() {
         return $('input[name=pagarme_payment_method]:checked').get(0).value === 'billet' ||
             $('input[name=pagarme_payment_method]:checked').get(0).value === 'pix' ? true : false;
     }
 
-    const clearTokens = function () {
+    const clearTokens = function() {
         const possibleSuffixes = 5;
 
         for (let i = 1; i <= possibleSuffixes; i++) {
@@ -261,11 +261,11 @@ jQuery(function ($) {
         }
     }
 
-    const getAPIData = function (url, data, suffix, success, fail) {
+    const getAPIData = function(url, data, suffix, success, fail) {
         var xhr = new XMLHttpRequest();
 
         xhr.open('POST', url);
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
             if (xhr.readyState < 4) {
                 return;
             }
@@ -283,7 +283,6 @@ jQuery(function ($) {
                 fail.call(null, errorObj, suffix);
             }
         };
-
         xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
         xhr.send(JSON.stringify({
             card: data
@@ -292,7 +291,7 @@ jQuery(function ($) {
         return xhr;
     };
 
-    const getBrand = function (types, bin) {
+    const getBrand = function(types, bin) {
         var oldPrefix = '';
         var currentBrand;
         for (var i = 0; i < types.length; i += 1) {
@@ -308,7 +307,7 @@ jQuery(function ($) {
         return currentBrand;
     };
 
-    const changeBrand = function (brand, cardNumberLength) {
+    const changeBrand = function(brand, cardNumberLength) {
         var $brand = creditCardBrand.get(0);
         var wrapper = creditCardBrand.closest('fieldset');
         const selectedPaymentMethod = $('input[name=pagarme_payment_method]:checked').get(0).value;
@@ -351,7 +350,7 @@ jQuery(function ($) {
         }
     };
 
-    const createCheckoutObj = function (fields, suffix) {
+    const createCheckoutObj = function(fields, suffix) {
         var obj = {},
             i = 0,
             length = fields.length,
@@ -379,19 +378,19 @@ jQuery(function ($) {
         return obj;
     };
 
-    const submitForm = function () {
+    const submitForm = function() {
         const form = $('form.checkout');
         form.submit();
     }
 
-    const onSubmit = function (e) {
+    const onSubmit = function(e) {
 
         // Bail if payment method isn't Pagar.me
-        if( $( 'input[name=payment_method]:checked' ).val() !== 'woo-pagarme-payments' ) {
+        if ($('input[name=payment_method]:checked').val() !== 'woo-pagarme-payments') {
             // Submit form normally
             return submitForm();
         }
-        
+
         const paymentMethod = $('input[name=pagarme_payment_method]:checked').get(0).value;
         if (hasCardId() && paymentMethod !== '2_cards') {
             return submitForm();
@@ -447,9 +446,8 @@ jQuery(function ($) {
                 apiURL,
                 checkoutObj,
                 suffix,
-                function (data, suffix) {
+                function(data, suffix) {
                     const objJSON = JSON.parse(data);
-
                     const form = $('form.checkout');
 
                     $hidden = document.createElement('input');
@@ -489,7 +487,7 @@ jQuery(function ($) {
                     }
 
                 },
-                function (error, suffix) {
+                function(error, suffix) {
                     swal.close();
                     if (error.statusCode == 503) {
                         swal({
@@ -505,13 +503,13 @@ jQuery(function ($) {
         }
     };
 
-    const _onFail = function (error, suffix) {
+    const _onFail = function(error, suffix) {
         $('body').trigger('onPagarmeCheckoutFail', [error]);
     };
 
-    const _onDone = function (data, suffix) { };
+    const _onDone = function(data, suffix) {};
 
-    const getCardTypes = function () {
+    const getCardTypes = function() {
         return [{
             brand: 'vr',
             brandName: 'VR',
@@ -619,7 +617,7 @@ jQuery(function ($) {
         }];
     };
 
-    const serialize = function (obj) {
+    const serialize = function(obj) {
         var str = [];
         for (var p in obj) {
             if (obj.hasOwnProperty(p)) {
@@ -629,7 +627,7 @@ jQuery(function ($) {
         return str.join("&");
     };
 
-    const keyEventHandlerCard = function (event) {
+    const keyEventHandlerCard = function(event) {
         var elem = event.currentTarget;
         var cardNumber = elem.value.replace(/\s/g, '');
         var bin = cardNumber.substr(0, 6);
@@ -647,26 +645,26 @@ jQuery(function ($) {
         }
     };
 
-    const disableFields = function (fields) {
+    const disableFields = function(fields) {
         for (let i = 0; i < fields.length; i += 1) {
             fields[i].setAttribute('disabled', 'disabled');
         }
     };
 
-    const enableFields = function (fields) {
+    const enableFields = function(fields) {
         for (let i = 0; i < fields.length; i += 1) {
             fields[i].removeAttribute('disabled');
         }
     };
 
-    const hasCardId = function () {
+    const hasCardId = function() {
         if (chooseCreditCard === undefined || chooseCreditCard.length === 0) {
             return false;
         }
         return chooseCreditCard.val().trim() !== '';
     };
 
-    window.pagarmeQrCodeCopy = function () {
+    window.pagarmeQrCodeCopy = function() {
         const qrCodeElement = document.getElementById("pagarme-qr-code");
 
         if (!qrCodeElement) {
@@ -686,11 +684,11 @@ jQuery(function ($) {
 
     }
 
-    const validate = function () {
+    const validate = function() {
         var requiredFields = $('[data-required=true]:visible'),
             isValid = true;
 
-        requiredFields.each(function (index, item) {
+        requiredFields.each(function(index, item) {
             var field = $(item);
             if (!$.trim(field.val())) {
                 if (field.attr('id') == 'installments') {
@@ -704,7 +702,7 @@ jQuery(function ($) {
         return isValid;
     };
 
-    const error = function (event, errorThrown) {
+    const error = function(event, errorThrown) {
         var error, rect;
         var element = $('#wcmp-checkout-errors');
 
@@ -726,11 +724,11 @@ jQuery(function ($) {
         window.scrollTo(0, (rect.top + window.scrollY) - 40);
     };
 
-    const parseErrorsList = function (error, message, index) {
+    const parseErrorsList = function(error, message, index) {
         errorList += '<li>' + translateErrors(error, message) + '<li>';
     };
 
-    let translateErrors = function (error, message) {
+    let translateErrors = function(error, message) {
         error = error.replace('request.', '');
         var output = error + ': ' + message;
         var ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
@@ -746,7 +744,7 @@ jQuery(function ($) {
         return output;
     };
 
-    const _onChangeCreditCard = function (event) {
+    const _onChangeCreditCard = function(event) {
         var select = $(event.currentTarget);
         var wrapper = select.closest('fieldset');
         var method = event.currentTarget.value.trim() ? 'slideUp' : 'slideDown';
@@ -800,12 +798,12 @@ jQuery(function ($) {
     $('body').on('pagarmeBlurCardOrderValue', onBlurCardOrderValue);
     $('body').on('pagarmeSelectOneClickBuy', onSelectOneClickBuy);
 
-    $('body').on('checkout_error', function () {
+    $('body').on('checkout_error', function() {
         swal.close();
     });
 
 
-    $('body').on('updated_checkout', function () {
+    $('body').on('updated_checkout', function() {
         if (isFirstLoad) {
             isFirstLoad = false;
             const firstPaymentMethod = jQuery("[data-pagarme-component=checkout-transparent]").children().first();
