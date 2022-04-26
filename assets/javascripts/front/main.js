@@ -55,10 +55,17 @@ jQuery(function ($) {
         var nextValue = total - value;
 
         if (value > total) {
-            swal({
+            const message = {
                 type: 'error',
                 text: 'O valor não pode ser maior que total do pedido!'
-            });
+            };
+
+            try {
+                swal(message);
+            } catch (e) {
+                new swal(message);
+            }
+
             input.val('');
             nextInput.val('');
             return;
@@ -231,11 +238,17 @@ jQuery(function ($) {
         jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
         if (isBilletOrPix()) {
-            swal({
+            const message = {
                 title: 'Aguarde...',
                 text: 'Nós estamos processando sua requisição.',
                 allowOutsideClick: false
-            });
+            };
+
+            try {
+                swal(message);
+            } catch (e) {
+                new swal(message);
+            }
             swal.showLoading();
             return submitForm();
         }
@@ -412,11 +425,17 @@ jQuery(function ($) {
 
         swal.close();
 
-        swal({
+        const message = {
             title: '',
             text: 'Gerando transação segura...',
             allowOutsideClick: false
-        });
+        };
+
+        try {
+            swal(message);
+        } catch (e) {
+            new swal(message);
+        }
 
         swal.showLoading();
 
@@ -476,12 +495,18 @@ jQuery(function ($) {
                         }
 
                         swal.close();
-
-                        swal({
+                        
+                        const message = {
                             title: 'Aguarde...',
                             text: 'Nós estamos processando sua requisição.',
                             allowOutsideClick: false
-                        });
+                        }; 
+
+                        try {
+                            swal(message);
+                        } catch (e) {
+                            new swal(message);
+                        }
 
                         swal.showLoading();
 
@@ -492,10 +517,16 @@ jQuery(function ($) {
                 function (error, suffix) {
                     swal.close();
                     if (error.statusCode == 503) {
-                        swal({
+                        const message = {
                             type: 'error',
                             html: 'Não foi possível gerar a transação segura. Serviço indisponível.'
-                        });
+                        };
+
+                        try {
+                            swal(message);
+                        } catch (e) {
+                            new swal(message);
+                        }
                     } else {
                         _onFail(error, suffix);
                     }
