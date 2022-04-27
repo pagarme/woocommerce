@@ -277,6 +277,9 @@ msgstr "Habilitar Captura Manual"
 msgid "Card Brands"
 msgstr "Bandeiras"
 
+msgid "Voucher Card Brands"
+msgstr "Bandeiras de voucher"
+
 #: src/Controller/Gateways.php:444
 msgid "Select one or more card brands"
 msgstr "Selecione uma ou mais bandeiras"
@@ -542,6 +545,9 @@ msgstr "MM / AA"
 msgid "Card code"
 msgstr "Código do cartão"
 
+msgid "Card Holder Document Number"
+msgstr "Documento do titular do cartão"
+
 #: templates/checkout/field-enable-multicustomers.php:31
 msgid "Fill other buyer data"
 msgstr "Preencher com dados de outro comprador"
@@ -760,6 +766,9 @@ msgstr "Habilitar card wallet"
 msgid "Description that appears on the credit card bill."
 msgstr "Descrição que aparece na fatura do cartão de crédito."
 
+msgid "Description that appears on the voucher bill."
+msgstr "Descrição que aparece na fatura do cartão de voucher."
+
 msgid "Installment configuration"
 msgstr "Configuração de parcelamento"
 
@@ -799,6 +808,9 @@ msgstr "Número padrão de dias para a expiração"
 msgid "Payment instructions"
 msgstr "Instruções de pagamento"
 
+msgid "Voucher settings"
+msgstr "Configurações de voucher"
+
 msgid "Number of days until the expiration date of the generated boleto."
 msgstr "Número de dias até a data de vencimento do boleto gerado."
 
@@ -819,6 +831,9 @@ msgstr "Habilitar pix"
 
 msgid "Enable boleto"
 msgstr "Habilitar boleto"
+
+msgid "Enable voucher"
+msgstr "Habilitar voucher"
 
 msgid "Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters."
 msgstr "Tamanho máximo de <span id='woo-pagarme-payments_max_length_span'>%s</span> caracteres."
