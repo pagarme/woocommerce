@@ -208,6 +208,7 @@ jQuery(function($) {
 
     $('input[name=pagarme_payment_method]').change(openPaymentMethodDetails);
 
+
     $('input[data-element=pagarme-card-number]').on('blur', function(e) {
         var cardNumberInput = $(e.currentTarget);
 
@@ -391,6 +392,21 @@ jQuery(function($) {
         return obj;
     };
 
+    const isVoucherCheckoutObject = function(checkoutObj) {
+        if (checkoutObj.hasOwnProperty('voucher-holder_name')) {
+            checkoutObj = {
+                number: checkoutObj.number,
+                holder_name: $('#voucher-card-holder-name').val(),
+                holder_document: $('#voucher-document-holder').val().replace('-', '').replace('.', '').replace('.', '').replace(' ', ''),
+                exp_month: checkoutObj.exp_month,
+                exp_year: checkoutObj.exp_year,
+                cvv: checkoutObj.cvv,
+                brand: 'sodexo'
+            }
+        }
+        return checkoutObj;
+    };
+
     const submitForm = function() {
         const form = $('form.checkout');
         form.submit();
@@ -453,6 +469,7 @@ jQuery(function($) {
             var markedInputs = $el.find('[data-pagarmecheckout-element-' + suffix + ']');
             var notMarkedInputs = $el.find('input:not([data-pagarmecheckout-element])');
             var checkoutObj = createCheckoutObj(markedInputs, suffix);
+            var checkoutObj = isVoucherCheckoutObject(checkoutObj);
             var callbackObj = {};
             var $hidden = $el.find('[name="pagarmetoken' + suffix + '"]');
             var cb;
@@ -493,12 +510,12 @@ jQuery(function($) {
                         }
 
                         swal.close();
-                        
+
                         const message = {
                             title: 'Aguarde...',
                             text: 'Nós estamos processando sua requisição.',
                             allowOutsideClick: false
-                        }; 
+                        };
 
                         try {
                             swal(message);

@@ -101,6 +101,46 @@ class Payment
     }
 
     /**
+     * Return payment data for "voucher"
+     *
+     * @return array
+     */
+    public function pay_voucher($wc_order, $form_fields, $customer)
+    {
+        $card              = $this->pay_voucher_base($wc_order, $form_fields, $customer);
+        $card_brand        = Utils::get_value_by($form_fields, 'brand');
+        $card_amount       = $wc_order->get_total();
+        $card['amount']    = Utils::format_order_price($card_amount);
+        $customer          = $this->get_multicustomer_data('card', $form_fields);
+        return $card;
+    }
+
+    /**
+     * Return payment data for "credit_card" base (without amount)
+     *
+     * @param $wc_order object order from woocommerce
+     * @param $form_fields array Sent form fields
+     * @param $customer object response of Woocommerce\Pagarme\Resource\Customer
+     *
+     * @return array
+     */
+    private function pay_voucher_base($wc_order, $form_fields, $customer, $is_second_card = false)
+    {
+        $suffix    = $is_second_card ? '2' : '';
+        $card_data = array(
+            'payment_method' => 'voucher',
+            'voucher'    => array(
+                'statement_descriptor' => $this->settings->voucher_soft_descriptor,
+                'card' => array(
+                    'billing_address' => $this->get_billing_address_from_customer($customer, $wc_order)
+                )
+            ),
+        );
+
+        return $this->handle_credit_card_type($form_fields, $card_data, $suffix);
+    }
+
+    /**
      * Return payment data for "credit_card"
      *
      * @param $wc_order object order from woocommerce
@@ -292,7 +332,7 @@ class Payment
     }
 
     /**
-     * Return payment data for "boleto"
+     * Return payment data for "pix"
      *
      * @return array
      */

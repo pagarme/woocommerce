@@ -261,6 +261,11 @@ class Gateways extends WC_Payment_Gateway
                     'pagarme_payment_method',
                     'enable_multicustomers_pix',
                 ];
+
+                case 'voucher':
+                    return [
+                        'pagarme_payment_method',
+                    ];
             default:
                 return $_POST;
         }

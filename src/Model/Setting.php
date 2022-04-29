@@ -36,6 +36,8 @@ class Setting
         'enable_billet'                     => array(),
         'enable_pix'                        => array(),
         'enable_voucher'                    => array(),
+        'voucher_soft_descriptor'           => array(),
+        'voucher_flags'                     => array(),
         'pix_qrcode_expiration_time'        => array(),
         'pix_additional_data'               => array(),
         'enable_credit_card'                => array(),
@@ -265,6 +267,11 @@ class Setting
         return $this->__get('cc_soft_descriptor');
     }
 
+    public function isVoucherStatementDescriptor()
+    {
+        return $this->__get('voucher_soft_descriptor');
+    }
+
     public function isHubEnabled()
     {
         return !empty($this->__get('hub_install_id'));
@@ -312,6 +319,9 @@ class Setting
 
             case '2cards':
                 return 5;
+
+            case 'voucher':
+                return 6;
 
             default:
                 return 0;

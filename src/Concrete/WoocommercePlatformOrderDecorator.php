@@ -636,6 +636,16 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $payment['payment_method'] === 'pix';
     }
 
+    private function isVoucherPayment($payments)
+    {
+        if (count($payments) > 1) {
+            return false;
+        }
+
+        $payment = $payments[0];
+        return $payment['payment_method'] === 'voucher';
+    }
+
     private function getPaymentHandler($payments)
     {
         if (count($payments) > 1) {
@@ -659,6 +669,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         if ($this->isPixPayment($payments)) {
             return 'Pix';
+        }
+
+        if ($this->isVoucherPayment($payments)) {
+            return 'Voucher';
         }
 
         return null;
@@ -974,6 +988,19 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
 
         $paymentData[$pixDataIndex][] = $newPaymentData;
+    }
+
+    private function extractPaymentDataFromVoucher(&$paymentData)
+    {
+        $newPaymentData = $this->extractBasePaymentData();
+
+        $voucherDataIndex = NewVoucherPayment::getBaseCode();
+
+        if (!isset($paymentData[$voucherDataIndex])) {
+            $paymentData[$voucherDataIndex] = [];
+        }
+
+        $paymentData[$voucherDataIndex][] = $newPaymentData;
     }
 
     public function getShipping()
