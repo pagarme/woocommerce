@@ -156,21 +156,17 @@ final class PaymentFactory
         if (!isset($data->$cardDataIndex)) {
             return [];
         }
-
-        $config = $this->moduleConfig
-            ->getVoucherConfig();
-
+        $config = $this->moduleConfig->getVoucherConfig();
         $cardsData = $data->$cardDataIndex;
 
         $payments = [];
         foreach ($cardsData as $cardData) {
-            $payments[] = $this->createBasePayments(
+            $payments[] = $this->createBaseCardPayment(
                 $cardData,
                 $cardDataIndex,
                 $config
             );
         }
-
         return $payments;
     }
 

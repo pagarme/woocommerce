@@ -264,7 +264,10 @@ class Gateways extends WC_Payment_Gateway
 
                 case 'voucher':
                     return [
+                        'brand1',
                         'pagarme_payment_method',
+                        'pagarmetoken6',
+                        'card_id'
                     ];
             default:
                 return $_POST;

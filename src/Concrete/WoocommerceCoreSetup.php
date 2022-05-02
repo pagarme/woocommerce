@@ -126,10 +126,13 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     static private function fillWithVoucherConfig($dataObj, $storeConfig)
     {
-        $dataObj->voucherEnabled = $storeConfig->is_active_voucher();
-        $dataObj->voucherStatementDescriptor = $storeConfig->isVoucherStatementDescriptor();
-        $dataObj->voucherStatementDescriptor = $storeConfig->isVoucherStatementDescriptor();
-        
+        $voucherConfig = new \stdClass();
+        $voucherConfig->enabled = $storeConfig->is_active_voucher();
+        $voucherConfig->title = null;
+        $voucherConfig->cardOperation = null;
+        $dataObj->cardStatementDescriptor = $storeConfig->isVoucherStatementDescriptor();
+        $dataObj->cardConfigs = self::getBrandConfig($storeConfig);
+        $dataObj->voucherConfig = $voucherConfig;
         return $dataObj;
     }
 

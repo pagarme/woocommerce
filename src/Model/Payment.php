@@ -116,7 +116,7 @@ class Payment
     }
 
     /**
-     * Return payment data for "credit_card" base (without amount)
+     * Return payment data for "voucher" base 
      *
      * @param $wc_order object order from woocommerce
      * @param $form_fields array Sent form fields
@@ -126,7 +126,6 @@ class Payment
      */
     private function pay_voucher_base($wc_order, $form_fields, $customer, $is_second_card = false)
     {
-        $suffix    = $is_second_card ? '2' : '';
         $card_data = array(
             'payment_method' => 'voucher',
             'voucher'    => array(
@@ -137,7 +136,7 @@ class Payment
             ),
         );
 
-        return $this->handle_credit_card_type($form_fields, $card_data, $suffix);
+        return $this->handle_credit_card_type($form_fields, $card_data, '');
     }
 
     /**

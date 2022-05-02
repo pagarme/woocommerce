@@ -726,6 +726,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (!$identifier) {
             $identifier = $this->formData["card_id"];
         }
+
         $customerId = $this->getCustomer()->getPagarmeId() ?
             $this->getCustomer()->getPagarmeId()->getValue() : null;
         $brand = $this->formData["brand"];
@@ -992,8 +993,13 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromVoucher(&$paymentData)
     {
-        $newPaymentData = $this->extractBasePaymentData();
-
+   
+        $newPaymentData = new \stdClass();
+        $newPaymentData->customerId = $this->getCustomer()->getPagarmeId() ?
+        $this->getCustomer()->getPagarmeId()->getValue() : null;
+        $newPaymentData->identifier = $this->formData["pagarmetoken6"];
+        $newPaymentData->brand = 'sodexo';
+        $newPaymentData->installments = (int)1;
         $voucherDataIndex = NewVoucherPayment::getBaseCode();
 
         if (!isset($paymentData[$voucherDataIndex])) {
@@ -1001,6 +1007,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
 
         $paymentData[$voucherDataIndex][] = $newPaymentData;
+        return $voucherDataIndex;
+
     }
 
     public function getShipping()
