@@ -108,7 +108,6 @@ class Payment
     public function pay_voucher($wc_order, $form_fields, $customer)
     {
         $card              = $this->pay_voucher_base($wc_order, $form_fields, $customer);
-        $card_brand        = Utils::get_value_by($form_fields, 'brand');
         $card_amount       = $wc_order->get_total();
         $card['amount']    = Utils::format_order_price($card_amount);
         $customer          = $this->get_multicustomer_data('card', $form_fields);
@@ -124,7 +123,7 @@ class Payment
      *
      * @return array
      */
-    private function pay_voucher_base($wc_order, $form_fields, $customer, $is_second_card = false)
+    private function pay_voucher_base($wc_order, $form_fields, $customer)
     {
         $card_data = array(
             'payment_method' => 'voucher',

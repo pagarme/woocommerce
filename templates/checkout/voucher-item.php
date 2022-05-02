@@ -2,7 +2,7 @@
 if (!function_exists('add_action')) {
     exit(0);
 }
-
+/** phpcs:disable */
 if (!$model->settings->is_active_voucher()) {
     return;
 }
@@ -20,6 +20,7 @@ $type              = 'voucher';
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
         <fieldset id="pagarme-fieldset-voucher" class="wc-voucher-form wc-payment-form">
+            <legend>Voucher form</legend>
             <label>
                 <div class="wc-voucher-info" data-element="fields-voucher-data">
                     <?php

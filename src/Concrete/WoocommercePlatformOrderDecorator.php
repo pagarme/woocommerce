@@ -993,7 +993,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromVoucher(&$paymentData)
     {
-   
         $newPaymentData = new \stdClass();
         $newPaymentData->customerId = $this->getCustomer()->getPagarmeId() ?
         $this->getCustomer()->getPagarmeId()->getValue() : null;

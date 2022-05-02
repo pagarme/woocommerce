@@ -395,5 +395,4 @@ MONSTER('Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
             }
         }
     };
-
 });
