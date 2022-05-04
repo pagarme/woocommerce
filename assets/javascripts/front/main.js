@@ -213,8 +213,22 @@ jQuery(function ($) {
         var cardNumberInput = $(e.currentTarget);
 
         creditCardBrand = cardNumberInput.siblings("span[name^='brand-image']");
-
+        console.log(creditCardBrand);
         suffix = creditCardBrand.get(0).getAttribute('pagarme-suffix');
+
+        brandInput = cardNumberInput.siblings("input[type='hidden']");
+
+        keyEventHandlerCard(e);
+    });
+
+    $('input[data-element=pagarme-voucher-card-number]').on('blur', function (e) {
+        var cardNumberInput = $(e.currentTarget);
+
+
+        creditCardBrand = cardNumberInput.siblings("span[name^='voucher-brand-image']");
+        console.log(creditCardBrand);
+        suffix = creditCardBrand.get(0).getAttribute('pagarme-suffix');
+
 
         brandInput = cardNumberInput.siblings("input[type='hidden']");
 
