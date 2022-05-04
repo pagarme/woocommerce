@@ -20,7 +20,6 @@ $type              = 'voucher';
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
         <fieldset id="pagarme-fieldset-voucher" class="wc-voucher-form wc-payment-form">
-            <legend>Voucher</legend>
             <label>
                 <div class="wc-voucher-info" data-element="fields-voucher-data">
                     <?php
