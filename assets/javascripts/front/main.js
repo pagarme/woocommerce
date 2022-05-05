@@ -213,7 +213,6 @@ jQuery(function ($) {
         var cardNumberInput = $(e.currentTarget);
 
         creditCardBrand = cardNumberInput.siblings("span[name^='brand-image']");
-        console.log(creditCardBrand);
         suffix = creditCardBrand.get(0).getAttribute('pagarme-suffix');
 
         brandInput = cardNumberInput.siblings("input[type='hidden']");
@@ -226,7 +225,6 @@ jQuery(function ($) {
 
 
         creditCardBrand = cardNumberInput.siblings("span[name^='voucher-brand-image']");
-        console.log(creditCardBrand);
         suffix = creditCardBrand.get(0).getAttribute('pagarme-suffix');
 
 
@@ -406,19 +404,30 @@ jQuery(function ($) {
         return obj;
     };
 
-    const isVoucherCheckoutObject = function (checkoutObj) {
-        if (checkoutObj.hasOwnProperty('voucher-holder_name')) {
-            checkoutObj = {
+    const prepareCheckoutObject = function (checkoutObj) {
+
+        if ($('#credit-card').is(':checked')) {
+            preparedCheckoutObject = {
+                number: checkoutObj.number,
+                holder_name: checkoutObj.holder_name,
+                exp_month: checkoutObj.exp_month,
+                exp_year: checkoutObj.exp_year,
+                cvv: checkoutObj.cvv,
+            }
+        }
+
+        if ($('#voucher').is(':checked')) {
+            preparedCheckoutObject = {
                 number: checkoutObj.number,
                 holder_name: $('#voucher-card-holder-name').val(),
                 holder_document: $('#voucher-document-holder').val().replace('-', '').replace('.', '').replace('.', '').replace(' ', ''),
                 exp_month: checkoutObj.exp_month,
                 exp_year: checkoutObj.exp_year,
                 cvv: checkoutObj.cvv,
-                brand: 'sodexo'
             }
         }
-        return checkoutObj;
+
+        return preparedCheckoutObject;
     };
 
     const submitForm = function () {
@@ -480,12 +489,12 @@ jQuery(function ($) {
                 continue;
             }
 
-            var markedInputs = $el.find('[data-pagarmecheckout-element-' + suffix + ']');
+            var markedInputs    = $el.find('[data-pagarmecheckout-element-' + suffix + ']');
             var notMarkedInputs = $el.find('input:not([data-pagarmecheckout-element])');
-            var checkoutObj = createCheckoutObj(markedInputs, suffix);
-            checkoutObj = isVoucherCheckoutObject(checkoutObj);
-            var callbackObj = {};
-            var $hidden = $el.find('[name="pagarmetoken' + suffix + '"]');
+            var checkoutObj     = createCheckoutObj(markedInputs, suffix);
+            checkoutObj         = prepareCheckoutObject(checkoutObj);
+            var callbackObj     = {};
+            var $hidden         = $el.find('[name="pagarmetoken' + suffix + '"]');
             var cb;
 
             if ($hidden) {

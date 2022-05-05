@@ -264,7 +264,7 @@ class Gateways extends WC_Payment_Gateway
 
                 case 'voucher':
                     return [
-                        'brand1',
+                        'brand6',
                         'pagarme_payment_method',
                         'pagarmetoken6',
                         'card_id'

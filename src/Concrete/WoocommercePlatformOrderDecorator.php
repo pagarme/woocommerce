@@ -997,7 +997,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $newPaymentData->customerId = $this->getCustomer()->getPagarmeId() ?
         $this->getCustomer()->getPagarmeId()->getValue() : null;
         $newPaymentData->identifier = $this->formData["pagarmetoken6"];
-        $newPaymentData->brand = 'sodexo';
+        $newPaymentData->brand = $this->formData["brand6"];
         $newPaymentData->installments = (int)1;
         $voucherDataIndex = NewVoucherPayment::getBaseCode();
 
