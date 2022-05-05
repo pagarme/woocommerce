@@ -31,7 +31,7 @@ class Checkout
         add_filter('wcbcf_billing_fields', array($this, 'set_required_fields'));
     }
 
-    public function process_checkout_transparent($wc_order)
+    public function process_checkout_transparent(WC_Order $wc_order = null): bool
     {
         if (!Utils::is_request_ajax() || Utils::server('REQUEST_METHOD') !== 'POST') {
             exit(0);
