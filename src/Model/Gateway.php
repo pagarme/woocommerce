@@ -228,7 +228,7 @@ class Gateway
     /**
      * @return bool
      */
-    public function isSandboxMode(): bool
+    public function is_sandbox_mode(): bool
     {
         return ( $this->settings->hub_environment === static::HUB_SANDBOX_ENVIRONMENT ||
             strpos($this->settings->production_secret_key, 'sk_test') !== false ||

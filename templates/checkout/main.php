@@ -24,8 +24,8 @@ $swal_data   = array(
 <div id="wcmp-checkout-errors">
     <ul class="woocommerce-error"></ul>
 </div>
-<?php if ($model->isSandboxMode()) : ?>
-    <div class="message-warning warning message">
+<?php if ($model->is_sandbox_mode()) : ?>
+    <div class="pagarme-message-warning">
         <span>
             <?= __('Important! This store is in the testing phase. Orders placed in this environment will not be carried out.', 'woo-pagarme-payments'); ?>
         </span>
