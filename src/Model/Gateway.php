@@ -28,6 +28,9 @@ class Gateway
      */
     const CC_TYPE_SINGLE  = 1;
 
+    /** @var string */
+    const HUB_SANDBOX_ENVIRONMENT  = 'Sandbox';
+
     /**
      * Credit Card Installment Type - By Flag
      *
@@ -222,4 +225,14 @@ class Gateway
         return $installToken->getValue();
     }
 
+    /**
+     * @return bool
+     */
+    public function isSandboxMode(): bool
+    {
+        return ( $this->settings->hub_environment === static::HUB_SANDBOX_ENVIRONMENT ||
+            strpos($this->settings->production_secret_key, 'sk_test') !== false ||
+            strpos($this->settings->production_public_key, 'pk_test') !== false
+        );
+    }
 }

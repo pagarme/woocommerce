@@ -64,7 +64,7 @@
   top: 3px;
 }
 
-#mainform .pagarme-field-error, 
+#mainform .pagarme-field-error,
 #mainform select:invalid[id*="woo-pagarme-payments"] + .select2-container > span.selection > span.select2-selection:focus {
   background-color: #f2dede;
   border-color: #ebccd1;
@@ -2213,4 +2213,12 @@ body .swal2-animate-x-mark {
   margin-top: -3px;
 }
 
+.message.warning {
+    margin: 0 0 10px;
+    padding: 12px 20px 12px 25px;
+    display: block;
+    background: #fae5e5;
+    color: #e02b27;
+    position: relative;
+}
 /*# sourceMappingURL=assets/stylesheets/admin/style.css.map */
