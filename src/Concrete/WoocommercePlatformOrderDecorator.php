@@ -172,6 +172,15 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return wc_get_order_status_name($orderStatus->getStatus());
     }
 
+
+    /**
+     * @return bool
+     */
+    public function isSandboxMode(): bool
+    {
+        return $this->getHubEnvironment() === static::HUB_SANDBOX_ENVIRONMENT || strpos($this->getSecretKey(), 'sk_test') !== false || strpos($this->getPublicKey(), 'pk_test') !== false ? true : false;
+    }
+
     /**
      * @param $message
      * @param bool $notifyCustomer
