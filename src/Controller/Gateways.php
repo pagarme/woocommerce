@@ -599,7 +599,7 @@ class Gateways extends WC_Payment_Gateway
                 'data-field'     => 'voucher-soft-descriptor',
                 'data-action'    => 'voucher-soft-descriptor',
                 'data-element'   => 'validate',
-                'maxlength'      => 13,
+                'maxlength'      => 22,
                 'data-error-msg' => __('This field is required.', 'woo-pagarme-payments'),
             ),
         );
