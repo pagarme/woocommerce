@@ -20,6 +20,8 @@ class Checkout
 {
     protected $cards = array();
 
+    protected $payment_methods = [];
+
     public function __construct()
     {
         $this->ordersController = new Orders();
@@ -29,6 +31,14 @@ class Checkout
         add_action('wp_ajax_xqRhBHJ5sW', array($this, 'build_installments'));
         add_action('wp_ajax_nopriv_xqRhBHJ5sW', array($this, 'build_installments'));
         add_filter('wcbcf_billing_fields', array($this, 'set_required_fields'));
+
+        $this->payment_methods = [
+            'credit_card'     => __('Credit card', 'woo-pagarme-payments'),
+            'billet'          => __('Boleto', 'woo-pagarme-payments'),
+            'pix'             => __('Pix', 'woo-pagarme-payments'),
+            '2_cards'         => __('2 credit cards', 'woo-pagarme-payments'),
+            'billet-and-card' => __('Credit card and Boleto', 'woo-pagarme-payments'),
+        ];
     }
 
     public function process_checkout_transparent(WC_Order $wc_order = null): bool
@@ -59,15 +69,15 @@ class Checkout
 
         $order  = new Order($wc_order->get_order_number());
         $order->payment_method   = $fields['payment_method'];
+        $title = Setting::get_instance()->title;
+        $order->update_meta('_payment_method_title', $this->payment_methods[$fields['payment_method']]);
+        $order->update_meta('_payment_method', $title);
         WC()->cart->empty_cart();
         if ($response) {
             $order->transaction_id     = $response->getPagarmeId()->getValue();
             $order->pagarme_id     = $response->getPagarmeId()->getValue();
             $order->pagarme_status = $response->getStatus()->getStatus();
             $order->response_data    = json_encode($response);
-            $title = Setting::get_instance()->title;
-            $order->update_meta('_payment_method_title', $fields['payment_method']);
-            $order->update_meta('_payment_method', $title);
             $order->update_by_pagarme_status($response->getStatus()->getStatus());
             return true;
         }
