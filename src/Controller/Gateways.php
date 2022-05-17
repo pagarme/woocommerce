@@ -139,7 +139,7 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-    public function process_payment($order_id)
+    public function process_payment($order_id): array
     {
         $wc_order = new WC_Order($order_id);
         $formattedPost['order'] = $order_id;
@@ -1036,6 +1036,19 @@ class Gateways extends WC_Payment_Gateway
                 <?php echo esc_attr($this->model->settings->hub_environment); ?>
             </td>
         </tr>
+        <?php if ($this->model->is_sandbox_mode()) : ?>
+            <tr valign="top">
+                <th scope="row" class="titledesc">
+                <td class="forminp ">
+                    <div class="pagarme-message-warning">
+                        <span>
+                            <?= __('Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions.', 'woo-pagarme-payments'); ?>
+                        </span>
+                    </div>
+                </td>
+                </th>
+            </tr>
+        <?php endif; ?>
     <?php
         return ob_get_clean();
     }
