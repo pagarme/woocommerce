@@ -32,6 +32,7 @@ $type              = 'voucher';
                     ?>
                 </div>
             </label>
+            <?php Utils::get_template('templates/checkout/field-save-card', ['suffix' => 6, 'type' => $type]); ?>
         </fieldset>
     </div>
 </li>

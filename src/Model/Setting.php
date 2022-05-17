@@ -36,6 +36,7 @@ class Setting
         'enable_billet'                     => array(),
         'enable_pix'                        => array(),
         'enable_voucher'                    => array(),
+        'voucher_card_wallet'               => array(),
         'voucher_soft_descriptor'           => array(),
         'voucher_flags'                     => array(),
         'pix_qrcode_expiration_time'        => array(),
@@ -208,6 +209,11 @@ class Setting
     public function is_allowed_save_credit_card()
     {
         return ('yes' === $this->__get('cc_allow_save'));
+    }
+
+    public function is_allowed_save_voucher_card()
+    {
+        return ('yes' === $this->__get('voucher_card_wallet'));
     }
 
     public function is_active_billet()
