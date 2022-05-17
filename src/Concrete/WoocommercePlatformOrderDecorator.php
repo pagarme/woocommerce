@@ -172,6 +172,15 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return wc_get_order_status_name($orderStatus->getStatus());
     }
 
+
+    /**
+     * @return bool
+     */
+    public function isSandboxMode(): bool
+    {
+        return $this->getHubEnvironment() === static::HUB_SANDBOX_ENVIRONMENT || strpos($this->getSecretKey(), 'sk_test') !== false || strpos($this->getPublicKey(), 'pk_test') !== false ? true : false;
+    }
+
     /**
      * @param $message
      * @param bool $notifyCustomer
@@ -636,6 +645,16 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $payment['payment_method'] === 'pix';
     }
 
+    private function isVoucherPayment($payments)
+    {
+        if (count($payments) > 1) {
+            return false;
+        }
+
+        $payment = $payments[0];
+        return $payment['payment_method'] === 'voucher';
+    }
+
     private function getPaymentHandler($payments)
     {
         if (count($payments) > 1) {
@@ -659,6 +678,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         if ($this->isPixPayment($payments)) {
             return 'Pix';
+        }
+
+        if ($this->isVoucherPayment($payments)) {
+            return 'Voucher';
         }
 
         return null;
@@ -712,6 +735,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (!$identifier) {
             $identifier = $this->formData["card_id"];
         }
+
         $customerId = $this->getCustomer()->getPagarmeId() ?
             $this->getCustomer()->getPagarmeId()->getValue() : null;
         $brand = $this->formData["brand"];
@@ -974,6 +998,25 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
 
         $paymentData[$pixDataIndex][] = $newPaymentData;
+    }
+
+    private function extractPaymentDataFromVoucher(&$paymentData)
+    {
+        $newPaymentData = new \stdClass();
+        $newPaymentData->customerId = $this->getCustomer()->getPagarmeId() ?
+        $this->getCustomer()->getPagarmeId()->getValue() : null;
+        $newPaymentData->identifier = $this->formData["pagarmetoken6"];
+        $newPaymentData->brand = $this->formData["brand6"];
+        $newPaymentData->installments = (int)1;
+        $voucherDataIndex = NewVoucherPayment::getBaseCode();
+
+        if (!isset($paymentData[$voucherDataIndex])) {
+            $paymentData[$voucherDataIndex] = [];
+        }
+
+        $paymentData[$voucherDataIndex][] = $newPaymentData;
+        return $voucherDataIndex;
+
     }
 
     public function getShipping()

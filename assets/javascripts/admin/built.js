@@ -1,72 +1,71 @@
-;(function(context, $) {
+;
+(function(context, $) {
 
     'use strict';
 
     var MONSTER = function(namespace, callback) {
-        var parts  = namespace.split( '\.' )
-          , parent = context
-          , count  = parts.length
-          , i      = 0
-        ;
+        var parts = namespace.split('\.'),
+            parent = context,
+            count = parts.length,
+            i = 0;
 
-        for ( i; i < count; i++ ) {
-            parent[parts[i]] = ( count - 1 === i ) ? MONSTER.Builder() : parent[parts[i]] || {};
-            parent           = parent[parts[i]];
+        for (i; i < count; i++) {
+            parent[parts[i]] = (count - 1 === i) ? MONSTER.Builder() : parent[parts[i]] || {};
+            parent = parent[parts[i]];
         }
 
-        if ( 'function' === typeof callback ) {
+        if ('function' === typeof callback) {
 
-            if ( !~namespace.indexOf( 'Components' ) ) {
-                parent.click = MONSTER.click.bind( parent );
-                parent.ajax  = MONSTER.ajax.bind( parent );
+            if (!~namespace.indexOf('Components')) {
+                parent.click = MONSTER.click.bind(parent);
+                parent.ajax = MONSTER.ajax.bind(parent);
             }
 
-            callback.call( null, parent, $, MONSTER.utils );
+            callback.call(null, parent, $, MONSTER.utils);
         }
 
         return parent;
     };
 
     MONSTER.getElements = function(context) {
-        var elements  = {}
-          , byElement = this.byElement.bind( context )
-        ;
+        var elements = {},
+            byElement = this.byElement.bind(context);
 
-        context.find( '[data-element]' ).each(function(index, element) {
-            var name = this.utils.toDataSetName( element.dataset.element );
+        context.find('[data-element]').each(function(index, element) {
+            var name = this.utils.toDataSetName(element.dataset.element);
 
-            if ( !elements[name] ) {
-                elements[name] = byElement( element.dataset.element );
+            if (!elements[name]) {
+                elements[name] = byElement(element.dataset.element);
             }
-        }.bind( this ) );
+        }.bind(this));
 
         return elements;
     };
 
     MONSTER.byAction = function(name, el) {
-        var container = ( el || this );
-        return container.find( '[data-action="' + name + '"]' );
+        var container = (el || this);
+        return container.find('[data-action="' + name + '"]');
     };
 
     MONSTER.byElement = function(name) {
-        return this.find( '[data-element="' + name + '"]' );
+        return this.find('[data-element="' + name + '"]');
     };
 
     MONSTER.event = function(instance, event, action) {
-        var handle = MONSTER.utils.getEventCallbackName( action, event );
-        this.byAction( action ).on( event, $.proxy( instance, handle ) );
+        var handle = MONSTER.utils.getEventCallbackName(action, event);
+        this.byAction(action).on(event, $.proxy(instance, handle));
     };
 
     MONSTER.getInstance = function(instance, context) {
-        context.byAction   = this.byAction.bind( context );
-        instance.$el       = context;
-        instance.data      = context.data();
-        instance.on        = this.event.bind( context, instance );
-        instance.elements  = this.getElements( context );
+        context.byAction = this.byAction.bind(context);
+        instance.$el = context;
+        instance.data = context.data();
+        instance.on = this.event.bind(context, instance);
+        instance.elements = this.getElements(context);
         instance.addPrefix = this.utils.addPrefix;
-        instance.prefix    = this.utils.prefix();
-        instance.ajax      = this.ajax.bind( instance );
-        instance.click     = this.click.bind( instance );
+        instance.prefix = this.utils.prefix();
+        instance.ajax = this.ajax.bind(instance);
+        instance.click = this.click.bind(instance);
 
         return instance;
     };
@@ -75,17 +74,17 @@
         var Kernel, Builder;
         var self = this;
 
-        Kernel  = function() {};
+        Kernel = function() {};
         Builder = function(context) {
             var instance = new Kernel();
-            instance     = self.getInstance( instance, context );
+            instance = self.getInstance(instance, context);
 
-            instance.start.apply( instance, arguments );
+            instance.start.apply(instance, arguments);
 
             return instance;
         };
 
-        Builder.fn       = Builder.prototype;
+        Builder.fn = Builder.prototype;
         Kernel.prototype = Builder.fn;
         Builder.fn.start = function() {};
 
@@ -93,72 +92,71 @@
     };
 
     MONSTER.ajax = function(options, done, fail) {
-        var ajax
-          , defaults = {
-            method : 'POST',
-            url    : MONSTER.utils.getAjaxUrl(),
-            data   : {}
+        var ajax, defaults = {
+            method: 'POST',
+            url: MONSTER.utils.getAjaxUrl(),
+            data: {}
         };
 
-        ajax = $.ajax( $.extend( defaults, ( options || {} ) ) );
+        ajax = $.ajax($.extend(defaults, (options || {})));
 
-        ajax.done( $.proxy( this, ( done || '_done' ) ) );
-        ajax.fail( $.proxy( this, ( fail || '_fail' ) ) );
+        ajax.done($.proxy(this, (done || '_done')));
+        ajax.fail($.proxy(this, (fail || '_fail')));
     };
 
     MONSTER.click = function(action, context) {
-        var instance = ( context || this );
-        MONSTER.byAction( action, instance.$el ).on( 'click', $.proxy( instance, MONSTER.utils.getEventCallbackName( action ) ) );
+        var instance = (context || this);
+        MONSTER.byAction(action, instance.$el).on('click', $.proxy(instance, MONSTER.utils.getEventCallbackName(action)));
     };
 
     MONSTER.utils = {
 
         getGlobalVars: function(name) {
-            return ( window.PagarmeGlobalVars || {} )[name];
+            return (window.PagarmeGlobalVars || {})[name];
         },
 
         prefix: function() {
-            return ( this.getGlobalVars( 'prefix' ) || 'monster' )
+            return (this.getGlobalVars('prefix') || 'monster')
         },
 
         getAjaxUrl: function() {
-            return this.getGlobalVars( 'ajaxUrl' );
+            return this.getGlobalVars('ajaxUrl');
         },
 
         getLocale: function() {
-            return this.getGlobalVars( 'WPLANG' );
+            return this.getGlobalVars('WPLANG');
         },
 
         getSpinnerUrl: function() {
-            return this.getGlobalVars( 'spinnerUrl' );
+            return this.getGlobalVars('spinnerUrl');
         },
 
         getPathUrl: function(url) {
-            return decodeURIComponent( url ).split(/[?#]/)[0];
+            return decodeURIComponent(url).split(/[?#]/)[0];
         },
 
         getTime: function() {
-            return ( new Date() ).getTime();
+            return (new Date()).getTime();
         },
 
         encodeUrl: function(url) {
-            return encodeURIComponent( url );
+            return encodeURIComponent(url);
         },
 
         decodeUrl: function(url) {
-            return decodeURIComponent( url );
+            return decodeURIComponent(url);
         },
 
         ucfirst: function(text) {
-            return this.parseName( text, /(\b[a-z])/g );
+            return this.parseName(text, /(\b[a-z])/g);
         },
 
         toDataSetName: function(text) {
-            return this.parseName( text, /(-)\w/g );
+            return this.parseName(text, /(-)\w/g);
         },
 
         hasParam: function() {
-            return ~window.location.href.indexOf( '?' );
+            return ~window.location.href.indexOf('?');
         },
 
         getPathName: function() {
@@ -166,53 +164,53 @@
         },
 
         getEventCallbackName: function(action, event) {
-            return this.ucfirst( [ '_on', ( event || 'click' ), action ].join( '-' ) );
+            return this.ucfirst(['_on', (event || 'click'), action].join('-'));
         },
 
         addPrefix: function(tag, separator) {
-            var sep = ( separator || '-' );
+            var sep = (separator || '-');
             return this.prefix() + sep + tag;
         },
 
         getSpinner: function() {
-            var img       = document.createElement( 'img' );
-            img.src       = this.getSpinnerUrl();
+            var img = document.createElement('img');
+            img.src = this.getSpinnerUrl();
             img.className = this.prefix() + '-spinner';
 
             return img;
         },
 
         isMobile: function() {
-            return ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|Tablet OS|IEMobile|Opera Mini/i.test(
+            return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|Tablet OS|IEMobile|Opera Mini/i.test(
                 navigator.userAgent
-            ) );
+            ));
         },
 
         parseName: function(text, regex) {
-            return text.replace( regex, function(match) {
+            return text.replace(regex, function(match) {
                 return match.toUpperCase();
-            }).replace( /-/g, '' );
+            }).replace(/-/g, '');
         },
 
         remove: function(element) {
-            element.fadeOut( 'fast', function() {
+            element.fadeOut('fast', function() {
                 element.remove();
             });
         },
 
         getId: function(id) {
-            if ( !id ) {
+            if (!id) {
                 return false;
             }
 
-            return document.getElementById( id );
+            return document.getElementById(id);
         },
 
         findComponent: function(selector, callback) {
-            var components = $(this).find( selector );
+            var components = $(this).find(selector);
 
-            if ( components.length && typeof callback === 'function' ) {
-                callback.call( null, components, $(this) );
+            if (components.length && typeof callback === 'function') {
+                callback.call(null, components, $(this));
             }
 
             return components.length;
@@ -221,124 +219,121 @@
         get: function(key, defaultVal) {
             var query, vars, varsLength, pair, i;
 
-            if ( !this.hasParam() ) {
-                return ( defaultVal || '' );
+            if (!this.hasParam()) {
+                return (defaultVal || '');
             }
 
-            query      = window.location.search.substring(1);
-            vars       = query.split( '&' );
+            query = window.location.search.substring(1);
+            vars = query.split('&');
             varsLength = vars.length;
 
-            for ( i = 0; i < varsLength; i++ ) {
-                pair = vars[i].split( '=' );
+            for (i = 0; i < varsLength; i++) {
+                pair = vars[i].split('=');
 
-                if ( pair[0] === key ) {
+                if (pair[0] === key) {
                     return pair[1];
                 }
             }
 
-            return ( defaultVal || '' );
+            return (defaultVal || '');
         },
 
         strToCode: function(str) {
-            var hash   = 0
-              , strLen = str.length
-              , i
-              , chr
-            ;
+            var hash = 0,
+                strLen = str.length,
+                i, chr;
 
-            if ( !strLen ) {
+            if (!strLen) {
                 return hash;
             }
 
-            for ( i = 0; i < strLen; i++ ) {
-                chr   = str.charCodeAt( i );
-                hash  = ( ( hash << 5 ) - hash ) + chr;
+            for (i = 0; i < strLen; i++) {
+                chr = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + chr;
                 hash |= 0;
             }
 
-            return Math.abs( hash );
+            return Math.abs(hash);
         }
     };
 
     context.MONSTER = MONSTER;
 
-})( window, jQuery );
-;MONSTER( 'Pagarme.BuildComponents', function(Model, $, utils) {
+})(window, jQuery);;
+MONSTER('Pagarme.BuildComponents', function(Model, $, utils) {
 
-	Model.create = function(container) {
-		var components    = '[data-' + utils.addPrefix( 'component' ) + ']'
-		  , findComponent = utils.findComponent.bind( container )
-		;
+    Model.create = function(container) {
+        var components = '[data-' + utils.addPrefix('component') + ']',
+            findComponent = utils.findComponent.bind(container);
 
-		findComponent( components, $.proxy( this, '_start' ) );
-	};
+        findComponent(components, $.proxy(this, '_start'));
+    };
 
-	Model._start = function(components) {
-		if ( typeof Pagarme.Components === 'undefined' ) {
-			return;
-		}
+    Model._start = function(components) {
+        if (typeof Pagarme.Components === 'undefined') {
+            return;
+        }
 
-		this._iterator( components );
-	};
+        this._iterator(components);
+    };
 
-	Model._iterator = function(components) {
-		var name;
+    Model._iterator = function(components) {
+        var name;
 
-		components.each( function(index, component) {
-			component = $( component );
-			name      = utils.ucfirst( this.getComponent( component ) );
-			this._callback( name, component );
-		}.bind( this ) );
-	};
+        components.each(function(index, component) {
+            component = $(component);
+            name = utils.ucfirst(this.getComponent(component));
+            this._callback(name, component);
+        }.bind(this));
+    };
 
-	Model.getComponent = function(component) {
-		var component = component.data( utils.addPrefix( 'component' ) );
+    Model.getComponent = function(component) {
+        var component = component.data(utils.addPrefix('component'));
 
-		if ( !component ) {
-			return '';
-		}
+        if (!component) {
+            return '';
+        }
 
-		return component;
-	};
+        return component;
+    };
 
-	Model._callback = function(name, component) {
-		var callback = Pagarme.Components[name];
+    Model._callback = function(name, component) {
+        var callback = Pagarme.Components[name];
 
-		if ( typeof callback == 'function' ) {
-			callback.call( null, component );
-			return;
-		}
+        if (typeof callback == 'function') {
+            callback.call(null, component);
+            return;
+        }
 
-		console.log( 'Component "' + name + '" is not a function.' );
-	};
+        console.log('Component "' + name + '" is not a function.');
+    };
 
-}, {} );
-;MONSTER( 'Pagarme.BuildCreate', function(Model, $, utils) {
+}, {});;
+MONSTER('Pagarme.BuildCreate', function(Model, $, utils) {
 
-	Model.init = function(container, names) {
-		if ( !names.length ) {
-			return;
-		}
+    Model.init = function(container, names) {
+        if (!names.length) {
+            return;
+        }
 
-		this.$el = container;
-		names.forEach( this.findNames.bind( this ) );
-	};
+        this.$el = container;
+        names.forEach(this.findNames.bind(this));
+    };
 
-	Model.findNames = function(name, index) {
-		this.callback( Pagarme[utils.ucfirst( name )] );
-	};
+    Model.findNames = function(name, index) {
+        this.callback(Pagarme[utils.ucfirst(name)]);
+    };
 
-	Model.callback = function(callback) {
-		if ( typeof callback !== 'function' ) {
-			return;
-		}
+    Model.callback = function(callback) {
+        if (typeof callback !== 'function') {
+            return;
+        }
 
-		callback.create( this.$el );
-	};
+        callback.create(this.$el);
+    };
 
-}, {} );
-;/**
+}, {});;
+/**
  * jquery.mask.js
  * @version: v1.14.10
  * @author: Igor Escobar
@@ -379,7 +374,7 @@
 
 // UMD (Universal Module Definition) patterns for JavaScript modules that work everywhere.
 // https://github.com/umdjs/umd/blob/master/jqueryPluginCommonjs.js
-(function (factory, jQuery, Zepto) {
+(function(factory, jQuery, Zepto) {
 
     if (typeof define === 'function' && define.amd) {
         define(['jquery'], factory);
@@ -389,13 +384,13 @@
         factory(jQuery || Zepto);
     }
 
-}(function ($) {
+}(function($) {
 
-    var Mask = function (el, mask, options) {
+    var Mask = function(el, mask, options) {
 
         var p = {
             invalid: [],
-            getCaret: function () {
+            getCaret: function() {
                 try {
                     var sel,
                         pos = 0,
@@ -437,45 +432,46 @@
             },
             events: function() {
                 el
-                .on('keydown.mask', function(e) {
-                    el.data('mask-keycode', e.keyCode || e.which);
-                    el.data('mask-previus-value', el.val());
-                })
-                .on($.jMaskGlobals.useInput ? 'input.mask' : 'keyup.mask', p.behaviour)
-                .on('paste.mask drop.mask', function() {
-                    setTimeout(function() {
-                        el.keydown().keyup();
-                    }, 100);
-                })
-                .on('change.mask', function(){
-                    el.data('changed', true);
-                })
-                .on('blur.mask', function(){
-                    if (oldValue !== p.val() && !el.data('changed')) {
-                        el.trigger('change');
-                    }
-                    el.data('changed', false);
-                })
-                // it's very important that this callback remains in this position
-                // otherwhise oldValue it's going to work buggy
-                .on('blur.mask', function() {
-                    oldValue = p.val();
-                })
-                // select all text on focus
-                .on('focus.mask', function (e) {
-                    if (options.selectOnFocus === true) {
-                        $(e.target).select();
-                    }
-                })
-                // clear the value if it not complete the mask
-                .on('focusout.mask', function() {
-                    if (options.clearIfNotMatch && !regexMask.test(p.val())) {
-                       p.val('');
-                   }
-                });
+                    .on('keydown.mask', function(e) {
+                        el.data('mask-keycode', e.keyCode || e.which);
+                        el.data('mask-previus-value', el.val());
+                    })
+                    .on($.jMaskGlobals.useInput ? 'input.mask' : 'keyup.mask', p.behaviour)
+                    .on('paste.mask drop.mask', function() {
+                        setTimeout(function() {
+                            el.keydown().keyup();
+                        }, 100);
+                    })
+                    .on('change.mask', function() {
+                        el.data('changed', true);
+                    })
+                    .on('blur.mask', function() {
+                        if (oldValue !== p.val() && !el.data('changed')) {
+                            el.trigger('change');
+                        }
+                        el.data('changed', false);
+                    })
+                    // it's very important that this callback remains in this position
+                    // otherwhise oldValue it's going to work buggy
+                    .on('blur.mask', function() {
+                        oldValue = p.val();
+                    })
+                    // select all text on focus
+                    .on('focus.mask', function(e) {
+                        if (options.selectOnFocus === true) {
+                            $(e.target).select();
+                        }
+                    })
+                    // clear the value if it not complete the mask
+                    .on('focusout.mask', function() {
+                        if (options.clearIfNotMatch && !regexMask.test(p.val())) {
+                            p.val('');
+                        }
+                    });
             },
             getRegexMask: function() {
-                var maskChunks = [], translation, pattern, optional, recursive, oRecursive, r;
+                var maskChunks = [],
+                    translation, pattern, optional, recursive, oRecursive, r;
 
                 for (var i = 0; i < mask.length; i++) {
                     translation = jMask.translation[mask.charAt(i)];
@@ -488,7 +484,7 @@
 
                         if (recursive) {
                             maskChunks.push(mask.charAt(i));
-                            oRecursive = {digit: mask.charAt(i), pattern: pattern};
+                            oRecursive = { digit: mask.charAt(i), pattern: pattern };
                         } else {
                             maskChunks.push(!optional && !recursive ? pattern : (pattern + '?'));
                         }
@@ -502,7 +498,7 @@
 
                 if (oRecursive) {
                     r = r.replace(new RegExp('(' + oRecursive.digit + '(.*' + oRecursive.digit + ')?)'), '($1)?')
-                         .replace(new RegExp(oRecursive.digit, 'g'), oRecursive.pattern);
+                        .replace(new RegExp(oRecursive.digit, 'g'), oRecursive.pattern);
                 }
 
                 return new RegExp(r);
@@ -528,14 +524,14 @@
             },
             calculateCaretPosition: function(caretPos, newVal) {
                 var newValL = newVal.length,
-                    oValue  = el.data('mask-previus-value') || '',
+                    oValue = el.data('mask-previus-value') || '',
                     oValueL = oValue.length;
 
                 // edge cases when erasing digits
                 if (el.data('mask-keycode') === 8 && oValue !== newVal) {
                     caretPos = caretPos - (newVal.slice(0, caretPos).length - oValue.slice(0, caretPos).length);
 
-                // edge cases when typing new digits
+                    // edge cases when typing new digits
                 } else if (oValue !== newVal) {
                     // if the cursor is at the end keep it there
                     if (caretPos >= oValueL) {
@@ -554,11 +550,11 @@
                 var keyCode = el.data('mask-keycode');
 
                 if ($.inArray(keyCode, jMask.byPassKeys) === -1) {
-                    var newVal   = p.getMasked(),
+                    var newVal = p.getMasked(),
                         caretPos = p.getCaret();
 
                     setTimeout(function(caretPos, newVal) {
-                      p.setCaret(p.calculateCaretPosition(caretPos, newVal));
+                        p.setCaret(p.calculateCaretPosition(caretPos, newVal));
                     }, 10, caretPos, newVal);
 
                     p.val(newVal);
@@ -569,9 +565,12 @@
             getMasked: function(skipMaskChars, val) {
                 var buf = [],
                     value = val === undefined ? p.val() : val + '',
-                    m = 0, maskLen = mask.length,
-                    v = 0, valLen = value.length,
-                    offset = 1, addMethod = 'push',
+                    m = 0,
+                    maskLen = mask.length,
+                    v = 0,
+                    valLen = value.length,
+                    offset = 1,
+                    addMethod = 'push',
                     resetPos = -1,
                     lastMaskChar,
                     check;
@@ -582,12 +581,12 @@
                     lastMaskChar = 0;
                     m = maskLen - 1;
                     v = valLen - 1;
-                    check = function () {
+                    check = function() {
                         return m > -1 && v > -1;
                     };
                 } else {
                     lastMaskChar = maskLen - 1;
-                    check = function () {
+                    check = function() {
                         return m < maskLen && v < valLen;
                     };
                 }
@@ -601,7 +600,7 @@
                     if (translation) {
                         if (valDigit.match(translation.pattern)) {
                             buf[addMethod](valDigit);
-                             if (translation.recursive) {
+                            if (translation.recursive) {
                                 if (resetPos === -1) {
                                     resetPos = m;
                                 } else if (m === lastMaskChar) {
@@ -626,7 +625,7 @@
                             m += offset;
                             v -= offset;
                         } else {
-                          p.invalid.push({p: v, v: valDigit, e: translation.pattern});
+                            p.invalid.push({ p: v, v: valDigit, e: translation.pattern });
                         }
                         v += offset;
                     } else {
@@ -651,7 +650,7 @@
 
                 return buf.join('');
             },
-            callbacks: function (e) {
+            callbacks: function(e) {
                 var val = p.val(),
                     changed = val !== oldValue,
                     defaultArgs = [val, e, el, options],
@@ -669,9 +668,11 @@
         };
 
         el = $(el);
-        var jMask = this, oldValue = p.val(), regexMask;
+        var jMask = this,
+            oldValue = p.val(),
+            regexMask;
 
-        mask = typeof mask === 'function' ? mask(p.val(), undefined, el,  options) : mask;
+        mask = typeof mask === 'function' ? mask(p.val(), undefined, el, options) : mask;
 
         // public methods
         jMask.mask = mask;
@@ -686,21 +687,21 @@
 
         // get value without mask
         jMask.getCleanVal = function() {
-           return p.getMasked(true);
+            return p.getMasked(true);
         };
 
         // get masked value without the value being in the input or element
         jMask.getMaskedVal = function(val) {
-           return p.getMasked(false, val);
+            return p.getMasked(false, val);
         };
 
-       jMask.init = function(onlyMask) {
+        jMask.init = function(onlyMask) {
             onlyMask = onlyMask || false;
             options = options || {};
 
-            jMask.clearIfNotMatch  = $.jMaskGlobals.clearIfNotMatch;
-            jMask.byPassKeys       = $.jMaskGlobals.byPassKeys;
-            jMask.translation      = $.extend({}, $.jMaskGlobals.translation, options.translation);
+            jMask.clearIfNotMatch = $.jMaskGlobals.clearIfNotMatch;
+            jMask.byPassKeys = $.jMaskGlobals.byPassKeys;
+            jMask.translation = $.extend({}, $.jMaskGlobals.translation, options.translation);
 
             jMask = $.extend(true, {}, jMask, options);
 
@@ -711,14 +712,14 @@
                 p.val(p.getMasked());
             } else {
                 if (options.placeholder) {
-                    el.attr('placeholder' , options.placeholder);
+                    el.attr('placeholder', options.placeholder);
                 }
 
                 // this is necessary, otherwise if the user submit the form
                 // and then press the "back" button, the autocomplete will erase
                 // the data. Works fine on IE9+, FF, Opera, Safari.
                 if (el.data('mask')) {
-                  el.attr('autocomplete', 'off');
+                    el.attr('autocomplete', 'off');
                 }
 
                 // detect if is necessary let the user type freely.
@@ -748,54 +749,55 @@
     };
 
     $.maskWatchers = {};
-    var HTMLAttributes = function () {
-        var input = $(this),
-            options = {},
-            prefix = 'data-mask-',
-            mask = input.attr('data-mask');
+    var HTMLAttributes = function() {
+            var input = $(this),
+                options = {},
+                prefix = 'data-mask-',
+                mask = input.attr('data-mask');
 
-        if (input.attr(prefix + 'reverse')) {
-            options.reverse = true;
-        }
-
-        if (input.attr(prefix + 'clearifnotmatch')) {
-            options.clearIfNotMatch = true;
-        }
-
-        if (input.attr(prefix + 'selectonfocus') === 'true') {
-           options.selectOnFocus = true;
-        }
-
-        if (notSameMaskObject(input, mask, options)) {
-            return input.data('mask', new Mask(this, mask, options));
-        }
-    },
-    notSameMaskObject = function(field, mask, options) {
-        options = options || {};
-        var maskObject = $(field).data('mask'),
-            stringify = JSON.stringify,
-            value = $(field).val() || $(field).text();
-        try {
-            if (typeof mask === 'function') {
-                mask = mask(value);
+            if (input.attr(prefix + 'reverse')) {
+                options.reverse = true;
             }
-            return typeof maskObject !== 'object' || stringify(maskObject.options) !== stringify(options) || maskObject.mask !== mask;
-        } catch (e) {}
-    },
-    eventSupported = function(eventName) {
-        var el = document.createElement('div'), isSupported;
 
-        eventName = 'on' + eventName;
-        isSupported = (eventName in el);
+            if (input.attr(prefix + 'clearifnotmatch')) {
+                options.clearIfNotMatch = true;
+            }
 
-        if ( !isSupported ) {
-            el.setAttribute(eventName, 'return;');
-            isSupported = typeof el[eventName] === 'function';
-        }
-        el = null;
+            if (input.attr(prefix + 'selectonfocus') === 'true') {
+                options.selectOnFocus = true;
+            }
 
-        return isSupported;
-    };
+            if (notSameMaskObject(input, mask, options)) {
+                return input.data('mask', new Mask(this, mask, options));
+            }
+        },
+        notSameMaskObject = function(field, mask, options) {
+            options = options || {};
+            var maskObject = $(field).data('mask'),
+                stringify = JSON.stringify,
+                value = $(field).val() || $(field).text();
+            try {
+                if (typeof mask === 'function') {
+                    mask = mask(value);
+                }
+                return typeof maskObject !== 'object' || stringify(maskObject.options) !== stringify(options) || maskObject.mask !== mask;
+            } catch (e) {}
+        },
+        eventSupported = function(eventName) {
+            var el = document.createElement('div'),
+                isSupported;
+
+            eventName = 'on' + eventName;
+            isSupported = (eventName in el);
+
+            if (!isSupported) {
+                el.setAttribute(eventName, 'return;');
+                isSupported = typeof el[eventName] === 'function';
+            }
+            el = null;
+
+            return isSupported;
+        };
 
     $.fn.mask = function(mask, options) {
         options = options || {};
@@ -813,7 +815,7 @@
 
         if (selector && selector !== '' && watchInputs) {
             clearInterval($.maskWatchers[selector]);
-            $.maskWatchers[selector] = setInterval(function(){
+            $.maskWatchers[selector] = setInterval(function() {
                 $(document).find(selector).each(maskFunction);
             }, interval);
         }
@@ -856,11 +858,11 @@
         watchDataMask: false,
         byPassKeys: [9, 16, 17, 18, 36, 37, 38, 39, 40, 91],
         translation: {
-            '0': {pattern: /\d/},
-            '9': {pattern: /\d/, optional: true},
-            '#': {pattern: /\d/, recursive: true},
-            'A': {pattern: /[a-zA-Z0-9]/},
-            'S': {pattern: /[a-zA-Z]/}
+            '0': { pattern: /\d/ },
+            '9': { pattern: /\d/, optional: true },
+            '#': { pattern: /\d/, recursive: true },
+            'A': { pattern: /[a-zA-Z0-9]/ },
+            'S': { pattern: /[a-zA-Z]/ }
         }
     };
 
@@ -877,1634 +879,1635 @@
             $.applyDataMask();
         }
     }, globals.watchInterval);
-}, window.jQuery, window.Zepto));
-;;(function($) {
+}, window.jQuery, window.Zepto));;;
+(function($) {
 
-	$.fn.isEmptyValue = function() {
-		return !( $.trim( this.val() ) );
-	};
+    $.fn.isEmptyValue = function() {
+        return !($.trim(this.val()));
+    };
 
-})( jQuery );;/*!
+})(jQuery);;
+/*!
  * sweetalert2 v6.6.2
  * Released under the MIT License.
  */
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Sweetalert2 = factory());
-}(this, (function () { 'use strict';
+(function(global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+        typeof define === 'function' && define.amd ? define(factory) :
+        (global.Sweetalert2 = factory());
+}(this, (function() {
+    'use strict';
 
-var defaultParams = {
-  title: '',
-  titleText: '',
-  text: '',
-  html: '',
-  type: null,
-  customClass: '',
-  target: 'body',
-  animation: true,
-  allowOutsideClick: true,
-  allowEscapeKey: true,
-  allowEnterKey: true,
-  showConfirmButton: true,
-  showCancelButton: false,
-  preConfirm: null,
-  confirmButtonText: 'OK',
-  confirmButtonColor: '#3085d6',
-  confirmButtonClass: null,
-  cancelButtonText: 'Cancel',
-  cancelButtonColor: '#aaa',
-  cancelButtonClass: null,
-  buttonsStyling: true,
-  reverseButtons: false,
-  focusCancel: false,
-  showCloseButton: false,
-  showLoaderOnConfirm: false,
-  imageUrl: null,
-  imageWidth: null,
-  imageHeight: null,
-  imageClass: null,
-  timer: null,
-  width: 500,
-  padding: 20,
-  background: '#fff',
-  input: null,
-  inputPlaceholder: '',
-  inputValue: '',
-  inputOptions: {},
-  inputAutoTrim: true,
-  inputClass: null,
-  inputAttributes: {},
-  inputValidator: null,
-  progressSteps: [],
-  currentProgressStep: null,
-  progressStepsDistance: '40px',
-  onOpen: null,
-  onClose: null
-};
-
-var swalPrefix = 'swal2-';
-
-var prefix = function prefix(items) {
-  var result = {};
-  for (var i in items) {
-    result[items[i]] = swalPrefix + items[i];
-  }
-  return result;
-};
-
-var swalClasses = prefix(['container', 'shown', 'iosfix', 'modal', 'overlay', 'fade', 'show', 'hide', 'noanimation', 'close', 'title', 'content', 'buttonswrapper', 'confirm', 'cancel', 'icon', 'image', 'input', 'file', 'range', 'select', 'radio', 'checkbox', 'textarea', 'inputerror', 'validationerror', 'progresssteps', 'activeprogressstep', 'progresscircle', 'progressline', 'loading', 'styled']);
-
-var iconTypes = prefix(['success', 'warning', 'info', 'question', 'error']);
-
-/*
- * Set hover, active and focus-states for buttons (source: http://www.sitepoint.com/javascript-generate-lighter-darker-color)
- */
-var colorLuminance = function colorLuminance(hex, lum) {
-  // Validate hex string
-  hex = String(hex).replace(/[^0-9a-f]/gi, '');
-  if (hex.length < 6) {
-    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-  }
-  lum = lum || 0;
-
-  // Convert to decimal and change luminosity
-  var rgb = '#';
-  for (var i = 0; i < 3; i++) {
-    var c = parseInt(hex.substr(i * 2, 2), 16);
-    c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
-    rgb += ('00' + c).substr(c.length);
-  }
-
-  return rgb;
-};
-
-var uniqueArray = function uniqueArray(arr) {
-  var result = [];
-  for (var i in arr) {
-    if (result.indexOf(arr[i]) === -1) {
-      result.push(arr[i]);
-    }
-  }
-  return result;
-};
-
-/* global MouseEvent */
-
-// Remember state in cases where opening and handling a modal will fiddle with it.
-var states = {
-  previousWindowKeyDown: null,
-  previousActiveElement: null,
-  previousBodyPadding: null
-};
-
-/*
- * Add modal + overlay to DOM
- */
-var init = function init(params) {
-  if (typeof document === 'undefined') {
-    console.error('SweetAlert2 requires document to initialize');
-    return;
-  }
-
-  var container = document.createElement('div');
-  container.className = swalClasses.container;
-  container.innerHTML = sweetHTML;
-
-  var targetElement = document.querySelector(params.target);
-  if (!targetElement) {
-    console.warn('SweetAlert2: Can\'t find the target "' + params.target + '"');
-    targetElement = document.body;
-  }
-  targetElement.appendChild(container);
-
-  var modal = getModal();
-  var input = getChildByClass(modal, swalClasses.input);
-  var file = getChildByClass(modal, swalClasses.file);
-  var range = modal.querySelector('.' + swalClasses.range + ' input');
-  var rangeOutput = modal.querySelector('.' + swalClasses.range + ' output');
-  var select = getChildByClass(modal, swalClasses.select);
-  var checkbox = modal.querySelector('.' + swalClasses.checkbox + ' input');
-  var textarea = getChildByClass(modal, swalClasses.textarea);
-
-  input.oninput = function () {
-    sweetAlert.resetValidationError();
-  };
-
-  input.onkeydown = function (event) {
-    setTimeout(function () {
-      if (event.keyCode === 13 && params.allowEnterKey) {
-        event.stopPropagation();
-        sweetAlert.clickConfirm();
-      }
-    }, 0);
-  };
-
-  file.onchange = function () {
-    sweetAlert.resetValidationError();
-  };
-
-  range.oninput = function () {
-    sweetAlert.resetValidationError();
-    rangeOutput.value = range.value;
-  };
-
-  range.onchange = function () {
-    sweetAlert.resetValidationError();
-    range.previousSibling.value = range.value;
-  };
-
-  select.onchange = function () {
-    sweetAlert.resetValidationError();
-  };
-
-  checkbox.onchange = function () {
-    sweetAlert.resetValidationError();
-  };
-
-  textarea.oninput = function () {
-    sweetAlert.resetValidationError();
-  };
-
-  return modal;
-};
-
-/*
- * Manipulate DOM
- */
-
-var sweetHTML = ('\n <div role="dialog" aria-labelledby="' + swalClasses.title + '" aria-describedby="' + swalClasses.content + '" class="' + swalClasses.modal + '" tabindex="-1">\n   <ul class="' + swalClasses.progresssteps + '"></ul>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.error + '">\n     <span class="swal2-x-mark"><span class="swal2-x-mark-line-left"></span><span class="swal2-x-mark-line-right"></span></span>\n   </div>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.question + '">?</div>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.warning + '">!</div>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.info + '">i</div>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.success + '">\n     <div class="swal2-success-circular-line-left"></div>\n     <span class="swal2-success-line-tip"></span> <span class="swal2-success-line-long"></span>\n     <div class="swal2-success-ring"></div> <div class="swal2-success-fix"></div>\n     <div class="swal2-success-circular-line-right"></div>\n   </div>\n   <img class="' + swalClasses.image + '">\n   <h2 class="' + swalClasses.title + '" id="' + swalClasses.title + '"></h2>\n   <div id="' + swalClasses.content + '" class="' + swalClasses.content + '"></div>\n   <input class="' + swalClasses.input + '">\n   <input type="file" class="' + swalClasses.file + '">\n   <div class="' + swalClasses.range + '">\n     <output></output>\n     <input type="range">\n   </div>\n   <select class="' + swalClasses.select + '"></select>\n   <div class="' + swalClasses.radio + '"></div>\n   <label for="' + swalClasses.checkbox + '" class="' + swalClasses.checkbox + '">\n     <input type="checkbox">\n   </label>\n   <textarea class="' + swalClasses.textarea + '"></textarea>\n   <div class="' + swalClasses.validationerror + '"></div>\n   <div class="' + swalClasses.buttonswrapper + '">\n     <button type="button" class="' + swalClasses.confirm + '">OK</button>\n     <button type="button" class="' + swalClasses.cancel + '">Cancel</button>\n   </div>\n   <button type="button" class="' + swalClasses.close + '" aria-label="Close this dialog">&times;</button>\n </div>\n').replace(/(^|\n)\s*/g, '');
-
-var getContainer = function getContainer() {
-  return document.body.querySelector('.' + swalClasses.container);
-};
-
-var getModal = function getModal() {
-  return getContainer() ? getContainer().querySelector('.' + swalClasses.modal) : null;
-};
-
-var getIcons = function getIcons() {
-  var modal = getModal();
-  return modal.querySelectorAll('.' + swalClasses.icon);
-};
-
-var elementByClass = function elementByClass(className) {
-  return getContainer() ? getContainer().querySelector('.' + className) : null;
-};
-
-var getTitle = function getTitle() {
-  return elementByClass(swalClasses.title);
-};
-
-var getContent = function getContent() {
-  return elementByClass(swalClasses.content);
-};
-
-var getImage = function getImage() {
-  return elementByClass(swalClasses.image);
-};
-
-var getButtonsWrapper = function getButtonsWrapper() {
-  return elementByClass(swalClasses.buttonswrapper);
-};
-
-var getProgressSteps = function getProgressSteps() {
-  return elementByClass(swalClasses.progresssteps);
-};
-
-var getValidationError = function getValidationError() {
-  return elementByClass(swalClasses.validationerror);
-};
-
-var getConfirmButton = function getConfirmButton() {
-  return elementByClass(swalClasses.confirm);
-};
-
-var getCancelButton = function getCancelButton() {
-  return elementByClass(swalClasses.cancel);
-};
-
-var getCloseButton = function getCloseButton() {
-  return elementByClass(swalClasses.close);
-};
-
-var getFocusableElements = function getFocusableElements(focusCancel) {
-  var buttons = [getConfirmButton(), getCancelButton()];
-  if (focusCancel) {
-    buttons.reverse();
-  }
-  var focusableElements = buttons.concat(Array.prototype.slice.call(getModal().querySelectorAll('button, input:not([type=hidden]), textarea, select, a, *[tabindex]:not([tabindex="-1"])')));
-  return uniqueArray(focusableElements);
-};
-
-var hasClass = function hasClass(elem, className) {
-  if (elem.classList) {
-    return elem.classList.contains(className);
-  }
-  return false;
-};
-
-var focusInput = function focusInput(input) {
-  input.focus();
-
-  // place cursor at end of text in text input
-  if (input.type !== 'file') {
-    // http://stackoverflow.com/a/2345915/1331425
-    var val = input.value;
-    input.value = '';
-    input.value = val;
-  }
-};
-
-var addClass = function addClass(elem, className) {
-  if (!elem || !className) {
-    return;
-  }
-  var classes = className.split(/\s+/).filter(Boolean);
-  classes.forEach(function (className) {
-    elem.classList.add(className);
-  });
-};
-
-var removeClass = function removeClass(elem, className) {
-  if (!elem || !className) {
-    return;
-  }
-  var classes = className.split(/\s+/).filter(Boolean);
-  classes.forEach(function (className) {
-    elem.classList.remove(className);
-  });
-};
-
-var getChildByClass = function getChildByClass(elem, className) {
-  for (var i = 0; i < elem.childNodes.length; i++) {
-    if (hasClass(elem.childNodes[i], className)) {
-      return elem.childNodes[i];
-    }
-  }
-};
-
-var show = function show(elem, display) {
-  if (!display) {
-    display = 'block';
-  }
-  elem.style.opacity = '';
-  elem.style.display = display;
-};
-
-var hide = function hide(elem) {
-  elem.style.opacity = '';
-  elem.style.display = 'none';
-};
-
-var empty = function empty(elem) {
-  while (elem.firstChild) {
-    elem.removeChild(elem.firstChild);
-  }
-};
-
-// borrowed from jqeury $(elem).is(':visible') implementation
-var isVisible = function isVisible(elem) {
-  return elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length;
-};
-
-var removeStyleProperty = function removeStyleProperty(elem, property) {
-  if (elem.style.removeProperty) {
-    elem.style.removeProperty(property);
-  } else {
-    elem.style.removeAttribute(property);
-  }
-};
-
-var fireClick = function fireClick(node) {
-  if (!isVisible(node)) {
-    return false;
-  }
-
-  // Taken from http://www.nonobtrusive.com/2011/11/29/programatically-fire-crossbrowser-click-event-with-javascript/
-  // Then fixed for today's Chrome browser.
-  if (typeof MouseEvent === 'function') {
-    // Up-to-date approach
-    var mevt = new MouseEvent('click', {
-      view: window,
-      bubbles: false,
-      cancelable: true
-    });
-    node.dispatchEvent(mevt);
-  } else if (document.createEvent) {
-    // Fallback
-    var evt = document.createEvent('MouseEvents');
-    evt.initEvent('click', false, false);
-    node.dispatchEvent(evt);
-  } else if (document.createEventObject) {
-    node.fireEvent('onclick');
-  } else if (typeof node.onclick === 'function') {
-    node.onclick();
-  }
-};
-
-var animationEndEvent = function () {
-  var testEl = document.createElement('div');
-  var transEndEventNames = {
-    'WebkitAnimation': 'webkitAnimationEnd',
-    'OAnimation': 'oAnimationEnd oanimationend',
-    'msAnimation': 'MSAnimationEnd',
-    'animation': 'animationend'
-  };
-  for (var i in transEndEventNames) {
-    if (transEndEventNames.hasOwnProperty(i) && testEl.style[i] !== undefined) {
-      return transEndEventNames[i];
-    }
-  }
-
-  return false;
-}();
-
-// Reset previous window keydown handler and focued element
-var resetPrevState = function resetPrevState() {
-  window.onkeydown = states.previousWindowKeyDown;
-  if (states.previousActiveElement && states.previousActiveElement.focus) {
-    var x = window.scrollX;
-    var y = window.scrollY;
-    states.previousActiveElement.focus();
-    if (x && y) {
-      // IE has no scrollX/scrollY support
-      window.scrollTo(x, y);
-    }
-  }
-};
-
-// Measure width of scrollbar
-// https://github.com/twbs/bootstrap/blob/master/js/modal.js#L279-L286
-var measureScrollbar = function measureScrollbar() {
-  var supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
-  if (supportsTouch) {
-    return 0;
-  }
-  var scrollDiv = document.createElement('div');
-  scrollDiv.style.width = '50px';
-  scrollDiv.style.height = '50px';
-  scrollDiv.style.overflow = 'scroll';
-  document.body.appendChild(scrollDiv);
-  var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-  document.body.removeChild(scrollDiv);
-  return scrollbarWidth;
-};
-
-// JavaScript Debounce Function
-// Simplivied version of https://davidwalsh.name/javascript-debounce-function
-var debounce = function debounce(func, wait) {
-  var timeout = void 0;
-  return function () {
-    var later = function later() {
-      timeout = null;
-      func();
+    var defaultParams = {
+        title: '',
+        titleText: '',
+        text: '',
+        html: '',
+        type: null,
+        customClass: '',
+        target: 'body',
+        animation: true,
+        allowOutsideClick: true,
+        allowEscapeKey: true,
+        allowEnterKey: true,
+        showConfirmButton: true,
+        showCancelButton: false,
+        preConfirm: null,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6',
+        confirmButtonClass: null,
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#aaa',
+        cancelButtonClass: null,
+        buttonsStyling: true,
+        reverseButtons: false,
+        focusCancel: false,
+        showCloseButton: false,
+        showLoaderOnConfirm: false,
+        imageUrl: null,
+        imageWidth: null,
+        imageHeight: null,
+        imageClass: null,
+        timer: null,
+        width: 500,
+        padding: 20,
+        background: '#fff',
+        input: null,
+        inputPlaceholder: '',
+        inputValue: '',
+        inputOptions: {},
+        inputAutoTrim: true,
+        inputClass: null,
+        inputAttributes: {},
+        inputValidator: null,
+        progressSteps: [],
+        currentProgressStep: null,
+        progressStepsDistance: '40px',
+        onOpen: null,
+        onClose: null
     };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-};
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
+    var swalPrefix = 'swal2-';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
-var modalParams = _extends({}, defaultParams);
-var queue = [];
-var swal2Observer = void 0;
-
-/*
- * Set type, text and actions on modal
- */
-var setParameters = function setParameters(params) {
-  var modal = getModal() || init(params);
-
-  for (var param in params) {
-    if (!defaultParams.hasOwnProperty(param) && param !== 'extraParams') {
-      console.warn('SweetAlert2: Unknown parameter "' + param + '"');
-    }
-  }
-
-  // Set modal width
-  modal.style.width = typeof params.width === 'number' ? params.width + 'px' : params.width;
-
-  modal.style.padding = params.padding + 'px';
-  modal.style.background = params.background;
-  var successIconParts = modal.querySelectorAll('[class^=swal2-success-circular-line], .swal2-success-fix');
-  for (var i = 0; i < successIconParts.length; i++) {
-    successIconParts[i].style.background = params.background;
-  }
-
-  var title = getTitle();
-  var content = getContent();
-  var buttonsWrapper = getButtonsWrapper();
-  var confirmButton = getConfirmButton();
-  var cancelButton = getCancelButton();
-  var closeButton = getCloseButton();
-
-  // Title
-  if (params.titleText) {
-    title.innerText = params.titleText;
-  } else {
-    title.innerHTML = params.title.split('\n').join('<br>');
-  }
-
-  // Content
-  if (params.text || params.html) {
-    if (_typeof(params.html) === 'object') {
-      content.innerHTML = '';
-      if (0 in params.html) {
-        for (var _i = 0; _i in params.html; _i++) {
-          content.appendChild(params.html[_i].cloneNode(true));
+    var prefix = function prefix(items) {
+        var result = {};
+        for (var i in items) {
+            result[items[i]] = swalPrefix + items[i];
         }
-      } else {
-        content.appendChild(params.html.cloneNode(true));
-      }
-    } else if (params.html) {
-      content.innerHTML = params.html;
-    } else if (params.text) {
-      content.textContent = params.text;
-    }
-    show(content);
-  } else {
-    hide(content);
-  }
-
-  // Close button
-  if (params.showCloseButton) {
-    show(closeButton);
-  } else {
-    hide(closeButton);
-  }
-
-  // Custom Class
-  modal.className = swalClasses.modal;
-  if (params.customClass) {
-    addClass(modal, params.customClass);
-  }
-
-  // Progress steps
-  var progressStepsContainer = getProgressSteps();
-  var currentProgressStep = parseInt(params.currentProgressStep === null ? sweetAlert.getQueueStep() : params.currentProgressStep, 10);
-  if (params.progressSteps.length) {
-    show(progressStepsContainer);
-    empty(progressStepsContainer);
-    if (currentProgressStep >= params.progressSteps.length) {
-      console.warn('SweetAlert2: Invalid currentProgressStep parameter, it should be less than progressSteps.length ' + '(currentProgressStep like JS arrays starts from 0)');
-    }
-    params.progressSteps.forEach(function (step, index) {
-      var circle = document.createElement('li');
-      addClass(circle, swalClasses.progresscircle);
-      circle.innerHTML = step;
-      if (index === currentProgressStep) {
-        addClass(circle, swalClasses.activeprogressstep);
-      }
-      progressStepsContainer.appendChild(circle);
-      if (index !== params.progressSteps.length - 1) {
-        var line = document.createElement('li');
-        addClass(line, swalClasses.progressline);
-        line.style.width = params.progressStepsDistance;
-        progressStepsContainer.appendChild(line);
-      }
-    });
-  } else {
-    hide(progressStepsContainer);
-  }
-
-  // Icon
-  var icons = getIcons();
-  for (var _i2 = 0; _i2 < icons.length; _i2++) {
-    hide(icons[_i2]);
-  }
-  if (params.type) {
-    var validType = false;
-    for (var iconType in iconTypes) {
-      if (params.type === iconType) {
-        validType = true;
-        break;
-      }
-    }
-    if (!validType) {
-      console.error('SweetAlert2: Unknown alert type: ' + params.type);
-      return false;
-    }
-    var icon = modal.querySelector('.' + swalClasses.icon + '.' + iconTypes[params.type]);
-    show(icon);
-
-    // Animate icon
-    if (params.animation) {
-      switch (params.type) {
-        case 'success':
-          addClass(icon, 'swal2-animate-success-icon');
-          addClass(icon.querySelector('.swal2-success-line-tip'), 'swal2-animate-success-line-tip');
-          addClass(icon.querySelector('.swal2-success-line-long'), 'swal2-animate-success-line-long');
-          break;
-        case 'error':
-          addClass(icon, 'swal2-animate-error-icon');
-          addClass(icon.querySelector('.swal2-x-mark'), 'swal2-animate-x-mark');
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  // Custom image
-  var image = getImage();
-  if (params.imageUrl) {
-    image.setAttribute('src', params.imageUrl);
-    show(image);
-
-    if (params.imageWidth) {
-      image.setAttribute('width', params.imageWidth);
-    } else {
-      image.removeAttribute('width');
-    }
-
-    if (params.imageHeight) {
-      image.setAttribute('height', params.imageHeight);
-    } else {
-      image.removeAttribute('height');
-    }
-
-    image.className = swalClasses.image;
-    if (params.imageClass) {
-      addClass(image, params.imageClass);
-    }
-  } else {
-    hide(image);
-  }
-
-  // Cancel button
-  if (params.showCancelButton) {
-    cancelButton.style.display = 'inline-block';
-  } else {
-    hide(cancelButton);
-  }
-
-  // Confirm button
-  if (params.showConfirmButton) {
-    removeStyleProperty(confirmButton, 'display');
-  } else {
-    hide(confirmButton);
-  }
-
-  // Buttons wrapper
-  if (!params.showConfirmButton && !params.showCancelButton) {
-    hide(buttonsWrapper);
-  } else {
-    show(buttonsWrapper);
-  }
-
-  // Edit text on cancel and confirm buttons
-  confirmButton.innerHTML = params.confirmButtonText;
-  cancelButton.innerHTML = params.cancelButtonText;
-
-  // Set buttons to selected background colors
-  if (params.buttonsStyling) {
-    confirmButton.style.backgroundColor = params.confirmButtonColor;
-    cancelButton.style.backgroundColor = params.cancelButtonColor;
-  }
-
-  // Add buttons custom classes
-  confirmButton.className = swalClasses.confirm;
-  addClass(confirmButton, params.confirmButtonClass);
-  cancelButton.className = swalClasses.cancel;
-  addClass(cancelButton, params.cancelButtonClass);
-
-  // Buttons styling
-  if (params.buttonsStyling) {
-    addClass(confirmButton, swalClasses.styled);
-    addClass(cancelButton, swalClasses.styled);
-  } else {
-    removeClass(confirmButton, swalClasses.styled);
-    removeClass(cancelButton, swalClasses.styled);
-
-    confirmButton.style.backgroundColor = confirmButton.style.borderLeftColor = confirmButton.style.borderRightColor = '';
-    cancelButton.style.backgroundColor = cancelButton.style.borderLeftColor = cancelButton.style.borderRightColor = '';
-  }
-
-  // CSS animation
-  if (params.animation === true) {
-    removeClass(modal, swalClasses.noanimation);
-  } else {
-    addClass(modal, swalClasses.noanimation);
-  }
-};
-
-/*
- * Animations
- */
-var openModal = function openModal(animation, onComplete) {
-  var container = getContainer();
-  var modal = getModal();
-
-  if (animation) {
-    addClass(modal, swalClasses.show);
-    addClass(container, swalClasses.fade);
-    removeClass(modal, swalClasses.hide);
-  } else {
-    removeClass(modal, swalClasses.fade);
-  }
-  show(modal);
-
-  // scrolling is 'hidden' until animation is done, after that 'auto'
-  container.style.overflowY = 'hidden';
-  if (animationEndEvent && !hasClass(modal, swalClasses.noanimation)) {
-    modal.addEventListener(animationEndEvent, function swalCloseEventFinished() {
-      modal.removeEventListener(animationEndEvent, swalCloseEventFinished);
-      container.style.overflowY = 'auto';
-    });
-  } else {
-    container.style.overflowY = 'auto';
-  }
-
-  addClass(document.documentElement, swalClasses.shown);
-  addClass(document.body, swalClasses.shown);
-  addClass(container, swalClasses.shown);
-  fixScrollbar();
-  iOSfix();
-  states.previousActiveElement = document.activeElement;
-  if (onComplete !== null && typeof onComplete === 'function') {
-    setTimeout(function () {
-      onComplete(modal);
-    });
-  }
-};
-
-var fixScrollbar = function fixScrollbar() {
-  // for queues, do not do this more than once
-  if (states.previousBodyPadding !== null) {
-    return;
-  }
-  // if the body has overflow
-  if (document.body.scrollHeight > window.innerHeight) {
-    // add padding so the content doesn't shift after removal of scrollbar
-    states.previousBodyPadding = document.body.style.paddingRight;
-    document.body.style.paddingRight = measureScrollbar() + 'px';
-  }
-};
-
-var undoScrollbar = function undoScrollbar() {
-  if (states.previousBodyPadding !== null) {
-    document.body.style.paddingRight = states.previousBodyPadding;
-    states.previousBodyPadding = null;
-  }
-};
-
-// Fix iOS scrolling http://stackoverflow.com/q/39626302/1331425
-var iOSfix = function iOSfix() {
-  var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  if (iOS && !hasClass(document.body, swalClasses.iosfix)) {
-    var offset = document.body.scrollTop;
-    document.body.style.top = offset * -1 + 'px';
-    addClass(document.body, swalClasses.iosfix);
-  }
-};
-
-var undoIOSfix = function undoIOSfix() {
-  if (hasClass(document.body, swalClasses.iosfix)) {
-    var offset = parseInt(document.body.style.top, 10);
-    removeClass(document.body, swalClasses.iosfix);
-    document.body.style.top = '';
-    document.body.scrollTop = offset * -1;
-  }
-};
-
-// SweetAlert entry point
-var sweetAlert = function sweetAlert() {
-  for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
-  }
-
-  if (args[0] === undefined) {
-    console.error('SweetAlert2 expects at least 1 attribute!');
-    return false;
-  }
-
-  var params = _extends({}, modalParams);
-
-  switch (_typeof(args[0])) {
-    case 'string':
-      params.title = args[0];
-      params.html = args[1];
-      params.type = args[2];
-
-      break;
-
-    case 'object':
-      _extends(params, args[0]);
-      params.extraParams = args[0].extraParams;
-
-      if (params.input === 'email' && params.inputValidator === null) {
-        params.inputValidator = function (email) {
-          return new Promise(function (resolve, reject) {
-            var emailRegex = /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-            if (emailRegex.test(email)) {
-              resolve();
-            } else {
-              reject('Invalid email address');
-            }
-          });
-        };
-      }
-
-      if (params.input === 'url' && params.inputValidator === null) {
-        params.inputValidator = function (url) {
-          return new Promise(function (resolve, reject) {
-            var urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-            if (urlRegex.test(url)) {
-              resolve();
-            } else {
-              reject('Invalid URL');
-            }
-          });
-        };
-      }
-      break;
-
-    default:
-      console.error('SweetAlert2: Unexpected type of argument! Expected "string" or "object", got ' + _typeof(args[0]));
-      return false;
-  }
-
-  setParameters(params);
-
-  var container = getContainer();
-  var modal = getModal();
-
-  return new Promise(function (resolve, reject) {
-    // Close on timer
-    if (params.timer) {
-      modal.timeout = setTimeout(function () {
-        sweetAlert.closeModal(params.onClose);
-        reject('timer');
-      }, params.timer);
-    }
-
-    // Get input element by specified type or, if type isn't specified, by params.input
-    var getInput = function getInput(inputType) {
-      inputType = inputType || params.input;
-      if (!inputType) {
-        return null;
-      }
-      switch (inputType) {
-        case 'select':
-        case 'textarea':
-        case 'file':
-          return getChildByClass(modal, swalClasses[inputType]);
-        case 'checkbox':
-          return modal.querySelector('.' + swalClasses.checkbox + ' input');
-        case 'radio':
-          return modal.querySelector('.' + swalClasses.radio + ' input:checked') || modal.querySelector('.' + swalClasses.radio + ' input:first-child');
-        case 'range':
-          return modal.querySelector('.' + swalClasses.range + ' input');
-        default:
-          return getChildByClass(modal, swalClasses.input);
-      }
+        return result;
     };
 
-    // Get the value of the modal input
-    var getInputValue = function getInputValue() {
-      var input = getInput();
-      if (!input) {
-        return null;
-      }
-      switch (params.input) {
-        case 'checkbox':
-          return input.checked ? 1 : 0;
-        case 'radio':
-          return input.checked ? input.value : null;
-        case 'file':
-          return input.files.length ? input.files[0] : null;
-        default:
-          return params.inputAutoTrim ? input.value.trim() : input.value;
-      }
-    };
+    var swalClasses = prefix(['container', 'shown', 'iosfix', 'modal', 'overlay', 'fade', 'show', 'hide', 'noanimation', 'close', 'title', 'content', 'buttonswrapper', 'confirm', 'cancel', 'icon', 'image', 'input', 'file', 'range', 'select', 'radio', 'checkbox', 'textarea', 'inputerror', 'validationerror', 'progresssteps', 'activeprogressstep', 'progresscircle', 'progressline', 'loading', 'styled']);
 
-    // input autofocus
-    if (params.input) {
-      setTimeout(function () {
-        var input = getInput();
-        if (input) {
-          focusInput(input);
-        }
-      }, 0);
-    }
+    var iconTypes = prefix(['success', 'warning', 'info', 'question', 'error']);
 
-    var confirm = function confirm(value) {
-      if (params.showLoaderOnConfirm) {
-        sweetAlert.showLoading();
-      }
-
-      if (params.preConfirm) {
-        params.preConfirm(value, params.extraParams).then(function (preConfirmValue) {
-          sweetAlert.closeModal(params.onClose);
-          resolve(preConfirmValue || value);
-        }, function (error) {
-          sweetAlert.hideLoading();
-          if (error) {
-            sweetAlert.showValidationError(error);
-          }
-        });
-      } else {
-        sweetAlert.closeModal(params.onClose);
-        resolve(value);
-      }
-    };
-
-    // Mouse interactions
-    var onButtonEvent = function onButtonEvent(event) {
-      var e = event || window.event;
-      var target = e.target || e.srcElement;
-      var confirmButton = getConfirmButton();
-      var cancelButton = getCancelButton();
-      var targetedConfirm = confirmButton && (confirmButton === target || confirmButton.contains(target));
-      var targetedCancel = cancelButton && (cancelButton === target || cancelButton.contains(target));
-
-      switch (e.type) {
-        case 'mouseover':
-        case 'mouseup':
-          if (params.buttonsStyling) {
-            if (targetedConfirm) {
-              confirmButton.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.1);
-            } else if (targetedCancel) {
-              cancelButton.style.backgroundColor = colorLuminance(params.cancelButtonColor, -0.1);
-            }
-          }
-          break;
-        case 'mouseout':
-          if (params.buttonsStyling) {
-            if (targetedConfirm) {
-              confirmButton.style.backgroundColor = params.confirmButtonColor;
-            } else if (targetedCancel) {
-              cancelButton.style.backgroundColor = params.cancelButtonColor;
-            }
-          }
-          break;
-        case 'mousedown':
-          if (params.buttonsStyling) {
-            if (targetedConfirm) {
-              confirmButton.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.2);
-            } else if (targetedCancel) {
-              cancelButton.style.backgroundColor = colorLuminance(params.cancelButtonColor, -0.2);
-            }
-          }
-          break;
-        case 'click':
-          // Clicked 'confirm'
-          if (targetedConfirm && sweetAlert.isVisible()) {
-            sweetAlert.disableButtons();
-            if (params.input) {
-              var inputValue = getInputValue();
-
-              if (params.inputValidator) {
-                sweetAlert.disableInput();
-                params.inputValidator(inputValue, params.extraParams).then(function () {
-                  sweetAlert.enableButtons();
-                  sweetAlert.enableInput();
-                  confirm(inputValue);
-                }, function (error) {
-                  sweetAlert.enableButtons();
-                  sweetAlert.enableInput();
-                  if (error) {
-                    sweetAlert.showValidationError(error);
-                  }
-                });
-              } else {
-                confirm(inputValue);
-              }
-            } else {
-              confirm(true);
-            }
-
-            // Clicked 'cancel'
-          } else if (targetedCancel && sweetAlert.isVisible()) {
-            sweetAlert.disableButtons();
-            sweetAlert.closeModal(params.onClose);
-            reject('cancel');
-          }
-          break;
-        default:
-      }
-    };
-
-    var buttons = modal.querySelectorAll('button');
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i].onclick = onButtonEvent;
-      buttons[i].onmouseover = onButtonEvent;
-      buttons[i].onmouseout = onButtonEvent;
-      buttons[i].onmousedown = onButtonEvent;
-    }
-
-    // Closing modal by close button
-    getCloseButton().onclick = function () {
-      sweetAlert.closeModal(params.onClose);
-      reject('close');
-    };
-
-    // Closing modal by overlay click
-    container.onclick = function (e) {
-      if (e.target !== container) {
-        return;
-      }
-      if (params.allowOutsideClick) {
-        sweetAlert.closeModal(params.onClose);
-        reject('overlay');
-      }
-    };
-
-    var buttonsWrapper = getButtonsWrapper();
-    var confirmButton = getConfirmButton();
-    var cancelButton = getCancelButton();
-
-    // Reverse buttons (Confirm on the right side)
-    if (params.reverseButtons) {
-      confirmButton.parentNode.insertBefore(cancelButton, confirmButton);
-    } else {
-      confirmButton.parentNode.insertBefore(confirmButton, cancelButton);
-    }
-
-    // Focus handling
-    var setFocus = function setFocus(index, increment) {
-      var focusableElements = getFocusableElements(params.focusCancel);
-      // search for visible elements and select the next possible match
-      for (var _i3 = 0; _i3 < focusableElements.length; _i3++) {
-        index = index + increment;
-
-        // rollover to first item
-        if (index === focusableElements.length) {
-          index = 0;
-
-          // go to last item
-        } else if (index === -1) {
-          index = focusableElements.length - 1;
-        }
-
-        // determine if element is visible
-        var el = focusableElements[index];
-        if (isVisible(el)) {
-          return el.focus();
-        }
-      }
-    };
-
-    var handleKeyDown = function handleKeyDown(event) {
-      var e = event || window.event;
-      var keyCode = e.keyCode || e.which;
-
-      if ([9, 13, 32, 27, 37, 38, 39, 40].indexOf(keyCode) === -1) {
-        // Don't do work on keys we don't care about.
-        return;
-      }
-
-      var targetElement = e.target || e.srcElement;
-
-      var focusableElements = getFocusableElements(params.focusCancel);
-      var btnIndex = -1; // Find the button - note, this is a nodelist, not an array.
-      for (var _i4 = 0; _i4 < focusableElements.length; _i4++) {
-        if (targetElement === focusableElements[_i4]) {
-          btnIndex = _i4;
-          break;
-        }
-      }
-
-      // TAB
-      if (keyCode === 9) {
-        if (!e.shiftKey) {
-          // Cycle to the next button
-          setFocus(btnIndex, 1);
-        } else {
-          // Cycle to the prev button
-          setFocus(btnIndex, -1);
-        }
-        e.stopPropagation();
-        e.preventDefault();
-
-        // ARROWS - switch focus between buttons
-      } else if (keyCode === 37 || keyCode === 38 || keyCode === 39 || keyCode === 40) {
-        // focus Cancel button if Confirm button is currently focused
-        if (document.activeElement === confirmButton && isVisible(cancelButton)) {
-          cancelButton.focus();
-          // and vice versa
-        } else if (document.activeElement === cancelButton && isVisible(confirmButton)) {
-          confirmButton.focus();
-        }
-
-        // ENTER/SPACE
-      } else if (keyCode === 13 || keyCode === 32) {
-        if (btnIndex === -1 && params.allowEnterKey) {
-          // ENTER/SPACE clicked outside of a button.
-          if (params.focusCancel) {
-            fireClick(cancelButton, e);
-          } else {
-            fireClick(confirmButton, e);
-          }
-          e.stopPropagation();
-          e.preventDefault();
-        }
-
-        // ESC
-      } else if (keyCode === 27 && params.allowEscapeKey === true) {
-        sweetAlert.closeModal(params.onClose);
-        reject('esc');
-      }
-    };
-
-    states.previousWindowKeyDown = window.onkeydown;
-    window.onkeydown = handleKeyDown;
-
-    // Loading state
-    if (params.buttonsStyling) {
-      confirmButton.style.borderLeftColor = params.confirmButtonColor;
-      confirmButton.style.borderRightColor = params.confirmButtonColor;
-    }
-
-    /**
-     * Show spinner instead of Confirm button and disable Cancel button
+    /*
+     * Set hover, active and focus-states for buttons (source: http://www.sitepoint.com/javascript-generate-lighter-darker-color)
      */
-    sweetAlert.showLoading = sweetAlert.enableLoading = function () {
-      show(buttonsWrapper);
-      show(confirmButton, 'inline-block');
-      addClass(buttonsWrapper, swalClasses.loading);
-      addClass(modal, swalClasses.loading);
-      confirmButton.disabled = true;
-      cancelButton.disabled = true;
-    };
-
-    /**
-     * Show spinner instead of Confirm button and disable Cancel button
-     */
-    sweetAlert.hideLoading = sweetAlert.disableLoading = function () {
-      if (!params.showConfirmButton) {
-        hide(confirmButton);
-        if (!params.showCancelButton) {
-          hide(getButtonsWrapper());
+    var colorLuminance = function colorLuminance(hex, lum) {
+        // Validate hex string
+        hex = String(hex).replace(/[^0-9a-f]/gi, '');
+        if (hex.length < 6) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
         }
-      }
-      removeClass(buttonsWrapper, swalClasses.loading);
-      removeClass(modal, swalClasses.loading);
-      confirmButton.disabled = false;
-      cancelButton.disabled = false;
-    };
+        lum = lum || 0;
 
-    sweetAlert.getTitle = function () {
-      return getTitle();
-    };
-    sweetAlert.getContent = function () {
-      return getContent();
-    };
-    sweetAlert.getInput = function () {
-      return getInput();
-    };
-    sweetAlert.getImage = function () {
-      return getImage();
-    };
-    sweetAlert.getButtonsWrapper = function () {
-      return getButtonsWrapper();
-    };
-    sweetAlert.getConfirmButton = function () {
-      return getConfirmButton();
-    };
-    sweetAlert.getCancelButton = function () {
-      return getCancelButton();
-    };
-
-    sweetAlert.enableButtons = function () {
-      confirmButton.disabled = false;
-      cancelButton.disabled = false;
-    };
-
-    sweetAlert.disableButtons = function () {
-      confirmButton.disabled = true;
-      cancelButton.disabled = true;
-    };
-
-    sweetAlert.enableConfirmButton = function () {
-      confirmButton.disabled = false;
-    };
-
-    sweetAlert.disableConfirmButton = function () {
-      confirmButton.disabled = true;
-    };
-
-    sweetAlert.enableInput = function () {
-      var input = getInput();
-      if (!input) {
-        return false;
-      }
-      if (input.type === 'radio') {
-        var radiosContainer = input.parentNode.parentNode;
-        var radios = radiosContainer.querySelectorAll('input');
-        for (var _i5 = 0; _i5 < radios.length; _i5++) {
-          radios[_i5].disabled = false;
+        // Convert to decimal and change luminosity
+        var rgb = '#';
+        for (var i = 0; i < 3; i++) {
+            var c = parseInt(hex.substr(i * 2, 2), 16);
+            c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+            rgb += ('00' + c).substr(c.length);
         }
-      } else {
-        input.disabled = false;
-      }
+
+        return rgb;
     };
 
-    sweetAlert.disableInput = function () {
-      var input = getInput();
-      if (!input) {
-        return false;
-      }
-      if (input && input.type === 'radio') {
-        var radiosContainer = input.parentNode.parentNode;
-        var radios = radiosContainer.querySelectorAll('input');
-        for (var _i6 = 0; _i6 < radios.length; _i6++) {
-          radios[_i6].disabled = true;
-        }
-      } else {
-        input.disabled = true;
-      }
-    };
-
-    // Set modal min-height to disable scrolling inside the modal
-    sweetAlert.recalculateHeight = debounce(function () {
-      var modal = getModal();
-      if (!modal) {
-        return;
-      }
-      var prevState = modal.style.display;
-      modal.style.minHeight = '';
-      show(modal);
-      modal.style.minHeight = modal.scrollHeight + 1 + 'px';
-      modal.style.display = prevState;
-    }, 50);
-
-    // Show block with validation error
-    sweetAlert.showValidationError = function (error) {
-      var validationError = getValidationError();
-      validationError.innerHTML = error;
-      show(validationError);
-
-      var input = getInput();
-      if (input) {
-        focusInput(input);
-        addClass(input, swalClasses.inputerror);
-      }
-    };
-
-    // Hide block with validation error
-    sweetAlert.resetValidationError = function () {
-      var validationError = getValidationError();
-      hide(validationError);
-      sweetAlert.recalculateHeight();
-
-      var input = getInput();
-      if (input) {
-        removeClass(input, swalClasses.inputerror);
-      }
-    };
-
-    sweetAlert.getProgressSteps = function () {
-      return params.progressSteps;
-    };
-
-    sweetAlert.setProgressSteps = function (progressSteps) {
-      params.progressSteps = progressSteps;
-      setParameters(params);
-    };
-
-    sweetAlert.showProgressSteps = function () {
-      show(getProgressSteps());
-    };
-
-    sweetAlert.hideProgressSteps = function () {
-      hide(getProgressSteps());
-    };
-
-    sweetAlert.enableButtons();
-    sweetAlert.hideLoading();
-    sweetAlert.resetValidationError();
-
-    // inputs
-    var inputTypes = ['input', 'file', 'range', 'select', 'radio', 'checkbox', 'textarea'];
-    var input = void 0;
-    for (var _i7 = 0; _i7 < inputTypes.length; _i7++) {
-      var inputClass = swalClasses[inputTypes[_i7]];
-      var inputContainer = getChildByClass(modal, inputClass);
-      input = getInput(inputTypes[_i7]);
-
-      // set attributes
-      if (input) {
-        for (var j in input.attributes) {
-          if (input.attributes.hasOwnProperty(j)) {
-            var attrName = input.attributes[j].name;
-            if (attrName !== 'type' && attrName !== 'value') {
-              input.removeAttribute(attrName);
+    var uniqueArray = function uniqueArray(arr) {
+        var result = [];
+        for (var i in arr) {
+            if (result.indexOf(arr[i]) === -1) {
+                result.push(arr[i]);
             }
-          }
         }
-        for (var attr in params.inputAttributes) {
-          input.setAttribute(attr, params.inputAttributes[attr]);
+        return result;
+    };
+
+    /* global MouseEvent */
+
+    // Remember state in cases where opening and handling a modal will fiddle with it.
+    var states = {
+        previousWindowKeyDown: null,
+        previousActiveElement: null,
+        previousBodyPadding: null
+    };
+
+    /*
+     * Add modal + overlay to DOM
+     */
+    var init = function init(params) {
+        if (typeof document === 'undefined') {
+            console.error('SweetAlert2 requires document to initialize');
+            return;
         }
-      }
 
-      // set class
-      inputContainer.className = inputClass;
-      if (params.inputClass) {
-        addClass(inputContainer, params.inputClass);
-      }
+        var container = document.createElement('div');
+        container.className = swalClasses.container;
+        container.innerHTML = sweetHTML;
 
-      hide(inputContainer);
-    }
+        var targetElement = document.querySelector(params.target);
+        if (!targetElement) {
+            console.warn('SweetAlert2: Can\'t find the target "' + params.target + '"');
+            targetElement = document.body;
+        }
+        targetElement.appendChild(container);
 
-    var populateInputOptions = void 0;
-    switch (params.input) {
-      case 'text':
-      case 'email':
-      case 'password':
-      case 'number':
-      case 'tel':
-      case 'url':
-        input = getChildByClass(modal, swalClasses.input);
-        input.value = params.inputValue;
-        input.placeholder = params.inputPlaceholder;
-        input.type = params.input;
-        show(input);
-        break;
-      case 'file':
-        input = getChildByClass(modal, swalClasses.file);
-        input.placeholder = params.inputPlaceholder;
-        input.type = params.input;
-        show(input);
-        break;
-      case 'range':
-        var range = getChildByClass(modal, swalClasses.range);
-        var rangeInput = range.querySelector('input');
-        var rangeOutput = range.querySelector('output');
-        rangeInput.value = params.inputValue;
-        rangeInput.type = params.input;
-        rangeOutput.value = params.inputValue;
-        show(range);
-        break;
-      case 'select':
+        var modal = getModal();
+        var input = getChildByClass(modal, swalClasses.input);
+        var file = getChildByClass(modal, swalClasses.file);
+        var range = modal.querySelector('.' + swalClasses.range + ' input');
+        var rangeOutput = modal.querySelector('.' + swalClasses.range + ' output');
         var select = getChildByClass(modal, swalClasses.select);
-        select.innerHTML = '';
-        if (params.inputPlaceholder) {
-          var placeholder = document.createElement('option');
-          placeholder.innerHTML = params.inputPlaceholder;
-          placeholder.value = '';
-          placeholder.disabled = true;
-          placeholder.selected = true;
-          select.appendChild(placeholder);
-        }
-        populateInputOptions = function populateInputOptions(inputOptions) {
-          for (var optionValue in inputOptions) {
-            var option = document.createElement('option');
-            option.value = optionValue;
-            option.innerHTML = inputOptions[optionValue];
-            if (params.inputValue === optionValue) {
-              option.selected = true;
-            }
-            select.appendChild(option);
-          }
-          show(select);
-          select.focus();
-        };
-        break;
-      case 'radio':
-        var radio = getChildByClass(modal, swalClasses.radio);
-        radio.innerHTML = '';
-        populateInputOptions = function populateInputOptions(inputOptions) {
-          for (var radioValue in inputOptions) {
-            var radioInput = document.createElement('input');
-            var radioLabel = document.createElement('label');
-            var radioLabelSpan = document.createElement('span');
-            radioInput.type = 'radio';
-            radioInput.name = swalClasses.radio;
-            radioInput.value = radioValue;
-            if (params.inputValue === radioValue) {
-              radioInput.checked = true;
-            }
-            radioLabelSpan.innerHTML = inputOptions[radioValue];
-            radioLabel.appendChild(radioInput);
-            radioLabel.appendChild(radioLabelSpan);
-            radioLabel.for = radioInput.id;
-            radio.appendChild(radioLabel);
-          }
-          show(radio);
-          var radios = radio.querySelectorAll('input');
-          if (radios.length) {
-            radios[0].focus();
-          }
-        };
-        break;
-      case 'checkbox':
-        var checkbox = getChildByClass(modal, swalClasses.checkbox);
-        var checkboxInput = getInput('checkbox');
-        checkboxInput.type = 'checkbox';
-        checkboxInput.value = 1;
-        checkboxInput.id = swalClasses.checkbox;
-        checkboxInput.checked = Boolean(params.inputValue);
-        var label = checkbox.getElementsByTagName('span');
-        if (label.length) {
-          checkbox.removeChild(label[0]);
-        }
-        label = document.createElement('span');
-        label.innerHTML = params.inputPlaceholder;
-        checkbox.appendChild(label);
-        show(checkbox);
-        break;
-      case 'textarea':
+        var checkbox = modal.querySelector('.' + swalClasses.checkbox + ' input');
         var textarea = getChildByClass(modal, swalClasses.textarea);
-        textarea.value = params.inputValue;
-        textarea.placeholder = params.inputPlaceholder;
-        show(textarea);
-        break;
-      case null:
-        break;
-      default:
-        console.error('SweetAlert2: Unexpected type of input! Expected "text", "email", "password", "number", "tel", "select", "radio", "checkbox", "textarea", "file" or "url", got "' + params.input + '"');
-        break;
-    }
 
-    if (params.input === 'select' || params.input === 'radio') {
-      if (params.inputOptions instanceof Promise) {
-        sweetAlert.showLoading();
-        params.inputOptions.then(function (inputOptions) {
-          sweetAlert.hideLoading();
-          populateInputOptions(inputOptions);
+        input.oninput = function() {
+            sweetAlert.resetValidationError();
+        };
+
+        input.onkeydown = function(event) {
+            setTimeout(function() {
+                if (event.keyCode === 13 && params.allowEnterKey) {
+                    event.stopPropagation();
+                    sweetAlert.clickConfirm();
+                }
+            }, 0);
+        };
+
+        file.onchange = function() {
+            sweetAlert.resetValidationError();
+        };
+
+        range.oninput = function() {
+            sweetAlert.resetValidationError();
+            rangeOutput.value = range.value;
+        };
+
+        range.onchange = function() {
+            sweetAlert.resetValidationError();
+            range.previousSibling.value = range.value;
+        };
+
+        select.onchange = function() {
+            sweetAlert.resetValidationError();
+        };
+
+        checkbox.onchange = function() {
+            sweetAlert.resetValidationError();
+        };
+
+        textarea.oninput = function() {
+            sweetAlert.resetValidationError();
+        };
+
+        return modal;
+    };
+
+    /*
+     * Manipulate DOM
+     */
+
+    var sweetHTML = ('\n <div role="dialog" aria-labelledby="' + swalClasses.title + '" aria-describedby="' + swalClasses.content + '" class="' + swalClasses.modal + '" tabindex="-1">\n   <ul class="' + swalClasses.progresssteps + '"></ul>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.error + '">\n     <span class="swal2-x-mark"><span class="swal2-x-mark-line-left"></span><span class="swal2-x-mark-line-right"></span></span>\n   </div>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.question + '">?</div>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.warning + '">!</div>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.info + '">i</div>\n   <div class="' + swalClasses.icon + ' ' + iconTypes.success + '">\n     <div class="swal2-success-circular-line-left"></div>\n     <span class="swal2-success-line-tip"></span> <span class="swal2-success-line-long"></span>\n     <div class="swal2-success-ring"></div> <div class="swal2-success-fix"></div>\n     <div class="swal2-success-circular-line-right"></div>\n   </div>\n   <img class="' + swalClasses.image + '">\n   <h2 class="' + swalClasses.title + '" id="' + swalClasses.title + '"></h2>\n   <div id="' + swalClasses.content + '" class="' + swalClasses.content + '"></div>\n   <input class="' + swalClasses.input + '">\n   <input type="file" class="' + swalClasses.file + '">\n   <div class="' + swalClasses.range + '">\n     <output></output>\n     <input type="range">\n   </div>\n   <select class="' + swalClasses.select + '"></select>\n   <div class="' + swalClasses.radio + '"></div>\n   <label for="' + swalClasses.checkbox + '" class="' + swalClasses.checkbox + '">\n     <input type="checkbox">\n   </label>\n   <textarea class="' + swalClasses.textarea + '"></textarea>\n   <div class="' + swalClasses.validationerror + '"></div>\n   <div class="' + swalClasses.buttonswrapper + '">\n     <button type="button" class="' + swalClasses.confirm + '">OK</button>\n     <button type="button" class="' + swalClasses.cancel + '">Cancel</button>\n   </div>\n   <button type="button" class="' + swalClasses.close + '" aria-label="Close this dialog">&times;</button>\n </div>\n').replace(/(^|\n)\s*/g, '');
+
+    var getContainer = function getContainer() {
+        return document.body.querySelector('.' + swalClasses.container);
+    };
+
+    var getModal = function getModal() {
+        return getContainer() ? getContainer().querySelector('.' + swalClasses.modal) : null;
+    };
+
+    var getIcons = function getIcons() {
+        var modal = getModal();
+        return modal.querySelectorAll('.' + swalClasses.icon);
+    };
+
+    var elementByClass = function elementByClass(className) {
+        return getContainer() ? getContainer().querySelector('.' + className) : null;
+    };
+
+    var getTitle = function getTitle() {
+        return elementByClass(swalClasses.title);
+    };
+
+    var getContent = function getContent() {
+        return elementByClass(swalClasses.content);
+    };
+
+    var getImage = function getImage() {
+        return elementByClass(swalClasses.image);
+    };
+
+    var getButtonsWrapper = function getButtonsWrapper() {
+        return elementByClass(swalClasses.buttonswrapper);
+    };
+
+    var getProgressSteps = function getProgressSteps() {
+        return elementByClass(swalClasses.progresssteps);
+    };
+
+    var getValidationError = function getValidationError() {
+        return elementByClass(swalClasses.validationerror);
+    };
+
+    var getConfirmButton = function getConfirmButton() {
+        return elementByClass(swalClasses.confirm);
+    };
+
+    var getCancelButton = function getCancelButton() {
+        return elementByClass(swalClasses.cancel);
+    };
+
+    var getCloseButton = function getCloseButton() {
+        return elementByClass(swalClasses.close);
+    };
+
+    var getFocusableElements = function getFocusableElements(focusCancel) {
+        var buttons = [getConfirmButton(), getCancelButton()];
+        if (focusCancel) {
+            buttons.reverse();
+        }
+        var focusableElements = buttons.concat(Array.prototype.slice.call(getModal().querySelectorAll('button, input:not([type=hidden]), textarea, select, a, *[tabindex]:not([tabindex="-1"])')));
+        return uniqueArray(focusableElements);
+    };
+
+    var hasClass = function hasClass(elem, className) {
+        if (elem.classList) {
+            return elem.classList.contains(className);
+        }
+        return false;
+    };
+
+    var focusInput = function focusInput(input) {
+        input.focus();
+
+        // place cursor at end of text in text input
+        if (input.type !== 'file') {
+            // http://stackoverflow.com/a/2345915/1331425
+            var val = input.value;
+            input.value = '';
+            input.value = val;
+        }
+    };
+
+    var addClass = function addClass(elem, className) {
+        if (!elem || !className) {
+            return;
+        }
+        var classes = className.split(/\s+/).filter(Boolean);
+        classes.forEach(function(className) {
+            elem.classList.add(className);
         });
-      } else if (_typeof(params.inputOptions) === 'object') {
-        populateInputOptions(params.inputOptions);
-      } else {
-        console.error('SweetAlert2: Unexpected type of inputOptions! Expected object or Promise, got ' + _typeof(params.inputOptions));
-      }
-    }
+    };
 
-    openModal(params.animation, params.onOpen);
-
-    // Focus the first element (input or button)
-    if (params.allowEnterKey) {
-      setFocus(-1, 1);
-    } else {
-      if (document.activeElement) {
-        document.activeElement.blur();
-      }
-    }
-
-    // fix scroll
-    getContainer().scrollTop = 0;
-
-    // Observe changes inside the modal and adjust height
-    if (typeof MutationObserver !== 'undefined' && !swal2Observer) {
-      swal2Observer = new MutationObserver(sweetAlert.recalculateHeight);
-      swal2Observer.observe(modal, { childList: true, characterData: true, subtree: true });
-    }
-  });
-};
-
-/*
- * Global function to determine if swal2 modal is shown
- */
-sweetAlert.isVisible = function () {
-  return !!getModal();
-};
-
-/*
- * Global function for chaining sweetAlert modals
- */
-sweetAlert.queue = function (steps) {
-  queue = steps;
-  var resetQueue = function resetQueue() {
-    queue = [];
-    document.body.removeAttribute('data-swal2-queue-step');
-  };
-  var queueResult = [];
-  return new Promise(function (resolve, reject) {
-    (function step(i, callback) {
-      if (i < queue.length) {
-        document.body.setAttribute('data-swal2-queue-step', i);
-
-        sweetAlert(queue[i]).then(function (result) {
-          queueResult.push(result);
-          step(i + 1, callback);
-        }, function (dismiss) {
-          resetQueue();
-          reject(dismiss);
+    var removeClass = function removeClass(elem, className) {
+        if (!elem || !className) {
+            return;
+        }
+        var classes = className.split(/\s+/).filter(Boolean);
+        classes.forEach(function(className) {
+            elem.classList.remove(className);
         });
-      } else {
-        resetQueue();
-        resolve(queueResult);
-      }
-    })(0);
-  });
-};
+    };
 
-/*
- * Global function for getting the index of current modal in queue
- */
-sweetAlert.getQueueStep = function () {
-  return document.body.getAttribute('data-swal2-queue-step');
-};
+    var getChildByClass = function getChildByClass(elem, className) {
+        for (var i = 0; i < elem.childNodes.length; i++) {
+            if (hasClass(elem.childNodes[i], className)) {
+                return elem.childNodes[i];
+            }
+        }
+    };
 
-/*
- * Global function for inserting a modal to the queue
- */
-sweetAlert.insertQueueStep = function (step, index) {
-  if (index && index < queue.length) {
-    return queue.splice(index, 0, step);
-  }
-  return queue.push(step);
-};
+    var show = function show(elem, display) {
+        if (!display) {
+            display = 'block';
+        }
+        elem.style.opacity = '';
+        elem.style.display = display;
+    };
 
-/*
- * Global function for deleting a modal from the queue
- */
-sweetAlert.deleteQueueStep = function (index) {
-  if (typeof queue[index] !== 'undefined') {
-    queue.splice(index, 1);
-  }
-};
+    var hide = function hide(elem) {
+        elem.style.opacity = '';
+        elem.style.display = 'none';
+    };
 
-/*
- * Global function to close sweetAlert
- */
-sweetAlert.close = sweetAlert.closeModal = function (onComplete) {
-  var container = getContainer();
-  var modal = getModal();
-  if (!modal) {
-    return;
-  }
-  removeClass(modal, swalClasses.show);
-  addClass(modal, swalClasses.hide);
-  clearTimeout(modal.timeout);
+    var empty = function empty(elem) {
+        while (elem.firstChild) {
+            elem.removeChild(elem.firstChild);
+        }
+    };
 
-  resetPrevState();
+    // borrowed from jqeury $(elem).is(':visible') implementation
+    var isVisible = function isVisible(elem) {
+        return elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length;
+    };
 
-  var removeModalAndResetState = function removeModalAndResetState() {
-    if (container.parentNode) {
-      container.parentNode.removeChild(container);
-    }
-    removeClass(document.documentElement, swalClasses.shown);
-    removeClass(document.body, swalClasses.shown);
-    undoScrollbar();
-    undoIOSfix();
-  };
+    var removeStyleProperty = function removeStyleProperty(elem, property) {
+        if (elem.style.removeProperty) {
+            elem.style.removeProperty(property);
+        } else {
+            elem.style.removeAttribute(property);
+        }
+    };
 
-  // If animation is supported, animate
-  if (animationEndEvent && !hasClass(modal, swalClasses.noanimation)) {
-    modal.addEventListener(animationEndEvent, function swalCloseEventFinished() {
-      modal.removeEventListener(animationEndEvent, swalCloseEventFinished);
-      if (hasClass(modal, swalClasses.hide)) {
-        removeModalAndResetState();
-      }
-    });
-  } else {
-    // Otherwise, remove immediately
-    removeModalAndResetState();
-  }
-  if (onComplete !== null && typeof onComplete === 'function') {
-    setTimeout(function () {
-      onComplete(modal);
-    });
-  }
-};
+    var fireClick = function fireClick(node) {
+        if (!isVisible(node)) {
+            return false;
+        }
 
-/*
- * Global function to click 'Confirm' button
- */
-sweetAlert.clickConfirm = function () {
-  return getConfirmButton().click();
-};
+        // Taken from http://www.nonobtrusive.com/2011/11/29/programatically-fire-crossbrowser-click-event-with-javascript/
+        // Then fixed for today's Chrome browser.
+        if (typeof MouseEvent === 'function') {
+            // Up-to-date approach
+            var mevt = new MouseEvent('click', {
+                view: window,
+                bubbles: false,
+                cancelable: true
+            });
+            node.dispatchEvent(mevt);
+        } else if (document.createEvent) {
+            // Fallback
+            var evt = document.createEvent('MouseEvents');
+            evt.initEvent('click', false, false);
+            node.dispatchEvent(evt);
+        } else if (document.createEventObject) {
+            node.fireEvent('onclick');
+        } else if (typeof node.onclick === 'function') {
+            node.onclick();
+        }
+    };
 
-/*
- * Global function to click 'Cancel' button
- */
-sweetAlert.clickCancel = function () {
-  return getCancelButton().click();
-};
+    var animationEndEvent = function() {
+        var testEl = document.createElement('div');
+        var transEndEventNames = {
+            'WebkitAnimation': 'webkitAnimationEnd',
+            'OAnimation': 'oAnimationEnd oanimationend',
+            'msAnimation': 'MSAnimationEnd',
+            'animation': 'animationend'
+        };
+        for (var i in transEndEventNames) {
+            if (transEndEventNames.hasOwnProperty(i) && testEl.style[i] !== undefined) {
+                return transEndEventNames[i];
+            }
+        }
 
-/**
- * Set default params for each popup
- * @param {Object} userParams
- */
-sweetAlert.setDefaults = function (userParams) {
-  if (!userParams || (typeof userParams === 'undefined' ? 'undefined' : _typeof(userParams)) !== 'object') {
-    return console.error('SweetAlert2: the argument for setDefaults() is required and has to be a object');
-  }
+        return false;
+    }();
 
-  for (var param in userParams) {
-    if (!defaultParams.hasOwnProperty(param) && param !== 'extraParams') {
-      console.warn('SweetAlert2: Unknown parameter "' + param + '"');
-      delete userParams[param];
-    }
-  }
+    // Reset previous window keydown handler and focued element
+    var resetPrevState = function resetPrevState() {
+        window.onkeydown = states.previousWindowKeyDown;
+        if (states.previousActiveElement && states.previousActiveElement.focus) {
+            var x = window.scrollX;
+            var y = window.scrollY;
+            states.previousActiveElement.focus();
+            if (x && y) {
+                // IE has no scrollX/scrollY support
+                window.scrollTo(x, y);
+            }
+        }
+    };
 
-  _extends(modalParams, userParams);
-};
+    // Measure width of scrollbar
+    // https://github.com/twbs/bootstrap/blob/master/js/modal.js#L279-L286
+    var measureScrollbar = function measureScrollbar() {
+        var supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+        if (supportsTouch) {
+            return 0;
+        }
+        var scrollDiv = document.createElement('div');
+        scrollDiv.style.width = '50px';
+        scrollDiv.style.height = '50px';
+        scrollDiv.style.overflow = 'scroll';
+        document.body.appendChild(scrollDiv);
+        var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+        document.body.removeChild(scrollDiv);
+        return scrollbarWidth;
+    };
 
-/**
- * Reset default params for each popup
- */
-sweetAlert.resetDefaults = function () {
-  modalParams = _extends({}, defaultParams);
-};
+    // JavaScript Debounce Function
+    // Simplivied version of https://davidwalsh.name/javascript-debounce-function
+    var debounce = function debounce(func, wait) {
+        var timeout = void 0;
+        return function() {
+            var later = function later() {
+                timeout = null;
+                func();
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
 
-sweetAlert.noop = function () {};
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(obj) {
+        return typeof obj;
+    } : function(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
 
-sweetAlert.version = '6.6.2';
 
-sweetAlert.default = sweetAlert;
 
-return sweetAlert;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var _extends = Object.assign || function(target) {
+        for (var i = 1; i < arguments.length; i++) {
+            var source = arguments[i];
+
+            for (var key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    target[key] = source[key];
+                }
+            }
+        }
+
+        return target;
+    };
+
+    var modalParams = _extends({}, defaultParams);
+    var queue = [];
+    var swal2Observer = void 0;
+
+    /*
+     * Set type, text and actions on modal
+     */
+    var setParameters = function setParameters(params) {
+        var modal = getModal() || init(params);
+
+        for (var param in params) {
+            if (!defaultParams.hasOwnProperty(param) && param !== 'extraParams') {
+                console.warn('SweetAlert2: Unknown parameter "' + param + '"');
+            }
+        }
+
+        // Set modal width
+        modal.style.width = typeof params.width === 'number' ? params.width + 'px' : params.width;
+
+        modal.style.padding = params.padding + 'px';
+        modal.style.background = params.background;
+        var successIconParts = modal.querySelectorAll('[class^=swal2-success-circular-line], .swal2-success-fix');
+        for (var i = 0; i < successIconParts.length; i++) {
+            successIconParts[i].style.background = params.background;
+        }
+
+        var title = getTitle();
+        var content = getContent();
+        var buttonsWrapper = getButtonsWrapper();
+        var confirmButton = getConfirmButton();
+        var cancelButton = getCancelButton();
+        var closeButton = getCloseButton();
+
+        // Title
+        if (params.titleText) {
+            title.innerText = params.titleText;
+        } else {
+            title.innerHTML = params.title.split('\n').join('<br>');
+        }
+
+        // Content
+        if (params.text || params.html) {
+            if (_typeof(params.html) === 'object') {
+                content.innerHTML = '';
+                if (0 in params.html) {
+                    for (var _i = 0; _i in params.html; _i++) {
+                        content.appendChild(params.html[_i].cloneNode(true));
+                    }
+                } else {
+                    content.appendChild(params.html.cloneNode(true));
+                }
+            } else if (params.html) {
+                content.innerHTML = params.html;
+            } else if (params.text) {
+                content.textContent = params.text;
+            }
+            show(content);
+        } else {
+            hide(content);
+        }
+
+        // Close button
+        if (params.showCloseButton) {
+            show(closeButton);
+        } else {
+            hide(closeButton);
+        }
+
+        // Custom Class
+        modal.className = swalClasses.modal;
+        if (params.customClass) {
+            addClass(modal, params.customClass);
+        }
+
+        // Progress steps
+        var progressStepsContainer = getProgressSteps();
+        var currentProgressStep = parseInt(params.currentProgressStep === null ? sweetAlert.getQueueStep() : params.currentProgressStep, 10);
+        if (params.progressSteps.length) {
+            show(progressStepsContainer);
+            empty(progressStepsContainer);
+            if (currentProgressStep >= params.progressSteps.length) {
+                console.warn('SweetAlert2: Invalid currentProgressStep parameter, it should be less than progressSteps.length ' + '(currentProgressStep like JS arrays starts from 0)');
+            }
+            params.progressSteps.forEach(function(step, index) {
+                var circle = document.createElement('li');
+                addClass(circle, swalClasses.progresscircle);
+                circle.innerHTML = step;
+                if (index === currentProgressStep) {
+                    addClass(circle, swalClasses.activeprogressstep);
+                }
+                progressStepsContainer.appendChild(circle);
+                if (index !== params.progressSteps.length - 1) {
+                    var line = document.createElement('li');
+                    addClass(line, swalClasses.progressline);
+                    line.style.width = params.progressStepsDistance;
+                    progressStepsContainer.appendChild(line);
+                }
+            });
+        } else {
+            hide(progressStepsContainer);
+        }
+
+        // Icon
+        var icons = getIcons();
+        for (var _i2 = 0; _i2 < icons.length; _i2++) {
+            hide(icons[_i2]);
+        }
+        if (params.type) {
+            var validType = false;
+            for (var iconType in iconTypes) {
+                if (params.type === iconType) {
+                    validType = true;
+                    break;
+                }
+            }
+            if (!validType) {
+                console.error('SweetAlert2: Unknown alert type: ' + params.type);
+                return false;
+            }
+            var icon = modal.querySelector('.' + swalClasses.icon + '.' + iconTypes[params.type]);
+            show(icon);
+
+            // Animate icon
+            if (params.animation) {
+                switch (params.type) {
+                    case 'success':
+                        addClass(icon, 'swal2-animate-success-icon');
+                        addClass(icon.querySelector('.swal2-success-line-tip'), 'swal2-animate-success-line-tip');
+                        addClass(icon.querySelector('.swal2-success-line-long'), 'swal2-animate-success-line-long');
+                        break;
+                    case 'error':
+                        addClass(icon, 'swal2-animate-error-icon');
+                        addClass(icon.querySelector('.swal2-x-mark'), 'swal2-animate-x-mark');
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        // Custom image
+        var image = getImage();
+        if (params.imageUrl) {
+            image.setAttribute('src', params.imageUrl);
+            show(image);
+
+            if (params.imageWidth) {
+                image.setAttribute('width', params.imageWidth);
+            } else {
+                image.removeAttribute('width');
+            }
+
+            if (params.imageHeight) {
+                image.setAttribute('height', params.imageHeight);
+            } else {
+                image.removeAttribute('height');
+            }
+
+            image.className = swalClasses.image;
+            if (params.imageClass) {
+                addClass(image, params.imageClass);
+            }
+        } else {
+            hide(image);
+        }
+
+        // Cancel button
+        if (params.showCancelButton) {
+            cancelButton.style.display = 'inline-block';
+        } else {
+            hide(cancelButton);
+        }
+
+        // Confirm button
+        if (params.showConfirmButton) {
+            removeStyleProperty(confirmButton, 'display');
+        } else {
+            hide(confirmButton);
+        }
+
+        // Buttons wrapper
+        if (!params.showConfirmButton && !params.showCancelButton) {
+            hide(buttonsWrapper);
+        } else {
+            show(buttonsWrapper);
+        }
+
+        // Edit text on cancel and confirm buttons
+        confirmButton.innerHTML = params.confirmButtonText;
+        cancelButton.innerHTML = params.cancelButtonText;
+
+        // Set buttons to selected background colors
+        if (params.buttonsStyling) {
+            confirmButton.style.backgroundColor = params.confirmButtonColor;
+            cancelButton.style.backgroundColor = params.cancelButtonColor;
+        }
+
+        // Add buttons custom classes
+        confirmButton.className = swalClasses.confirm;
+        addClass(confirmButton, params.confirmButtonClass);
+        cancelButton.className = swalClasses.cancel;
+        addClass(cancelButton, params.cancelButtonClass);
+
+        // Buttons styling
+        if (params.buttonsStyling) {
+            addClass(confirmButton, swalClasses.styled);
+            addClass(cancelButton, swalClasses.styled);
+        } else {
+            removeClass(confirmButton, swalClasses.styled);
+            removeClass(cancelButton, swalClasses.styled);
+
+            confirmButton.style.backgroundColor = confirmButton.style.borderLeftColor = confirmButton.style.borderRightColor = '';
+            cancelButton.style.backgroundColor = cancelButton.style.borderLeftColor = cancelButton.style.borderRightColor = '';
+        }
+
+        // CSS animation
+        if (params.animation === true) {
+            removeClass(modal, swalClasses.noanimation);
+        } else {
+            addClass(modal, swalClasses.noanimation);
+        }
+    };
+
+    /*
+     * Animations
+     */
+    var openModal = function openModal(animation, onComplete) {
+        var container = getContainer();
+        var modal = getModal();
+
+        if (animation) {
+            addClass(modal, swalClasses.show);
+            addClass(container, swalClasses.fade);
+            removeClass(modal, swalClasses.hide);
+        } else {
+            removeClass(modal, swalClasses.fade);
+        }
+        show(modal);
+
+        // scrolling is 'hidden' until animation is done, after that 'auto'
+        container.style.overflowY = 'hidden';
+        if (animationEndEvent && !hasClass(modal, swalClasses.noanimation)) {
+            modal.addEventListener(animationEndEvent, function swalCloseEventFinished() {
+                modal.removeEventListener(animationEndEvent, swalCloseEventFinished);
+                container.style.overflowY = 'auto';
+            });
+        } else {
+            container.style.overflowY = 'auto';
+        }
+
+        addClass(document.documentElement, swalClasses.shown);
+        addClass(document.body, swalClasses.shown);
+        addClass(container, swalClasses.shown);
+        fixScrollbar();
+        iOSfix();
+        states.previousActiveElement = document.activeElement;
+        if (onComplete !== null && typeof onComplete === 'function') {
+            setTimeout(function() {
+                onComplete(modal);
+            });
+        }
+    };
+
+    var fixScrollbar = function fixScrollbar() {
+        // for queues, do not do this more than once
+        if (states.previousBodyPadding !== null) {
+            return;
+        }
+        // if the body has overflow
+        if (document.body.scrollHeight > window.innerHeight) {
+            // add padding so the content doesn't shift after removal of scrollbar
+            states.previousBodyPadding = document.body.style.paddingRight;
+            document.body.style.paddingRight = measureScrollbar() + 'px';
+        }
+    };
+
+    var undoScrollbar = function undoScrollbar() {
+        if (states.previousBodyPadding !== null) {
+            document.body.style.paddingRight = states.previousBodyPadding;
+            states.previousBodyPadding = null;
+        }
+    };
+
+    // Fix iOS scrolling http://stackoverflow.com/q/39626302/1331425
+    var iOSfix = function iOSfix() {
+        var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (iOS && !hasClass(document.body, swalClasses.iosfix)) {
+            var offset = document.body.scrollTop;
+            document.body.style.top = offset * -1 + 'px';
+            addClass(document.body, swalClasses.iosfix);
+        }
+    };
+
+    var undoIOSfix = function undoIOSfix() {
+        if (hasClass(document.body, swalClasses.iosfix)) {
+            var offset = parseInt(document.body.style.top, 10);
+            removeClass(document.body, swalClasses.iosfix);
+            document.body.style.top = '';
+            document.body.scrollTop = offset * -1;
+        }
+    };
+
+    // SweetAlert entry point
+    var sweetAlert = function sweetAlert() {
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        if (args[0] === undefined) {
+            console.error('SweetAlert2 expects at least 1 attribute!');
+            return false;
+        }
+
+        var params = _extends({}, modalParams);
+
+        switch (_typeof(args[0])) {
+            case 'string':
+                params.title = args[0];
+                params.html = args[1];
+                params.type = args[2];
+
+                break;
+
+            case 'object':
+                _extends(params, args[0]);
+                params.extraParams = args[0].extraParams;
+
+                if (params.input === 'email' && params.inputValidator === null) {
+                    params.inputValidator = function(email) {
+                        return new Promise(function(resolve, reject) {
+                            var emailRegex = /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+                            if (emailRegex.test(email)) {
+                                resolve();
+                            } else {
+                                reject('Invalid email address');
+                            }
+                        });
+                    };
+                }
+
+                if (params.input === 'url' && params.inputValidator === null) {
+                    params.inputValidator = function(url) {
+                        return new Promise(function(resolve, reject) {
+                            var urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+                            if (urlRegex.test(url)) {
+                                resolve();
+                            } else {
+                                reject('Invalid URL');
+                            }
+                        });
+                    };
+                }
+                break;
+
+            default:
+                console.error('SweetAlert2: Unexpected type of argument! Expected "string" or "object", got ' + _typeof(args[0]));
+                return false;
+        }
+
+        setParameters(params);
+
+        var container = getContainer();
+        var modal = getModal();
+
+        return new Promise(function(resolve, reject) {
+            // Close on timer
+            if (params.timer) {
+                modal.timeout = setTimeout(function() {
+                    sweetAlert.closeModal(params.onClose);
+                    reject('timer');
+                }, params.timer);
+            }
+
+            // Get input element by specified type or, if type isn't specified, by params.input
+            var getInput = function getInput(inputType) {
+                inputType = inputType || params.input;
+                if (!inputType) {
+                    return null;
+                }
+                switch (inputType) {
+                    case 'select':
+                    case 'textarea':
+                    case 'file':
+                        return getChildByClass(modal, swalClasses[inputType]);
+                    case 'checkbox':
+                        return modal.querySelector('.' + swalClasses.checkbox + ' input');
+                    case 'radio':
+                        return modal.querySelector('.' + swalClasses.radio + ' input:checked') || modal.querySelector('.' + swalClasses.radio + ' input:first-child');
+                    case 'range':
+                        return modal.querySelector('.' + swalClasses.range + ' input');
+                    default:
+                        return getChildByClass(modal, swalClasses.input);
+                }
+            };
+
+            // Get the value of the modal input
+            var getInputValue = function getInputValue() {
+                var input = getInput();
+                if (!input) {
+                    return null;
+                }
+                switch (params.input) {
+                    case 'checkbox':
+                        return input.checked ? 1 : 0;
+                    case 'radio':
+                        return input.checked ? input.value : null;
+                    case 'file':
+                        return input.files.length ? input.files[0] : null;
+                    default:
+                        return params.inputAutoTrim ? input.value.trim() : input.value;
+                }
+            };
+
+            // input autofocus
+            if (params.input) {
+                setTimeout(function() {
+                    var input = getInput();
+                    if (input) {
+                        focusInput(input);
+                    }
+                }, 0);
+            }
+
+            var confirm = function confirm(value) {
+                if (params.showLoaderOnConfirm) {
+                    sweetAlert.showLoading();
+                }
+
+                if (params.preConfirm) {
+                    params.preConfirm(value, params.extraParams).then(function(preConfirmValue) {
+                        sweetAlert.closeModal(params.onClose);
+                        resolve(preConfirmValue || value);
+                    }, function(error) {
+                        sweetAlert.hideLoading();
+                        if (error) {
+                            sweetAlert.showValidationError(error);
+                        }
+                    });
+                } else {
+                    sweetAlert.closeModal(params.onClose);
+                    resolve(value);
+                }
+            };
+
+            // Mouse interactions
+            var onButtonEvent = function onButtonEvent(event) {
+                var e = event || window.event;
+                var target = e.target || e.srcElement;
+                var confirmButton = getConfirmButton();
+                var cancelButton = getCancelButton();
+                var targetedConfirm = confirmButton && (confirmButton === target || confirmButton.contains(target));
+                var targetedCancel = cancelButton && (cancelButton === target || cancelButton.contains(target));
+
+                switch (e.type) {
+                    case 'mouseover':
+                    case 'mouseup':
+                        if (params.buttonsStyling) {
+                            if (targetedConfirm) {
+                                confirmButton.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.1);
+                            } else if (targetedCancel) {
+                                cancelButton.style.backgroundColor = colorLuminance(params.cancelButtonColor, -0.1);
+                            }
+                        }
+                        break;
+                    case 'mouseout':
+                        if (params.buttonsStyling) {
+                            if (targetedConfirm) {
+                                confirmButton.style.backgroundColor = params.confirmButtonColor;
+                            } else if (targetedCancel) {
+                                cancelButton.style.backgroundColor = params.cancelButtonColor;
+                            }
+                        }
+                        break;
+                    case 'mousedown':
+                        if (params.buttonsStyling) {
+                            if (targetedConfirm) {
+                                confirmButton.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.2);
+                            } else if (targetedCancel) {
+                                cancelButton.style.backgroundColor = colorLuminance(params.cancelButtonColor, -0.2);
+                            }
+                        }
+                        break;
+                    case 'click':
+                        // Clicked 'confirm'
+                        if (targetedConfirm && sweetAlert.isVisible()) {
+                            sweetAlert.disableButtons();
+                            if (params.input) {
+                                var inputValue = getInputValue();
+
+                                if (params.inputValidator) {
+                                    sweetAlert.disableInput();
+                                    params.inputValidator(inputValue, params.extraParams).then(function() {
+                                        sweetAlert.enableButtons();
+                                        sweetAlert.enableInput();
+                                        confirm(inputValue);
+                                    }, function(error) {
+                                        sweetAlert.enableButtons();
+                                        sweetAlert.enableInput();
+                                        if (error) {
+                                            sweetAlert.showValidationError(error);
+                                        }
+                                    });
+                                } else {
+                                    confirm(inputValue);
+                                }
+                            } else {
+                                confirm(true);
+                            }
+
+                            // Clicked 'cancel'
+                        } else if (targetedCancel && sweetAlert.isVisible()) {
+                            sweetAlert.disableButtons();
+                            sweetAlert.closeModal(params.onClose);
+                            reject('cancel');
+                        }
+                        break;
+                    default:
+                }
+            };
+
+            var buttons = modal.querySelectorAll('button');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].onclick = onButtonEvent;
+                buttons[i].onmouseover = onButtonEvent;
+                buttons[i].onmouseout = onButtonEvent;
+                buttons[i].onmousedown = onButtonEvent;
+            }
+
+            // Closing modal by close button
+            getCloseButton().onclick = function() {
+                sweetAlert.closeModal(params.onClose);
+                reject('close');
+            };
+
+            // Closing modal by overlay click
+            container.onclick = function(e) {
+                if (e.target !== container) {
+                    return;
+                }
+                if (params.allowOutsideClick) {
+                    sweetAlert.closeModal(params.onClose);
+                    reject('overlay');
+                }
+            };
+
+            var buttonsWrapper = getButtonsWrapper();
+            var confirmButton = getConfirmButton();
+            var cancelButton = getCancelButton();
+
+            // Reverse buttons (Confirm on the right side)
+            if (params.reverseButtons) {
+                confirmButton.parentNode.insertBefore(cancelButton, confirmButton);
+            } else {
+                confirmButton.parentNode.insertBefore(confirmButton, cancelButton);
+            }
+
+            // Focus handling
+            var setFocus = function setFocus(index, increment) {
+                var focusableElements = getFocusableElements(params.focusCancel);
+                // search for visible elements and select the next possible match
+                for (var _i3 = 0; _i3 < focusableElements.length; _i3++) {
+                    index = index + increment;
+
+                    // rollover to first item
+                    if (index === focusableElements.length) {
+                        index = 0;
+
+                        // go to last item
+                    } else if (index === -1) {
+                        index = focusableElements.length - 1;
+                    }
+
+                    // determine if element is visible
+                    var el = focusableElements[index];
+                    if (isVisible(el)) {
+                        return el.focus();
+                    }
+                }
+            };
+
+            var handleKeyDown = function handleKeyDown(event) {
+                var e = event || window.event;
+                var keyCode = e.keyCode || e.which;
+
+                if ([9, 13, 32, 27, 37, 38, 39, 40].indexOf(keyCode) === -1) {
+                    // Don't do work on keys we don't care about.
+                    return;
+                }
+
+                var targetElement = e.target || e.srcElement;
+
+                var focusableElements = getFocusableElements(params.focusCancel);
+                var btnIndex = -1; // Find the button - note, this is a nodelist, not an array.
+                for (var _i4 = 0; _i4 < focusableElements.length; _i4++) {
+                    if (targetElement === focusableElements[_i4]) {
+                        btnIndex = _i4;
+                        break;
+                    }
+                }
+
+                // TAB
+                if (keyCode === 9) {
+                    if (!e.shiftKey) {
+                        // Cycle to the next button
+                        setFocus(btnIndex, 1);
+                    } else {
+                        // Cycle to the prev button
+                        setFocus(btnIndex, -1);
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    // ARROWS - switch focus between buttons
+                } else if (keyCode === 37 || keyCode === 38 || keyCode === 39 || keyCode === 40) {
+                    // focus Cancel button if Confirm button is currently focused
+                    if (document.activeElement === confirmButton && isVisible(cancelButton)) {
+                        cancelButton.focus();
+                        // and vice versa
+                    } else if (document.activeElement === cancelButton && isVisible(confirmButton)) {
+                        confirmButton.focus();
+                    }
+
+                    // ENTER/SPACE
+                } else if (keyCode === 13 || keyCode === 32) {
+                    if (btnIndex === -1 && params.allowEnterKey) {
+                        // ENTER/SPACE clicked outside of a button.
+                        if (params.focusCancel) {
+                            fireClick(cancelButton, e);
+                        } else {
+                            fireClick(confirmButton, e);
+                        }
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    // ESC
+                } else if (keyCode === 27 && params.allowEscapeKey === true) {
+                    sweetAlert.closeModal(params.onClose);
+                    reject('esc');
+                }
+            };
+
+            states.previousWindowKeyDown = window.onkeydown;
+            window.onkeydown = handleKeyDown;
+
+            // Loading state
+            if (params.buttonsStyling) {
+                confirmButton.style.borderLeftColor = params.confirmButtonColor;
+                confirmButton.style.borderRightColor = params.confirmButtonColor;
+            }
+
+            /**
+             * Show spinner instead of Confirm button and disable Cancel button
+             */
+            sweetAlert.showLoading = sweetAlert.enableLoading = function() {
+                show(buttonsWrapper);
+                show(confirmButton, 'inline-block');
+                addClass(buttonsWrapper, swalClasses.loading);
+                addClass(modal, swalClasses.loading);
+                confirmButton.disabled = true;
+                cancelButton.disabled = true;
+            };
+
+            /**
+             * Show spinner instead of Confirm button and disable Cancel button
+             */
+            sweetAlert.hideLoading = sweetAlert.disableLoading = function() {
+                if (!params.showConfirmButton) {
+                    hide(confirmButton);
+                    if (!params.showCancelButton) {
+                        hide(getButtonsWrapper());
+                    }
+                }
+                removeClass(buttonsWrapper, swalClasses.loading);
+                removeClass(modal, swalClasses.loading);
+                confirmButton.disabled = false;
+                cancelButton.disabled = false;
+            };
+
+            sweetAlert.getTitle = function() {
+                return getTitle();
+            };
+            sweetAlert.getContent = function() {
+                return getContent();
+            };
+            sweetAlert.getInput = function() {
+                return getInput();
+            };
+            sweetAlert.getImage = function() {
+                return getImage();
+            };
+            sweetAlert.getButtonsWrapper = function() {
+                return getButtonsWrapper();
+            };
+            sweetAlert.getConfirmButton = function() {
+                return getConfirmButton();
+            };
+            sweetAlert.getCancelButton = function() {
+                return getCancelButton();
+            };
+
+            sweetAlert.enableButtons = function() {
+                confirmButton.disabled = false;
+                cancelButton.disabled = false;
+            };
+
+            sweetAlert.disableButtons = function() {
+                confirmButton.disabled = true;
+                cancelButton.disabled = true;
+            };
+
+            sweetAlert.enableConfirmButton = function() {
+                confirmButton.disabled = false;
+            };
+
+            sweetAlert.disableConfirmButton = function() {
+                confirmButton.disabled = true;
+            };
+
+            sweetAlert.enableInput = function() {
+                var input = getInput();
+                if (!input) {
+                    return false;
+                }
+                if (input.type === 'radio') {
+                    var radiosContainer = input.parentNode.parentNode;
+                    var radios = radiosContainer.querySelectorAll('input');
+                    for (var _i5 = 0; _i5 < radios.length; _i5++) {
+                        radios[_i5].disabled = false;
+                    }
+                } else {
+                    input.disabled = false;
+                }
+            };
+
+            sweetAlert.disableInput = function() {
+                var input = getInput();
+                if (!input) {
+                    return false;
+                }
+                if (input && input.type === 'radio') {
+                    var radiosContainer = input.parentNode.parentNode;
+                    var radios = radiosContainer.querySelectorAll('input');
+                    for (var _i6 = 0; _i6 < radios.length; _i6++) {
+                        radios[_i6].disabled = true;
+                    }
+                } else {
+                    input.disabled = true;
+                }
+            };
+
+            // Set modal min-height to disable scrolling inside the modal
+            sweetAlert.recalculateHeight = debounce(function() {
+                var modal = getModal();
+                if (!modal) {
+                    return;
+                }
+                var prevState = modal.style.display;
+                modal.style.minHeight = '';
+                show(modal);
+                modal.style.minHeight = modal.scrollHeight + 1 + 'px';
+                modal.style.display = prevState;
+            }, 50);
+
+            // Show block with validation error
+            sweetAlert.showValidationError = function(error) {
+                var validationError = getValidationError();
+                validationError.innerHTML = error;
+                show(validationError);
+
+                var input = getInput();
+                if (input) {
+                    focusInput(input);
+                    addClass(input, swalClasses.inputerror);
+                }
+            };
+
+            // Hide block with validation error
+            sweetAlert.resetValidationError = function() {
+                var validationError = getValidationError();
+                hide(validationError);
+                sweetAlert.recalculateHeight();
+
+                var input = getInput();
+                if (input) {
+                    removeClass(input, swalClasses.inputerror);
+                }
+            };
+
+            sweetAlert.getProgressSteps = function() {
+                return params.progressSteps;
+            };
+
+            sweetAlert.setProgressSteps = function(progressSteps) {
+                params.progressSteps = progressSteps;
+                setParameters(params);
+            };
+
+            sweetAlert.showProgressSteps = function() {
+                show(getProgressSteps());
+            };
+
+            sweetAlert.hideProgressSteps = function() {
+                hide(getProgressSteps());
+            };
+
+            sweetAlert.enableButtons();
+            sweetAlert.hideLoading();
+            sweetAlert.resetValidationError();
+
+            // inputs
+            var inputTypes = ['input', 'file', 'range', 'select', 'radio', 'checkbox', 'textarea'];
+            var input = void 0;
+            for (var _i7 = 0; _i7 < inputTypes.length; _i7++) {
+                var inputClass = swalClasses[inputTypes[_i7]];
+                var inputContainer = getChildByClass(modal, inputClass);
+                input = getInput(inputTypes[_i7]);
+
+                // set attributes
+                if (input) {
+                    for (var j in input.attributes) {
+                        if (input.attributes.hasOwnProperty(j)) {
+                            var attrName = input.attributes[j].name;
+                            if (attrName !== 'type' && attrName !== 'value') {
+                                input.removeAttribute(attrName);
+                            }
+                        }
+                    }
+                    for (var attr in params.inputAttributes) {
+                        input.setAttribute(attr, params.inputAttributes[attr]);
+                    }
+                }
+
+                // set class
+                inputContainer.className = inputClass;
+                if (params.inputClass) {
+                    addClass(inputContainer, params.inputClass);
+                }
+
+                hide(inputContainer);
+            }
+
+            var populateInputOptions = void 0;
+            switch (params.input) {
+                case 'text':
+                case 'email':
+                case 'password':
+                case 'number':
+                case 'tel':
+                case 'url':
+                    input = getChildByClass(modal, swalClasses.input);
+                    input.value = params.inputValue;
+                    input.placeholder = params.inputPlaceholder;
+                    input.type = params.input;
+                    show(input);
+                    break;
+                case 'file':
+                    input = getChildByClass(modal, swalClasses.file);
+                    input.placeholder = params.inputPlaceholder;
+                    input.type = params.input;
+                    show(input);
+                    break;
+                case 'range':
+                    var range = getChildByClass(modal, swalClasses.range);
+                    var rangeInput = range.querySelector('input');
+                    var rangeOutput = range.querySelector('output');
+                    rangeInput.value = params.inputValue;
+                    rangeInput.type = params.input;
+                    rangeOutput.value = params.inputValue;
+                    show(range);
+                    break;
+                case 'select':
+                    var select = getChildByClass(modal, swalClasses.select);
+                    select.innerHTML = '';
+                    if (params.inputPlaceholder) {
+                        var placeholder = document.createElement('option');
+                        placeholder.innerHTML = params.inputPlaceholder;
+                        placeholder.value = '';
+                        placeholder.disabled = true;
+                        placeholder.selected = true;
+                        select.appendChild(placeholder);
+                    }
+                    populateInputOptions = function populateInputOptions(inputOptions) {
+                        for (var optionValue in inputOptions) {
+                            var option = document.createElement('option');
+                            option.value = optionValue;
+                            option.innerHTML = inputOptions[optionValue];
+                            if (params.inputValue === optionValue) {
+                                option.selected = true;
+                            }
+                            select.appendChild(option);
+                        }
+                        show(select);
+                        select.focus();
+                    };
+                    break;
+                case 'radio':
+                    var radio = getChildByClass(modal, swalClasses.radio);
+                    radio.innerHTML = '';
+                    populateInputOptions = function populateInputOptions(inputOptions) {
+                        for (var radioValue in inputOptions) {
+                            var radioInput = document.createElement('input');
+                            var radioLabel = document.createElement('label');
+                            var radioLabelSpan = document.createElement('span');
+                            radioInput.type = 'radio';
+                            radioInput.name = swalClasses.radio;
+                            radioInput.value = radioValue;
+                            if (params.inputValue === radioValue) {
+                                radioInput.checked = true;
+                            }
+                            radioLabelSpan.innerHTML = inputOptions[radioValue];
+                            radioLabel.appendChild(radioInput);
+                            radioLabel.appendChild(radioLabelSpan);
+                            radioLabel.for = radioInput.id;
+                            radio.appendChild(radioLabel);
+                        }
+                        show(radio);
+                        var radios = radio.querySelectorAll('input');
+                        if (radios.length) {
+                            radios[0].focus();
+                        }
+                    };
+                    break;
+                case 'checkbox':
+                    var checkbox = getChildByClass(modal, swalClasses.checkbox);
+                    var checkboxInput = getInput('checkbox');
+                    checkboxInput.type = 'checkbox';
+                    checkboxInput.value = 1;
+                    checkboxInput.id = swalClasses.checkbox;
+                    checkboxInput.checked = Boolean(params.inputValue);
+                    var label = checkbox.getElementsByTagName('span');
+                    if (label.length) {
+                        checkbox.removeChild(label[0]);
+                    }
+                    label = document.createElement('span');
+                    label.innerHTML = params.inputPlaceholder;
+                    checkbox.appendChild(label);
+                    show(checkbox);
+                    break;
+                case 'textarea':
+                    var textarea = getChildByClass(modal, swalClasses.textarea);
+                    textarea.value = params.inputValue;
+                    textarea.placeholder = params.inputPlaceholder;
+                    show(textarea);
+                    break;
+                case null:
+                    break;
+                default:
+                    console.error('SweetAlert2: Unexpected type of input! Expected "text", "email", "password", "number", "tel", "select", "radio", "checkbox", "textarea", "file" or "url", got "' + params.input + '"');
+                    break;
+            }
+
+            if (params.input === 'select' || params.input === 'radio') {
+                if (params.inputOptions instanceof Promise) {
+                    sweetAlert.showLoading();
+                    params.inputOptions.then(function(inputOptions) {
+                        sweetAlert.hideLoading();
+                        populateInputOptions(inputOptions);
+                    });
+                } else if (_typeof(params.inputOptions) === 'object') {
+                    populateInputOptions(params.inputOptions);
+                } else {
+                    console.error('SweetAlert2: Unexpected type of inputOptions! Expected object or Promise, got ' + _typeof(params.inputOptions));
+                }
+            }
+
+            openModal(params.animation, params.onOpen);
+
+            // Focus the first element (input or button)
+            if (params.allowEnterKey) {
+                setFocus(-1, 1);
+            } else {
+                if (document.activeElement) {
+                    document.activeElement.blur();
+                }
+            }
+
+            // fix scroll
+            getContainer().scrollTop = 0;
+
+            // Observe changes inside the modal and adjust height
+            if (typeof MutationObserver !== 'undefined' && !swal2Observer) {
+                swal2Observer = new MutationObserver(sweetAlert.recalculateHeight);
+                swal2Observer.observe(modal, { childList: true, characterData: true, subtree: true });
+            }
+        });
+    };
+
+    /*
+     * Global function to determine if swal2 modal is shown
+     */
+    sweetAlert.isVisible = function() {
+        return !!getModal();
+    };
+
+    /*
+     * Global function for chaining sweetAlert modals
+     */
+    sweetAlert.queue = function(steps) {
+        queue = steps;
+        var resetQueue = function resetQueue() {
+            queue = [];
+            document.body.removeAttribute('data-swal2-queue-step');
+        };
+        var queueResult = [];
+        return new Promise(function(resolve, reject) {
+            (function step(i, callback) {
+                if (i < queue.length) {
+                    document.body.setAttribute('data-swal2-queue-step', i);
+
+                    sweetAlert(queue[i]).then(function(result) {
+                        queueResult.push(result);
+                        step(i + 1, callback);
+                    }, function(dismiss) {
+                        resetQueue();
+                        reject(dismiss);
+                    });
+                } else {
+                    resetQueue();
+                    resolve(queueResult);
+                }
+            })(0);
+        });
+    };
+
+    /*
+     * Global function for getting the index of current modal in queue
+     */
+    sweetAlert.getQueueStep = function() {
+        return document.body.getAttribute('data-swal2-queue-step');
+    };
+
+    /*
+     * Global function for inserting a modal to the queue
+     */
+    sweetAlert.insertQueueStep = function(step, index) {
+        if (index && index < queue.length) {
+            return queue.splice(index, 0, step);
+        }
+        return queue.push(step);
+    };
+
+    /*
+     * Global function for deleting a modal from the queue
+     */
+    sweetAlert.deleteQueueStep = function(index) {
+        if (typeof queue[index] !== 'undefined') {
+            queue.splice(index, 1);
+        }
+    };
+
+    /*
+     * Global function to close sweetAlert
+     */
+    sweetAlert.close = sweetAlert.closeModal = function(onComplete) {
+        var container = getContainer();
+        var modal = getModal();
+        if (!modal) {
+            return;
+        }
+        removeClass(modal, swalClasses.show);
+        addClass(modal, swalClasses.hide);
+        clearTimeout(modal.timeout);
+
+        resetPrevState();
+
+        var removeModalAndResetState = function removeModalAndResetState() {
+            if (container.parentNode) {
+                container.parentNode.removeChild(container);
+            }
+            removeClass(document.documentElement, swalClasses.shown);
+            removeClass(document.body, swalClasses.shown);
+            undoScrollbar();
+            undoIOSfix();
+        };
+
+        // If animation is supported, animate
+        if (animationEndEvent && !hasClass(modal, swalClasses.noanimation)) {
+            modal.addEventListener(animationEndEvent, function swalCloseEventFinished() {
+                modal.removeEventListener(animationEndEvent, swalCloseEventFinished);
+                if (hasClass(modal, swalClasses.hide)) {
+                    removeModalAndResetState();
+                }
+            });
+        } else {
+            // Otherwise, remove immediately
+            removeModalAndResetState();
+        }
+        if (onComplete !== null && typeof onComplete === 'function') {
+            setTimeout(function() {
+                onComplete(modal);
+            });
+        }
+    };
+
+    /*
+     * Global function to click 'Confirm' button
+     */
+    sweetAlert.clickConfirm = function() {
+        return getConfirmButton().click();
+    };
+
+    /*
+     * Global function to click 'Cancel' button
+     */
+    sweetAlert.clickCancel = function() {
+        return getCancelButton().click();
+    };
+
+    /**
+     * Set default params for each popup
+     * @param {Object} userParams
+     */
+    sweetAlert.setDefaults = function(userParams) {
+        if (!userParams || (typeof userParams === 'undefined' ? 'undefined' : _typeof(userParams)) !== 'object') {
+            return console.error('SweetAlert2: the argument for setDefaults() is required and has to be a object');
+        }
+
+        for (var param in userParams) {
+            if (!defaultParams.hasOwnProperty(param) && param !== 'extraParams') {
+                console.warn('SweetAlert2: Unknown parameter "' + param + '"');
+                delete userParams[param];
+            }
+        }
+
+        _extends(modalParams, userParams);
+    };
+
+    /**
+     * Reset default params for each popup
+     */
+    sweetAlert.resetDefaults = function() {
+        modalParams = _extends({}, defaultParams);
+    };
+
+    sweetAlert.noop = function() {};
+
+    sweetAlert.version = '6.6.2';
+
+    sweetAlert.default = sweetAlert;
+
+    return sweetAlert;
 
 })));
-if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
-;/*
-* iziModal | v1.5.1
-* http://izimodal.marcelodolce.com
-* by Marcelo Dolce.
-*/
-(function (factory) {
+if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;;
+/*
+ * iziModal | v1.5.1
+ * http://izimodal.marcelodolce.com
+ * by Marcelo Dolce.
+ */
+(function(factory) {
     if (typeof define === 'function' && define.amd) {
         define(['jquery'], factory);
     } else if (typeof module === 'object' && module.exports) {
-        module.exports = function (root, jQuery) {
+        module.exports = function(root, jQuery) {
             if (jQuery === undefined) {
                 if (typeof window !== 'undefined') {
                     jQuery = require('jquery');
-                }
-                else {
+                } else {
                     jQuery = require('jquery')(root);
                 }
             }
@@ -2514,7 +2517,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
     } else {
         factory(jQuery);
     }
-}(function ($) {
+}(function($) {
 
     var $window = $(window),
         $document = $(document),
@@ -2564,7 +2567,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
     window.$iziModal.autoOpen = 0;
     window.$iziModal.history = false;
 
-    var iziModal = function (element, options) {
+    var iziModal = function(element, options) {
         this.init(element, options);
     };
 
@@ -2572,7 +2575,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         constructor: iziModal,
 
-        init: function (element, options) {
+        init: function(element, options) {
 
             var that = this;
             this.$element = $(element);
@@ -2620,7 +2623,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                 this.$element.attr('data-' + PLUGIN_NAME + '-loop', true);
             }
 
-            $.each(this.options, function (index, val) {
+            $.each(this.options, function(index, val) {
                 var attr = that.$element.attr('data-' + PLUGIN_NAME + '-' + index);
                 try {
                     if (typeof attr !== typeof undefined) {
@@ -2635,7 +2638,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                             options[index] = attr;
                         }
                     }
-                } catch (exc) { }
+                } catch (exc) {}
             });
 
             if (options.appendTo !== false) {
@@ -2693,13 +2696,13 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             this.recalcWidth();
             this.recalcVerticalPos();
 
-            if (that.options.afterRender && (typeof (that.options.afterRender) === "function" || typeof (that.options.afterRender) === "object")) {
+            if (that.options.afterRender && (typeof(that.options.afterRender) === "function" || typeof(that.options.afterRender) === "object")) {
                 that.options.afterRender(that);
             }
 
         },
 
-        createHeader: function () {
+        createHeader: function() {
 
             this.$header = $('<div class="' + PLUGIN_NAME + '-header"><h2 class="' + PLUGIN_NAME + '-header-title">' + this.options.title + '</h2><p class="' + PLUGIN_NAME + '-header-subtitle">' + this.options.subtitle + '</p><div class="' + PLUGIN_NAME + '-header-buttons"></div></div>');
 
@@ -2742,7 +2745,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             }
         },
 
-        setGroup: function (groupName) {
+        setGroup: function(groupName) {
 
             var that = this,
                 group = this.group.name || groupName;
@@ -2756,7 +2759,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             if (group !== undefined && group !== "") {
 
                 var count = 0;
-                $.each($('.' + PLUGIN_NAME + '[data-' + PLUGIN_NAME + '-group=' + group + ']'), function (index, val) {
+                $.each($('.' + PLUGIN_NAME + '[data-' + PLUGIN_NAME + '-group=' + group + ']'), function(index, val) {
 
                     that.group.ids.push($(this)[0].id);
 
@@ -2768,7 +2771,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             }
         },
 
-        toggle: function () {
+        toggle: function() {
 
             if (this.state == STATES.OPENED) {
                 this.close();
@@ -2778,11 +2781,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             }
         },
 
-        open: function (param) {
+        open: function(param) {
 
             var that = this;
 
-            $.each($('.' + PLUGIN_NAME), function (index, modal) {
+            $.each($('.' + PLUGIN_NAME), function(index, modal) {
                 if ($(modal).data().iziModal !== undefined) {
                     var state = $(modal).iziModal('getState');
                     if (state == 'opened' || state == 'opening') {
@@ -2811,7 +2814,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                 that.state = STATES.OPENED;
                 that.$element.trigger(STATES.OPENED);
 
-                if (that.options.onOpened && (typeof (that.options.onOpened) === "function" || typeof (that.options.onOpened) === "object")) {
+                if (that.options.onOpened && (typeof(that.options.onOpened) === "function" || typeof(that.options.onOpened) === "object")) {
                     that.options.onOpened(that);
                 }
             }
@@ -2819,7 +2822,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             function bindEvents() {
 
                 // Close when button pressed
-                that.$element.off('click', '[data-' + PLUGIN_NAME + '-close]').on('click', '[data-' + PLUGIN_NAME + '-close]', function (e) {
+                that.$element.off('click', '[data-' + PLUGIN_NAME + '-close]').on('click', '[data-' + PLUGIN_NAME + '-close]', function(e) {
                     e.preventDefault();
 
                     var transition = $(e.currentTarget).attr('data-' + PLUGIN_NAME + '-transitionOut');
@@ -2832,7 +2835,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                 });
 
                 // Expand when button pressed
-                that.$element.off('click', '[data-' + PLUGIN_NAME + '-fullscreen]').on('click', '[data-' + PLUGIN_NAME + '-fullscreen]', function (e) {
+                that.$element.off('click', '[data-' + PLUGIN_NAME + '-fullscreen]').on('click', '[data-' + PLUGIN_NAME + '-fullscreen]', function(e) {
                     e.preventDefault();
                     if (that.isFullscreen === true) {
                         that.isFullscreen = false;
@@ -2841,25 +2844,25 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                         that.isFullscreen = true;
                         that.$element.addClass('isFullscreen');
                     }
-                    if (that.options.onFullscreen && typeof (that.options.onFullscreen) === "function") {
+                    if (that.options.onFullscreen && typeof(that.options.onFullscreen) === "function") {
                         that.options.onFullscreen(that);
                     }
                     that.$element.trigger('fullscreen', that);
                 });
 
                 // Next modal
-                that.$navigate.off('click', '.' + PLUGIN_NAME + '-navigate-next').on('click', '.' + PLUGIN_NAME + '-navigate-next', function (e) {
+                that.$navigate.off('click', '.' + PLUGIN_NAME + '-navigate-next').on('click', '.' + PLUGIN_NAME + '-navigate-next', function(e) {
                     that.next(e);
                 });
-                that.$element.off('click', '[data-' + PLUGIN_NAME + '-next]').on('click', '[data-' + PLUGIN_NAME + '-next]', function (e) {
+                that.$element.off('click', '[data-' + PLUGIN_NAME + '-next]').on('click', '[data-' + PLUGIN_NAME + '-next]', function(e) {
                     that.next(e);
                 });
 
                 // Previous modal
-                that.$navigate.off('click', '.' + PLUGIN_NAME + '-navigate-prev').on('click', '.' + PLUGIN_NAME + '-navigate-prev', function (e) {
+                that.$navigate.off('click', '.' + PLUGIN_NAME + '-navigate-prev').on('click', '.' + PLUGIN_NAME + '-navigate-prev', function(e) {
                     that.prev(e);
                 });
-                that.$element.off('click', '[data-' + PLUGIN_NAME + '-prev]').on('click', '[data-' + PLUGIN_NAME + '-prev]', function (e) {
+                that.$element.off('click', '[data-' + PLUGIN_NAME + '-prev]').on('click', '[data-' + PLUGIN_NAME + '-prev]', function(e) {
                     that.prev(e);
                 });
             }
@@ -2879,7 +2882,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
                     this.$element.find('.' + PLUGIN_NAME + '-content').addClass(PLUGIN_NAME + '-content-loader');
 
-                    this.$element.find('.' + PLUGIN_NAME + '-iframe').on('load', function () {
+                    this.$element.find('.' + PLUGIN_NAME + '-iframe').on('load', function() {
                         $(this).parent().removeClass(PLUGIN_NAME + '-content-loader');
                     });
 
@@ -2906,7 +2909,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                     }
                 }
 
-                if (this.options.onOpening && typeof (this.options.onOpening) === "function") {
+                if (this.options.onOpening && typeof(this.options.onOpening) === "function") {
                     this.options.onOpening(this);
                 }
                 (function open() {
@@ -2975,7 +2978,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                     if (transitionIn !== '' && animationEvent !== undefined) {
 
                         that.$element.addClass("transitionIn " + transitionIn).show();
-                        that.$wrap.one(animationEvent, function () {
+                        that.$wrap.one(animationEvent, function() {
 
                             that.$element.removeClass(transitionIn + " transitionIn");
                             that.$overlay.removeClass(that.options.transitionInOverlay);
@@ -2992,11 +2995,11 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
                     if (that.options.pauseOnHover === true && that.options.pauseOnHover === true && that.options.timeout !== false && !isNaN(parseInt(that.options.timeout)) && that.options.timeout !== false && that.options.timeout !== 0) {
 
-                        that.$element.off('mouseenter').on('mouseenter', function (event) {
+                        that.$element.off('mouseenter').on('mouseenter', function(event) {
                             event.preventDefault();
                             that.isPaused = true;
                         });
-                        that.$element.off('mouseleave').on('mouseleave', function (event) {
+                        that.$element.off('mouseleave').on('mouseleave', function(event) {
                             event.preventDefault();
                             that.isPaused = false;
                         });
@@ -3013,7 +3016,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                             maxHideTime: null,
                             currentTime: new Date().getTime(),
                             el: this.$element.find('.' + PLUGIN_NAME + '-progressbar > div'),
-                            updateProgress: function () {
+                            updateProgress: function() {
                                 if (!that.isPaused) {
 
                                     that.progressBar.currentTime = that.progressBar.currentTime + 10;
@@ -3035,7 +3038,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
                     } else {
 
-                        this.timerTimeout = setTimeout(function () {
+                        this.timerTimeout = setTimeout(function() {
                             that.close();
                         }, that.options.timeout);
                     }
@@ -3043,7 +3046,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
                 // Close on overlay click
                 if (this.options.overlayClose && !this.$element.hasClass(this.options.transitionOut)) {
-                    this.$overlay.click(function () {
+                    this.$overlay.click(function() {
                         that.close();
                     });
                 }
@@ -3058,7 +3061,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                 })();
 
                 // Close when the Escape key is pressed
-                $document.on('keydown.' + PLUGIN_NAME, function (e) {
+                $document.on('keydown.' + PLUGIN_NAME, function(e) {
                     if (that.options.closeOnEscape && e.keyCode === 27) {
                         that.close();
                     }
@@ -3068,7 +3071,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         },
 
-        close: function (param) {
+        close: function(param) {
 
             var that = this;
 
@@ -3090,7 +3093,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                     }
                 }
 
-                if (that.options.onClosed && typeof (that.options.onClosed) === "function") {
+                if (that.options.onClosed && typeof(that.options.onClosed) === "function") {
                     that.options.onClosed(that);
                 }
 
@@ -3116,7 +3119,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                 clearTimeout(this.timer);
                 clearTimeout(this.timerTimeout);
 
-                if (that.options.onClosing && typeof (that.options.onClosing) === "function") {
+                if (that.options.onClosing && typeof(that.options.onClosing) === "function") {
                     that.options.onClosing(this);
                 }
 
@@ -3152,7 +3155,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                         this.$navigate.attr('class', PLUGIN_NAME + "-navigate fadeOut");
                     }
 
-                    this.$element.one(animationEvent, function () {
+                    this.$element.one(animationEvent, function() {
 
                         if (that.$element.hasClass(transitionOut)) {
                             that.$element.removeClass(transitionOut + " transitionOut").hide();
@@ -3167,7 +3170,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             }
         },
 
-        next: function (e) {
+        next: function(e) {
 
             var that = this;
             var transitionIn = 'fadeInRight';
@@ -3192,7 +3195,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
             this.close({ transition: transitionOut });
 
-            setTimeout(function () {
+            setTimeout(function() {
 
                 var loop = $('.' + PLUGIN_NAME + '[data-' + PLUGIN_NAME + '-group="' + that.group.name + '"][data-' + PLUGIN_NAME + '-loop]').length;
                 for (var i = that.group.index + 1; i <= that.group.ids.length; i++) {
@@ -3228,7 +3231,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             $(document).trigger(PLUGIN_NAME + "-group-change", modals);
         },
 
-        prev: function (e) {
+        prev: function(e) {
             var that = this;
             var transitionIn = 'fadeInLeft';
             var transitionOut = 'fadeOutRight';
@@ -3254,7 +3257,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
             this.close({ transition: transitionOut });
 
-            setTimeout(function () {
+            setTimeout(function() {
 
                 var loop = $('.' + PLUGIN_NAME + '[data-' + PLUGIN_NAME + '-group="' + that.group.name + '"][data-' + PLUGIN_NAME + '-loop]').length;
 
@@ -3291,7 +3294,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             $(document).trigger(PLUGIN_NAME + "-group-change", modals);
         },
 
-        destroy: function () {
+        destroy: function() {
             var e = $.Event('destroy');
 
             this.$element.trigger(e);
@@ -3320,17 +3323,17 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             this.$element = null;
         },
 
-        getState: function () {
+        getState: function() {
 
             return this.state;
         },
 
-        getGroup: function () {
+        getGroup: function() {
 
             return this.group;
         },
 
-        setWidth: function (width) {
+        setWidth: function(width) {
 
             this.options.width = width;
 
@@ -3344,14 +3347,14 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         },
 
-        setTop: function (top) {
+        setTop: function(top) {
 
             this.options.top = top;
 
             this.recalcVerticalPos(false);
         },
 
-        setBottom: function (bottom) {
+        setBottom: function(bottom) {
 
             this.options.bottom = bottom;
 
@@ -3359,7 +3362,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         },
 
-        setHeader: function (status) {
+        setHeader: function(status) {
 
             if (status) {
                 this.$element.find('.' + PLUGIN_NAME + '-header').show();
@@ -3369,7 +3372,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             }
         },
 
-        setTitle: function (title) {
+        setTitle: function(title) {
 
             this.options.title = title;
 
@@ -3384,7 +3387,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             this.$header.find('.' + PLUGIN_NAME + '-header-title').html(title);
         },
 
-        setSubtitle: function (subtitle) {
+        setSubtitle: function(subtitle) {
 
             if (subtitle === '') {
 
@@ -3404,7 +3407,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             this.options.subtitle = subtitle;
         },
 
-        setIcon: function (icon) {
+        setIcon: function(icon) {
 
             if (this.$header.find('.' + PLUGIN_NAME + '-header-icon').length === 0) {
                 this.$header.prepend('<i class="' + PLUGIN_NAME + '-header-icon"></i>');
@@ -3413,13 +3416,13 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             this.options.icon = icon;
         },
 
-        setIconText: function (iconText) {
+        setIconText: function(iconText) {
 
             this.$header.find('.' + PLUGIN_NAME + '-header-icon').html(iconText);
             this.options.iconText = iconText;
         },
 
-        setHeaderColor: function (headerColor) {
+        setHeaderColor: function(headerColor) {
             if (this.options.borderBottom === true) {
                 this.$element.css('border-bottom', '3px solid ' + headerColor + '');
             }
@@ -3427,7 +3430,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             this.options.headerColor = headerColor;
         },
 
-        setBackground: function (background) {
+        setBackground: function(background) {
             if (background === false) {
                 this.options.background = null;
                 this.$element.css('background', '');
@@ -3437,7 +3440,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             }
         },
 
-        setZindex: function (zIndex) {
+        setZindex: function(zIndex) {
 
             if (!isNaN(parseInt(this.options.zindex))) {
                 this.options.zindex = zIndex;
@@ -3447,7 +3450,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             }
         },
 
-        setFullscreen: function (value) {
+        setFullscreen: function(value) {
 
             if (value) {
                 this.isFullscreen = true;
@@ -3459,7 +3462,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         },
 
-        setContent: function (content) {
+        setContent: function(content) {
 
             if (typeof content == "object") {
                 var replace = content.default || false;
@@ -3474,23 +3477,23 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         },
 
-        setTransitionIn: function (transition) {
+        setTransitionIn: function(transition) {
 
             this.options.transitionIn = transition;
         },
 
-        setTransitionOut: function (transition) {
+        setTransitionOut: function(transition) {
 
             this.options.transitionOut = transition;
         },
 
-        resetContent: function () {
+        resetContent: function() {
 
             this.$element.find('.' + PLUGIN_NAME + '-content').html(this.content);
 
         },
 
-        startLoading: function () {
+        startLoading: function() {
 
             if (!this.$element.find('.' + PLUGIN_NAME + '-loader').length) {
                 this.$element.append('<div class="' + PLUGIN_NAME + '-loader fadeIn"></div>');
@@ -3501,7 +3504,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             });
         },
 
-        stopLoading: function () {
+        stopLoading: function() {
 
             var $loader = this.$element.find('.' + PLUGIN_NAME + '-loader');
 
@@ -3510,12 +3513,12 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                 $loader = this.$element.find('.' + PLUGIN_NAME + '-loader').css('border-radius', this.options.radius);
             }
             $loader.removeClass('fadeIn').addClass('fadeOut');
-            setTimeout(function () {
+            setTimeout(function() {
                 $loader.remove();
             }, 600);
         },
 
-        recalcWidth: function () {
+        recalcWidth: function() {
 
             var that = this;
 
@@ -3534,7 +3537,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             }
         },
 
-        recalcVerticalPos: function (first) {
+        recalcVerticalPos: function(first) {
 
             if (this.options.top !== null && this.options.top !== false) {
                 this.$element.css('margin-top', this.options.top);
@@ -3571,7 +3574,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         },
 
-        recalcLayout: function () {
+        recalcLayout: function() {
 
             var that = this,
                 windowHeight = $window.height(),
@@ -3617,7 +3620,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             if (modalHeight !== this.modalHeight) {
                 this.modalHeight = modalHeight;
 
-                if (this.options.onResize && typeof (this.options.onResize) === "function") {
+                if (this.options.onResize && typeof(this.options.onResize) === "function") {
                     this.options.onResize(this);
                 }
             }
@@ -3688,7 +3691,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             }
         },
 
-        recalcButtons: function () {
+        recalcButtons: function() {
             var widthButtons = this.$header.find('.' + PLUGIN_NAME + '-header-buttons').innerWidth() + 10;
             if (this.options.rtl === true) {
                 this.$header.css('padding-left', widthButtons);
@@ -3703,7 +3706,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         return '#' + encodeURIComponent(hash.substr(1));
     }
 
-    $window.off('load.' + PLUGIN_NAME).on('load.' + PLUGIN_NAME, function (e) {
+    $window.off('load.' + PLUGIN_NAME).on('load.' + PLUGIN_NAME, function(e) {
 
         var modalHash = escapeHash(document.location.hash);
 
@@ -3721,7 +3724,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
     });
 
-    $window.off('hashchange.' + PLUGIN_NAME).on('hashchange.' + PLUGIN_NAME, function (e) {
+    $window.off('hashchange.' + PLUGIN_NAME).on('hashchange.' + PLUGIN_NAME, function(e) {
 
         var modalHash = escapeHash(document.location.hash);
         var data = $(modalHash).data();
@@ -3730,7 +3733,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             try {
                 if (typeof data !== 'undefined' && $(modalHash).iziModal('getState') !== 'opening') {
 
-                    setTimeout(function () {
+                    setTimeout(function() {
                         $(modalHash).iziModal("open");
                     }, 200);
                 }
@@ -3739,7 +3742,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         } else {
 
             if (window.$iziModal.history) {
-                $.each($('.' + PLUGIN_NAME), function (index, modal) {
+                $.each($('.' + PLUGIN_NAME), function(index, modal) {
                     if ($(modal).data().iziModal !== undefined) {
                         var state = $(modal).iziModal('getState');
                         if (state == 'opened' || state == 'opening') {
@@ -3753,7 +3756,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
     });
 
-    $document.off('click', '[data-' + PLUGIN_NAME + '-open]').on('click', '[data-' + PLUGIN_NAME + '-open]', function (e) {
+    $document.off('click', '[data-' + PLUGIN_NAME + '-open]').on('click', '[data-' + PLUGIN_NAME + '-open]', function(e) {
         e.preventDefault();
 
         var modal = $('.' + PLUGIN_NAME + ':visible');
@@ -3769,7 +3772,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             modal.iziModal('close');
         }
 
-        setTimeout(function () {
+        setTimeout(function() {
             if (transitionIn !== undefined) {
                 $(openModal).iziModal('open', {
                     transition: transitionIn
@@ -3780,7 +3783,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         }, 200);
     });
 
-    $document.off('keyup.' + PLUGIN_NAME).on('keyup.' + PLUGIN_NAME, function (event) {
+    $document.off('keyup.' + PLUGIN_NAME).on('keyup.' + PLUGIN_NAME, function(event) {
 
         if ($('.' + PLUGIN_NAME + ':visible').length) {
             var modal = $('.' + PLUGIN_NAME + ':visible')[0].id,
@@ -3794,8 +3797,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                 if (e.keyCode === 37) { // left
 
                     $("#" + modal).iziModal('prev', e);
-                }
-                else if (e.keyCode === 39) { // right
+                } else if (e.keyCode === 39) { // right
 
                     $("#" + modal).iziModal('next', e);
 
@@ -3804,7 +3806,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         }
     });
 
-    $.fn[PLUGIN_NAME] = function (option, args) {
+    $.fn[PLUGIN_NAME] = function(option, args) {
 
 
         if (!$(this).length && typeof option == "object") {
@@ -3818,14 +3820,14 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             if (newEL.id.length > 1) {
                 try {
                     newEL.$el = document.createElement(id[0]);
-                } catch (exc) { }
+                } catch (exc) {}
 
                 newEL.$el.id = this.selector.split('#')[1].trim();
 
             } else if (newEL.class.length > 1) {
                 try {
                     newEL.$el = document.createElement(newEL.class[0]);
-                } catch (exc) { }
+                } catch (exc) {}
 
                 for (var x = 1; x < newEL.class.length; x++) {
                     newEL.$el.classList.add(newEL.class[x].trim());
@@ -3846,8 +3848,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             if (!data && (!option || typeof option == 'object')) {
 
                 $this.data(PLUGIN_NAME, (data = new iziModal($this, options)));
-            }
-            else if (typeof option == 'string' && typeof data != 'undefined') {
+            } else if (typeof option == 'string' && typeof data != 'undefined') {
 
                 return data[option].apply(data, [].concat(args));
             }
@@ -3855,7 +3856,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
                 if (!isNaN(parseInt(options.autoOpen))) {
 
-                    setTimeout(function () {
+                    setTimeout(function() {
                         data.open();
                     }, options.autoOpen);
 
@@ -3875,7 +3876,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         subtitle: '',
         headerColor: '#88A0B9',
         background: null,
-        theme: '',  // light
+        theme: '', // light
         icon: null,
         iconText: null,
         iconColor: '',
@@ -3912,149 +3913,150 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         timeoutProgressbar: false,
         pauseOnHover: false,
         timeoutProgressbarColor: 'rgba(255,255,255,0.5)',
-        transitionIn: 'comingIn',   // comingIn, bounceInDown, bounceInUp, fadeInDown, fadeInUp, fadeInLeft, fadeInRight, flipInX
+        transitionIn: 'comingIn', // comingIn, bounceInDown, bounceInUp, fadeInDown, fadeInUp, fadeInLeft, fadeInRight, flipInX
         transitionOut: 'comingOut', // comingOut, bounceOutDown, bounceOutUp, fadeOutDown, fadeOutUp, , fadeOutLeft, fadeOutRight, flipOutX
         transitionInOverlay: 'fadeIn',
         transitionOutOverlay: 'fadeOut',
-        onFullscreen: function () { },
-        onResize: function () { },
-        onOpening: function () { },
-        onOpened: function () { },
-        onClosing: function () { },
-        onClosed: function () { },
-        afterRender: function () { }
+        onFullscreen: function() {},
+        onResize: function() {},
+        onOpening: function() {},
+        onOpened: function() {},
+        onClosing: function() {},
+        onClosed: function() {},
+        afterRender: function() {}
     };
 
     $.fn[PLUGIN_NAME].Constructor = iziModal;
 
     return $.fn.iziModal;
 
-}));;MONSTER( 'Pagarme.Application', function(Model, $, utils) {
+}));;
+MONSTER('Pagarme.Application', function(Model, $, utils) {
 
-	var createNames = [
-		// Name for instance method create() if not component
-	];
+    var createNames = [
+        // Name for instance method create() if not component
+    ];
 
-	Model.init = function(container) {
-		Model.setArrayIncludesPolyfill();
-		Pagarme.BuildComponents.create( container );
-		Pagarme.BuildCreate.init( container, createNames );
-	};
+    Model.init = function(container) {
+        Model.setArrayIncludesPolyfill();
+        Pagarme.BuildComponents.create(container);
+        Pagarme.BuildCreate.init(container, createNames);
+    };
 
-	Model.setArrayIncludesPolyfill = function() {
-		if ( ! Array.prototype.includes ) {
-			Object.defineProperty( Array.prototype, 'includes', {
-				value: function(searchElement, fromIndex) {
+    Model.setArrayIncludesPolyfill = function() {
+        if (!Array.prototype.includes) {
+            Object.defineProperty(Array.prototype, 'includes', {
+                value: function(searchElement, fromIndex) {
 
-					if ( this == null ) {
-						throw new TypeError('"this" is null or not defined');
-					}
+                    if (this == null) {
+                        throw new TypeError('"this" is null or not defined');
+                    }
 
-					var o   = Object(this);
-					var len = o.length >>> 0;
+                    var o = Object(this);
+                    var len = o.length >>> 0;
 
-					if ( len === 0 ) {
-						return false;
-					}
+                    if (len === 0) {
+                        return false;
+                    }
 
-					var n = fromIndex | 0;
-					var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+                    var n = fromIndex | 0;
+                    var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
 
-					while ( k < len ) {
-						if (o[k] === searchElement) {
-							return true;
-						}
-						k++;
-					}
+                    while (k < len) {
+                        if (o[k] === searchElement) {
+                            return true;
+                        }
+                        k++;
+                    }
 
-					return false;
-				}
-			});
-		}
-	};
+                    return false;
+                }
+            });
+        }
+    };
 
-});
-;MONSTER( 'Pagarme.Components.Capture', function(Model, $, Utils) {
+});;
+MONSTER('Pagarme.Components.Capture', function(Model, $, Utils) {
 
-	Model.fn.start = function() {
-		this.init();
-		this.lock = false;
-	};
+    Model.fn.start = function() {
+        this.init();
+        this.lock = false;
+    };
 
-	Model.fn.init = function() {
-		this.addEventListener();
-		this.startModal();
-	};
+    Model.fn.init = function() {
+        this.addEventListener();
+        this.startModal();
+    };
 
-	Model.fn.addEventListener = function() {
-		this.$el.find( '[data-ref]:enabled' ).on( 'click', function(e){
-			e.preventDefault();
-			var target   = e.currentTarget;
-			var selector = '[data-charge-action=' + target.dataset.ref + '-' + target.dataset.type + ']';
-			$( selector ).iziModal( 'open' );
-		});
-	};
+    Model.fn.addEventListener = function() {
+        this.$el.find('[data-ref]:enabled').on('click', function(e) {
+            e.preventDefault();
+            var target = e.currentTarget;
+            var selector = '[data-charge-action=' + target.dataset.ref + '-' + target.dataset.type + ']';
+            $(selector).iziModal('open');
+        });
+    };
 
-	Model.fn.onClickCancel = function(e) {
-		e.preventDefault();
-		this.handleEvents( e, 'cancel' );
-	};
+    Model.fn.onClickCancel = function(e) {
+        e.preventDefault();
+        this.handleEvents(e, 'cancel');
+    };
 
-	Model.fn.onClickCapture = function(e) {
-		e.preventDefault();
-		this.handleEvents( e, 'capture' );
-	};
+    Model.fn.onClickCapture = function(e) {
+        e.preventDefault();
+        this.handleEvents(e, 'capture');
+    };
 
-	Model.fn.handleEvents = function(DOMEvent, type) {
-		var target   = $( DOMEvent.currentTarget );
-		var wrapper  = target.closest( '[data-charge]' );
-		var chargeId = wrapper.data( 'charge' );
-		var amount   = wrapper.find( '[data-element=amount]' ).val();
+    Model.fn.handleEvents = function(DOMEvent, type) {
+        var target = $(DOMEvent.currentTarget);
+        var wrapper = target.closest('[data-charge]');
+        var chargeId = wrapper.data('charge');
+        var amount = wrapper.find('[data-element=amount]').val();
 
-		this.request( type, chargeId, amount);
-	};
+        this.request(type, chargeId, amount);
+    };
 
-	Model.fn.request = function(mode, chargeId, amount) {
-		if ( this.lock ) {
-			return;
-		}
-		this.lock = true;
-		this.requestInProgress();
-		var ajax = $.ajax({
-			'url': MONSTER.utils.getAjaxUrl(),
-			'method': 'POST',
-			'data': {
-				'action': 'STW3dqRT6E',
-				'mode': mode,
-				'charge_id': chargeId,
-				'amount': amount
-			}
-		});
+    Model.fn.request = function(mode, chargeId, amount) {
+        if (this.lock) {
+            return;
+        }
+        this.lock = true;
+        this.requestInProgress();
+        var ajax = $.ajax({
+            'url': MONSTER.utils.getAjaxUrl(),
+            'method': 'POST',
+            'data': {
+                'action': 'STW3dqRT6E',
+                'mode': mode,
+                'charge_id': chargeId,
+                'amount': amount
+            }
+        });
 
-		ajax.done( this._onDone.bind(this) );
-		ajax.fail( this._onFail.bind(this) );
-	};
+        ajax.done(this._onDone.bind(this));
+        ajax.fail(this._onFail.bind(this));
+    };
 
-	Model.fn.startModal = function() {
-		var self = this;
-		$( '.modal' ).iziModal({
-			padding: 20,
-			onOpening: function (modal) {
-				var amount = modal.$element.find( '[data-element=amount]' );
+    Model.fn.startModal = function() {
+        var self = this;
+        $('.modal').iziModal({
+            padding: 20,
+            onOpening: function(modal) {
+                var amount = modal.$element.find('[data-element=amount]');
                 const options = {
-                    reverse:true,
-                    onKeyPress: function(amountValue, event, field){
-                        if (!event.originalEvent){
+                    reverse: true,
+                    onKeyPress: function(amountValue, event, field) {
+                        if (!event.originalEvent) {
                             return;
                         }
 
                         amountValue = amountValue.replace(/^0+/, '')
-                        if (amountValue[0] === ','){
+                        if (amountValue[0] === ',') {
                             amountValue = '0' + amountValue;
                         }
 
-                        if (amountValue && amountValue.length <= 2){
-                            amountValue = ('000'+amountValue).slice(-3);
+                        if (amountValue && amountValue.length <= 2) {
+                            amountValue = ('000' + amountValue).slice(-3);
                             field.val(amountValue);
                             field.trigger('input');
                             return;
@@ -4063,77 +4065,81 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
                         field.val(amountValue);
                     }
                 };
-                amount.mask( "#.##0,00", options );
-				modal.$element.on( 'click', '[data-action=capture]', self.onClickCapture.bind(self) );
-				modal.$element.on( 'click', '[data-action=cancel]', self.onClickCancel.bind(self) );
-			}
-		});
-	};
+                amount.mask("#.##0,00", options);
+                modal.$element.on('click', '[data-action=capture]', self.onClickCapture.bind(self));
+                modal.$element.on('click', '[data-action=cancel]', self.onClickCancel.bind(self));
+            }
+        });
+    };
 
-	Model.fn.requestInProgress = function () {
-		swal({
-			title: ' ',
-			text: 'Processando...',
-			allowOutsideClick: false
-		});
-		swal.showLoading();
-	};
+    Model.fn.requestInProgress = function() {
+        swal({
+            title: ' ',
+            text: 'Processando...',
+            allowOutsideClick: false
+        });
+        swal.showLoading();
+    };
 
-	Model.fn._onDone = function(response) {
-		this.lock = false;
-		$( '.modal' ).iziModal('close');
-		swal.close();
-		swal({
-			type: 'success',
-			title: ' ',
-			html: response.data.message,
-			showConfirmButton: false,
-			timer: 2000
-		}).then(
-			function () { },
-			function (dismiss) {
-				window.location.reload();
-			}
-		);
-	};
+    Model.fn._onDone = function(response) {
+        this.lock = false;
+        $('.modal').iziModal('close');
+        swal.close();
+        swal({
+            type: 'success',
+            title: ' ',
+            html: response.data.message,
+            showConfirmButton: false,
+            timer: 2000
+        }).then(
+            function() {},
+            function(dismiss) {
+                window.location.reload();
+            }
+        );
+    };
 
-	Model.fn._onFail = function(xhr) {
-		this.lock = false;
-		swal.close();
-		var data = JSON.parse(xhr.responseText);
-		swal({
-			type: 'error',
-			title: ' ',
-			html: data.message,
-			showConfirmButton: false,
-			timer: 2000
-		});
-	};
+    Model.fn._onFail = function(xhr) {
+        this.lock = false;
+        swal.close();
+        var data = JSON.parse(xhr.responseText);
+        swal({
+            type: 'error',
+            title: ' ',
+            html: data.message,
+            showConfirmButton: false,
+            timer: 2000
+        });
+    };
 
-});
-;MONSTER( 'Pagarme.Components.Settings', function(Model, $, Utils) {
+});;
+MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
 
-    var errorClass = Utils.addPrefix( 'field-error' );
+    var errorClass = Utils.addPrefix('field-error');
 
     Model.fn.start = function() {
         this.init();
     };
 
     Model.fn.init = function() {
-        this.installments                 = $( '[data-field="installments"]' );
-        this.billet                       = $( '[data-field="billet"]' );
-        this.installmentsMax              = $( '[data-field="installments-maximum"]' );
-        this.installmentsInterest         = $( '[data-field="installments-interest"]' );
-        this.installmentsByFlag           = $( '[data-field="installments-by-flag"]' );
-        this.installmentsWithoutInterest  = $( '[data-field="installments-without-interest"]' );
-        this.installmentsInterestIncrease = $( '[data-field="installments-interest-increase"]' );
-        this.antifraudSection             = $( 'h3[id*="woo-pagarme-payments_section_antifraud"]' );
-        this.antifraudEnabled             = $( '[data-field="antifraud-enabled"]' );
-        this.antifraudMinValue            = $( '[data-field="antifraud-min-value"]' );
-        this.ccBrands                     = $( '[data-field="flags-select"]' );
-        this.ccAllowSave                  = $( '[data-field="cc-allow-save"]' );
-        this.billetBank                   = $( '[data-field="billet-bank"]' );
-        this.softDescriptor               = $( '[data-field="soft-descriptor"]' );
+        this.installments = $('[data-field="installments"]');
+        this.billet = $('[data-field="billet"]');
+        this.installmentsMax = $('[data-field="installments-maximum"]');
+        this.installmentsInterest = $('[data-field="installments-interest"]');
+        this.installmentsByFlag = $('[data-field="installments-by-flag"]');
+        this.installmentsWithoutInterest = $('[data-field="installments-without-interest"]');
+        this.installmentsInterestIncrease = $('[data-field="installments-interest-increase"]');
+        this.antifraudSection = $('h3[id*="woo-pagarme-payments_section_antifraud"]');
+        this.antifraudEnabled = $('[data-field="antifraud-enabled"]');
+        this.antifraudMinValue = $('[data-field="antifraud-min-value"]');
+        this.ccBrands = $('[data-field="flags-select"]');
+        this.ccAllowSave = $('[data-field="cc-allow-save"]');
+        this.billetBank = $('[data-field="billet-bank"]');
+        this.softDescriptor = $('[data-field="soft-descriptor"]');
+        this.voucherSection = $('h3[id*="woo-pagarme-payments_section_voucher"]');
+        this.voucherSoftDescriptor = $('[data-field="voucher-soft-descriptor"]');
+        this.VoucherccBrands = $('[data-field="voucher-flags-select"]');
+        this.cardWallet = $('[data-field="card-wallet"]');
 
         this.isGatewayIntegrationType = $('input[id*="woo-pagarme-payments_is_gateway_integration_type"]').prop("checked");
         this.installmentsMaxByFlag = this.installmentsByFlag.find('input[name*="cc_installments_by_flag[max_installment]"]');
@@ -4146,26 +4152,26 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         this.setMaxInstallmentsWithoutInterestBasedOnMaxInstallments();
         this.setMaxInstallmentsWithoutInterestBasedOnMaxInstallmentsByFlag();
 
-        this.setInstallmentsByFlags( null, true );
+        this.setInstallmentsByFlags(null, true);
 
         this.addEventListener();
     };
 
     Model.fn.addEventListener = function() {
-        this.on( 'keyup', 'soft-descriptor' );
-        this.on( 'change', 'environment' );
-        this.on( 'change', 'installments-type' );
-        this.on( 'change', 'is-gateway-integration-type' );
-        this.on( 'change', 'enable-billet' );
-        this.on( 'change', 'enable-multimethods-billet-card' );
+        this.on('keyup', 'soft-descriptor');
+        this.on('change', 'environment');
+        this.on('change', 'installments-type');
+        this.on('change', 'is-gateway-integration-type');
+        this.on('change', 'enable-billet');
+        this.on('change', 'enable-multimethods-billet-card');
 
-        this.elements.flagsSelect.on( 'select2:unselecting', this._onChangeFlags.bind(this) );
-        this.elements.flagsSelect.on( 'select2:selecting', this._onChangeFlags.bind(this) );
+        this.elements.flagsSelect.on('select2:unselecting', this._onChangeFlags.bind(this));
+        this.elements.flagsSelect.on('select2:selecting', this._onChangeFlags.bind(this));
 
-        $( '#mainform' ).on( 'submit', this._onSubmitForm.bind( this ) );
+        $('#mainform').on('submit', this._onSubmitForm.bind(this));
     };
 
-    Model.fn._onKeyupSoftDescriptor = function( event ) {
+    Model.fn._onKeyupSoftDescriptor = function(event) {
         var isGatewayIntegrationType = $('input[id*="woo-pagarme-payments_is_gateway_integration_type"]').prop("checked");
 
         if (!isGatewayIntegrationType && event.currentTarget.value.length > 13) {
@@ -4178,20 +4184,20 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
             return;
         }
 
-        $( event.currentTarget ).removeClass( errorClass );
+        $(event.currentTarget).removeClass(errorClass);
     };
 
-    Model.fn._onSubmitForm = function( event ) {
+    Model.fn._onSubmitForm = function(event) {
         this.toTop = false;
         this.items = [];
 
-        this.elements.validate.each( this._eachValidate.bind( this ) );
+        this.elements.validate.each(this._eachValidate.bind(this));
 
-        return !~this.items.indexOf( true );
+        return !~this.items.indexOf(true);
     };
 
-    Model.fn._onChangeInstallmentsType = function( event ) {
-        this.handleInstallmentFieldsVisibility( event.currentTarget.value );
+    Model.fn._onChangeInstallmentsType = function(event) {
+        this.handleInstallmentFieldsVisibility(event.currentTarget.value);
     };
 
     Model.fn._onChangeIsGatewayIntegrationType = function(event) {
@@ -4206,24 +4212,23 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         this.handleBilletBankRequirement();
     };
 
-    Model.fn._onChangeFlags = function( event ) {
-        this.setInstallmentsByFlags( event, false );
+    Model.fn._onChangeFlags = function(event) {
+        this.setInstallmentsByFlags(event, false);
     };
 
-    Model.fn._eachValidate = function( index, field ) {
+    Model.fn._eachValidate = function(index, field) {
         var rect;
-        var element          = $( field )
-          , empty            = element.isEmptyValue()
-          , invalidMaxLength = element.val().length > element.prop("maxLength")
-          , isFieldInvalid   = empty || invalidMaxLength
-          , func             = isFieldInvalid ? 'addClass' : 'removeClass'
-        ;
+        var element = $(field),
+            empty = element.isEmptyValue(),
+            invalidMaxLength = element.val().length > element.prop("maxLength"),
+            isFieldInvalid = empty || invalidMaxLength,
+            func = isFieldInvalid ? 'addClass' : 'removeClass';
 
-        if ( ! element.is( ':visible' ) ) {
+        if (!element.is(':visible')) {
             return;
         }
 
-        element[func]( errorClass );
+        element[func](errorClass);
 
         this.items[index] = isFieldInvalid;
 
@@ -4233,29 +4238,28 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
         field.placeholder = field.dataset.errorMsg;
 
-        if ( ! this.toTop ) {
+        if (!this.toTop) {
             this.toTop = true;
-            rect       = field.getBoundingClientRect();
-            window.scrollTo( 0, ( rect.top + window.scrollY ) - 32 );
+            rect = field.getBoundingClientRect();
+            window.scrollTo(0, (rect.top + window.scrollY) - 32);
         }
     };
 
-    Model.fn.handleInstallmentFieldsVisibility = function( value ) {
-        var installmentsMaxContainer      		  = this.installmentsMax.closest( 'tr' )
-          , installmentsInterestContainer 		  = this.installmentsInterest.closest( 'tr' )
-          , installmentsByFlagContainer   		  = this.installmentsByFlag.closest( 'tr' )
-          , installmentsWithoutInterestContainer  = this.installmentsWithoutInterest.closest( 'tr' )
-          , installmentsInterestIncreaseContainer = this.installmentsInterestIncrease.closest( 'tr' )
-        ;
+    Model.fn.handleInstallmentFieldsVisibility = function(value) {
+        var installmentsMaxContainer = this.installmentsMax.closest('tr'),
+            installmentsInterestContainer = this.installmentsInterest.closest('tr'),
+            installmentsByFlagContainer = this.installmentsByFlag.closest('tr'),
+            installmentsWithoutInterestContainer = this.installmentsWithoutInterest.closest('tr'),
+            installmentsInterestIncreaseContainer = this.installmentsInterestIncrease.closest('tr');
 
-        if ( value == 1 ) {
+        if (value == 1) {
             installmentsMaxContainer.show();
             installmentsInterestContainer.show();
             installmentsInterestIncreaseContainer.show();
             installmentsWithoutInterestContainer.show();
             installmentsByFlagContainer.hide();
         } else {
-            if ( this.elements.flagsSelect.val() ) {
+            if (this.elements.flagsSelect.val()) {
                 installmentsByFlagContainer.show();
                 this.setInstallmentsByFlags(null, true);
             }
@@ -4284,7 +4288,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         var installments = '';
         var maxInstallmentsLength = this.installmentsMax.children('option').length;
 
-        for (let i = 13; i <= maxInstallmentsLength+1; i++) {
+        for (let i = 13; i <= maxInstallmentsLength + 1; i++) {
             installments += `option[value="${i}"], `;
         }
 
@@ -4309,7 +4313,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         }
     };
 
-    Model.fn.setMaxInstallmentsWithoutInterestBasedOnMaxInstallments = function () {
+    Model.fn.setMaxInstallmentsWithoutInterestBasedOnMaxInstallments = function() {
         var installmentsMaxElement = this.installmentsMax;
 
         installmentsMaxElement.on('change', function() {
@@ -4326,7 +4330,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         }
     };
 
-    Model.fn.setMaxInstallmentsWithoutInterestBasedOnMaxInstallmentsByFlag = function () {
+    Model.fn.setMaxInstallmentsWithoutInterestBasedOnMaxInstallmentsByFlag = function() {
         var installmentsMaxElement = this.installmentsMaxByFlag;
 
         installmentsMaxElement.on('change', function() {
@@ -4343,17 +4347,24 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         }
     };
 
-    Model.fn.setupPSPOptions = function (
+    Model.fn.setupPSPOptions = function(
         antifraudEnabled,
         antifraudMinValue,
         ccAllowSave,
-        billetBank
+        billetBank,
+        voucherSoftDescriptor,
+        VoucherccBrands,
+        cardWallet
     ) {
         antifraudEnabled.hide();
         antifraudMinValue.hide();
         ccAllowSave.hide();
         billetBank.hide();
         this.antifraudSection.hide();
+        this.voucherSection.hide();
+        voucherSoftDescriptor.hide();
+        VoucherccBrands.hide();
+        cardWallet.hide();
 
         this.ccAllowSave.prop("checked", false);
         var $optionsToRemove = this.ccBrands.find(this.getOnlyGatewayBrands());
@@ -4374,17 +4385,24 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
         this.installmentsMaxByFlag.prop("max", 12);
     };
 
-    Model.fn.setupGatewayOptions = function (
+    Model.fn.setupGatewayOptions = function(
         antifraudEnabled,
         antifraudMinValue,
         ccAllowSave,
-        billetBank
+        billetBank,
+        voucherSoftDescriptor,
+        VoucherccBrands,
+        cardWallet
     ) {
         antifraudEnabled.show();
         antifraudMinValue.show();
         ccAllowSave.show();
         billetBank.show();
         this.antifraudSection.show();
+        this.voucherSection.show();
+        voucherSoftDescriptor.show();
+        VoucherccBrands.show();
+        cardWallet.show();
 
         this.restoreOptions(this.ccBrands);
 
@@ -4398,86 +4416,96 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
     };
 
     Model.fn.handleGatewayIntegrationFieldsVisibility = function(isGateway) {
-        var antifraudEnabled  = this.antifraudEnabled.closest( 'tr' )
-          , antifraudMinValue = this.antifraudMinValue.closest( 'tr' )
-          , ccAllowSave = this.ccAllowSave.closest( 'tr' )
-          , billetBank = this.billetBank.closest( 'tr' )
-        ;
+
+        var antifraudEnabled = this.antifraudEnabled.closest('tr'),
+            antifraudMinValue = this.antifraudMinValue.closest('tr'),
+            ccAllowSave = this.ccAllowSave.closest('tr'),
+            billetBank = this.billetBank.closest('tr'),
+            voucherSoftDescriptor = this.voucherSoftDescriptor.closest('tr'),
+            VoucherccBrands = this.VoucherccBrands.closest('tr'),
+            cardWallet = this.cardWallet.closest('tr')
 
         if (isGateway) {
             return this.setupGatewayOptions(
                 antifraudEnabled,
                 antifraudMinValue,
                 ccAllowSave,
-                billetBank
+                billetBank,
+                voucherSoftDescriptor,
+                VoucherccBrands,
+                cardWallet
             );
+
         }
 
         return this.setupPSPOptions(
             antifraudEnabled,
             antifraudMinValue,
             ccAllowSave,
-            billetBank
+            billetBank,
+            voucherSoftDescriptor,
+            VoucherccBrands,
+            cardWallet
         );
     };
 
     Model.fn.handleBilletBankRequirement = function() {
         const billetBankElementId = '#woocommerce_woo-pagarme-payments_billet_bank';
-        let bankRequirementFields = $( '[data-requires-field="billet-bank"]' );
+        let bankRequirementFields = $('[data-requires-field="billet-bank"]');
         let billetBankIsRequired = false;
 
         bankRequirementFields.each(function() {
-            if ( $( this ).prop( "checked" ) ) {
+            if ($(this).prop("checked")) {
                 billetBankIsRequired = true;
                 return false;
             }
         });
 
-        if ( billetBankIsRequired ) {
-            $( billetBankElementId ).attr( 'required', true );
+        if (billetBankIsRequired) {
+            $(billetBankElementId).attr('required', true);
             return;
         }
 
-        $( billetBankElementId ).attr( 'required', false );
+        $(billetBankElementId).attr('required', false);
     };
 
-    Model.fn.setInstallmentsByFlags = function( event, firstLoad ) {
-        var flags        = this.elements.flagsSelect.val() || [];
-        var flagsWrapper = this.installmentsByFlag.closest( 'tr' );
+    Model.fn.setInstallmentsByFlags = function(event, firstLoad) {
+        var flags = this.elements.flagsSelect.val() || [];
+        var flagsWrapper = this.installmentsByFlag.closest('tr');
         var allFlags = $('[data-flag]');
 
-        if ( parseInt( this.elements.installmentsTypeSelect.val() ) !== 2 ) {
+        if (parseInt(this.elements.installmentsTypeSelect.val()) !== 2) {
             allFlags.hide();
             flagsWrapper.hide();
             return;
         }
 
-        if ( ! firstLoad ) {
+        if (!firstLoad) {
             var selectedItem = event.params.args.data.id;
-            var filtered     = flags;
+            var filtered = flags;
 
             flagsWrapper.show();
 
-            if ( event.params.name == 'unselect' ) {
+            if (event.params.name == 'unselect') {
                 filtered = flags.filter(function(i) {
                     return i != selectedItem;
                 });
 
-                if ( filtered.length == 0 ) {
-                    this.installmentsByFlag.closest( 'tr' ).hide();
+                if (filtered.length == 0) {
+                    this.installmentsByFlag.closest('tr').hide();
                 }
             } else {
-                filtered.push( selectedItem );
+                filtered.push(selectedItem);
             }
 
             allFlags.hide();
 
             filtered.map(function(item) {
-                var element = $( '[data-flag=' + item + ']' );
+                var element = $('[data-flag=' + item + ']');
                 element.show();
             });
         } else {
-            if ( flags.length === 0 ) {
+            if (flags.length === 0) {
                 allFlags.hide();
                 flagsWrapper.hide();
                 return;
@@ -4485,7 +4513,7 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
             allFlags.each(function(index, item) {
                 item = $(item);
-                if ( ! flags.includes( item.data( 'flag' ) ) ) {
+                if (!flags.includes(item.data('flag'))) {
                     item.hide();
                 } else {
                     item.show();
@@ -4497,12 +4525,13 @@ if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 });
 
 
-;jQuery(function($) {
-	var context = $( 'body' );
+;
+jQuery(function($) {
+    var context = $('body');
 
-	Pagarme.vars = {
-		body : context
-	};
+    Pagarme.vars = {
+        body: context
+    };
 
-	Pagarme.Application.init.apply( null, [context] );
+    Pagarme.Application.init.apply(null, [context]);
 });

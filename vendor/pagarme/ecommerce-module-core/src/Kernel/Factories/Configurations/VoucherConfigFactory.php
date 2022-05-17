@@ -11,7 +11,7 @@ use Pagarme\Core\Kernel\ValueObjects\Configuration\VoucherConfig;
 class VoucherConfigFactory implements FactoryCreateFromDbDataInterface
 {
     /**
-     * @param array $data
+     * @param object $data
      * @return VoucherConfig
      * @throws InvalidParamException
      */
@@ -41,6 +41,7 @@ class VoucherConfigFactory implements FactoryCreateFromDbDataInterface
             $voucherConfig->setSaveCards((bool) $data->saveCards);
         }
 
+        if (isset($data->cardConfigs)) {
         foreach ($data->cardConfigs as $cardConfig) {
             $brand = strtolower($cardConfig->brand);
             $voucherConfig->addCardConfig(
@@ -55,6 +56,7 @@ class VoucherConfigFactory implements FactoryCreateFromDbDataInterface
                 )
             );
         }
+    }
 
         return $voucherConfig;
     }

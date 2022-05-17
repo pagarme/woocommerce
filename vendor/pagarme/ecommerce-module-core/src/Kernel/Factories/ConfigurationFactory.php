@@ -40,7 +40,8 @@ class ConfigurationFactory implements FactoryInterface
                     $cardConfig['installments_up_to'],
                     $cardConfig['installments_without_interest'],
                     $cardConfig['interest'],
-                    $cardConfig['incremental_interest']
+                    $cardConfig['incremental_interest'],
+                    null
                 )
             );
         }
