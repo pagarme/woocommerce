@@ -134,7 +134,7 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-    public function process_payment($order_id)
+    public function process_payment($order_id): array
     {
         $wc_order = new WC_Order($order_id);
         $formattedPost['order'] = $order_id;
