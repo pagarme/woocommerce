@@ -20,7 +20,7 @@ class Order extends Meta
     protected $payment_method;
     protected $pagarme_status;
     protected $pagarme_id;
-    protected WC_Order $wc_order;
+    protected $wc_order;
     protected $settings;
 
     // == BEGIN WC ORDER ==
