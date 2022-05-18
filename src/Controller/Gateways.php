@@ -105,6 +105,7 @@ class Gateways extends WC_Payment_Gateway
             'enable_credit_card'                => $this->field_enable_credit_card(),
             'enable_pix'                        => $this->field_enable_pix(),
             'enable_billet'                     => $this->field_enable_billet(),
+            'enable_voucher'                    => $this->field_enable_voucher(),
             'multimethods_2_cards'              => $this->field_multimethods_2_cards(),
             'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
             'multicustomers'                    => $this->field_multicustomers(),
@@ -126,6 +127,10 @@ class Gateways extends WC_Payment_Gateway
             'billet_bank'                       => $this->field_billet_bank(),
             'billet_deadline_days'              => $this->field_billet_deadline_days(),
             'billet_instructions'               => $this->field_billet_instructions(),
+            'section_voucher'                   => $this->section_voucher(),
+            'voucher_soft_descriptor'           => $this->field_voucher_soft_descriptor(),
+            'field_voucher_flags'               => $this->field_voucher_flags(),
+            'card_wallet'                       => $this->field_card_wallet(),
             'section_antifraud'                 => $this->section_antifraud(),
             'antifraud_enabled'                 => $this->antifraud_enabled(),
             'antifraud_min_value'               => $this->antifraud_min_value(),
@@ -134,7 +139,7 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-    public function process_payment($order_id)
+    public function process_payment($order_id): array
     {
         $wc_order = new WC_Order($order_id);
         $formattedPost['order'] = $order_id;
@@ -256,6 +261,14 @@ class Gateways extends WC_Payment_Gateway
                     'pagarme_payment_method',
                     'enable_multicustomers_pix',
                 ];
+
+                case 'voucher':
+                    return [
+                        'brand6',
+                        'pagarme_payment_method',
+                        'pagarmetoken6',
+                        'card_id'
+                    ];
             default:
                 return $_POST;
         }
@@ -493,6 +506,30 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
+    public function field_enable_voucher()
+    {
+        return array(
+            'title'   => __('Voucher', 'woo-pagarme-payments'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable voucher', 'woo-pagarme-payments'),
+            'default' => 'no'
+        );
+    }
+
+    public function field_card_wallet()
+    {
+        return array(
+            'title'    => __('Card Wallet', 'woo-pagarme-payments'),
+            'desc_tip' => __('Enable Card Wallet', 'woo-pagarme-payments'),
+            'type'     => 'checkbox',
+            'label'    => __('Card Wallet', 'woo-pagarme-payments'),
+            'default'  => 'no',
+            'custom_attributes' => array(
+                'data-field'   => 'card-wallet',
+            ),
+        );
+    }
+
     public function field_enable_billet()
     {
         return array(
@@ -538,6 +575,53 @@ class Gateways extends WC_Payment_Gateway
             'type'    => 'checkbox',
             'label'   => __('Enable multi-buyers', 'woo-pagarme-payments'),
             'default' => 'no',
+        );
+    }
+
+    public function section_voucher()
+    {
+        return array(
+            'title' => __('Voucher settings', 'woo-pagarme-payments'),
+            'type'  => 'title',
+            'custom_attributes' => array(
+                'data-field' => 'voucher-section',
+            )
+        );
+    }
+
+    public function field_voucher_soft_descriptor()
+    {
+        return array(
+            'title'             => __('Soft descriptor', 'woo-pagarme-payments'),
+            'desc_tip'          => __('Description that appears on the voucher bill.', 'woo-pagarme-payments'),
+            'description'       => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments'), 13),
+            'custom_attributes' => array(
+                'data-field'     => 'voucher-soft-descriptor',
+                'data-action'    => 'voucher-soft-descriptor',
+                'data-element'   => 'validate',
+                'maxlength'      => 22,
+                'data-error-msg' => __('This field is required.', 'woo-pagarme-payments'),
+            ),
+        );
+    }
+
+    public function field_voucher_flags()
+    {
+        return array(
+            'type'              => 'multiselect',
+            'title'             => __('Voucher Card Brands', 'woo-pagarme-payments'),
+            'select_buttons'    => false,
+            'class'             => 'wc-enhanced-select',
+            'options'           => array(
+                'alelo'  => 'Alelo',
+                'sodexo' => 'Sodexo',
+                'vr'     => 'VR',
+            ),
+            'custom_attributes' => array(
+                'data-field'   => 'voucher-flags-select',
+                'data-element' => 'voucher-flags-select',
+                'data-action'  => 'flags',
+            ),
         );
     }
 
@@ -952,6 +1036,19 @@ class Gateways extends WC_Payment_Gateway
                 <?php echo esc_attr($this->model->settings->hub_environment); ?>
             </td>
         </tr>
+        <?php if ($this->model->is_sandbox_mode()) : ?>
+            <tr valign="top">
+                <th scope="row" class="titledesc">
+                <td class="forminp ">
+                    <div class="pagarme-message-warning">
+                        <span>
+                            <?= __('Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions.', 'woo-pagarme-payments'); ?>
+                        </span>
+                    </div>
+                </td>
+                </th>
+            </tr>
+        <?php endif; ?>
     <?php
         return ob_get_clean();
     }

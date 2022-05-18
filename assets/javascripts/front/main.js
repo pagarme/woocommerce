@@ -208,12 +208,25 @@ jQuery(function ($) {
 
     $('input[name=pagarme_payment_method]').change(openPaymentMethodDetails);
 
+
     $('input[data-element=pagarme-card-number]').on('blur', function (e) {
         var cardNumberInput = $(e.currentTarget);
 
         creditCardBrand = cardNumberInput.siblings("span[name^='brand-image']");
-
         suffix = creditCardBrand.get(0).getAttribute('pagarme-suffix');
+
+        brandInput = cardNumberInput.siblings("input[type='hidden']");
+
+        keyEventHandlerCard(e);
+    });
+
+    $('input[data-element=pagarme-voucher-card-number]').on('blur', function (e) {
+        var cardNumberInput = $(e.currentTarget);
+
+
+        creditCardBrand = cardNumberInput.siblings("span[name^='voucher-brand-image']");
+        suffix = creditCardBrand.get(0).getAttribute('pagarme-suffix');
+
 
         brandInput = cardNumberInput.siblings("input[type='hidden']");
 
@@ -234,7 +247,7 @@ jQuery(function ($) {
 
         e.preventDefault();
         e.stopPropagation();
-        
+
         jQuery('#wcmp-submit').attr('disabled', 'disabled');
 
         if (isBilletOrPix()) {
@@ -296,7 +309,6 @@ jQuery(function ($) {
                 fail.call(null, errorObj, suffix);
             }
         };
-
         xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
         xhr.send(JSON.stringify({
             card: data
@@ -392,6 +404,32 @@ jQuery(function ($) {
         return obj;
     };
 
+    const prepareCheckoutObject = function (checkoutObj) {
+
+        if ($('#credit-card').is(':checked')) {
+            preparedCheckoutObject = {
+                number: checkoutObj.number,
+                holder_name: checkoutObj.holder_name,
+                exp_month: checkoutObj.exp_month,
+                exp_year: checkoutObj.exp_year,
+                cvv: checkoutObj.cvv,
+            }
+        }
+
+        if ($('#voucher').is(':checked')) {
+            preparedCheckoutObject = {
+                number: checkoutObj.number,
+                holder_name: $('#voucher-card-holder-name').val(),
+                holder_document: $('#voucher-document-holder').val().replace('-', '').replace('.', '').replace('.', '').replace(' ', ''),
+                exp_month: checkoutObj.exp_month,
+                exp_year: checkoutObj.exp_year,
+                cvv: checkoutObj.cvv,
+            }
+        }
+
+        return preparedCheckoutObject;
+    };
+
     const submitForm = function () {
         const form = $('form.checkout');
         form.submit();
@@ -400,11 +438,11 @@ jQuery(function ($) {
     const onSubmit = function (e) {
 
         // Bail if payment method isn't Pagar.me
-        if( $( 'input[name=payment_method]:checked' ).val() !== 'woo-pagarme-payments' ) {
+        if ($('input[name=payment_method]:checked').val() !== 'woo-pagarme-payments') {
             // Submit form normally
             return submitForm();
         }
-        
+
         const paymentMethod = $('input[name=pagarme_payment_method]:checked').get(0).value;
         if (hasCardId() && paymentMethod !== '2_cards') {
             return submitForm();
@@ -451,11 +489,12 @@ jQuery(function ($) {
                 continue;
             }
 
-            var markedInputs = $el.find('[data-pagarmecheckout-element-' + suffix + ']');
+            var markedInputs    = $el.find('[data-pagarmecheckout-element-' + suffix + ']');
             var notMarkedInputs = $el.find('input:not([data-pagarmecheckout-element])');
-            var checkoutObj = createCheckoutObj(markedInputs, suffix);
-            var callbackObj = {};
-            var $hidden = $el.find('[name="pagarmetoken' + suffix + '"]');
+            var checkoutObj     = createCheckoutObj(markedInputs, suffix);
+            checkoutObj         = prepareCheckoutObject(checkoutObj);
+            var callbackObj     = {};
+            var $hidden         = $el.find('[name="pagarmetoken' + suffix + '"]');
             var cb;
 
             if ($hidden) {
@@ -468,7 +507,6 @@ jQuery(function ($) {
                 suffix,
                 function (data, suffix) {
                     const objJSON = JSON.parse(data);
-
                     const form = $('form.checkout');
 
                     $hidden = document.createElement('input');
@@ -495,12 +533,12 @@ jQuery(function ($) {
                         }
 
                         swal.close();
-                        
+
                         const message = {
                             title: 'Aguarde...',
                             text: 'Nós estamos processando sua requisição.',
                             allowOutsideClick: false
-                        }; 
+                        };
 
                         try {
                             swal(message);
@@ -835,7 +873,6 @@ jQuery(function ($) {
         swal.close();
     });
 
-
     $('body').on('updated_checkout', function () {
         if (isFirstLoad) {
             isFirstLoad = false;
@@ -850,5 +887,4 @@ jQuery(function ($) {
         });
         openPaymentMethodDetails(changeEvent);
     });
-
 });

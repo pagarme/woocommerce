@@ -103,12 +103,13 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithTwoCreditCardsConfig($configData, $storeConfig);
         $configData = self::fillWithMultiBuyerConfig($configData, $storeConfig);
         $configData = self::fillWithPixConfig($configData, $storeConfig);
+        $configData = self::fillWithVoucherConfig($configData, $storeConfig);
+        $configData = self::fillWithHubConfig($configData, $storeConfig);
+
         // These method calls are commented for now because they are not implemented yet:
         // $configData = self::fillWithAddressConfig($configData, $storeConfig);
-        // $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
         // $configData = self::fillWithRecurrenceConfig($configData, $storeConfig);
-        $configData = self::fillWithHubConfig($configData, $storeConfig);
 
         $configurationFactory = new ConfigurationFactory();
         $config = $configurationFactory->createFromJsonData(
@@ -125,7 +126,14 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     static private function fillWithVoucherConfig($dataObj, $storeConfig)
     {
-        // Not implemented on Woocommerce because there is no voucher config
+        $voucherConfig = new \stdClass();
+        $voucherConfig->enabled = $storeConfig->is_active_voucher();
+        $voucherConfig->title = null;
+        $voucherConfig->cardOperation = null;
+        $dataObj->cardStatementDescriptor = $storeConfig->isVoucherStatementDescriptor();
+        $dataObj->cardConfigs = self::getBrandConfig($storeConfig);
+        $dataObj->voucherConfig = $voucherConfig;
+        return $dataObj;
     }
 
     static private function fillWithDebitConfig($dataObj, $storeConfig)

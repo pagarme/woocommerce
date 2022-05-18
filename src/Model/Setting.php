@@ -35,6 +35,9 @@ class Setting
         'section_payment_settings'          => array(),
         'enable_billet'                     => array(),
         'enable_pix'                        => array(),
+        'enable_voucher'                    => array(),
+        'voucher_soft_descriptor'           => array(),
+        'voucher_flags'                     => array(),
         'pix_qrcode_expiration_time'        => array(),
         'pix_additional_data'               => array(),
         'enable_credit_card'                => array(),
@@ -132,16 +135,31 @@ class Setting
             'aura'              => 'Aura',
             'jcb'               => 'JCB',
             'credz'             => 'Credz',
+            // 'sodexoalimentacao' => 'SodexoAlimentacao',
+            // 'sodexocultura'     => 'SodexoCultura',
+            // 'sodexogift'        => 'SodexoGift',
+            // 'sodexopremium'     => 'SodexoPremium',
+            // 'sodexorefeicao'    => 'SodexoRefeicao',
+            // 'sodexocombustivel' => 'SodexoCombustivel',
+            // 'vr'                => 'VR',
+            // 'alelo'             => 'Alelo',
+            'banese'            => 'Banese',
+            'cabal'             => 'Cabal',
+        );
+    }
+
+    public function get_voucher_flags_list()
+    {
+        return array(
+            'alelo'             => 'Alelo',
             'sodexoalimentacao' => 'SodexoAlimentacao',
             'sodexocultura'     => 'SodexoCultura',
             'sodexogift'        => 'SodexoGift',
             'sodexopremium'     => 'SodexoPremium',
             'sodexorefeicao'    => 'SodexoRefeicao',
             'sodexocombustivel' => 'SodexoCombustivel',
-            'vr'                => 'VR',
-            'alelo'             => 'Alelo',
-            'banese'            => 'Banese',
-            'cabal'             => 'Cabal',
+            'vr'                => 'VR'
+
         );
     }
 
@@ -212,6 +230,11 @@ class Setting
         return ('yes' === $this->__get('enable_pix'));
     }
 
+    public function is_active_voucher()
+    {
+        return ('yes' === $this->__get('enable_voucher'));
+    }
+
     public function is_active_capture()
     {
         $operation_type = $this->__get('cc_operation_type');
@@ -242,6 +265,11 @@ class Setting
     public function isCardStatementDescriptor()
     {
         return $this->__get('cc_soft_descriptor');
+    }
+
+    public function isVoucherStatementDescriptor()
+    {
+        return $this->__get('voucher_soft_descriptor');
     }
 
     public function isHubEnabled()
@@ -291,6 +319,9 @@ class Setting
 
             case '2cards':
                 return 5;
+
+            case 'voucher':
+                return 6;
 
             default:
                 return 0;

@@ -2,7 +2,6 @@
 if (!function_exists('add_action')) {
     exit(0);
 }
-
 global $woocommerce;
 
 use Woocommerce\Pagarme\Core;
@@ -24,7 +23,13 @@ $swal_data   = array(
 <div id="wcmp-checkout-errors">
     <ul class="woocommerce-error"></ul>
 </div>
-
+<?php if ($model->is_sandbox_mode()) : ?>
+    <div class="pagarme-message-warning">
+        <span>
+            <?= __('Important! This store is in the testing phase. Orders placed in this environment will not be carried out.', 'woo-pagarme-payments'); ?>
+        </span>
+    </div>
+<?php endif; ?>
 <ul class="wc_payment_methods payment_methods methods" <?php echo
                                                         /** phpcs:ignore */
                                                         Utils::get_component('checkout-transparent'); ?>>
@@ -54,6 +59,12 @@ $swal_data   = array(
         'templates/checkout/pix-item',
         array('model' => $model)
     );
+
+    Utils::get_template(
+        'templates/checkout/voucher-item',
+        array('model' => $model)
+    );
+
     ?>
 </ul>
 

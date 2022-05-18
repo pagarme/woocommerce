@@ -48,6 +48,8 @@ class Checkouts
 
             case '2_cards':
                 return self::two_credit_card_message($order);
+            case 'voucher':
+                return self::credit_card_message($order);
         }
     }
 
