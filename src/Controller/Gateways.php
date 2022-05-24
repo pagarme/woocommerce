@@ -261,14 +261,14 @@ class Gateways extends WC_Payment_Gateway
                     'pagarme_payment_method',
                     'enable_multicustomers_pix',
                 ];
-
-                case 'voucher':
-                    return [
-                        'brand6',
-                        'pagarme_payment_method',
-                        'pagarmetoken6',
-                        'card_id'
-                    ];
+            case 'voucher':
+                return [
+                    'brand6',
+                    'pagarme_payment_method',
+                    'pagarmetoken6',
+                    'save_credit_card6',
+                    'card_id6'
+                ];
             default:
                 return $_POST;
         }
@@ -323,6 +323,14 @@ class Gateways extends WC_Payment_Gateway
                     $arrayFieldKey
                 );
             }
+
+            if ($paymentMethod == 'voucher') {
+                $formattedPost = $this->applyForCardCVoucherField(
+                    $field,
+                    $formattedPost,
+                    $arrayFieldKey
+                );
+            }
         }
 
         return $formattedPost;
@@ -360,6 +368,25 @@ class Gateways extends WC_Payment_Gateway
             }
         }
 
+        return $formattedPost;
+    }
+
+    private function applyForCardCVoucherField(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    ) {
+        $dictionary = [
+            'card_id6' => 'card_id',
+            'brand6' => 'brand',
+            'save_credit_card6' => 'save_credit_card'
+        ];
+        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+            if (in_array($fieldKey, $field)) {
+                $field['name'] = $formatedPostKey;
+                $formattedPost['fields'][$arrayFieldKey] = $field;
+            }
+        }
         return $formattedPost;
     }
 

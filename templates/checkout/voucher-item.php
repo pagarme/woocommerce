@@ -7,6 +7,7 @@ if (!$model->settings->is_active_voucher()) {
     return;
 }
 
+use Pagarme\Core\Kernel\ValueObjects\TransactionType;
 use Woocommerce\Pagarme\Helper\Utils;
 
 $ref               = sha1(random_int(1, 1000));
@@ -20,6 +21,7 @@ $type              = 'voucher';
     <div class="payment_box panel entry-content pagarme_methods" style="display:none;">
 
         <fieldset id="pagarme-fieldset-voucher" class="wc-voucher-form wc-payment-form">
+            <?php Utils::get_template('templates/checkout/choose-credit-card', ['suffix' => 6, 'cardType' => [TransactionType::VOUCHER]]); ?>
             <label>
                 <div class="wc-voucher-info" data-element="fields-voucher-data">
                     <?php

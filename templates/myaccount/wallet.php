@@ -35,6 +35,9 @@ if ($customer->cards) :
                 <th class="woocommerce-wallet-name">
                     <?php esc_html_e('Name', 'woo-pagarme-payments'); ?>
                 </th>
+                <th class="woocommerce-wallet-brand">
+                    <?php esc_html_e('Type', 'woo-pagarme-payments'); ?>
+                </th>
                 <th class="woocommerce-wallet-last-digits">
                     <?php esc_html_e('Card', 'woo-pagarme-payments'); ?>
                 </th>
@@ -56,6 +59,9 @@ if ($customer->cards) :
                 <tr>
                     <td>
                         <?php echo esc_html($card->getOwnerName()); ?>
+                    </td>
+                    <td>
+                        <?php echo esc_html(ucwords(str_replace('_', ' ', $card->getType()))); ?>
                     </td>
                     <td>
                         <?php echo esc_html("******" . $card->getLastFourDigits()->getValue()); ?>

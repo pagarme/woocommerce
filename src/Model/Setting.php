@@ -62,6 +62,7 @@ class Setting
         'cc_installments_by_flag'           => array(),
         'webhook_id'                        => array(),
         'enable_logs'                       => array(),
+        'migrations'                        => array(),
     );
 
     private function __construct($settings)
