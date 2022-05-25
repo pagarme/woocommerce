@@ -69,8 +69,11 @@ class Checkout
 
         $order  = new Order($wc_order->get_order_number());
         $order->payment_method   = $fields['payment_method'];
+        $order->update_meta('_payment_method_title', $this->payment_methods[$fields['payment_method']]);
+        $order->update_meta('_payment_method', Gateways::PAYMENT_METHOD);
         WC()->cart->empty_cart();
         if ($response) {
+            $order->transaction_id     = $response->getPagarmeId()->getValue();
             $order->pagarme_id     = $response->getPagarmeId()->getValue();
             $order->pagarme_status = $response->getStatus()->getStatus();
             $order->response_data    = json_encode($response);
