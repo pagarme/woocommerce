@@ -23,6 +23,8 @@ class Gateways extends WC_Payment_Gateway
      */
     public $model;
 
+    const PAYMENT_METHOD = 'Pagar.me';
+
     public function __construct()
     {
         $this->model = new Gateway();
@@ -45,7 +47,7 @@ class Gateways extends WC_Payment_Gateway
         }
 
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
-        add_action('woocommerce_thankyou_' . $this->id, array($this, 'thank_you_page'));
+        add_action('woocommerce_thankyou_' . self::PAYMENT_METHOD, array($this, 'thank_you_page'));
     }
 
     public function payment_fields()
