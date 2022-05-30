@@ -69,9 +69,8 @@ class Checkout
 
         $order  = new Order($wc_order->get_order_number());
         $order->payment_method   = $fields['payment_method'];
-        $title = Setting::get_instance()->title;
         $order->update_meta('_payment_method_title', $this->payment_methods[$fields['payment_method']]);
-        $order->update_meta('_payment_method', $title);
+        $order->update_meta('_payment_method', Gateways::PAYMENT_METHOD);
         WC()->cart->empty_cart();
         if ($response) {
             $order->transaction_id     = $response->getPagarmeId()->getValue();
