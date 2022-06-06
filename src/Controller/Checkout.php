@@ -38,6 +38,7 @@ class Checkout
             'pix'             => __('Pix', 'woo-pagarme-payments'),
             '2_cards'         => __('2 credit cards', 'woo-pagarme-payments'),
             'billet-and-card' => __('Credit card and Boleto', 'woo-pagarme-payments'),
+            'voucher'         => __('Voucher', 'woo-pagarme-payments'),
         ];
     }
 
