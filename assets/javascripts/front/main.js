@@ -416,6 +416,16 @@ jQuery(function ($) {
             }
         }
 
+        if ($('#2-credit-card').is(':checked')) {
+            preparedCheckoutObject = {
+                number: checkoutObj.number,
+                holder_name: checkoutObj.holder_name,
+                exp_month: checkoutObj.exp_month,
+                exp_year: checkoutObj.exp_year,
+                cvv: checkoutObj.cvv,
+            }
+        }
+
         if ($('#voucher').is(':checked')) {
             preparedCheckoutObject = {
                 number: checkoutObj.number,
