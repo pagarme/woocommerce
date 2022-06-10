@@ -110,12 +110,11 @@ class Payment
         $card              = $this->pay_voucher_base($wc_order, $form_fields, $customer);
         $card_amount       = $wc_order->get_total();
         $card['amount']    = Utils::format_order_price($card_amount);
-        $customer          = $this->get_multicustomer_data('card', $form_fields);
         return $card;
     }
 
     /**
-     * Return payment data for "voucher" base 
+     * Return payment data for "voucher" base
      *
      * @param $wc_order object order from woocommerce
      * @param $form_fields array Sent form fields
