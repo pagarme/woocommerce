@@ -405,28 +405,17 @@ jQuery(function ($) {
     };
 
     const prepareCheckoutObject = function (checkoutObj) {
-
-        if ($('#credit-card').is(':checked')) {
-            preparedCheckoutObject = {
-                number: checkoutObj.number,
-                holder_name: checkoutObj.holder_name,
-                exp_month: checkoutObj.exp_month,
-                exp_year: checkoutObj.exp_year,
-                cvv: checkoutObj.cvv,
-            }
+        let preparedCheckoutObject = {
+            number: checkoutObj.number,
+            holder_name: checkoutObj.holder_name,
+            exp_month: checkoutObj.exp_month,
+            exp_year: checkoutObj.exp_year,
+            cvv: checkoutObj.cvv,
         }
-
         if ($('#voucher').is(':checked')) {
-            preparedCheckoutObject = {
-                number: checkoutObj.number,
-                holder_name: $('#voucher-card-holder-name').val(),
-                holder_document: $('#voucher-document-holder').val().replace('-', '').replace('.', '').replace('.', '').replace(' ', ''),
-                exp_month: checkoutObj.exp_month,
-                exp_year: checkoutObj.exp_year,
-                cvv: checkoutObj.cvv,
-            }
+            preparedCheckoutObject.holder_name = $('#voucher-card-holder-name').val();
+            preparedCheckoutObject.holder_document = $('#voucher-document-holder').val().replace('-', '').replace('.', '').replace('.', '').replace(' ', '');
         }
-
         return preparedCheckoutObject;
     };
 
