@@ -9,6 +9,7 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
         this.installments = $('[data-field="installments"]');
         this.billet = $('[data-field="billet"]');
         this.installmentsMax = $('[data-field="installments-maximum"]');
+        this.installmentsMinAmount = $('[data-field="installments-min-amount"]');
         this.installmentsInterest = $('[data-field="installments-interest"]');
         this.installmentsByFlag = $('[data-field="installments-by-flag"]');
         this.installmentsWithoutInterest = $(
@@ -165,6 +166,8 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
         var installmentsMaxContainer = this.installmentsMax.closest("tr"),
             installmentsInterestContainer =
                 this.installmentsInterest.closest("tr"),
+            installmentsMinAmountContainer =
+                this.installmentsMinAmount.closest("tr"),
             installmentsByFlagContainer = this.installmentsByFlag.closest("tr"),
             installmentsWithoutInterestContainer =
                 this.installmentsWithoutInterest.closest("tr"),
@@ -176,6 +179,7 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
             installmentsInterestContainer.show();
             installmentsInterestIncreaseContainer.show();
             installmentsWithoutInterestContainer.show();
+            installmentsMinAmountContainer.show();
             installmentsByFlagContainer.hide();
         } else {
             if (this.elements.flagsSelect.val()) {
@@ -183,6 +187,7 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
                 this.setInstallmentsByFlags(null, true);
             }
             installmentsMaxContainer.hide();
+            installmentsMinAmountContainer.hide();
             installmentsInterestContainer.hide();
             installmentsInterestIncreaseContainer.hide();
             installmentsWithoutInterestContainer.hide();

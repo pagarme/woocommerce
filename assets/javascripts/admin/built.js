@@ -4126,6 +4126,7 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
         this.billet = $('[data-field="billet"]');
         this.installmentsMax = $('[data-field="installments-maximum"]');
         this.installmentsInterest = $('[data-field="installments-interest"]');
+        this.installmentsMinAmount = $('[data-field="installments-min-amount"]');
         this.installmentsByFlag = $('[data-field="installments-by-flag"]');
         this.installmentsWithoutInterest = $('[data-field="installments-without-interest"]');
         this.installmentsInterestIncrease = $('[data-field="installments-interest-increase"]');
@@ -4248,12 +4249,14 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
     Model.fn.handleInstallmentFieldsVisibility = function(value) {
         var installmentsMaxContainer = this.installmentsMax.closest('tr'),
             installmentsInterestContainer = this.installmentsInterest.closest('tr'),
+            installmentsMinAmountContainer = this.installmentsMinAmount.closest("tr"),
             installmentsByFlagContainer = this.installmentsByFlag.closest('tr'),
             installmentsWithoutInterestContainer = this.installmentsWithoutInterest.closest('tr'),
             installmentsInterestIncreaseContainer = this.installmentsInterestIncrease.closest('tr');
 
         if (value == 1) {
             installmentsMaxContainer.show();
+            installmentsMinAmountContainer.show();
             installmentsInterestContainer.show();
             installmentsInterestIncreaseContainer.show();
             installmentsWithoutInterestContainer.show();
@@ -4264,6 +4267,7 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
                 this.setInstallmentsByFlags(null, true);
             }
             installmentsMaxContainer.hide();
+            installmentsMinAmountContainer.hide();
             installmentsInterestContainer.hide();
             installmentsInterestIncreaseContainer.hide();
             installmentsWithoutInterestContainer.hide();
