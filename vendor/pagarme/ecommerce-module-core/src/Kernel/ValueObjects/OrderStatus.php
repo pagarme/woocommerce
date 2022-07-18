@@ -11,10 +11,11 @@ final class OrderStatus extends AbstractValueObject
     const PROCESSING = 'processing';
     const CANCELED = 'canceled';
     const FAILED = 'failed';
+    const COMPLETE = 'complete';
 
     /**
      *
-     * @var string 
+     * @var string
      */
     private $status;
 
@@ -51,6 +52,11 @@ final class OrderStatus extends AbstractValueObject
     static public function canceled()
     {
         return new self(self::CANCELED);
+    }
+
+    static public function complete()
+    {
+        return new self(self::COMPLETE);
     }
 
     static public function failed()
