@@ -6,7 +6,6 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Pagarme\Core\Kernel\Services\OrderService;
@@ -93,11 +92,6 @@ class Order extends Meta
             $this->wc_order->payment_complete();
         }
 
-        if (!$this->wc_order->needs_processing()) {
-            $this->wc_order->set_status('completed');
-            $this->wc_order->save();
-        }
-
         $statusArray = [
             'previous_status' => $current_status,
             'new_status' => $this->wc_order->get_status()
@@ -129,10 +123,11 @@ class Order extends Meta
                 $this->payment_on_hold();
                 break;
             case 'paid':
-            case OrderStatus::PROCESSING:
                 $this->payment_paid();
                 break;
             case 'failed':
+                $this->payment_canceled();
+                break;
             case 'canceled':
                 $this->payment_canceled();
                 break;
