@@ -122,7 +122,7 @@ class LogService
         return $result;
     }
 
-    function blurEmailSensitiveData($string)
+    private function blurEmailSensitiveData($string)
     {
         $displayed = substr($string, 0, 3);
         $final = substr($string, strpos($string, "@"));    
