@@ -130,7 +130,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $voucherConfig->enabled = $storeConfig->is_active_voucher();
         $voucherConfig->title = null;
         $voucherConfig->cardOperation = null;
-        $dataObj->cardStatementDescriptor = $storeConfig->isVoucherStatementDescriptor();
+        $dataObj->voucherCardStatementDescriptor = $storeConfig->isVoucherStatementDescriptor();
         $dataObj->cardConfigs = self::getBrandConfig($storeConfig);
         $dataObj->voucherConfig = $voucherConfig;
         return $dataObj;
