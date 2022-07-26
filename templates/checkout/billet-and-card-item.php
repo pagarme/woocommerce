@@ -11,6 +11,7 @@ global $woocommerce;
 
 $total = $woocommerce->cart->total;
 
+use Pagarme\Core\Kernel\ValueObjects\TransactionType;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\View\Checkouts;
 use Woocommerce\Pagarme\Helper\Utils;
@@ -30,7 +31,7 @@ $ref_card          = sha1(random_int(1, 1000));
 
         <fieldset id="pagarme-fieldset-billet-and-card" class="wc-credit-card-form wc-payment-form">
 
-            <?php Utils::get_template('templates/checkout/choose-credit-card', ['suffix' => 4]); ?>
+            <?php Utils::get_template('templates/checkout/choose-credit-card', ['suffix' => 4, 'cardType' => [TransactionType::CREDIT_CARD,TransactionType::DEBIT_CARD]]); ?>
 
             <div class="form-row form-row-wide">
                 <div class="form-row form-row-first">

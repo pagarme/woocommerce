@@ -1002,21 +1002,25 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromVoucher(&$paymentData)
     {
+        $identifier = $this->formData["pagarmetoken6"];
+        if (!$identifier) {
+            $identifier = $this->formData["card_id"];
+        }
         $newPaymentData = new \stdClass();
         $newPaymentData->customerId = $this->getCustomer()->getPagarmeId() ?
         $this->getCustomer()->getPagarmeId()->getValue() : null;
-        $newPaymentData->identifier = $this->formData["pagarmetoken6"];
-        $newPaymentData->brand = $this->formData["brand6"];
+        $newPaymentData->identifier = $identifier;
+        $newPaymentData->brand = strtolower($this->formData["brand6"]);
         $newPaymentData->installments = (int)1;
         $voucherDataIndex = NewVoucherPayment::getBaseCode();
-
+        $newPaymentData->saveOnSuccess =
+            isset($this->formData["save_credit_card"]);
         if (!isset($paymentData[$voucherDataIndex])) {
             $paymentData[$voucherDataIndex] = [];
         }
 
         $paymentData[$voucherDataIndex][] = $newPaymentData;
         return $voucherDataIndex;
-
     }
 
     public function getShipping()

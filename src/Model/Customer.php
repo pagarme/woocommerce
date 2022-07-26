@@ -71,7 +71,7 @@ class Customer
         }
     }
 
-    public function get_cards()
+    public function get_cards($types = null, $includeEmptyType = true)
     {
         if ($this->cards) {
             return $this->cards;
@@ -82,9 +82,20 @@ class Customer
             return null;
         }
 
+        if (is_array($types)) {
+            foreach ($types as $type) {
+                if (is_object($type)) {
+                    $types = null;
+                    break;
+                }
+            }
+        }
+
         $this->cards =
             $this->cardRepository->findByOwnerId(
-                $coreCustomer->getPagarmeId()
+                $coreCustomer->getPagarmeId(),
+                $types,
+                $includeEmptyType
             );
 
         return $this->cards;

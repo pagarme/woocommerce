@@ -23,6 +23,8 @@ class Gateways extends WC_Payment_Gateway
      */
     public $model;
 
+    const PAYMENT_METHOD = 'Pagar.me';
+
     public function __construct()
     {
         $this->model = new Gateway();
@@ -45,7 +47,7 @@ class Gateways extends WC_Payment_Gateway
         }
 
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
-        add_action('woocommerce_thankyou_' . $this->id, array($this, 'thank_you_page'));
+        add_action('woocommerce_thankyou_' . self::PAYMENT_METHOD, array($this, 'thank_you_page'));
     }
 
     public function payment_fields()
@@ -106,6 +108,7 @@ class Gateways extends WC_Payment_Gateway
             'enable_pix'                        => $this->field_enable_pix(),
             'enable_billet'                     => $this->field_enable_billet(),
             'enable_voucher'                    => $this->field_enable_voucher(),
+            'voucher_card_wallet'               => $this->field_voucher_card_wallet(),
             'multimethods_2_cards'              => $this->field_multimethods_2_cards(),
             'multimethods_billet_card'          => $this->field_multimethods_billet_card(),
             'multicustomers'                    => $this->field_multicustomers(),
@@ -131,7 +134,6 @@ class Gateways extends WC_Payment_Gateway
             'section_voucher'                   => $this->section_voucher(),
             'voucher_soft_descriptor'           => $this->field_voucher_soft_descriptor(),
             'field_voucher_flags'               => $this->field_voucher_flags(),
-            'card_wallet'                       => $this->field_card_wallet(),
             'section_antifraud'                 => $this->section_antifraud(),
             'antifraud_enabled'                 => $this->antifraud_enabled(),
             'antifraud_min_value'               => $this->antifraud_min_value(),
@@ -262,14 +264,14 @@ class Gateways extends WC_Payment_Gateway
                     'pagarme_payment_method',
                     'enable_multicustomers_pix',
                 ];
-
-                case 'voucher':
-                    return [
-                        'brand6',
-                        'pagarme_payment_method',
-                        'pagarmetoken6',
-                        'card_id'
-                    ];
+            case 'voucher':
+                return [
+                    'brand6',
+                    'pagarme_payment_method',
+                    'pagarmetoken6',
+                    'save_credit_card6',
+                    'card_id6'
+                ];
             default:
                 return $_POST;
         }
@@ -324,6 +326,14 @@ class Gateways extends WC_Payment_Gateway
                     $arrayFieldKey
                 );
             }
+
+            if ($paymentMethod == 'voucher') {
+                $formattedPost = $this->applyForCardCVoucherField(
+                    $field,
+                    $formattedPost,
+                    $arrayFieldKey
+                );
+            }
         }
 
         return $formattedPost;
@@ -361,6 +371,25 @@ class Gateways extends WC_Payment_Gateway
             }
         }
 
+        return $formattedPost;
+    }
+
+    private function applyForCardCVoucherField(
+        $field,
+        $formattedPost,
+        $arrayFieldKey
+    ) {
+        $dictionary = [
+            'card_id6' => 'card_id',
+            'brand6' => 'brand',
+            'save_credit_card6' => 'save_credit_card'
+        ];
+        foreach ($dictionary as $fieldKey => $formatedPostKey) {
+            if (in_array($fieldKey, $field)) {
+                $field['name'] = $formatedPostKey;
+                $formattedPost['fields'][$arrayFieldKey] = $field;
+            }
+        }
         return $formattedPost;
     }
 
@@ -517,7 +546,7 @@ class Gateways extends WC_Payment_Gateway
         );
     }
 
-    public function field_card_wallet()
+    public function field_voucher_card_wallet()
     {
         return array(
             'title'    => __('Card Wallet', 'woo-pagarme-payments'),
@@ -526,7 +555,7 @@ class Gateways extends WC_Payment_Gateway
             'label'    => __('Card Wallet', 'woo-pagarme-payments'),
             'default'  => 'no',
             'custom_attributes' => array(
-                'data-field'   => 'card-wallet',
+                'data-field'   => 'voucher-card-wallet',
             ),
         );
     }

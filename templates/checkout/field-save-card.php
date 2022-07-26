@@ -13,10 +13,20 @@ if (!is_user_logged_in()) {
 
 $customer = new Customer(get_current_user_id());
 $suffix   = isset($suffix) ? $suffix : '';
-$setting = Setting::get_instance();
+$type     = isset($type) ? $type : '';
+$setting  = Setting::get_instance();
 
-if (!$setting->is_allowed_save_credit_card()) {
-    return;
+switch ($type) {
+    case 'voucher':
+        if (!$setting->is_allowed_save_voucher_card()) {
+            return;
+        }
+        break;
+    default:
+        if (!$setting->is_allowed_save_credit_card()) {
+            return;
+        }
+        break;
 }
 
 ?>
