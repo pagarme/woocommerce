@@ -86,6 +86,7 @@ class Gateway
         $flags             = $this->settings->flags;
         $type              = $this->settings->cc_installment_type;
         $max_installments  = intval($this->settings->cc_installments_maximum);
+        $min_amount        = Utils::str_to_float($this->settings->cc_installments_min_amount);
         $no_interest       = intval($this->settings->cc_installments_without_interest);
         $interest          = Utils::str_to_float($this->settings->cc_installments_interest);
         $interest_increase = Utils::str_to_float($this->settings->cc_installments_interest_increase);
@@ -93,12 +94,12 @@ class Gateway
         $method = '_calc_installments_' . $type;
 
         return $this->{$method}(
-            compact('max_installments', 'no_interest', 'interest', 'interest_increase', 'total', 'flag')
+            compact('max_installments', 'min_amount', 'no_interest', 'interest', 'interest_increase', 'total', 'flag')
         );
     }
 
     /** phpcs:disable */
-    public function render_installments_options($total, $max_installments, $interest, $interest_increase, $no_interest)
+    public function render_installments_options($total, $max_installments, $min_amount, $interest, $interest_increase, $no_interest)
     {
         $output = sprintf(
             '<option value="1">%1$s</option>',
@@ -127,6 +128,9 @@ class Gateway
             }
 
             $price = ceil($value / $times * 100) / 100;
+            if ($price < $min_amount) {
+                break;
+            }
             $text  = sprintf(
                 __('%dx of %s (%s)', 'woo-pagarme-payments'),
                 $times,
@@ -150,7 +154,7 @@ class Gateway
     {
         extract($params, EXTR_SKIP);
 
-        return $this->render_installments_options($total, $max_installments, $interest, $interest_increase, $no_interest);
+        return $this->render_installments_options($total, $max_installments, $min_amount, $interest, $interest_increase, $no_interest);
     }
 
     private function _calc_installments_2(array $params)
@@ -164,11 +168,12 @@ class Gateway
         }
 
         $max_installments  = intval($settings_by_flag['max_installment'][$flag]);
+        $min_amount        = Utils::str_to_float($settings_by_flag['installment_min_amount'][$flag]);
         $no_interest       = intval($settings_by_flag['no_interest'][$flag]);
         $interest          = Utils::str_to_float($settings_by_flag['interest'][$flag]);
         $interest_increase = Utils::str_to_float($settings_by_flag['interest_increase'][$flag]);
 
-        return $this->render_installments_options($total, $max_installments, $interest, $interest_increase, $no_interest);
+        return $this->render_installments_options($total, $max_installments, $min_amount, $interest, $interest_increase, $no_interest);
     }
 
     public function get_hub_button_text($hub_install_id)

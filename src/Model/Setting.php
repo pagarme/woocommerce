@@ -58,6 +58,7 @@ class Setting
         'cc_installments_maximum'           => ['sanitize' => 'intval'],
         'cc_installments_without_interest'  => ['sanitize' => 'intval'],
         'cc_installments_interest'          => ['sanitize' => 'floatval'],
+        'cc_installments_min_amount'        => ['sanitize' => 'floatval'],
         'cc_installments_interest_increase' => ['sanitize' => 'floatval'],
         'cc_installments_by_flag'           => array(),
         'webhook_id'                        => array(),
