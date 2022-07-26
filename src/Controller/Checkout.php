@@ -37,7 +37,8 @@ class Checkout
             'billet'          => __('Boleto', 'woo-pagarme-payments'),
             'pix'             => __('Pix', 'woo-pagarme-payments'),
             '2_cards'         => __('2 credit cards', 'woo-pagarme-payments'),
-            'billet-and-card' => __('Credit card and Boleto', 'woo-pagarme-payments'),
+            'billet_and_card' => __('Credit card and Boleto', 'woo-pagarme-payments'),
+            'voucher'         => __('Voucher', 'woo-pagarme-payments'),
         ];
     }
 
@@ -69,8 +70,11 @@ class Checkout
 
         $order  = new Order($wc_order->get_order_number());
         $order->payment_method   = $fields['payment_method'];
+        $order->update_meta('_payment_method_title', $this->payment_methods[$fields['payment_method']]);
+        $order->update_meta('_payment_method', Gateways::PAYMENT_METHOD);
         WC()->cart->empty_cart();
         if ($response) {
+            $order->transaction_id     = $response->getPagarmeId()->getValue();
             $order->pagarme_id     = $response->getPagarmeId()->getValue();
             $order->pagarme_status = $response->getStatus()->getStatus();
             $order->response_data    = json_encode($response);
