@@ -110,6 +110,12 @@ class LogService
             if (isset($data['data']['charges'][0]['customer'])) {
                 $data = $this->blurChargeCustomer($data);
             }
+            if (isset($data['data']['charges'][0]['last_transaction']['card']['billing_address'])) {
+                $data['data']['charges'][0]['last_transaction']['card']['billing_address'] = null;
+            }
+            if (isset($data['data']['payments'][0]['credit_card']['card']['billing_address'])) {
+                $data['data']['payments'][0]['credit_card']['card']['billing_address'] = null;
+            }
         }
         return $data;
     }
