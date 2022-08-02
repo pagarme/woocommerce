@@ -133,6 +133,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $dataObj->voucherCardStatementDescriptor = $storeConfig->isVoucherStatementDescriptor();
         $dataObj->cardConfigs = self::getBrandConfig($storeConfig);
         $dataObj->voucherConfig = $voucherConfig;
+        $dataObj->saveVoucherCards = $storeConfig->is_allowed_save_voucher_card();
         return $dataObj;
     }
 
@@ -152,6 +153,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $dataObj->antifraudEnabled = $storeConfig->isAntifraudEnabled();
         $dataObj->antifraudMinAmount = intval($storeConfig->antifraud_min_value);
         $dataObj->saveCards = $storeConfig->is_allowed_save_credit_card();
+        $dataObj->saveVoucherCards = $storeConfig->is_allowed_save_voucher_card();
         $dataObj->installmentsDefaultConfig = $storeConfig->isInstallmentsDefaultConfig();
 
         $dataObj->antifraudMinAmount =

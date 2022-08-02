@@ -1010,8 +1010,15 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $newPaymentData->customerId = $this->getCustomer()->getPagarmeId() ?
         $this->getCustomer()->getPagarmeId()->getValue() : null;
         $newPaymentData->identifier = $identifier;
-        $newPaymentData->brand = strtolower($this->formData["brand6"]);
+        $newPaymentData->brand = strtolower($this->formData["brand"]);
         $newPaymentData->installments = (int)1;
+        $amount = isset($this->formData["card_order_value"]) ?
+            $this->formData["card_order_value"] :
+            $this->getGrandTotal() - $this->getBaseTaxAmount();
+        $amount = number_format($amount, 2, '.', '');
+        $amount = str_replace('.', '', $amount);
+        $amount = str_replace(',', '', $amount);
+        $newPaymentData->amount = $amount;
         $voucherDataIndex = NewVoucherPayment::getBaseCode();
         $newPaymentData->saveOnSuccess =
             isset($this->formData["save_credit_card"]);
