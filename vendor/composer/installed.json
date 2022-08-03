@@ -1,428 +1,472 @@
-{
-    "packages": [
-        {
-            "name": "apimatic/jsonmapper",
-            "version": "v1.3.1",
-            "version_normalized": "1.3.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/apimatic/jsonmapper.git",
-                "reference": "0883d385653ebd2a194ec79e66facb7d69441404"
+[
+    {
+        "name": "apimatic/jsonmapper",
+        "version": "v1.3.1",
+        "version_normalized": "1.3.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/apimatic/jsonmapper.git",
+            "reference": "0883d385653ebd2a194ec79e66facb7d69441404"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/apimatic/jsonmapper/zipball/0883d385653ebd2a194ec79e66facb7d69441404",
+            "reference": "0883d385653ebd2a194ec79e66facb7d69441404",
+            "shasum": ""
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^5 || ^6 || ^7",
+            "squizlabs/php_codesniffer": "^3"
+        },
+        "time": "2020-04-06T20:47:48+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "apimatic\\jsonmapper\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "OSL-3.0"
+        ],
+        "authors": [
+            {
+                "name": "Christian Weiske",
+                "email": "christian.weiske@netresearch.de",
+                "homepage": "http://www.netresearch.de/",
+                "role": "Developer"
             },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/apimatic/jsonmapper/zipball/0883d385653ebd2a194ec79e66facb7d69441404",
-                "reference": "0883d385653ebd2a194ec79e66facb7d69441404",
-                "shasum": ""
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5 || ^6 || ^7",
-                "squizlabs/php_codesniffer": "^3"
-            },
-            "time": "2020-04-06T20:47:48+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "apimatic\\jsonmapper\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "OSL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Christian Weiske",
-                    "email": "christian.weiske@netresearch.de",
-                    "homepage": "http://www.netresearch.de/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Mehdi Jaffery",
-                    "email": "mehdi.jaffery@apimatic.io",
-                    "homepage": "http://apimatic.io/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Map nested JSON structures onto PHP classes",
-            "support": {
+            {
+                "name": "Mehdi Jaffery",
                 "email": "mehdi.jaffery@apimatic.io",
-                "issues": "https://github.com/apimatic/jsonmapper/issues",
-                "source": "https://github.com/apimatic/jsonmapper/tree/v1.3.1"
-            },
-            "install-path": "../apimatic/jsonmapper"
-        },
-        {
-            "name": "apimatic/unirest-php",
-            "version": "2.0.0",
-            "version_normalized": "2.0.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/apimatic/unirest-php.git",
-                "reference": "b4e399a8970c3a5c611f734282f306381f9d1eee"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/apimatic/unirest-php/zipball/b4e399a8970c3a5c611f734282f306381f9d1eee",
-                "reference": "b4e399a8970c3a5c611f734282f306381f9d1eee",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.6.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5 || ^6 || ^7"
-            },
-            "suggest": {
-                "ext-json": "Allows using JSON Bodies for sending and parsing requests"
-            },
-            "time": "2020-04-07T17:16:29+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-0": {
-                    "Unirest\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Mashape",
-                    "email": "opensource@mashape.com",
-                    "homepage": "https://www.mashape.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "APIMATIC",
-                    "email": "opensource@apimatic.io",
-                    "homepage": "https://www.apimatic.io",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Unirest PHP",
-            "homepage": "https://github.com/apimatic/unirest-php",
-            "keywords": [
-                "client",
-                "curl",
-                "http",
-                "https",
-                "rest"
-            ],
-            "support": {
-                "email": "opensource@apimatic.io",
-                "issues": "https://github.com/apimatic/unirest-php/issues",
-                "source": "https://github.com/apimatic/unirest-php/tree/2.0.0"
-            },
-            "install-path": "../apimatic/unirest-php"
-        },
-        {
-            "name": "mashape/unirest-php",
-            "version": "v3.0.4",
-            "version_normalized": "3.0.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Mashape/unirest-php.git",
-                "reference": "842c0f242dfaaf85f16b72e217bf7f7c19ab12cb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Mashape/unirest-php/zipball/842c0f242dfaaf85f16b72e217bf7f7c19ab12cb",
-                "reference": "842c0f242dfaaf85f16b72e217bf7f7c19ab12cb",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "codeclimate/php-test-reporter": "0.1.*",
-                "phpunit/phpunit": "~4.4"
-            },
-            "suggest": {
-                "ext-json": "Allows using JSON Bodies for sending and parsing requests"
-            },
-            "time": "2016-08-11T17:49:21+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-0": {
-                    "Unirest\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Unirest PHP",
-            "homepage": "https://github.com/Mashape/unirest-php",
-            "keywords": [
-                "client",
-                "curl",
-                "http",
-                "https",
-                "rest"
-            ],
-            "install-path": "../mashape/unirest-php"
-        },
-        {
-            "name": "monolog/monolog",
-            "version": "1.26.1",
-            "version_normalized": "1.26.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "c6b00f05152ae2c9b04a448f99c7590beb6042f5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/c6b00f05152ae2c9b04a448f99c7590beb6042f5",
-                "reference": "c6b00f05152ae2c9b04a448f99c7590beb6042f5",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0",
-                "psr/log": "~1.0"
-            },
-            "provide": {
-                "psr/log-implementation": "1.0.0"
-            },
-            "require-dev": {
-                "aws/aws-sdk-php": "^2.4.9 || ^3.0",
-                "doctrine/couchdb": "~1.0@dev",
-                "graylog2/gelf-php": "~1.0",
-                "php-amqplib/php-amqplib": "~2.4",
-                "php-console/php-console": "^3.1.3",
-                "phpstan/phpstan": "^0.12.59",
-                "phpunit/phpunit": "~4.5",
-                "ruflin/elastica": ">=0.90 <3.0",
-                "sentry/sentry": "^0.13",
-                "swiftmailer/swiftmailer": "^5.3|^6.0"
-            },
-            "suggest": {
-                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
-                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
-                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
-                "ext-mongo": "Allow sending log messages to a MongoDB server",
-                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
-                "mongodb/mongodb": "Allow sending log messages to a MongoDB server via PHP Driver",
-                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
-                "php-console/php-console": "Allow sending log messages to Google Chrome",
-                "rollbar/rollbar": "Allow sending log messages to Rollbar",
-                "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
-                "sentry/sentry": "Allow sending log messages to a Sentry server"
-            },
-            "time": "2021-05-28T08:32:12+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Monolog\\": "src/Monolog"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jordi Boggiano",
-                    "email": "j.boggiano@seld.be",
-                    "homepage": "http://seld.be"
-                }
-            ],
-            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
-            "homepage": "http://github.com/Seldaek/monolog",
-            "keywords": [
-                "log",
-                "logging",
-                "psr-3"
-            ],
-            "support": {
-                "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/1.26.1"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/Seldaek",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
-                    "type": "tidelift"
-                }
-            ],
-            "install-path": "../monolog/monolog"
-        },
-        {
-            "name": "mundipagg/mundiapi",
-            "version": "3.1.20",
-            "version_normalized": "3.1.20.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mundipagg/MundiAPI-PHP.git",
-                "reference": "56535b652071d1930b508eb57ffe88ad7647a8f5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mundipagg/MundiAPI-PHP/zipball/56535b652071d1930b508eb57ffe88ad7647a8f5",
-                "reference": "56535b652071d1930b508eb57ffe88ad7647a8f5",
-                "shasum": ""
-            },
-            "require": {
-                "apimatic/jsonmapper": "^1.3.1",
-                "apimatic/unirest-php": "^2.0.0",
-                "ext-curl": "*",
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "squizlabs/php_codesniffer": "^2.7"
-            },
-            "time": "2021-02-26T19:15:09+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "MundiAPILib\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "APIMatic SDK Generator",
-                    "email": "support@apimatic.io",
-                    "homepage": "https://apimatic.io",
-                    "role": "API Tool"
-                }
-            ],
-            "description": "Mundipagg API",
-            "homepage": "https://apimatic.io",
-            "keywords": [
-                "MundiAPI",
-                "api",
-                "sdk"
-            ],
-            "support": {
-                "issues": "https://github.com/mundipagg/MundiAPI-PHP/issues",
-                "source": "https://github.com/mundipagg/MundiAPI-PHP/tree/3.1.20"
-            },
-            "install-path": "../mundipagg/mundiapi"
-        },
-        {
-            "name": "pagarme/ecommerce-module-core",
-            "version": "1.1.2",
-            "version_normalized": "1.1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pagarme/ecommerce-module-core.git",
-                "reference": "6784424e25bb790baa77065630f252f2e1d30a74"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/6784424e25bb790baa77065630f252f2e1d30a74",
-                "reference": "6784424e25bb790baa77065630f252f2e1d30a74",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "monolog/monolog": "~1.6",
-                "mundipagg/mundiapi": "^3.0",
-                "php": ">=7.1"
-            },
-            "require-dev": {
-                "ext-pdo": "*",
-                "mockery/mockery": "1.2.4",
-                "nesbot/carbon": "1.39.0",
-                "phpunit/phpunit": "5.7.27"
-            },
-            "time": "2021-07-26T20:31:49+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Pagarme\\Core\\": "src",
-                    "Pagarme\\Core\\Test\\": "tests",
-                    "Pagarme\\Core\\Test\\Mock\\": "tests\\mock"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Open Source Team"
-                }
-            ],
-            "description": "Core component for Pagar.me e-commerce platform modules.",
-            "support": {
-                "source": "https://github.com/pagarme/ecommerce-module-core/tree/1.1.2"
-            },
-            "install-path": "../pagarme/ecommerce-module-core"
-        },
-        {
-            "name": "psr/log",
-            "version": "1.1.4",
-            "version_normalized": "1.1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "time": "2021-05-03T11:20:27+00:00",
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Psr\\Log\\": "Psr/Log/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "https://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for logging libraries",
-            "homepage": "https://github.com/php-fig/log",
-            "keywords": [
-                "log",
-                "psr",
-                "psr-3"
-            ],
-            "support": {
-                "source": "https://github.com/php-fig/log/tree/1.1.4"
-            },
-            "install-path": "../psr/log"
+                "homepage": "http://apimatic.io/",
+                "role": "Developer"
+            }
+        ],
+        "description": "Map nested JSON structures onto PHP classes",
+        "support": {
+            "email": "mehdi.jaffery@apimatic.io",
+            "issues": "https://github.com/apimatic/jsonmapper/issues",
+            "source": "https://github.com/apimatic/jsonmapper/tree/v1.3.1"
         }
-    ],
-    "dev": true,
-    "dev-package-names": []
-}
+    },
+    {
+        "name": "apimatic/unirest-php",
+        "version": "2.0.0",
+        "version_normalized": "2.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/apimatic/unirest-php.git",
+            "reference": "b4e399a8970c3a5c611f734282f306381f9d1eee"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/apimatic/unirest-php/zipball/b4e399a8970c3a5c611f734282f306381f9d1eee",
+            "reference": "b4e399a8970c3a5c611f734282f306381f9d1eee",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "php": ">=5.6.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^5 || ^6 || ^7"
+        },
+        "suggest": {
+            "ext-json": "Allows using JSON Bodies for sending and parsing requests"
+        },
+        "time": "2020-04-07T17:16:29+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Unirest\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Mashape",
+                "email": "opensource@mashape.com",
+                "homepage": "https://www.mashape.com",
+                "role": "Developer"
+            },
+            {
+                "name": "APIMATIC",
+                "email": "opensource@apimatic.io",
+                "homepage": "https://www.apimatic.io",
+                "role": "Developer"
+            }
+        ],
+        "description": "Unirest PHP",
+        "homepage": "https://github.com/apimatic/unirest-php",
+        "keywords": [
+            "client",
+            "curl",
+            "http",
+            "https",
+            "rest"
+        ],
+        "support": {
+            "email": "opensource@apimatic.io",
+            "issues": "https://github.com/apimatic/unirest-php/issues",
+            "source": "https://github.com/apimatic/unirest-php/tree/2.0.0"
+        }
+    },
+    {
+        "name": "mashape/unirest-php",
+        "version": "v3.0.4",
+        "version_normalized": "3.0.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Mashape/unirest-php.git",
+            "reference": "842c0f242dfaaf85f16b72e217bf7f7c19ab12cb"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Mashape/unirest-php/zipball/842c0f242dfaaf85f16b72e217bf7f7c19ab12cb",
+            "reference": "842c0f242dfaaf85f16b72e217bf7f7c19ab12cb",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "codeclimate/php-test-reporter": "0.1.*",
+            "phpunit/phpunit": "~4.4"
+        },
+        "suggest": {
+            "ext-json": "Allows using JSON Bodies for sending and parsing requests"
+        },
+        "time": "2016-08-11T17:49:21+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Unirest\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Unirest PHP",
+        "homepage": "https://github.com/Mashape/unirest-php",
+        "keywords": [
+            "client",
+            "curl",
+            "http",
+            "https",
+            "rest"
+        ]
+    },
+    {
+        "name": "monolog/monolog",
+        "version": "1.26.1",
+        "version_normalized": "1.26.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Seldaek/monolog.git",
+            "reference": "c6b00f05152ae2c9b04a448f99c7590beb6042f5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/c6b00f05152ae2c9b04a448f99c7590beb6042f5",
+            "reference": "c6b00f05152ae2c9b04a448f99c7590beb6042f5",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0",
+            "psr/log": "~1.0"
+        },
+        "provide": {
+            "psr/log-implementation": "1.0.0"
+        },
+        "require-dev": {
+            "aws/aws-sdk-php": "^2.4.9 || ^3.0",
+            "doctrine/couchdb": "~1.0@dev",
+            "graylog2/gelf-php": "~1.0",
+            "php-amqplib/php-amqplib": "~2.4",
+            "php-console/php-console": "^3.1.3",
+            "phpstan/phpstan": "^0.12.59",
+            "phpunit/phpunit": "~4.5",
+            "ruflin/elastica": ">=0.90 <3.0",
+            "sentry/sentry": "^0.13",
+            "swiftmailer/swiftmailer": "^5.3|^6.0"
+        },
+        "suggest": {
+            "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+            "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+            "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+            "ext-mongo": "Allow sending log messages to a MongoDB server",
+            "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+            "mongodb/mongodb": "Allow sending log messages to a MongoDB server via PHP Driver",
+            "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+            "php-console/php-console": "Allow sending log messages to Google Chrome",
+            "rollbar/rollbar": "Allow sending log messages to Rollbar",
+            "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
+            "sentry/sentry": "Allow sending log messages to a Sentry server"
+        },
+        "time": "2021-05-28T08:32:12+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Monolog\\": "src/Monolog"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jordi Boggiano",
+                "email": "j.boggiano@seld.be",
+                "homepage": "http://seld.be"
+            }
+        ],
+        "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+        "homepage": "http://github.com/Seldaek/monolog",
+        "keywords": [
+            "log",
+            "logging",
+            "psr-3"
+        ],
+        "support": {
+            "issues": "https://github.com/Seldaek/monolog/issues",
+            "source": "https://github.com/Seldaek/monolog/tree/1.26.1"
+        },
+        "funding": [
+            {
+                "url": "https://github.com/Seldaek",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                "type": "tidelift"
+            }
+        ]
+    },
+    {
+        "name": "mundipagg/mundiapi",
+        "version": "3.1.20",
+        "version_normalized": "3.1.20.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/mundipagg/MundiAPI-PHP.git",
+            "reference": "56535b652071d1930b508eb57ffe88ad7647a8f5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/mundipagg/MundiAPI-PHP/zipball/56535b652071d1930b508eb57ffe88ad7647a8f5",
+            "reference": "56535b652071d1930b508eb57ffe88ad7647a8f5",
+            "shasum": ""
+        },
+        "require": {
+            "apimatic/jsonmapper": "^1.3.1",
+            "apimatic/unirest-php": "^2.0.0",
+            "ext-curl": "*",
+            "ext-json": "*",
+            "ext-mbstring": "*",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "squizlabs/php_codesniffer": "^2.7"
+        },
+        "time": "2021-02-26T19:15:09+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "MundiAPILib\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "APIMatic SDK Generator",
+                "email": "support@apimatic.io",
+                "homepage": "https://apimatic.io",
+                "role": "API Tool"
+            }
+        ],
+        "description": "Mundipagg API",
+        "homepage": "https://apimatic.io",
+        "keywords": [
+            "MundiAPI",
+            "api",
+            "sdk"
+        ],
+        "support": {
+            "issues": "https://github.com/mundipagg/MundiAPI-PHP/issues",
+            "source": "https://github.com/mundipagg/MundiAPI-PHP/tree/3.1.20"
+        },
+        "abandoned": true
+    },
+    {
+        "name": "pagarme/ecommerce-module-core",
+        "version": "1.1.2",
+        "version_normalized": "1.1.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pagarme/ecommerce-module-core.git",
+            "reference": "6784424e25bb790baa77065630f252f2e1d30a74"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/6784424e25bb790baa77065630f252f2e1d30a74",
+            "reference": "6784424e25bb790baa77065630f252f2e1d30a74",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "monolog/monolog": "~1.6",
+            "mundipagg/mundiapi": "^3.0",
+            "php": ">=7.1"
+        },
+        "require-dev": {
+            "ext-pdo": "*",
+            "mockery/mockery": "1.2.4",
+            "nesbot/carbon": "1.39.0",
+            "phpunit/phpunit": "5.7.27"
+        },
+        "time": "2021-07-26T20:31:49+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Pagarme\\Core\\": "src",
+                "Pagarme\\Core\\Test\\": "tests",
+                "Pagarme\\Core\\Test\\Mock\\": "tests\\mock"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Open Source Team"
+            }
+        ],
+        "description": "Core component for Pagar.me e-commerce platform modules.",
+        "support": {
+            "source": "https://github.com/pagarme/ecommerce-module-core/tree/1.1.2"
+        }
+    },
+    {
+        "name": "pagarme/pagarmecoreapi",
+        "version": "v5.6.0",
+        "version_normalized": "5.6.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pagarme/pagarme-core-api-php.git",
+            "reference": "72c2faf12664341d7e5b55f7f6e4407023758803"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pagarme/pagarme-core-api-php/zipball/72c2faf12664341d7e5b55f7f6e4407023758803",
+            "reference": "72c2faf12664341d7e5b55f7f6e4407023758803",
+            "shasum": ""
+        },
+        "require": {
+            "apimatic/jsonmapper": "^1.3.1",
+            "apimatic/unirest-php": "^2.0.0",
+            "ext-curl": "*",
+            "ext-json": "*",
+            "ext-mbstring": "*",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "squizlabs/php_codesniffer": "^2.7"
+        },
+        "time": "2022-03-04T14:17:53+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "PagarmeCoreApiLib\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "APIMatic SDK Generator",
+                "email": "support@apimatic.io",
+                "homepage": "https://apimatic.io",
+                "role": "API Tool"
+            }
+        ],
+        "description": "Pagarme API",
+        "homepage": "https://apimatic.io",
+        "keywords": [
+            "PagarmeCoreApi",
+            "api",
+            "sdk"
+        ]
+    },
+    {
+        "name": "psr/log",
+        "version": "1.1.4",
+        "version_normalized": "1.1.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/log.git",
+            "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
+            "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2021-05-03T11:20:27+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.1.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Log\\": "Psr/Log/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "https://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for logging libraries",
+        "homepage": "https://github.com/php-fig/log",
+        "keywords": [
+            "log",
+            "psr",
+            "psr-3"
+        ],
+        "support": {
+            "source": "https://github.com/php-fig/log/tree/1.1.4"
+        }
+    }
+]

@@ -12,6 +12,7 @@ return array(
     'Pagarme\\Core\\Test\\Mock\\' => array($vendorDir . '/pagarme/ecommerce-module-core/tests/mock'),
     'Pagarme\\Core\\Test\\' => array($vendorDir . '/pagarme/ecommerce-module-core/tests'),
     'Pagarme\\Core\\' => array($vendorDir . '/pagarme/ecommerce-module-core/src'),
+    'PagarmeCoreApiLib\\' => array($vendorDir . '/pagarme/pagarmecoreapi/src'),
     'MundiAPILib\\' => array($vendorDir . '/mundipagg/mundiapi/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
 );
