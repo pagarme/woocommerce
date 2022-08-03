@@ -21,6 +21,7 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
             'Pagarme\\Core\\Test\\Mock\\' => 23,
             'Pagarme\\Core\\Test\\' => 18,
             'Pagarme\\Core\\' => 13,
+            'PagarmeCoreApiLib\\' => 18,
         ),
         'M' => 
         array (
@@ -54,6 +55,10 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         array (
             0 => __DIR__ . '/..' . '/pagarme/ecommerce-module-core/src',
         ),
+        'PagarmeCoreApiLib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pagarme/pagarmecoreapi/src',
+        ),
         'MundiAPILib\\' => 
         array (
             0 => __DIR__ . '/..' . '/mundipagg/mundiapi/src',
@@ -69,14 +74,10 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         array (
             'Unirest\\' => 
             array (
-                0 => __DIR__ . '/..' . '/mashape/unirest-php/src',
-                1 => __DIR__ . '/..' . '/apimatic/unirest-php/src',
+                0 => __DIR__ . '/..' . '/apimatic/unirest-php/src',
+                1 => __DIR__ . '/..' . '/mashape/unirest-php/src',
             ),
         ),
-    );
-
-    public static $classMap = array (
-        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -85,7 +86,6 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
             $loader->prefixLengthsPsr4 = ComposerStaticInitbb567e266966327c41fd47379c4c230d::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitbb567e266966327c41fd47379c4c230d::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInitbb567e266966327c41fd47379c4c230d::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitbb567e266966327c41fd47379c4c230d::$classMap;
 
         }, null, ClassLoader::class);
     }
