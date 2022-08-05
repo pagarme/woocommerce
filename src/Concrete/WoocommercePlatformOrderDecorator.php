@@ -135,8 +135,18 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function setStatusAfterLog(OrderStatus $status)
     {
+        $log = new LogService('Order', true);
         $stringCoreStatus = $status->getStatus();
         $stringWoocommerceStatus = $this->getWoocommerceStatusFromCoreStatus($stringCoreStatus);
+        if ($this->getPlatformOrder()->get_status() === 'completed') {
+            $log->info('Impediment to change the order status to ' . $status->getStatus() . '. Order is complete.');
+            return;
+        }
+        $order = new Order($this->getPlatformOrder()->get_id());
+        if (!$order->needs_processing()) {
+            $log->info('Order does not need processing. Changing status to complete.');
+            $stringWoocommerceStatus = $this->getWoocommerceStatusFromCoreStatus('completed');
+        }
         $this->getPlatformOrder()->set_status($stringWoocommerceStatus);
     }
 
