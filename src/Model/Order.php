@@ -93,7 +93,7 @@ class Order extends Meta
             $this->wc_order->payment_complete();
         }
 
-        if (!$this->wc_order->needs_processing()) {
+        if (!$this->needs_processing()) {
             $this->wc_order->set_status('completed');
             $this->wc_order->save();
         }
@@ -201,5 +201,28 @@ class Order extends Meta
         if (!empty($this->settings)) {
             $this->settings->log()->add($file, $message);
         }
+    }
+
+    /**
+     * See if the order needs processing before it can be completed.
+     * @return bool
+     */
+    public function needs_processing() {
+        $needs_processing = false;
+        if ( count( $this->wc_order->get_items() ) > 0 ) {
+            foreach ( $this->wc_order->get_items() as $item ) {
+                if ( $item->is_type( 'line_item' ) ) {
+                    $product = $item->get_product();
+                    if ( !$product ) {
+                        continue;
+                    }
+                    if ( !$product->is_downloadable() && !$product->is_virtual() ) {
+                        $needs_processing = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return $needs_processing;
     }
 }
