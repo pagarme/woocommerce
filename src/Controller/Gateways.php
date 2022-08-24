@@ -118,6 +118,7 @@ class Gateways extends WC_Payment_Gateway
             'cc_allow_save'                     => $this->field_cc_allow_save(),
             'cc_installment_type'               => $this->field_cc_installment_type(),
             'cc_installments_maximum'           => $this->field_cc_installment_fields('maximum'),
+            'cc_installments_min_amount'        => $this->field_cc_installment_fields('installment_min_amount'),
             'cc_installments_interest'          => $this->field_cc_installment_fields('interest'),
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
             'cc_installments_without_interest'  => $this->field_cc_installment_fields('without_interest'),
@@ -739,6 +740,19 @@ class Gateways extends WC_Payment_Gateway
             ),
         );
 
+        $installments['installment_min_amount'] = array(
+            'title'             => __('Minimum installment amount', 'woo-pagarme-payments'),
+            'type'              => 'text',
+            'description'       => __('Defines the minimum value that an installment can assume', 'woo-pagarme-payments'),
+            'desc_tip'          => true,
+            'placeholder'       => '0.00',
+            'custom_attributes' => array(
+                'data-field'        => 'installments-min-amount',
+                'data-mask'         => '##0.00',
+                'data-mask-reverse' => 'true',
+            ),
+        );
+
         $installments['interest'] = array(
             'title'             => __('Initial interest rate (%)', 'woo-pagarme-payments'),
             'type'              => 'text',
@@ -1100,6 +1114,7 @@ class Gateways extends WC_Payment_Gateway
                             <tr>
                                 <th class="align"><?php _e('Card Brand', 'woo-pagarme-payments'); ?></th>
                                 <th class="align"><?php _e('Max number of installments', 'woo-pagarme-payments'); ?></th>
+                                <th class="align"><?php _e('Minimum installment amount', 'woo-pagarme-payments'); ?></th>
                                 <th class="align"><?php _e('Initial interest rate (%)', 'woo-pagarme-payments'); ?></th>
                                 <th class="align"><?php _e('Incremental interest rate (%)', 'woo-pagarme-payments'); ?></th>
                                 <th class="align"><?php _e('Number of installments<br/>without interest', 'woo-pagarme-payments'); ?></th>
@@ -1111,11 +1126,13 @@ class Gateways extends WC_Payment_Gateway
                                 $interest          = isset($value['interest'][$flag_key]) ? $value['interest'][$flag_key] : '';
                                 $interest_increase = isset($value['interest_increase'][$flag_key]) ? $value['interest_increase'][$flag_key] : '';
                                 $max_installment   = isset($value['max_installment'][$flag_key]) ? $value['max_installment'][$flag_key] : 12;
+                                $installment_min_amount   = isset($value['installment_min_amount'][$flag_key]) ? $value['installment_min_amount'][$flag_key] : '';
                                 $no_interest       = isset($value['no_interest'][$flag_key]) ? $value['no_interest'][$flag_key] : 1;
                             ?>
                                 <tr class="account ui-sortable-handle flag" data-flag="<?php echo esc_attr($flag_key); ?>">
                                     <td><input class="align" type="text" value="<?php echo esc_attr($flag_name); ?>" <?php disabled(1, true); ?> /></td>
                                     <td><input class="align" type="number" min="1" max="24" name="<?php echo esc_attr($field_key); ?>[max_installment][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_max_installment_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($max_installment); ?>" /></td>
+                                    <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[installment_min_amount][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_installment_min_amount_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($installment_min_amount) ?>" /></td>
                                     <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest) ?>" /></td>
                                     <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest_increase][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_increase_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest_increase) ?>" /></td>
                                     <td><input class="align" type="number" min="1" max="<?php echo intval($no_interest); ?>" name="<?php echo esc_attr($field_key); ?>[no_interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_no_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($no_interest); ?>" /></td>
