@@ -11,8 +11,8 @@
   "type": "library",
   "require": {
     "php": ">=7.1",
-    "monolog/monolog": "*",
-    "pagarme/pagarmecoreapi": "~5.6.0",
+    "monolog/monolog": "~1.6",
+    "mundipagg/mundiapi": "^3.0",
     "ext-json": "*"
   },
   "require-dev": {
