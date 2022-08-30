@@ -11,7 +11,7 @@ use Pagarme\Core\Kernel\ValueObjects\Configuration\VoucherConfig;
 class VoucherConfigFactory implements FactoryCreateFromDbDataInterface
 {
     /**
-     * @param object $data
+     * @param array $data
      * @return VoucherConfig
      * @throws InvalidParamException
      */
@@ -41,22 +41,26 @@ class VoucherConfigFactory implements FactoryCreateFromDbDataInterface
             $voucherConfig->setSaveCards((bool) $data->saveCards);
         }
 
-        if (isset($data->cardConfigs)) {
-        foreach ($data->cardConfigs as $cardConfig) {
-            $brand = strtolower($cardConfig->brand);
-            $voucherConfig->addCardConfig(
-                new CardConfig(
-                    $cardConfig->enabled,
-                    CardBrand::$brand(),
-                    $cardConfig->maxInstallment,
-                    $cardConfig->maxInstallmentWithoutInterest,
-                    $cardConfig->initialInterest,
-                    $cardConfig->incrementalInterest,
-                    $cardConfig->minValue
-                )
-            );
+        if (isset($data->saveVoucherCards)) {
+            $voucherConfig->setSaveVoucherCards((bool) $data->saveVoucherCards);
         }
-    }
+
+        if (isset($data->cardConfigs)) {
+            foreach ($data->cardConfigs as $cardConfig) {
+                $brand = strtolower($cardConfig->brand);
+                $voucherConfig->addCardConfig(
+                    new CardConfig(
+                        $cardConfig->enabled,
+                        CardBrand::$brand(),
+                        $cardConfig->maxInstallment,
+                        $cardConfig->maxInstallmentWithoutInterest,
+                        $cardConfig->initialInterest,
+                        $cardConfig->incrementalInterest,
+                        $cardConfig->minValue
+                    )
+                );
+            }
+        }
 
         return $voucherConfig;
     }

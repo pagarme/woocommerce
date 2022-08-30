@@ -31,7 +31,7 @@ final class NewVoucherPayment extends AbstractCreditCardPayment
             return false;
         }
 
-        if (!MPSetup::getModuleConfiguration()->getVoucherConfig()->isSaveCards()) {
+        if (!MPSetup::getModuleConfiguration()->isSaveVoucherCards()) {
             return false;
         }
 

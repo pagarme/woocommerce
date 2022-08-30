@@ -38,8 +38,8 @@ class OrderCreationService
      */
     public function createOrder(
         CreateOrderRequest $orderRequest,
-        $idempotencyKey,
-        $attempt = 1
+                           $idempotencyKey,
+                           $attempt = 1
     ) {
         $shouldRetry = false;
         $response = null;

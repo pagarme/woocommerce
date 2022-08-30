@@ -144,6 +144,5 @@ class WebhookReceiverService
         $data->shipping->address->neighborhood = null;
 
         return $data;
-
     }
 }

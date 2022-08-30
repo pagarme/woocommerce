@@ -55,4 +55,17 @@ class CustomerTests extends TestCase
             $emailMaxLength, strlen($this->customer->getEmail())
         );
     }
+
+    public function testDocumentSanitize()
+    {
+        $expectedDocument = "12345678910";
+        $customerDocument = "123.456.789-10";
+
+        $this->customer->setCode(5);
+        $this->customer->setDocument($customerDocument);
+
+        $this->assertEquals(
+            $expectedDocument, $this->customer->getDocument()
+        );
+    }
 }

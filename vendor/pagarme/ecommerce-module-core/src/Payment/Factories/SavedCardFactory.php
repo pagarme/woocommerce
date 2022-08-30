@@ -7,6 +7,7 @@ use Pagarme\Core\Kernel\Interfaces\FactoryInterface;
 use Pagarme\Core\Kernel\ValueObjects\CardBrand;
 use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
 use Pagarme\Core\Kernel\ValueObjects\NumericString;
+use Pagarme\Core\Kernel\ValueObjects\TransactionType;
 use Pagarme\Core\Payment\Aggregates\SavedCard;
 use Pagarme\Core\Payment\ValueObjects\CardId;
 
@@ -32,6 +33,7 @@ class SavedCardFactory implements FactoryInterface
         $brand = strtolower($postData->brand);
         $savedCard->setBrand(CardBrand::$brand());
         $savedCard->setOwnerName($postData->holder_name);
+        $savedCard->setType($postData->type);
         $savedCard->setFirstSixDigits(
             new NumericString($postData->first_six_digits)
         );
@@ -69,6 +71,7 @@ class SavedCardFactory implements FactoryInterface
 
         $brand = strtolower($dbData['brand']);
         $savedCard->setOwnerName($dbData['owner_name']);
+        $savedCard->setType($dbData['type']);
         $savedCard->setBrand(CardBrand::$brand());
         $savedCard->setFirstSixDigits(
             new NumericString($dbData['first_six_digits'])
@@ -103,6 +106,7 @@ class SavedCardFactory implements FactoryInterface
 
         $brand = strtolower($data['brand']);
         $savedCard->setOwnerName($data['holder_name']);
+        $savedCard->setType($data['type']);
         $savedCard->setBrand(CardBrand::$brand());
         $savedCard->setFirstSixDigits(
             new NumericString($data['first_six_digits'])
@@ -141,6 +145,7 @@ class SavedCardFactory implements FactoryInterface
         $brand = strtolower($cardObj->brand);
         $savedCard->setOwnerName($cardObj->ownerName);
         $savedCard->setBrand(CardBrand::$brand());
+        $savedCard->setType($cardObj->type);
         $savedCard->setFirstSixDigits(
             new NumericString($cardObj->firstSixDigits)
         );

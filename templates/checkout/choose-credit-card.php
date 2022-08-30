@@ -19,8 +19,10 @@ $setting = Setting::get_instance();
 $customer = new Customer(get_current_user_id());
 $suffix   = isset($suffix) ? $suffix : '';
 $cardType = $cardType ?? TransactionType::CREDIT_CARD;
-
-switch (current($cardType)) {
+if (is_array($cardType)) {
+    $cardType = current($cardType);
+}
+switch ($cardType) {
     case PaymentMethod::VOUCHER:
         if (!$setting->is_allowed_save_voucher_card()) {
             return;

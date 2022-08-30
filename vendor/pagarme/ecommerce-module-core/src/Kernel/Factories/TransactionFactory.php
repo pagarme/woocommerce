@@ -112,8 +112,8 @@ class TransactionFactory implements FactoryInterface
 
         if (isset($postData['card'])) {
             $cardFactory = new SavedCardFactory();
+            $postData['card']['type'] = $transaction->getTransactionType()->getType();
             $card = $cardFactory->createFromTransactionData($postData['card']);
-
             $transaction->setCardData($card);
         }
 
@@ -182,6 +182,7 @@ class TransactionFactory implements FactoryInterface
         if (!empty($dbData['card_data']) && $dbData['card_data'] !== "null") {
             $cardData = json_decode($dbData['card_data']);
             $cardFactory = new SavedCardFactory();
+            $cardData->type = $transaction->getTransactionType()->getType();
             $card = $cardFactory->createFromTransactionJson($cardData);
 
             $transaction->setCardData($card);
