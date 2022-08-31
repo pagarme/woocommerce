@@ -25,6 +25,9 @@ class VoucherConfig extends AbstractValueObject
     /** @var bool */
     private $saveCards;
 
+    /** @var bool */
+    private $saveVoucherCards;
+
     /** @var CardConfig[] */
     private $cardConfigs;
 
@@ -97,6 +100,24 @@ class VoucherConfig extends AbstractValueObject
     public function setSaveCards($saveCards)
     {
         $this->saveCards = $saveCards;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSaveVoucherCards()
+    {
+        return $this->saveVoucherCards;
+    }
+
+    /**
+     * @param bool $saveVoucherCards
+     * @return VoucherConfig
+     */
+    public function setSaveVoucherCards($saveVoucherCards)
+    {
+        $this->saveVoucherCards = $saveVoucherCards;
         return $this;
     }
 

@@ -124,14 +124,14 @@ class LogService
         $displayed = substr($string, 0, $delimiter);
         $blur = str_repeat("*", strlen($string));
         $blur = substr($blur, $delimiter);
-        $result = "$displayed $blur"; 
+        $result = "$displayed $blur";
         return $result;
     }
 
     private function blurEmailSensitiveData($string)
     {
         $displayed = substr($string, 0, 3);
-        $final = substr($string, strpos($string, "@"));    
+        $final = substr($string, strpos($string, "@"));
         $result = "$displayed***$final";
         return $result;
     }
@@ -178,7 +178,7 @@ class LogService
         $data['data']['payments'][0]['customer']['address']['neighborhood'] = '***********';
         return $data;
     }
-    
+
     private function blurChargeCustomer($data){
         $data['data']['charges'][0]['customer']['name'] = $this->blurStringSensitiveData($data['data']['charges'][0]['customer']['name'], 5);
         $data['data']['charges'][0]['customer']['email'] = $this->blurEmailSensitiveData($data['data']['charges'][0]['customer']['email']);
