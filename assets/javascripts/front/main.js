@@ -830,6 +830,8 @@ jQuery(function ($) {
                 var option = '<option value="">...</option>';
                 $('[data-element=installments]').html(option);
             }
+        } else if (type == 'OneClickBuy') {
+            $('body').trigger('pagarmeSelectOneClickBuy', [brand, wrapper]);
         }
 
         wrapper.find('[data-element="fields-cc-data"]')[method]();
