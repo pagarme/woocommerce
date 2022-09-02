@@ -15,15 +15,11 @@ if (!is_user_logged_in()) {
 $setting = Setting::get_instance();
 $customer = new Customer(get_current_user_id());
 $suffix   = isset($suffix) ? $suffix : '';
-$cardType = $cardType ?? PaymentMethod::CREDIT_CARD;
+$cardType = $cardType ?? [PaymentMethod::CREDIT_CARD];
 
-if ($cardType == PaymentMethod::VOUCHER && !$setting->is_allowed_save_voucher_card()) {
+if ((current($cardType) == PaymentMethod::VOUCHER && !$setting->is_allowed_save_voucher_card())
+    || !$setting->is_allowed_save_credit_card()) {
      return;
-}
-
-if ((is_array($cardType) || $cardType == PaymentMethod::CREDIT_CARD)
-    && !$setting->is_allowed_save_credit_card()) {
-    return;
 }
 
 $cards = $customer->get_cards($cardType, true);
