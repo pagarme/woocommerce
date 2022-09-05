@@ -55,7 +55,18 @@ final class HubIntegrationService
     ) {
         $tokenRepo = new InstallTokenRepository();
 
+        $rawToken = $installToken;
+
         $installToken = $tokenRepo->findByPagarmeId(new HubInstallToken($installToken));
+
+        if (empty($installToken)) {
+            $message = "installToken not found in database. Raw Token: $rawToken";
+
+            $exception = new \Exception($message);
+
+            $this->logService->exception($exception);
+            throw $exception;
+        }
 
         $isValidToken = is_a($installToken, InstallToken::class)
             && !$installToken->isExpired()

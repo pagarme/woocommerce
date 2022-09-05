@@ -4,11 +4,8 @@ if (!function_exists('add_action')) {
 }
 
 use Pagarme\Core\Kernel\ValueObjects\PaymentMethod;
-use Pagarme\Core\Kernel\ValueObjects\TransactionType;
-use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Customer;
 use Woocommerce\Pagarme\Model\Setting;
-use Woocommerce\Pagarme\Helper\Utils;
 
 if (!is_user_logged_in()) {
     return;
@@ -18,19 +15,11 @@ if (!is_user_logged_in()) {
 $setting = Setting::get_instance();
 $customer = new Customer(get_current_user_id());
 $suffix   = isset($suffix) ? $suffix : '';
-$cardType = $cardType ?? TransactionType::CREDIT_CARD;
+$cardType = $cardType ?? [PaymentMethod::CREDIT_CARD];
 
-switch (current($cardType)) {
-    case PaymentMethod::VOUCHER:
-        if (!$setting->is_allowed_save_voucher_card()) {
-            return;
-        }
-        break;
-    default:
-        if (!$setting->is_allowed_save_credit_card()) {
-            return;
-        }
-        break;
+if ((current($cardType) == PaymentMethod::VOUCHER && !$setting->is_allowed_save_voucher_card())
+    || !$setting->is_allowed_save_credit_card()) {
+     return;
 }
 
 $cards = $customer->get_cards($cardType, true);

@@ -122,7 +122,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
      */
     public function setDocument($document)
     {
-        $this->document = substr($document, 0, 16);
+        $this->document = $this->formatDocument($document);
 
         if (empty($this->document)) {
 
@@ -208,7 +208,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     public function getAddressToSDK()
     {
         if ($this->getAddress() !== null) {
-         return $this->getAddress()->convertToSDKRequest();
+            return $this->getAddress()->convertToSDKRequest();
         }
         return null;
     }
@@ -216,7 +216,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     public function getPhonesToSDK()
     {
         if ($this->getPhones() !== null) {
-         return $this->getPhones()->convertToSDKRequest();
+            return $this->getPhones()->convertToSDKRequest();
         }
         return null;
     }
@@ -255,5 +255,15 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
 
             throw new \Exception($message, 400);
         }
+    }
+
+    private function formatDocument($document)
+    {
+        $document = preg_replace(
+            '/[^0-9]/is', '',
+            substr($document, 0, 16)
+        );
+
+        return $document;
     }
 }
