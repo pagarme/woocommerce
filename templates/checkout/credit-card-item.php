@@ -11,6 +11,7 @@ if (!$model->settings->is_active_credit_card()) {
     return;
 }
 
+use Pagarme\Core\Kernel\ValueObjects\TransactionType;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\View\Checkouts;
 use Woocommerce\Pagarme\Model\Customer;
@@ -20,6 +21,7 @@ use Woocommerce\Pagarme\Helper\Utils;
 $installments_type = Setting::get_instance()->cc_installment_type;
 $ref               = sha1(random_int(1, 1000));
 $type              = 'card';
+$cardType          = [TransactionType::CREDIT_CARD,TransactionType::DEBIT_CARD];
 
 ?>
 

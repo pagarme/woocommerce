@@ -21,6 +21,9 @@ final class SavedCard extends AbstractEntity
     private $firstSixDigits;
 
     /** @var NumericString */
+    private $type;
+
+    /** @var NumericString */
     private $lastFourDigits;
 
     /** @var CardBrand */
@@ -59,6 +62,22 @@ final class SavedCard extends AbstractEntity
     public function setOwnerName($ownerName)
     {
         $this->ownerName = $ownerName;
+    }
+
+    /**
+     * @return NumericString
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param NumericString $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 
     /**
@@ -139,6 +158,7 @@ final class SavedCard extends AbstractEntity
         $obj->id = $this->getId();
         $obj->pagarmeId = $this->getPagarmeId();
         $obj->ownerId = $this->getOwnerId();
+        $obj->type = $this->getType();
         $obj->ownerName = $this->getOwnerName();
         $obj->firstSixDigits = $this->getFirstSixDigits();
         $obj->lastFourDigits = $this->getLastFourDigits();

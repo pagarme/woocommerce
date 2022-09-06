@@ -354,7 +354,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         $obj->country = $this->country;
         $obj->line1 = $this->getLine1();
         $obj->line2 = $this->getLine2();
-        
+
         return $obj;
     }
 

@@ -18,13 +18,14 @@ use Pagarme\Core\Recurrence\ValueObjects\SubscriptionItemId;
 
 class InvoiceFactory implements FactoryInterface
 {
-    /** @var Invoice  */
+    /** @var Invoice */
     public $invoice;
 
     public function __construct()
     {
         $this->invoice = new Invoice();
     }
+
     public function createFromPostData($postData)
     {
         $postData = json_decode(json_encode($postData));
@@ -42,7 +43,7 @@ class InvoiceFactory implements FactoryInterface
             return;
         }
 
-        $cycleData = (array) $postData->cycle;
+        $cycleData = (array)$postData->cycle;
         $cycleFactory = new CycleFactory();
         $cycle = $cycleFactory->createFromPostData($cycleData);
         $this->invoice->setCycle($cycle);
@@ -132,7 +133,7 @@ class InvoiceFactory implements FactoryInterface
 
         if (isset($data->cycle)) {
             $cycleFactory = new CycleFactory();
-            $cycle = $cycleFactory->createFromPostData((array) $data->cycle);
+            $cycle = $cycleFactory->createFromPostData((array)$data->cycle);
             $this->invoice->setCycle($cycle);
         }
         return $this->invoice;

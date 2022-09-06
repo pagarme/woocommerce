@@ -135,8 +135,18 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function setStatusAfterLog(OrderStatus $status)
     {
+        $log = new LogService('Order', true);
         $stringCoreStatus = $status->getStatus();
         $stringWoocommerceStatus = $this->getWoocommerceStatusFromCoreStatus($stringCoreStatus);
+        if ($this->getPlatformOrder()->get_status() === 'completed') {
+            $log->info('Impediment to change the order status to ' . $status->getStatus() . '. Order is complete.');
+            return;
+        }
+        $order = new Order($this->getPlatformOrder()->get_id());
+        if (!$order->needs_processing()) {
+            $log->info('Order does not need processing. Changing status to complete.');
+            $stringWoocommerceStatus = $this->getWoocommerceStatusFromCoreStatus('completed');
+        }
         $this->getPlatformOrder()->set_status($stringWoocommerceStatus);
     }
 
@@ -1002,21 +1012,32 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromVoucher(&$paymentData)
     {
+        $identifier = $this->formData["pagarmetoken6"];
+        if (!$identifier) {
+            $identifier = $this->formData["card_id"];
+        }
         $newPaymentData = new \stdClass();
         $newPaymentData->customerId = $this->getCustomer()->getPagarmeId() ?
         $this->getCustomer()->getPagarmeId()->getValue() : null;
-        $newPaymentData->identifier = $this->formData["pagarmetoken6"];
-        $newPaymentData->brand = $this->formData["brand6"];
+        $newPaymentData->identifier = $identifier;
+        $newPaymentData->brand = strtolower($this->formData["brand"]);
         $newPaymentData->installments = (int)1;
+        $amount = isset($this->formData["card_order_value"]) ?
+            $this->formData["card_order_value"] :
+            $this->getGrandTotal() - $this->getBaseTaxAmount();
+        $amount = number_format($amount, 2, '.', '');
+        $amount = str_replace('.', '', $amount);
+        $amount = str_replace(',', '', $amount);
+        $newPaymentData->amount = $amount;
         $voucherDataIndex = NewVoucherPayment::getBaseCode();
-
+        $newPaymentData->saveOnSuccess =
+            isset($this->formData["save_credit_card"]);
         if (!isset($paymentData[$voucherDataIndex])) {
             $paymentData[$voucherDataIndex] = [];
         }
 
         $paymentData[$voucherDataIndex][] = $newPaymentData;
         return $voucherDataIndex;
-
     }
 
     public function getShipping()

@@ -665,6 +665,10 @@ msgstr "Não, cancelar!"
 msgid "Name"
 msgstr "Nome"
 
+#: templates/myaccount/wallet.php:39
+msgid "Type"
+msgstr "Tipo"
+
 #: templates/myaccount/wallet.php:40
 msgid "Last digits"
 msgstr "Últimos dígitos"

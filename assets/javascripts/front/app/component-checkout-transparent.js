@@ -296,6 +296,7 @@ MONSTER( 'Pagarme.Components.CheckoutTransparent', function(Model, $, utils) {
 		}
 
 		wrapper.find( '[data-element="fields-cc-data"]' )[method]();
+		wrapper.find( '[data-element="fields-voucher-data"]' )[method]();
 		wrapper.find( '[data-element="save-cc-check"]' )[method]();
 		wrapper.find( '[data-element="enable-multicustomers-check"]' )[method]();
 		wrapper.find( '[data-element="enable-multicustomers-label-card"]' )[method]();

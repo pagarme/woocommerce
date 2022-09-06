@@ -7,12 +7,12 @@ use Pagarme\Core\Kernel\Factories\LogObjectFactory;
 
 class JsonPrettyFormatter extends JsonFormatter
 {
-    public function format(array $record)
+    public function format(array $record): string
     {
         $logObjectFactory = new LogObjectFactory();
         $logObject = $logObjectFactory->createFromArray($record['context']);
 
-        $msg  =
+        $msg =
             "[{$record['datetime']->format('Y-m-d h:i:s')}] " .
             "{$record['channel']}.{$record['level_name']}: " .
             "{$record['message']}" . PHP_EOL;

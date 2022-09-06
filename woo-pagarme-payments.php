@@ -71,7 +71,7 @@ function _wcmp_load_instances()
     require_once 'vendor/autoload.php';
 
     Woocommerce\Pagarme\Core::instance();
-
+    (new Woocommerce\Pagarme\DB\Migration\Migrator)->execute();
     do_action('wcmp_init');
 }
 
@@ -92,6 +92,7 @@ function wcmp_plugins_loaded_check()
     if (!$checkout_fields) {
         _wcmp_load_notice('admin_notice_error_wecffb');
     }
+
 }
 
 add_action('plugins_loaded', 'wcmp_plugins_loaded_check', 0);
