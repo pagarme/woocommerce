@@ -43,7 +43,7 @@ class Migrator
 
     public function autoLoad()
     {
-        foreach(glob( WP_PLUGIN_DIR  . DIRECTORY_SEPARATOR . 'pagarme-payments-for-woocommerce/src/DB/Migration/Migrations/*.php') as $file) {
+        foreach(glob( __DIR__ . '/Migrations/*.php') as $file) {
             include($file);
         }
     }
