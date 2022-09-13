@@ -125,7 +125,7 @@ jobs:
                       docker exec -it newimage mysql -u root -D wordpress -e "INSERT INTO wp_options (option_name,option_value) VALUES ('${PLUGIN_META_NAME}','${PLUGIN_CONFIG}');"
                       docker exec -i newimage curl -X GET "http://localhost/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php?url=${STAGING_URL}"
                       docker exec -it newimage rm /app/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php
-                      docker exec -it newimage touch test4.txt
+                      docker exec -it newimage touch test5.txt
             - run:
                   name: Clear useless files
                   command: |
@@ -175,11 +175,16 @@ workflows:
                       - sonar
                   filters:
                       branches:
-                          only: develop
+                          only:
+                              - stg
+                              - develop
             - deploy_staging:
                   context: acceptance
                   requires:
                       - publish
                   filters:
                       branches:
-                          only: develop
+                          only:
+                              - stg
+                              - develop
+
