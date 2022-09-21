@@ -381,7 +381,7 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
             voucherSoftDescriptor = this.voucherSoftDescriptor.closest("tr"),
             VoucherccBrands = this.VoucherccBrands.closest("tr"),
             voucherEnabled = this.voucherEnabled.closest('tr'),
-            voucherCardWallet = this.voucherEnabled.closest('tr'),
+            voucherCardWallet = this.voucherCardWallet.closest('tr'),
             cardWallet = this.cardWallet.closest("tr");
 
         if (isGateway) {
