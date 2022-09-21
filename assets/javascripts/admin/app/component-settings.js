@@ -30,11 +30,14 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
         this.voucherSection = $(
             'h3[id*="woo-pagarme-payments_section_voucher"]'
         );
+
+        this.voucherEnabled = $('#woocommerce_woo-pagarme-payments_enable_voucher');
         this.voucherSoftDescriptor = $(
             '[data-field="voucher-soft-descriptor"]'
         );
         this.VoucherccBrands = $('[data-field="voucher-flags-select"]');
         this.cardWallet = $('[data-field="card-wallet"]');
+        this.voucherCardWallet = $('[data-field="voucher-card-wallet"]');
 
         this.isGatewayIntegrationType = $(
             'input[id*="woo-pagarme-payments_is_gateway_integration_type"]'
@@ -297,7 +300,9 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
         billetBank,
         voucherSoftDescriptor,
         VoucherccBrands,
-        cardWallet
+        cardWallet,
+        voucherEnabled,
+        voucherCardWallet
     ) {
         antifraudEnabled.hide();
         antifraudMinValue.hide();
@@ -308,6 +313,8 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
         voucherSoftDescriptor.hide();
         VoucherccBrands.hide();
         cardWallet.hide();
+        voucherEnabled.hide();
+        voucherCardWallet.hide();
 
         this.ccAllowSave.prop("checked", false);
         var $optionsToRemove = this.ccBrands.find(this.getOnlyGatewayBrands());
@@ -339,7 +346,9 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
         billetBank,
         voucherSoftDescriptor,
         VoucherccBrands,
-        cardWallet
+        cardWallet,
+        voucherEnabled,
+        voucherCardWallet
     ) {
         antifraudEnabled.show();
         antifraudMinValue.show();
@@ -350,6 +359,8 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
         voucherSoftDescriptor.show();
         VoucherccBrands.show();
         cardWallet.show();
+        voucherEnabled.show();
+        voucherCardWallet.show();
 
         this.restoreOptions(this.ccBrands);
 
@@ -369,6 +380,8 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
             billetBank = this.billetBank.closest("tr"),
             voucherSoftDescriptor = this.voucherSoftDescriptor.closest("tr"),
             VoucherccBrands = this.VoucherccBrands.closest("tr"),
+            voucherEnabled = this.voucherEnabled.closest('tr'),
+            voucherCardWallet = this.voucherEnabled.closest('tr'),
             cardWallet = this.cardWallet.closest("tr");
 
         if (isGateway) {
@@ -379,7 +392,9 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
                 billetBank,
                 voucherSoftDescriptor,
                 VoucherccBrands,
-                cardWallet
+                cardWallet,
+                voucherEnabled,
+                voucherCardWallet
             );
         }
 
@@ -390,7 +405,9 @@ MONSTER("Pagarme.Components.Settings", function (Model, $, Utils) {
             billetBank,
             voucherSoftDescriptor,
             VoucherccBrands,
-            cardWallet
+            cardWallet,
+            voucherEnabled,
+            voucherCardWallet
         );
     };
 
