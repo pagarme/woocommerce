@@ -177,6 +177,7 @@ workflows:
                           only:
                               - stg
                               - develop
+                              - master
             - deploy_staging:
                   context: acceptance
                   requires:
@@ -186,4 +187,5 @@ workflows:
                           only:
                               - stg
                               - develop
+                              - master
 
