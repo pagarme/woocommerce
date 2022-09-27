@@ -143,7 +143,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             return;
         }
         $order = new Order($this->getPlatformOrder()->get_id());
-        if (!$order->needs_processing()) {
+        if ($stringWoocommerceStatus === 'processing' && !$order->needs_processing()) {
             $log->info('Order does not need processing. Changing status to complete.');
             $stringWoocommerceStatus = $this->getWoocommerceStatusFromCoreStatus('completed');
         }

@@ -14,4 +14,4 @@ services:
       - 3306:3306
     volumes:
       - ./:/app/wp-content/plugins/woo-pagarme-payments
-      - ../wordpress/wp-content/
+
