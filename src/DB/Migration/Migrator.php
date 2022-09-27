@@ -44,7 +44,7 @@ class Migrator
     public function autoLoad()
     {
         foreach(glob( __DIR__ . '/Migrations/*.php') as $file) {
-            include($file);
+            include_once($file);
         }
     }
 
