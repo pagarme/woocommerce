@@ -122,7 +122,8 @@ jobs:
                   command: |
                       docker exec -it newimage wp plugin activate ${PLUGIN_NAME} --allow-root
                       docker exec -it newimage chmod -R 777 /app/wp-content/plugins/${PLUGIN_NAME}
-                      docker exec -i newimage curl -X GET "http://localhost/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php?url=${STAGING_URL}"
+                      docker exec -it newimage mysql -u root -D wordpress -e "REPLACE INTO wp_options (option_name,option_value) VALUES ('${PLUGIN_META_NAME}','${PLUGIN_CONFIG}');"
+                      docker exec -i newimage curl -X GET "http://localhost/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php?url=test-woocommerce.mundipagg.com/"
                       docker exec -it newimage rm /app/wp-content/plugins/${PLUGIN_NAME}/update-wp-config.php
                       docker exec -it newimage touch test5.txt
             - run:
@@ -175,6 +176,7 @@ workflows:
                   filters:
                       branches:
                           only:
+                              - test
                               - stg
                               - develop
                               - master
@@ -185,6 +187,7 @@ workflows:
                   filters:
                       branches:
                           only:
+                              - test
                               - stg
                               - develop
                               - master
