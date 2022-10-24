@@ -112,7 +112,7 @@ class Gateway
             $interest = $interest_base;
             $amount = $total;
 
-            if ($interest) {
+            if ($interest || $interest_increase) {
 
                 if ($interest_increase && $times > $no_interest + 1) {
                     $interest += ($interest_increase * ($times - ($no_interest + 1)));
