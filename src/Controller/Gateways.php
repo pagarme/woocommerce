@@ -1115,15 +1115,11 @@ class Gateways extends WC_Payment_Gateway
                                         }
                                     });
                                 } catch (e) {
-                                    new swal(content).then((result) => {
-                                        if (result) {
-                                            swal(
-                                                'Deleted!',
-                                                'Your file has been deleted.',
-                                                'success'
-                                            )
-                                        }
-                                    });
+                                    swal(
+                                        '<?php echo esc_attr(__('Disintegration Error', 'woo-pagarme-payments')); ?>',
+                                        '<?php echo esc_attr(__('Integration keys not removed.', 'woo-pagarme-payments')); ?>',
+                                        'error'
+                                    )
                                 }
                             });
                         });
