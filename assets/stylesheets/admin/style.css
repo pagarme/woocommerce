@@ -2207,6 +2207,44 @@ body .swal2-animate-x-mark {
   border-color: rgb(125, 163, 0);
 }
 
+.btn-hub button img {
+    width: 16px;
+    margin-bottom: -3px;
+    margin-top: -3px;
+}
+
+.forminp.flex {
+    display: flex;
+}
+
+.btn-hub.pagarme-warning button {
+    background-color: #e02b27;
+    border-color: rgb(222, 43, 40);
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 2px;
+    cursor: pointer;
+    letter-spacing: .04em;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Open Sans, sans-serif;
+    outline: none;
+    padding: 8px 12px;
+    text-transform: uppercase;
+    text-align: center;
+    color: #fff;
+    user-select: none;
+    white-space: normal;
+    transition: all .3s ease-in-out;
+    margin-left: 10px;
+}
+
+.btn-hub.pagarme-warning button:hover, .btn-hub.pagarme-warning button:active, .btn-hub.pagarme-warning button:focus{
+    background-color: rgba(222, 43, 40, 0.76);
+    border-color: rgba(222, 43, 40, 0.76);
+}
+
 #botao-hub button img {
   width: 16px;
   margin-bottom: -3px;
