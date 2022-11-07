@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2022-08-24 11:58-0300\n"
+"PO-Revision-Date: 2022-11-07 15:14-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -550,6 +550,18 @@ msgstr "Código do cartão"
 
 msgid "Card Holder Document Number"
 msgstr "Documento do titular do cartão"
+
+msgid "Bank "
+msgstr "Banco "
+
+msgid "Integration pending"
+msgstr "Integração pendente"
+
+msgid "Invalid data for payment method: "
+msgstr "Dados inválidos para a forma de pagamento: "
+
+msgid "Invalid payment method: "
+msgstr "Forma de pagamento inválido: "
 
 #: templates/checkout/field-enable-multicustomers.php:31
 msgid "Fill other buyer data"

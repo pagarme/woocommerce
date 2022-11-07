@@ -560,7 +560,10 @@ class Utils
         $locale = Core::plugin_dir_path() . $file . '.php';
 
         if (!file_exists($locale)) {
-            return;
+            $locale = Core::plugin_dir_path() . $file . '.phtml';
+            if (!file_exists($locale)) {
+                return;
+            }
         }
 
         include $locale;
