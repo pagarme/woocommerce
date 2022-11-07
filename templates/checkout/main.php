@@ -1,4 +1,8 @@
 <?php
+/**
+ * @deprecated
+ * @see templates/checkout/default.php
+ */
 if (!function_exists('add_action')) {
     exit(0);
 }

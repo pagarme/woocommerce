@@ -8,7 +8,7 @@ use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Setting;
 
-$suffix  = isset($suffix) ? $suffix : '';
+$suffix  = (string) isset($suffix) ?? '';
 $setting = Setting::get_instance();
 
 ?>

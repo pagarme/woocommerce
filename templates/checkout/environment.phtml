@@ -1,0 +1,20 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Model\Gateway $model */
+
+declare( strict_types=1 );
+?>
+<?php if ($model->is_sandbox_mode()) : ?>
+    <div class="pagarme-message-warning">
+        <span>
+            <?= __('Important! This store is in the testing phase. Orders placed in this environment will not be carried out.', 'woo-pagarme-payments'); ?>
+        </span>
+    </div>
+<?php endif; ?>
