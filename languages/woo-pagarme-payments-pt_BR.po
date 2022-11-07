@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2022-11-07 15:14-0300\n"
+"PO-Revision-Date: 2022-11-07 16:18-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -868,6 +868,30 @@ msgstr "Integrar com Pagar.me"
 
 msgid "View Integration"
 msgstr "Visualizar integração"
+
+msgid "Disintegrate"
+msgstr "Desintegrar"
+
+msgid "Disintegrate?"
+msgstr "Desintegrar?"
+
+msgid "This removes the integration keys on your platform enabling the opportunity to effect a new integration. However, its integration still remains in our dash and it is necessary to remove the integration manually."
+msgstr "Isso remove as chaves de integração em sua plataforma, permitindo a oportunidade de efetuar uma nova integração. No entanto, sua integração ainda permanece em nosso painel sendo necessário remove-la manualmente."
+
+msgid "Yes, remove keys!"
+msgstr "Sim, remova as chaves!"
+
+msgid "Disintegration Complete"
+msgstr "Desintegração Concluída"
+
+msgid "Integration keys successfully removed. Reload the page."
+msgstr "Chaves de integração removidas com sucesso. Recarregue a pagina"
+
+msgid "Disintegration Error"
+msgstr "Erro na Desintegração"
+
+msgid "Integration keys not removed."
+msgstr "Chaves de integração não removidas."
 
 msgid "2 credit cards"
 msgstr "2 cartões de crédito"

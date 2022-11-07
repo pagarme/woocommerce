@@ -40,7 +40,9 @@ class HubCommand
         try {
             $hubIntegrationService->executeCommandFromPost($params);
         } catch (\Throwable $e) {
-            $this->sendResponse($e->getMessage(), self::HTTP_BAD_REQUEST);
+            if (!$this->isForce($params)) {
+                $this->sendResponse($e->getMessage(), self::HTTP_BAD_REQUEST);
+            }
         }
 
         $command = strtolower($params->command) . 'Command';
@@ -53,6 +55,14 @@ class HubCommand
         $commandMessage = $this->$command();
 
         return $this->sendResponse($commandMessage, self::HTTP_OK);
+    }
+
+    private function isForce($params)
+    {
+        if (!isset($params->force)) {
+            return false;
+        }
+        return $params->force;
     }
 
     private function sendResponse($message, $code)

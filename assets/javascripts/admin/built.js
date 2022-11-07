@@ -4143,6 +4143,7 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
         this.VoucherccBrands = $('[data-field="voucher-flags-select"]');
         this.cardWallet = $('[data-field="card-wallet"]');
         this.voucherCardWallet = $('[data-field="voucher-card-wallet"]');
+        this.disintegrate = $('#btn-uninstall-hub');
 
         this.isGatewayIntegrationType = $('input[id*="woo-pagarme-payments_is_gateway_integration_type"]').prop("checked");
         this.installmentsMaxByFlag = this.installmentsByFlag.find('input[name*="cc_installments_by_flag[max_installment]"]');
@@ -4362,7 +4363,8 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
         VoucherccBrands,
         cardWallet,
         voucherEnabled,
-        voucherCardWallet
+        voucherCardWallet,
+        disintegrate
     ) {
         antifraudEnabled.hide();
         antifraudMinValue.hide();
@@ -4375,6 +4377,7 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
         cardWallet.hide();
         voucherEnabled.hide();
         voucherCardWallet.hide();
+        disintegrate.hide();
 
         this.ccAllowSave.prop("checked", false);
         var $optionsToRemove = this.ccBrands.find(this.getOnlyGatewayBrands());
@@ -4404,7 +4407,8 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
         VoucherccBrands,
         cardWallet,
         voucherEnabled,
-        voucherCardWallet
+        voucherCardWallet,
+        disintegrate
     ) {
         antifraudEnabled.show();
         antifraudMinValue.show();
@@ -4417,6 +4421,7 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
         cardWallet.show();
         voucherCardWallet.show();
         voucherEnabled.show();
+        disintegrate.show();
 
         this.restoreOptions(this.ccBrands);
 
@@ -4439,6 +4444,7 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
             VoucherccBrands = this.VoucherccBrands.closest('tr'),
             voucherEnabled = this.voucherEnabled.closest('tr'),
             voucherCardWallet = this.voucherCardWallet.closest('tr'),
+            disintegrate = this.disintegrate.closest('p'),
             cardWallet = this.cardWallet.closest('tr');
 
         if (isGateway) {
@@ -4451,7 +4457,8 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
                 VoucherccBrands,
                 cardWallet,
                 voucherEnabled,
-                voucherCardWallet
+                voucherCardWallet,
+                disintegrate
             );
 
         }
@@ -4465,7 +4472,8 @@ MONSTER('Pagarme.Components.Settings', function(Model, $, Utils) {
             VoucherccBrands,
             cardWallet,
             voucherEnabled,
-            voucherCardWallet
+            voucherCardWallet,
+            disintegrate
         );
     };
 
