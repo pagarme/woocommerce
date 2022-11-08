@@ -16,6 +16,9 @@ use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Gateway;
 
+/**
+ * @deprecated Class for backward compatibility. Will be removed someday
+ */
 class Gateways extends WC_Payment_Gateway
 {
     /**
