@@ -15,7 +15,6 @@ use ReflectionClass;
 
 defined( 'ABSPATH' ) || exit;
 
-/**
  *  Class CreditCard
  * @package Woocommerce\Pagarme\Model\Payment
  */
