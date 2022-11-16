@@ -121,8 +121,8 @@ class Settings
     }
 
     /**
-	 * Plugin settings form fields.
-	 */
+     * Plugin settings form fields.
+     */
     public function plugin_settings() {
         $option = $this->get_option_key();
 
