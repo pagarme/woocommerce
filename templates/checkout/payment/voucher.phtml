@@ -1,0 +1,39 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Model\Gateway $model */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+
+use Woocommerce\Pagarme\Helper\Utils;
+use Pagarme\Core\Kernel\ValueObjects\TransactionType;
+
+$ref  = sha1((string)random_int(1, 1000));
+$type = $model->payment;
+?>
+<fieldset id="pagarme-fieldset-voucher" class="wc-voucher-form wc-payment-form">
+    <?php Utils::get_template('templates/checkout/choose-credit-card', ['suffix' => $model->getPaymentInstace($type)->getSuffix(), 'cardType' => [TransactionType::VOUCHER]]); ?>
+    <label>
+        <div class="wc-voucher-info" data-element="fields-voucher-data">
+            <?php
+            Utils::get_template(
+                'templates/checkout/common-voucher-item',
+                [
+                    'suffix' => $model->getPaymentInstace($type)->getSuffix()
+                ]
+            );
+            ?>
+        </div>
+    </label>
+    <?php Utils::get_template('templates/checkout/field-save-card', ['suffix' => $model->getPaymentInstace($type)->getSuffix(), 'type' => $type]); ?>
+</fieldset>
