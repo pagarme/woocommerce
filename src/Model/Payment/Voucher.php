@@ -29,4 +29,20 @@ class Voucher extends AbstractPayment implements PaymentInterface
 
     /** @var string */
     protected $code = 'voucher';
+
+    /** @var string[] */
+    protected $requirementsData = [
+        'brand6',
+        'payment_method',
+        'pagarmetoken6',
+        'save_credit_card6',
+        'card_id6'
+    ];
+
+    /** @var array */
+    protected $dictionary = [
+        'card_id6' => 'card_id',
+        'brand6' => 'brand',
+        'save_credit_card6' => 'save_credit_card'
+    ];
 }

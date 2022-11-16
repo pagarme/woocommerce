@@ -15,18 +15,36 @@ use ReflectionClass;
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- *  Class Voucher
+ *  Class CreditCard
  * @package Woocommerce\Pagarme\Model\Payment
  */
-class Voucher extends AbstractPayment implements PaymentInterface
+class CreditCard extends AbstractPayment implements PaymentInterface
 {
     /** @var int */
-    protected $suffix = 3;
+    protected $suffix = 1;
 
     /** @var string */
-    protected $name = 'CreditCard';
+    protected $name = 'Credit Card';
 
     /** @var string */
-    protected $code = 'credit-card';
+    protected $code = 'credit_card';
+
+    /** @var string[] */
+    protected $requirementsData = [
+        'brand1',
+        'pagarmetoken1',
+        'installments_card',
+        'multicustomer_card',
+        'payment_method',
+        'enable_multicustomers_card',
+        'save_credit_card1',
+        'card_id'
+    ];
+
+    /** @var array */
+    protected $dictionary = [
+        'installments_card' => 'installments',
+        'brand1' => 'brand',
+        'save_credit_card1' => 'save_credit_card'
+    ];
 }

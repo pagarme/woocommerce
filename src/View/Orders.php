@@ -53,7 +53,8 @@ class Orders
                     <?php foreach ($charges as $charge) : ?>
                         <tr <?php echo Utils::get_component('capture'); ?>>
                             <?php
-                            $transaction = array_shift($charge->getTransactions());
+                            $transactions = $charge->getTransactions();
+                            $transaction = array_shift($transactions);
                             $chargeId = $charge->getPagarmeId()->getValue();
                             $chargeStatus = $charge->getStatus()->getStatus();
 
