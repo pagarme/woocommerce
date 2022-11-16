@@ -238,7 +238,8 @@ class Charge
     public function is_allowed_cancel($charge)
     {
         $status = $charge->getStatus()->getStatus();
-        $transaction = array_shift($charge->getTransactions());
+        $transactions = $charge->getTransactions();
+        $transaction = array_shift($transactions);
         $method = $transaction->getTransactionType()->getType();
 
         if ($method == 'boleto' && in_array($status, ['pending'])) {
