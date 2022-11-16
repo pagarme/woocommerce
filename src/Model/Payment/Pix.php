@@ -29,4 +29,14 @@ class Pix extends AbstractPayment implements PaymentInterface
 
     /** @var string */
     protected $code = 'pix';
+
+    /** @var string[] */
+    protected $requirementsData = [
+        'multicustomer_pix',
+        'payment_method',
+        'enable_multicustomers_pix'
+    ];
+
+    /** @var array */
+    protected $dictionary = [];
 }

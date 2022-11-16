@@ -13,9 +13,12 @@ namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use WC_Payment_Gateway;
 use WC_Order;
+use Woocommerce\Pagarme\Controller\Checkout;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Payment\PostFormatter;
+use Woocommerce\Pagarme\Model\WooOrderRepository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -29,9 +32,7 @@ if (!function_exists('add_action')) {
  */
 abstract class AbstractGateway extends WC_Payment_Gateway
 {
-    /**
-     * @var Object
-     */
+    /** @var Gateway|null */
     public $model;
 
     /** @var string */
@@ -40,9 +41,34 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var string */
     protected $vendor = 'Pagar.me';
 
-    public function __construct()
-    {
-        $this->model = new Gateway();
+    /** @var WooOrderRepository */
+    private $wooOrderRepository;
+
+    /** @var PostFormatter */
+    private $postFormatter;
+
+    /**
+     * @param Gateway|null $gateway
+     * @param WooOrderRepository|null $wooOrderRepository
+     * @param PostFormatter|null $postFormatter
+     */
+    public function __construct(
+        Gateway $gateway = null,
+        WooOrderRepository $wooOrderRepository = null,
+        PostFormatter $postFormatter = null
+    ) {
+        if (!$gateway) {
+            $gateway = new Gateway();
+        }
+        if (!$wooOrderRepository) {
+            $wooOrderRepository = new WooOrderRepository();
+        }
+        if (!$postFormatter) {
+            $postFormatter = new PostFormatter();
+        }
+        $this->postFormatter = $postFormatter;
+        $this->model = $gateway;
+        $this->wooOrderRepository = $wooOrderRepository;
         $this->id = 'woo-pagarme-payments-' . $this->method;
         $this->method_title = __($this->getPaymentMethodTitle(), 'woo-pagarme-payments');
         $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->getPaymentMethodTitle();
@@ -59,6 +85,23 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         }
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
         add_action('woocommerce_thankyou_' . $this->vendor, array($this, 'thank_you_page'));
+    }
+
+    /**
+     * @param $orderId
+     * @return array
+     * @throws \Exception
+     */
+    public function process_payment($orderId): array
+    {
+        $wooOrder = $this->wooOrderRepository->getById($orderId);
+        $this->postFormatter->format($orderId);
+        $checkout = new Checkout();
+        $checkout->process_checkout_transparent($wooOrder);
+        return [
+            'result'   => 'success',
+            'redirect' => $this->get_return_url($wooOrder)
+        ];
     }
 
     public function payment_fields()
