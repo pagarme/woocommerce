@@ -196,7 +196,7 @@ class Core
 
     public static function get_page_link()
     {
-        return Utils::get_admin_url('admin.php') . '?page=wc-settings&tab=checkout&section=' . self::SLUG;
+        return Utils::get_admin_url('admin.php') . '?page=' . self::SLUG;
     }
 
     public static function tag_name($name = '')
