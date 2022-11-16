@@ -29,4 +29,14 @@ class Billet extends AbstractPayment implements PaymentInterface
 
     /** @var string */
     protected $code = 'billet';
+
+    /** @var string[] */
+    protected $requirementsData = [
+        'multicustomer_billet',
+        'payment_method',
+        'enable_multicustomers_billet'
+    ];
+
+    /** @var array */
+    protected $dictionary = [];
 }

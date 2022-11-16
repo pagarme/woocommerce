@@ -33,4 +33,14 @@ interface PaymentInterface
      * @return string
      */
     public function getMethodCode();
+
+    /**
+     * @return array
+     */
+    public function getRequirementsData();
+
+    /**
+     * @return array
+     */
+    public function renameFieldsPost($field, $formattedPost, $arrayFieldKey);
 }
