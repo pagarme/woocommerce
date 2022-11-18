@@ -184,11 +184,24 @@ class Gateways extends WC_Payment_Gateway
         foreach ($filteredPost as $key => $value) {
             array_push($formattedPost['fields'], [
                 "name" => sanitize_text_field($key),
-                "value" => sanitize_text_field($value)
+                "value" => $this->sanitize_field($value)
             ]);
         }
 
         return $formattedPost;
+    }
+
+    private function sanitize_field($field)
+    {
+        if (is_array($field)) {
+            $sanitizedData = [];
+            foreach ($field as $key => $value) {
+                $sanitizedData[$key] = sanitize_text_field($value);
+            }
+            return $sanitizedData;
+        }
+
+        return sanitize_text_field($field);
     }
 
     private function formatMulticustomerCardArray($formattedPost)
@@ -269,9 +282,11 @@ class Gateways extends WC_Payment_Gateway
                 ];
             case 'voucher':
                 return [
+                    'multicustomer_voucher',
                     'brand6',
                     'pagarme_payment_method',
                     'pagarmetoken6',
+                    'enable_multicustomers_voucher',
                     'save_credit_card6',
                     'card_id6'
                 ];

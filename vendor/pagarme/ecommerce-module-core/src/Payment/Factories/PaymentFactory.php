@@ -166,7 +166,7 @@ final class PaymentFactory
 
         $payments = [];
         foreach ($cardsData as $cardData) {
-            $payments[] = $this->createBaseCardPayment(
+            $payments[] = $this->createBasePayments(
                 $cardData,
                 $cardDataIndex,
                 $config
