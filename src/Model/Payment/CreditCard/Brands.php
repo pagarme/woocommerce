@@ -9,7 +9,7 @@
 
 declare( strict_types=1 );
 
-namespace Woocommerce\Pagarme\Model\Payment\Voucher;
+namespace Woocommerce\Pagarme\Model\Payment\CreditCard;
 
 use ReflectionClass;
 
