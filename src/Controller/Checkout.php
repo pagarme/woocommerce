@@ -170,7 +170,7 @@ class Checkout
             }
 
             $name = sanitize_text_field($data['name']);
-            $value = sanitize_text_field($data['value']);
+            $value = $this->sanitize_field($data['value']);
 
             $fields[$name] = Utils::rm_tags($value, true);
 
@@ -188,6 +188,19 @@ class Checkout
         }
 
         return $fields;
+    }
+
+    private function sanitize_field($field)
+    {
+        if (is_array($field)) {
+            $sanitizedData = [];
+            foreach ($field as $key => $value) {
+                $sanitizedData[$key] = sanitize_text_field($value);
+            }
+            return $sanitizedData;
+        }
+
+        return sanitize_text_field($field);
     }
 
     private function prepare_expiry_field($data, &$fields, $sufix = '')
