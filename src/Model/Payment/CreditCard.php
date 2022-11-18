@@ -15,7 +15,8 @@ use ReflectionClass;
 
 defined( 'ABSPATH' ) || exit;
 
- *  Class CreditCard
+/**
+ * Class CreditCard
  * @package Woocommerce\Pagarme\Model\Payment
  */
 class CreditCard extends AbstractPayment implements PaymentInterface
