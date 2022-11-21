@@ -2940,6 +2940,7 @@ MONSTER('Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
             responseDiv.appendChild(input);
             input.focus();
             input.select();
+            alert("Falha ao copiar! Por favor, copie o código manualmente utilizando o campo abaixo do botão.");
         };
 
         if (window.isSecureContext && navigator.clipboard) {
@@ -2948,24 +2949,21 @@ MONSTER('Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
                 alert("Código copiado!");
             } catch (err) {
                 alternativePagarmeQrCodeCopy(rawCode);
-                alert("Falha ao copiar! Por favor, copie o código manualmente utilizando o campo abaixo do botão.");
-                console.error('Falha ao copiar: ', err);
             }
-        } else {
-            const input = document.createElement('input');
-            document.body.appendChild(input)
-            input.value = rawCode;
-            input.select();
-            try {
-                document.execCommand('copy', false);
-                alert("Código copiado!");
-            } catch (err) {
-                alternativePagarmeQrCodeCopy(rawCode);
-                alert("Falha ao copiar! Por favor, copie o código manualmente utilizando o campo abaixo do botão.");
-                console.error('Falha ao copiar: ', err);
-            }
-            input.remove();
+            return;
         }
+
+        const input = document.createElement('input');
+        document.body.appendChild(input)
+        input.value = rawCode;
+        input.select();
+        try {
+            document.execCommand('copy', false);
+            alert("Código copiado!");
+        } catch (err) {
+            alternativePagarmeQrCodeCopy(rawCode);
+        }
+        input.remove();
     }
 
     Model.fn.start = function() {
