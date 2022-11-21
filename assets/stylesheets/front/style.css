@@ -983,6 +983,10 @@ body .swal2-animate-x-mark {
     text-align: left;
 }
 
+.pagarme-response .pix-qr-code-instruction input {
+  width: 100%;
+}
+
 #pix-image-attention{
     margin: auto;
     display: block;

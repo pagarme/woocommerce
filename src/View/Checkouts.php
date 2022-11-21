@@ -221,6 +221,7 @@ class Checkouts
         <a id="pagarme-qr-code" rawCode="<?php echo esc_attr($rawQrCode); ?>" onclick="pagarmeQrCodeCopy()" class="payment-link">
             <?php _e('Copy Code', 'woo-pagarme-payments'); ?>
         </a>
+        <div id="pagarme-qr-code-response" class="pix-qr-code-instruction"></div>
 
         <div class="pix-qr-code-instruction">
             <?php _e('1. Point your phone at this screen to capture the code.', 'woo-pagarme-payments'); ?>
