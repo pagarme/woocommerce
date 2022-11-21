@@ -2924,7 +2924,7 @@ MONSTER('Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 
     window.Pagarme2Cards = 0;
 
-    window.pagarmeQrCodeCopy = function() {
+    window.pagarmeQrCodeCopy = async function() {
         const qrCodeElement = document.getElementById("pagarme-qr-code");
 
         if (!qrCodeElement) {
@@ -2932,16 +2932,40 @@ MONSTER('Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
         }
 
         const rawCode = qrCodeElement.getAttribute("rawCode");
+        const alternativePagarmeQrCodeCopy = (text) => {
+            const responseDiv = document.getElementById("pagarme-qr-code-response");
+            const input = document.createElement("input");
+            responseDiv.innerHTML = "";
+            input.value=text;
+            responseDiv.appendChild(input);
+            input.focus();
+            input.select();
+        };
 
-        const input = document.createElement('input');
-        document.body.appendChild(input)
-        input.value = rawCode;
-        input.select();
-        document.execCommand('copy', false);
-        input.remove();
-
-        alert("Código copiado.");
-
+        if (window.isSecureContext && navigator.clipboard) {
+            try {
+                await navigator.clipboard.writeText(rawCode);
+                alert("Código copiado!");
+            } catch (err) {
+                alternativePagarmeQrCodeCopy(rawCode);
+                alert("Falha ao copiar! Por favor, copie o código manualmente utilizando o campo abaixo do botão.");
+                console.error('Falha ao copiar: ', err);
+            }
+        } else {
+            const input = document.createElement('input');
+            document.body.appendChild(input)
+            input.value = rawCode;
+            input.select();
+            try {
+                document.execCommand('copy', false);
+                alert("Código copiado!");
+            } catch (err) {
+                alternativePagarmeQrCodeCopy(rawCode);
+                alert("Falha ao copiar! Por favor, copie o código manualmente utilizando o campo abaixo do botão.");
+                console.error('Falha ao copiar: ', err);
+            }
+            input.remove();
+        }
     }
 
     Model.fn.start = function() {
