@@ -2932,11 +2932,11 @@ MONSTER('Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
         }
 
         const rawCode = qrCodeElement.getAttribute("rawCode");
-        const alternativePagarmeQrCodeCopy = (text) => {
+        const alternativePagarmeQrCodeCopy = (rawCode) => {
             const responseDiv = document.getElementById("pagarme-qr-code-response");
             const input = document.createElement("input");
             responseDiv.innerHTML = "";
-            input.value=text;
+            input.value=rawCode;
             responseDiv.appendChild(input);
             input.focus();
             input.select();
