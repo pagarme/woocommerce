@@ -35,6 +35,8 @@ $type              = 'voucher';
                 </div>
             </label>
             <?php Utils::get_template('templates/checkout/field-save-card', ['suffix' => 6, 'type' => $type]); ?>
+            <?php Utils::get_template('templates/checkout/field-enable-multicustomers', compact('ref', 'type')); ?>
         </fieldset>
+        <?php Utils::get_template('templates/checkout/multicustomers-form', compact('ref', 'type')); ?>
     </div>
 </li>
