@@ -195,7 +195,7 @@ class Setting
 
     public function is_gateway_integration_type()
     {
-        return ('yes' === $this->__get('is_gateway_integration_type'));
+        return (bool) $this->__get('is_gateway_integration_type');
     }
 
     public function is_enabled_logs()

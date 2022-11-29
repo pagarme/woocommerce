@@ -115,9 +115,12 @@ class Settings
     }
 
 
+    /**
+     * @return string
+     */
     public function get_option_key()
     {
-        return "wc_pagarme_settings";
+        return $this->model->settings->get_option_key();
     }
 
     /**
@@ -284,6 +287,21 @@ class Settings
         );
 
         add_settings_field(
+            'is_gateway_integration_type',
+            __('Advanced settings', 'woo-pagarme-payments'),
+            [ $this, 'checkbox_element_callback'],
+            $option,
+            'tools_section',
+            [
+                'menu'  => $option,
+                'id'    => 'is_gateway_integration_type',
+                'label'       => __('Enable', 'woo-pagarme-payments'),
+                'default'     => 'no',
+                'description' => __('Configurations that only works for Gateway customers, who have a direct contract with an acquirer.', 'woo-pagarme-payments')
+            ]
+        );
+
+        add_settings_field(
             'enable_logs',
             __('Logs', 'woo-pagarme-payments'),
             array( $this, 'checkbox_element_callback' ),
@@ -389,7 +407,7 @@ class Settings
         $button_label = $this->model->get_hub_button_text($hub_install_id);
         $url_hub = $this->model->get_hub_url($hub_install_id);
 
-
+        $isAdvancedSettings = $this->model->settings->is_gateway_integration_type();
 
 
         include dirname( __FILE__ ) . '/../View/Admin/html-hub-integration-button.php';
