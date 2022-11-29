@@ -268,16 +268,20 @@ class Core
     public static function credit_card_errors_pt_br()
     {
         return array(
-            'exp_month: A value is required.'                             => 'Validade: O mês é obrigatório.',
-            'exp_month: The field exp_month must be between 1 and 12.'    => 'Validade: O mês deve estar entre 1 e 12.',
-            "exp_year: The value 'undefined' is not valid for exp_year."  => 'Validade: Ano inválido.',
-            'request: The card expiration date is invalid.'               => 'Validade: Data de expiração inválida.',
-            'request: Card expired.'                                      => 'Validade: Cartão expirado.',
-            'holder_name: The holder_name field is required.'             => 'O nome impresso no cartão é obrigatório.',
-            'number: The number field is required.'                       => 'O número do cartão é obrigatório.',
-            'number: The number field is not a valid credit card number.' => 'Este número de cartão é inválido.',
-            'number: The field number must be a string with a minimum length of 13 and a maximum length of 19.'
-            => 'O numéro do cartão tamanho deve ter entre 13 e 19 caracteres.',
+            'A value is required.' => 'Validade: O mês é obrigatório.',
+            'The field exp_month must be between 1 and 12.' => 'Validade: O mês deve estar entre 1 e 12.',
+            "The value 'undefined' is not valid for exp_year." => 'Validade: Ano inválido.',
+            'The card expiration date is invalid.' => 'Validade: Data de expiração inválida.',
+            'Card expired.' => 'Validade: Cartão expirado.',
+            'The holder_name field is required.' => 'O nome impresso no cartão é obrigatório.',
+            'The number field is required.' => 'O número do cartão é obrigatório.',
+            'The number field is not a valid number.' => 'O número do cartão é inválido.',
+            'The number field is not a valid credit card number.' => 'O número do cartão é inválido.',
+            'The field number must be a string with a minimum length of 13 and a maximum length of 19.'
+            => 'O tamanho do número do cartão deve ter entre 13 e 19 caracteres.',
+            'The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
+            => 'O campo cvv deve ter entre 3 e 4 caracteres.',
+            'The cvv field is not a valid number.' => 'O CVV é inválido',
         );
     }
 }
