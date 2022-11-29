@@ -35,12 +35,24 @@ class Billet extends AbstractGateway
     public function append_form_fields()
     {
         return [
-            'billet_bank' => $this->field_billet_bank(),
             'billet_deadline_days' => $this->field_billet_deadline_days(),
             'billet_instructions' => $this->field_billet_instructions(),
         ];
     }
 
+    /**
+     * @return array
+     */
+    protected function gateway_form_fields()
+    {
+        return [
+            'billet_bank' => $this->field_billet_bank()
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function field_billet_bank()
     {
         $options = [];
@@ -62,6 +74,9 @@ class Billet extends AbstractGateway
         ];
     }
 
+    /**
+     * @return array
+     */
     public function field_billet_deadline_days()
     {
         return [
@@ -77,6 +92,9 @@ class Billet extends AbstractGateway
         ];
     }
 
+    /**
+     * @return array
+     */
     public function field_billet_instructions()
     {
         return [

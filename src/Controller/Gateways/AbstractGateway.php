@@ -78,7 +78,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->has_fields = false;
         $this->icon = Core::plugins_url('assets/images/logo.png');
         $this->init_form_fields();
-        $this->form_fields = array_merge($this->form_fields,$this->append_form_fields());
+        $this->form_fields = array_merge($this->form_fields,array_merge($this->append_form_fields(), $this->append_gateway_form_fields()));
         $this->init_settings();
         $this->enabled = $this->get_option('enabled', 'no');
         $this->title = $this->getTitle();
@@ -177,6 +177,25 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      * @return array
      */
     public function append_form_fields()
+    {
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    private function append_gateway_form_fields()
+    {
+        if ($this->model->settings->is_gateway_integration_type()) {
+            return $this->gateway_form_fields();
+        }
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    protected function gateway_form_fields()
     {
         return [];
     }
