@@ -6,8 +6,10 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Select;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Setting;
 
@@ -20,10 +22,13 @@ class Settings
     /** @var Gateway */
     public $model;
 
+    /** @var \Woocommerce\Pagarme\Model\Config\Source\Yesno */
+    private \Woocommerce\Pagarme\Model\Config\Source\Yesno $yesNoOptions;
+
     public function __construct()
     {
         $this->model = new Gateway();
-
+        $this->yesNoOptions = new \Woocommerce\Pagarme\Model\Config\Source\Yesno();
         add_filter(Core::plugin_basename('plugin_action_links_'), array($this, 'plugin_link'));
         add_action( 'admin_menu', array( $this, 'settings_menu' ), 58 );
         add_action( 'admin_init', array( $this, 'plugin_settings' ) );
@@ -120,7 +125,7 @@ class Settings
      */
     public function get_option_key()
     {
-        return $this->model->settings->get_option_key();
+        return $this->model->config->getOptionKey();
     }
 
     /**
@@ -136,18 +141,18 @@ class Settings
             $option
         );
 
-        add_settings_field(
-            'enabled',
-            __('Enable', 'woo-pagarme-payments'),
-            array( $this, 'checkbox_element_callback' ),
-            $option,
-            'options_section',
-            array(
-                'menu'  => $option,
-                'id'    => 'enabled',
-                'label'   => __('Enable Pagar.me', 'woo-pagarme-payments')
-            )
+        $select = new Select(
+            [
+                'id' => 'enabled',
+                'title' => 'Enable',
+                'page' => $option,
+                'section' => 'options_section',
+                'options' => $this->yesNoOptions->toOptionArray(),
+                'name' => $option,
+                'default' => Yesno::VALUE_NO
+            ]
         );
+        $select->toHtml();
 
         add_settings_field(
             'hub_button_integration',
@@ -333,16 +338,14 @@ class Settings
      * @param array $args Callback arguments.
      */
     public function checkbox_element_callback( $args ) {
-        $menu    = $args['menu'];
-        $id      = $args['id'];
+        $menu = $args['menu'];
+        $id = $args['id'];
         $options = get_option( $menu );
-
         if ( isset( $options[ $id ] ) ) {
             $current = $options[ $id ];
         } else {
             $current = isset( $args['default'] ) ? $args['default'] : '0';
         }
-
         include dirname( __FILE__ ) . '/../View/Admin/html-checkbox-field.php';
     }
 
