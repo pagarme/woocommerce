@@ -112,9 +112,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->model->payment = $this->method;
         echo (Utils::get_template_as_string(
             'templates/checkout/default',
-            array(
-                'model' => $this->model,
-            )
+            ['model' => $this->model]
         ));
     }
 
@@ -186,7 +184,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     private function append_gateway_form_fields()
     {
-        if ($this->model->settings->is_gateway_integration_type()) {
+        if ($this->model->config->getIsGatewayIntegrationType()) {
             return $this->gateway_form_fields();
         }
         return [];

@@ -12,6 +12,10 @@ use Woocommerce\Pagarme\Model\Custom_Gateway;
 
 use WC_Logger;
 
+/**
+ * @deprecated Class for backward compatibility. Will be removed someday.
+ * @see \Woocommerce\Pagarme\Model\Config
+ */
 class Setting
 {
     public static $_instance = null;
