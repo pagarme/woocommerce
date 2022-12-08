@@ -3,7 +3,7 @@
 namespace Pagarme\Core\Recurrence\Services;
 
 use MundiAPILib\Models\GetPlanItemResponse;
-use MundiAPILib\PagarmeCoreApiClient;
+use MundiAPILib\MundiAPIClient;
 use Pagarme\Core\Kernel\Services\LogService;
 use Pagarme\Core\Kernel\ValueObjects\AbstractValidString;
 use Pagarme\Core\Recurrence\Aggregates\Plan;
@@ -31,7 +31,7 @@ class PlanService
 
         \MundiAPILib\Configuration::$basicAuthPassword = '';
 
-        $this->pagarmeCoreApi = new PagarmeCoreApiClient($secretKey, $password);
+        $this->mundipaggApi = new MundiAPIClient($secretKey, $password);
     }
 
     /**
@@ -57,7 +57,7 @@ class PlanService
     public function createPlanAtPagarme(Plan $plan)
     {
         $createPlanRequest = $plan->convertToSdkRequest();
-        $planController = $this->pagarmeCoreApi->getPlans();
+        $planController = $this->mundipaggApi->getPlans();
 
         try {
             $logService = $this->getLogService();
@@ -86,7 +86,7 @@ class PlanService
     public function updatePlanAtPagarme(Plan $plan)
     {
         $updatePlanRequest = $plan->convertToSdkRequest(true);
-        $planController = $this->pagarmeCoreApi->getPlans();
+        $planController = $this->mundipaggApi->getPlans();
 
         $this->updateItemsAtPagarme($plan, $planController);
         $result = $planController->updatePlan($plan->getPagarmeId(), $updatePlanRequest);
@@ -168,7 +168,7 @@ class PlanService
         }
 
         try {
-            $planController = $this->pagarmeCoreApi->getPlans();
+            $planController = $this->mundipaggApi->getPlans();
             $planController->deletePlan($plan->getPagarmeId());
         } catch (\Exception $exception) {
             return $exception->getMessage();
@@ -182,9 +182,9 @@ class PlanService
         return new PlanRepository();
     }
 
-    public function getPagarmeCoreApiClient($secretKey, $password)
+    public function getMundiAPIClient($secretKey, $password)
     {
-        return new PagarmeCoreApiClient($secretKey, $password);
+        return new MundiAPIClient($secretKey, $password);
     }
 
     public function getLogService()
