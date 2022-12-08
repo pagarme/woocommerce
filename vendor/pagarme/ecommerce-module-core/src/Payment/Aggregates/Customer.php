@@ -208,7 +208,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     public function getAddressToSDK()
     {
         if ($this->getAddress() !== null) {
-            return $this->getAddress()->convertToSDKRequest();
+         return $this->getAddress()->convertToSDKRequest();
         }
         return null;
     }
@@ -216,7 +216,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     public function getPhonesToSDK()
     {
         if ($this->getPhones() !== null) {
-            return $this->getPhones()->convertToSDKRequest();
+         return $this->getPhones()->convertToSDKRequest();
         }
         return null;
     }
