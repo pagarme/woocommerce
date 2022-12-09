@@ -278,9 +278,9 @@ class Core
             'The number field is not a valid number.' => 'O número do cartão é inválido.',
             'The number field is not a valid credit card number.' => 'O número do cartão é inválido.',
             'The field number must be a string with a minimum length of 13 and a maximum length of 19.'
-            => 'O tamanho do numéro do cartão deve ter entre 13 e 19 caracteres.',
+            => 'O tamanho do número do cartão deve ter entre 13 e 19 caracteres.',
             'The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
-            => 'O campo cvv deve ser uma string entre 3 e 4 caracteres.',
+            => 'O campo cvv deve ter entre 3 e 4 caracteres.',
             'The cvv field is not a valid number.' => 'O CVV é inválido',
         );
     }
