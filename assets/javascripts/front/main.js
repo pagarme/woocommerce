@@ -793,18 +793,17 @@ jQuery(function ($) {
 
     let translateErrors = function (error, message) {
         error = error.replace('request.', '');
-        var output = error + ': ' + message;
         var ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
 
         if (PagarmeGlobalVars.WPLANG != 'pt_BR') {
-            return output;
+            return error;
         }
 
-        if (ptBrMessages.hasOwnProperty(output)) {
-            return ptBrMessages[output];
+        if (ptBrMessages.hasOwnProperty(error)) {
+            return ptBrMessages[error];
         }
 
-        return output;
+        return error;
     };
 
     const _onChangeCreditCard = function (event) {

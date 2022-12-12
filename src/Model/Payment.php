@@ -110,6 +110,16 @@ class Payment
         $card              = $this->pay_voucher_base($wc_order, $form_fields, $customer);
         $card_amount       = $wc_order->get_total();
         $card['amount']    = Utils::format_order_price($card_amount);
+        $multicustomer     = $this->get_multicustomer_data('voucher', $form_fields);
+
+        if ($multicustomer) {
+            $card['customer'] = $multicustomer;
+        }
+
+        if (!$multicustomer && !empty($customer->email)) {
+            $card['customer'] = $customer;
+        }
+
         return $card;
     }
 

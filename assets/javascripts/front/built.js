@@ -2924,7 +2924,7 @@ MONSTER('Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
 
     window.Pagarme2Cards = 0;
 
-    window.pagarmeQrCodeCopy = function() {
+    window.pagarmeQrCodeCopy = async function() {
         const qrCodeElement = document.getElementById("pagarme-qr-code");
 
         if (!qrCodeElement) {
@@ -2932,16 +2932,38 @@ MONSTER('Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
         }
 
         const rawCode = qrCodeElement.getAttribute("rawCode");
+        const alternativePagarmeQrCodeCopy = (rawCode) => {
+            const responseDiv = document.getElementById("pagarme-qr-code-response");
+            const input = document.createElement("input");
+            responseDiv.innerHTML = "";
+            input.value=rawCode;
+            responseDiv.appendChild(input);
+            input.focus();
+            input.select();
+            alert("Falha ao copiar! Por favor, copie o código manualmente utilizando o campo abaixo do botão.");
+        };
+
+        if (window.isSecureContext && navigator.clipboard) {
+            try {
+                await navigator.clipboard.writeText(rawCode);
+                alert("Código copiado!");
+            } catch (err) {
+                alternativePagarmeQrCodeCopy(rawCode);
+            }
+            return;
+        }
 
         const input = document.createElement('input');
         document.body.appendChild(input)
         input.value = rawCode;
         input.select();
-        document.execCommand('copy', false);
+        try {
+            document.execCommand('copy', false);
+            alert("Código copiado!");
+        } catch (err) {
+            alternativePagarmeQrCodeCopy(rawCode);
+        }
         input.remove();
-
-        alert("Código copiado.");
-
     }
 
     Model.fn.start = function() {
