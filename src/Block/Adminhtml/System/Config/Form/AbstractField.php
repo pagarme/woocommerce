@@ -11,6 +11,8 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form;
 
+use Woocommerce\Pagarme\Model\Config;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -49,18 +51,42 @@ abstract class AbstractField
     /** @var string */
     private string $section;
 
+    /** @var Config */
+    protected $config;
+
     /**
+     * @param Config $config
      * @param string $template
      * @param array $data
      */
     public function __construct(
+        Config $config = null,
         string $template = '',
         array $data = []
     ) {
+        $this->config = $config;
+        if (!$this->config) {
+            $this->config = new Config();
+        }
         if ($template) {
             $this->template = $template;
         }
         $this->init($data);
+    }
+
+    /**
+     * @param array $data
+     * @return $this
+     */
+    public function setData(array $data = [])
+    {
+        foreach ($data as $key => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
+            if (method_exists($this, $method)) {
+                $this->{$method}($value);
+            }
+        }
+        return $this;
     }
 
     /**
@@ -71,20 +97,31 @@ abstract class AbstractField
         add_settings_field(
             $this->getId(),
             __($this->getTitle(), 'woo-pagarme-payments'),
-            [$this, 'emptyCallback'],
+            [$this, 'getElementCallBack'],
             $this->getPage(),
             $this->getSection(),
             json_encode($this)
         );
-        include_once $this->template;
+    }
+
+    /**
+     * @return void
+     */
+    public function getElementCallBack($values)
+    {
+        if (!method_exists($this, 'elementCallBack')) {
+            $this->includeTemplate();
+            return;
+        }
+        $this->elementCallBack($values);
     }
 
     /**
      * Null fallback.
      */
-    public function emptyCallback()
+    public function includeTemplate()
     {
-
+        include $this->template;
     }
 
     /**
@@ -93,12 +130,7 @@ abstract class AbstractField
     protected function init(array $data = [])
     {
         $this->template = plugin_dir_path(WCMP_ROOT_SRC ) . 'src' . DIRECTORY_SEPARATOR . $this->templatePath . $this->template;
-        foreach ($data as $key => $value) {
-            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
-            if (method_exists($this, $method)) {
-                $this->{$method}($value);
-            }
-        }
+        $this->setData($data);
     }
 
     /**
@@ -236,7 +268,7 @@ abstract class AbstractField
      */
     public function setDescription($description)
     {
-        $this->description = $description;
+        $this->description = __($description, 'woo-pagarme-payments');
         return $this;
     }
 
@@ -246,5 +278,23 @@ abstract class AbstractField
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @return $this
+     */
+    public function clearData($key = null)
+    {
+        if (!$key) {
+            foreach (get_class_methods(get_class($this)) as $method) {
+                if (strpos($method, 'set') !== false) {
+                    $this->{$method} = '';
+                }
+            }
+        }
+        if ($key) {
+            $this->{$key} = '';
+        }
+        return $this;
     }
 }

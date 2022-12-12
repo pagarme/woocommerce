@@ -59,9 +59,8 @@ class Config extends DataObject
             $values = $_POST[$this->getOptionKey()];
             if ($values && is_array($values)) {
                 foreach ($values as $key => $value) {
-                    $this->setData($key, $value);
+                    $this->setData($key, sanitize_text_field($value));
                 }
-                $this->setData(array_intersect_key($this->getData(), $values));
             }
         }
         $this->save();

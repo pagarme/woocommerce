@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $menu ); ?>[<?php echo esc_attr( $id ); ?>]">
 <?php foreach ( $args['options'] as $key => $value ) : ?>
-	<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $current, $key, true ) ?>><?php echo esc_html( $value ); ?></option>
+	<option value="<?php echo esc_attr( $value['value'] ); ?>" <?php selected( $current, $value['value'], true ) ?>><?php echo esc_html( $value['label'] ); ?></option>
 <?php endforeach; ?>
 </select>
 <?php if ( isset( $args['description'] ) ) : ?>
