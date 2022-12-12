@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field;
 
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\AbstractField;
+use Woocommerce\Pagarme\Model\Config;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -28,26 +29,32 @@ class Select extends AbstractField
     private $options = [];
 
     /**
-     * @param array $data
-     */
-    public function __construct(
-        array $data = []
-    ) {
-        parent::__construct($this->template, $data);
-    }
-
-    /**
      * @param array $options
      * @return Select
      */
-    public function setOptions(array $options)
-    {
+    public function setOptions(
+        array $options
+    ) {
         $this->options = $options;
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * @return void
+     */
+    public function elementCallBack()
+    {
+        if ($value = $this->config->getData($this->getId())) {
+            $this->setCurrent($value);
+        }
+        parent::includeTemplate();
     }
 }
