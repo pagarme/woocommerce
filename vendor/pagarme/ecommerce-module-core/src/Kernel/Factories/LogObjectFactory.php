@@ -48,16 +48,13 @@ class LogObjectFactory
         $baseObject = new LogObject();
         $baseObject->setVersions(
             new VersionInfo(
-                $data['versions']['moduleVersion'],
-                $data['versions']['coreVersion'],
-                $data['versions']['platformVersion']
+                $data['versions']['moduleVersion'] ?? '',
+                $data['versions']['coreVersion'] ?? '',
+                $data['versions']['platformVersion'] ?? ''
             )
         );
-
         $baseObject->setMethod($data['method']);
-
-        $baseObject->setData(json_decode(json_encode($data['data'])));
-
+        $baseObject->setData(json_decode(json_encode($data['data'] ?? '')));
         return $baseObject;
     }
 }
