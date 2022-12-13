@@ -6,6 +6,8 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Environment;
+use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Integration;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Select;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Section;
 use Woocommerce\Pagarme\Helper\Utils;
@@ -74,16 +76,22 @@ class Settings
                     'title' => 'General',
                     'fields' => [
                         [
+                            'class' => Select::class,
                             'id' => 'enabled',
                             'title' => 'Enable',
                             'options' => $this->yesNoOptions->toOptionArray(),
                             'default' => Yesno::VALUE_NO,
                         ],
                         [
+                            'class' => Integration::class,
                             'id' => 'hub_button_integration',
+                            'title' => 'Hub integration',
                         ],
                         [
+                            'class' => Environment::class,
                             'id' => 'hub_environment',
+                            'title' => 'Integration environment',
+                            'default' => 'Develop',
                         ]
                     ]
                 ],
@@ -92,6 +100,7 @@ class Settings
                     'title' => 'Payment methods',
                     'fields' => [
                         [
+                            'class' => Select::class,
                             'id' => 'enable_credit_card',
                             'title' => 'Credit card',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -99,6 +108,7 @@ class Settings
                             'description' => 'Enable credit card'
                         ],
                         [
+                            'class' => Select::class,
                             'id' => 'enable_billet',
                             'title' => 'Boleto',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -106,6 +116,7 @@ class Settings
                             'description' => 'Enable credit card'
                         ],
                         [
+                            'class' => Select::class,
                             'id' => 'enable_pix',
                             'title' => 'Pix',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -113,6 +124,7 @@ class Settings
                             'description' => 'Enable pix'
                         ],
                         [
+                            'class' => Select::class,
                             'id' => 'multimethods_2_cards',
                             'title' => 'Multi-means </br>(2 Credit cards)',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -120,6 +132,7 @@ class Settings
                             'description' => 'Enable multi-means (2 Credit cards)'
                         ],
                         [
+                            'class' => Select::class,
                             'id' => 'multimethods_billet_card',
                             'title' => 'Multi-means </br>(Boleto + Credit card)',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -127,6 +140,7 @@ class Settings
                             'description' => 'Enable multi-means (Boleto + Credit card)'
                         ],
                         [
+                            'class' => Select::class,
                             'id' => 'multicustomers',
                             'title' => 'Multi-buyers',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -134,6 +148,7 @@ class Settings
                             'description' => 'Enable multi-buyers'
                         ],
                         [
+                            'class' => Select::class,
                             'id' => 'enable_voucher',
                             'title' => 'Voucher Card',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -147,6 +162,7 @@ class Settings
                     'title' => 'Tools',
                     'fields' => [
                         [
+                            'class' => Select::class,
                             'id' => 'is_gateway_integration_type',
                             'title' => 'Advanced settings',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -154,6 +170,7 @@ class Settings
                             'description' => 'Configurations that only works for Gateway customers, who have a direct contract with an acquirer.'
                         ],
                         [
+                            'class' => Select::class,
                             'id' => 'enable_logs',
                             'title' => 'Logs',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -258,38 +275,14 @@ class Settings
         return $this->model->config->getOptionKey();
     }
 
+    /**
+     * @param $values
+     * @return void
+     */
     public function getField($values)
     {
-        if ($values['id'] === 'hub_button_integration') {
-            add_settings_field(
-                'hub_button_integration',
-                __('Hub integration', 'woo-pagarme-payments'),
-                array( $this, 'hub_integration_button_callback' ),
-                $values['page'],
-                'options_section',
-                array(
-                    'menu'  => $values['page'],
-                    'id'    => 'hub_button_integration'
-                )
-            );
-            return;
-        }
-        if ($values['id'] === 'hub_environment') {
-            add_settings_field(
-                'hub_environment',
-                __('Integration environment', 'woo-pagarme-payments'),
-                array( $this, 'hub_environment_callback' ),
-                $values['page'],
-                'options_section',
-                array(
-                    'menu'  => $values['page'],
-                    'id'    => 'hub_environment'
-                )
-            );
-            return;
-        }
-        $select = new Select();
-        $select->setData($values)->toHtml();
+        $field = new $values['class']();
+        $field->setData($values)->toHtml();
     }
 
     /**

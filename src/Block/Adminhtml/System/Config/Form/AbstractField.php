@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form;
 
 use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
 abstract class AbstractField
 {
     /** @var string */
-    protected $template;
+    protected $template = 'main.phtml';
 
     /** @var string */
     protected $templatePath = 'View/Admin/templates/system/config/form/field/';
@@ -54,6 +55,12 @@ abstract class AbstractField
     /** @var Config */
     protected $config;
 
+    /** @var bool */
+    protected bool $readonly = false;
+
+    /** @var bool */
+    protected bool $isVisible = true;
+
     /**
      * @param Config $config
      * @param string $template
@@ -72,6 +79,14 @@ abstract class AbstractField
             $this->template = $template;
         }
         $this->init($data);
+    }
+
+    /**
+     * @return void
+     */
+    protected function init(array $data = [])
+    {
+        $this->setData($data);
     }
 
     /**
@@ -117,20 +132,11 @@ abstract class AbstractField
     }
 
     /**
-     * Null fallback.
-     */
-    public function includeTemplate()
-    {
-        include $this->template;
-    }
-
-    /**
      * @return void
      */
-    protected function init(array $data = [])
+    public function includeTemplate(string $file = 'main.phtml')
     {
-        $this->template = plugin_dir_path(WCMP_ROOT_SRC ) . 'src' . DIRECTORY_SEPARATOR . $this->templatePath . $this->template;
-        $this->setData($data);
+        include plugin_dir_path(WCMP_ROOT_SRC ) . 'src' . DIRECTORY_SEPARATOR . $this->templatePath . $file;
     }
 
     /**
@@ -149,6 +155,42 @@ abstract class AbstractField
     public function getSection()
     {
         return $this->section;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getVisible()
+    {
+        return $this->isVisible;
+    }
+
+    /**
+     * @param bool $value
+     * @return $this
+     */
+    public function setVisible(bool $value)
+    {
+        $this->isVisible = $value;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getReadonly()
+    {
+        return $this->readonly;
+    }
+
+    /**
+     * @param bool $value
+     * @return $this
+     */
+    public function setReadonly(bool $value)
+    {
+        $this->isVisible = $value;
+        return $this;
     }
 
     /**
