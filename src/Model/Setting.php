@@ -12,6 +12,10 @@ use Woocommerce\Pagarme\Model\Custom_Gateway;
 
 use WC_Logger;
 
+/**
+ * @deprecated Class for backward compatibility. Will be removed someday.
+ * @see \Woocommerce\Pagarme\Model\Config
+ */
 class Setting
 {
     public static $_instance = null;
@@ -195,7 +199,7 @@ class Setting
 
     public function is_gateway_integration_type()
     {
-        return ('yes' === $this->__get('is_gateway_integration_type'));
+        return (bool) $this->__get('is_gateway_integration_type');
     }
 
     public function is_enabled_logs()

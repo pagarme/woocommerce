@@ -43,9 +43,17 @@ class Gateway
 
     public $settings;
 
-    public function __construct()
-    {
+    /** @var Config|null */
+    public $config;
+
+    public function __construct(
+        Config $config = null
+    ) {
         $this->settings = Setting::get_instance();
+        if (!$config) {
+            $config = new Config();
+        }
+        $this->config = $config;
     }
 
     public function supported_currency()

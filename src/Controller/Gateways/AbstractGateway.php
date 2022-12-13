@@ -32,6 +32,9 @@ if (!function_exists('add_action')) {
  */
 abstract class AbstractGateway extends WC_Payment_Gateway
 {
+    /** @var string */
+    const PAGARME = 'Pagar.me';
+
     /** @var Gateway|null */
     public $model;
 
@@ -39,7 +42,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     protected $method = 'payment';
 
     /** @var string */
-    protected $vendor = 'Pagar.me';
+    protected $vendor = self::PAGARME;
 
     /** @var WooOrderRepository */
     private $wooOrderRepository;
@@ -75,7 +78,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->has_fields = false;
         $this->icon = Core::plugins_url('assets/images/logo.png');
         $this->init_form_fields();
-        $this->form_fields = array_merge($this->form_fields,$this->append_form_fields());
+        $this->form_fields = array_merge($this->form_fields,array_merge($this->append_form_fields(), $this->append_gateway_form_fields()));
         $this->init_settings();
         $this->enabled = $this->get_option('enabled', 'no');
         $this->title = $this->getTitle();
@@ -84,7 +87,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
         }
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
-        add_action('woocommerce_thankyou_' . $this->vendor, array($this, 'thank_you_page'));
+        add_action('woocommerce_thankyou_' . $this->vendor . ' ' . $this->getPaymentMethodTitle(), array($this, 'thank_you_page'));
     }
 
     /**
@@ -109,9 +112,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->model->payment = $this->method;
         echo (Utils::get_template_as_string(
             'templates/checkout/default',
-            array(
-                'model' => $this->model,
-            )
+            ['model' => $this->model]
         ));
     }
 
@@ -130,7 +131,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function checkout_transparent($order_id)
     {
-        $wc_order = new WC_Order($order_id);
+        $wc_order = $this->wooOrderRepository->getById($order_id);
         require_once Core::get_file_path($this->method . '-item.php', 'templates/checkout/');
     }
 
@@ -140,7 +141,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function thank_you_page($order_id)
     {
-        $order = new WC_Order($order_id);
+        $order = $this->wooOrderRepository->getById($order_id);
         require_once Core::get_file_path('thank-you-page.php', 'templates/');
     }
 
@@ -152,7 +153,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if ($title = $this->get_option('title')) {
             return $title;
         }
-        return $this->vendor . ' ' . $this->method;
+        return $this->vendor . ' ' . $this->getPaymentMethodTitle();
     }
 
     /**
@@ -160,13 +161,12 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function getPaymentMethodTitle()
     {
-        return ucfirst($this->method);
+        return ucfirst(str_replace('-', ' ', $this->method));
     }
 
     public function init_form_fields()
     {
         $this->form_fields = [
-            'hub_environment' => $this->field_hub_environment(),
             'title' => $this->field_title()
         ];
     }
@@ -182,6 +182,25 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /**
      * @return array
      */
+    private function append_gateway_form_fields()
+    {
+        if ($this->model->config->getIsGatewayIntegrationType()) {
+            return $this->gateway_form_fields();
+        }
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    protected function gateway_form_fields()
+    {
+        return [];
+    }
+
+    /**
+     * @return array
+     */
     public function field_title()
     {
         return [
@@ -190,58 +209,5 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             'desc_tip'    => true,
             'default'     => __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function field_hub_environment()
-    {
-        return array(
-            'title' => __('Integration environment', 'woo-pagarme-payments'),
-            'type'  => 'hub_environment',
-        );
-    }
-
-    public function generate_hub_environment_html($key, $data)
-    {
-        ob_start();
-        ?>
-        <tr valign="top">
-            <th scope="row" class="titledesc">
-                <?php echo __('Integration environment', 'woo-pagarme-payments'); ?>
-            </th>
-            <td class="forminp">
-                <?php echo esc_attr($this->model->settings->hub_environment); ?>
-            </td>
-        </tr>
-        <?php if (!$this->model->settings->hub_install_id) : ?>
-        <tr valign="top">
-            <th scope="row" class="titledesc">
-            <td class="forminp ">
-                <div class="pagarme-message-warning">
-                        <span>
-                            <?= __('Integration pending', 'woo-pagarme-payments'); ?>
-                        </span>
-                </div>
-            </td>
-            </th>
-        </tr>
-        <?php endif; ?>
-        <?php if ($this->model->is_sandbox_mode()) : ?>
-        <tr valign="top">
-            <th scope="row" class="titledesc">
-            <td class="forminp ">
-                <div class="pagarme-message-warning">
-                        <span>
-                            <?= __('Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions.', 'woo-pagarme-payments'); ?>
-                        </span>
-                </div>
-            </td>
-            </th>
-        </tr>
-    <?php endif; ?>
-        <?php
-        return ob_get_clean();
     }
 }

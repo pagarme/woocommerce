@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Model\Payment\Voucher\Brands;
-use Woocommerce\Pagarme\Model\Payment\Voucher\BrandsInterface;
+use Woocommerce\Pagarme\Model\Payment\CreditCard\Brands;
+use Woocommerce\Pagarme\Model\Payment\CreditCard\BrandsInterface;
 
 defined('ABSPATH') || exit;
 

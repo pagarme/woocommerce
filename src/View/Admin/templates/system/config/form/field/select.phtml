@@ -1,0 +1,20 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var $this \Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Select */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
+<select id="<?= esc_attr($this->getId()); ?>" name="<?= esc_attr($this->getName()); ?>[<?= esc_attr($this->getId()) ?>]" <?= $this->getReadonly() ? '' : 'readonly' ; ?>>
+    <?php foreach ($this->getOptions() as $option) : ?>
+        <option value="<?= esc_attr($option['value']) ?>" <?= selected($this->getCurrent(), $option['value'], true) ?>><?= esc_html($option['label']) ?></option>
+    <?php endforeach; ?>
+</select>

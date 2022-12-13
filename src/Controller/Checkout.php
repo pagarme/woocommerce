@@ -6,6 +6,7 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer;
 use Woocommerce\Pagarme\Model\Gateway;
@@ -71,7 +72,7 @@ class Checkout
         $order  = new Order($wc_order->get_order_number());
         $order->payment_method   = $fields['payment_method'];
         $order->update_meta('_payment_method_title', $this->payment_methods[$fields['payment_method']]);
-        $order->update_meta('_payment_method', Gateways::PAYMENT_METHOD);
+        $order->update_meta('_payment_method', AbstractGateway::PAGARME . ' ' . $this->payment_methods[$fields['payment_method']]);
         WC()->cart->empty_cart();
         if ($response) {
             $order->transaction_id     = $response->getPagarmeId()->getValue();
