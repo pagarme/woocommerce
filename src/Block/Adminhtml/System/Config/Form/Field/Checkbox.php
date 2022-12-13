@@ -16,34 +16,34 @@ use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\AbstractField;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Select
+ * Class Checkbox
  * @package Woocommerce\Pagarme\Block\Adminthml\System\Config\Form\Field
  */
-class Select extends AbstractField
+class Checkbox extends AbstractField
 {
     /** @var string */
-    protected $template = 'select.phtml';
+    protected $template = 'checkbox.phtml';
 
-    /** @var array */
-    private $options = [];
+    /** @var string */
+    private string $label;
 
     /**
-     * @param array $options
-     * @return Select
+     * @param string $label
+     * @return Checkbox
      */
-    public function setOptions(
-        array $options
+    public function setLabel(
+        string $label
     ) {
-        $this->options = $options;
+        $this->label = $label;
         return $this;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getOptions()
+    public function getLabel()
     {
-        return $this->options;
+        return $this->label;
     }
 
     /**

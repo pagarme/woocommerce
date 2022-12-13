@@ -1,0 +1,27 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var $this \Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\AbstractField */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+?>
+<div>
+    <div class="<?= esc_attr($this->getId()); ?>-field <?= $this->getVisible() ? '' : 'hidden' ; ?>">
+        <?php
+            $this->includeTemplate($this->template, $this);
+        ?>
+    </div>
+    <div class="<?= esc_attr($this->getId()); ?>-description">
+        <?php if ($this->getDescription()) : ?>
+            <p class="description"><?= esc_html($this->getDescription()) ?></p>
+        <?php endif; ?>
+    </div>
+</div>

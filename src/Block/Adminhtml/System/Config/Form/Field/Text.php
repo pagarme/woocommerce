@@ -19,31 +19,31 @@ defined( 'ABSPATH' ) || exit;
  * Class Select
  * @package Woocommerce\Pagarme\Block\Adminthml\System\Config\Form\Field
  */
-class Select extends AbstractField
+class Text extends AbstractField
 {
     /** @var string */
-    protected $template = 'select.phtml';
+    protected $template = 'text.phtml';
 
-    /** @var array */
-    private $options = [];
+    /** @var string */
+    private string $label;
 
     /**
-     * @param array $options
-     * @return Select
+     * @param string $label
+     * @return Text
      */
-    public function setOptions(
-        array $options
+    public function setLabel(
+        string $label
     ) {
-        $this->options = $options;
+        $this->label = $label;
         return $this;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getOptions()
+    public function getLabel()
     {
-        return $this->options;
+        return $this->label;
     }
 
     /**

@@ -14,6 +14,7 @@ namespace Woocommerce\Pagarme\Model;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Data\DataObject;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
+use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,6 +24,9 @@ defined( 'ABSPATH' ) || exit;
  */
 class Config extends DataObject
 {
+    /** @var string */
+    const HUB_SANDBOX_ENVIRONMENT = 'Sandbox';
+
     /**
      * @param Json|null $jsonSerialize
      * @param array $data
@@ -92,5 +96,75 @@ class Config extends DataObject
     public function getOptionKey()
     {
         return Core::tag_name('settings');
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getHubAppId()
+    {
+        return CoreSetup::getHubAppPublicAppKey();
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsSandboxMode()
+    {
+        return ( $this->getHubEnvironment() === static::HUB_SANDBOX_ENVIRONMENT ||
+            strpos(($this->getProductionSecretKey()) ?? '', 'sk_test') !== false ||
+            strpos(($this->getProductionPublicKey()) ?? '', 'pk_test') !== false
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getHubUrl(): string
+    {
+        return ($this->getHubAppId()) ? $this->getHubViewIntegrationUrl() : $this->getHubIntegrateUrl();
+    }
+
+    /**
+     * @return string
+     */
+    private function getHubIntegrateUrl(): string
+    {
+        return $this->getHubBaseUrl() . $this->getHubParamsUrl();
+    }
+
+    /**
+     * @return string
+     */
+    private function getHubBaseUrl()
+    {
+        return sprintf(
+            'https://hub.pagar.me/apps/%s/authorize',
+            $this->getHubAppId()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    private function getHubParamsUrl()
+    {
+        return sprintf(
+            '?redirect=%s?install_token=%s',
+            Core::get_hub_url(),
+            $this->getHubInstallToken()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    private function getHubViewIntegrationUrl()
+    {
+        return sprintf(
+            'https://hub.pagar.me/apps/%s/edit/%s',
+            $this->getHubAppId(),
+            $this->getHubInstallId()
+        );
     }
 }
