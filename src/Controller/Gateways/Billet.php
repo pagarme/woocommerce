@@ -66,7 +66,7 @@ class Billet extends AbstractGateway
             'type'    => 'select',
             'title'   => __('Bank', 'woo-pagarme-payments'),
             'class'   => 'wc-enhanced-select',
-            'default' => 0,
+            'default' => $this->config->getData('billet-bank') ?? 0,
             'options' => $options,
             'custom_attributes' => [
                 'data-field' => 'billet-bank',
@@ -84,7 +84,7 @@ class Billet extends AbstractGateway
             'description' => __('Number of days until the expiration date of the generated boleto.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'placeholder' => 5,
-            'default'     => 5,
+            'default'     => $this->config->getData('billet_deadline_days') ?? 5,
             'custom_attributes' => [
                 'data-mask'         => '##0',
                 'data-mask-reverse' => 'true',
@@ -100,6 +100,7 @@ class Billet extends AbstractGateway
         return [
             'title'       => __('Payment instructions', 'woo-pagarme-payments'),
             'type'        => 'text',
+            'default' => $this->config->getData('billet_instructions') ?? '',
             'description' => __('Instructions printed on the boleto.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
         ];

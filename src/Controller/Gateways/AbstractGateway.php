@@ -16,6 +16,7 @@ use WC_Order;
 use Woocommerce\Pagarme\Controller\Checkout;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Payment\PostFormatter;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
@@ -35,6 +36,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var string */
     const PAGARME = 'Pagar.me';
 
+    /** @var string */
+    const PAYMENT_OPTION_UPDATE_SLUG = 'woocommerce_update_options_payment_gateways_';
+
     /** @var Gateway|null */
     public $model;
 
@@ -50,15 +54,20 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var PostFormatter */
     private $postFormatter;
 
+    /** @var Config */
+    protected $config;
+
     /**
      * @param Gateway|null $gateway
      * @param WooOrderRepository|null $wooOrderRepository
      * @param PostFormatter|null $postFormatter
+     * @param Config|null $config
      */
     public function __construct(
         Gateway $gateway = null,
         WooOrderRepository $wooOrderRepository = null,
-        PostFormatter $postFormatter = null
+        PostFormatter $postFormatter = null,
+        Config $config = null
     ) {
         if (!$gateway) {
             $gateway = new Gateway();
@@ -69,6 +78,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if (!$postFormatter) {
             $postFormatter = new PostFormatter();
         }
+        if (!$config) {
+            $config = new Config();
+        }
+        $this->config = $config;
         $this->postFormatter = $postFormatter;
         $this->model = $gateway;
         $this->wooOrderRepository = $wooOrderRepository;
@@ -84,10 +97,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->title = $this->getTitle();
         $this->has_fields = true;
         if (is_admin()) {
-            add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+            add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'beforeProcessAdminOptions']);
+            add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'process_admin_options']);
         }
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
-        add_action('woocommerce_thankyou_' . $this->vendor . ' ' . $this->getPaymentMethodTitle(), array($this, 'thank_you_page'));
+        add_action('woocommerce_thankyou_' . $this->vendor . ' ' . $this->getPaymentMethodTitle(), [$this, 'thank_you_page']);
     }
 
     /**
@@ -107,6 +121,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         ];
     }
 
+    /**
+     * @return void
+     */
     public function payment_fields()
     {
         $this->model->payment = $this->method;
@@ -209,5 +226,24 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             'desc_tip'    => true,
             'default'     => __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
         ];
+    }
+
+    /**
+     * @return void
+     */
+    public function beforeProcessAdminOptions()
+    {
+        foreach ($_POST as $key => $value) {
+            $paymentOptionsSlug = 'woocommerce_'  . $this->id;
+            if (strpos($key, $paymentOptionsSlug) !== false) {
+                if (array_key_exists(1, explode($paymentOptionsSlug . '_', $key))) {
+                    $field = explode($paymentOptionsSlug . '_', $key)[1];
+                    if ($field !== 'title') {
+                        $this->config->setData($field, $value);
+                    }
+                }
+            }
+        }
+        $this->config->save();
     }
 }

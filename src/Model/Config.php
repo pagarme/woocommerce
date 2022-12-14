@@ -66,8 +66,8 @@ class Config extends DataObject
                     $this->setData($key, sanitize_text_field($value));
                 }
             }
+            $this->save();
         }
-        $this->save();
     }
 
     /**
