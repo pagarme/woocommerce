@@ -122,7 +122,7 @@ class Config extends DataObject
      */
     public function getHubUrl(): string
     {
-        return ($this->getHubAppId()) ? $this->getHubViewIntegrationUrl() : $this->getHubIntegrateUrl();
+        return ($this->getHubInstallId()) ? $this->getHubViewIntegrationUrl() : $this->getHubIntegrateUrl();
     }
 
     /**
