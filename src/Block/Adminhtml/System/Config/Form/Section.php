@@ -20,13 +20,13 @@ defined( 'ABSPATH' ) || exit;
 class Section
 {
     /** @var string */
-    private string $id;
+    private $id;
 
     /** @var string */
-    private string $title;
+    private $title;
 
     /** @var string */
-    private string $page;
+    private $page;
 
     /**
      * @param array $data

@@ -25,7 +25,7 @@ class Checkbox extends AbstractField
     protected $template = 'checkbox.phtml';
 
     /** @var string */
-    private string $label;
+    private $label;
 
     /**
      * @param string $label

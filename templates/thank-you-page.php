@@ -3,8 +3,6 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\View\Checkouts;
 

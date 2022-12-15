@@ -25,7 +25,7 @@ class Text extends AbstractField
     protected $template = 'text.phtml';
 
     /** @var string */
-    private string $label;
+    private $label;
 
     /**
      * @param string $label
