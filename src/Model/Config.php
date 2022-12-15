@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model;
 
+use Pagarme\Core\Hub\Services\HubIntegrationService;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Data\DataObject;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
@@ -66,8 +67,8 @@ class Config extends DataObject
                     $this->setData($key, sanitize_text_field($value));
                 }
             }
+            $this->save();
         }
-        $this->save();
     }
 
     /**
@@ -122,7 +123,7 @@ class Config extends DataObject
      */
     public function getHubUrl(): string
     {
-        return ($this->getHubAppId()) ? $this->getHubViewIntegrationUrl() : $this->getHubIntegrateUrl();
+        return ($this->getHubInstallId()) ? $this->getHubViewIntegrationUrl() : $this->getHubIntegrateUrl();
     }
 
     /**
@@ -166,5 +167,17 @@ class Config extends DataObject
             $this->getHubAppId(),
             $this->getHubInstallId()
         );
+    }
+
+    /**
+     * @return string
+     */
+    private function getHubInstallToken()
+    {
+        $installSeed = uniqid();
+        $hubIntegrationService = new HubIntegrationService();
+        $installToken = $hubIntegrationService
+            ->startHubIntegration($installSeed);
+        return $installToken->getValue();
     }
 }

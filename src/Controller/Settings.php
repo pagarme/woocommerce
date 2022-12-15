@@ -76,19 +76,19 @@ class Settings
                     'title' => 'General',
                     'fields' => [
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'enabled',
                             'title' => 'Enable',
                             'options' => $this->yesNoOptions->toOptionArray(),
                             'default' => Yesno::VALUE_NO,
                         ],
                         [
-                            'class' => Integration::class,
+                            'fieldObject' => Integration::class,
                             'id' => 'hub_button_integration',
                             'title' => 'Hub integration',
                         ],
                         [
-                            'class' => Environment::class,
+                            'fieldObject' => Environment::class,
                             'id' => 'hub_environment',
                             'title' => 'Integration environment',
                             'default' => 'Develop',
@@ -100,7 +100,7 @@ class Settings
                     'title' => 'Payment methods',
                     'fields' => [
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'enable_credit_card',
                             'title' => 'Credit card',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -108,7 +108,7 @@ class Settings
                             'description' => 'Enable credit card'
                         ],
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'enable_billet',
                             'title' => 'Boleto',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -116,7 +116,7 @@ class Settings
                             'description' => 'Enable credit card'
                         ],
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'enable_pix',
                             'title' => 'Pix',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -124,7 +124,7 @@ class Settings
                             'description' => 'Enable pix'
                         ],
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'multimethods_2_cards',
                             'title' => 'Multi-means </br>(2 Credit cards)',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -132,7 +132,7 @@ class Settings
                             'description' => 'Enable multi-means (2 Credit cards)'
                         ],
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'multimethods_billet_card',
                             'title' => 'Multi-means </br>(Boleto + Credit card)',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -140,7 +140,7 @@ class Settings
                             'description' => 'Enable multi-means (Boleto + Credit card)'
                         ],
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'multicustomers',
                             'title' => 'Multi-buyers',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -148,7 +148,7 @@ class Settings
                             'description' => 'Enable multi-buyers'
                         ],
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'enable_voucher',
                             'title' => 'Voucher Card',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -162,7 +162,7 @@ class Settings
                     'title' => 'Tools',
                     'fields' => [
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'is_gateway_integration_type',
                             'title' => 'Advanced settings',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -170,7 +170,7 @@ class Settings
                             'description' => 'Configurations that only works for Gateway customers, who have a direct contract with an acquirer.'
                         ],
                         [
-                            'class' => Select::class,
+                            'fieldObject' => Select::class,
                             'id' => 'enable_logs',
                             'title' => 'Logs',
                             'options' => $this->yesNoOptions->toOptionArray(),
@@ -278,11 +278,16 @@ class Settings
     /**
      * @param $values
      * @return void
+     * @throws \Exception
      */
     public function getField($values)
     {
-        $field = new $values['class']();
-        $field->setData($values)->toHtml();
+        if (class_exists($values['fieldObject'])) {
+            $field = new $values['fieldObject']();
+            $field->setData($values)->toHtml();
+            return;
+        }
+        throw new \Exception(sprintf('Field object class %s not exists. ', $values['fieldObject']));
     }
 
     /**
@@ -311,55 +316,11 @@ class Settings
     }
 
     /**
-     * Select element fallback.
-     *
-     * @param array $args Callback arguments.
+     * @param $input
+     * @return array
      */
-    public function hub_integration_button_callback( $args ) {
-        $menu    = $args['menu'];
-        $id      = $args['id'];
-        $options = get_option( $menu );
-
-        if ( isset( $options[ $id ] ) ) {
-            $current = $options[ $id ];
-        } else {
-            $current = isset( $args['default'] ) ? $args['default'] : 0;
-        }
-
-
-
-
-        $hub_install_id = $this->model->settings->hub_install_id;
-        $button_label = $this->model->get_hub_button_text($hub_install_id);
-        $url_hub = $this->model->get_hub_url($hub_install_id);
-
-        $isAdvancedSettings = $this->model->settings->is_gateway_integration_type();
-
-
-        include dirname( __FILE__ ) . '/../View/Admin/html-hub-integration-button.php';
-    }
-
-    /**
-     * Select element fallback.
-     *
-     * @param array $args Callback arguments.
-     */
-    public function hub_environment_callback( $args ) {
-        $hub_environment = $this->model->settings->hub_environment;
-        $is_sandbox_mode = $this->model->is_sandbox_mode();
-        include dirname( __FILE__ ) . '/../View/Admin/html-hub-enviroment.php';
-    }
-
-    /**
-     * Valid options.
-     *
-     * @param  array $input options to valid.
-     *
-     * @return array        validated options.
-     */
-    public function validate_options( $input ) {
+    public function validate_options($input ) {
         $output = array();
-
         // Loop through each of the incoming options.
         foreach ( $input as $key => $value ) {
             // Check to see if the current option has a value. If so, process it.
@@ -367,7 +328,6 @@ class Settings
                 $output[ $key ] = sanitize_text_field( $input[ $key ] );
             }
         }
-
         return $output;
     }
 }

@@ -176,6 +176,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
         if (
             !empty($pixAdditionalData)
+            && is_array($pixAdditionalData)
             && count(array_filter($pixAdditionalData))
             == count($pixAdditionalData)
 
