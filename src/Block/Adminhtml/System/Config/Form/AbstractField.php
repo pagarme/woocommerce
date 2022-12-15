@@ -32,34 +32,34 @@ abstract class AbstractField
     protected $default = null;
 
     /** @var string */
-    private string $id;
+    private $id;
 
     /** @var string */
-    private string $name;
+    private  $name;
 
     /** @var string|null */
-    private ?string $current = null;
+    private $current = null;
 
     /** @var ?string */
-    private ?string $description = null;
+    private $description = null;
 
     /** @var string */
-    private string $page;
+    private $page;
 
     /** @var string */
-    private string $title;
+    private $title;
 
     /** @var string */
-    private string $section;
+    private $section;
 
     /** @var Config */
     protected $config;
 
     /** @var bool */
-    protected bool $readonly = false;
+    protected $readonly = false;
 
     /** @var bool */
-    protected bool $isVisible = true;
+    protected $isVisible = true;
 
     /**
      * @param Config $config

@@ -387,7 +387,8 @@ class Checkouts
 
     private static function get_payment_detail($charge, Charge $model_charge)
     {
-        if ($charge->payment_method == 'boleto') {
+        $html = '';
+        if (property_exists($charge, 'payment_method') && $charge->payment_method === 'boleto') {
 
             $due_at = new \DateTime($charge->last_transaction->due_at);
 
@@ -432,7 +433,7 @@ class Checkouts
             ob_end_clean();
         }
 
-        if ($charge->payment_method == 'credit_card') {
+        if (property_exists($charge, 'payment_method') && $charge->payment_method === 'credit_card') {
 
             ob_start()
 
