@@ -86,8 +86,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->model = $gateway;
         $this->wooOrderRepository = $wooOrderRepository;
         $this->id = 'woo-pagarme-payments-' . $this->method;
-        $this->method_title = __($this->getPaymentMethodTitle(), 'woo-pagarme-payments');
-        $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->getPaymentMethodTitle();
+        $this->method_title = $this->getPaymentMethodTitle();
+        $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->method_title;
         $this->has_fields = false;
         $this->icon = Core::plugins_url('assets/images/logo.png');
         $this->init_form_fields();
@@ -170,7 +170,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if ($title = $this->get_option('title')) {
             return $title;
         }
-        return $this->vendor . ' ' . $this->getPaymentMethodTitle();
+        return $this->getPaymentMethodTitle();
     }
 
     /**
@@ -178,9 +178,12 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function getPaymentMethodTitle()
     {
-        return ucfirst(str_replace('-', ' ', $this->method));
+        return __(ucwords(str_replace('-', ' ', $this->method)), 'woo-pagarme-payments');
     }
 
+    /**
+     * @return void
+     */
     public function init_form_fields()
     {
         $this->form_fields = [
@@ -238,9 +241,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             if (strpos($key, $paymentOptionsSlug) !== false) {
                 if (array_key_exists(1, explode($paymentOptionsSlug . '_', $key))) {
                     $field = explode($paymentOptionsSlug . '_', $key)[1];
-                    if ($field !== 'title') {
-                        $this->config->setData($field, $value);
+                    if ($field === 'title') {
+                        $field = $this->method . '_' . $field;
                     }
+                    $this->config->setData($field, $value);
                 }
             }
         }
