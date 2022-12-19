@@ -2,13 +2,13 @@
 
 namespace Pagarme\Core\Test\Recurrence\Aggregates;
 
-use MundiAPILib\Models\CreatePlanRequest;
-use MundiAPILib\Models\UpdatePlanRequest;
+use PagarmeCoreApiLib\Models\CreatePlanRequest;
+use PagarmeCoreApiLib\Models\UpdatePlanRequest;
 use Pagarme\Core\Recurrence\Aggregates\Plan;
 use Pagarme\Core\Recurrence\Aggregates\SubProduct;
 use Pagarme\Core\Recurrence\ValueObjects\PlanId;
-use PHPUnit\Framework\TestCase;
 use Pagarme\Core\Recurrence\ValueObjects\IntervalValueObject;
+use PHPUnit\Framework\TestCase;
 
 class PlanTest extends TestCase
 {

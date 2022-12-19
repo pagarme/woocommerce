@@ -30,7 +30,7 @@ composer update pagarme/ecommerce-module-core
 
 ## API Reference
 
-[http://docs.mundipagg.com](http://docs.mundipagg.com)
+[https://docs.pagar.me](https://docs.pagar.me)
 
 ## Contributting
 Please, refer to [CONTRIBUTING](.github/CONTRIBUTING.md)

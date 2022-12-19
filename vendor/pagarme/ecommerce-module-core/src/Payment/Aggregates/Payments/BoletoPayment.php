@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates\Payments;
 
-use MundiAPILib\Models\CreateBoletoPaymentRequest;
+use PagarmeCoreApiLib\Models\CreateBoletoPaymentRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Payment\Aggregates\Customer;
