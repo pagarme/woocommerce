@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates\Payments;
 
-use MundiAPILib\Models\CreatePaymentRequest;
+use PagarmeCoreApiLib\Models\CreatePaymentRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
 use Pagarme\Core\Payment\Interfaces\HaveOrderInterface;

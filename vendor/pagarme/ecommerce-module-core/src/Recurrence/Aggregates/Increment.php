@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Recurrence\Aggregates;
 
-use MundiAPILib\Models\CreateIncrementRequest;
+use PagarmeCoreApiLib\Models\CreateIncrementRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 
 class Increment extends AbstractEntity

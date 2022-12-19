@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates\Payments;
 
-use MundiAPILib\Models\CreateCreditCardPaymentRequest;
+use PagarmeCoreApiLib\Models\CreateCreditCardPaymentRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Payment\ValueObjects\AbstractCardIdentifier;

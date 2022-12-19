@@ -2,14 +2,14 @@
 
 namespace Pagarme\Core\Recurrence\Services;
 
-use MundiAPILib\Models\GetPlanItemResponse;
-use MundiAPILib\MundiAPIClient;
+use PagarmeCoreApiLib\Models\GetPlanItemResponse;
+use PagarmeCoreApiLib\PagarmeCoreApiClient;
+use PagarmeCoreApiLib\Models\CreatePlanRequest;
 use Pagarme\Core\Kernel\Services\LogService;
 use Pagarme\Core\Kernel\ValueObjects\AbstractValidString;
 use Pagarme\Core\Recurrence\Aggregates\Plan;
 use Pagarme\Core\Recurrence\Factories\PlanFactory;
 use Pagarme\Core\Recurrence\Repositories\PlanRepository;
-use MundiAPILib\Models\CreatePlanRequest;
 use Pagarme\Core\Recurrence\ValueObjects\PlanId;
 use Pagarme\Core\Recurrence\ValueObjects\PlanItemId;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup;
@@ -29,9 +29,9 @@ class PlanService
 
         $password = '';
 
-        \MundiAPILib\Configuration::$basicAuthPassword = '';
+        \PagarmeCoreApiLib\Configuration::$basicAuthPassword = '';
 
-        $this->mundipaggApi = new MundiAPIClient($secretKey, $password);
+        $this->pagarmeCoreApiClient = new PagarmeCoreApiClient($secretKey, $password);
     }
 
     /**
@@ -57,7 +57,7 @@ class PlanService
     public function createPlanAtPagarme(Plan $plan)
     {
         $createPlanRequest = $plan->convertToSdkRequest();
-        $planController = $this->mundipaggApi->getPlans();
+        $planController = $this->pagarmeCoreApiClient->getPlans();
 
         try {
             $logService = $this->getLogService();
@@ -86,7 +86,7 @@ class PlanService
     public function updatePlanAtPagarme(Plan $plan)
     {
         $updatePlanRequest = $plan->convertToSdkRequest(true);
-        $planController = $this->mundipaggApi->getPlans();
+        $planController = $this->pagarmeCoreApiClient->getPlans();
 
         $this->updateItemsAtPagarme($plan, $planController);
         $result = $planController->updatePlan($plan->getPagarmeId(), $updatePlanRequest);
@@ -168,7 +168,7 @@ class PlanService
         }
 
         try {
-            $planController = $this->mundipaggApi->getPlans();
+            $planController = $this->pagarmeCoreApiClient->getPlans();
             $planController->deletePlan($plan->getPagarmeId());
         } catch (\Exception $exception) {
             return $exception->getMessage();
@@ -182,9 +182,9 @@ class PlanService
         return new PlanRepository();
     }
 
-    public function getMundiAPIClient($secretKey, $password)
+    public function getPagarmeCoreAPIClient($secretKey, $password)
     {
-        return new MundiAPIClient($secretKey, $password);
+        return new PagarmeCoreAPIClient($secretKey, $password);
     }
 
     public function getLogService()

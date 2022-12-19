@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates;
 
-use MundiAPILib\Models\CreateOrderItemRequest;
+use PagarmeCoreApiLib\Models\CreateOrderItemRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Payment\Interfaces\ConvertibleToSDKRequestsInterface;

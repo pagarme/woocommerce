@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates;
 
-use MundiAPILib\Models\CreateOrderRequest;
+use PagarmeCoreApiLib\Models\CreateOrderRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Payment\Aggregates\Payments\AbstractPayment;
