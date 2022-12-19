@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\ValueObjects;
 
-use MundiAPILib\Models\CreatePhonesRequest;
+use PagarmeCoreApiLib\Models\CreatePhonesRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractValueObject;
 use Pagarme\Core\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
 

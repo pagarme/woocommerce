@@ -2,8 +2,8 @@
 
 namespace Pagarme\Core\Recurrence\Aggregates;
 
-use MundiAPILib\Models\CreateCardRequest;
-use MundiAPILib\Models\CreateSubscriptionRequest;
+use PagarmeCoreApiLib\Models\CreateCardRequest;
+use PagarmeCoreApiLib\Models\CreateSubscriptionRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Aggregates\Order;
 use Pagarme\Core\Kernel\Interfaces\ChargeInterface;

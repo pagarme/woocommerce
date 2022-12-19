@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates\Payments;
 
-use MundiAPILib\Models\CreateCreditCardPaymentRequest;
+use PagarmeCoreApiLib\Models\CreateCreditCardPaymentRequest;
 use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
 use Pagarme\Core\Payment\ValueObjects\AbstractCardIdentifier;
 use Pagarme\Core\Payment\ValueObjects\CardId;

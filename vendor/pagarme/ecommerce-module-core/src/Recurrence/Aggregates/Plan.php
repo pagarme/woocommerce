@@ -2,8 +2,8 @@
 
 namespace Pagarme\Core\Recurrence\Aggregates;
 
-use MundiAPILib\Models\CreatePlanRequest;
-use MundiAPILib\Models\UpdatePlanRequest;
+use PagarmeCoreApiLib\Models\CreatePlanRequest;
+use PagarmeCoreApiLib\Models\UpdatePlanRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Recurrence\Interfaces\RecurrenceEntityInterface;
