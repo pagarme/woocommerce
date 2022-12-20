@@ -2180,6 +2180,10 @@ body .swal2-animate-x-mark {
   }
 }
 
+.btn-hub {
+    display: inline-block;
+}
+
 #botao-hub button {
   background-color: #65a300;
   border-color: rgb(101, 163, 0);
