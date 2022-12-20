@@ -36,7 +36,16 @@ class Voucher extends AbstractGateway
     {
         return [
             'voucher_soft_descriptor' => $this->field_voucher_soft_descriptor(),
-            'field_voucher_flags' => $this->field_voucher_flags(),
+            'field_voucher_flags' => $this->field_voucher_flags()
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function gateway_form_fields()
+    {
+        return [
             'voucher_card_wallet' => $this->field_voucher_card_wallet()
         ];
     }
