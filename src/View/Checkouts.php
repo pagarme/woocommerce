@@ -8,6 +8,7 @@ if (!function_exists('add_action')) {
 
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\CardInstallments;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Model\Gateway;
@@ -379,11 +380,14 @@ class Checkouts
         <?php
     }
 
+    /**
+     * @param $total
+     * @return array
+     */
     public static function render_installments($total)
     {
-        $gateway = new Gateway();
-
-        echo esc_html($gateway->get_installments_by_type($total));
+        $cardInstallments = new CardInstallments();
+        return $cardInstallments->getInstallmentsByType($total);
     }
 
     private static function get_payment_detail($charge, Charge $model_charge)

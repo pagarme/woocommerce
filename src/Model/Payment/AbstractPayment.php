@@ -13,6 +13,9 @@ namespace Woocommerce\Pagarme\Model\Payment;
 
 defined( 'ABSPATH' ) || exit;
 
+use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Customer;
+
 /**
  * Abstract AbstractPayment
  * @package Woocommerce\Pagarme\Model\Payment
@@ -96,6 +99,15 @@ abstract class AbstractPayment
     }
 
     /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getReference()
+    {
+        return sha1((string)random_int(1, 1000));
+    }
+
+    /**
      * @param $field
      * @return mixed
      * @throws \Exception
@@ -103,5 +115,25 @@ abstract class AbstractPayment
     private function error($field)
     {
         throw new \Exception(__('Invalid data for payment method: ', 'woo-pagarme-payments') . $field);
+    }
+
+    /**
+     * @param int|null $customerId
+     * @return Customer
+     */
+    public function getCustomer(?int $customerId = null)
+    {
+        if(!$customerId) {
+            $customerId = get_current_user_id();
+        }
+        return new Customer($customerId);
+    }
+
+    /**
+     * @return Config
+     */
+    public function getConfig()
+    {
+        return new Config();
     }
 }
