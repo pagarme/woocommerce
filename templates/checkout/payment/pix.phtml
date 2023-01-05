@@ -15,21 +15,20 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 
-$ref  = sha1((string)random_int(1, 1000));
 $type = $model->payment;
+$ref = $model->getPaymentInstace($type)->getReference();
 ?>
 <fieldset class="wc-credit-card-form wc-payment-form">
     <p>
-        O QR Code para seu pagamento através de PIX será gerado após a confirmação da compra. Aponte seu celular para a tela para capturar o código ou copie e cole o código em seu aplicativo de pagamentos.
+        <?= $model->getPaymentInstace($type)->getMessage() ?>
     </p>
     <label>
         <?php
         printf(
             '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
-            esc_url(Core::plugins_url('assets/images/pix.svg')),
+            $model->getPaymentInstace($type)->getImage(),
             esc_html__('Pix', 'woo-pagarme-payments')
         );
         ?>

@@ -11,15 +11,13 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
-use ReflectionClass;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Class CreditCard
  * @package Woocommerce\Pagarme\Model\Payment
  */
-class CreditCard extends AbstractPayment implements PaymentInterface
+class CreditCard extends Card implements PaymentInterface
 {
     /** @var int */
     protected $suffix = 1;

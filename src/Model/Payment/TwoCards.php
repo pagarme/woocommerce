@@ -11,8 +11,6 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
-use ReflectionClass;
-
 defined( 'ABSPATH' ) || exit;
 
 /**

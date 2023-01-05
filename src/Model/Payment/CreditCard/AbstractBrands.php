@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Abstract Brands
- * @package Woocommerce\Pagarme\Model\Payment\Voucher
+ * @package Woocommerce\Pagarme\Model\Payment\CreditCard
  */
 abstract class AbstractBrands
 {

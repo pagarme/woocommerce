@@ -18,18 +18,18 @@ if (!function_exists('add_action')) {
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 
-$ref  = sha1((string)random_int(1, 1000));
 $type = $model->payment;
+$ref = $model->getPaymentInstace($type)->getReference();
 ?>
 <fieldset class="wc-credit-card-form wc-payment-form">
     <p>
-        O Boleto bancário será exibido após a confirmação da compra e poderá ser pago em qualquer agência bancária, pelo seu smartphone ou computador através de serviços digitais de bancos.
+        <?= $model->getPaymentInstace($type)->getMessage() ?>
     </p>
     <label>
         <?php
         printf(
             '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
-            esc_url(Core::plugins_url('assets/images/barcode.svg')),
+            $model->getPaymentInstace($type)->getImage(),
             esc_html__('Boleto', 'woo-pagarme-payments')
         );
         ?>

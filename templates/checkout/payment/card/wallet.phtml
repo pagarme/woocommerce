@@ -1,0 +1,36 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Model\Payment\CreditCard|\Woocommerce\Pagarme\Model\Payment\Voucher $payment */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+
+$payment = $args['payment'];
+$cards = $payment->getCards();
+?>
+<?php if ($payment->getIsEnableWallet() && $cards) : ?>
+    <?php esc_html_e('Credit cards save', 'woo-pagarme-payments'); ?><br>
+    <select name="card_id" id="field-choose-card" data-action="select2" data-installments-type="<?php echo intval($payment->getConfig()->getCcInstallmentType()); ?>" data-element="choose-credit-card" style="font-size: 1.41575em">
+        <?php foreach ($cards as $card) : ?>
+            <?php
+                printf(
+                    '<option data-brand="%3$s" value="%2$s">(%1$s) •••• •••• •••• %4$s</option>',
+                    esc_html(strtoupper($card->getBrand()->getName())),
+                    esc_attr($card->getPagarmeId()->getValue()),
+                    esc_html(strtolower($card->getBrand()->getName())),
+                    esc_html($card->getLastFourDigits()->getValue())
+                );
+            ?>
+        <?php endforeach; ?>
+    </select>
+<?php endif; ?>

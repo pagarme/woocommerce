@@ -21,7 +21,7 @@ use Woocommerce\Pagarme\Helper\Utils;
 $installments_type = Setting::get_instance()->cc_installment_type;
 $ref               = sha1(random_int(1, 1000));
 $type              = 'card';
-$cardType          = [TransactionType::CREDIT_CARD,TransactionType::DEBIT_CARD];
+$cardType          = [TransactionType::CREDIT_CARD, TransactionType::DEBIT_CARD];
 
 ?>
 
