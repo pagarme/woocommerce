@@ -38,4 +38,4 @@ $wc_api      = get_home_url(null, '/wc-api/' . Checkout::API_REQUEST);
     var ajaxUrl = "<?= admin_url('admin-ajax.php'); ?>";
     var cartTotal = <?= WC()->cart->total ?>;
 </script>
-<script src="<?= esc_url(Core::plugins_url('assets/javascripts/front/main.js')); ?>" type="application/javascript"> </script>
+<script src="<?= esc_url(Core::plugins_url('assets/javascripts/front/main.js')); ?>" type="application/javascript"></script>

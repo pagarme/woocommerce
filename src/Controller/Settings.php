@@ -187,8 +187,8 @@ class Settings
      * Add link settings page
      *
      * @since 1.0
-     * @param Array $links
-     * @return Array
+     * @param array $links
+     * @return array
      */
     public function plugin_link($links)
     {

@@ -279,7 +279,7 @@ class Payment
 
     private function get_billing_address_from_customer($customer, $wc_order)
     {
-        $addressArray = (array) $customer->address;
+        $addressArray = isset($customer->address) ? (array) $customer->address : [];
 
         if (empty($addressArray)) {
             $addressArray = $this->get_customer_address_from_wc_order($wc_order);
