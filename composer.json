@@ -2,7 +2,7 @@
     "name": "pagarme/woocommerce-pagarme-payments",
     "description": "Pagar.me module for Woocommerce",
     "type": "wordpress-plugin",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "license": "GPL",
     "autoload": {
         "psr-4": {
