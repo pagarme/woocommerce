@@ -124,8 +124,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     {
         $this->document = $this->formatDocument($document);
 
-        if (empty($this->document)) {
-
+        if (empty($this->document) && empty($this->getPagarmeId())) {
             $inputName = $this->i18n->getDashboard('document');
             $message = $this->i18n->getDashboard(
                 "The %s should not be empty!",
@@ -228,8 +227,11 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
         $customerRequest->code = $this->getCode();
         $customerRequest->name = $this->getName();
         $customerRequest->email = $this->getEmail();
-        $customerRequest->document = $this->getDocument();
-        $customerRequest->type = $this->getTypeValue();
+        if ($this->getDocument()) {
+            $customerRequest->document = $this->getDocument();
+            $customerRequest->type = $this->getTypeValue();
+        }
+
         $customerRequest->address = $this->getAddressToSDK();
         $customerRequest->phones = $this->getPhonesToSDK();
 

@@ -21,10 +21,10 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
             'Pagarme\\Core\\Test\\Mock\\' => 23,
             'Pagarme\\Core\\Test\\' => 18,
             'Pagarme\\Core\\' => 13,
+            'PagarmeCoreApiLib\\' => 18,
         ),
         'M' => 
         array (
-            'MundiAPILib\\' => 12,
             'Monolog\\' => 8,
         ),
     );
@@ -54,9 +54,9 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         array (
             0 => __DIR__ . '/..' . '/pagarme/ecommerce-module-core/src',
         ),
-        'MundiAPILib\\' => 
+        'PagarmeCoreApiLib\\' => 
         array (
-            0 => __DIR__ . '/..' . '/mundipagg/mundiapi/src',
+            0 => __DIR__ . '/..' . '/pagarme/pagarmecoreapi/src',
         ),
         'Monolog\\' => 
         array (

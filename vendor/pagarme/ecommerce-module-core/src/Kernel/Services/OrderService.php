@@ -394,7 +394,7 @@ final class OrderService
         $order->setCode($platformOrder->getCode());
 
         $shipping = $platformOrder->getShipping();
-        if ($shipping !== null) {
+        if (!$shipping && $shipping !== null) {
             $order->setShipping($shipping);
         }
 
