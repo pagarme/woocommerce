@@ -3,9 +3,9 @@
 namespace Pagarme\Core\Test\Recurrence\Aggregates;
 
 use Mockery;
-use MundiAPILib\Models\CreateAddressRequest;
-use MundiAPILib\Models\CreateCardRequest;
-use MundiAPILib\Models\CreateSubscriptionRequest;
+use PagarmeCoreApiLib\Models\CreateAddressRequest;
+use PagarmeCoreApiLib\Models\CreateCardRequest;
+use PagarmeCoreApiLib\Models\CreateSubscriptionRequest;
 use Pagarme\Core\Kernel\Interfaces\PlatformOrderInterface;
 use Pagarme\Core\Kernel\ValueObjects\Id\ChargeId;
 use Pagarme\Core\Kernel\ValueObjects\Id\SubscriptionId;

@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates;
 
-use MundiAPILib\Models\CreateShippingRequest;
+use PagarmeCoreApiLib\Models\CreateShippingRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
 use Pagarme\Core\Payment\Traits\WithAmountTrait;

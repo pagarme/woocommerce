@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates;
 
-use MundiAPILib\Models\CreateAddressRequest;
+use PagarmeCoreApiLib\Models\CreateAddressRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Helper\StringFunctionsHelper;
 use Pagarme\Core\Kernel\Services\LocalizationService;
@@ -354,7 +354,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         $obj->country = $this->country;
         $obj->line1 = $this->getLine1();
         $obj->line2 = $this->getLine2();
-
+        
         return $obj;
     }
 

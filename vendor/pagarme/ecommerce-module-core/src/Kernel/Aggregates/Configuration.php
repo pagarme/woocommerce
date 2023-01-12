@@ -705,7 +705,7 @@ final class Configuration extends AbstractEntity
         if (!is_numeric($boletoDueDays)) {
             throw new InvalidParamException("Boleto due days should be an integer!", $boletoDueDays);
         }
-
+        
         $this->boletoDueDays = (int) $boletoDueDays;
     }
 

@@ -2,7 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates;
 
-use MundiAPILib\Models\CreateCustomerRequest;
+use PagarmeCoreApiLib\Models\CreateCustomerRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
@@ -208,7 +208,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     public function getAddressToSDK()
     {
         if ($this->getAddress() !== null) {
-            return $this->getAddress()->convertToSDKRequest();
+         return $this->getAddress()->convertToSDKRequest();
         }
         return null;
     }
@@ -216,7 +216,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     public function getPhonesToSDK()
     {
         if ($this->getPhones() !== null) {
-            return $this->getPhones()->convertToSDKRequest();
+         return $this->getPhones()->convertToSDKRequest();
         }
         return null;
     }
