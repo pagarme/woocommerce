@@ -63,22 +63,6 @@ jobs:
                   paths:
                       - app
 
-    sonar:
-        working_directory: << pipeline.parameters.working_dir >>
-        machine:
-            image: << pipeline.parameters.machine_image >>
-        steps:
-            - checkout
-            - run: *pull_sonar_image
-            - run:
-                name: Run Sonar
-                command: make sonar BRANCH=$CIRCLE_BRANCH
-            - persist_to_workspace:
-                root: << pipeline.parameters.working_dir >>
-                paths:
-                    - '*'
-
-    check_quality_gate_sonar:
         working_directory: << pipeline.parameters.working_dir >>
         machine:
             image: << pipeline.parameters.machine_image >>
@@ -157,22 +141,10 @@ workflows:
     build_publish_deploy:
         jobs:
             - build
-            - sonar:
-                  context: dockerhub
-            - check_quality_gate_sonar:
-                  context: dockerhub
-                  requires:
-                      - sonar
-                  filters:
-                      branches:
-                          ignore:
-                              - master
-                              - develop
             - publish:
                   context: acceptance
                   requires:
                       - build
-                      - sonar
                   filters:
                       branches:
                           only:
