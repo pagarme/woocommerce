@@ -18,6 +18,7 @@ if (!function_exists('add_action')) {
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Core;
 
+$cardQty = 1;
 ?>
-<?php Utils::get_template('templates/checkout/payment/card', [$model]); ?>
+<?php Utils::get_template('templates/checkout/payment/card', [$model, $cardQty]); ?>
 <script src="<?= esc_url(Core::plugins_url('assets/javascripts/front/checkout/model/payment/voucher.js')); ?>" type="application/javascript"> </script>

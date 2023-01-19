@@ -1,4 +1,5 @@
 jQuery(function ($) {
+
     let suffix = null;
     let creditCardBrand = null;
     let brandInput = null;
@@ -207,18 +208,6 @@ jQuery(function ($) {
     };
 
     $('input[name=pagarme_payment_method]').change(openPaymentMethodDetails);
-
-
-    $('input[data-element=pagarme-card-number]').on('blur', function (e) {
-        var cardNumberInput = $(e.currentTarget);
-
-        creditCardBrand = cardNumberInput.siblings("span[name^='brand-image']");
-        suffix = creditCardBrand.get(0).getAttribute('pagarme-suffix');
-
-        brandInput = cardNumberInput.siblings("input[type='hidden']");
-
-        keyEventHandlerCard(e);
-    });
 
     $('input[data-element=pagarme-voucher-card-number]').on('blur', function (e) {
         var cardNumberInput = $(e.currentTarget);

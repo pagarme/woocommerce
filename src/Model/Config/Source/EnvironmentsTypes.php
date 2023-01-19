@@ -19,17 +19,17 @@ defined( 'ABSPATH' ) || exit;
  * Class Yesno
  * @package Woocommerce\Pagarme\Model\Config\Source
  */
-class Yesno extends AbstractOptions implements OptionSourceInterface
+class EnvironmentsTypes extends AbstractOptions implements OptionSourceInterface
 {
     /** @var string */
-    const NO = 'No';
+    const PRODUCTION = 'Production';
 
     /** @var int */
-    const NO_VALUE = 0;
+    const PRODUCTION_VALUE = 'Production';
 
     /** @var string */
-    const YES = 'Yes';
+    const SANDBOX = 'Sandbox';
 
     /** @var int */
-    const YES_VALUE = 1;
+    const SANDBOX_VALUE = 'Sandbox';
 }

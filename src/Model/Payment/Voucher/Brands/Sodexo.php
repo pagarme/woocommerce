@@ -27,4 +27,7 @@ class Sodexo extends AbstractBrands implements BrandsInterface
 
     /** @var string */
     protected $name = 'Sodexo';
+
+    /** @var int[] */
+    protected $prefixes = [603389, 606071, 606069, 600818, 606070, 606068];
 }

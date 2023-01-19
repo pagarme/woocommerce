@@ -28,4 +28,9 @@ interface BrandsInterface
      * @return string
      */
     public function getName();
+
+    /**
+     * @return array
+     */
+    public function getConfigDataProvider();
 }
