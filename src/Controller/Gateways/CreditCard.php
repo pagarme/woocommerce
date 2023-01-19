@@ -36,7 +36,7 @@ class CreditCard extends AbstractGateway
     public function append_form_fields()
     {
         return [
-            'enable_credit_card'                => $this->field_enable_credit_card(),
+            'enabled' => $this->field_enabled(),
             'cc_operation_type' => $this->field_cc_operation_type(),
             'cc_soft_descriptor' => $this->field_cc_soft_descriptor(),
             'cc_flags' => $this->field_cc_flags(),
@@ -57,14 +57,15 @@ class CreditCard extends AbstractGateway
     /**
      * @return array
      */
-    public function field_enable_credit_card()
+    public function field_enabled()
     {
-        return array(
+        return [
             'title'   => __('Credit card', 'woo-pagarme-payments'),
             'type'    => 'checkbox',
             'label'   => __('Enable credit card', 'woo-pagarme-payments'),
-            'default' => 'yes',
-        );
+            'old_name'    => 'enable_credit_card',
+            'default'     => $this->config->getData('enable_credit_card') ?? 'no',
+        ];
     }
 
     /**
@@ -284,4 +285,83 @@ class CreditCard extends AbstractGateway
             ),
         );
     }
-}
+
+    public function generate_installments_by_flag_html($key, $data)
+    {
+        $field_key = $this->get_field_key($key);
+        $defaults  = array(
+            'title'             => '',
+            'disabled'          => false,
+            'class'             => '',
+            'css'               => '',
+            'placeholder'       => '',
+            'type'              => 'text',
+            'desc_tip'          => false,
+            'description'       => '',
+            'custom_attributes' => array(),
+        );
+
+        $data  = wp_parse_args($data, $defaults);
+        $value = (array) $this->get_option($key, array());
+        $flags = $this->model->settings->get_flags_list();
+
+        ob_start();
+
+        ?>
+        <style>
+            .woocommerce table.form-table p.flag input.small-input {
+                width: 150px;
+            }
+
+            th.align,
+            input.align {
+                text-align: center;
+                vertical-align: middle;
+            }
+        </style>
+        <tr valign="top">
+            <th scope="row" class="titledesc">
+                <?php echo esc_html($this->get_tooltip_html($data)); ?>
+                <label for="<?php echo esc_attr($field_key); ?>"><?php echo wp_kses_post($data['title']); ?></label>
+            </th>
+            <td class="forminp">
+                <fieldset data-field="installments-by-flag">
+                    <table class="widefat wc_input_table sortable">
+                        <thead>
+                        <tr>
+                            <th class="align"><?php _e('Card Brand', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Max number of installments', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Minimum installment amount', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Initial interest rate (%)', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Incremental interest rate (%)', 'woo-pagarme-payments'); ?></th>
+                            <th class="align"><?php _e('Number of installments<br/>without interest', 'woo-pagarme-payments'); ?></th>
+                        </tr>
+                        </thead>
+                        <tbody class="accounts ui-sortable">
+                        <?php
+                        foreach ($flags as $flag_key => $flag_name) :
+                            $interest          = isset($value['interest'][$flag_key]) ? $value['interest'][$flag_key] : '';
+                            $interest_increase = isset($value['interest_increase'][$flag_key]) ? $value['interest_increase'][$flag_key] : '';
+                            $max_installment   = isset($value['max_installment'][$flag_key]) ? $value['max_installment'][$flag_key] : 12;
+                            $installment_min_amount   = isset($value['installment_min_amount'][$flag_key]) ? $value['installment_min_amount'][$flag_key] : '';
+                            $no_interest       = isset($value['no_interest'][$flag_key]) ? $value['no_interest'][$flag_key] : 1;
+                            ?>
+                            <tr class="account ui-sortable-handle flag" data-flag="<?php echo esc_attr($flag_key); ?>">
+                                <td><input class="align" type="text" value="<?php echo esc_attr($flag_name); ?>" <?php disabled(1, true); ?> /></td>
+                                <td><input class="align" type="number" min="1" max="24" name="<?php echo esc_attr($field_key); ?>[max_installment][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_max_installment_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($max_installment); ?>" /></td>
+                                <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[installment_min_amount][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_installment_min_amount_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($installment_min_amount) ?>" /></td>
+                                <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest) ?>" /></td>
+                                <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest_increase][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_increase_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest_increase) ?>" /></td>
+                                <td><input class="align" type="number" min="1" max="<?php echo intval($no_interest); ?>" name="<?php echo esc_attr($field_key); ?>[no_interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_no_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($no_interest); ?>" /></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </td>
+        </tr>
+        <?php
+
+        return ob_get_clean();
+    }
+ }
