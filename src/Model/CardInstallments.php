@@ -26,8 +26,8 @@ if (!function_exists('add_action')) {
  */
 class CardInstallments
 {
-    /** @var Config|null */
-    private ?Config $config;
+    /** @var  */
+    private $config;
 
     /**
      * @param Config|null $config
@@ -112,6 +112,22 @@ class CardInstallments
     }
 
     /**
+     * @param array $options
+     * @return string
+     */
+    public function renderOptions(array $options)
+    {
+        $html = '';
+        if (!$options) {
+            $html .= '<option value="">...</option>';
+        }
+        foreach ($options as $option) {
+            $html .= '<option value="' . $option['value'] . '">' . $option['content'] . '</option>';
+        }
+        return $html;
+    }
+
+    /**
      * @param array $params
      * @return string
      */
@@ -139,4 +155,6 @@ class CardInstallments
         $interestIncrease = Utils::str_to_float($configByFlags['interest_increase'][$flag]);
         return $this->getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest);
     }
+
+
 }

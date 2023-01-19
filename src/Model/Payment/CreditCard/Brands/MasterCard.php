@@ -27,4 +27,7 @@ class MasterCard extends AbstractBrands implements BrandsInterface
 
     /** @var string */
     protected $name = 'MasterCard';
+
+    /** @var int[] */
+    protected $prefixes = [5, 2];
 }

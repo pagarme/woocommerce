@@ -13,6 +13,7 @@ namespace Woocommerce\Pagarme\Model;
 
 use Pagarme\Core\Hub\Services\HubIntegrationService;
 use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
 use Woocommerce\Pagarme\Model\Data\DataObject;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
@@ -179,5 +180,17 @@ class Config extends DataObject
         $installToken = $hubIntegrationService
             ->startHubIntegration($installSeed);
         return $installToken->getValue();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPublicKey()
+    {
+        $publicKey = $this->getData('production_public_key');
+        if ($this->getHubEnvironment() === EnvironmentsTypes::SANDBOX_VALUE && $this->getData('sandbox_public_key')) {
+            $publicKey = $this->getData('sandbox_public_key');
+        }
+        return $publicKey;
     }
 }

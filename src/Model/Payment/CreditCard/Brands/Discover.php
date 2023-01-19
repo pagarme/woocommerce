@@ -27,4 +27,10 @@ class Discover extends AbstractBrands implements BrandsInterface
 
     /** @var string */
     protected $name = 'Discover';
+
+    /** @var int */
+    protected $cvv = 4;
+
+    /** @var int[] */
+    protected $prefixes = [6011, 622, 64, 65];
 }

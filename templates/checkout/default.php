@@ -21,7 +21,14 @@ use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 
-$wc_api      = get_home_url(null, '/wc-api/' . Checkout::API_REQUEST);
+wp_enqueue_script('pagarme-checkout-card', Core::plugins_url('assets/javascripts/front/checkout/model/payment.js'));
+wp_localize_script(
+    'pagarme-checkout-card',
+    'wc_pagarme_checkout',
+    ['config' => $model->getConfigDataProvider()]
+);
+
+$wc_api = get_home_url(null, '/wc-api/' . Checkout::API_REQUEST);
 ?>
 <div id="wcmp-checkout-errors">
     <ul class="woocommerce-error"></ul>
@@ -38,4 +45,3 @@ $wc_api      = get_home_url(null, '/wc-api/' . Checkout::API_REQUEST);
     var ajaxUrl = "<?= admin_url('admin-ajax.php'); ?>";
     var cartTotal = <?= WC()->cart->total ?>;
 </script>
-<script src="<?= esc_url(Core::plugins_url('assets/javascripts/front/main.js')); ?>" type="application/javascript"></script>

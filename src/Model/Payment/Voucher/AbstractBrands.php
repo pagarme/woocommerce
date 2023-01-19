@@ -25,6 +25,21 @@ abstract class AbstractBrands
     /** @var string */
     protected $name = '';
 
+    /** @var int[] */
+    protected $gaps = [4, 8, 12];
+
+    /** @var int|int[] */
+    protected $size = 16;
+
+    /** @var string */
+    protected $mask = '/(\\d{1,4})/g';
+
+    /** @var int */
+    protected $cvv = 3;
+
+    /** @var int[] */
+    protected $prefixes = [];
+
     /**
      * @return string
      */
@@ -39,5 +54,21 @@ abstract class AbstractBrands
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfigDataProvider()
+    {
+        return [
+            'brand' => $this->code,
+            'brandName' => $this->name,
+            'gaps' => $this->gaps,
+            'mask' => $this->mask,
+            'size' => $this->size,
+            'cvv' => $this->cvv,
+            'prefixes' => $this->prefixes,
+        ];
     }
 }

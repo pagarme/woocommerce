@@ -27,4 +27,7 @@ class Aura extends AbstractBrands implements BrandsInterface
 
     /** @var string */
     protected $name = 'Aura';
+
+    /** @var int[] */
+    protected $prefixes = [50];
 }

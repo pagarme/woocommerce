@@ -101,7 +101,7 @@ class Settings
                             'id' => 'enabled',
                             'title' => 'Enable',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                         ],
                         [
                             'fieldObject' => Integration::class,
@@ -117,6 +117,7 @@ class Settings
                     ]
                 ],
                 [
+
                     'id' => 'tools_section',
                     'title' => 'Tools',
                     'fields' => [
@@ -125,7 +126,7 @@ class Settings
                             'id' => 'is_gateway_integration_type',
                             'title' => 'Advanced settings',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Configurations that only works for Gateway customers, who have a direct contract with an acquirer.'
                         ],
                         [
@@ -133,7 +134,7 @@ class Settings
                             'id' => 'enable_logs',
                             'title' => 'Logs',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Log Pagar.me events, you can check this log in WooCommerce>Status>Logs.'
                         ]
                     ],

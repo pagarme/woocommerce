@@ -27,4 +27,10 @@ class Diners extends AbstractBrands implements BrandsInterface
 
     /** @var string */
     protected $name = 'Diners';
+
+    /** @var int|int[] */
+    protected $size = [14, 16];
+
+    /** @var int[] */
+    protected $prefixes = [300, 301, 302, 303, 304, 305, 36, 38];
 }
