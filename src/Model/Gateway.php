@@ -293,4 +293,17 @@ class Gateway
             include_once($file);
         }
     }
+
+    /**
+     * @return array
+     */
+    public function getConfigDataProvider()
+    {
+        $jsConfigProvider = [];
+        foreach ($this->getPayments() as $class) {
+            $payment = new $class;
+            $jsConfigProvider['payment'][$payment->getMethodCode()] = $payment->getConfigDataProvider();
+        }
+        return $jsConfigProvider;
+    }
 }

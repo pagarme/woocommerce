@@ -80,7 +80,7 @@ class Settings
                             'id' => 'enabled',
                             'title' => 'Enable',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                         ],
                         [
                             'fieldObject' => Integration::class,
@@ -104,7 +104,7 @@ class Settings
                             'id' => 'enable_credit_card',
                             'title' => 'Credit card',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Enable credit card'
                         ],
                         [
@@ -112,7 +112,7 @@ class Settings
                             'id' => 'enable_billet',
                             'title' => 'Boleto',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Enable credit card'
                         ],
                         [
@@ -120,7 +120,7 @@ class Settings
                             'id' => 'enable_pix',
                             'title' => 'Pix',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Enable pix'
                         ],
                         [
@@ -128,7 +128,7 @@ class Settings
                             'id' => 'multimethods_2_cards',
                             'title' => 'Multi-means </br>(2 Credit cards)',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Enable multi-means (2 Credit cards)'
                         ],
                         [
@@ -136,7 +136,7 @@ class Settings
                             'id' => 'multimethods_billet_card',
                             'title' => 'Multi-means </br>(Boleto + Credit card)',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Enable multi-means (Boleto + Credit card)'
                         ],
                         [
@@ -144,7 +144,7 @@ class Settings
                             'id' => 'multicustomers',
                             'title' => 'Multi-buyers',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Enable multi-buyers'
                         ],
                         [
@@ -152,7 +152,7 @@ class Settings
                             'id' => 'enable_voucher',
                             'title' => 'Voucher Card',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'You need to have an exclusive contract with a voucher flag (Gateway customer only)'
                         ]
                     ],
@@ -166,7 +166,7 @@ class Settings
                             'id' => 'is_gateway_integration_type',
                             'title' => 'Advanced settings',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Configurations that only works for Gateway customers, who have a direct contract with an acquirer.'
                         ],
                         [
@@ -174,7 +174,7 @@ class Settings
                             'id' => 'enable_logs',
                             'title' => 'Logs',
                             'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::VALUE_NO,
+                            'default' => Yesno::NO_VALUE,
                             'description' => 'Log Pagar.me events, you can check this log in WooCommerce>Status>Logs.'
                         ]
                     ],

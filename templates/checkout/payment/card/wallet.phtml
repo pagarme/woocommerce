@@ -16,11 +16,12 @@ if (!function_exists('add_action')) {
 }
 
 $payment = $args['payment'];
+$ref = $args['ref'];
 $cards = $payment->getCards();
 ?>
 <?php if ($payment->getIsEnableWallet() && $cards) : ?>
     <?php esc_html_e('Credit cards save', 'woo-pagarme-payments'); ?><br>
-    <select name="card_id" id="field-choose-card" data-action="select2" data-installments-type="<?php echo intval($payment->getConfig()->getCcInstallmentType()); ?>" data-element="choose-credit-card" style="font-size: 1.41575em">
+    <select name="card-id-<?= $payment->getMethodCode() . '-' . $ref ?>" id="field-choose-card" data-action="select-card-wallet" data-installments-type="<?php echo intval($payment->getConfig()->getCcInstallmentType()); ?>" data-element="choose-credit-card" style="font-size: 1.41575em">
         <?php foreach ($cards as $card) : ?>
             <?php
                 printf(

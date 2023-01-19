@@ -11,6 +11,9 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
+use Woocommerce\Pagarme\Model\Payment\CreditCard\Brands;
+use Woocommerce\Pagarme\Model\Payment\CreditCard\BrandsInterface;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -46,4 +49,19 @@ class CreditCard extends Card implements PaymentInterface
         'brand1' => 'brand',
         'save_credit_card1' => 'save_credit_card'
     ];
+
+    /**
+     * @return array
+     */
+    public function getConfigDataProvider()
+    {
+        $jsConfigProvider = parent::getConfigDataProvider();
+        $brands = new Brands;
+        foreach ($brands->getBrands() as $class) {
+            /** @var BrandsInterface $bank */
+            $brand = new $class;
+            $jsConfigProvider['brands'][$brand->getBrandCode()] = $brand->getConfigDataProvider();
+        }
+        return $jsConfigProvider;
+    }
 }

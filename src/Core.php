@@ -23,7 +23,6 @@ class Core
     {
         add_action('init', array(__CLASS__, 'load_textdomain'));
         add_action('admin_init', array(__CLASS__, 'redirect_on_activate'));
-
         self::initialize();
         self::admin_enqueue_scripts();
         self::front_enqueue_scripts();

@@ -136,4 +136,16 @@ abstract class AbstractPayment
     {
         return new Config();
     }
+
+    /**
+     * @return array
+     */
+    public function getConfigDataProvider()
+    {
+        $jsConfigProvider = [];
+        if (is_subclass_of($this, Card::class )) {
+            $jsConfigProvider['is_card'] = true;
+        }
+        return $jsConfigProvider;
+    }
 }

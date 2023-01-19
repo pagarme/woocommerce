@@ -27,4 +27,10 @@ class HiperCard extends AbstractBrands implements BrandsInterface
 
     /** @var string */
     protected $name = 'HiperCard';
+
+    /** @var int|int[] */
+    protected $size = [13, 16, 19];
+
+    /** @var int[] */
+    protected $prefixes = [384100, 384140, 384160, 60, 606282, 637095, 637568, 637599, 637609, 637612, 637600];
 }

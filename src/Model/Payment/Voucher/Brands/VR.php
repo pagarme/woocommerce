@@ -27,4 +27,7 @@ class VR extends AbstractBrands implements BrandsInterface
 
     /** @var string */
     protected $name = 'VR';
+
+    /** @var int[] */
+    protected $prefixes = [637036, 627416, 636350, 637037];
 }

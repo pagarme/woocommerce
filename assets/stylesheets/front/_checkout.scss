@@ -112,3 +112,12 @@
 .payment_method_woo-pagarme-payments img {
 	max-height: 1.618em !important;
 }
+
+[data-pagarme-component="pagarme-checkout"] {
+    [name="brand-image"] {
+        float: right;
+        border: 0;
+        padding: 0;
+        max-height: 2em;
+    }
+}

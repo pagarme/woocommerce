@@ -27,4 +27,7 @@ class Visa extends AbstractBrands implements BrandsInterface
 
     /** @var string */
     protected $name = 'Visa';
+
+    /** @var int[] */
+    protected $prefixes = [4];
 }

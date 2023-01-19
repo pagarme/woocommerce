@@ -27,4 +27,7 @@ class Jcb extends AbstractBrands implements BrandsInterface
 
     /** @var string */
     protected $name = 'Jcb';
+
+    /** @var int[] */
+    protected $prefixes = [35, 2131, 1800];
 }
