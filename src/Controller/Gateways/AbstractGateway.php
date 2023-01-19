@@ -45,6 +45,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var string */
     protected $method = 'payment';
 
+    /**
+     * @var bool
+     */
+    protected $gatewayType = false;
+
     /** @var string */
     protected $vendor = self::PAGARME;
 
@@ -91,7 +96,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->has_fields = false;
         $this->icon = Core::plugins_url('assets/images/logo.png');
         $this->init_form_fields();
-        $this->form_fields = array_merge($this->form_fields,array_merge($this->append_form_fields(), $this->append_gateway_form_fields()));
         $this->init_settings();
         $this->enabled = $this->get_option('enabled', 'no');
         $this->title = $this->getTitle();
@@ -186,9 +190,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function init_form_fields()
     {
-        $this->form_fields = [
-            'title' => $this->field_title()
-        ];
+        $this->form_fields['title'] = $this->field_title();
+        $this->form_fields = array_merge( $this->form_fields, $this->append_form_fields(), $this->append_gateway_form_fields());
     }
 
     /**
@@ -219,6 +222,13 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     }
 
     /**
+     * @return bool
+     */
+    public function isGatewayType(){
+        return $this->gatewayType;
+    }
+
+    /**
      * @return array
      */
     public function field_title()
@@ -243,6 +253,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
                     $field = explode($paymentOptionsSlug . '_', $key)[1];
                     if ($field === 'title') {
                         $field = $this->method . '_' . $field;
+                    }
+                    if ($field === 'enabled') {
+                        $field = $this->form_fields['enabled']['old_name'] ?? 'enable_' . $this->method;
                     }
                     $this->config->setData($field, $value);
                 }

@@ -29,7 +29,7 @@ class PostFormatter
     private $orderId;
 
     /** @var Gateway */
-    private Gateway $gateway;
+    private $gateway;
 
     /**
      * @param Gateway|null $gateway

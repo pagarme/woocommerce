@@ -10,12 +10,11 @@ use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Environment
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Integration;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Select;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Section;
-use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Page\PageSettings;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Model\Setting;
 
 class Settings
 {
@@ -37,6 +36,11 @@ class Settings
 
     protected $sectionsFields = [];
 
+    /**
+     * @var array
+     */
+    private $gateways;
+
     public function __construct(
         Select $select = null,
         Config $config = null
@@ -51,9 +55,10 @@ class Settings
         }
         $this->model = new Gateway();
         $this->yesNoOptions = new Yesno();
+        add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
         add_filter(Core::plugin_basename('plugin_action_links_'), array($this, 'plugin_link'));
-        add_action( 'admin_menu', array( $this, 'settings_menu' ), 58 );
-        add_action( 'admin_init', array( $this, 'plugin_settings' ) );
+        add_action('admin_menu', array($this, 'settings_menu'), 58);
+        add_action('admin_init', array($this, 'plugin_settings'));
 
         $this->gateway_load();
         $this->select = $select;
@@ -61,6 +66,22 @@ class Settings
             $this->select = new Select();
         }
         $this->setSectionsFields();
+    }
+
+    public function admin_scripts()
+    {
+        wp_register_script('pagarme_settings', Core::plugins_url('assets/javascripts/admin/pagarme_settings.js'), array('jQuery'), false, true);
+        wp_enqueue_script('pagarme_settings');
+        wp_register_style('woocommerce_admin_styles', WC()->plugin_url() . '/assets/css/admin.css', array());
+        wp_enqueue_style('woocommerce_admin_styles');
+
+        $params = array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonces' => array(
+                'gateway_toggle' => wp_create_nonce('woocommerce-toggle-payment-gateway-enabled'),
+            )
+        );
+        wp_localize_script('pagarme_settings', 'pagarme_settings', $params);
     }
 
     private function setSectionsFields(array $value = null)
@@ -96,68 +117,7 @@ class Settings
                     ]
                 ],
                 [
-                    'id' => 'section_payment_settings',
-                    'title' => 'Payment methods',
-                    'fields' => [
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'enable_credit_card',
-                            'title' => 'Credit card',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
-                            'description' => 'Enable credit card'
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'enable_billet',
-                            'title' => 'Boleto',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
-                            'description' => 'Enable credit card'
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'enable_pix',
-                            'title' => 'Pix',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
-                            'description' => 'Enable pix'
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'multimethods_2_cards',
-                            'title' => 'Multi-means </br>(2 Credit cards)',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
-                            'description' => 'Enable multi-means (2 Credit cards)'
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'multimethods_billet_card',
-                            'title' => 'Multi-means </br>(Boleto + Credit card)',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
-                            'description' => 'Enable multi-means (Boleto + Credit card)'
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'multicustomers',
-                            'title' => 'Multi-buyers',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
-                            'description' => 'Enable multi-buyers'
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'enable_voucher',
-                            'title' => 'Voucher Card',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
-                            'description' => 'You need to have an exclusive contract with a voucher flag (Gateway customer only)'
-                        ]
-                    ],
-                ],
-                [
+
                     'id' => 'tools_section',
                     'title' => 'Tools',
                     'fields' => [
@@ -234,6 +194,7 @@ class Settings
                 $gateways[] = $class;
             }
         }
+        $this->gateways = $gateways;
         return $gateways;
     }
 
@@ -263,7 +224,8 @@ class Settings
      */
     public function settings_page() {
         $options = $this->get_option_key();
-        include dirname( __FILE__ ) . '/../View/Settings.php';
+        $pageSettings = new PageSettings($options, $this->gateways);
+        $pageSettings->includeTemplate();
     }
 
 
