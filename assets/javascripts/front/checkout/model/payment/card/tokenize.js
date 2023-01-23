@@ -8,6 +8,10 @@
         const form = $('form.checkout');
 
         var pagarme = {
+            isPagarmePayment: function () {
+                let value = $('form.checkout input[name="payment_method"]:checked').val();
+                return value.indexOf('pagarme');
+            },
             getEndpoint: function () {
                 let url = new URL(apiUrl);
                 url.searchParams.append('appId', appId);
@@ -130,7 +134,7 @@
         async function createTokenInput(response, field)
         {
             try {
-                await clearInputTokens(field);
+               let clear =  await clearInputTokens(field);
             } catch (e) {
                 showError(e.message);
             }
@@ -158,21 +162,23 @@
                     field = $(field);
                 }
                 let inputs = field.find('#' + token);
-                $.each(inputs, function () {
-                    if (!(field instanceof jQuery)) {
-                        field = $(field);
-                    }
-                    this.remove();
-                });
-                return resolve;
+                if (inputs.length) {
+                    $.each(inputs, function () {
+                        this.remove();
+                    });
+                }
+                resolve(true);
             });
         }
 
         $("form.checkout").on(
             "checkout_place_order",
             function () {
-                execute();
-                return false;
+                try {
+                    execute();
+                } catch (e) {
+                    return false;
+                }
             }
         );
     } (jQuery)
