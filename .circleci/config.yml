@@ -1,17 +1,5 @@
 version: 2.1
 
-_run:
-  pull_sonar_image: &pull_sonar_image
-    name: Pull Docker sonar-scanner image
-    command: |
-      echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
-      docker pull pagarme/sonar-scanner
-  pull_sonar_check_quality_gate_image: &pull_sonar_check_quality_gate_image
-    name: Pull Docker check-sonar-quality-gate image
-    command: |
-      echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
-      docker pull pagarme/check-sonar-quality-gate
-
 parameters:
   machine_image:
     type: string
