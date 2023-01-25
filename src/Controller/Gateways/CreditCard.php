@@ -30,17 +30,21 @@ class CreditCard extends AbstractGateway
     /** @var string */
     protected $method = 'credit-card';
 
+    public function payments_scripts()
+    {
+        wp_register_script('pagarme_payments', $this->jsUrl('pagarme_payments'), [], false, true);
+        wp_enqueue_script('pagarme_payments');
+    }
+
     /**
      * @return array
      */
     public function append_form_fields()
     {
         return [
-            'enabled' => $this->field_enabled(),
             'cc_operation_type' => $this->field_cc_operation_type(),
             'cc_soft_descriptor' => $this->field_cc_soft_descriptor(),
             'cc_flags' => $this->field_cc_flags(),
-            'cc_allow_save' => $this->field_cc_allow_save(),
             'cc_installment_type' => $this->field_cc_installment_type(),
             'cc_installments_maximum' => $this->field_cc_installment_fields('maximum'),
             'cc_installments_min_amount' => $this->field_cc_installment_fields('installment_min_amount'),
@@ -48,9 +52,19 @@ class CreditCard extends AbstractGateway
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
             'cc_installments_without_interest' => $this->field_cc_installment_fields('without_interest'),
             'cc_installments_by_flag' => $this->field_cc_installment_fields('flags'),
-            'section_antifraud'                 => $this->section_antifraud(),
-            'antifraud_enabled'                 => $this->antifraud_enabled(),
-            'antifraud_min_value'               => $this->antifraud_min_value(),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function gateway_form_fields()
+    {
+        return [
+            'cc_allow_save' => $this->field_cc_allow_save(),
+            'section_antifraud' => $this->section_antifraud(),
+            'antifraud_enabled' => $this->antifraud_enabled(),
+            'antifraud_min_value' => $this->antifraud_min_value(),
         ];
     }
 
@@ -60,7 +74,7 @@ class CreditCard extends AbstractGateway
     public function field_enabled()
     {
         return [
-            'title'   => __('Credit card', 'woo-pagarme-payments'),
+            'title'   => __('Enable/Disable', 'woocommerce'),
             'type'    => 'checkbox',
             'label'   => __('Enable credit card', 'woo-pagarme-payments'),
             'old_name'    => 'enable_credit_card',
@@ -364,4 +378,19 @@ class CreditCard extends AbstractGateway
 
         return ob_get_clean();
     }
- }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return mixed
+     */
+    public function validate_installments_by_flag_field($key, $value)
+    {
+        foreach ($value['max_installment'] as $brand => $maxInstallment) {
+            if($maxInstallment < $value['no_interest'][$brand]) {
+                $value['no_interest'][$brand] = $maxInstallment;
+            }
+        }
+        return $value;
+    }
+}

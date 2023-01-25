@@ -106,6 +106,16 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         }
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
         add_action('woocommerce_thankyou_' . $this->vendor . ' ' . $this->method_title, [$this, 'thank_you_page']);
+        add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
+    }
+
+    public function payments_scripts()
+    {
+        return ;
+    }
+    public function jsUrl($jsFileName)
+    {
+        return Core::plugins_url('assets/javascripts/admin/' . $jsFileName . '.js');
     }
 
     /**
@@ -190,6 +200,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function init_form_fields()
     {
+        $this->form_fields['enabled'] = $this->field_enabled();
         $this->form_fields['title'] = $this->field_title();
         $this->form_fields = array_merge( $this->form_fields, $this->append_form_fields(), $this->append_gateway_form_fields());
     }
@@ -226,6 +237,20 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function isGatewayType(){
         return $this->gatewayType;
+    }
+
+    /**
+     * @return array
+     */
+    public function field_enabled()
+    {
+        return [
+            'title'   => __('Enable/Disable', 'woocommerce'),
+            'type'    => 'checkbox',
+            'label'   => __('Enable', 'woo-pagarme-payments') . ' ' .
+                __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
+            'default' => $this->config->getData('enable_' . $this->method) ?? 'no',
+        ];
     }
 
     /**
