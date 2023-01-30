@@ -9,8 +9,7 @@
 
         var pagarme = {
             isPagarmePayment: function () {
-                let value = $('form.checkout input[name="payment_method"]:checked').val();
-                return value.indexOf('pagarme');
+                return $('form.checkout input[name="payment_method"]:checked').val().indexOf('pagarme');
             },
             getEndpoint: function () {
                 let url = new URL(apiUrl);
@@ -39,10 +38,10 @@
             },
         };
 
-        function execute() {
+        async function execute() {
             let el = pagarme.getCheckoutPaymentElement();
-            if (pagarme.haveCardForm(el) !== false) {
-                pagarme.getCardsForm(el).each(tokenize);
+            if (pagarme.isPagarmePayment() && pagarme.haveCardForm(el) !== false) {
+                pagarme.getCardsForm(el).each(await tokenize);
             }
         }
 
