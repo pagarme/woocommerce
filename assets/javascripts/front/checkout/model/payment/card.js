@@ -7,14 +7,68 @@
         const brandImgTarget = 'span[name="brand-image"]';
         const installmentsTarget = '[data-pagarme-component="installments"]';
         const mundiCdn = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
+        const limit = 10;
+        const tokenElement = '#pagarmetoken';
+        let canSubmit = false;
         let cardsMethods = [];
         let brands = [];
 
         let pagarme = {
+            getCheckoutPaymentElement: function () {
+                let value = $('form.checkout input[name="payment_method"]:checked').val();
+                return $('.wc_payment_method.payment_method_' + value);
+            },
+            isPagarmePayment: function () {
+                return $('form.checkout input[name="payment_method"]:checked').val().indexOf('pagarme');
+            },
             keyEventHandlerCard: function (e) {
                 loadBrand(e);
-            }
+            },
+            formHandler: function () {
+                if (pagarme.isPagarmePayment()) {
+                    let e = pagarme.getCheckoutPaymentElement();
+                    let cardsForm = e.find('fieldset[data-pagarmecheckout="card"]');
+                    return checkTokenCard(cardsForm);
+                }
+                return true;
+            },
+            hasSelectedWallet: function (el) {
+                let elWallet = $(el).find('select[data-element="choose-credit-card"]');
+                if (elWallet.length) {
+                    return elWallet.val().trim() !== '';
+                }
+                return false;
+            },
         };
+
+        function checkTokenCard(e)
+        {
+            let allResult = [];
+            e.each(async function () {
+                if (pagarme.hasSelectedWallet(this)) {
+                    allResult.push(true);
+                    return;
+                }
+                allResult.push(checkToken(this));
+            });
+            return !allResult.includes(false);
+        }
+
+        async function wait(ms = 1000) {
+            return new Promise(resolve => {
+                setTimeout(resolve, ms);
+            });
+        }
+
+        function checkToken(e, step = 0) {
+            if (!(e instanceof jQuery)) {
+                e = $(e);
+            }
+            if (e.find(tokenElement).length) {
+                return true;
+            }
+            return false;
+        }
 
         async function getCardDataContingency(cardNumber) {
             let oldPrefix = '',
@@ -220,6 +274,20 @@
             });
         };
 
+        function showError(text)
+        {
+            const message = {
+                type: 'error',
+                html: text,
+                allowOutsideClick: false
+            };
+            try {
+                swal(message);
+            } catch (e) {
+                new swal(message);
+            }
+        }
+
         $(cardNumberTarget).on('blur', function (e) {
             pagarme.keyEventHandlerCard(e);
         });
@@ -230,5 +298,35 @@
             addsMask();
         });
 
+        async function execute() {
+            let result = pagarme.formHandler(),
+                i = 1;
+            try {
+                while(!result && i <= limit) {
+                    if (i === limit) {
+                        throw "Tokenize timeout";
+                    }
+                    await wait();
+                    result = pagarme.formHandler();
+                    i++;
+                }
+                canSubmit = true;
+                $("form.checkout, form#order_review").submit();
+            } catch (er) {
+                showError(er.message);
+            }
+        }
+
+        $("form.checkout").on(
+            "checkout_place_order",
+            function (e) {
+                e.preventDefault();
+                if (pagarme.isPagarmePayment() && !canSubmit) {
+                    execute();
+                    return false;
+                }
+                return true;
+            }
+        );
     } (jQuery)
 );
