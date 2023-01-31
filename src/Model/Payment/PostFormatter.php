@@ -13,11 +13,12 @@ namespace Woocommerce\Pagarme\Model\Payment;
 
 use ReflectionClass;
 use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequest;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- *  Class Voucher
+ * Class PostFormatter
  * @package Woocommerce\Pagarme\Model\Payment
  */
 class PostFormatter
@@ -31,12 +32,16 @@ class PostFormatter
     /** @var Gateway */
     private $gateway;
 
+    /** @var PaymentRequest */
+    private $paymentRequest;
+
     /**
      * @param Gateway|null $gateway
      * @param null $paymentMethod
      * @param null $orderId
      */
     public function __construct(
+        PaymentRequest $paymentRequest = null,
         Gateway $gateway = null,
         $paymentMethod = null,
         $orderId = null
@@ -47,8 +52,12 @@ class PostFormatter
         if (!$gateway) {
             $gateway = new Gateway();
         }
+        if (!$paymentRequest) {
+            $paymentRequest = new PaymentRequest;
+        }
         $this->orderId = $orderId;
         $this->gateway = $gateway;
+        $this->paymentRequest = $paymentRequest;
     }
 
     /**
@@ -87,6 +96,14 @@ class PostFormatter
         $result = $this->renameFieldsFromFormattedPost($result, $this->getPaymentMethod());
         $result = $this->formatMulticustomerCardArray($result);
         $_POST = $result;
+    }
+
+    /**
+     * @return void
+     */
+    public function assemblePaymentRequest()
+    {
+        $_POST[PaymentRequest::PAGARME_PAYMENT_REQUEST_KEY] = $this->paymentRequest;
     }
 
     /**

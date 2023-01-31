@@ -4,14 +4,17 @@
         const script = $('[data-pagarmecheckout-app-id]');
         const appId = script.data('pagarmecheckoutAppId');
         const apiUrl = 'https://api.mundipagg.com/core/v1/tokens';
+        const token = 'pagarmetoken';
         const form = $('form.checkout');
 
         var pagarme = {
+            isPagarmePayment: function () {
+                return $('form.checkout input[name="payment_method"]:checked').val().indexOf('pagarme');
+            },
             getEndpoint: function () {
                 let url = new URL(apiUrl);
-                let params = new URLSearchParams(url.search);
-                params.append('appId', appId);
-                return url + params;
+                url.searchParams.append('appId', appId);
+                return  url.toString();
             },
             getCheckoutPaymentElement: function () {
                 let value = $('form.checkout input[name="payment_method"]:checked').val();
@@ -35,80 +38,146 @@
             },
         };
 
-        function execute() {
+        async function execute() {
             let el = pagarme.getCheckoutPaymentElement();
-            if (pagarme.haveCardForm(el) !== false) {
-                pagarme.getCardsForm(el).each(tokenize);
+            if (pagarme.isPagarmePayment() && pagarme.haveCardForm(el) !== false) {
+                pagarme.getCardsForm(el).each(await tokenize);
             }
         }
 
-        function tokenize() {
+        async function tokenize() {
             if (pagarme.hasSelectedWallet(this) === false) {
-                let endpoint = pagarme.getEndpoint();
-
-                let card = createCheckoutObj(this);
+                let endpoint = pagarme.getEndpoint(),
+                    card = createCardObject(this),
+                    field = $(this);
+                await getApiData(
+                    endpoint,
+                    card,
+                    field,
+                    function (data) {
+                        createTokenInput(data, field);
+                    },
+                    function (error) {
+                        showError('Não foi possível gerar a transação segura. Serviço indisponível.')
+                    }
+                );
             }
         }
 
-        function createCheckoutObj(fields) {
-            var obj = {},
-                i = 0,
-                length = fields.length,
-                prop, key;
-            obj['type'] = 'credit_card';
-            for (i = 0; i < length; i++) {
-                prop = fields[i].getAttribute('data-pagarmecheckout-element');
+        function createCardObject(field) {
+            let obj = {};
+            $.each($(field).find('input'), function () {
+                let prop = this.getAttribute('data-pagarmecheckout-element'),
+                    value;
+                value = this.value;
                 if (prop === 'exp_date') {
-                    var sep = fields[i].getAttribute('data-pagarmecheckout-separator') ? fields[i].getAttribute('data-pagarmecheckout-separator') : '/';
-                    var values = fields[i].value.replace(/\s/g, '').split(sep);
+                    let sep = this.getAttribute('data-pagarmecheckout-separator') ? this.getAttribute('data-pagarmecheckout-separator') : '/';
+                    let values = this.value.replace(/\s/g, '').split(sep);
                     obj['exp_month'] = values[0];
                     obj['exp_year'] = values[1];
-                } else {
-                    key = fields[i].value;
-                    if (prop == 'number') {
-                        key = key.replace(/\s/g, '');
-                    }
-                    if (prop == 'brand') {
-                        key = fields[i].getAttribute('data-pagarmecheckout-brand');
-                    }
                 }
-                obj[prop] = key;
-            }
+                if (prop === 'number') {
+                    value = this.value.replace(/\s/g, '');
+                }
+                if (prop === 'brand-input' || prop === 'exp_date') {
+                    return;
+                }
+                obj[prop] = value;
+            });
             return obj;
         }
 
-        function getApiData(url, data, success, fail) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', url);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState < 4) {
-                    return;
-                }
-                if (xhr.status == 200) {
-                    success.call(null, xhr.responseText);
-                } else {
-                    var errorObj = {};
-                    if (xhr.response) {
-                        errorObj = JSON.parse(xhr.response);
-                        errorObj.statusCode = xhr.status;
-                    } else {
-                        errorObj.statusCode = 503;
+        function getApiData(url, data, field, success, fail) {
+            return new Promise((resolve) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', url);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState < 4) {
+                        return;
                     }
-                    fail.call(null, errorObj);
-                }
+                    if (xhr.status == 200) {
+                        success.call(null, xhr.responseText, field);
+                    } else {
+                        var errorObj = {};
+                        if (xhr.response) {
+                            errorObj = JSON.parse(xhr.response);
+                            errorObj.statusCode = xhr.status;
+                        } else {
+                            errorObj.statusCode = 503;
+                        }
+                        fail.call(null, errorObj);
+                    }
+                };
+                xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+                xhr.send(JSON.stringify({
+                    card: data
+                }));
+                return xhr;
+            });
+        }
+
+        function showError(text)
+        {
+            const message = {
+                type: 'error',
+                html: text,
+                allowOutsideClick: false
             };
-            xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-            xhr.send(JSON.stringify({
-                card: data
-            }));
-            return xhr;
+            try {
+                swal(message);
+            } catch (e) {
+                new swal(message);
+            }
+        }
+
+        async function createTokenInput(response, field)
+        {
+            try {
+               let clear =  await clearInputTokens(field);
+            } catch (e) {
+                showError(e.message);
+            }
+            const objJSON = JSON.parse(response);
+            let input = $(document.createElement('input'));
+            input.attr(
+                'type', 'hidden'
+            ).attr(
+            'name', token
+            ).attr(
+                'id', token
+            ).attr(
+                'value', objJSON.id
+            );
+            if (!(field instanceof jQuery)) {
+                field = $(field);
+            }
+            $(field).append(input);
+        }
+
+        function clearInputTokens(field)
+        {
+            return new Promise((resolve) => {
+                if (!(field instanceof jQuery)) {
+                    field = $(field);
+                }
+                let inputs = field.find('#' + token);
+                if (inputs.length) {
+                    $.each(inputs, function () {
+                        this.remove();
+                    });
+                }
+                resolve(true);
+            });
         }
 
         $("form.checkout").on(
             "checkout_place_order",
             function () {
-                execute();
-                return false;
+                try {
+                    execute();
+                } catch (e) {
+                    return false;
+                }
             }
         );
     } (jQuery)

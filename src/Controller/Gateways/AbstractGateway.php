@@ -126,7 +126,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function process_payment($orderId): array
     {
         $wooOrder = $this->wooOrderRepository->getById($orderId);
-        $this->postFormatter->format($orderId);
+//        $this->postFormatter->format($orderId);
+        $this->postFormatter->assemblePaymentRequest();
         $checkout = new Checkout();
         $checkout->process_checkout_transparent($wooOrder);
         return [

@@ -39,12 +39,12 @@ $ref = $model->getPaymentInstace($type)->getReference();
                 <p class="form-row form-row-wide">
                     <label for="card-holder-name">
                         <?php esc_html_e('Card Holder Name', 'woo-pagarme-payments'); ?> <span class="required">*</span>
-                        <input id="card-holder-name" onkeydown="return /[a-z, ]/i.test(event.key)" data-element="card-holder-name" data-required="true" class="input-text" style="font-size: 1.41575em">
+                        <input id="card-holder-name" onkeydown="return /[a-z, ]/i.test(event.key)" data-element="card-holder-name" data-required="true" class="input-text" style="font-size: 1.41575em" data-pagarmecheckout-element="holder_name">
                     </label>
                 </p>
                 <p class="form-row form-row-wide">
                     <label for="card-number"><?php esc_html_e('Card number', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
-                    <input id="card-number" data-element="pagarme-card-number" class="input-text wc-credit-card-form-card-number pagarme-card-form-card-number" data-mask="0000 0000 0000 0000" placeholder="•••• •••• •••• ••••" data-required="true" style="background-image: none">
+                    <input id="card-number" data-element="pagarme-card-number" class="input-text wc-credit-card-form-card-number pagarme-card-form-card-number" data-mask="0000 0000 0000 0000" placeholder="•••• •••• •••• ••••" data-required="true" style="background-image: none" data-pagarmecheckout-element="number">
                     <input type="hidden" name="brand" data-pagarmecheckout-element="brand-input" />
                     <span name="brand-image" data-pagarmecheckout-element="brand"></span>
                 </p>
