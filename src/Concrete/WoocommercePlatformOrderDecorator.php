@@ -1012,7 +1012,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromVoucher(&$paymentData)
     {
-        $identifier = $this->formData["pagarmetoken6"];
+        $identifier = $this->formData["pagarmetoken"];
         if (!$identifier) {
             $identifier = $this->formData["card_id"];
         }

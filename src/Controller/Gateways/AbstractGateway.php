@@ -13,7 +13,7 @@ namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use WC_Payment_Gateway;
 use WC_Order;
-use Woocommerce\Pagarme\Controller\Checkout;
+use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
@@ -62,6 +62,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var Config */
     protected $config;
 
+    /** @var Checkout */
+    private $checkout;
+
     /**
      * @param Gateway|null $gateway
      * @param WooOrderRepository|null $wooOrderRepository
@@ -69,6 +72,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      * @param Config|null $config
      */
     public function __construct(
+        Checkout $checkout = null,
         Gateway $gateway = null,
         WooOrderRepository $wooOrderRepository = null,
         PostFormatter $postFormatter = null,
@@ -86,9 +90,14 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if (!$config) {
             $config = new Config();
         }
+        if (!$checkout) {
+            $checkout = new Checkout;
+        }
+
         $this->config = $config;
         $this->postFormatter = $postFormatter;
         $this->model = $gateway;
+        $this->checkout = $checkout;
         $this->wooOrderRepository = $wooOrderRepository;
         $this->id = 'woo-pagarme-payments-' . $this->method;
         $this->method_title = $this->getPaymentMethodTitle();
@@ -118,8 +127,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $wooOrder = $this->wooOrderRepository->getById($orderId);
 //        $this->postFormatter->format($orderId);
         $this->postFormatter->assemblePaymentRequest();
-        $checkout = new Checkout();
-        $checkout->process_checkout_transparent($wooOrder);
+        $this->checkout->process($wooOrder);
         return [
             'result'   => 'success',
             'redirect' => $this->get_return_url($wooOrder)

@@ -67,6 +67,7 @@ class PaymentRequest extends DataObject implements PaymentRequestInterface
         $this->shippingMethod = $shippingMethod;
         $this->shippingAddress = $shippingAddress;
         $this->billingAddress = $billingAddress;
+        $this->init();
     }
 
     /**
@@ -85,26 +86,51 @@ class PaymentRequest extends DataObject implements PaymentRequestInterface
     }
 
     /**
+     * @return array
+     */
+    private function getConstants()
+    {
+        $oClass = new \ReflectionClass($this);
+        return $oClass->getConstants();
+    }
+
+    /**
      * @param string $value
      * @return PaymentRequest
      */
-    protected function setPaymentMethod(string $value)
+    public function setPaymentMethod(string $value)
     {
         return $this->setData(self::PAYMENT_METHOD, str_replace('woo-pagarme-payments-', '', $value));
     }
 
     /**
-     * @return PaymentRequest
+     * @return string
      */
-    protected function setShippingMethod()
+    public function getPaymentMethod()
     {
-        return $this->setData(self::SHIPPING_METHOD, $this->shippingMethod->getMethods());
+        return $this->getData(self::PAYMENT_METHOD);
     }
 
     /**
      * @return PaymentRequest
      */
-    protected function setCards()
+    public function setShippingMethod()
+    {
+        return $this->setData(self::SHIPPING_METHOD, $this->shippingMethod->getMethods());
+    }
+
+    /**
+     * @return array|mixed|null
+     */
+    public function getShippingMethod()
+    {
+        return $this->getData(self::SHIPPING_METHOD);
+    }
+
+    /**
+     * @return PaymentRequest
+     */
+    public function setCards()
     {
         return $this->setData(self::CARDS, $this->cards->getCards());
     }
@@ -112,7 +138,7 @@ class PaymentRequest extends DataObject implements PaymentRequestInterface
     /**
      * @return PaymentRequest
      */
-    protected function setShippingAddress()
+    public function setShippingAddress()
     {
         return $this->setData(self::SHIPPING_ADDRESS, $this->shippingAddress);
     }
@@ -120,7 +146,7 @@ class PaymentRequest extends DataObject implements PaymentRequestInterface
     /**
      * @return PaymentRequest
      */
-    protected function setBillingAddress()
+    public function setBillingAddress()
     {
         return $this->setData(self::BILLING_ADDRESS, $this->billingAddress);
     }
