@@ -29,13 +29,14 @@ wp_localize_script(
 );
 
 $type = $model->payment;
-$ref = $model->getPaymentInstace($type)->getReference();
+$payment = $model->getPaymentInstace($type);
+$ref = $payment->getReference();
 ?>
 <?php for ($qty = 1; $qty <= $cardQty; $qty++) : ?>
     <fieldset id="pagarme-fieldset-<?= $type . '-' . $qty ?>" class="wc-credit-card-form wc-payment-form" data-pagarmecheckout-method="<?= $type ?>" data-pagarmecheckout="card" data-pagarmecheckout-card-num="<?= $qty ?>">
-        <?php Utils::get_template('templates/checkout/payment/card/wallet', ['payment' => $model->getPaymentInstace($type), 'ref' => $qty]) ?>
+        <?php Utils::get_template('templates/checkout/payment/card/wallet', ['payment' => $payment, 'ref' => $qty]) ?>
         <div class="wc-credit-card-info" data-element="fields-cc-data">
-            <div <?= Utils::get_component('pagarme-checkout'); ?> data-pagarmecheckout-app-id="<?= esc_attr($model->getPaymentInstace($type)->getConfig()->getPublicKey()); ?>">
+            <div <?= Utils::get_component('pagarme-checkout'); ?> data-pagarmecheckout-app-id="<?= esc_attr($payment->getConfig()->getPublicKey()); ?>">
                 <p class="form-row form-row-wide">
                     <label for="card-holder-name">
                         <?php esc_html_e('Card Holder Name', 'woo-pagarme-payments'); ?> <span class="required">*</span>
@@ -62,10 +63,17 @@ $ref = $model->getPaymentInstace($type)->getReference();
                     <input id="card-cvc" data-element="card-cvc" data-mask="0000" class="input-text wc-credit-card-form-card-cvc pagarme-card-form-card-cvc" maxlength="4" placeholder="CVC" data-required="true" data-pagarmecheckout-element="cvv">
                 </p>
             </div>
-            <p class="form-row form-row-wide">
-                <?php Utils::get_template('templates/checkout/payment/card/installments', ['payment' => $model->getPaymentInstace($type)]) ?>
+
+            <p class="form-row form-row-wide" style="display: <?= ($payment->getMethodCode() === 'voucher') ? 'none' : 'block' ?>">
+                <?php Utils::get_template('templates/checkout/payment/card/installments', ['payment' => $payment]) ?>
             </p>
-            <?php Utils::get_template('templates/checkout/payment/card/field-save', ['payment' => $model->getPaymentInstace($type)]); ?>
+            <p class="form-row form-row-wide" style="display: <?= ($payment->getMethodCode() === 'voucher') ? 'block' : 'none' ?>">
+                <label>
+                    <?php esc_html_e('Card Holder Document Number', 'woo-pagarme-payments'); ?> <span class="required">*</span>
+                    <input name="document-holder" class="input-text" id="document-holder">
+                </label>
+            </p>
+            <?php Utils::get_template('templates/checkout/payment/card/field-save', ['payment' => $payment]); ?>
             <?php Utils::get_template('templates/checkout/field-enable-multicustomers', compact('ref', 'type')); ?>
         </div>
     </fieldset>

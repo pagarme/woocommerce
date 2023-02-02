@@ -36,4 +36,25 @@ interface PaymentRequestInterface
 
     /** @var string */
     const PAGARME_PAYMENT_REQUEST_KEY = 'pagarme_payment_request';
+
+    /**
+     * @param string $value
+     * @return PaymentRequest
+     */
+    public function setPaymentMethod(string $value);
+
+    /**
+     * @return string
+     */
+    public function getPaymentMethod();
+
+    /**
+     * @return PaymentRequest
+     */
+    public function setShippingMethod();
+
+    /**
+     * @return array|mixed|null
+     */
+    public function getShippingMethod();
 }
