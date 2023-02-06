@@ -288,15 +288,7 @@
             }
         }
 
-        $(cardNumberTarget).on('blur', function (e) {
-            pagarme.keyEventHandlerCard(e);
-        });
 
-        $( document ).ready(function() {
-            getCardsMethods();
-            getBrands();
-            addsMask();
-        });
 
         async function execute() {
             let result = pagarme.formHandler(),
@@ -316,6 +308,16 @@
                 showError(er.message);
             }
         }
+
+        $(cardNumberTarget).on('blur', function (e) {
+            pagarme.keyEventHandlerCard(e);
+        });
+
+        $( document ).ready(function() {
+            getCardsMethods();
+            getBrands();
+            addsMask();
+        });
 
         $("form.checkout").on(
             "checkout_place_order",

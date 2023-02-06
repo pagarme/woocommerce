@@ -19,13 +19,8 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
     public function setPaymentMethod($platformOrder)
     {
         $paymentMethod = $platformOrder->getPaymentMethodPlatform();
-        if (
-            $paymentMethod === self::BOLETO_CREDIT_CARD ||
-            $paymentMethod === self::TWO_CREDIT_CARDS
-        ) {
-            $paymentMethod = self::CREDIT_CARD;
-        }
-        $this->paymentMethod = $this->{$paymentMethod}();
+        $method = 'get' . str_replace(' ', '', ucwords(str_replace('-', ' ', $paymentMethod)));
+        $this->paymentMethod = $this->{$method}();
     }
 
     public function getPaymentMethod()
@@ -33,7 +28,7 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
         return $this->paymentMethod;
     }
 
-    private function creditcard()
+    private function getCreditCard()
     {
         return self::CREDIT_CARD;
     }
@@ -42,22 +37,22 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
      * @return string
      * @uses WoocommercePlatformPaymentMethodDecorator::setPaymentMethod()
      */
-    private function billet()
+    private function getBillet()
     {
         return self::BOLETO;
     }
 
-    private function voucher()
+    private function getVoucher()
     {
         return self::VOUCHER;
     }
 
-    private function debit()
+    private function getDebit()
     {
         return self::DEBIT;
     }
 
-    private function pix()
+    private function getPix()
     {
         return self::PIX;
     }

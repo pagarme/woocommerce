@@ -104,15 +104,18 @@ class CreditCard extends AbstractGateway
      */
     public function field_cc_soft_descriptor()
     {
+        $maxLength = $this->isGatewayType() ? 22 : 13;
+
         return array(
             'title' => __('Soft descriptor', 'woo-pagarme-payments'),
             'desc_tip' => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
-            'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments'), 13),
+            'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
+                'woo-pagarme-payments'), $maxLength),
             'custom_attributes' => array(
                 'data-field' => 'soft-descriptor',
                 'data-action' => 'soft-descriptor',
                 'data-element' => 'validate',
-                'maxlength' => 13,
+                'maxlength' => $maxLength,
                 'data-error-msg' => __('This field is required.', 'woo-pagarme-payments'),
             ),
         );

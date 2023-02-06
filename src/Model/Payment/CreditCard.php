@@ -29,7 +29,7 @@ class CreditCard extends Card implements PaymentInterface
     protected $name = 'Credit Card';
 
     /** @var string */
-    protected $code = 'credit_card';
+    protected $code = 'credit-card';
 
     /** @var string[] */
     protected $requirementsData = [
