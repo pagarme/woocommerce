@@ -68,9 +68,14 @@ class Settings
         $this->setSectionsFields();
     }
 
+    public function jsUrl($jsFileName)
+    {
+        return Core::plugins_url('assets/javascripts/admin/' . $jsFileName . '.js');
+    }
+
     public function admin_scripts()
     {
-        wp_register_script('pagarme_settings', Core::plugins_url('assets/javascripts/admin/pagarme_settings.js'), array('jQuery'), false, true);
+        wp_register_script('pagarme_settings', $this->jsUrl('pagarme_settings'), array('jQuery'), false, true);
         wp_enqueue_script('pagarme_settings');
         wp_register_style('woocommerce_admin_styles', WC()->plugin_url() . '/assets/css/admin.css', array());
         wp_enqueue_style('woocommerce_admin_styles');
@@ -194,7 +199,6 @@ class Settings
                 $gateways[] = $class;
             }
         }
-        $this->gateways = $gateways;
         return $gateways;
     }
 
@@ -224,7 +228,7 @@ class Settings
      */
     public function settings_page() {
         $options = $this->get_option_key();
-        $pageSettings = new PageSettings($options, $this->gateways);
+        $pageSettings = new PageSettings($options, $this->getGateways());
         $pageSettings->includeTemplate();
     }
 

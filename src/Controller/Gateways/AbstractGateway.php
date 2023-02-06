@@ -122,6 +122,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     {
         return ;
     }
+
     public function jsUrl($jsFileName)
     {
         return Core::plugins_url('assets/javascripts/admin/' . $jsFileName . '.js');
