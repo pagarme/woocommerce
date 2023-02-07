@@ -28,12 +28,6 @@ class CreditCard extends AbstractGateway
     /** @var string */
     protected $method = \Woocommerce\Pagarme\Model\Payment\CreditCard::PAYMENT_CODE;
 
-    public function payments_scripts()
-    {
-        wp_register_script('pagarme_payments', $this->jsUrl('pagarme_payments'), [], false, true);
-        wp_enqueue_script('pagarme_payments');
-    }
-
     /**
      * @return array
      */
@@ -367,7 +361,7 @@ class CreditCard extends AbstractGateway
                                 <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[installment_min_amount][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_installment_min_amount_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($installment_min_amount) ?>" /></td>
                                 <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest) ?>" /></td>
                                 <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest_increase][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_increase_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest_increase) ?>" /></td>
-                                <td><input class="align" type="number" min="1" max="<?php echo intval($no_interest); ?>" name="<?php echo esc_attr($field_key); ?>[no_interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_no_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($no_interest); ?>" /></td>
+                                <td><input class="align" type="number" min="1" max="<?php echo intval($max_installment); ?>" name="<?php echo esc_attr($field_key); ?>[no_interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_no_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($no_interest); ?>" /></td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
