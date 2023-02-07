@@ -120,7 +120,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     public function payments_scripts()
     {
-        return ;
+        wp_register_script('pagarme_payments', $this->jsUrl('pagarme_payments'), [], false, true);
+        wp_enqueue_script('pagarme_payments');
     }
 
     public function jsUrl($jsFileName)
@@ -228,7 +229,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     private function append_gateway_form_fields()
     {
-        if ($this->isGatewayType()) {
+        if ($this->model->config->getIsGatewayIntegrationType()) {
             return $this->gateway_form_fields();
         }
         return [];
@@ -246,7 +247,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      * @return bool
      */
     public function isGatewayType(){
-        return $this->model->config->getIsGatewayIntegrationType();
+        return $this->gatewayType;
     }
 
     /**

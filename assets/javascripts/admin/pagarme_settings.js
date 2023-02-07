@@ -1,4 +1,4 @@
-/* globals jQuery, ajaxurl, woocommerce_admin_scripts */
+/* globals jquery, ajaxurl, pagarme_settings */
 (function ($) {
 
     $('.wc_gateways').on(
@@ -11,7 +11,7 @@
 
             var data = {
                 action: 'woocommerce_toggle_gateway_enabled',
-                security: woocommerce_admin_scripts.nonces.gateway_toggle,
+                security: pagarme_settings.nonces.gateway_toggle,
                 gateway_id: $row.data('gateway_id'),
             };
 

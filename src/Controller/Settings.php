@@ -75,7 +75,7 @@ class Settings
 
     public function admin_scripts()
     {
-        wp_register_script('pagarme_settings', $this->jsUrl('pagarme_settings'), array('jQuery'), false, true);
+        wp_register_script('pagarme_settings', $this->jsUrl('pagarme_settings'), array('jquery'), false, true);
         wp_enqueue_script('pagarme_settings');
         wp_register_style('woocommerce_admin_styles', WC()->plugin_url() . '/assets/css/admin.css', array());
         wp_enqueue_style('woocommerce_admin_styles');
