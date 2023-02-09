@@ -24,7 +24,7 @@ if (!function_exists('add_action')) {
 class Pix extends AbstractGateway
 {
     /** @var string */
-    protected $method = 'pix';
+    protected $method = \Woocommerce\Pagarme\Model\Payment\Pix::PAYMENT_CODE;
 
     /**
      * @return array

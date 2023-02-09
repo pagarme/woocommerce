@@ -27,7 +27,7 @@ if (!function_exists('add_action')) {
 class Billet extends AbstractGateway
 {
     /** @var string */
-    protected $method = 'billet';
+    protected $method = \Woocommerce\Pagarme\Model\Payment\Billet::PAYMENT_CODE;
 
     /**
      * @return array
