@@ -11,6 +11,8 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
+use Pagarme\Core\Payment\Aggregates\SavedCard;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -19,6 +21,9 @@ defined( 'ABSPATH' ) || exit;
  */
 class TwoCards extends AbstractPayment implements PaymentInterface
 {
+    /** @var string */
+    const PAYMENT_CODE = '2_cards';
+
     /** @var int */
     protected $suffix = 2;
 
@@ -26,7 +31,7 @@ class TwoCards extends AbstractPayment implements PaymentInterface
     protected $name = '2 Cards';
 
     /** @var string */
-    protected $code = '2_cards';
+    protected $code = self::PAYMENT_CODE;
 
     /** @var string[] */
     protected $requirementsData = [
@@ -60,4 +65,20 @@ class TwoCards extends AbstractPayment implements PaymentInterface
         'save_credit_card2' => 'save_credit_card',
         'save_credit_card3' => 'save_credit_card2'
     ];
+
+    /**
+     * @return SavedCard[]|null
+     */
+    public function getCards()
+    {
+        return $this->getCustomer()->get_cards();
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEnableWallet()
+    {
+        return (bool) $this->getConfig()->{'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $this->code)))  . 'Wallet'}();
+    }
 }

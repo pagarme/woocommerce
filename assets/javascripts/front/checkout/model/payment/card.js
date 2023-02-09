@@ -201,12 +201,6 @@
             $('.pagarme-card-form-card-number').mask('0000 0000 0000 0000');
             $('.pagarme-card-form-card-expiry').mask('00 / 00');
             $('.pagarme-card-form-card-cvc').mask('0000');
-            $('#card-order-value').mask('#.##0,00', {
-                reverse: true
-            });
-            $('#card-order-value2').mask('#.##0,00', {
-                reverse: true
-            });
             $('#billet-value').mask('#.##0,00', {
                 reverse: true
             });
@@ -288,16 +282,6 @@
             }
         }
 
-        $(cardNumberTarget).on('blur', function (e) {
-            pagarme.keyEventHandlerCard(e);
-        });
-
-        $( document ).ready(function() {
-            getCardsMethods();
-            getBrands();
-            addsMask();
-        });
-
         async function execute() {
             let result = pagarme.formHandler(),
                 i = 1;
@@ -313,9 +297,23 @@
                 canSubmit = true;
                 $("form.checkout, form#order_review").submit();
             } catch (er) {
-                showError(er.message);
+                if (typeof er === 'string') {
+                    showError(er);
+                } else {
+                    showError(er.message);
+                }
             }
         }
+
+        $(cardNumberTarget).on('blur', function (e) {
+            pagarme.keyEventHandlerCard(e);
+        });
+
+        $( document ).ready(function() {
+            getCardsMethods();
+            getBrands();
+            addsMask();
+        });
 
         $("form.checkout").on(
             "checkout_place_order",
