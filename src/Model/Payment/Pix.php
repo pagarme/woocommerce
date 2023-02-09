@@ -22,6 +22,9 @@ defined( 'ABSPATH' ) || exit;
  */
 class Pix extends AbstractPayment implements PaymentInterface
 {
+    /** @var string */
+    const PAYMENT_CODE = 'pix';
+
     /** @var int */
     protected $suffix = 7;
 
@@ -29,7 +32,7 @@ class Pix extends AbstractPayment implements PaymentInterface
     protected $name = 'Pix';
 
     /** @var string */
-    protected $code = 'pix';
+    protected $code = self::PAYMENT_CODE;
 
     /** @var string[] */
     protected $requirementsData = [

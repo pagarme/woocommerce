@@ -191,7 +191,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function getPaymentMethodTitle()
     {
-        return __(ucwords(str_replace('-', ' ', $this->method)), 'woo-pagarme-payments');
+        return __(ucwords(str_replace('-', ' ', str_replace('_', ' ', $this->method))), 'woo-pagarme-payments');
     }
 
     /**

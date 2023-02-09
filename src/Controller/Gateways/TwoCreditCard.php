@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
-use Woocommerce\Pagarme\Model\Payment\Voucher\Brands;
-use Woocommerce\Pagarme\Model\Payment\Voucher\BrandsInterface;
+use Woocommerce\Pagarme\Model\Payment\TwoCards;
 
 defined('ABSPATH') || exit;
 
@@ -21,34 +20,11 @@ if (!function_exists('add_action')) {
 }
 
 /**
- * Class Voucher
+ * Class TwoCreditCard
  * @package Woocommerce\Pagarme\Controller\Gateways
  */
 class TwoCreditCard extends AbstractGateway
 {
     /** @var string */
-    protected $method = 'two-credit-card';
-
-    /**
-     * @return array
-     */
-    public function append_form_fields()
-    {
-        return [
-            'multimethods_2_cards' => $this->field_multimethods_2_cards(),
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function field_multimethods_2_cards()
-    {
-        return array(
-            'title' => __('Multi-means </br>(2 Credit cards)', 'woo-pagarme-payments'),
-            'type' => 'checkbox',
-            'label' => __('Enable multi-means (2 Credit cards)', 'woo-pagarme-payments'),
-            'default' => 'no',
-        );
-    }
+    protected $method = TwoCards::PAYMENT_CODE;
 }

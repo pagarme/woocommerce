@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Model\Payment\CreditCard\Brands;
-use Woocommerce\Pagarme\Model\Payment\CreditCard\BrandsInterface;
 
 defined('ABSPATH') || exit;
 
@@ -22,13 +20,13 @@ if (!function_exists('add_action')) {
 }
 
 /**
- * Class Voucher
+ * Class CreditCard
  * @package Woocommerce\Pagarme\Controller\Gateways
  */
 class CreditCard extends AbstractGateway
 {
     /** @var string */
-    protected $method = 'credit-card';
+    protected $method = \Woocommerce\Pagarme\Model\Payment\CreditCard::PAYMENT_CODE;
 
     /**
      * @return array

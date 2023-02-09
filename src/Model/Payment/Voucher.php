@@ -22,6 +22,9 @@ defined( 'ABSPATH' ) || exit;
  */
 class Voucher extends Card implements PaymentInterface
 {
+    /** @var string */
+    const PAYMENT_CODE = 'voucher';
+
     /** @var int */
     protected $suffix = 6;
 
@@ -29,7 +32,7 @@ class Voucher extends Card implements PaymentInterface
     protected $name = 'Voucher';
 
     /** @var string */
-    protected $code = 'voucher';
+    protected $code = self::PAYMENT_CODE;
 
     /** @var string[] */
     protected $requirementsData = [

@@ -21,6 +21,9 @@ defined( 'ABSPATH' ) || exit;
  */
 class BilletCard extends AbstractPayment implements PaymentInterface
 {
+    /** @var string */
+    const PAYMENT_CODE = 'billet-and-card';
+
     /** @var int */
     protected $suffix = 4;
 
@@ -28,7 +31,7 @@ class BilletCard extends AbstractPayment implements PaymentInterface
     protected $name = 'Billet and Card';
 
     /** @var string */
-    protected $code = 'billet-and-card';
+    protected $code = self::PAYMENT_CODE;
 
     /** @var string[] */
     protected $requirementsData = [

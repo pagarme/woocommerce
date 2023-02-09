@@ -27,7 +27,7 @@ if (!function_exists('add_action')) {
 class Voucher extends AbstractGateway
 {
     /** @var string */
-    protected $method = 'voucher';
+    protected $method = \Woocommerce\Pagarme\Model\Payment\Voucher::PAYMENT_CODE;
 
     /**
      * @return array
