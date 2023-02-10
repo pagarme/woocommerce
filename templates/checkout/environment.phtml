@@ -7,11 +7,11 @@
  * @link        https://pagar.me
  */
 
-/** @var \Woocommerce\Pagarme\Model\Gateway $model */
+/** @var \Woocommerce\Pagarme\Block\Checkout\Environment $this */
 
 declare( strict_types=1 );
 ?>
-<?php if ($model->is_sandbox_mode()) : ?>
+<?php if ($this->getConfig()->getIsSandboxMode()) : ?>
     <div class="pagarme-message-warning">
         <span>
             <?= __('Important! This store is in the testing phase. Orders placed in this environment will not be carried out.', 'woo-pagarme-payments'); ?>

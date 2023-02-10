@@ -7,32 +7,35 @@
  * @link        https://pagar.me
  */
 
-/** @var \Woocommerce\Pagarme\Model\Gateway $model */
+/** @var \Woocommerce\Pagarme\Block\Checkout\Payment\Pix $this */
 
 declare( strict_types=1 );
 
 if (!function_exists('add_action')) {
     exit(0);
 }
-
-use Woocommerce\Pagarme\Helper\Utils;
-
-$type = $model->payment;
-$ref = $model->getPaymentInstace($type)->getReference();
 ?>
 <fieldset class="wc-credit-card-form wc-payment-form">
     <p>
-        <?= $model->getPaymentInstace($type)->getMessage() ?>
+        <?= $this->getPaymentInstance()->getMessage() ?>
     </p>
     <label>
         <?php
         printf(
             '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
-            $model->getPaymentInstace($type)->getImage(),
+            $this->getPaymentInstance()->getImage(),
             esc_html__('Pix', 'woo-pagarme-payments')
         );
         ?>
     </label>
-    <?php Utils::get_template('templates/checkout/field-enable-multicustomers', compact('ref', 'type')); ?>
 </fieldset>
-<?php Utils::get_template('templates/checkout/multicustomers-form', compact('ref', 'type')); ?>
+<?= $this->createBlock(
+    '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
+    'pagarme.checkout.field.multicustomers',
+    ['payment_instance' => $this->getPaymentInstance()]
+)->toHtml() ?>
+<?= $this->createBlock(
+    '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
+    'pagarme.checkout.form.multicustomers',
+    ['payment_instance' => $this->getPaymentInstance()]
+)->toHtml() ?>

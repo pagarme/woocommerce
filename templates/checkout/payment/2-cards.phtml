@@ -7,18 +7,20 @@
  * @link        https://pagar.me
  */
 
-/** @var \Woocommerce\Pagarme\Model\Gateway $model */
+/** @var \Woocommerce\Pagarme\Block\Checkout\Payment\TwoCards $this */
 
 declare( strict_types=1 );
 
 if (!function_exists('add_action')) {
     exit(0);
 }
-
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Core;
-
-$cardQty = 2;
 ?>
-<?php Utils::get_template('templates/checkout/payment/card', [$model, $cardQty]); ?>
-<script src="<?= esc_url(Core::plugins_url('assets/javascripts/front/checkout/model/payment/two-cards.js')); ?>" type="application/javascript"> </script>
+<?= $this->createBlock(
+    '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
+    'pagarme.checkout.form.card',
+    [
+        'payment_instance' => $this->getPaymentInstance(),
+        'qty_cards' => $this->getQtyCards()
+    ]
+)->toHtml() ?>
+<script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/payment/two-cards.js')); ?>" type="application/javascript"></script>
