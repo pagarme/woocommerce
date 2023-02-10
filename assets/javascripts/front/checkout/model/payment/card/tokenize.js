@@ -5,6 +5,9 @@
         const appId = script.data('pagarmecheckoutAppId');
         const apiUrl = 'https://api.mundipagg.com/core/v1/tokens';
         const token = 'pagarmetoken';
+        const paymentMethodTarget = 'data-pagarmecheckout-method';
+        const sequenceTarget = 'data-pagarmecheckout-card-num';
+        const tokenElementTarget = 'data-pagarmecheckout-element';
         const form = $('form.checkout');
 
         var pagarme = {
@@ -68,6 +71,7 @@
             let obj = {};
             $.each($(field).find('input'), function () {
                 let prop = this.getAttribute('data-pagarmecheckout-element'),
+                    ignore = ['brand-input', 'exp_date', 'card-order-value', null],
                     value;
                 value = this.value;
                 if (prop === 'exp_date') {
@@ -79,7 +83,7 @@
                 if (prop === 'number') {
                     value = this.value.replace(/\s/g, '');
                 }
-                if (prop === 'brand-input' || prop === 'exp_date') {
+                if (ignore.includes(prop)) {
                     return;
                 }
                 obj[prop] = value;
@@ -139,19 +143,21 @@
             }
             const objJSON = JSON.parse(response);
             let input = $(document.createElement('input'));
-            input.attr(
-                'type', 'hidden'
-            ).attr(
-            'name', token
-            ).attr(
-                'id', token
-            ).attr(
-                'value', objJSON.id
-            );
             if (!(field instanceof jQuery)) {
                 field = $(field);
             }
-            $(field).append(input);
+            input.attr(
+                'type', 'hidden'
+            ).attr(
+            'name', token + '-' + field.attr(paymentMethodTarget) + '-' + field.attr(sequenceTarget)
+            ).attr(
+                'id', token + '-' + field.attr(paymentMethodTarget) + '-' + field.attr(sequenceTarget)
+            ).attr(
+                'value', objJSON.id
+            ).attr(
+                tokenElementTarget, token
+            );
+            field.append(input);
         }
 
         function clearInputTokens(field)
@@ -160,7 +166,7 @@
                 if (!(field instanceof jQuery)) {
                     field = $(field);
                 }
-                let inputs = field.find('#' + token);
+                let inputs = field.find('[' + tokenElementTarget + '=' + token + ']');
                 if (inputs.length) {
                     $.each(inputs, function () {
                         this.remove();

@@ -38,7 +38,7 @@ $wc_api = get_home_url(null, '/wc-api/' . Checkout::API_REQUEST);
     array('model' => $model)
 ); ?>
 <?php Utils::get_template(
-    'templates/checkout/payment/' . $model->payment,
+    'templates/checkout/payment/' . str_replace('_', '-', $model->payment),
     array('model' => $model)
 ); ?>
 <script type="application/javascript">

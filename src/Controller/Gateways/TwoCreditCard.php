@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
-use Woocommerce\Pagarme\Model\Payment\Voucher\Brands;
-use Woocommerce\Pagarme\Model\Payment\Voucher\BrandsInterface;
+use Woocommerce\Pagarme\Model\Payment\TwoCards;
 
 defined('ABSPATH') || exit;
 
@@ -21,13 +20,13 @@ if (!function_exists('add_action')) {
 }
 
 /**
- * Class Voucher
+ * Class TwoCreditCard
  * @package Woocommerce\Pagarme\Controller\Gateways
  */
 class TwoCreditCard extends AbstractGateway
 {
     /** @var string */
-    protected $method = 'two-credit-card';
+    protected $method = TwoCards::PAYMENT_CODE;
 
     /**
      * @return array
@@ -42,5 +41,4 @@ class TwoCreditCard extends AbstractGateway
             'default'     => $this->config->getData('multimethods_2_cards') ?? 'no',
         ];
     }
-
 }
