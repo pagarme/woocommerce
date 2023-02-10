@@ -45,11 +45,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var string */
     protected $method = 'payment';
 
-    /**
-     * @var bool
-     */
-    protected $gatewayType = false;
-
     /** @var string */
     protected $vendor = self::PAGARME;
 
@@ -120,8 +115,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     public function payments_scripts()
     {
-        return ;
+        wp_register_script('pagarme_payments', $this->jsUrl('pagarme_payments'), [], false, true);
+        wp_enqueue_script('pagarme_payments');
     }
+
     public function jsUrl($jsFileName)
     {
         return Core::plugins_url('assets/javascripts/admin/' . $jsFileName . '.js');
