@@ -61,4 +61,9 @@ class Pix extends AbstractGateway
             'type'        => 'pix_additional_data',
         ];
     }
+
+    public function validate_pix_additional_data_field($key, $value)
+    {
+        return $value;
+    }
 }

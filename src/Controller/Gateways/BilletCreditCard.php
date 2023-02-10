@@ -31,23 +31,14 @@ class BilletCreditCard extends AbstractGateway
     /**
      * @return array
      */
-    public function append_form_fields()
-    {
-        return [
-            'multimethods_billet_card' => $this->field_multimethods_billet_card(),
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function field_multimethods_billet_card()
+    public function field_enabled()
     {
         return array(
-            'title'   => __('Multi-means </br>(Boleto + Credit card)', 'woo-pagarme-payments'),
+            'title'   => __('Enable/Disable', 'woocommerce'),
             'type'    => 'checkbox',
             'label'   => __('Enable multi-means (Boleto + Credit card)', 'woo-pagarme-payments'),
-            'default' => 'no',
+            'old_name'    => 'multimethods_billet_card',
+            'default'     => $this->config->getData('multimethods_billet_card') ?? 'no',
             'custom_attributes' => array(
                 'data-action'  => 'enable-multimethods-billet-card',
                 'data-requires-field' => 'billet-bank',
