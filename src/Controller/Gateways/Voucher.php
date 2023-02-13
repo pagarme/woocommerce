@@ -55,15 +55,17 @@ class Voucher extends AbstractGateway
      */
     public function field_voucher_soft_descriptor()
     {
+        $maxLength = $this->isGatewayType() ? 22 : 13;
         return [
             'title' => __('Soft descriptor', 'woo-pagarme-payments'),
             'desc_tip' => __('Description that appears on the voucher bill.', 'woo-pagarme-payments'),
-            'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.", 'woo-pagarme-payments'), 13),
+            'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
+                'woo-pagarme-payments'), $maxLength),
             'custom_attributes' => [
                 'data-field' => 'voucher-soft-descriptor',
                 'data-action' => 'voucher-soft-descriptor',
                 'data-element' => 'validate',
-                'maxlength' => 22,
+                'maxlength' => $maxLength,
                 'data-error-msg' => __('This field is required.', 'woo-pagarme-payments')
             ]
         ];

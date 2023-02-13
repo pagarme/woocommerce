@@ -1,0 +1,24 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Model\Gateway $model */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Core;
+
+$cardQty = 1;
+?>
+<?php Utils::get_template('templates/checkout/payment/card', [$model, $cardQty]); ?>
+<script src="<?= esc_url(Core::plugins_url('assets/javascripts/front/checkout/model/payment/voucher.js')); ?>" type="application/javascript"> </script>
