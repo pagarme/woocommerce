@@ -1,4 +1,13 @@
 <?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Controller;
 
@@ -16,6 +25,10 @@ use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
 
+/**
+ * Abstract Settings
+ * @package Woocommerce\Pagarme\Controller
+ */
 class Settings
 {
 
@@ -118,7 +131,14 @@ class Settings
                             'id' => 'hub_environment',
                             'title' => 'Integration environment',
                             'default' => 'Develop',
-                        ]
+                        ],
+                        [
+                            'fieldObject' => Select::class,
+                            'id' => 'multicustomers',
+                            'title' => 'Multi-buyers',
+                            'options' => $this->yesNoOptions->toOptionArray(),
+                            'default' => Yesno::NO_VALUE,
+                        ],
                     ]
                 ],
                 [

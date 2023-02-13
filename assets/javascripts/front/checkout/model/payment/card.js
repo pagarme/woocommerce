@@ -8,7 +8,7 @@
         const installmentsTarget = '[data-pagarme-component="installments"]';
         const mundiCdn = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
         const limit = 10;
-        const tokenElement = '#pagarmetoken';
+        const tokenElement = '[data-pagarmecheckout-element="pagarmetoken"]';
         let canSubmit = false;
         let cardsMethods = [];
         let brands = [];
@@ -298,6 +298,7 @@
             try {
                 while(!result && i <= limit) {
                     if (i === limit) {
+                        removeLoader(pagarme.getCheckoutPaymentElement());
                         throw "Tokenize timeout";
                     }
                     await wait();
@@ -320,6 +321,7 @@
             function (e) {
                 e.preventDefault();
                 if (pagarme.isPagarmePayment() && !canSubmit) {
+                    showLoader(pagarme.getCheckoutPaymentElement());
                     execute();
                     return false;
                 }

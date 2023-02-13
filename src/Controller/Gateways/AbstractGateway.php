@@ -20,6 +20,7 @@ use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Payment\PostFormatter;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
+use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -60,6 +61,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var Checkout */
     private $checkout;
 
+    /** @var GatewayBlock */
+    private $gatewayBlock;
+
     /**
      * @param Gateway|null $gateway
      * @param WooOrderRepository|null $wooOrderRepository
@@ -71,7 +75,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         Gateway $gateway = null,
         WooOrderRepository $wooOrderRepository = null,
         PostFormatter $postFormatter = null,
-        Config $config = null
+        Config $config = null,
+        GatewayBlock $gatewayBlock = null
     ) {
         if (!$gateway) {
             $gateway = new Gateway();
@@ -88,7 +93,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if (!$checkout) {
             $checkout = new Checkout;
         }
-
+        if (!$gatewayBlock) {
+            $gatewayBlock = new GatewayBlock;
+        }
+        $this->gatewayBlock = $gatewayBlock;
         $this->config = $config;
         $this->postFormatter = $postFormatter;
         $this->model = $gateway;
@@ -143,14 +151,12 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /**
      * @return void
+     * @throws \Exception
      */
     public function payment_fields()
     {
         $this->model->payment = $this->method;
-        echo (Utils::get_template_as_string(
-            'templates/checkout/default',
-            ['model' => $this->model]
-        ));
+        echo $this->gatewayBlock->setPaymentInstance($this->model->getPaymentInstace($this->method))->toHtml();
     }
 
     /**
