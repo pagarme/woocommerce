@@ -7,7 +7,7 @@
  * @link        https://pagar.me
  */
 
-/** @var \Woocommerce\Pagarme\Block\Checkout\Payment\Billet $this */
+/** @var \Woocommerce\Pagarme\Block\Checkout\Payment\BilletAndCard $this */
 
 declare( strict_types=1 );
 
@@ -37,3 +37,4 @@ if (!function_exists('add_action')) {
     'pagarme.checkout.form.multicustomers',
     ['payment_instance' => $this->getPaymentInstance()]
 )->toHtml() ?>
+<script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/payment/billet-and-cards.js')); ?>" type="application/javascript"></script>
