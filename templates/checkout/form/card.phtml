@@ -101,22 +101,25 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
                 ]
             )->toHtml() ?>
         </div>
+        <?php if ($this->showMulticustomersForm()) : ?>
+            <?= $this->createBlock(
+                '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
+                'pagarme.checkout.field.multicustomers',
+                [
+                    'payment_instance' => $this->getPaymentInstance(),
+                    'sequence' => $qty
+                ]
+            )->toHtml() ?>
+            <?= $this->createBlock(
+                '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
+                'pagarme.checkout.form.multicustomers',
+                [
+                    'payment_instance' => $this->getPaymentInstance(),
+                    'sequence' => $qty
+                ]
+            )->toHtml() ?>
+        <?php endif; ?>
     </fieldset>
 <?php endfor; ?>
-<?php if ($this->showMulticustomersForm()) : ?>
-    <?= $this->createBlock(
-        '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
-        'pagarme.checkout.field.multicustomers',
-        [
-            'payment_instance' => $this->getPaymentInstance(),
-            'sequence' => $qty
-        ]
-    )->toHtml() ?>
-    <?= $this->createBlock(
-        '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
-        'pagarme.checkout.form.multicustomers',
-        ['payment_instance' => $this->getPaymentInstance()]
-    )->toHtml() ?>
-<?php endif; ?>
 <script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/payment/card/tokenize.js')); ?>" type="application/javascript"> </script>
 <script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/payment/card.js')); ?>" type="application/javascript"> </script>

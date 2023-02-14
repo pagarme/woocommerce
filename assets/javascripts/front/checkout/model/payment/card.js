@@ -8,7 +8,7 @@
         const installmentsTarget = '[data-pagarme-component="installments"]';
         const mundiCdn = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
         const limit = 10;
-        const tokenElement = '[data-pagarmecheckout-element="pagarmetoken"]';
+        const tokenElement = '[data-pagarmecheckout-element="token"]';
         let canSubmit = false;
         let cardsMethods = [];
         let brands = [];

@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Class Card
- * @package Woocommerce\Pagarme\Block\Checkout
+ * @package Woocommerce\Pagarme\Block\Checkout\Form
  */
 class Card extends Gateway
 {
@@ -111,11 +111,4 @@ class Card extends Gateway
         return Utils::get_component('pagarme-checkout');
     }
 
-    /**
-     * @return array|mixed|true
-     */
-    public function showMulticustomersForm()
-    {
-        return $this->getData('show_multicustomers_form') ?? true;
-    }
 }

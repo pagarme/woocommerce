@@ -15,25 +15,23 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 ?>
-<fieldset class="wc-credit-card-form wc-payment-form">
-
-</fieldset>
+<?= $this->createBlock(
+    '\Woocommerce\Pagarme\Block\Checkout\Form\Billet',
+    'pagarme.checkout.form.billet',
+    [
+        'payment_instance' => $this->getPaymentInstance(),
+        'show_order_value' => true,
+        'show_multicustomers_form' => true,
+        'multicustomers_sequence' => 1
+    ]
+)->toHtml() ?>
 <?= $this->createBlock(
     '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
     'pagarme.checkout.form.card',
     [
         'payment_instance' => $this->getPaymentInstance(),
         'qty_cards' => $this->getQtyCards(),
-        'show_multicustomers_form' => false
+        'show_multicustomers_form' => true,
+        'multicustomers_sequence' => 2
     ]
-)->toHtml() ?>
-<?= $this->createBlock(
-    '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
-    'pagarme.checkout.field.multicustomers',
-    ['payment_instance' => $this->getPaymentInstance()]
-)->toHtml() ?>
-<?= $this->createBlock(
-    '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
-    'pagarme.checkout.form.multicustomers',
-    ['payment_instance' => $this->getPaymentInstance()]
 )->toHtml() ?>

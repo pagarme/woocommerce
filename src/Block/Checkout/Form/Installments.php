@@ -20,8 +20,8 @@ global $woocommerce;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Card
- * @package Woocommerce\Pagarme\Block\Checkout
+ * Class Installments
+ * @package Woocommerce\Pagarme\Block\Checkout\Form
  */
 class Installments extends Gateway
 {
@@ -59,7 +59,7 @@ class Installments extends Gateway
      */
     public function getElementId(string $id)
     {
-        $id = '[cards][installments][' . $this->getSequence() . '][' . $id . ']';
+        $id = '[cards][' . $this->getSequence() . '][' . $id . ']';
         return parent::getElementId($id);
     }
 
