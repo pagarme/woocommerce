@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment\Data;
 
-use Woocommerce\Pagarme\Model\Data\DataObject;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
 defined( 'ABSPATH' ) || exit;
@@ -20,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  * Class PaymentRequest
  * @package Woocommerce\Pagarme\Model\Payment\Data
  */
-class PaymentRequest extends DataObject implements PaymentRequestInterface
+class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
 {
     /** @var ShippingMethod */
     private $shippingMethod;
@@ -61,7 +60,7 @@ class PaymentRequest extends DataObject implements PaymentRequestInterface
             $shippingAddress = new ShippingAddress;
         }
         if (!$billingAddress) {
-            $billingAddress = new BillingAddress();
+            $billingAddress = new BillingAddress;
         }
         $this->cards = $cards;
         $this->shippingMethod = $shippingMethod;
@@ -149,15 +148,5 @@ class PaymentRequest extends DataObject implements PaymentRequestInterface
     public function setBillingAddress()
     {
         return $this->setData(self::BILLING_ADDRESS, $this->billingAddress);
-    }
-
-    /**
-     * @param string $value
-     * @param string $type
-     * @return string
-     */
-    private function getMethod(string $value, string $type = 'set')
-    {
-        return $type . str_replace(' ', '', ucwords(str_replace('_', ' ', $value)));
     }
 }

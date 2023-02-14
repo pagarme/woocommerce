@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Class Wallet
- * @package Woocommerce\Pagarme\Block\Checkout
+ * @package Woocommerce\Pagarme\Block\Checkout\Form
  */
 class Wallet extends Gateway
 {
@@ -74,7 +74,7 @@ class Wallet extends Gateway
      */
     public function getElementId(string $id)
     {
-        $id = '[cards][' . $this->getSequence() . '][wallet][' . $id . ']';
+        $id = '[cards][' . $this->getSequence() . '][' . $id . ']';
         return parent::getElementId($id);
     }
 }

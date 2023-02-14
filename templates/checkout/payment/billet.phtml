@@ -15,27 +15,12 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 ?>
-<fieldset class="wc-credit-card-form wc-payment-form">
-    <p>
-        <?= $this->getPaymentInstance()->getMessage() ?>
-    </p>
-    <label>
-        <?php
-        printf(
-            '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
-            $this->getPaymentInstance()->getImage(),
-            esc_html__('Boleto', 'woo-pagarme-payments')
-        );
-        ?>
-    </label>
-</fieldset>
 <?= $this->createBlock(
-    '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
-    'pagarme.checkout.field.multicustomers',
-    ['payment_instance' => $this->getPaymentInstance()]
-)->toHtml() ?>
-<?= $this->createBlock(
-    '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
-    'pagarme.checkout.form.multicustomers',
-    ['payment_instance' => $this->getPaymentInstance()]
+    '\Woocommerce\Pagarme\Block\Checkout\Form\Billet',
+    'pagarme.checkout.form.billet',
+    [
+        'payment_instance' => $this->getPaymentInstance(),
+        'show_message' => true,
+        'show_image' => true
+    ]
 )->toHtml() ?>

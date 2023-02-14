@@ -12,6 +12,8 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
     const TWO_CREDIT_CARDS = '2Cards';
     const VOUCHER = 'voucher';
     const DEBIT = "debit";
+
+    /** @var string */
     const PIX = "pix";
 
     private $paymentMethod;
@@ -19,6 +21,9 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
     public function setPaymentMethod($platformOrder)
     {
         $paymentMethod = $platformOrder->getPaymentMethodPlatform();
+        if (in_array($paymentMethod, [self::BOLETO_CREDIT_CARD, self::TWO_CREDIT_CARDS])) {
+            $paymentMethod = self::CREDIT_CARD;
+        }
         $method = 'get' . str_replace(' ', '', ucwords(str_replace('-', ' ', $paymentMethod)));
         $this->paymentMethod = $this->{$method}();
     }
