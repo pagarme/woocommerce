@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  * Class Cards
  * @package Woocommerce\Pagarme\Model\Payment\Data
  */
-class Cards extends DataObject
+class Cards extends AbstractPayment
 {
     /** @var string */
     const CARDS = 'cards';
@@ -43,7 +43,7 @@ class Cards extends DataObject
     private function init()
     {
         $cards = [];
-        for ($count = 0; $count < $this->getCountTokens(); $count++) {
+        for ($count = 1; $count <= $this->getCountTokens(); $count++) {
             $card = new Card($count);
             $cards[] = $card;
         }
@@ -56,9 +56,13 @@ class Cards extends DataObject
     private function getCountTokens()
     {
         $count = 0;
-        foreach ($_POST as $key => $value) {
-            if (strpos($key, 'pagarmetoken') !== false) {
-                $count++;
+        if ($this->getPostPaymentContent() && isset($this->getPostPaymentContent()['cards'])) {
+            foreach ($this->getPostPaymentContent()['cards'] as $card) {
+                foreach ($card as $key => $value) {
+                    if (strpos($key, 'token') !== false) {
+                        $count++;
+                    }
+                }
             }
         }
         return $count;

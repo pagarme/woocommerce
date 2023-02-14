@@ -177,4 +177,73 @@ class Gateway extends Template
     {
         return WC()->cart->total;
     }
+
+    /**
+     * @return bool
+     */
+    public function showMessage()
+    {
+        return $this->getData('show_message') ?? false;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMessage($htmlFormat = false)
+    {
+        $content = null;
+        if ($message = $this->getPaymentInstance()->getMessage()) {
+            $content = $message;
+            if ($htmlFormat) {
+                $content = '<p>' . $content . '</p>';
+            }
+        }
+        return $content;
+    }
+
+    /**
+     * @return bool
+     */
+    public function showImage()
+    {
+        return $this->getData('show_image') ?? false;
+    }
+
+
+    /**
+     * @param $htmlFormat
+     * @return string|null
+     */
+    public function getImage($htmlFormat = false)
+    {
+        $content = null;
+        if ($image = $this->getPaymentInstance()->getImage()) {
+            $content = $image;
+            if ($htmlFormat) {
+                $content = '<label>' .
+                printf(
+                    '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
+                    $content,
+                    esc_html__($this->getPaymentInstance()->getName(), 'woo-pagarme-payments')
+                ) . '</label>';
+            }
+        }
+        return $content;
+    }
+
+    /**
+     * @return bool
+     */
+    public function showOrderValue()
+    {
+        return $this->getData('show_order_value') ?? false;
+    }
+
+    /**
+     * @return array|mixed|true
+     */
+    public function showMulticustomersForm()
+    {
+        return $this->getData('show_multicustomers_form') ?? true;
+    }
 }

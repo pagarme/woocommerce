@@ -127,16 +127,24 @@ class Checkout
             'payment_method' => $paymentRequest->getPaymentMethod()
         ];
         if ($cards = $paymentRequest->getCards()) {
-            foreach ($cards as $card) {
-                $fields['brand'] = $card->getBrand();
-                $fields['pagarmetoken'] = $card->getToken();
+            foreach ($cards as $key => $card) {
+                $key++;
+                if ($key === 1) {
+                    if ($orderValue = $card->getCardOrderValue()) {
+                        $fields['card_order_value'] = $orderValue;
+                    }
+                    $fields['brand'] = $card->getBrand();
+                    $fields['installments'] = $card->getInstallment();
+                } else {
+                    if ($orderValue = $card->getCardOrderValue()) {
+                        $fields['card_order_value' . $key] = $orderValue;
+                    }
+                    $fields['brand' . $key] = $card->getBrand();
+                    $fields['installments' . $key] = $card->getInstallment();
+                }
+                $fields['pagarmetoken' . $key] = $card->getToken();
             }
         }
         return $fields;
-    }
-
-    private function validate(PaymentRequest $paymentRequest)
-    {
-
     }
 }

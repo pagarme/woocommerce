@@ -4,7 +4,8 @@
         const script = $('[data-pagarmecheckout-app-id]');
         const appId = script.data('pagarmecheckoutAppId');
         const apiUrl = 'https://api.mundipagg.com/core/v1/tokens';
-        const token = 'pagarmetoken';
+        const token = 'token';
+        const vendor = 'pagarme';
         const paymentMethodTarget = 'data-pagarmecheckout-method';
         const sequenceTarget = 'data-pagarmecheckout-card-num';
         const tokenElementTarget = 'data-pagarmecheckout-element';
@@ -149,9 +150,9 @@
             input.attr(
                 'type', 'hidden'
             ).attr(
-            'name', token + '-' + field.attr(paymentMethodTarget) + '-' + field.attr(sequenceTarget)
+            'name', vendor + '[' + field.attr(paymentMethodTarget) + '][cards][' + field.attr(sequenceTarget) + '][' + token + ']'
             ).attr(
-                'id', token + '-' + field.attr(paymentMethodTarget) + '-' + field.attr(sequenceTarget)
+                'id', vendor + '[' + field.attr(paymentMethodTarget) + '][cards][' + field.attr(sequenceTarget) + '][' + token + ']'
             ).attr(
                 'value', objJSON.id
             ).attr(
