@@ -26,9 +26,16 @@ class EnableMulticustomers extends Gateway
      */
     protected $_template = 'templates/checkout/form/field/enable-multicustomers';
 
+    /**
+     * @param string $id
+     * @return string
+     */
     public function getElementId(string $id)
     {
-        $id = '[multicustomer][' . $id . ']';
+        if ($this->getParentElementId()) {
+            return $this->getParentElementId() . '[' . $id . ']';
+        }
+        $id = '[multicustomers][' . $this->getSequence() . '][' . $id . ']';
         return parent::getElementId($id);
     }
 }
