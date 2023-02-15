@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
 class Card extends AbstractPayment
 {
     /** @var int */
-    private int $num;
+    private $num;
 
     /**
      * @param int $num
@@ -31,7 +31,7 @@ class Card extends AbstractPayment
      * @param array $data
      */
     public function __construct(
-        int $num = 1,
+        $num = 1,
         Json  $jsonSerialize = null,
         array $data = []
     ) {

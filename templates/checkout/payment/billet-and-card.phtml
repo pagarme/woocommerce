@@ -7,7 +7,7 @@
  * @link        https://pagar.me
  */
 
-/** @var \Woocommerce\Pagarme\Block\Checkout\Payment\Billet $this */
+/** @var \Woocommerce\Pagarme\Block\Checkout\Payment\BilletAndCard $this */
 
 declare( strict_types=1 );
 
@@ -31,6 +31,7 @@ if (!function_exists('add_action')) {
     [
         'payment_instance' => $this->getPaymentInstance(),
         'qty_cards' => $this->getQtyCards(),
+        'show_order_value' => true,
         'show_multicustomers_form' => true,
         'multicustomers_sequence' => 2
     ]

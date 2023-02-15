@@ -24,12 +24,8 @@ if (!function_exists('add_action')) {
             <input id="<?= $this->getElementId('billet-value') ?>" name="<?= $this->getElementId('billet-value') ?>" data-element="billet-value" data-value="1" data-required="true" class="input-text" style="font-size: 1.41575em">
         </div>
     <?php endif; ?>
-    <?php if ($this->showMessage() && $this->getMessage()) : ?>
-        <?= $this->getMessage(true) ?>
-    <?php endif; ?>
-    <?php if ($this->showImage() && $this->getImage()) : ?>
-        <?= $this->getImage(true) ?>
-    <?php endif; ?>
+    <?= $this->getMessage(true) ?>
+    <?= $this->getImage(true) ?>
 </fieldset>
 <?php if ($this->showMulticustomersForm()) : ?>
     <?= $this->createBlock(
