@@ -24,7 +24,7 @@ class Wallet extends Gateway
 {
 
     /** @var int  */
-    protected int $sequence = 1;
+    protected $sequence = 1;
 
     /**
      * @var string

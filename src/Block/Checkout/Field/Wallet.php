@@ -27,7 +27,7 @@ class Wallet extends Gateway
     protected $_template = 'templates/checkout/form/field/card-save';
 
     /** @var int  */
-    protected int $sequence = 1;
+    protected $sequence = 1;
 
     /**
      * @param int $sequence
