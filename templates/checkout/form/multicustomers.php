@@ -11,7 +11,7 @@
 
 declare( strict_types=1 );
 ?>
-<fieldset data-ref="multicustomers-<?= $this->getPaymentInstance()->getMethodCode() . '-' . $this->getSequence() ?>" data-pagarme-payment="<?= $this->getPaymentInstance()->getMethodCode() ?>" data-pagarme-sequence="<?= $this->getSequence() ?>" style="display:none;">
+<fieldset data-ref="multicustomers-<?= $this->getPaymentInstance()->getMethodCode() . '-' . $this->getSequence() ?>" data-pagarme-payment="<?= $this->getPaymentInstance()->getMethodCode() ?>" data-pagarme-sequence="<?= $this->getSequence() ?>" data-pagarme-payment-element="multicustomers" style="display:none;">
     <?= $this->formatElement($this->getTitle(), ['h4' => []]) ?>
     <div class="multicustomer">
         <p class="form-row form-row-wide">
@@ -82,3 +82,4 @@ declare( strict_types=1 );
         </p>
     </div>
 </fieldset>
+<script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/multicustomers.js')); ?>" type="application/javascript"> </script>

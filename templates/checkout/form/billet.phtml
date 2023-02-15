@@ -30,25 +30,26 @@ if (!function_exists('add_action')) {
     <?php if ($this->showImage() && $this->getImage()) : ?>
         <?= $this->getImage(true) ?>
     <?php endif; ?>
+    <?php if ($this->showMulticustomersForm()) : ?>
+        <?= $this->createBlock(
+            '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
+            'pagarme.checkout.field.multicustomers',
+            [
+                'payment_instance' => $this->getPaymentInstance(),
+                'parent_element_id' => $this->getElementId('multicustomers'),
+                'sequence' => $this->getMulticustomersSequece()
+            ]
+        )->toHtml() ?>
+        <?= $this->createBlock(
+            '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
+            'pagarme.checkout.form.multicustomers',
+            [
+                'payment_instance' => $this->getPaymentInstance(),
+                'parent_element_id' => $this->getElementId('multicustomers'),
+                'sequence' => $this->getMulticustomersSequece()
+            ]
+        )->toHtml() ?>
+    <?php endif; ?>
 </fieldset>
-<?php if ($this->showMulticustomersForm()) : ?>
-    <?= $this->createBlock(
-        '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
-        'pagarme.checkout.field.multicustomers',
-        [
-            'payment_instance' => $this->getPaymentInstance(),
-            'parent_element_id' => $this->getElementId('multicustomers'),
-            'sequence' => $this->getMulticustomersSequece()
-        ]
-    )->toHtml() ?>
-    <?= $this->createBlock(
-        '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
-        'pagarme.checkout.form.multicustomers',
-        [
-            'payment_instance' => $this->getPaymentInstance(),
-            'parent_element_id' => $this->getElementId('multicustomers'),
-            'sequence' => $this->getMulticustomersSequece()
-        ]
-    )->toHtml() ?>
-<?php endif; ?>
+
 
