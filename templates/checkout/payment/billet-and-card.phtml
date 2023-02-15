@@ -32,6 +32,7 @@ if (!function_exists('add_action')) {
         'payment_instance' => $this->getPaymentInstance(),
         'qty_cards' => $this->getQtyCards(),
         'show_multicustomers_form' => true,
-        'multicustomers_sequence' => 2
+        'multicustomers_sequence' => 2,
+        'show_order_value' => true,
     ]
 )->toHtml() ?>

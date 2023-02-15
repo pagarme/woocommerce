@@ -220,12 +220,7 @@ class Gateway extends Template
         if ($image = $this->getPaymentInstance()->getImage()) {
             $content = $image;
             if ($htmlFormat) {
-                $content = '<label>' .
-                printf(
-                    '<img class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
-                    $content,
-                    esc_html__($this->getPaymentInstance()->getName(), 'woo-pagarme-payments')
-                ) . '</label>';
+                $content = '<label><img class="logo" src="' . $content . '" alt="'. esc_html__($this->getPaymentInstance()->getName(), 'woo-pagarme-payments') . '" title="' . esc_html__($this->getPaymentInstance()->getName(), 'woo-pagarme-payments') . '" /></label>';
             }
         }
         return $content;

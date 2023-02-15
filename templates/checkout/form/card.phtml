@@ -19,13 +19,16 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
 <?php for ($qty = 1; $qty <= $this->getQuantityCards(); $qty++) : ?>
     <?php $this->setData('sequence', $qty); ?>
     <fieldset id="<?= WCMP_PREFIX; ?>-fieldset-<?= $this->getPaymentInstance()->getMethodCode() . '-' . $qty ?>" class="wc-credit-card-form wc-payment-form" data-pagarmecheckout-method="<?= $this->getPaymentInstance()->getMethodCode() ?>" data-pagarmecheckout="card" data-pagarmecheckout-card-num="<?= $qty ?>">
-        <?php if ($this->getQuantityCards() > 1) : ?>
-            <h4><?php
-                printf(
-                    '%sº %s',
-                    $qty,
-                    esc_html__('Card', 'woo-pagarme-payments')
-                ); ?></h4>
+        <?php if ($this->getShowOrderValue()) : ?>
+            <?php if ($this->getQuantityCards() > 1) : ?>
+                <h4><?php
+                    printf(
+                        '%sº %s',
+                        $qty,
+                        esc_html__('Card', 'woo-pagarme-payments')
+                    ); ?>
+                </h4>
+            <?php endif; ?>
             <p class="form-row form-row-first">
                 <label for="<?= $this->getElementId('card-order-value'); ?>"><?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
                 <input id="<?= $this->getElementId('card-order-value'); ?>" name="<?= $this->getElementId('card-order-value'); ?>" data-element="card-order-value" data-pagarmecheckout-element="card-order-value" data-required="true" data-value="1" data-pagarmecheckout-card-num="<?= $qty ?>" data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>" class="input-text">
