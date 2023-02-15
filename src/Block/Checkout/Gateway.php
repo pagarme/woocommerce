@@ -7,7 +7,7 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Block\Checkout;
 
@@ -19,7 +19,7 @@ use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Core;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class Gateway
@@ -46,7 +46,8 @@ class Gateway extends Template
         array        $data = [],
         GatewayModel $gateway = null,
         Config       $config = null
-    ) {
+    )
+    {
         parent::__construct($jsonSerialize, $data);
         if (!$config) {
             $config = new Config;
@@ -191,12 +192,12 @@ class Gateway extends Template
      */
     public function getMessage($htmlFormat = false)
     {
-        $content = null;
-        if ($message = $this->getPaymentInstance()->getMessage()) {
-            $content = $message;
-            if ($htmlFormat) {
-                $content = '<p>' . $content . '</p>';
-            }
+        if (!$this->showMessage()) {
+            return;
+        }
+        $content = $this->getPaymentInstance()->getMessage();
+        if ($htmlFormat) {
+            $content = "<p>{$content}</p>";
         }
         return $content;
     }
@@ -216,13 +217,16 @@ class Gateway extends Template
      */
     public function getImage($htmlFormat = false)
     {
-        $content = null;
-        if ($image = $this->getPaymentInstance()->getImage()) {
-            $content = $image;
-            if ($htmlFormat) {
-                $content = '<label><img class="logo" src="' . $content . '" alt="'. esc_html__($this->getPaymentInstance()->getName(), 'woo-pagarme-payments') . '" title="' . esc_html__($this->getPaymentInstance()->getName(), 'woo-pagarme-payments') . '" /></label>';
-            }
+        if (!$this->showImage()) {
+            return;
+
         }
+        $content = $this->getPaymentInstance()->getImage();
+        if ($htmlFormat) {
+            $name = esc_html__($this->getPaymentInstance()->getName(), 'woo-pagarme-payments');
+            $content = "<label><img class='logo' src='{$content}' alt='{$name}' title='{$name}' /></label>";
+        }
+
         return $content;
     }
 

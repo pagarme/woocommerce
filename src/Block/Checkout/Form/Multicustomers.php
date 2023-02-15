@@ -31,7 +31,7 @@ class Multicustomers extends Gateway
     protected $_template = 'templates/checkout/form/multicustomers';
 
     /** @var int  */
-    protected int $sequence = 1;
+    protected $sequence = 1;
 
     /**
      * @param Json|null $jsonSerialize

@@ -31,7 +31,7 @@ class Installments extends Gateway
     protected $_template = 'templates/checkout/form/card/installments';
 
     /** @var int  */
-    protected int $sequence = 1;
+    protected $sequence = 1;
 
     /**
      * @param int $sequence
