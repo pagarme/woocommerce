@@ -219,6 +219,7 @@ class Gateway extends Template
     {
         if (!$this->showImage()) {
             return;
+
         }
         $content = $this->getPaymentInstance()->getImage();
         if ($htmlFormat) {

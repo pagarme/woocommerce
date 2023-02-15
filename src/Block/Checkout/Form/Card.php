@@ -57,6 +57,9 @@ class Card extends Gateway
      */
     public function setQuantityCards(int $qtyCards = 1)
     {
+        if ($qtyCards > 1) {
+            $this->setShowOrderValue(true);
+        }
         return $this->setData('qty_cards', $qtyCards);
     }
 
@@ -65,6 +68,9 @@ class Card extends Gateway
      */
     public function getQuantityCards()
     {
+        if ($this->getQtyCards() > 1) {
+            $this->setShowOrderValue(true);
+        }
         return $this->getData('qty_cards');
     }
 

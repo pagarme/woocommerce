@@ -97,6 +97,9 @@ class Multicustomers extends Gateway
      */
     public function getElementId(string $id)
     {
+        if ($this->getParentElementId()) {
+            return $this->getParentElementId() . '[' . $id . ']';
+        }
         $id = '[multicustomers][' . $this->getSequence() . '][' . $id . ']';
         return parent::getElementId($id);
     }
