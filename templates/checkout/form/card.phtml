@@ -110,6 +110,7 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
                 'pagarme.checkout.field.multicustomers',
                 [
                     'payment_instance' => $this->getPaymentInstance(),
+                    'parent_element_id' => $this->getElementId('multicustomers'),
                     'sequence' => $qty
                 ]
             )->toHtml() ?>
@@ -118,6 +119,7 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
                 'pagarme.checkout.form.multicustomers',
                 [
                     'payment_instance' => $this->getPaymentInstance(),
+                    'parent_element_id' => $this->getElementId('multicustomers'),
                     'sequence' => $qty
                 ]
             )->toHtml() ?>

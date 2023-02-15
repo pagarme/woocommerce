@@ -37,6 +37,7 @@ if (!function_exists('add_action')) {
         'pagarme.checkout.field.multicustomers',
         [
             'payment_instance' => $this->getPaymentInstance(),
+            'parent_element_id' => $this->getElementId('multicustomers'),
             'sequence' => $this->getMulticustomersSequece()
         ]
     )->toHtml() ?>
@@ -45,6 +46,7 @@ if (!function_exists('add_action')) {
         'pagarme.checkout.form.multicustomers',
         [
             'payment_instance' => $this->getPaymentInstance(),
+            'parent_element_id' => $this->getElementId('multicustomers'),
             'sequence' => $this->getMulticustomersSequece()
         ]
     )->toHtml() ?>
