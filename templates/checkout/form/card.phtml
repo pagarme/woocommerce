@@ -30,8 +30,8 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
                 </h4>
             <?php endif; ?>
             <p class="form-row form-row-first">
-                <label for="<?= $this->getElementId('card-order-value'); ?>"><?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
-                <input id="<?= $this->getElementId('card-order-value'); ?>" name="<?= $this->getElementId('card-order-value'); ?>" data-element="card-order-value" data-pagarmecheckout-element="card-order-value" data-required="true" data-value="1" data-pagarmecheckout-card-num="<?= $qty ?>" data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>" class="input-text">
+                <label for="<?= $this->getElementId('order-value'); ?>"><?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
+                <input id="<?= $this->getElementId('order-value'); ?>" name="<?= $this->getElementId('order-value'); ?>" data-element="order-value" data-pagarmecheckout-element="order-value" data-required="true" data-value="1" data-pagarmecheckout-card-num="<?= $qty ?>" data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>" class="input-text">
             </p>
         <?php endif; ?>
         <?= $this->createBlock(

@@ -37,6 +37,12 @@ interface PaymentRequestInterface
     /** @var string */
     const PAGARME_PAYMENT_REQUEST_KEY = 'pagarme_payment_request';
 
+    /** @var string */
+    const BILLET = 'billet';
+
+    /** @var string */
+    const PIX = 'pix';
+
     /**
      * @param string $value
      * @return PaymentRequest

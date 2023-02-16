@@ -33,12 +33,20 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
     /** @var BillingAddress */
     private $billingAddress;
 
+    /** @var Billet */
+    private $billet;
+
+    /** @var Pix */
+    private $pix;
+
     /**
      * @param ShippingAddress|null $shippingAddress
      * @param BillingAddress|null $billingAddress
      * @param Cards|null $cards
      * @param ShippingMethod|null $shippingMethod
      * @param Json|null $jsonSerialize
+     * @param Billet|null $billet
+     * @param Pix|null $pix
      * @param array $data
      */
     public function __construct(
@@ -47,6 +55,8 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
         Cards $cards = null,
         ShippingMethod $shippingMethod = null,
         Json $jsonSerialize = null,
+        Billet $billet = null,
+        Pix $pix = null,
         array $data = []
     ) {
         parent::__construct($jsonSerialize, $data);
@@ -62,10 +72,18 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
         if (!$billingAddress) {
             $billingAddress = new BillingAddress;
         }
+        if (!$billet) {
+            $billet = new Billet;
+        }
+        if (!$pix) {
+            $pix = new Pix;
+        }
         $this->cards = $cards;
         $this->shippingMethod = $shippingMethod;
         $this->shippingAddress = $shippingAddress;
         $this->billingAddress = $billingAddress;
+        $this->billet = $billet;
+        $this->pix = $pix;
         $this->init();
     }
 
@@ -148,5 +166,21 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
     public function setBillingAddress()
     {
         return $this->setData(self::BILLING_ADDRESS, $this->billingAddress);
+    }
+
+    /**
+     * @return PaymentRequest
+     */
+    public function setBillet()
+    {
+        return $this->setData(self::BILLET, $this->billet);
+    }
+
+    /**
+     * @return PaymentRequest
+     */
+    public function setPix()
+    {
+        return $this->setData(self::PIX, $this->pix);
     }
 }
