@@ -146,7 +146,10 @@ class CardInstallments
         $configByFlags = $this->config->getCcInstallmentsByFlag();
         extract($params, EXTR_SKIP);
         if (!$flag || !isset($configByFlags['max_installment'][$flag])) {
-            return sprintf('<option value="">%s</option>', __('This card brand not is allowed on checkout.', Core::SLUG));
+            return [[
+                'value' => 0,
+                'content' =>  __('This card brand not is allowed on checkout.', Core::SLUG)
+            ]];
         }
         $maxInstallments  = intval($configByFlags['max_installment'][$flag]);
         $minAmount = Utils::str_to_float($configByFlags['installment_min_amount'][$flag]);
