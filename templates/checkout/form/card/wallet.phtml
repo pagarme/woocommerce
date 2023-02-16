@@ -17,7 +17,7 @@ if (!function_exists('add_action')) {
 ?>
 <?php if ($this->getConfig()->getIsEnableWallet() && $this->getPaymentInstance()->getCards()) : ?>
     <?php esc_html_e('Credit cards save', 'woo-pagarme-payments'); ?><br>
-    <select name="<?= $this->getElementId('wallet-id') ?>" id="<?= $this->getElementId('wallet-id') ?>" data-action="select-card-wallet" data-installments-type="<?= intval($this->getPaymentInstance()->getConfig()->getCcInstallmentType()); ?>" data-element="choose-credit-card" style="font-size: 1.41575em">
+    <select name="<?= $this->getElementId('wallet-id') ?>" id="<?= $this->getElementId('wallet-id') ?>" data-action="select-card-wallet" data-installments-type="<?= intval($this->getPaymentInstance()->getConfig()->getCcInstallmentType()); ?>" data-element="choose-credit-card">
         <?php foreach ($this->getPaymentInstance()->getCards() as $card) : ?>
             <?php
                 printf(
