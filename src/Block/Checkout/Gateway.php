@@ -143,11 +143,12 @@ class Gateway extends Template
 
     /**
      * @param bool $include
-     * @return void
+     * @return $this
      */
     public function setIncludeContainer(bool $include = true)
     {
         $this->container = $include;
+        return $this;
     }
 
     /**

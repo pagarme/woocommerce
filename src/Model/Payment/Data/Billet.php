@@ -11,37 +11,25 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment\Data;
 
-use Woocommerce\Pagarme\Model\Data\DataObject;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Card
+ * Class Billet
  * @package Woocommerce\Pagarme\Model\Payment\Data
  */
-class Card extends AbstractPayment
+class Billet extends AbstractPayment
 {
-    /** @var int */
-    private $num;
-
     /** @var Multicustomers|null */
     private $multicustomers;
 
-    /**
-     * @param int $num
-     * @param Json|null $jsonSerialize
-     * @param array $data
-     * @param Multicustomers|null $multicustomers
-     */
     public function __construct(
-        $num = 1,
-        Json  $jsonSerialize = null,
+        Json $jsonSerialize = null,
         array $data = [],
         Multicustomers $multicustomers = null
     ) {
         parent::__construct($jsonSerialize, $data);
-        $this->num = $num;
         if (!$multicustomers) {
             $multicustomers = new Multicustomers;
         }
@@ -54,14 +42,16 @@ class Card extends AbstractPayment
      */
     private function init()
     {
-        foreach ($this->getPostPaymentContent()['cards'][$this->num] as $field => $value) {
-            $this->{$this->getMethod($field)}($value);
+        if ($this->getPostPaymentContent() && is_array($this->getPostPaymentContent()) && array_key_exists('billet', $this->getPostPaymentContent())) {
+            foreach ($this->getPostPaymentContent()['billet'] as $field => $value) {
+                $this->{$this->getMethod($field)}($value);
+            }
         }
     }
 
     /**
      * @param $data
-     * @return $this
+     * @return Billet
      */
     public function setMulticustomers($data)
     {

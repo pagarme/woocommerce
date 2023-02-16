@@ -32,7 +32,7 @@ class Pix extends Gateway
      */
     public function getElementId(string $id)
     {
-        $id = '[' . $id . ']';
+        $id = '[pix][' . $id . ']';
         return parent::getElementId($id);
     }
 }

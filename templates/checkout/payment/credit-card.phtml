@@ -14,14 +14,11 @@ declare( strict_types=1 );
 if (!function_exists('add_action')) {
     exit(0);
 }
-$y = $this->getQtyCards();
-$x = $this->getPaymentInstance();
-
 $this->createBlock(
     '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
     'pagarme.checkout.form.card',
     [
-        'payment_instance' => $x,
-        'qty_cards' => $y
+        'payment_instance' => $this->getPaymentInstance(),
+        'qty_cards' =>  $this->getQtyCards()
     ]
 )->toHtml();

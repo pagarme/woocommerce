@@ -33,7 +33,7 @@ if (!function_exists('add_action')) {
         'qty_cards' => $this->getQtyCards(),
         'show_order_value' => true,
         'show_multicustomers_form' => true,
-        'multicustomers_sequence' => 2,
-        'show_order_value' => true,
+        'multicustomers_sequence' => 2
     ]
 )->toHtml() ?>
+<script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/payment/order-value.js')); ?>" type="application/javascript"></script>

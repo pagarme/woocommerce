@@ -32,7 +32,7 @@ class Billet extends Gateway
      */
     public function getElementId(string $id)
     {
-        $id = '[' . $id . ']';
+        $id = '[billet][' . $id . ']';
         return parent::getElementId($id);
     }
 }

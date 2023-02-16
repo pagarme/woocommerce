@@ -12,7 +12,7 @@
 declare( strict_types=1 );
 ?>
 <?php if ($this->getConfig()->getMulticustomers()) : ?>
-    <?= $this->formatElement(
+    <?= $this->setIncludeContainer()->formatElement(
         '<p class=\'form-row form-row-wide\' data-element=\'enable-multicustomers-check\'>',
         ['p' => ['class' => true, 'data-element' => true]]
     ) ?>
