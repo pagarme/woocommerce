@@ -52,11 +52,24 @@ class Card extends AbstractPayment
     /**
      * @return void
      */
-    private function init()
+    protected function init()
     {
         foreach ($this->getPostPaymentContent()['cards'][$this->num] as $field => $value) {
             $this->{$this->getMethod($field)}($value);
         }
+    }
+
+    /**
+     * @param string $method
+     * @param bool $identifier
+     * @return bool
+     */
+    protected function havePaymentForm(string $method, bool $identifier = true)
+    {
+        if ($this->getPostPaymentContent()['cards'][$this->num] && is_array($this->getPostPaymentContent()['cards'][$this->num]) && array_key_exists($method, $this->getPostPaymentContent()['cards'][$this->num])) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -65,6 +78,9 @@ class Card extends AbstractPayment
      */
     public function setMulticustomers($data)
     {
-        return $this->setData('multicustomers', $this->multicustomers->setData($data));
+        if ($this->havePaymentForm(Multicustomers::FIELD) && $this->multicustomers->isEnable($data)) {
+            return $this->setData(Multicustomers::FIELD, $this->multicustomers->setData($data));
+        }
+        return $this;
     }
 }

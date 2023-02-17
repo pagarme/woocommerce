@@ -90,11 +90,12 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
     /**
      * @return void
      */
-    private function init()
+    protected function init()
     {
         foreach ($this->getConstants() as $const) {
-            if (isset($_POST[$const])) {
-                $this->{$this->getMethod($const)}($_POST[$const]);
+            if (isset($_POST[$const]) || isset($this->getPostPaymentContent()[$const])) {
+                $value = $_POST[$const] ?? $this->getPostPaymentContent()[$const];
+                $this->{$this->getMethod($const)}($value);
             }
         }
         $this->setCards();
@@ -149,7 +150,10 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
      */
     public function setCards()
     {
-        return $this->setData(self::CARDS, $this->cards->getCards());
+        if ($this->havePaymentForm(self::CARDS, false)) {
+            return $this->setData(self::CARDS, $this->cards->getCards());
+        }
+        return $this;
     }
 
     /**
@@ -173,7 +177,10 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
      */
     public function setBillet()
     {
-        return $this->setData(self::BILLET, $this->billet);
+        if ($this->havePaymentForm(self::BILLET, false)) {
+            return $this->setData(self::BILLET, $this->billet);
+        }
+        return $this;
     }
 
     /**
@@ -181,6 +188,9 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
      */
     public function setPix()
     {
-        return $this->setData(self::PIX, $this->pix);
+        if ($this->havePaymentForm(self::PIX, false)) {
+            return $this->setData(self::PIX, $this->pix);
+        }
+        return $this;
     }
 }

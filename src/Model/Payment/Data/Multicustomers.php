@@ -21,4 +21,14 @@ defined( 'ABSPATH' ) || exit;
  */
 class Multicustomers extends AbstractPayment
 {
+    const FIELD = 'multicustomers';
+
+    /**
+     * @param array $data
+     * @return bool
+     */
+    public function isEnable(array $data)
+    {
+        return array_key_exists('enable', $data) ? $data['enable'] : false;
+    }
 }
