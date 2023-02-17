@@ -24,6 +24,9 @@ class Pix extends AbstractPayment
     /** @var Multicustomers|null */
     private $multicustomers;
 
+    /** @var string */
+    protected $identifier = 'pix';
+
     public function __construct(
         Json $jsonSerialize = null,
         array $data = [],
@@ -38,23 +41,14 @@ class Pix extends AbstractPayment
     }
 
     /**
-     * @return void
-     */
-    private function init()
-    {
-        if ($this->getPostPaymentContent() && is_array($this->getPostPaymentContent()) && array_key_exists('pix', $this->getPostPaymentContent())) {
-            foreach ($this->getPostPaymentContent()['pix'] as $field => $value) {
-                $this->{$this->getMethod($field)}($value);
-            }
-        }
-    }
-
-    /**
      * @param $data
      * @return $this
      */
     public function setMulticustomers($data)
     {
-        return $this->setData('multicustomers', $this->multicustomers->setData($data));
+        if ($this->havePaymentForm(Multicustomers::FIELD) && $this->multicustomers->isEnable($data)) {
+            return $this->setData(Multicustomers::FIELD, $this->multicustomers->setData($data));
+        }
+        return $this;
     }
 }

@@ -24,6 +24,9 @@ class Billet extends AbstractPayment
     /** @var Multicustomers|null */
     private $multicustomers;
 
+    /** @var string */
+    protected $identifier = 'billet';
+
     public function __construct(
         Json $jsonSerialize = null,
         array $data = [],
@@ -38,23 +41,14 @@ class Billet extends AbstractPayment
     }
 
     /**
-     * @return void
-     */
-    private function init()
-    {
-        if ($this->getPostPaymentContent() && is_array($this->getPostPaymentContent()) && array_key_exists('billet', $this->getPostPaymentContent())) {
-            foreach ($this->getPostPaymentContent()['billet'] as $field => $value) {
-                $this->{$this->getMethod($field)}($value);
-            }
-        }
-    }
-
-    /**
      * @param $data
-     * @return Billet
+     * @return $this
      */
     public function setMulticustomers($data)
     {
-        return $this->setData('multicustomers', $this->multicustomers->setData($data));
+        if ($this->havePaymentForm(Multicustomers::FIELD) && $this->multicustomers->isEnable($data)) {
+            return $this->setData(Multicustomers::FIELD, $this->multicustomers->setData($data));
+        }
+        return $this;
     }
 }

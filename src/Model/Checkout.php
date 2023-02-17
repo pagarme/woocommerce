@@ -19,6 +19,10 @@ if (!defined('ABSPATH')) {
 }
 
 use WC_Order;
+use Woocommerce\Pagarme\Model\Payment\Data\AbstractPayment;
+use Woocommerce\Pagarme\Model\Payment\Data\Card;
+use Woocommerce\Pagarme\Model\Payment\Data\Cards;
+use Woocommerce\Pagarme\Model\Payment\Data\Multicustomers;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequest;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
 
@@ -124,19 +128,19 @@ class Checkout
     private function convertCheckoutObject(PaymentRequestInterface $paymentRequest)
     {
         $fields = [
-            'payment_method' => $paymentRequest->getPaymentMethod()
+            'payment_method' => str_replace('-', '_', $paymentRequest->getPaymentMethod())
         ];
         if ($cards = $paymentRequest->getCards()) {
             foreach ($cards as $key => $card) {
                 $key++;
                 if ($key === 1) {
-                    if ($orderValue = $card->getCardOrderValue()) {
+                    if ($orderValue = $card->getOrderValue()) {
                         $fields['card_order_value'] = $orderValue;
                     }
                     $fields['brand'] = $card->getBrand();
                     $fields['installments'] = $card->getInstallment();
                 } else {
-                    if ($orderValue = $card->getCardOrderValue()) {
+                    if ($orderValue = $card->getOrderValue()) {
                         $fields['card_order_value' . $key] = $orderValue;
                     }
                     $fields['brand' . $key] = $card->getBrand();
@@ -145,6 +149,52 @@ class Checkout
                 $fields['pagarmetoken' . $key] = $card->getToken();
             }
         }
+        $this->extractMulticustomers($fields, $paymentRequest);
+        $this->extractOrderValue($fields, $paymentRequest);
         return $fields;
+    }
+
+    private function extractMulticustomers(array &$fields, PaymentRequestInterface $paymentRequest)
+    {
+        foreach ($paymentRequest->getData() as $method => $data) {
+            if ($data instanceof AbstractPayment) {
+                if ($data->getMulticustomers() instanceof Multicustomers) {
+                    foreach ($data->getMulticustomers()->getData() as $key => $value) {
+                        $fields['multicustomer_' . $method][$key] = $value;
+                        $fields['multicustomer_' . $method . '[' . $key . ']'] = $value;
+                        $fields['enable_multicustomers_' . $method] = 1;
+                    }
+                }
+            }
+            if (is_array($data)) {
+                foreach ($data as $sequece => $datum) {
+                    if ($datum instanceof Card) {
+                        $method = 'card';
+                        $sequece++;
+                        if (count($data) > 1) {
+                            $method .= $sequece;
+                        }
+                        if ($datum->getMulticustomers() instanceof Multicustomers) {
+                            foreach ($datum->getMulticustomers()->getData() as $key => $value) {
+                                $fields['multicustomer_' . $method][$key] = $value;
+                                $fields['multicustomer_' . $method . '[' . $key . ']'] = $value;
+                                $fields['enable_multicustomers_' . $method] = $value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private function extractOrderValue(array &$fields, PaymentRequestInterface $paymentRequest)
+    {
+        foreach ($paymentRequest->getData() as $method => $data) {
+            if ($data instanceof AbstractPayment) {
+                if ($orderValue = $data->getOrderValue()) {
+                    $fields[$method . '_value'] = $orderValue;
+                }
+            }
+        }
     }
 }
