@@ -21,6 +21,21 @@ defined( 'ABSPATH' ) || exit;
  */
 class AbstractPayment extends DataObject
 {
+    /** @var string */
+    protected $identifier = 'pix';
+
+    /**
+     * @return void
+     */
+    protected function init()
+    {
+        if ($this->getPostPaymentContent() && is_array($this->getPostPaymentContent()) && array_key_exists($this->identifier, $this->getPostPaymentContent())) {
+            foreach ($this->getPostPaymentContent()[$this->identifier] as $field => $value) {
+                $this->{$this->getMethod($field)}($value);
+            }
+        }
+    }
+
     /**
      * @return array|null
      */
@@ -59,5 +74,22 @@ class AbstractPayment extends DataObject
     public function convertField(string $field)
     {
         return str_replace('-', '_', ucwords(str_replace('_', ' ', $field)));
+    }
+
+    /**
+     * @param string $method
+     * @param bool $identifier
+     * @return bool
+     */
+    protected function havePaymentForm(string $method, bool $identifier = true)
+    {
+        $content = $this->getPostPaymentContent();
+        if ($identifier && isset($this->getPostPaymentContent()[$this->identifier])) {
+            $content = $this->getPostPaymentContent()[$this->identifier];
+        }
+        if (is_array($content) && array_key_exists($method, $content)) {
+            return true;
+        }
+        return false;
     }
 }

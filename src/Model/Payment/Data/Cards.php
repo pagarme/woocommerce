@@ -40,7 +40,7 @@ class Cards extends AbstractPayment
     /**
      * @return Cards
      */
-    private function init()
+    protected function init()
     {
         $cards = [];
         for ($count = 1; $count <= $this->getCountTokens(); $count++) {
