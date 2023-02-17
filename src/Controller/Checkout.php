@@ -103,15 +103,13 @@ class Checkout
         if (!Utils::is_request_ajax() || Utils::server('REQUEST_METHOD') !== 'GET') {
             exit(0);
         }
+        
+        $html = $this->cardInstallments->renderOptions(
+            $this->cardInstallments->getInstallmentsByType(
+                Utils::get('total', false),
+                Utils::get('flag', false, 'esc_html')
 
-        $x = $this->cardInstallments->getInstallmentsByType(
-            Utils::get('total', false),
-            Utils::get('flag', false, 'esc_html')
-
-        );
-
-
-        $html = $this->cardInstallments->renderOptions($x);
+        ));
         echo wp_kses_no_null($html);
         exit();
     }
