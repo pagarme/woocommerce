@@ -11,8 +11,11 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
+use WC_Order;
+use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Payment\CreditCard\Brands;
 use Woocommerce\Pagarme\Model\Payment\CreditCard\BrandsInterface;
+use Woocommerce\Pagarme\Resource\Customers;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -66,5 +69,30 @@ class CreditCard extends Card implements PaymentInterface
             $jsConfigProvider['brands'][$brand->getBrandCode()] = $brand->getConfigDataProvider();
         }
         return $jsConfigProvider;
+    }
+
+    /**
+     * @param WC_Order $wc_order
+     * @param array $form_fields
+     * @param Customers|null $customer
+     * @return null[]|string[]
+     * @throws \Exception
+     */
+    public function getPayRequest(WC_Order $wc_order, array $form_fields, $customer = null)
+    {
+        $request = [];
+        $content = parent::getPayRequest($wc_order, $form_fields, $customer);
+        $content['amount'] = Utils::format_order_price(
+            $this->getPriceWithInterest(
+                $wc_order->get_total(),
+                Utils::get_value_by($form_fields, 'installments'),
+                Utils::get_value_by($form_fields, 'brand')
+            )
+        );
+        if (!isset($content['customer']) && isset($customer->email)) {
+            $content['customer'] = $customer;
+        }
+        $request[] = $content;
+        return $request;
     }
 }

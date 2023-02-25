@@ -1,0 +1,43 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\ThankYou $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<div class="woocommerce-<?= $this->isSuccessOrder() ? 'message' : 'error' ?>">
+    <div class="pagarme-response">
+        <?=
+        $this->setIncludeContainer()->formatElement(
+            '<p class="title">' . __('Your transaction has been processed.', 'woo-pagarme-payments') . '</p>',
+            ['p' => []]
+        )
+        ?>
+        <?= $this->createBlock(
+            $this->getThankYouClass(),
+            'pagarme.checkout.than-you',
+            [
+                'woo_order' => $this->getWooOrder(),
+                'pagarme_order' => $this->getPagarmeOrder(),
+                'payment_method' => $this->getPaymentMethod()
+            ]
+        )->toHtml()  ?>
+        <?=
+        $this->setIncludeContainer()->formatElement(
+            '<p>' . __('If you have any questions regarding the transaction, please contact us.', 'woo-pagarme-payments') . '</p>',
+            ['p' => []]
+        )
+        ?>
+    </div>
+</div>
+

@@ -13,11 +13,13 @@ namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use WC_Payment_Gateway;
 use WC_Order;
+use Woocommerce\Pagarme\Block\Template;
 use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Payment\PostFormatter;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
 use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
@@ -64,6 +66,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var GatewayBlock */
     private $gatewayBlock;
 
+    /** @var Template*/
+    private Template $template;
+
     /**
      * @param Gateway|null $gateway
      * @param WooOrderRepository|null $wooOrderRepository
@@ -76,7 +81,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         WooOrderRepository $wooOrderRepository = null,
         PostFormatter $postFormatter = null,
         Config $config = null,
-        GatewayBlock $gatewayBlock = null
+        GatewayBlock $gatewayBlock = null,
+        Template $template = null
     ) {
         if (!$gateway) {
             $gateway = new Gateway();
@@ -96,12 +102,16 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if (!$gatewayBlock) {
             $gatewayBlock = new GatewayBlock;
         }
+        if (!$template) {
+            $template = new Template;
+        }
         $this->gatewayBlock = $gatewayBlock;
         $this->config = $config;
         $this->postFormatter = $postFormatter;
         $this->model = $gateway;
         $this->checkout = $checkout;
         $this->wooOrderRepository = $wooOrderRepository;
+        $this->template = $template;
         $this->id = 'woo-pagarme-payments-' . $this->method;
         $this->method_title = $this->getPaymentMethodTitle();
         $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->method_title;
@@ -117,7 +127,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'process_admin_options']);
         }
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
-        add_action('woocommerce_thankyou_' . $this->vendor . ' ' . $this->method_title, [$this, 'thank_you_page']);
+        add_action('woocommerce_thankyou_' . $this->vendor, [$this, 'thank_you_page']);
         add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
     }
 
@@ -181,11 +191,24 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /**
      * @param $order_id
      * @return void
+     * @throws \Exception
      */
     public function thank_you_page($order_id)
     {
         $order = $this->wooOrderRepository->getById($order_id);
-        require_once Core::get_file_path('thank-you-page.php', 'templates/');
+        $pagarmeOrder = new Order($order_id);
+        if ($this->method === $pagarmeOrder->payment_method) {
+            $this->template->createBlock(
+                '\Woocommerce\Pagarme\Block\Checkout\ThankYou',
+                'pagarme.checkout.thank-you',
+                [
+                    'woo_order' => $order,
+                    'pagarme_order' => $pagarmeOrder,
+                    'payment_method' => $this->method,
+                    'container' => true
+                ]
+            )->toHtml();
+        }
     }
 
     /**

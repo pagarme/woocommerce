@@ -99,7 +99,6 @@ class Gateway extends Template
 
     public function getPaymentClass()
     {
-
         return '\Woocommerce\Pagarme\Block\Checkout\Payment\\' . str_replace(' ', '', ucwords($this->numeralReplace(str_replace(['_', '-'], ' ', $this->getPaymentInstance()->getMethodCode()))));
     }
 
