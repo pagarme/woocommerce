@@ -55,7 +55,7 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
                 <p class="form-row form-row-wide">
                     <label for="<?= $this->getElementId('card-holder-name'); ?>">
                         <?php esc_html_e('Card Holder Name', 'woo-pagarme-payments'); ?> <span class="required">*</span>
-                        <input id="<?= $this->getElementId('card-holder-name'); ?>" onkeydown="return /[a-z, ]/i.test(event.key)" data-element="card-holder-name" data-required="true" class="input-text" style="font-size: 1.41575em" data-pagarmecheckout-element="holder_name">
+                        <input id="<?= $this->getElementId('card-holder-name'); ?>" onkeydown="return /[a-z, ]/i.test(event.key)" data-element="card-holder-name" data-required="true" class="input-text" data-pagarmecheckout-element="holder_name">
                     </label>
                 </p>
                 <p class="form-row form-row-wide">

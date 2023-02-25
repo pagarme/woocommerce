@@ -103,6 +103,7 @@ class Checkout
         if (!Utils::is_request_ajax() || Utils::server('REQUEST_METHOD') !== 'GET') {
             exit(0);
         }
+        
         $html = $this->cardInstallments->renderOptions(
             $this->cardInstallments->getInstallmentsByType(
                 Utils::get('total', false),

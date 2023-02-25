@@ -5,6 +5,7 @@
         const cardNumberTarget = 'input[data-element="pagarme-card-number"]';
         const brandTarget = '[data-pagarmecheckout-element="brand-input"]';
         const brandImgTarget = 'span[name="brand-image"]';
+        const valueTarget = '[data-pagarmecheckout-element="order-value"]';
         const installmentsTarget = '[data-pagarme-component="installments"]';
         const mundiCdn = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
         const limit = 10;
@@ -210,7 +211,9 @@
 
         function updateInstallmentsElement(e) {
             let elem = e.currentTarget;
-            let brand = $(elem).parent().find(brandTarget).val(),
+            let brand = $(elem).parent().find(brandTarget).val();
+            let total = $(elem).closest('fieldset').find(valueTarget).val();
+            if (!total)
                 total = cartTotal;
             if (!brand || !total)
                 throw "Cant update installments: invalid total and/or brand";
