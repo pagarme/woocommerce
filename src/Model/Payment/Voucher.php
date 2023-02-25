@@ -11,8 +11,10 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
+use WC_Order;
 use Woocommerce\Pagarme\Model\Payment\Voucher\Brands;
 use Woocommerce\Pagarme\Model\Payment\Voucher\BrandsInterface;
+use Woocommerce\Pagarme\Resource\Customers;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -63,5 +65,24 @@ class Voucher extends Card implements PaymentInterface
             $jsConfigProvider['brands'][$brand->getBrandCode()] = $brand->getConfigDataProvider();
         }
         return $jsConfigProvider;
+    }
+
+    /**
+     * @param WC_Order $wc_order
+     * @param array $form_fields
+     * @param Customers|null $customer
+     * @return array|string[]
+     * @throws \Exception
+     */
+    public function getPayRequestBase(WC_Order $wc_order, array $form_fields, $customer = null)
+    {
+        $content = parent::getPayRequestBase($wc_order, $form_fields, $customer);
+        $content['voucher'] = [
+            'statement_descriptor' => $this->getConfig()->getVoucherSoftDescriptor(),
+            'card' => [
+                'billing_address' => $this->getBillingAddressFromCustomer($customer, $wc_order)
+            ]
+        ];
+        return $this->handleCardType($form_fields, $content);
     }
 }

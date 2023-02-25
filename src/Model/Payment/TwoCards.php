@@ -12,6 +12,8 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Model\Payment;
 
 use Pagarme\Core\Payment\Aggregates\SavedCard;
+use WC_Order;
+use Woocommerce\Pagarme\Resource\Customers;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -66,6 +68,18 @@ class TwoCards extends AbstractPayment implements PaymentInterface
         'save_credit_card3' => 'save_credit_card2'
     ];
 
+    /** @var CreditCard */
+    private $creditCard;
+
+    /**
+     * @param CreditCard $creditCard
+     */
+    public function __construct(
+        CreditCard $creditCard
+    ) {
+        $this->creditCard = $creditCard;
+    }
+
     /**
      * @return SavedCard[]|null
      */
@@ -80,5 +94,20 @@ class TwoCards extends AbstractPayment implements PaymentInterface
     public function getIsEnableWallet()
     {
         return (bool) $this->getConfig()->{'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $this->code)))  . 'Wallet'}();
+    }
+
+    /**
+     * @param WC_Order $wc_order
+     * @param array $form_fields
+     * @param Customers|null $customer
+     * @return null[]|string[]
+     * @throws \Exception
+     */
+    public function getPayRequest(WC_Order $wc_order, array $form_fields, $customer = null)
+    {
+        $content = [];
+        $content[] = $this->creditCard->getPayRequest($wc_order, $form_fields, $customer);
+        $content[] = $this->creditCard->setPayRequestCardNum(2)->getPayRequest($wc_order, $form_fields, $customer);
+        return $content;
     }
 }

@@ -12,6 +12,9 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Model\Payment;
 
 use ReflectionClass;
+use WC_Order;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Resource\Customers;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -61,6 +64,25 @@ class BilletCard extends AbstractPayment implements PaymentInterface
         'save_credit_card4' => 'save_credit_card'
     ];
 
+
+    /** @var CreditCard */
+    private $creditCard;
+
+    /** @var Billet */
+    private $billet;
+
+    /**
+     * @param CreditCard $creditCard
+     * @param Billet $billet
+     */
+    public function __construct(
+        CreditCard $creditCard,
+        Billet $billet
+    ) {
+        $this->creditCard = $creditCard;
+        $this->billet = $billet;
+    }
+
     /**
      * @return array
      */
@@ -76,5 +98,20 @@ class BilletCard extends AbstractPayment implements PaymentInterface
             $formattedPost['fields'][$arrayFieldKey] = $field;
         }
         return $formattedPost;
+    }
+
+    /**
+     * @param WC_Order $wc_order
+     * @param array $form_fields
+     * @param Customers|null $customer
+     * @return null[]|string[]
+     * @throws \Exception
+     */
+    public function getPayRequest(WC_Order $wc_order, array $form_fields, $customer = null)
+    {
+        $content = [];
+        $content[] = $this->billet->getPayRequest($wc_order, $form_fields, $customer);
+        $content[] = $this->creditCard->getPayRequest($wc_order, $form_fields, $customer);
+        return $content;
     }
 }

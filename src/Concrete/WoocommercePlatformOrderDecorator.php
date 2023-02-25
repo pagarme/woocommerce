@@ -952,7 +952,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $paymentData[$boletoDataIndex] = [];
         }
 
-        if ($this->formData["enable_multicustomers_billet"]) {
+        if (isset($this->formData["enable_multicustomers_billet"]) && $this->formData["enable_multicustomers_billet"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'billet'
             );
@@ -977,7 +977,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $paymentData[$boletoDataIndex] = [];
         }
 
-        if ($this->formData["enable_multicustomers_billet"]) {
+        if (isset($this->formData["enable_multicustomers_billet"]) && $this->formData["enable_multicustomers_billet"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'billet'
             );
@@ -1012,7 +1012,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromVoucher(&$paymentData)
     {
-        $identifier = $this->formData["pagarmetoken"];
+        $identifier = $this->formData["pagarmetoken1"];
         if (!$identifier) {
             $identifier = $this->formData["card_id"];
         }

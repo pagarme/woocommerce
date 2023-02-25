@@ -1,0 +1,44 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\ThankYou\BilletAndCard $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->getCharges()) : ?>
+    <?php foreach ($this->getCharges() as $charge) : ?>
+        <?php if ($this->getTransactionType($charge) === 'credit_card') : ?>
+            <?= $this->setIncludeContainer()->formatElement('<p>', ['p' => []]) ?>
+                <?php
+                    printf(
+                        __('CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments'),
+                        '<strong>' .  strtoupper(
+                            __(
+                                ucfirst($charge->status),
+                                'woo-pagarme-payments'
+                            )
+                        )  . '</strong>'
+                    );
+                ?>
+            <?= $this->setIncludeContainer()->formatElement('</p>', ['p' => []]) ?>
+        <?php endif; ?>
+        <?php if ($this->getTransactionType($charge) === 'boleto') : ?>
+            <p>
+                <?= __('BOLETO: If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments'); ?>
+            </p>
+            <a href="<?= $this->getTransacion($charge)->boletoUrl ?>" target="_blank" class="payment-link">
+                <?= __('Print', 'woo-pagarme-payments'); ?>
+            </a>
+        <?php endif; ?>
+    <?php endforeach ?>
+<?php endif; ?>
