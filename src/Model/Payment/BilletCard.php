@@ -64,7 +64,6 @@ class BilletCard extends AbstractPayment implements PaymentInterface
         'save_credit_card4' => 'save_credit_card'
     ];
 
-
     /** @var CreditCard */
     private $creditCard;
 
@@ -72,15 +71,15 @@ class BilletCard extends AbstractPayment implements PaymentInterface
     private $billet;
 
     /**
-     * @param CreditCard $creditCard
-     * @param Billet $billet
+     * @param CreditCard|null $creditCard
+     * @param Billet|null $billet
      */
     public function __construct(
-        CreditCard $creditCard,
-        Billet $billet
+        CreditCard $creditCard = null,
+        Billet $billet = null
     ) {
-        $this->creditCard = $creditCard;
-        $this->billet = $billet;
+        $this->creditCard = $creditCard ?? new CreditCard;
+        $this->billet = $billet ?? new Billet;
     }
 
     /**
