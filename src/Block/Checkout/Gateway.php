@@ -49,17 +49,11 @@ class Gateway extends Template
     )
     {
         parent::__construct($jsonSerialize, $data);
-        if (!$config) {
-            $config = new Config;
-        }
-        if (!$gateway) {
-            $gateway = new GatewayModel;
-        }
         if (!$this->getData('config')) {
-            $this->setData('config', $config);
+            $this->setData('config', $config ?? new Config);
         }
         if (!$this->getData('gateway')) {
-            $this->setData('gateway', $gateway);
+            $this->setData('gateway', $gateway ?? new GatewayModel);
         }
     }
 

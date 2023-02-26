@@ -47,10 +47,7 @@ abstract class AbstractPayment
      */
     public function getSuffix()
     {
-        if ($this->suffix) {
-            return $this->suffix;
-        }
-        return $this->error($this->suffix);
+        return $this->suffix ?? $this->error($this->suffix);
     }
 
     /**
@@ -59,10 +56,7 @@ abstract class AbstractPayment
      */
     public function getName()
     {
-        if ($this->name) {
-            return $this->name;
-        }
-        return $this->error($this->name);
+        return $this->name ?? $this->error($this->name);
     }
 
     /**
@@ -71,10 +65,7 @@ abstract class AbstractPayment
      */
     public function getMethodCode()
     {
-        if ($this->code) {
-            return $this->code;
-        }
-        return $this->error($this->code);
+        return $this->code ?? $this->error($this->code);
     }
 
     /**

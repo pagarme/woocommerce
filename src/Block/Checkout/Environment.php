@@ -39,11 +39,8 @@ class Environment extends Template
         Config $config = null
     ) {
         parent::__construct($jsonSerialize, $data);
-        if (!$config) {
-            $config = new Config;
-        }
         if (!$this->getData('config')) {
-            $this->setData('config', $config);
+            $this->setData('config', $config ?? new Config);
         }
     }
 

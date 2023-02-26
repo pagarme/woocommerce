@@ -32,10 +32,7 @@ abstract class AbstractBlock extends DataObject
         Json $jsonSerialize = null,
         array $data = []
     ) {
-        if (!$jsonSerialize) {
-            $jsonSerialize = new Json;
-        }
-        $this->jsonSerialize = $jsonSerialize;
+        $this->jsonSerialize = $jsonSerialize ?? new Json;
         parent::__construct($jsonSerialize, $data);
     }
 

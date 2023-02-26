@@ -40,8 +40,7 @@ class PageSettings
     public function __construct(
         string $options,
         array $paymentMethods
-    )
-    {
+    ) {
         $this->options = $options;
         $this->paymentMethods = $paymentMethods;
         $this->paymentGateways = $this->getPaymentGateways();

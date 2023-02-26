@@ -84,34 +84,13 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         GatewayBlock $gatewayBlock = null,
         Template $template = null
     ) {
-        if (!$gateway) {
-            $gateway = new Gateway();
-        }
-        if (!$wooOrderRepository) {
-            $wooOrderRepository = new WooOrderRepository();
-        }
-        if (!$postFormatter) {
-            $postFormatter = new PostFormatter();
-        }
-        if (!$config) {
-            $config = new Config();
-        }
-        if (!$checkout) {
-            $checkout = new Checkout;
-        }
-        if (!$gatewayBlock) {
-            $gatewayBlock = new GatewayBlock;
-        }
-        if (!$template) {
-            $template = new Template;
-        }
-        $this->gatewayBlock = $gatewayBlock;
-        $this->config = $config;
-        $this->postFormatter = $postFormatter;
-        $this->model = $gateway;
-        $this->checkout = $checkout;
-        $this->wooOrderRepository = $wooOrderRepository;
-        $this->template = $template;
+        $this->gatewayBlock = $gatewayBlock ?? new GatewayBlock;
+        $this->config = $config ?? new Config;
+        $this->postFormatter = $postFormatter ?? new PostFormatter;
+        $this->model = $gateway ?? new Gateway;
+        $this->checkout = $checkout ?? new Checkout;
+        $this->wooOrderRepository = $wooOrderRepository ?? new WooOrderRepository;
+        $this->template = $template ?? new Template;
         $this->id = 'woo-pagarme-payments-' . $this->method;
         $this->method_title = $this->getPaymentMethodTitle();
         $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->method_title;
