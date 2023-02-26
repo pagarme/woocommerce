@@ -72,12 +72,12 @@ class TwoCards extends AbstractPayment implements PaymentInterface
     private $creditCard;
 
     /**
-     * @param CreditCard $creditCard
+     * @param CreditCard|null $creditCard
      */
     public function __construct(
-        CreditCard $creditCard
+        CreditCard $creditCard = null
     ) {
-        $this->creditCard = $creditCard;
+        $this->creditCard = $creditCard ?? new CreditCard;
     }
 
     /**
