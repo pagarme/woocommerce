@@ -106,8 +106,8 @@ class TwoCards extends AbstractPayment implements PaymentInterface
     public function getPayRequest(WC_Order $wc_order, array $form_fields, $customer = null)
     {
         $content = [];
-        $content[] = $this->creditCard->getPayRequest($wc_order, $form_fields, $customer);
-        $content[] = $this->creditCard->setPayRequestCardNum(2)->getPayRequest($wc_order, $form_fields, $customer);
+        $content[] = current($this->creditCard->getPayRequest($wc_order, $form_fields, $customer));
+        $content[] = current($this->creditCard->setPayRequestCardNum(2)->getPayRequest($wc_order, $form_fields, $customer));
         return $content;
     }
 }

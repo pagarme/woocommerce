@@ -31,6 +31,6 @@ class StatusTransaction extends ThankYou
      */
     public function getMessage()
     {
-        return $this->getData('message') ? $this->getData('message') : __('Failed', 'woo-pagarme-payments');
+        return $this->getData('message') ? __($this->getData('message'), 'woo-pagarme-payments') : __('Failed', 'woo-pagarme-payments');
     }
 }

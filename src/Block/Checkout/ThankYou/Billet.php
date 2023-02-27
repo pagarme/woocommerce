@@ -26,17 +26,30 @@ class Billet extends ThankYou
      */
     protected $_template = 'templates/checkout/thankyou/billet';
 
+
+    public function getCharge()
+    {
+        if ($charge = $this->getData('charge')) {
+            return $charge;
+        }
+        if ($response = $this->getResponseData()) {
+            if (property_exists($response, 'charges')) {
+                return current($response->charges);
+            }
+        }
+        return null;
+    }
+
     /**
      * @return string|null
      */
     public function getBilletUrl()
     {
-        if ($response = $this->getResponseData()) {
-            $charges = $response->charges;
-            $charge = array_shift($charges);
-            $transaction = array_shift($charge->transactions);
+        try {
+            $charge = $this->getCharge();
+            $transaction = current($charge->transactions);
             return $transaction->boletoUrl;
-        }
+        } catch (\Exception $e) {}
         return null;
     }
 }

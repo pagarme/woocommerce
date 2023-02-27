@@ -39,4 +39,9 @@ if (!function_exists('add_action')) {
     <div class="pix-qr-code-instruction pix-attention-instruction">
         <?php _e('You can also complete the payment by copying and pasting the code into the app.', 'woo-pagarme-payments'); ?>
     </div>
+<?php else : ?>
+    <?= $this->createBlock(
+        '\Woocommerce\Pagarme\Block\Checkout\ThankYou\StatusTransaction',
+        'pagarme.checkout.thankyou.statustransaction'
+    )->toHtml() ?>
 <?php endif; ?>

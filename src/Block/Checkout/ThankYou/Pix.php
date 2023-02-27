@@ -31,12 +31,14 @@ class Pix extends ThankYou
      */
     public function getQrCodeUrl()
     {
-        if ($response = $this->getResponseData()) {
-            $charges = $response->charges;
-            $charge = array_shift($charges);
-            $transaction = array_shift($charge->transactions);
-            return $transaction->postData->qr_code_url;
-        }
+        try {
+            if ($response = $this->getResponseData()) {
+                $charges = $response->charges;
+                $charge = array_shift($charges);
+                $transaction = array_shift($charge->transactions);
+                return $transaction->postData->qr_code_url;
+            }
+        } catch (\Exception $e) {}
         return null;
     }
 
@@ -45,12 +47,14 @@ class Pix extends ThankYou
      */
     public function getRawQrCode()
     {
-        if ($response = $this->getResponseData()) {
-            $charges = $response->charges;
-            $charge = array_shift($charges);
-            $transaction = array_shift($charge->transactions);
-            return $transaction->postData->qr_code;
-        }
+        try {
+            if ($response = $this->getResponseData()) {
+                $charges = $response->charges;
+                $charge = array_shift($charges);
+                $transaction = array_shift($charge->transactions);
+                return $transaction->postData->qr_code;
+            }
+        } catch (\Exception $e) {}
         return null;
     }
 
