@@ -33,10 +33,7 @@ class Pix extends AbstractPayment
         Multicustomers $multicustomers = null
     ) {
         parent::__construct($jsonSerialize, $data);
-        if (!$multicustomers) {
-            $multicustomers = new Multicustomers;
-        }
-        $this->multicustomers = $multicustomers;
+        $this->multicustomers = $multicustomers ?? new Multicustomers;
         $this->init();
     }
 
