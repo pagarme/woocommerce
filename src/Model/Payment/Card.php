@@ -84,15 +84,12 @@ class Card extends AbstractPayment
     {
         $suffix = $this->payRequestCardNum === 1 ? '' : '2';
         $content = parent::getPayRequestBase($wc_order, $form_fields, $customer);
-        $content['voucher'] = [
-            'statement_descriptor' => $this->getConfig()->getVoucherSoftDescriptor(),
-            'credit_card' => [
-                'installments' => Utils::get_value_by($form_fields, "installments{$suffix}"),
-                'statement_descriptor' => $this->getConfig()->getCcSoftDescriptor(),
-                'capture' => $this->getConfig()->getIsActiveCapture(),
-                'card' => [
-                    'billing_address' => $this->getBillingAddressFromCustomer($customer, $wc_order)
-                ]
+        $content[$this->getMethodCode()] = [
+            'installments' => Utils::get_value_by($form_fields, "installments{$suffix}"),
+            'statement_descriptor' => $this->getConfig()->getCcSoftDescriptor(),
+            'capture' => $this->getConfig()->getIsActiveCapture(),
+            'card' => [
+                'billing_address' => $this->getBillingAddressFromCustomer($customer, $wc_order)
             ]
         ];
         return $this->handleCardType($form_fields, $content, $suffix);

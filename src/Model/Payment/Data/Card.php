@@ -42,10 +42,7 @@ class Card extends AbstractPayment
     ) {
         parent::__construct($jsonSerialize, $data);
         $this->num = $num;
-        if (!$multicustomers) {
-            $multicustomers = new Multicustomers;
-        }
-        $this->multicustomers = $multicustomers;
+        $this->multicustomers = $multicustomers ?? new Multicustomers;
         $this->init();
     }
 

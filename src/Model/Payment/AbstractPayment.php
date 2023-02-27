@@ -202,7 +202,7 @@ abstract class AbstractPayment
         );
     }
 
-    protected function getBillingAddressFromCustomer(Customers $customer, WC_Order $wc_order)
+    protected function getBillingAddressFromCustomer($customer, WC_Order $wc_order)
     {
         $addressArray = isset($customer->address) ? (array) $customer->address : [];
         if (empty($addressArray)) {

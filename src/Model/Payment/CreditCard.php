@@ -81,7 +81,7 @@ class CreditCard extends Card implements PaymentInterface
     public function getPayRequest(WC_Order $wc_order, array $form_fields, $customer = null)
     {
         $request = [];
-        $content = parent::getPayRequest($wc_order, $form_fields, $customer);
+        $content = current(parent::getPayRequest($wc_order, $form_fields, $customer));
         $content['amount'] = Utils::format_order_price(
             $this->getPriceWithInterest(
                 $wc_order->get_total(),

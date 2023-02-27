@@ -60,30 +60,12 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
         array $data = []
     ) {
         parent::__construct($jsonSerialize, $data);
-        if (!$shippingMethod) {
-            $shippingMethod = new ShippingMethod;
-        }
-        if (!$cards) {
-            $cards = new Cards;
-        }
-        if (!$shippingAddress) {
-            $shippingAddress = new ShippingAddress;
-        }
-        if (!$billingAddress) {
-            $billingAddress = new BillingAddress;
-        }
-        if (!$billet) {
-            $billet = new Billet;
-        }
-        if (!$pix) {
-            $pix = new Pix;
-        }
-        $this->cards = $cards;
-        $this->shippingMethod = $shippingMethod;
-        $this->shippingAddress = $shippingAddress;
-        $this->billingAddress = $billingAddress;
-        $this->billet = $billet;
-        $this->pix = $pix;
+        $this->cards = $cards ?? new Cards;
+        $this->shippingMethod = $shippingMethod ?? new ShippingMethod;
+        $this->shippingAddress = $shippingAddress ?? new ShippingAddress;
+        $this->billingAddress = $billingAddress ?? new BillingAddress;
+        $this->billet = $billet ?? new Billet;
+        $this->pix = $pix ?? new Pix;
         $this->init();
     }
 
