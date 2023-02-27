@@ -1,0 +1,27 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\ThankYou\TwoCards $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php foreach ($this->getCharges() as $key => $charge) : ?>
+    <?= __('CREDIT CARD', 'woo-pagarme-payments') . ' ' . ++$key; ?>
+    <?= $this->createBlock(
+        '\Woocommerce\Pagarme\Block\Checkout\ThankYou\CreditCard',
+        'pagarme.checkout.thankyou.credit_card',
+        [
+            'charge' => $charge
+        ]
+    )->toHtml() ?>
+<?php endforeach; ?>

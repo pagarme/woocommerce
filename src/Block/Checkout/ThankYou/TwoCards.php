@@ -16,24 +16,27 @@ use Woocommerce\Pagarme\Block\Checkout\ThankYou;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class CreditCard
+ * Class TwoCards
  * @package Woocommerce\Pagarme\Block\Checkout\ThankYou
  */
-class CreditCard extends ThankYou
+class TwoCards extends ThankYou
 {
     /**
      * @var string
      */
-    protected $_template = 'templates/checkout/thankyou/credit-card';
+    protected $_template = 'templates/checkout/thankyou/2-cards';
 
-    public function getCharge()
+    /**
+     * @return array|mixed|null
+     */
+    public function getCharges()
     {
-        if ($charge = $this->getData('charge')) {
-            return $charge;
+        if ($charges = $this->getData('charges')) {
+            return $charges;
         }
         if ($response = $this->getResponseData()) {
             if (property_exists($response, 'charges')) {
-                return array_shift($response->charges);
+                return $response->charges;
             }
         }
         return null;

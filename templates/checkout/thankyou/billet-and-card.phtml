@@ -19,26 +19,25 @@ if (!function_exists('add_action')) {
     <?php foreach ($this->getCharges() as $charge) : ?>
         <?php if ($this->getTransactionType($charge) === 'credit_card') : ?>
             <?= $this->setIncludeContainer()->formatElement('<p>', ['p' => []]) ?>
-                <?php
-                    printf(
-                        __('CREDIT CARD: The status of your transaction is %s.', 'woo-pagarme-payments'),
-                        '<strong>' .  strtoupper(
-                            __(
-                                ucfirst($charge->status),
-                                'woo-pagarme-payments'
-                            )
-                        )  . '</strong>'
-                    );
-                ?>
+                <?= __('CREDIT CARD', 'woo-pagarme-payments'); ?>
+                <?= $this->createBlock(
+                    '\Woocommerce\Pagarme\Block\Checkout\ThankYou\CreditCard',
+                    'pagarme.checkout.thankyou.credit_card',
+                    [
+                        'charge' => $charge
+                    ]
+                )->toHtml() ?>
             <?= $this->setIncludeContainer()->formatElement('</p>', ['p' => []]) ?>
         <?php endif; ?>
         <?php if ($this->getTransactionType($charge) === 'boleto') : ?>
-            <p>
-                <?= __('BOLETO: If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments'); ?>
-            </p>
-            <a href="<?= $this->getTransacion($charge)->boletoUrl ?>" target="_blank" class="payment-link">
-                <?= __('Print', 'woo-pagarme-payments'); ?>
-            </a>
+            <?= __('BOLETO', 'woo-pagarme-payments'); ?>
+            <?= $this->createBlock(
+                '\Woocommerce\Pagarme\Block\Checkout\ThankYou\Billet',
+                'pagarme.checkout.thankyou.billet',
+                [
+                    'charge' => $charge
+                ]
+            )->toHtml() ?>
         <?php endif; ?>
     <?php endforeach ?>
 <?php else : ?>

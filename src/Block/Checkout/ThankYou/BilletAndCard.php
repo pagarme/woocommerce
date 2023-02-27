@@ -41,11 +41,17 @@ class BilletAndCard extends ThankYou
 
     public function getTransactionType($charge)
     {
-        return $this->getTransacion($charge)->type;
+        try {
+            return $this->getTransacion($charge)->type;
+        } catch (\Exception $e) {}
+        return null;
     }
 
     public function getTransacion($charge)
     {
-        return current($charge->transactions);
+        try {
+            return current($charge->transactions);
+        } catch (\Exception $e) {}
+        return null;
     }
 }
