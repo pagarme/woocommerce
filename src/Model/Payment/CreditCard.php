@@ -84,7 +84,7 @@ class CreditCard extends Card implements PaymentInterface
         $content = current(parent::getPayRequest($wc_order, $form_fields, $customer));
         $content['amount'] = Utils::format_order_price(
             $this->getPriceWithInterest(
-                $wc_order->get_total(),
+                $this->getAmount($wc_order, $form_fields),
                 Utils::get_value_by($form_fields, 'installments'),
                 Utils::get_value_by($form_fields, 'brand')
             )

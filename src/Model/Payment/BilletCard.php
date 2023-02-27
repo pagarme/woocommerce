@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
 class BilletCard extends AbstractPayment implements PaymentInterface
 {
     /** @var string */
-    const PAYMENT_CODE = 'billet-and-card';
+    const PAYMENT_CODE = 'billet_and_card';
 
     /** @var int */
     protected $suffix = 4;
@@ -109,8 +109,8 @@ class BilletCard extends AbstractPayment implements PaymentInterface
     public function getPayRequest(WC_Order $wc_order, array $form_fields, $customer = null)
     {
         $content = [];
-        $content[] = $this->billet->getPayRequest($wc_order, $form_fields, $customer);
-        $content[] = $this->creditCard->getPayRequest($wc_order, $form_fields, $customer);
+        $content[] = current($this->billet->getPayRequest($wc_order, $form_fields, $customer));
+        $content[] = current($this->creditCard->getPayRequest($wc_order, $form_fields, $customer));
         return $content;
     }
 }

@@ -41,6 +41,9 @@ abstract class AbstractPayment
     /** @var array */
     protected $dictionary = [];
 
+    /** @var null */
+    protected $charOrderValue = null;
+
     /**
      * @return int
      * @throws \Exception
@@ -164,12 +167,22 @@ abstract class AbstractPayment
     {
         $request = [];
         $content = $this->getPayRequestBase($wc_order, $form_fields, $customer);
-        $content['amount'] = Utils::format_order_price($wc_order->get_total());
+        $content['amount'] = Utils::format_desnormalized_order_price($this->getAmount($wc_order, $form_fields));
         if ($multicustomers = $this->getMulticustomerData($this->code, $form_fields)) {
             $content['customer'] = $multicustomers;
         }
         $request[] = $content;
         return $request;
+    }
+
+    protected function getAmount(WC_Order $wc_order, $form_fields)
+    {
+        $amount = $wc_order->get_total();
+        $charOrderValue = $this->charOrderValue ?? $this->code . '_value';
+        if ($value = Utils::get_value_by($form_fields, $charOrderValue)) {
+            $amount = $value;
+        }
+        return $amount;
     }
 
     protected function getMulticustomerData($type, $form_fields)

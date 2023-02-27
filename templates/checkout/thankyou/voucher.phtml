@@ -15,18 +15,10 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 ?>
-<p>
-    <?php
-    /** phpcs:disable */
-    printf(
-        __('The status of your transaction is %s.', 'woo-pagarme-payments'),
-        '<strong>' . strtoupper(
-            __(
-                $this->getChargeStatus() ? ucfirst($this->getChargeStatus()) : 'Failed',
-                'woo-pagarme-payments'
-            )
-        ) . '</strong>'
-    );
-    /** phpcs:enable */
-    ?>
-</p>
+<?= $this->createBlock(
+    '\Woocommerce\Pagarme\Block\Checkout\ThankYou\StatusTransaction',
+    'pagarme.checkout.thankyou.statustransaction',
+    [
+        'message' => $this->getChargeStatus() ? ucfirst($this->getChargeStatus()) : null
+    ]
+)->toHtml() ?>

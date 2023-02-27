@@ -23,17 +23,8 @@ if (!function_exists('add_action')) {
         <?php _e('Print', 'woo-pagarme-payments'); ?>
     </a>
 <?php else : ?>
-    <p>
-        <?php
-        printf(
-            __('The status of your transaction is %s.', 'woo-pagarme-payments'),
-            '<strong>' . strtoupper(
-                __(
-                    'Failed',
-                    'woo-pagarme-payments'
-                )
-            ) . '</strong>'
-        );
-        ?>
-    </p>
+    <?= $this->createBlock(
+        '\Woocommerce\Pagarme\Block\Checkout\ThankYou\StatusTransaction',
+        'pagarme.checkout.thankyou.statustransaction'
+    )->toHtml() ?>
 <?php endif; ?>
