@@ -92,6 +92,7 @@ class Card extends AbstractPayment
                 'billing_address' => $this->getBillingAddressFromCustomer($customer, $wc_order)
             ]
         ];
+        $this->charOrderValue = 'card_order_value' . $suffix;
         return $this->handleCardType($form_fields, $content, $suffix);
     }
 

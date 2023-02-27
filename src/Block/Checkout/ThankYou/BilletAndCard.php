@@ -46,6 +46,6 @@ class BilletAndCard extends ThankYou
 
     public function getTransacion($charge)
     {
-        return array_shift($charge->transactions);
+        return current($charge->transactions);
     }
 }

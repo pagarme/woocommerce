@@ -41,4 +41,9 @@ if (!function_exists('add_action')) {
             </a>
         <?php endif; ?>
     <?php endforeach ?>
+<?php else : ?>
+    <?= $this->createBlock(
+        '\Woocommerce\Pagarme\Block\Checkout\ThankYou\StatusTransaction',
+        'pagarme.checkout.thankyou.statustransaction'
+    )->toHtml() ?>
 <?php endif; ?>
