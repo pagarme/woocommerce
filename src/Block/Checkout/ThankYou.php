@@ -29,7 +29,6 @@ class ThankYou extends Template
     /** @var bool */
     protected $container;
 
-
     /**
      * @return string
      */
