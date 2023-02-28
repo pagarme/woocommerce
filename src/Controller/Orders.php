@@ -6,6 +6,7 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order as BlockOrder;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
@@ -18,15 +19,19 @@ class Orders
 {
     private $settings;
 
-    public function __construct()
-    {
+    /** @var BlockOrder */
+    private $blockOrder;
+
+    public function __construct(
+        BlockOrder $blockOrder = null
+    ) {
         $this->settings = Setting::get_instance();
         $this->debug    = $this->settings->is_enabled_logs();
-
+        $this->blockOrder = $blockOrder ?? new BlockOrder;
         add_action('on_pagarme_order_paid', array($this, 'set_order_paid'), 20, 2);
         add_action('on_pagarme_order_created', array($this, 'set_order_created'), 20, 2);
         add_action('on_pagarme_order_canceled', array($this, 'set_order_canceled'), 20, 2);
-        add_action('add_meta_boxes', array($this, 'add_capture_metabox'));
+        add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
     }
 
     public function create_order(WC_Order $wc_order, $payment_method, $form_fields)
@@ -79,15 +84,17 @@ class Orders
         $order->payment_canceled();
     }
 
-    public function add_capture_metabox()
+    public function add_meta_boxes()
     {
-        add_meta_box(
-            'woo-pagarme-capture',
-            'Pagar.me - Captura/Cancelamento',
-            array('Woocommerce\Pagarme\View\Orders', 'render_capture_metabox'),
-            'shop_order',
-            'advanced',
-            'high'
-        );
+        foreach ($this->blockOrder->getMetaBoxes() as $metaBox) {
+            add_meta_box(
+                'woo-pagarme-capture',
+                $metaBox->getTitle(),
+                [$metaBox, 'toHtml'],
+                'shop_order',
+                'advanced',
+                'high'
+            );
+        }
     }
 }

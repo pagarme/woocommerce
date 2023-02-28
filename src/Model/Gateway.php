@@ -261,7 +261,6 @@ class Gateway
         foreach ($this->getPayments() as $class) {
             /** @var PaymentInterface $payment */
             $payment = new $class;
-            $x = $payment->getMethodCode();
             if ($payment->getMethodCode() === $paymentCode) {
                 return $payment;
             }

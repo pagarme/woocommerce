@@ -220,7 +220,7 @@ class Charge
 
     public function is_allowed_capture($charge)
     {
-        $transaction = array_shift($charge->getTransactions());
+        $transaction = current($charge->getTransactions());
         $method = $transaction->getTransactionType()->getType();
         $chargeStatus = $charge->getStatus()->getStatus();
 

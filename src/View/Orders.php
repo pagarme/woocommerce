@@ -12,6 +12,10 @@ use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Charge;
 use Woocommerce\Pagarme\Model\Setting;
 
+/**
+ * @deprecated Class for backward compatibility. Will be removed someday.
+ * @see \Woocommerce\Pagarme\Block\Adminhtml\Sales\Order
+ */
 class Orders
 {
     public static function render_capture_metabox($post)
@@ -72,7 +76,7 @@ class Orders
                                 ?></td>
                             <td><?php echo wp_kses($refunded_amount, ['span' => array('class' => true)]);
                                 ?></td>
-                            <td><?php echo esc_html(strtoupper($chargeStatus)); ?></td>
+                            <td><?php echo esc_html(strtoupper(__(ucfirst($chargeStatus), 'woo-pagarme-payments'))); ?></td>
                             <td style="width:150px; padding-top:12px; text-align:center;">
                                 <button data-type="cancel" data-ref="<?php echo esc_attr($chargeId); ?>" <?php echo esc_attr(!$charge_model->is_allowed_cancel($charge) ? 'disabled=disabled' : ''); ?> class="button-primary">Cancelar</button>
 
