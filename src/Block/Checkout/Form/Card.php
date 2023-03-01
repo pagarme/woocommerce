@@ -100,13 +100,16 @@ class Card extends Gateway
     }
 
     /**
-     * @param string $id
+     * @param string|null $id
      * @return string
      */
-    public function getElementId(string $id)
+    public function getElementId(string $id = null)
     {
-        $id = '[cards][' . $this->getSequence() . '][' . $id . ']';
-        return parent::getElementId($id);
+        $elementId = '[cards][' . $this->getSequence() . ']';
+        if ($id) {
+            $elementId .= '[' . $id . ']';
+        }
+        return parent::getElementId($elementId);
     }
 
     /**

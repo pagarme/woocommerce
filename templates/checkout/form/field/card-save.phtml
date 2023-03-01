@@ -15,7 +15,7 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 ?>
-<?php if ($this->getConfig()->getIsEnableWallet()) : ?>
+<?php if ($this->getIsEnableWallet()) : ?>
     <p class="form-row form-row-wide" data-element="save-cc-check">
         <label for="save-card">
             <input type="checkbox" id="<?= $this->getElementId('save-card'); ?>" name="<?= $this->getElementId('save-card'); ?>" value="1" <?php checked($this->getPaymentInstance()->getCustomer()->save_credit_card, true); ?>>
