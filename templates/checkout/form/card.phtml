@@ -35,14 +35,6 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
             </p>
         <?php endif; ?>
         <?= $this->createBlock(
-            '\Woocommerce\Pagarme\Block\Checkout\Field\Wallet',
-            'pagarme.checkout.field.wallet',
-            [
-                'payment_instance' => $this->getPaymentInstance(),
-                'sequence' => $qty
-            ]
-        )->toHtml() ?>
-        <?= $this->createBlock(
             '\Woocommerce\Pagarme\Block\Checkout\Form\Wallet',
             'pagarme.checkout.form.wallet',
             [
@@ -100,6 +92,7 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
                 'pagarme.checkout.field.wallet',
                 [
                     'payment_instance' => $this->getPaymentInstance(),
+                    'parent_element_id' => $this->getElementId(),
                     'sequence' => $qty
                 ]
             )->toHtml() ?>

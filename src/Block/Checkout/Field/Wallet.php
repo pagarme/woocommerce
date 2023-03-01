@@ -12,6 +12,8 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Block\Checkout\Field;
 
 use Woocommerce\Pagarme\Block\Checkout\Gateway;
+use Woocommerce\Pagarme\Model\Payment\CreditCard;
+use Woocommerce\Pagarme\Model\Payment\Voucher;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -55,7 +57,25 @@ class Wallet extends Gateway
      */
     public function getElementId(string $id)
     {
+        if ($this->getParentElementId()) {
+            return $this->getParentElementId() . '[' . $id . ']';
+        }
         $id = '[wallet][' . $this->getSequence() . '][' . $id . ']';
         return parent::getElementId($id);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEnableWallet()
+    {
+        $configField = [
+            CreditCard::PAYMENT_CODE => 'cc-allow-save',
+            Voucher::PAYMENT_CODE => 'voucher-card-wallet'
+        ];
+        $method = 'get' . str_replace(' ', '', ucwords(str_replace('-', ' ' ,
+            $configField[$this->getPaymentInstance()->getMethodCode()]
+        )));
+        return (bool)$this->getConfig()->{$method}();
     }
 }

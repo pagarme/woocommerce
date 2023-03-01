@@ -46,18 +46,10 @@ class PostFormatter
         $paymentMethod = null,
         $orderId = null
     ) {
-        if ($paymentMethod) {
-            $this->paymentMethod = $paymentMethod;
-        }
-        if (!$gateway) {
-            $gateway = new Gateway();
-        }
-        if (!$paymentRequest) {
-            $paymentRequest = new PaymentRequest;
-        }
+        $this->paymentMethod = $paymentMethod;
+        $this->gateway = $gateway ?? new Gateway;
+        $this->paymentRequest = $paymentRequest ?? new PaymentRequest;
         $this->orderId = $orderId;
-        $this->gateway = $gateway;
-        $this->paymentRequest = $paymentRequest;
     }
 
     /**

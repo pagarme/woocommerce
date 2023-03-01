@@ -139,12 +139,18 @@ class Checkout
                     }
                     $fields['brand'] = $card->getBrand();
                     $fields['installments'] = $card->getInstallment();
+                    if ($card->getSaveCard()) {
+                        $fields['save_credit_card'] = 1;
+                    }
                 } else {
                     if ($orderValue = $card->getOrderValue()) {
                         $fields['card_order_value' . $key] = $orderValue;
                     }
                     $fields['brand' . $key] = $card->getBrand();
                     $fields['installments' . $key] = $card->getInstallment();
+                    if ($card->getSaveCard()) {
+                        $fields['save_credit_card' . $key] = 1;
+                    }
                 }
                 $fields['pagarmetoken' . $key] = $card->getToken();
             }
