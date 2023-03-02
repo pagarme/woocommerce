@@ -27,6 +27,11 @@ class BilletAndCard extends Gateway
     protected $_template = 'templates/checkout/payment/billet-and-card';
 
     /**
+     * @var string[]
+     */
+    protected $scripts = ['checkout/model/payment/order-value'];
+
+    /**
      * @return int
      */
     public function getQtyCards()

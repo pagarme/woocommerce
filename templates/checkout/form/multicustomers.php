@@ -82,4 +82,3 @@ declare( strict_types=1 );
         </p>
     </div>
 </fieldset>
-<script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/multicustomers.js')); ?>" type="application/javascript"> </script>

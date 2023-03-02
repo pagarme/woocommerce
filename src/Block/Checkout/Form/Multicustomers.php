@@ -30,6 +30,11 @@ class Multicustomers extends Gateway
      */
     protected $_template = 'templates/checkout/form/multicustomers';
 
+    /**
+     * @var string[]
+     */
+    protected $scripts = ['checkout/model/multicustomers'];
+
     /** @var int  */
     protected $sequence = 1;
 
