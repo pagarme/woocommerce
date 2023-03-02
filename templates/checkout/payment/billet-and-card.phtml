@@ -36,4 +36,8 @@ if (!function_exists('add_action')) {
         'multicustomers_sequence' => 2
     ]
 )->toHtml() ?>
-<script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/payment/order-value.js')); ?>" type="application/javascript"></script>
+<script type="text/javascript">
+    if (typeof pagarmeOrderValue == 'object') {
+        pagarmeOrderValue.start();
+    }
+</script>

@@ -119,13 +119,13 @@ class Core
     {
         $id = "{$type}-script-" . self::SLUG;
 
-        wp_enqueue_script(
-            $id,
-            self::plugins_url("assets/javascripts/{$type}/built.js"),
-            array_merge(array('jquery'), $deps),
-            self::filemtime("assets/javascripts/{$type}/built.js"),
-            true
-        );
+//        wp_enqueue_script(
+//            $id,
+//            self::plugins_url("assets/javascripts/{$type}/built.js"),
+//            array_merge(array('jquery'), $deps),
+//            self::filemtime("assets/javascripts/{$type}/built.js"),
+//            true
+//        );
 
         if ($type == 'front') {
             wp_enqueue_script(
@@ -133,7 +133,14 @@ class Core
                 self::plugins_url("assets/javascripts/vendor/sweetalert2.js"),
                 array_merge(array('jquery'), $deps),
                 self::filemtime("assets/javascripts/vendor/sweetalert2.js"),
-                true
+                false
+            );
+            wp_enqueue_script(
+                'jquery.mask',
+                self::plugins_url("assets/javascripts/vendor/jquery.mask.js"),
+                array('jquery'),
+                '1.14.16',
+                false
             );
         }
 

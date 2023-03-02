@@ -68,7 +68,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     private $gatewayBlock;
 
     /** @var Template*/
-    private Template $template;
+    private $template;
 
     /** @var Yesno */
     protected $yesnoOptions;

@@ -1001,7 +1001,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $paymentData[$pixDataIndex] = [];
         }
 
-        if ($this->formData["enable_multicustomers_pix"]) {
+        if (isset($this->formData["enable_multicustomers_pix"]) && $this->formData["enable_multicustomers_pix"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'pix'
             );
