@@ -117,7 +117,7 @@ let pagarmeCard = {
 
     loadBrand: async function (e) {
         let elem = e.currentTarget;
-        let cardNumber = this.elem.value.replace(/\s/g, '');
+        let cardNumber = elem.value.replace(/\s/g, '');
         let card = await this.getCardData(cardNumber);
         this.changeBrand(e, card);
         this.updateInstallmentsElement(e);
@@ -175,7 +175,7 @@ let pagarmeCard = {
             throw "Invalid data to change card brand";
         }
         let elem = e.currentTarget;
-        let imageSrc = getImageSrc(card);
+        let imageSrc = this.getImageSrc(card);
         let imgElem = $(elem).parent().find(brandImgTarget).find('img');
         $(elem).parent().find(brandTarget).attr('value', card[0].brand);
         if (imgElem.length) {
@@ -232,22 +232,24 @@ let pagarmeCard = {
                     'total': total
                 }
             });
-            ajax.done($.proxy(_done, this, select, storageName, cardForm));
-            ajax.fail(function () {
-                removeLoader(cardForm);
+            ajax.done(function (response) {
+                pagarmeCard._done(select, storageName, cardForm, response);
             });
-            showLoader(cardForm);
+            ajax.fail(function () {
+                pagarmeCard._fail(cardForm);
+            });
+            pagarmeCard.showLoader(cardForm);
         }
     },
 
     _done: function (select, storageName, e, response) {
         select.html(response);
         sessionStorage.setItem(storageName, response);
-        removeLoader(e);
+        this.removeLoader(e);
     },
 
     _fail: function (e) {
-        removeLoader(e);
+        this.removeLoader(e);
     },
 
     removeLoader: function (e) {
@@ -282,16 +284,6 @@ let pagarmeCard = {
             new swal(message);
         }
     },
-    addEventListener: function () {
-        jQuery(cardNumberTarget).on('blur', function (e) {
-            pagarmeCard.keyEventHandlerCard(e);
-        });
-    },
-    start: function () {
-        pagarmeCard.getCardsMethods();
-        pagarmeCard.getBrands();
-        pagarmeCard.addsMask();
-    },
     execute: async function () {
         let result = pagarmeCard.formHandler(),
             i = 1;
@@ -314,6 +306,17 @@ let pagarmeCard = {
                 showError(er.message);
             }
         }
-    }
+    },
+    addEventListener: function () {
+        jQuery(cardNumberTarget).on('blur', function (e) {
+            pagarmeCard.keyEventHandlerCard(e);
+        });
+    },
+    start: function () {
+        pagarmeCard.getCardsMethods();
+        pagarmeCard.getBrands();
+        pagarmeCard.addsMask();
+        this.addEventListener();
+    },
 };
 
