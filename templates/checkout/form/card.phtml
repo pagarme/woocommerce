@@ -120,7 +120,7 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
     </fieldset>
 <?php endfor; ?>
 <script type="text/javascript">
-    if (typeof pagarmeOrderValue == 'object') {
+    if (typeof pagarmeCard == 'object') {
         pagarmeCard.start();
     }
 </script>
