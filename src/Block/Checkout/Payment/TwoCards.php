@@ -27,6 +27,11 @@ class TwoCards extends Gateway
     protected $_template = 'templates/checkout/payment/2-cards';
 
     /**
+     * @var string[]
+     */
+    protected $scripts = ['checkout/model/payment/order-value'];
+
+    /**
      * @return int
      */
     public function getQtyCards()

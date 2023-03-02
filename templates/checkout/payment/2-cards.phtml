@@ -23,4 +23,11 @@ if (!function_exists('add_action')) {
         'qty_cards' => $this->getQtyCards()
     ]
 )->toHtml() ?>
-<script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/payment/order-value.js')); ?>" type="application/javascript"></script>
+
+<?php
+?>
+<script type="text/javascript">
+    if (typeof pagarmeOrderValue == 'object') {
+        pagarmeOrderValue.start();
+    }
+</script>
