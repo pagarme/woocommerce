@@ -69,10 +69,10 @@ class CreditCard extends AbstractGateway
         return [
             'title'   => __('Enable/Disable', 'woocommerce'),
             'type'     => 'select',
-            'options' => $this->yesnoOptions->toArray(),
+            'options' => $this->yesnoOptions->toLabelsArray(),
             'label'   => __('Enable credit card', 'woo-pagarme-payments'),
             'old_name'    => 'enable_credit_card',
-            'default'     => $this->config->getData('enable_credit_card') ?? Yesno::NO_VALUE,
+            'default'     => $this->config->getData('enable_credit_card') ?? strtolower(Yesno::NO),
         ];
     }
 
