@@ -267,10 +267,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         return [
             'title'   => __('Enable/Disable', 'woocommerce'),
             'type'    => 'select',
-            'options' => $this->yesnoOptions->toArray(),
+            'options' => $this->yesnoOptions->toLabelsArray(),
             'label'   => __('Enable', 'woo-pagarme-payments') . ' ' .
                 __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
-            'default' => $this->config->getData('enable_' . $this->method) ?? Yesno::NO_VALUE,
+            'default' => $this->config->getData('enable_' . $this->method) ?? strtolower(Yesno::NO),
         ];
     }
 

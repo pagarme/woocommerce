@@ -53,4 +53,22 @@ abstract class AbstractOptions implements OptionSourceInterface
         }
         return $options;
     }
+
+    /**
+     * "key-value" format
+     * @return array
+     */
+    public function toLabelsArray($translate = false)
+    {
+        $options = [];
+        $reflectionClass = new \ReflectionClass($this);
+        $const = $reflectionClass->getConstants();
+        foreach ($const as $code => $value) {
+            if (strpos($code, '_VALUE') === false) {
+                $value = $translate ? __($value) : $value;
+                $options[strtolower($value)] = $value;
+            }
+        }
+        return $options;
+    }
 }
