@@ -28,6 +28,11 @@ class Card extends Gateway
      */
     protected $_template = 'templates/checkout/form/card';
 
+    /**
+     * @var string[]
+     */
+    protected $scripts = ['checkout/model/payment/card', 'checkout/model/payment/card/tokenize'];
+
     /** @var int  */
     protected $sequence = 1;
 

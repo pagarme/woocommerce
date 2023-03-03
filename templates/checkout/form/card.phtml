@@ -119,5 +119,8 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
         <?php endif; ?>
     </fieldset>
 <?php endfor; ?>
-<script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/payment/card/tokenize.js')); ?>" type="application/javascript"> </script>
-<script src="<?= esc_url($this->getFileUrl('assets/javascripts/front/checkout/model/payment/card.js')); ?>" type="application/javascript"> </script>
+<script type="text/javascript">
+    if (typeof pagarmeCard == 'object') {
+        pagarmeCard.start();
+    }
+</script>
