@@ -1,7 +1,6 @@
 /* globals wc_pagarme_checkout */
 $ = jQuery;
 
-const cardEl = $('[data-element="fields-cc-data"]');
 const cardNumberTarget = 'input[data-element="pagarme-card-number"]';
 const brandTarget = '[data-pagarmecheckout-element="brand-input"]';
 const brandImgTarget = 'span[name="brand-image"]';
@@ -45,11 +44,11 @@ let pagarmeCard = {
     checkTokenCard: function (e) {
         let allResult = [];
         e.each(async function () {
-            if (this.hasSelectedWallet(this)) {
+            if (pagarmeCard.hasSelectedWallet(this)) {
                 allResult.push(true);
                 return;
             }
-            allResult.push(this.checkToken(this));
+            allResult.push(pagarmeCard.checkToken(this));
         });
         return !allResult.includes(false);
     },
@@ -64,22 +63,19 @@ let pagarmeCard = {
         if (!(e instanceof jQuery)) {
             e = $(e);
         }
-        if (e.find(tokenElement).length) {
-            return true;
-        }
-        return false;
+        return !!e.find(tokenElement).length;
     },
 
     getCardDataContingency: async function (cardNumber) {
         let oldPrefix = '',
             types = await this.getBrands(true),
-            bin = cardNumber.substr(0, 6),
+            bin = cardNumber.substring(0, 6),
             currentBrand,
             data;
-        for (var i = 0; i < types.length; i += 1) {
-            var current_type = types[i];
-            for (var j = 0; j < current_type.prefixes.length; j += 1) {
-                var prefix = current_type.prefixes[j].toString();
+        for (let i = 0; i < types.length; i += 1) {
+            let current_type = types[i];
+            for (let j = 0; j < current_type.prefixes.length; j += 1) {
+                let prefix = current_type.prefixes[j].toString();
                 if (bin.indexOf(prefix) === 0 && oldPrefix.length < prefix.length) {
                     oldPrefix = prefix;
                     currentBrand = current_type.brand;
@@ -95,7 +91,7 @@ let pagarmeCard = {
             if (onlyBrands) {
                 let types = [];
                 cardsMethods.forEach(function (key) {
-                    $.each(wc_pagarme_checkout.config.payment[key].brands, function (method) {
+                    $.each(wc_pagarme_checkout.config.payment[key].brands, function () {
                         types.push(this);
                     });
                 });
@@ -290,7 +286,7 @@ let pagarmeCard = {
         try {
             while (!result && i <= this.limit) {
                 if (i === this.limit) {
-                    removeLoader(this.getCheckoutPaymentElement());
+                    this.removeLoader(this.getCheckoutPaymentElement());
                     throw "Tokenize timeout";
                 }
                 await pagarmeCard.wait();
@@ -301,9 +297,9 @@ let pagarmeCard = {
             $("form.checkout, form#order_review").submit();
         } catch (er) {
             if (typeof er === 'string') {
-                showError(er);
+                this.showError(er);
             } else {
-                showError(er.message);
+                this.showError(er.message);
             }
         }
     },
@@ -311,6 +307,19 @@ let pagarmeCard = {
         jQuery(cardNumberTarget).on('blur', function (e) {
             pagarmeCard.keyEventHandlerCard(e);
         });
+        $("form.checkout").on(
+            "checkout_place_order",
+            function (e) {
+                e.preventDefault();
+                if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit) {
+                    pagarmeCard.showLoader(pagarmeCard.getCheckoutPaymentElement());
+                    pagarmeCard.execute();
+                    return false;
+                }
+                return true;
+            }
+        );
+
     },
     start: function () {
         pagarmeCard.getCardsMethods();
@@ -319,4 +328,3 @@ let pagarmeCard = {
         this.addEventListener();
     },
 };
-
