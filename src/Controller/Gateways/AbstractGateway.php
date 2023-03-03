@@ -18,6 +18,7 @@ use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Payment\PostFormatter;
@@ -69,6 +70,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var Template*/
     private Template $template;
 
+    /** @var Yesno */
+    protected $yesnoOptions;
+
     /**
      * @param Gateway|null $gateway
      * @param WooOrderRepository|null $wooOrderRepository
@@ -76,6 +80,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      * @param Config|null $config
      */
     public function __construct(
+        Yesno $yesnoOptions = null,
         Checkout $checkout = null,
         Gateway $gateway = null,
         WooOrderRepository $wooOrderRepository = null,
@@ -92,6 +97,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->wooOrderRepository = $wooOrderRepository ?? new WooOrderRepository;
         $this->template = $template ?? new Template;
         $this->id = 'woo-pagarme-payments-' . $this->method;
+        $this->yesnoOptions = $yesnoOptions ?? new Yesno;
         $this->method_title = $this->getPaymentMethodTitle();
         $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->method_title;
         $this->has_fields = false;
@@ -260,10 +266,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     {
         return [
             'title'   => __('Enable/Disable', 'woocommerce'),
-            'type'    => 'checkbox',
+            'type'    => 'select',
+            'options' => $this->yesnoOptions->toArray(),
             'label'   => __('Enable', 'woo-pagarme-payments') . ' ' .
                 __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
-            'default' => $this->config->getData('enable_' . $this->method) ?? 'no',
+            'default' => $this->config->getData('enable_' . $this->method) ?? Yesno::NO_VALUE,
         ];
     }
 

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Payment\BilletCard;
 
 defined('ABSPATH') || exit;
@@ -35,10 +36,11 @@ class BilletCreditCard extends AbstractGateway
     {
         return array(
             'title'   => __('Enable/Disable', 'woocommerce'),
-            'type'    => 'checkbox',
+            'type'     => 'select',
+            'options' => $this->yesnoOptions->toArray(),
             'label'   => __('Enable multi-means (Boleto + Credit card)', 'woo-pagarme-payments'),
             'old_name'    => 'multimethods_billet_card',
-            'default'     => $this->config->getData('multimethods_billet_card') ?? 'no',
+            'default'     => $this->config->getData('multimethods_billet_card') ?? Yesno::NO_VALUE,
             'custom_attributes' => array(
                 'data-action'  => 'enable-multimethods-billet-card',
                 'data-requires-field' => 'billet-bank',

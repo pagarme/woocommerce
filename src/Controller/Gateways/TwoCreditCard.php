@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Payment\TwoCards;
 
 defined('ABSPATH') || exit;
@@ -35,10 +36,11 @@ class TwoCreditCard extends AbstractGateway
     {
         return [
             'title'   => __('Enable/Disable', 'woocommerce'),
-            'type' => 'checkbox',
+            'type'     => 'select',
+            'options' => $this->yesnoOptions->toArray(),
             'label' => __('Enable multi-means (2 Credit cards)', 'woo-pagarme-payments'),
             'old_name'    => 'multimethods_2_cards',
-            'default'     => $this->config->getData('multimethods_2_cards') ?? 'no',
+            'default'     => $this->config->getData('multimethods_2_cards') ?? Yesno::NO_VALUE,
         ];
     }
 }

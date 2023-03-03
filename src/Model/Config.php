@@ -13,6 +13,7 @@ namespace Woocommerce\Pagarme\Model;
 
 use Pagarme\Core\Hub\Services\HubIntegrationService;
 use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Config\PagarmeCoreConfigManagement;
 use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
 use Woocommerce\Pagarme\Model\Data\DataObject;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
@@ -29,14 +30,20 @@ class Config extends DataObject
     /** @var string */
     const HUB_SANDBOX_ENVIRONMENT = 'Sandbox';
 
+    /** @var PagarmeCoreConfigManagement */
+    private $pagarmeCoreConfigManagement;
+
     /**
+     * @param PagarmeCoreConfigManagement|null $pagarmeCoreConfigManagement
      * @param Json|null $jsonSerialize
      * @param array $data
      */
     public function __construct(
+        PagarmeCoreConfigManagement $pagarmeCoreConfigManagement = null,
         Json $jsonSerialize = null,
         array $data = []
     ) {
+        $this->pagarmeCoreConfigManagement = $pagarmeCoreConfigManagement ?? new PagarmeCoreConfigManagement;
         parent::__construct($jsonSerialize, $data);
         $this->init();
     }
@@ -82,6 +89,7 @@ class Config extends DataObject
             $config = $this;
         }
         update_option($this->getOptionKey(), $config->getData());
+        $this->pagarmeCoreConfigManagement->update($config);
     }
 
     /**

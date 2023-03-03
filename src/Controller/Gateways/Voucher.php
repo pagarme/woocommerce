@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Payment\Voucher\Brands;
 use Woocommerce\Pagarme\Model\Payment\Voucher\BrandsInterface;
 
@@ -105,9 +106,10 @@ class Voucher extends AbstractGateway
         return [
             'title'    => __('Card Wallet', 'woo-pagarme-payments'),
             'desc_tip' => __('Enable Card Wallet', 'woo-pagarme-payments'),
-            'type'     => 'checkbox',
+            'type'     => 'select',
             'label'    => __('Card Wallet', 'woo-pagarme-payments'),
-            'default'  => 'no',
+            'options' => $this->yesnoOptions->toArray(),
+            'default'  => Yesno::NO_VALUE,
             'custom_attributes' => [
                 'data-field'   => 'voucher-card-wallet',
             ]
