@@ -110,8 +110,40 @@ class PagarmeCoreConfigManagement
     /**
      * @return string
      */
+    public function convertKeyAntifraudMinValue()
+    {
+        return 'antifraudMinAmount';
+    }
+
+    /**
+     * @return string
+     */
+    public function convertKeyEnableBillet()
+    {
+        return 'boletoEnabled';
+    }
+
+    /**
+     * @return string
+     */
     public function convertKeyEnableCreditCard()
     {
-        return 'saveVoucherCards';
+        return 'creditCardEnabled';
+    }
+
+    /**
+     * @return string
+     */
+    public function convertKeyMultimethods2Cards()
+    {
+        return 'twoCreditCardsEnabled';
+    }
+
+    /**
+     * @return string
+     */
+    public function convertKeyMultimethodsBilletCard()
+    {
+        return 'boletoCreditCardEnabled';
     }
 }
