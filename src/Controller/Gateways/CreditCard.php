@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
 
 defined('ABSPATH') || exit;
@@ -67,10 +68,11 @@ class CreditCard extends AbstractGateway
     {
         return [
             'title'   => __('Enable/Disable', 'woocommerce'),
-            'type'    => 'checkbox',
+            'type'     => 'select',
+            'options' => $this->yesnoOptions->toArray(),
             'label'   => __('Enable credit card', 'woo-pagarme-payments'),
             'old_name'    => 'enable_credit_card',
-            'default'     => $this->config->getData('enable_credit_card') ?? 'no',
+            'default'     => $this->config->getData('enable_credit_card') ?? Yesno::NO_VALUE,
         ];
     }
 
@@ -120,9 +122,10 @@ class CreditCard extends AbstractGateway
     {
         return array(
             'title' => __('Card wallet', 'woo-pagarme-payments'),
-            'type' => 'checkbox',
+            'type'     => 'select',
+            'options' => $this->yesnoOptions->toArray(),
             'label' => __('Enable card wallet', 'woo-pagarme-payments'),
-            'default' => 'no',
+            'default' => Yesno::NO_VALUE,
             'description' => __('Allows for cards to be saved for future purchases.', 'woo-pagarme-payments'),
             'desc_tip' => true,
             'custom_attributes' => array(
@@ -267,9 +270,10 @@ class CreditCard extends AbstractGateway
     {
         return array(
             'title'   => __('Enable', 'woo-pagarme-payments'),
-            'type'    => 'checkbox',
+            'type'     => 'select',
+            'options' => $this->yesnoOptions->toArray(),
             'label'   => __('Enable anti fraud', 'woo-pagarme-payments'),
-            'default' => 'no',
+            'default' => Yesno::NO_VALUE,
             'custom_attributes' => array(
                 'data-field' => 'antifraud-enabled',
             )
