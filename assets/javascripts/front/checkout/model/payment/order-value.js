@@ -1,12 +1,20 @@
 const cardValueTarget = 'input[data-pagarmecheckout-element="order-value"]';
 const firstCardValue = '[data-pagarmecheckout-card-num="1"]';
 let pagarmeOrderValue = {
-    cardValueTarget: 'input[data-pagarmecheckout-element="order-value"]',
-    firstCardValue: '[data-pagarmecheckout-card-num="1"]',
+    started: false,
+    isStarted: function (){
+        if (!this.started){
+            this.started = true;
+            return false;
+        }
+        return true;
+    },
     start: function () {
+        if (this.isStarted()) {
+            return;
+        }
         this.addsMask();
         this.addEventListener();
-        // let e = jQuery(cardValueTarget + firstCardValue).val(10);
     },
     fillAnotherInput: async function (e) {
         let input = jQuery(e.currentTarget);
