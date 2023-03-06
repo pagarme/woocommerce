@@ -14,7 +14,14 @@ let brands = [];
 let pagarmeCard = {
     limit: 10,
     canSubmit: false,
-
+    started: false,
+    isStarted: function (){
+        if (!this.started){
+            this.started = true;
+            return false;
+        }
+        return true;
+    },
     getCheckoutPaymentElement: function () {
         let value = $('form.checkout input[name="payment_method"]:checked').val();
         return $('.wc_payment_method.payment_method_' + value);
@@ -197,11 +204,13 @@ let pagarmeCard = {
         $('.pagarme-card-form-card-number').mask('0000 0000 0000 0000');
         $('.pagarme-card-form-card-expiry').mask('00 / 00');
         $('.pagarme-card-form-card-cvc').mask('0000');
-        $('#billet-value').mask('#.##0,00', {
-            reverse: true
-        });
         $('input[name*=\\[cpf\\]]').mask('000.000.000-00');
         $('input[name*=\\[zip_code\\]]').mask('00000-000');
+        $('#billing_cpf').change(function () {
+            $('input[name="pagarme[voucher][cards][1][document-holder]"]').empty();
+            $('input[name="pagarme[voucher][cards][1][document-holder]"]').val($('#billing_cpf').val()).mask("999.999.999-99").trigger('input');
+        });
+        $('input[name="pagarme[voucher][cards][1][document-holder]"]').val($('#billing_cpf').val()).mask("999.999.999-99").trigger('input');
     },
 
     updateInstallmentsElement: function (e) {
@@ -322,9 +331,12 @@ let pagarmeCard = {
 
     },
     start: function () {
-        pagarmeCard.getCardsMethods();
-        pagarmeCard.getBrands();
-        pagarmeCard.addsMask();
+        if (this.isStarted()) {
+            return;
+        }
+        this.getCardsMethods();
+        this.getBrands();
+        this.addsMask();
         this.addEventListener();
     },
 };
