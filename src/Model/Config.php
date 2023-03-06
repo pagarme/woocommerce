@@ -201,4 +201,16 @@ class Config extends DataObject
         }
         return $publicKey;
     }
+
+    /**
+     * @return string
+     */
+    public function getSecretKey()
+    {
+        $publicKey = $this->getData('production_secret_key');
+        if ($this->getHubEnvironment() === EnvironmentsTypes::SANDBOX_VALUE && $this->getData('sandbox_secret_key')) {
+            $publicKey = $this->getData('sandbox_secret_key');
+        }
+        return $publicKey;
+    }
 }

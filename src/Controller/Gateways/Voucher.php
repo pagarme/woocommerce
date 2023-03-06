@@ -108,8 +108,8 @@ class Voucher extends AbstractGateway
             'desc_tip' => __('Enable Card Wallet', 'woo-pagarme-payments'),
             'type'     => 'select',
             'label'    => __('Card Wallet', 'woo-pagarme-payments'),
-            'options' => $this->yesnoOptions->toLabelsArray(),
-            'default'  => strtolower(Yesno::NO),
+            'options' => $this->yesnoOptions->toArray(),
+            'default'  => Yesno::NO_VALUE,
             'custom_attributes' => [
                 'data-field'   => 'voucher-card-wallet',
             ]

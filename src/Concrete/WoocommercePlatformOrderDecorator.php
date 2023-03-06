@@ -823,7 +823,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $multiCustomerFlag = empty($index) ? "enable_multicustomers_card1"
                 : "enable_multicustomers_card2";
             if ($this->formData[$multiCustomerFlag]) {
-                $flag = explode("_", $multiCustomerFlag)
+                $flag = explode("_", $multiCustomerFlag);
                 $card = array_pop($flag);
 
                 $newPaymentData->customer = $this->extractMultibuyerData(
