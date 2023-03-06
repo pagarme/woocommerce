@@ -213,4 +213,9 @@ class Config extends DataObject
         }
         return $publicKey;
     }
+
+    public function getCardOperationForCore()
+    {
+        return ((int)$this->getCcOperationType() === 2 ? 'auth_and_capture' : 'auth_only');
+    }
 }
