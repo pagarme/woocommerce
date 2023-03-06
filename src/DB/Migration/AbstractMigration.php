@@ -66,7 +66,7 @@ abstract class AbstractMigration
     public function registerMigration(MigrationInterface $migration)
     {
         $migrationSetting = $this->settings->__get(self::MIGRATION_SETTINGS);
-        if (empty($migrationSetting)) {
+        if (!is_array($migrationSetting)) {
             $migrationSetting = [];
         }
         $migrationSetting[] = get_class($migration);
