@@ -12,7 +12,9 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Block\Checkout\Field;
 
 use Woocommerce\Pagarme\Block\Checkout\Gateway;
+use Woocommerce\Pagarme\Model\Payment\BilletCard;
 use Woocommerce\Pagarme\Model\Payment\CreditCard;
+use Woocommerce\Pagarme\Model\Payment\TwoCards;
 use Woocommerce\Pagarme\Model\Payment\Voucher;
 
 defined( 'ABSPATH' ) || exit;
@@ -71,6 +73,8 @@ class Wallet extends Gateway
     {
         $configField = [
             CreditCard::PAYMENT_CODE => 'cc-allow-save',
+            TwoCards::PAYMENT_CODE => 'cc-allow-save',
+            BilletCard::PAYMENT_CODE => 'cc-allow-save',
             Voucher::PAYMENT_CODE => 'voucher-card-wallet'
         ];
         $method = 'get' . str_replace(' ', '', ucwords(str_replace('-', ' ' ,

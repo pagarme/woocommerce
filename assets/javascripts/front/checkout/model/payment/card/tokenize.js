@@ -12,19 +12,12 @@
         const form = $('form.checkout');
 
         var pagarme = {
-            isPagarmePayment: function () {
-                return $('form.checkout input[name="payment_method"]:checked').val().indexOf('pagarme');
-            },
             getEndpoint: function () {
                 let url = new URL(apiUrl);
                 url.searchParams.append('appId', appId);
-                return  url.toString();
+                return url.toString();
             },
-            getCheckoutPaymentElement: function () {
-                let value = $('form.checkout input[name="payment_method"]:checked').val();
-                return $('.wc_payment_method.payment_method_' + value);
-            },
-            getCardsForm: function(el) {
+            getCardsForm: function (el) {
                 return el.find('fieldset[data-pagarmecheckout="card"]');
             },
             haveCardForm: function (el) {
@@ -33,24 +26,17 @@
                 }
                 return false;
             },
-            hasSelectedWallet: function (el) {
-                let elWallet = $(el).find('select[data-element="choose-credit-card"]');
-                if (elWallet.length) {
-                    return elWallet.val().trim() !== '';
-                }
-                return false;
-            },
         };
 
         async function execute() {
-            let el = pagarme.getCheckoutPaymentElement();
-            if (pagarme.isPagarmePayment() && pagarme.haveCardForm(el) !== false) {
+            let el = pagarmeCard.getCheckoutPaymentElement();
+            if (pagarmeCard.isPagarmePayment() && pagarme.haveCardForm(el) !== false) {
                 pagarme.getCardsForm(el).each(await tokenize);
             }
         }
 
         async function tokenize() {
-            if (pagarme.hasSelectedWallet(this) === false) {
+            if (pagarmeCard.hasSelectedWallet(this) === false) {
                 let endpoint = pagarme.getEndpoint(),
                     card = createCardObject(this),
                     field = $(this);
@@ -121,8 +107,7 @@
             });
         }
 
-        function showError(text)
-        {
+        function showError(text) {
             const message = {
                 type: 'error',
                 html: text,
@@ -135,10 +120,9 @@
             }
         }
 
-        async function createTokenInput(response, field)
-        {
+        async function createTokenInput(response, field) {
             try {
-               let clear =  await clearInputTokens(field);
+                let clear = await clearInputTokens(field);
             } catch (e) {
                 showError(e.message);
             }
@@ -147,22 +131,16 @@
             if (!(field instanceof jQuery)) {
                 field = $(field);
             }
-            input.attr(
-                'type', 'hidden'
-            ).attr(
-            'name', vendor + '[' + field.attr(paymentMethodTarget) + '][cards][' + field.attr(sequenceTarget) + '][' + token + ']'
-            ).attr(
-                'id', vendor + '[' + field.attr(paymentMethodTarget) + '][cards][' + field.attr(sequenceTarget) + '][' + token + ']'
-            ).attr(
-                'value', objJSON.id
-            ).attr(
-                tokenElementTarget, token
-            );
+            let inputName = vendor + '[' + field.attr(paymentMethodTarget) + '][cards][' + field.attr(sequenceTarget) + '][' + token + ']'
+            input.attr('type', 'hidden')
+                .attr('name',  inputName)
+                .attr('id', inputName)
+                .attr('value', objJSON.id)
+                .attr(tokenElementTarget, token);
             field.append(input);
         }
 
-        function clearInputTokens(field)
-        {
+        function clearInputTokens(field) {
             return new Promise((resolve) => {
                 if (!(field instanceof jQuery)) {
                     field = $(field);
@@ -187,5 +165,5 @@
                 }
             }
         );
-    } (jQuery)
+    }(jQuery)
 );
