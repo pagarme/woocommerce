@@ -13,6 +13,8 @@ namespace Woocommerce\Pagarme\Block\Checkout\Form;
 
 use Woocommerce\Pagarme\Block\Checkout\Gateway;
 use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Payment\CreditCard;
+use Woocommerce\Pagarme\Model\Payment\Voucher;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -66,6 +68,23 @@ class Wallet extends Gateway
             return $this->sequence;
         }
         return $this->getData('sequence');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWalletEnable()
+    {
+        $result = false;
+        switch ($this->getPaymentInstance()->getMethodCode()) {
+            case CreditCard::PAYMENT_CODE:
+                $result = (bool) $this->getConfig()->getCcAllowSave();
+                break;
+            case Voucher::PAYMENT_CODE:
+                $result = (bool) $this->getConfig()->getVoucherCardWallet();
+                break;
+        }
+        return $result;
     }
 
     /**
