@@ -26,58 +26,22 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
     <script>
         jQuery(function ($) {
-            swal.close();
-            const content = {
-                title: '<?php echo esc_attr(__('Disintegrate?', 'woo-pagarme-payments')); ?>',
-                text: '<?php echo esc_attr(__('This removes the integration keys on your platform enabling the opportunity to effect a new integration. However, its integration still remains in our dash and it is necessary to remove the integration manually.', 'woo-pagarme-payments')); ?>',
-                type: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<?php echo esc_attr(__('Yes, remove keys!', 'woo-pagarme-payments')); ?>'
-            };
             $('#btn-uninstall-hub').on('click', function (e) {
-                try {
-                    swal(content).then((result) => {
-                        if (result) {
-                            swal({
-                                title: ' ',
-                                text: '<?php echo esc_attr(__('Processing', 'woo-pagarme-payments')); ?>',
-                                allowOutsideClick: false
-                            });
-                            swal.showLoading();
-                            $.ajax({
-                                url: '<?php echo admin_url('/wc-api/pagarme-hubcommand'); ?>',
-                                type: 'POST',
-                                dataType: "json",
-                                data: JSON.stringify({
-                                    command: 'Uninstall',
-                                    force: true
-                                }),
-                                success: function (response) {
-                                    swal(
-                                        '<?php echo esc_attr(__('Disintegration Complete', 'woo-pagarme-payments')); ?>',
-                                        '<?php echo esc_attr(__('Integration keys successfully removed. Reload the page.', 'woo-pagarme-payments')); ?>',
-                                        'success'
-                                    )
-                                },
-                                fail: function (response) {
-                                    swal(
-                                        '<?php echo esc_attr(__('Disintegration Error', 'woo-pagarme-payments')); ?>',
-                                        '<?php echo esc_attr(__('Integration keys not removed.', 'woo-pagarme-payments')); ?>',
-                                        'error'
-                                    )
-                                }
-                            });
-                        }
-                    });
-                } catch (e) {
-                    swal(
-                        '<?php echo esc_attr(__('Disintegration Error', 'woo-pagarme-payments')); ?>',
-                        '<?php echo esc_attr(__('Integration keys not removed.', 'woo-pagarme-payments')); ?>',
-                        'error'
-                    )
-                }
+                $.ajax({
+                    url: '<?php echo admin_url('/wc-api/pagarme-hubcommand'); ?>',
+                    type: 'POST',
+                    dataType: "json",
+                    data: JSON.stringify({
+                        command: 'Uninstall',
+                        force: true
+                    }),
+                    success: function (response) {
+                        alert('success');
+                    },
+                    fail: function (response) {
+                        alert('error');
+                    }
+                });
             });
         });
     </script>

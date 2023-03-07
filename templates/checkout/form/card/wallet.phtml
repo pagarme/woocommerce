@@ -14,6 +14,7 @@ declare( strict_types=1 );
 if (!function_exists('add_action')) {
     exit(0);
 }
+wp_enqueue_script('pagarme-checkout-wallet', $this->getFileUrl('assets/javascripts/front/checkout/model/payment/card/wallet.js'));
 ?>
 <?php if ($this->isWalletEnable() && $this->getPaymentInstance()->getCards()) : ?>
     <p class="form-row form-row-wide">
@@ -21,7 +22,7 @@ if (!function_exists('add_action')) {
             <?= __('Cards save', 'woo-pagarme-payments'); ?>
         </label>
         <select name="<?= $this->getElementId('wallet-id') ?>" id="<?= $this->getElementId('wallet-id') ?>" data-action="select-card-wallet" data-installments-type="<?= intval($this->getPaymentInstance()->getConfig()->getCcInstallmentType()); ?>" data-element="choose-credit-card">
-            <option value=""><?= __('Select', 'woo-pagarme-payments'); ?></option>
+            <option value=""><?= __('Saved credit card', 'woo-pagarme-payments'); ?></option>
             <?php foreach ($this->getPaymentInstance()->getCards() as $card) : ?>
                 <?php
                 printf(
@@ -36,3 +37,8 @@ if (!function_exists('add_action')) {
         </select>
     </p>
 <?php endif; ?>
+<script type="text/javascript">
+    if (typeof pagarmeWallet == 'object') {
+        pagarmeWallet.start();
+    }
+</script>
