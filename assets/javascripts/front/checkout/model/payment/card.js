@@ -66,6 +66,10 @@ let pagarmeCard = {
         });
     },
 
+    getBrandTarget: function () {
+        return brandTarget;
+    },
+
     checkToken: function (e, step = 0) {
         if (!(e instanceof jQuery)) {
             e = $(e);

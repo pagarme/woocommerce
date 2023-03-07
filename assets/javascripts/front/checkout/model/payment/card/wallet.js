@@ -19,6 +19,9 @@ let pagarmeWallet = {
         let select  = $( e.currentTarget );
         let wrapper = select.closest( 'fieldset' );
         let method  = e.currentTarget.value.trim() ? 'slideUp': 'slideDown';
+        let brand = select.find('option:selected').data('brand');
+        let brandInput = wrapper.find(pagarmeCard.getBrandTarget());
+        brandInput.val(brand);
         cardFields.forEach( function (field) {
             wrapper.find(field)[method]();
         });
