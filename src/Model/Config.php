@@ -218,4 +218,12 @@ class Config extends DataObject
     {
         return ((int)$this->getCcOperationType() === 2 ? 'auth_and_capture' : 'auth_only');
     }
+
+    /**
+     * @return array|mixed
+     */
+    public function getCcFlags()
+    {
+        return $this->getData('cc_flags') ?? [];
+    }
 }
