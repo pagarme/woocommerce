@@ -43,7 +43,7 @@ class Cards extends AbstractPayment
     protected function init()
     {
         $cards = [];
-        for ($count = 1; $count <= $this->getCountTokens(); $count++) {
+        for ($count = 1; $count <= $this->getCountCards(); $count++) {
             $card = new Card($count);
             $cards[] = $card;
         }
@@ -53,14 +53,17 @@ class Cards extends AbstractPayment
     /**
      * @return int
      */
-    private function getCountTokens()
+    private function getCountCards()
     {
         $count = 0;
         if ($this->getPostPaymentContent() && isset($this->getPostPaymentContent()['cards'])) {
             foreach ($this->getPostPaymentContent()['cards'] as $card) {
                 foreach ($card as $key => $value) {
-                    if (strpos($key, 'token') !== false) {
-                        $count++;
+                    if (strpos($key, 'token') !== false || $key === 'wallet-id') {
+                        if ($value) {
+                            $count++;
+                            break;
+                        }
                     }
                 }
             }
