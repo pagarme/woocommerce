@@ -224,6 +224,10 @@ class Config extends DataObject
      */
     public function getCcFlags()
     {
-        return $this->getData('cc_flags') ?? [];
+        $ccFlags = [];
+        if ($value = $this->getData('cc_flags')) {
+            $ccFlags = $value;
+        }
+        return $ccFlags;
     }
 }
