@@ -77,11 +77,11 @@ class Wallet extends Gateway
     {
         $result = false;
         switch ($this->getPaymentInstance()->getMethodCode()) {
-            case CreditCard::PAYMENT_CODE:
-                $result = (bool) $this->getConfig()->getCcAllowSave();
-                break;
             case Voucher::PAYMENT_CODE:
                 $result = (bool) $this->getConfig()->getVoucherCardWallet();
+                break;
+            default:
+                $result = (bool) $this->getConfig()->getCcAllowSave();
                 break;
         }
         return $result;

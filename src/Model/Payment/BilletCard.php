@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
+use Pagarme\Core\Payment\Aggregates\SavedCard;
 use ReflectionClass;
 use WC_Order;
 use Woocommerce\Pagarme\Helper\Utils;
@@ -22,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  *  Class BilletCard
  * @package Woocommerce\Pagarme\Model\Payment
  */
-class BilletCard extends AbstractPayment implements PaymentInterface
+class BilletCard extends Card implements PaymentInterface
 {
     /** @var string */
     const PAYMENT_CODE = 'billet_and_card';
@@ -112,5 +113,13 @@ class BilletCard extends AbstractPayment implements PaymentInterface
         $content[] = current($this->billet->getPayRequest($wc_order, $form_fields, $customer));
         $content[] = current($this->creditCard->getPayRequest($wc_order, $form_fields, $customer));
         return $content;
+    }
+
+    /**
+     * @return SavedCard[]|null
+     */
+    public function getCards()
+    {
+        return $this->getCustomer()->get_cards(CreditCard::PAYMENT_CODE);
     }
 }
