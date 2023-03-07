@@ -142,6 +142,9 @@ class Checkout
                     if ($card->getSaveCard()) {
                         $fields['save_credit_card'] = 1;
                     }
+                    if ($value = $card->getWalletId()) {
+                        $fields['card_id'] = $value;
+                    }
                 } else {
                     if ($orderValue = $card->getOrderValue()) {
                         $fields['card_order_value' . $key] = $orderValue;
@@ -150,6 +153,9 @@ class Checkout
                     $fields['installments' . $key] = $card->getInstallment();
                     if ($card->getSaveCard()) {
                         $fields['save_credit_card' . $key] = 1;
+                    }
+                    if ($value = $card->getWalletId()) {
+                        $fields['card_id' . $key] = $value;
                     }
                 }
                 $fields['pagarmetoken' . $key] = $card->getToken();
