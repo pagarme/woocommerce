@@ -82,3 +82,8 @@ declare( strict_types=1 );
         </p>
     </div>
 </fieldset>
+<script type="text/javascript">
+    if (typeof pagarmeMultiCustomer == 'object') {
+        pagarmeMultiCustomer.start();
+    }
+</script>
