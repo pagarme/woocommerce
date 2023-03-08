@@ -235,7 +235,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     static private function fillWithGeneralConfig($dataObj, $storeConfig)
     {
-        $dataObj->enabled = $storeConfig->getEnabled();
+        $dataObj->enabled = (bool)$storeConfig->getEnabled();
         $dataObj->testMode = $storeConfig->getIsSandboxMode();
         $dataObj->sendMail = false;
         $dataObj->createOrder = false;

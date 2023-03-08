@@ -76,11 +76,6 @@ class PagarmeCoreConfigManagement
         $this->pagarmeCoreConfigRepository->save($moduleConfig);
     }
 
-    public function setCardConfigs(&$data)
-    {
-        $data['cardConfigs'] = [];
-    }
-
     /**
      * @param string $value
      * @param string $type

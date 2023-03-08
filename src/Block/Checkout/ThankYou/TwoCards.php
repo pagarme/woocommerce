@@ -39,6 +39,6 @@ class TwoCards extends ThankYou
                 return $response->charges;
             }
         }
-        return null;
+        return [null, null];
     }
 }
