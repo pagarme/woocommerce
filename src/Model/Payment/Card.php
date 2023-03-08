@@ -33,7 +33,7 @@ class Card extends AbstractPayment
      */
     public function getCards()
     {
-        return $this->getCustomer()->get_cards($this->code);
+        return $this->getCustomer()->get_cards([$this->code]);
     }
 
     /**

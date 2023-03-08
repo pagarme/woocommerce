@@ -56,6 +56,15 @@ class Card extends AbstractPayment
         }
     }
 
+    protected function setInstallment($data)
+    {
+        $value = 1;
+        if ($data) {
+            $value = $data;
+        }
+        return $this->setData('installment', $value);
+    }
+
     /**
      * @param string $method
      * @param bool $identifier

@@ -138,7 +138,7 @@ class Checkout
                         $fields['card_order_value'] = $orderValue;
                     }
                     $fields['brand'] = $card->getBrand();
-                    $fields['installments'] = $card->getInstallment();
+                    $fields['installments'] = $card->getInstallment() ?? 1;
                     if ($card->getSaveCard()) {
                         $fields['save_credit_card'] = 1;
                     }
@@ -150,7 +150,7 @@ class Checkout
                         $fields['card_order_value' . $key] = $orderValue;
                     }
                     $fields['brand' . $key] = $card->getBrand();
-                    $fields['installments' . $key] = $card->getInstallment();
+                    $fields['installments' . $key] = $card->getInstallment() ?? 1;
                     if ($card->getSaveCard()) {
                         $fields['save_credit_card' . $key] = 1;
                     }
