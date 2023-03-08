@@ -1,5 +1,6 @@
 const cardValueTarget = 'input[data-pagarmecheckout-element="order-value"]';
 const firstCardValue = '[data-pagarmecheckout-card-num="1"]';
+
 let pagarmeOrderValue = {
     started: false,
     isStarted: function (){
@@ -54,7 +55,7 @@ let pagarmeOrderValue = {
         });
     },
     addsMask: function () {
-        jQuery(this.cardValueTarget).mask('#.##0,00', {
+        jQuery(cardValueTarget).mask('#.##0,00', {
             reverse: true
         });
     },
@@ -71,7 +72,7 @@ let pagarmeOrderValue = {
         }
     },
     addEventListener: function () {
-        jQuery(this.cardValueTarget).on('change', function (e) {
+        jQuery(cardValueTarget).on('change', function (e) {
             pagarmeOrderValue.keyEventHandler(e);
         });
     },
