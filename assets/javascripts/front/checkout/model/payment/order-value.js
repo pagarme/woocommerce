@@ -78,6 +78,7 @@ let pagarmeOrderValue = {
     },
     keyEventHandler: function (e) {
         this.fillAnotherInput(e);
+        pagarmeCard.updateInstallmentsElement(e);
     },
     getCartTotals: function () {
         return cartTotal;
