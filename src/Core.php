@@ -126,22 +126,22 @@ class Core
 //            self::filemtime("assets/javascripts/{$type}/built.js"),
 //            true
 //        );
+        wp_enqueue_script(
+            'sweetalert2',
+            self::plugins_url("assets/javascripts/vendor/sweetalert2.js"),
+            array_merge(array('jquery'), $deps),
+            self::filemtime("assets/javascripts/vendor/sweetalert2.js"),
+            false
+        );
+        wp_enqueue_script(
+            'jquery.mask',
+            self::plugins_url("assets/javascripts/vendor/jquery.mask.js"),
+            array('jquery'),
+            '1.14.16',
+            false
+        );
 
         if ($type == 'front') {
-            wp_enqueue_script(
-                'sweetalert2',
-                self::plugins_url("assets/javascripts/vendor/sweetalert2.js"),
-                array_merge(array('jquery'), $deps),
-                self::filemtime("assets/javascripts/vendor/sweetalert2.js"),
-                false
-            );
-            wp_enqueue_script(
-                'jquery.mask',
-                self::plugins_url("assets/javascripts/vendor/jquery.mask.js"),
-                array('jquery'),
-                '1.14.16',
-                false
-            );
         }
 
         wp_localize_script(
