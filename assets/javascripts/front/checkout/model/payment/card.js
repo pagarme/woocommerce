@@ -219,7 +219,7 @@ let pagarmeCard = {
 
     updateInstallmentsElement: function (e) {
         let elem = e.currentTarget;
-        let brand = $(elem).parent().find(brandTarget).val();
+        let brand = $(elem).closest('fieldset').find(brandTarget).val();
         let total = $(elem).closest('fieldset').find(valueTarget).val();
         if (!total)
             total = cartTotal;

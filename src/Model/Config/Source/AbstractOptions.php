@@ -16,7 +16,7 @@ use Woocommerce\Pagarme\Model\Data\OptionSourceInterface;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Yesno
+ * Class AbstractOptions
  * @package Woocommerce\Pagarme\Model\Config\Source
  */
 abstract class AbstractOptions implements OptionSourceInterface
