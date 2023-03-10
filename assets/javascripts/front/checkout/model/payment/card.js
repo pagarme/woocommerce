@@ -22,6 +22,25 @@ let pagarmeCard = {
         }
         return true;
     },
+    haveCardForm: function (e) {
+        let elem = null;
+        if (e instanceof $) {
+            elem = e;
+        }
+        if (e instanceof $.Event) {
+            elem = $(e.currentTarget);
+        }
+        if (!elem) {
+            throw "Cant check card form: Invalid element received";
+        }
+        if (elem.is("fieldset") && elem.attr("data-pagarmecheckout") === 'card') {
+            return true;
+        }
+        if (elem.has('fieldset[data-pagarmecheckout="card"]').length) {
+            return true;
+        }
+        return false;
+    },
     getCheckoutPaymentElement: function () {
         let value = $('form.checkout input[name="payment_method"]:checked').val();
         return $('.wc_payment_method.payment_method_' + value);
@@ -218,9 +237,18 @@ let pagarmeCard = {
     },
 
     updateInstallmentsElement: function (e) {
-        let elem = e.currentTarget;
-        let brand = $(elem).closest('fieldset').find(brandTarget).val();
-        let total = $(elem).closest('fieldset').find(valueTarget).val();
+        let elem = null;
+        if (e instanceof $) {
+            elem = e;
+        }
+        if (e instanceof $.Event) {
+            elem = $(e.currentTarget);
+        }
+        if (!elem) {
+            throw "Cant update installments: Invalid element received";
+        }
+        let brand = elem.closest('fieldset').find(brandTarget).val();
+        let total = elem.closest('fieldset').find(valueTarget).val();
         if (!total)
             total = cartTotal;
         if (!brand || !total)
@@ -228,7 +256,7 @@ let pagarmeCard = {
         let storageName = btoa(brand + total);
         sessionStorage.removeItem(storageName);
         let storage = sessionStorage.getItem(storageName);
-        let cardForm = $(elem).closest("fieldset");
+        let cardForm = elem.closest("fieldset");
         let select = cardForm.find(installmentsTarget);
         if (storage) {
             select.html(storage);
