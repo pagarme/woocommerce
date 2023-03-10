@@ -19,18 +19,12 @@
             },
             getCardsForm: function (el) {
                 return el.find('fieldset[data-pagarmecheckout="card"]');
-            },
-            haveCardForm: function (el) {
-                if (el.has('fieldset[data-pagarmecheckout="card"]').length) {
-                    return true;
-                }
-                return false;
-            },
+            }
         };
 
         async function execute() {
             let el = pagarmeCard.getCheckoutPaymentElement();
-            if (pagarmeCard.isPagarmePayment() && pagarme.haveCardForm(el) !== false) {
+            if (pagarmeCard.isPagarmePayment() && pagarmeCard.haveCardForm(el) !== false) {
                 pagarme.getCardsForm(el).each(await tokenize);
             }
         }

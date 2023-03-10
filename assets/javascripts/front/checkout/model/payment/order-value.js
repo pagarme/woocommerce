@@ -37,7 +37,18 @@ let pagarmeOrderValue = {
         }
         nextInput.val(await this.formatValue((total - value), false));
         input.val(await this.formatValue(value, false));
-        pagarmeCard.updateInstallmentsElement(e);
+        [e, nextInput].forEach( function (input) {
+            if (!input instanceof $) {
+                input = $(input);
+            }
+            if (input instanceof $.Event) {
+                input = $(input.currentTarget);
+            }
+            let fieldset = input.closest('fieldset').first();
+            if (pagarmeCard.haveCardForm(fieldset)) {
+                pagarmeCard.updateInstallmentsElement(fieldset);
+            }
+        });
     },
     formatValue: function (value, raw = true) {
         return new Promise((resolve) => {
