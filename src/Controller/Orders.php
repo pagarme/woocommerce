@@ -7,6 +7,7 @@ if (!function_exists('add_action')) {
 }
 
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order as BlockOrder;
+use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
@@ -86,6 +87,8 @@ class Orders
 
     public function add_meta_boxes()
     {
+        wp_register_script('pagarme-adminhmlt-order-view-cancel-capture', $this->jsUrl('sales/order/view/cancel-capture'), ['jquery'], false);
+        wp_enqueue_script('pagarme-adminhmlt-order-view-cancel-capture');
         foreach ($this->blockOrder->getMetaBoxes() as $metaBox) {
             add_meta_box(
                 'woo-pagarme-capture',
@@ -96,5 +99,10 @@ class Orders
                 'high'
             );
         }
+    }
+
+    public function jsUrl($jsFileName)
+    {
+        return Core::plugins_url('assets/javascripts/admin/' . $jsFileName . '.js');
     }
 }

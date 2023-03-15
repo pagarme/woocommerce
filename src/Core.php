@@ -134,6 +134,13 @@ class Core
             false
         );
         wp_enqueue_script(
+            'izimodal',
+            self::plugins_url("assets/javascripts/admin/vendor/izimodal.js"),
+            array_merge(['jquery'], $deps),
+            self::filemtime("assets/javascripts/admin/vendor/izimodal.js"),
+            false
+        );
+        wp_enqueue_script(
             'jquery.mask',
             self::plugins_url("assets/javascripts/vendor/jquery.mask.js"),
             array('jquery'),
