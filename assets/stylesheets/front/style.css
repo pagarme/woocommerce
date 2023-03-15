@@ -1045,4 +1045,19 @@ body .swal2-animate-x-mark {
     color: #6f4400;
     position: relative;
 }
+
+@media only screen and (max-width: 1023px) {
+    .select2-container--open .select2-dropdown--below{
+        margin-top: 50px;
+    }
+}
+
+li.wc_payment_method[class*="pagarme-payments"] label {
+    display: inline;
+}
+
+li.wc_payment_method[class*="pagarme-payments"] img {
+    max-width: 30px;
+    float: right;
+}
 /*# sourceMappingURL=assets/stylesheets/front/style.css.map */
