@@ -31,7 +31,7 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
             <?php endif; ?>
             <p class="form-row form-row-first">
                 <label for="<?= $this->getElementId('order-value'); ?>"><?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
-                <input id="<?= $this->getElementId('order-value'); ?>" name="<?= $this->getElementId('order-value'); ?>" data-element="order-value" data-pagarmecheckout-element="order-value" data-required="true" data-value="1" data-pagarmecheckout-card-num="<?= $qty ?>" data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>" class="input-text">
+                <input id="<?= $this->getElementId('order-value'); ?>" name="<?= $this->getElementId('order-value'); ?>" data-element="order-value" data-mask="#.##0,00" data-mask-reverse="true" data-pagarmecheckout-element="order-value" data-required="true" data-value="1" data-pagarmecheckout-card-num="<?= $qty ?>" data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>" class="input-text">
             </p>
         <?php endif; ?>
         <?= $this->createBlock(
@@ -62,13 +62,13 @@ wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts
                             <?php esc_html_e('Expiration Date (MM/YY)', 'woo-pagarme-payments'); ?>
                             <span class="required">*</span>
                         </label>
-                        <input id="<?= $this->getElementId('card-expiry'); ?>" data-element="card-expiry" class="input-text wc-credit-card-form-card-expiry pagarme-card-form-card-expiry" data-mask="00 / 00" data-required="true" placeholder="<?php esc_html_e('MM / YY', 'woo-pagarme-payments'); ?>" data-pagarmecheckout-element="exp_date">
+                        <input required id="<?= $this->getElementId('card-expiry'); ?>" data-element="card-expiry" class="input-text wc-credit-card-form-card-expiry pagarme-card-form-card-expiry" data-mask="00 / 00" data-required="true" placeholder="<?php esc_html_e('MM / YY', 'woo-pagarme-payments'); ?>" data-pagarmecheckout-element="exp_date">
                     </p>
                     <p class="form-row form-row-last">
                         <label for="<?= $this->getElementId('card-cvc'); ?>">
                             <?php esc_html_e('Card code', 'woo-pagarme-payments'); ?> <span class="required">*</span>
                         </label>
-                        <input id="<?= $this->getElementId('card-cvc'); ?>" data-element="card-cvc" data-mask="0000" class="input-text wc-credit-card-form-card-cvc pagarme-card-form-card-cvc" maxlength="4" placeholder="CVC" data-required="true" data-pagarmecheckout-element="cvv">
+                        <input required id="<?= $this->getElementId('card-cvc'); ?>" data-element="card-cvc" data-mask="0000" class="input-text wc-credit-card-form-card-cvc pagarme-card-form-card-cvc" maxlength="4" placeholder="CVC" data-required="true" data-pagarmecheckout-element="cvv">
                     </p>
                 </div>
             </div>

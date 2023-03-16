@@ -23,6 +23,9 @@
         };
 
         async function execute() {
+            if (wc_pagarme_checkout.validate() === false) {
+                return;
+            }
             let el = pagarmeCard.getCheckoutPaymentElement();
             if (pagarmeCard.isPagarmePayment() && pagarmeCard.haveCardForm(el) !== false) {
                 pagarme.getCardsForm(el).each(await tokenize);
@@ -42,7 +45,11 @@
                         createTokenInput(data, field);
                     },
                     function (error) {
-                        showError('Não foi possível gerar a transação segura. Serviço indisponível.')
+                        if (error.statusCode == 503) {
+                            showError('Não foi possível gerar a transação segura. Serviço indisponível.')
+                        } else {
+                            listError(error.errors);
+                        }
                     }
                 );
             }
@@ -102,6 +109,7 @@
         }
 
         function showError(text) {
+            swal.close();
             const message = {
                 type: 'error',
                 html: text,
@@ -113,6 +121,48 @@
                 new swal(message);
             }
         }
+
+        function listError(errors) {
+            var error, rect;
+            var element = $('input[name$="payment_method"]:checked').closest('li').find('#wcmp-checkout-errors');
+
+            swal.close();
+
+            wc_pagarme_checkout.errorList = '';
+
+            for (error in errors) {
+                (errors[error] || []).forEach(parseErrorsList.bind(this, error));
+            }
+
+            element.find('.woocommerce-error').html(wc_pagarme_checkout.errorList);
+            element.slideDown();
+
+            rect = element.get(0).getBoundingClientRect();
+
+            jQuery('#wcmp-submit').removeAttr('disabled', 'disabled');
+
+            window.scrollTo(0, (rect.top + window.scrollY) - 40);
+        };
+
+        function parseErrorsList (error, message) {
+            wc_pagarme_checkout.errorList += '<li>' + translateErrors(error, message) + '<li>';
+        };
+
+        function translateErrors(error, message) {
+            error = error.replace('request.', '');
+            var output = error + ': ' + message;
+            // var ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
+
+            // if (PagarmeGlobalVars.WPLANG != 'pt_BR') {
+            //     return output;
+            // }
+            //
+            // if (ptBrMessages.hasOwnProperty(output)) {
+            //     return ptBrMessages[output];
+            // }
+
+            return output;
+        };
 
         async function createTokenInput(response, field) {
             try {

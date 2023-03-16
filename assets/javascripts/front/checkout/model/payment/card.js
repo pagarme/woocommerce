@@ -223,19 +223,6 @@ let pagarmeCard = {
         return mundiCdn + card[0].brand + '.png';
     },
 
-    addsMask: function () {
-        $('.pagarme-card-form-card-number').mask('0000 0000 0000 0000');
-        $('.pagarme-card-form-card-expiry').mask('00 / 00');
-        $('.pagarme-card-form-card-cvc').mask('0000');
-        $('input[name*=\\[cpf\\]]').mask('000.000.000-00');
-        $('input[name*=\\[zip_code\\]]').mask('00000-000');
-        $('#billing_cpf').change(function () {
-            $('input[name="pagarme[voucher][cards][1][document-holder]"]').empty();
-            $('input[name="pagarme[voucher][cards][1][document-holder]"]').val($('#billing_cpf').val()).mask("999.999.999-99").trigger('input');
-        });
-        $('input[name="pagarme[voucher][cards][1][document-holder]"]').val($('#billing_cpf').val()).mask("999.999.999-99").trigger('input');
-    },
-
     updateInstallmentsElement: function (e) {
         let elem = null;
         if (e instanceof $) {
@@ -245,14 +232,14 @@ let pagarmeCard = {
             elem = $(e.currentTarget);
         }
         if (!elem) {
-            throw "Cant update installments: Invalid element received";
+            return false;
         }
         let brand = elem.closest('fieldset').find(brandTarget).val();
         let total = elem.closest('fieldset').find(valueTarget).val();
         if (!total)
             total = cartTotal;
         if (!brand || !total)
-            throw "Cant update installments: invalid total and/or brand";
+            return false;
         let storageName = btoa(brand + total);
         sessionStorage.removeItem(storageName);
         let storage = sessionStorage.getItem(storageName);
@@ -344,22 +331,33 @@ let pagarmeCard = {
             }
         }
     },
+    canExecute: function(e) {
+        e.preventDefault();
+        if (!wc_pagarme_checkout.validate()) {
+            return false;
+        }
+        if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit) {
+            pagarmeCard.showLoader(pagarmeCard.getCheckoutPaymentElement());
+            pagarmeCard.execute();
+            return false;
+        }
+        return true;
+    },
     addEventListener: function () {
-        jQuery(cardNumberTarget).on('blur', function (e) {
+        $(cardNumberTarget).on('blur', function (e) {
             pagarmeCard.keyEventHandlerCard(e);
         });
         $("form.checkout").on(
             "checkout_place_order",
             function (e) {
-                e.preventDefault();
-                if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit) {
-                    pagarmeCard.showLoader(pagarmeCard.getCheckoutPaymentElement());
-                    pagarmeCard.execute();
-                    return false;
-                }
-                return true;
+                return pagarmeCard.canExecute(e);
             }
         );
+        $('#billing_cpf').change(function () {
+            $('input[name="pagarme[voucher][cards][1][document-holder]"]').empty();
+            $('input[name="pagarme[voucher][cards][1][document-holder]"]').val($('#billing_cpf').val()).trigger('input');
+        });
+        $('input[name="pagarme[voucher][cards][1][document-holder]"]').val($('#billing_cpf').val()).trigger('input');
 
     },
     start: function () {
@@ -368,7 +366,6 @@ let pagarmeCard = {
         }
         this.getCardsMethods();
         this.getBrands();
-        this.addsMask();
         this.addEventListener();
     },
 };
