@@ -1,0 +1,72 @@
+name: Continuous Delivery
+
+on:
+  push:
+    branches:
+      - master
+      - test
+      - stg
+      - develop
+
+concurrency:
+  group: ${{github.workflows}}-${{github.ref}}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    container:
+      image: docker:17.05.0-ce-git
+    steps:
+    -
+      name: Checkout Code
+      uses: actions/checkout@v3
+    -
+      name: Copy CI files to root
+      run: |
+        cd /app
+        cp devops/.htaccess .
+        cp devops/Dockerfile .
+        cp devops/update-wp-config.php .
+        cp devops/wait-for-mysql.sh .
+    -
+      name: Build image base for modifications
+      run: |
+        cd /app && ls
+        docker build -t ${{ secrets.DOCKER_ACCOUNT }}/${{ github.repository }}:latest .
+        docker run --name newimage -d -p3306:3306 -p80:80 ${{ secrets.DOCKER_ACCOUNT }}/${{ github.repository }}:latest
+    -
+      name: Wait for MySQL Service
+      run: |
+        docker exec -it newimage sh /app/wp-content/plugins/${{ secrets.PLUGIN_NAME }}/wait-for-mysql.sh
+        docker exec -it newimage rm /app/wp-content/plugins/${{ secrets.PLUGIN_NAME }}/wait-for-mysql.sh
+    -
+      name: Activate and setup Plugin
+      run: | 
+        docker exec -it newimage wp plugin activate ${{ secrets.PLUGIN_NAME }} --allow-root
+        docker exec -it newimage chmod -R 777 /app/wp-content/plugins/${{ secrets.PLUGIN_NAME }}
+        docker exec -it newimage mysql -u root -D wordpress -e "REPLACE INTO wp_options (option_name,option_value) VALUES ('${{ secrets.PLUGIN_META_NAME }}','${{ secrets.PLUGIN_CONFIG }}');"
+        docker exec -i newimage curl -X GET "http://localhost/wp-content/plugins/${{ secrets.PLUGIN_NAME }}/update-wp-config.php?url=${{ secrets.STAGING_URL }}"
+        docker exec -it newimage rm /app/wp-content/plugins/${{ secrets.PLUGIN_NAME }}/update-wp-config.php
+        docker exec -it newimage touch test5.txt
+    -
+      name: Clear useless files
+      run: |
+        docker exec -it newimage sh -c "cd /app/wp-content/plugins/${{ secrets.PLUGIN_NAME }}" && \
+        rm -rf .github .plugin-data .git .gitignore .editorconfig && \
+        rm -rf Dockerfile update-wp-config.php wait-for-mysql.sh LICENSE *.MD
+    -
+      name: Commit and push Docker image
+      run: |
+        sleep 5 && docker stop newimage
+        docker login ${{  secrets.DOCKER_ACCOUNT  }}} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker commit newimage ${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }}:latest
+        docker tag ${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }} "${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }}:latest"
+        docker tag ${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }} "${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }}:${{ github.ref }}"
+        docker push "${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }}"
+    -
+      # name: Send deployment webhook to Rancher
+      # run: |
+      #   BODY='{"push_data":{"tag":"'"${{ github.ref }}"'"},"repository":{"repo_name":"'"${{ secrets.DOCKER_ACCOUNT }}/${{ github.repository }}"'"}}'
+      #   curl -X POST ${{ secrets.RANCHER_STG_DEPLOY_URL }} -H 'Content-Type: application/json' -d "${BODY}"
