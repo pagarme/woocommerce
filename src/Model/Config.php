@@ -53,14 +53,16 @@ class Config extends DataObject
      */
     private function init()
     {
-        foreach ($this->getOptions() as $key => $value) {
-            $this->setData($key, $value);
+        if (is_array($this->getOptions()) || is_object($this->getOptions())) {
+            foreach ($this->getOptions() as $key => $value) {
+                $this->setData($key, $value);
+            }
+            add_action(
+                'update_option_' . $this->getOptionKey(),
+                [ $this, 'updateOption' ],
+                10, 3
+            );
         }
-        add_action(
-            'update_option_' . $this->getOptionKey(),
-            [ $this, 'updateOption' ],
-            10, 3
-        );
     }
 
     /**
