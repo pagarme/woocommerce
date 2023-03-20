@@ -117,15 +117,6 @@ class Core
 
     public static function enqueue_scripts($type, $deps = array(), $localize_args = array())
     {
-        $id = "{$type}-script-" . self::SLUG;
-
-//        wp_enqueue_script(
-//            $id,
-//            self::plugins_url("assets/javascripts/{$type}/built.js"),
-//            array_merge(array('jquery'), $deps),
-//            self::filemtime("assets/javascripts/{$type}/built.js"),
-//            true
-//        );
         wp_enqueue_script(
             'sweetalert2',
             self::plugins_url("assets/javascripts/vendor/sweetalert2.js"),
@@ -146,15 +137,6 @@ class Core
             array('jquery'),
             '1.14.16',
             false
-        );
-
-        if ($type == 'front') {
-        }
-
-        wp_localize_script(
-            $id,
-            self::LOCALIZE_SCRIPT_ID,
-            self::get_localize_script_args($localize_args)
         );
     }
 

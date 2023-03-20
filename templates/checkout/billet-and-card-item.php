@@ -38,7 +38,7 @@ $ref_card          = sha1(random_int(1, 1000));
                     <label for="billet-value">
                         <?php esc_html_e('Value (Boleto)', 'woo-pagarme-payments'); ?><span class="required">*</span>
                     </label>
-                    <input id="billet-value" name="billet_value" data-element="billet-value" data-value="1" data-required="true" class="input-text" style="font-size: 1.41575em">
+                    <input id="billet-value" name="billet_value" data-element="billet-value" data-mask="#.##0,00" data-mask-reverse="true" data-value="1" data-required="true" class="input-text" style="font-size: 1.41575em">
                     <?php
                     Utils::get_template(
                         'templates/checkout/field-enable-multicustomers',
