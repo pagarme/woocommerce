@@ -55,7 +55,9 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
         \Woocommerce\Pagarme\Model\Charge $charge = null
     ) {
         parent::__construct($jsonSerialize, $data);
-        $this->order = $order ?? new Order($this->getOrderId());
+        try {
+            $this->order = $order ?? new Order($this->getOrderId());
+        } catch (\Exception $e) {}
         $this->charge = $charge ?? new \Woocommerce\Pagarme\Model\Charge;
     }
 
@@ -80,7 +82,10 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
      */
     public function getCharges()
     {
-        return $this->getOrder()->get_charges();
+        if ($this->getOrder()) {
+            return $this->getOrder()->get_charges();
+        }
+        return null;
     }
 
     /**
