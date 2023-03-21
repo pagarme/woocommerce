@@ -30,6 +30,8 @@ class Wallet extends Gateway
      */
     protected $_template = 'templates/checkout/form/field/card-save';
 
+    protected $scripts = ['checkout/model/payment/card/wallet'];
+
     /** @var int  */
     protected $sequence = 1;
 

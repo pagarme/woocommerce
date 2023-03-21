@@ -138,6 +138,23 @@ class Core
             '1.14.16',
             false
         );
+        if ($type == 'front') {
+            $id = "{$type}-script-" . self::SLUG;
+            wp_enqueue_script(
+                'pagarme-checkout-card',
+                self::plugins_url("assets/javascripts/front/checkout/model/payment.js"),
+                array_merge(array('jquery'), $deps),
+                self::filemtime("assets/javascripts/front/checkout/model/payment.js"),
+                true
+            );
+            $x = self::get_localize_script_args();
+            wp_localize_script(
+                'pagarme-checkout-card',
+                'PagarmeGlobalVars',
+                $x
+            );
+        }
+
     }
 
     public static function enqueue_styles($type)
@@ -271,8 +288,12 @@ class Core
             'holder_name: The holder_name field is required.'             => 'O nome impresso no cartão é obrigatório.',
             'number: The number field is required.'                       => 'O número do cartão é obrigatório.',
             'number: The number field is not a valid credit card number.' => 'Este número de cartão é inválido.',
-            'number: The field number must be a string with a minimum length of 13 and a maximum length of 19.'
-            => 'O numéro do cartão tamanho deve ter entre 13 e 19 caracteres.',
+            'card: The number field is not a valid card number'           => 'Este número de cartão é inválido.',
+            'card.number: The field number must be a string with a minimum length of 13 and a maximum length of 19.'
+            => 'O numéro do cartão deve ter entre 13 e 19 caracteres.',
+            'card: Card expired.'                                         => 'A validade do cartão está expirada',
+            'card.cvv: The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
+            => 'O número cvv deve ter 3 ou 4 caracteres.',
         );
     }
 }

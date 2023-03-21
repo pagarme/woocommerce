@@ -17,7 +17,6 @@ if (!function_exists('add_action')) {
 
 global $woocommerce;
 
-wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts/front/checkout/model/payment.js'));
 wp_localize_script(
     'pagarme-checkout-card',
     'wc_pagarme_checkout',

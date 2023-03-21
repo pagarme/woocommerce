@@ -34,6 +34,7 @@
 
         async function tokenize() {
             if (pagarmeCard.hasSelectedWallet(this) === false) {
+                wc_pagarme_checkout.errorTokenize = false;
                 let endpoint = pagarme.getEndpoint(),
                     card = createCardObject(this),
                     field = $(this);
@@ -45,6 +46,7 @@
                         createTokenInput(data, field);
                     },
                     function (error) {
+                        wc_pagarme_checkout.errorTokenize = true;
                         if (error.statusCode == 503) {
                             showError('Não foi possível gerar a transação segura. Serviço indisponível.')
                         } else {
@@ -151,15 +153,15 @@
         function translateErrors(error, message) {
             error = error.replace('request.', '');
             var output = error + ': ' + message;
-            // var ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
+            var ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
 
-            // if (PagarmeGlobalVars.WPLANG != 'pt_BR') {
-            //     return output;
-            // }
-            //
-            // if (ptBrMessages.hasOwnProperty(output)) {
-            //     return ptBrMessages[output];
-            // }
+            if (PagarmeGlobalVars.WPLANG != 'pt_BR') {
+                return output;
+            }
+
+            if (ptBrMessages.hasOwnProperty(output)) {
+                return ptBrMessages[output];
+            }
 
             return output;
         };

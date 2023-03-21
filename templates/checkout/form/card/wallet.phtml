@@ -14,7 +14,7 @@ declare( strict_types=1 );
 if (!function_exists('add_action')) {
     exit(0);
 }
-wp_enqueue_script('pagarme-checkout-wallet', $this->getFileUrl('assets/javascripts/front/checkout/model/payment/card/wallet.js'));
+
 ?>
 <?php if ($this->isWalletEnable() && $this->getPaymentInstance()->getCards()) : ?>
     <p class="form-row form-row-wide">

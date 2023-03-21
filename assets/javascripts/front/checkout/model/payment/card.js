@@ -12,7 +12,7 @@ let cardsMethods = [];
 let brands = [];
 
 let pagarmeCard = {
-    limit: 10,
+    limitTokenize: 10,
     canSubmit: false,
     started: false,
     isStarted: function (){
@@ -143,7 +143,13 @@ let pagarmeCard = {
 
     loadBrand: async function (e) {
         let elem = e.currentTarget;
+        if (!elem.checkVisibility()) {
+            return;
+        }
         let cardNumber = elem.value.replace(/\s/g, '');
+        if (cardNumber.length < 6) {
+            return;
+        }
         let card = await this.getCardData(cardNumber);
         this.changeBrand(e, card);
         this.updateInstallmentsElement(e);
@@ -151,9 +157,6 @@ let pagarmeCard = {
 
     getCardData: async function (cardNumber) {
         let result = [];
-        if (cardNumber.length < 6) {
-            throw "Invalid card number";
-        }
         let value = await this.getCardDataByApi(cardNumber);
         if (value === 'error' || typeof value == 'undefined') {
             value = await this.getCardDataContingency(cardNumber);
@@ -312,15 +315,20 @@ let pagarmeCard = {
         let result = pagarmeCard.formHandler(),
             i = 1;
         try {
-            while (!result && i <= this.limit) {
+            while (!result && i <= this.limitTokenize) {
                 if (i === this.limit) {
                     this.removeLoader(this.getCheckoutPaymentElement());
                     throw "Tokenize timeout";
+                }
+                if (wc_pagarme_checkout.errorTokenize === true) {
+                    this.removeLoader(this.getCheckoutPaymentElement());
+                    return;
                 }
                 await pagarmeCard.wait();
                 result = pagarmeCard.formHandler();
                 i++;
             }
+
             this.canSubmit = true;
             $("form.checkout, form#order_review").submit();
         } catch (er) {
@@ -333,7 +341,7 @@ let pagarmeCard = {
     },
     canExecute: function(e) {
         e.preventDefault();
-        if (!wc_pagarme_checkout.validate()) {
+        if (!wc_pagarme_checkout.validate() || wc_pagarme_checkout.errorTokenize === true) {
             return false;
         }
         if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit) {
