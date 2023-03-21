@@ -3,6 +3,7 @@
 jQuery(function ($) {
     globalThis.wc_pagarme_checkout = wc_pagarme_checkout;
     $.jMaskGlobals.watchDataMask = true;
+
     wc_pagarme_checkout.validate = function () {
         var requiredFields = $('[data-required=true]:visible'),
             isValid = true;

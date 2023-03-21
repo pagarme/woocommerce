@@ -14,7 +14,7 @@ declare( strict_types=1 );
 if (!function_exists('add_action')) {
     exit(0);
 }
-wp_enqueue_script('pagarme-checkout-card', $this->getFileUrl('assets/javascripts/front/checkout/model/payment/card.js'));
+
 ?>
 <?php for ($qty = 1; $qty <= $this->getQuantityCards(); $qty++) : ?>
     <?php $this->setData('sequence', $qty); ?>
