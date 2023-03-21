@@ -26,10 +26,10 @@ jobs:
       name: Copy CI files to root
       run: |
         cd /app
-        cp devops/.htaccess .
-        cp devops/Dockerfile .
-        cp devops/update-wp-config.php .
-        cp devops/wait-for-mysql.sh .
+        cp .github/data/.htaccess .
+        cp .github/data/Dockerfile .
+        cp .github/data/update-wp-config.php .
+        cp .github/data/wait-for-mysql.sh .
     -
       name: Build image base for modifications
       run: |
@@ -65,8 +65,8 @@ jobs:
         docker tag ${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }} "${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }}:latest"
         docker tag ${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }} "${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }}:${{ github.ref }}"
         docker push "${{  secrets.DOCKER_ACCOUNT  }}}/${{ github.repository }}"
-    -
-      # name: Send deployment webhook to Rancher
-      # run: |
-      #   BODY='{"push_data":{"tag":"'"${{ github.ref }}"'"},"repository":{"repo_name":"'"${{ secrets.DOCKER_ACCOUNT }}/${{ github.repository }}"'"}}'
-      #   curl -X POST ${{ secrets.RANCHER_STG_DEPLOY_URL }} -H 'Content-Type: application/json' -d "${BODY}"
+    # -
+    #   # name: Send deployment webhook to Rancher
+    #   # run: |
+    #   #   BODY='{"push_data":{"tag":"'"${{ github.ref }}"'"},"repository":{"repo_name":"'"${{ secrets.DOCKER_ACCOUNT }}/${{ github.repository }}"'"}}'
+    #   #   curl -X POST ${{ secrets.RANCHER_STG_DEPLOY_URL }} -H 'Content-Type: application/json' -d "${BODY}"
