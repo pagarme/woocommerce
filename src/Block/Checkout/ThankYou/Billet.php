@@ -47,8 +47,10 @@ class Billet extends ThankYou
     {
         try {
             $charge = $this->getCharge();
-            $transaction = current($charge->transactions);
-            return $transaction->boletoUrl;
+            if ($charge) {
+                $transaction = current($charge->transactions);
+                return $transaction->boletoUrl;
+            }
         } catch (\Exception $e) {}
         return null;
     }
