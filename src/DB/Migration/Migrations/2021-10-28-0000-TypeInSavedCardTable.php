@@ -31,19 +31,34 @@ class TypeInSavedCardTable extends AbstractMigration implements MigrationInterfa
 
     /**
      * Apply the migrations.
-     *
      * @return void
      */
     public function apply(): void
     {
         $table_name = $this->wpdb->prefix . self::TABLE;
         $column_name = self::COLUMN_TYPE;
-        $row = $this->wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = '$column_name'");
-        if (empty($row)) {
-            $query = "ALTER TABLE {$table_name} ADD {$column_name} varchar(30) not null comment 'card type' AFTER brand";
-            $this->wpdb->query($query);
+        if ($this->validate()) {
+            try {
+                $query = "ALTER TABLE {$table_name} ADD {$column_name} varchar(30) not null comment 'card type' AFTER brand";
+                $this->wpdb->query($query);
+                $query = "UPDATE {$table_name} SET type = 'credit_card'";
+                $this->wpdb->query($query);
+            } catch (\Exception $e) {}
         }
-        $query = "UPDATE {$table_name} SET type = 'credit_card'";
-        $this->wpdb->query($query);
+    }
+
+    /**
+     * Checks if the migration has already been run. Returns true if not.
+     * @return bool
+     */
+    public function validate(): bool
+    {
+        $table_name = $this->wpdb->prefix . self::TABLE;
+        $column_name = self::COLUMN_TYPE;
+        $row = $this->wpdb->get_results(  "SHOW COLUMNS FROM $table_name LIKE '$column_name'");
+        if (empty($row)) {
+            return true;
+        }
+        return false;
     }
 }

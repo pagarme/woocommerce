@@ -34,6 +34,9 @@ class Migrator
             foreach ($migrationsClasses as $class) {
                 /** @var MigrationInterface $migration */
                 $migration = new $class;
+                if ($migration->validate()) {
+                    $migration->unregisterMigration($migration);
+                }
                 if ($migration->canApply($migration)) {
                     $migration->apply();
                     $migration->registerMigration($migration);
