@@ -79,19 +79,7 @@ jobs:
         docker tag mpdockerregistry.azurecr.io/woocommerce-pagarme "mpdockerregistry.azurecr.io/woocommerce-pagarme:${{ github.ref_name }}"
         docker push "mpdockerregistry.azurecr.io/woocommerce-pagarme"
     # -
-    #   name: Build and push Docker image
-    #   uses: docker/build-push-action@v2
-    #   with:
-    #     context: .
-    #     push: true
-    #     tags: ${{ steps.meta.outputs.tags }}
-    #     labels: ${{ steps.meta.outputs.labels }}
-      # name: Send deployment webhook to Rancher
-      # run: |
-      #   BODY='{"push_data":{"tag":"'"${{ github.ref }}"'"},"repository":{"repo_name":"'"${{ secrets.DOCKER_ACCOUNT }}/${{ github.repository }}"'"}}'
-      #   curl -X POST ${{ secrets.RANCHER_STG_DEPLOY_URL }} -H 'Content-Type: application/json' -d "${BODY}"
-    # -
     #   # name: Send deployment webhook to Rancher
     #   # run: |
     #   #   BODY='{"push_data":{"tag":"'"${{ github.ref_name }}"'"},"repository":{"repo_name":"'"${{ secrets.DOCKER_ACCOUNT }}/${{ github.repository }}"'"}}'
-    #   #   curl -X POST ${{ secrets.RANCHER_STG_DEPLOY_URL }} -H 'Content-Type: application/json' -d "${BODY}"
+
