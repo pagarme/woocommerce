@@ -47,7 +47,7 @@ jobs:
       run: |
         docker exec newimage wp plugin activate ${{ vars.PLUGIN_NAME }} --allow-root
         docker exec newimage chmod -R 777 /app/wp-content/plugins/${{ vars.PLUGIN_NAME }}
-        docker exec newimage mysql -u root -D wordpress -e "REPLACE INTO wp_options (option_name,option_value) VALUES ('${{ vars.PLUGIN_META_NAME }}','${{ secrets.PLUGIN_CONFIG }}');"
+        docker exec newimage mysql -u root -D wordpress -e "REPLACE INTO wp_options (option_name,option_value) VALUES (\"${{ vars.PLUGIN_META_NAME }}\",\"${{ secrets.PLUGIN_CONFIG }}\");"
         docker exec newimage curl -X GET "http://localhost/wp-content/plugins/${{ vars.PLUGIN_NAME }}/update-wp-config.php?url=https://${{ github.ref_name }}${{ secrets.STAGING_URL }}"
         docker exec newimage rm /app/wp-content/plugins/${{ vars.PLUGIN_NAME }}/update-wp-config.php
         docker exec newimage touch test5.txt
