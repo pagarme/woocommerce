@@ -98,15 +98,12 @@ class Card extends AbstractPayment
 
     protected function getPriceWithInterest($price, $installments, $flag = '')
     {
-        $type   = intval($this->getConfig()->getCcInstallmentType());
         $amount = $price;
-        if ($type === Gateway::CC_TYPE_SINGLE) { // Parcelamento único
-            $no_interest       = intval($this->getConfig()->getCcInstallmentsWithoutInterest());
-            $interest          = Utils::str_to_float($this->getConfig()->getCcInstallmentsInterest());
-            $interest_increase = Utils::str_to_float($this->getConfig()->getCcInstallmentsInterestIncrease());
-            $max_installments  = intval($this->getConfig()->getCcInstallmentsMaximum());
-        } else { // Parcelamento por bandeira
-            $settings_by_flag  = $this->getConfig()->getCcInstallmentsByFlag();
+        $no_interest       = intval($this->getConfig()->getCcInstallmentsWithoutInterest());
+        $interest          = Utils::str_to_float($this->getConfig()->getCcInstallmentsInterest());
+        $interest_increase = Utils::str_to_float($this->getConfig()->getCcInstallmentsInterestIncrease());
+        $max_installments  = intval($this->getConfig()->getCcInstallmentsMaximum());
+        if ($settings_by_flag = $this->getConfig()->getCcInstallmentsByFlag()) {
             $no_interest       = intval($settings_by_flag['no_interest'][$flag]);
             $interest          = Utils::str_to_float($settings_by_flag['interest'][$flag]);
             $interest_increase = Utils::str_to_float($settings_by_flag['interest_increase'][$flag]);

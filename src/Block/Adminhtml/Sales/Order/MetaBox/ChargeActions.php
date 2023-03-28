@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
 class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
 {
     /** @var string */
-    protected $code = 'charge-actions';
+    protected $code = 'capture';
 
     /** @var int */
     protected $sortOrder = 1;
@@ -48,6 +48,12 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
      */
     protected $_template = 'templates/adminhtml/sales/order/meta-box/charge-actions';
 
+    /**
+     * @param Json|null $jsonSerialize
+     * @param array $data
+     * @param Order|null $order
+     * @param \Woocommerce\Pagarme\Model\Charge|null $charge
+     */
     public function __construct(
         Json $jsonSerialize = null,
         array $data = [],
@@ -69,6 +75,9 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
         return $this->order;
     }
 
+    /**
+     * @return mixed|null
+     */
     private function getOrderId()
     {
         if (isset($this->getRequest()['post'])) {
@@ -96,6 +105,9 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
         return $_REQUEST;
     }
 
+    /**
+     * @return string[]
+     */
     public function getHeaderGrid()
     {
         return [
@@ -110,6 +122,10 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
         ];
     }
 
+    /**
+     * @param $charge
+     * @return false|mixed
+     */
     public function getTransaction($charge)
     {
         return current($charge->getTransactions());

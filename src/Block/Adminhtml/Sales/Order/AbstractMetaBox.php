@@ -46,7 +46,7 @@ abstract class AbstractMetaBox extends Template
      */
     public function getCode()
     {
-        return $this->code;
+        return 'woo-pagarme-' . $this->code;
     }
 
     /** return int */

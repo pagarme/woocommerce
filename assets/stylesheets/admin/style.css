@@ -2263,4 +2263,8 @@ body .swal2-animate-x-mark {
     color: #e02b27;
     position: relative;
 }
+
+#woo-pagarme-additional-information section h2{
+    display: none;
+}
 /*# sourceMappingURL=assets/stylesheets/admin/style.css.map */
