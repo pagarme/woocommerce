@@ -91,7 +91,7 @@ class Orders
         wp_enqueue_script('pagarme-adminhmlt-order-view-cancel-capture');
         foreach ($this->blockOrder->getMetaBoxes() as $metaBox) {
             add_meta_box(
-                'woo-pagarme-capture',
+                $metaBox->getCode(),
                 $metaBox->getTitle(),
                 [$metaBox, 'toHtml'],
                 'shop_order',

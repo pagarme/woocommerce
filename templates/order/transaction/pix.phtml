@@ -1,0 +1,51 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Order\Transaction\DefaultTransaction $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<tr>
+    <th><?= __('Payment Type', 'woo-pagarme-payments'); ?>:</th>
+    <td><?= __($this->getTransactionType(), 'woo-pagarme-payments'); ?></td>
+</tr>
+<?php if ($this->getQrCodeUrl()) : ?>
+    <tr>
+        <th><?= __('QR Code', 'woo-pagarme-payments'); ?>:</th>
+        <td>
+            <p>
+                <img style="margin: auto;" src="<?= $this->getQrCodeUrl() ?>" title="Link to QRCode" />
+            </p>
+            <a id="pagarme-qr-code" rawCode="<?= $this->getRawQrCode() ?>" onclick="pagarmeQrCodeCopy()" class="payment-link">
+                <?= __('Copy Code', 'woo-pagarme-payments'); ?>
+            </a>
+            <?php foreach ($this->getInstructions() as $instruction) : ?>
+                <div class="pix-qr-code-instruction">
+                    <?= __($instruction, 'woo-pagarme-payments'); ?>
+                </div>
+            <?php endforeach; ?>
+            <div id="pix-image-attention-container">
+                <?php
+                printf(
+                    '<img id="pix-image-attention" class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
+                    esc_url($this->getFilePath('assets/images/pix-checkout-attention.svg')),
+                    esc_html__('pix attention icon', 'woo-pagarme-payments')
+                );
+                ?>
+            </div>
+            <div class="pix-qr-code-instruction pix-attention-instruction">
+                <?php _e('You can also complete the payment by copying and pasting the code into the app.', 'woo-pagarme-payments'); ?>
+            </div>
+        </td>
+    </tr>
+<?php endif; ?>

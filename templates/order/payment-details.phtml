@@ -1,0 +1,41 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Order\PaymentDetails $this */
+
+declare( strict_types=1 );
+
+use Woocommerce\Pagarme\Block\Order\Charge;
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->getCharges()) : ?>
+    <section>
+        <h2><?= __('Payment Data', 'woo-pagarme-payments'); ?></h2>
+        <table class="woocommerce-table">
+            <?php foreach ($this->getCharges() as $charge) : ?>
+                <?=
+                    $this->createBlock(Charge::class,
+                        'pagarme.order.charge',
+                        [
+                            'charge' => $charge
+                        ]
+                    )->toHtml()
+                ?>
+            <?php endforeach; ?>
+        </table>
+    </section>
+<?php else : ?>
+    <section>
+        <?= __('No records found.', 'woo-pagarme-payments'); ?>
+    </section>
+<?php endif; ?>
+
