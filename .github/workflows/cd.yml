@@ -75,9 +75,7 @@ jobs:
       run: |
         sleep 5 && docker stop newimage
         docker commit newimage ${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}:${{ github.ref_name }}
-        docker tag ${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }} "${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}:latest"
-        docker tag ${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }} "${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}:${{ github.ref_name }}"
-        docker push "${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}"
+        docker push "${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}:${{ github.ref_name }}"
     # -
     #   # name: Send deployment webhook to Rancher
     #   # run: |
