@@ -40,28 +40,28 @@ jobs:
       name: Wait for MySQL Service
       run: |
         ls -la
-        docker exec newimage sh /app/wp-content/plugins/pagarme-payments-for-woocommerce/wait-for-mysql.sh
-        docker exec newimage rm /app/wp-content/plugins/pagarme-payments-for-woocommerce/wait-for-mysql.sh
+        docker exec newimage sh /app/wp-content/plugins/${{ vars.PLUGIN_NAME }}/wait-for-mysql.sh
+        docker exec newimage rm /app/wp-content/plugins/${{ vars.PLUGIN_NAME }}/wait-for-mysql.sh
     -
       name: Activate and setup Plugin
       run: |
-        docker exec newimage wp plugin activate pagarme-payments-for-woocommerce --allow-root
-        docker exec newimage chmod -R 777 /app/wp-content/plugins/pagarme-payments-for-woocommerce
-        docker exec newimage mysql -u root -D wordpress -e "REPLACE INTO wp_options (option_name,option_value) VALUES ('wcmp_pagarme_settings','pagarme-payments-for-woocommerce');"
-        docker exec newimage curl -X GET "http://localhost/wp-content/plugins/pagarme-payments-for-woocommerce/update-wp-config.php?url=${{ secrets.STAGING_URL }}"
-        docker exec newimage rm /app/wp-content/plugins/pagarme-payments-for-woocommerce/update-wp-config.php
+        docker exec newimage wp plugin activate ${{ vars.PLUGIN_NAME }} --allow-root
+        docker exec newimage chmod -R 777 /app/wp-content/plugins/${{ vars.PLUGIN_NAME }}
+        docker exec newimage mysql -u root -D wordpress -e "REPLACE INTO wp_options (option_name,option_value) VALUES ('${{ vars.PLUGIN_META_NAME }}','${{ secrets.PLUGIN_CONFIG }}');"
+        docker exec newimage curl -X GET "http://localhost/wp-content/plugins/${{ vars.PLUGIN_NAME }}/update-wp-config.php?url=https://${{ github.ref_name }}${{ secrets.STAGING_URL }}"
+        docker exec newimage rm /app/wp-content/plugins/${{ vars.PLUGIN_NAME }}/update-wp-config.php
         docker exec newimage touch test5.txt
     -
       name: Clear useless files
       run: |
-        docker exec newimage sh -c "cd /app/wp-content/plugins/pagarme-payments-for-woocommerce" && \
+        docker exec newimage sh -c "cd /app/wp-content/plugins/${{ vars.PLUGIN_NAME }}" && \
         rm -rf .github .plugin-data .git .gitignore .editorconfig && \
         rm -rf Dockerfile update-wp-config.php wait-for-mysql.sh LICENSE *.MD
     -
       name: Log in to Docker Hub
       uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
       with:
-        registry: mpdockerregistry.azurecr.io
+        registry: ${{ secrets.DOCKER_ACCOUNT }}
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     -
@@ -69,15 +69,15 @@ jobs:
       id: meta
       uses: docker/metadata-action@v2
       with:
-        images: mpdockerregistry.azurecr.io/woocommerce-pagarme
+        images: ${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}
     -
       name: Deploy
       run: |
         sleep 5 && docker stop newimage
-        docker commit newimage mpdockerregistry.azurecr.io/woocommerce-pagarme:latest
-        docker tag mpdockerregistry.azurecr.io/woocommerce-pagarme "mpdockerregistry.azurecr.io/woocommerce-pagarme:latest"
-        docker tag mpdockerregistry.azurecr.io/woocommerce-pagarme "mpdockerregistry.azurecr.io/woocommerce-pagarme:${{ github.ref_name }}"
-        docker push "mpdockerregistry.azurecr.io/woocommerce-pagarme"
+        docker commit newimage ${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}:${{ github.ref_name }}
+        docker tag ${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }} "${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}:latest"
+        docker tag ${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }} "${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}:${{ github.ref_name }}"
+        docker push "${{ secrets.DOCKER_ACCOUNT }}/${{ vars.PROJECT_NAME }}"
     # -
     #   # name: Send deployment webhook to Rancher
     #   # run: |
