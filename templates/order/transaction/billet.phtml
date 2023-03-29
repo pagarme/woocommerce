@@ -15,10 +15,6 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 ?>
-<tr>
-    <th><?= __('Payment Type', 'woo-pagarme-payments'); ?>:</th>
-    <td><?= __($this->getTransactionType(), 'woo-pagarme-payments'); ?></td>
-</tr>
 <?php if ($this->getBilletUrl()) : ?>
     <tr>
         <th><?= __('Billet', 'woo-pagarme-payments'); ?>:</th>

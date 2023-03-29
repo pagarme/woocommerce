@@ -17,18 +17,27 @@ if (!function_exists('add_action')) {
 ?>
 <?php if ($this->getCharge() && $this->getCharge()->getTransactions()) : ?>
     <?php foreach ($this->getCharge()->getTransactions() as $transaction) : ?>
-        <?=
-            $this->createBlock(
-                $this->getTransactionClass($transaction),
-                'pagarme.order.charge.transaction',
-                [
-                    'transaction' => $transaction
-                ]
-            )->toHtml();
-        ?>
+        <table class="woocommerce-table">
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align: center"><?= __($this->getTransactionType($transaction), 'woo-pagarme-payments'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?=
+                    $this->createBlock(
+                        $this->getTransactionClass($transaction),
+                        'pagarme.order.charge.transaction',
+                        [
+                            'transaction' => $transaction
+                        ]
+                    )->toHtml();
+                ?>
+                <tr>
+                    <th><?= __('Status', 'woo-pagarme-payments'); ?>:</th>
+                    <td><?= $this->getChargeStatus(); ?></td>
+                </tr>
+            </tbody>
+        </table>
     <?php endforeach; ?>
-    <tr>
-        <th><?= __('Status', 'woo-pagarme-payments'); ?>:</th>
-        <td><?= $this->getChargeStatus(); ?></td>
-    </tr>
 <?php endif; ?>

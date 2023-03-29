@@ -29,14 +29,4 @@ abstract class AbstractTransaction extends Template
     {
         return esc_url(plugins_url($path, WCMP_ROOT_FILE));
     }
-
-    /**
-     * @return array|string|string[]|void
-     */
-    public function getTransactionType()
-    {
-        if ($this->getTransaction() && $this->getTransaction()->getTransactionType()->getType()) {
-            return str_replace(' ', '', ucwords(str_replace('_', ' ', $this->getTransaction()->getTransactionType()->getType())));
-        }
-    }
 }

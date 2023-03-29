@@ -2267,4 +2267,55 @@ body .swal2-animate-x-mark {
 #woo-pagarme-additional-information section h2{
     display: none;
 }
+
+#woo-pagarme-additional-information table.woocommerce-table{
+    border-spacing: 0;
+    width: 100%;
+    margin: 0 0 1.41575em;
+    border-collapse: separate;
+}
+
+#woo-pagarme-additional-information table.woocommerce-table thead{
+    display: table-header-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+#woo-pagarme-additional-information table.woocommerce-table thead th{
+    padding: 1.41575em;
+    vertical-align: middle;
+    text-align: center;
+}
+
+#woo-pagarme-additional-information table.woocommerce-table tr{
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+    box-sizing: border-box;
+}
+
+#woo-pagarme-additional-information table.woocommerce-table td{
+    box-sizing: border-box;
+    padding: 1em 1.41575em;
+    text-align: left;
+    vertical-align: top;
+    background-color: #fdfdfd;
+}
+
+#woo-pagarme-additional-information table.woocommerce-table th{
+    display: table-cell;
+    box-sizing: border-box;
+    padding: 1em 1.41575em;
+    text-align: left;
+    vertical-align: top;
+    font-weight: 600;
+    background-color: #f8f8f8;
+}
+
+#woo-pagarme-additional-information table.woocommerce-table tbody{
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+    box-sizing: border-box;
+}
 /*# sourceMappingURL=assets/stylesheets/admin/style.css.map */
