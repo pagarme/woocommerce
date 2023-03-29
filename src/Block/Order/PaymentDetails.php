@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Block\Order;
 
 use Woocommerce\Pagarme\Block\Template;
+use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 use Woocommerce\Pagarme\Model\Order;
 
 defined( 'ABSPATH' ) || exit;
@@ -43,5 +44,13 @@ class PaymentDetails extends Template
             return $this->getOrder()->get_charges();
         }
         return null;
+    }
+
+    public function isPagarmePaymentMethod(Order $order)
+    {
+        if (property_exists($order, 'wc_order')) {
+            return $order->wc_order->get_payment_method() === AbstractGateway::PAGARME;
+        }
+        return false;
     }
 }

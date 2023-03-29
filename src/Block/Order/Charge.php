@@ -63,4 +63,14 @@ class Charge extends Template
     {
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $method)));
     }
+
+    /**
+     * @return array|string|string[]|void
+     */
+    public function getTransactionType($transaction)
+    {
+        if ($transaction && $transaction->getTransactionType()->getType()) {
+            return str_replace(' ', '', ucwords(str_replace('_', ' ', $transaction->getTransactionType()->getType())));
+        }
+    }
 }

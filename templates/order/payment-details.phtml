@@ -17,25 +17,22 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 ?>
-<?php if ($this->getCharges()) : ?>
+<?php if ($this->isPagarmePaymentMethod($this->getOrder())) : ?>
     <section>
         <h2><?= __('Payment Data', 'woo-pagarme-payments'); ?></h2>
-        <table class="woocommerce-table">
+        <?php if ($this->getCharges()) : ?>
             <?php foreach ($this->getCharges() as $charge) : ?>
                 <?=
-                    $this->createBlock(Charge::class,
-                        'pagarme.order.charge',
-                        [
-                            'charge' => $charge
-                        ]
-                    )->toHtml()
+                $this->createBlock(Charge::class,
+                    'pagarme.order.charge',
+                    [
+                        'charge' => $charge
+                    ]
+                )->toHtml()
                 ?>
             <?php endforeach; ?>
-        </table>
-    </section>
-<?php else : ?>
-    <section>
-        <?= __('No records found.', 'woo-pagarme-payments'); ?>
+        <?php else : ?>
+            <?= __('No records found.', 'woo-pagarme-payments'); ?>
+        <?php endif; ?>
     </section>
 <?php endif; ?>
-
