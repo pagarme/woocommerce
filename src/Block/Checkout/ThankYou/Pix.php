@@ -27,6 +27,11 @@ class Pix extends ThankYou
     protected $_template = 'templates/checkout/thankyou/pix';
 
     /**
+     * @var string[]
+     */
+    protected $scripts = ['checkout/model/payment/pix'];
+
+    /**
      * @return string|null
      */
     public function getQrCodeUrl()

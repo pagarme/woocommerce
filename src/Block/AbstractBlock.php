@@ -32,6 +32,9 @@ abstract class AbstractBlock extends DataObject
     /** @var Json */
     protected $scripts;
 
+    /** @var string */
+    protected $areaCode = 'front';
+
     public function __construct(
         Json  $jsonSerialize = null,
         array $data = []
@@ -103,11 +106,11 @@ abstract class AbstractBlock extends DataObject
 
     public function getScriptUrl($jsFileName)
     {
-        return Core::plugins_url('assets/javascripts/front/' . $jsFileName . '.js');
+        return Core::plugins_url('assets/javascripts/' . $this->areaCode . '/' . $jsFileName . '.js');
     }
 
     public function getScriptVer($jsFileName)
     {
-        return Core::filemtime('assets/javascripts/front/' . $jsFileName . '.js');
+        return Core::filemtime('assets/javascripts/' . $this->areaCode . '/' . $jsFileName . '.js');
     }
 }

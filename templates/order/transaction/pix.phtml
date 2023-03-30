@@ -23,7 +23,7 @@ if (!function_exists('add_action')) {
             <p>
                 <img style="margin: auto;" src="<?= $this->getQrCodeUrl() ?>" title="Link to QRCode" />
             </p>
-            <a id="pagarme-qr-code" rawCode="<?= $this->getRawQrCode() ?>" onclick="pagarmeQrCodeCopy()" class="payment-link">
+            <a id="pagarme-qr-code" rawCode="<?= $this->getRawQrCode() ?>" class="payment-link">
                 <?= __('Copy Code', 'woo-pagarme-payments'); ?>
             </a>
             <?php foreach ($this->getInstructions() as $instruction) : ?>
