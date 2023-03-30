@@ -46,6 +46,11 @@ class AdditionalInformation extends AbstractMetaBox implements MetaBoxInterface
     protected $_template = 'templates/adminhtml/sales/order/meta-box/additional-information';
 
     /**
+     * @var string[]
+     */
+    protected $scripts = ['checkout/model/payment/pix'];
+
+    /**
      * @param Json|null $jsonSerialize
      * @param array $data
      * @param Order|null $order
