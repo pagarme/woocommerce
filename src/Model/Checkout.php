@@ -69,6 +69,24 @@ class Checkout
         $this->orders = $orders;
         $this->gateway = $gateway;
         $this->wooOrderRepository = $wooOrderRepository;
+        add_action('woocommerce_after_checkout_validation', array($this, 'validateCheckout'), 10, 2);
+    }
+
+    public function validateCheckout($fields, $errors)
+    {
+        if (
+            $fields['billing_number'] == 0 &&
+            !key_exists('billing_number_required', $errors->errors)
+        ) {
+            $errors->add('billing_number_required', '<strong>O campo "Número" do endereço de faturamento</strong> é um campo obrigatório.');
+        }
+        if (
+            $fields['ship_to_different_address'] &&
+            $fields['shipping_number'] == 0 &&
+            !key_exists('shipping_number_required', $errors->errors)
+        ) {
+            $errors->add('shipping_number_required', '<strong>O campo "Número" do endereço de entrega</strong> é um campo obrigatório.');
+        }
     }
 
     /**

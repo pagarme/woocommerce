@@ -6,7 +6,7 @@ jQuery(function ($) {
         $.jMaskGlobals.watchDataMask = true;
         wc_pagarme_checkout.validate = function () {
             var requiredFields = $('[data-required=true]:visible'),
-                isValid = true;
+                isValid = wc_pagarme_checkout.validateNumberAdrress();
 
             requiredFields.each(function (index, item) {
                 var field = $(item);
@@ -28,6 +28,19 @@ jQuery(function ($) {
                 $('[data-required=true]:visible.invalid')[0].append('<div className="valid-feedback">Campo Obrigatório</div>');
             }
             return isValid;
+        }
+
+        wc_pagarme_checkout.validateNumberAdrress = function () {
+            var requiredFields = $("#billing_number, #shipping_number:visible, input[name*='[multicustomers][number]']:visible");
+            requiredFields.each(function (index, item) {
+                var field = $(item);
+                if (field.val() == 0) {
+                    field.val('');
+                    field.data('required', true).addClass('invalid');
+                    return false;
+                }
+                return true;
+            });
         }
     }
 });
