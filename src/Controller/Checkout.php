@@ -77,7 +77,7 @@ class Checkout
             $fields
         );
 
-        $order  = new Order($wc_order->get_order_number());
+        $order  = new Order($wc_order->get_id());
         $order->payment_method   = $fields['payment_method'];
         $order->update_meta('_payment_method_title', $this->payment_methods[$fields['payment_method']]);
         $order->update_meta('_payment_method', AbstractGateway::PAGARME . ' ' . $this->payment_methods[$fields['payment_method']]);

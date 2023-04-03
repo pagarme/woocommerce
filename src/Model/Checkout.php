@@ -124,7 +124,7 @@ class Checkout
 
             $paymentInstance = $this->gateway->getPaymentInstace($fields['payment_method']);
 
-            $order = new Order($wc_order->get_order_number());
+            $order = new Order($wc_order->get_id());
             $order->payment_method = $fields['payment_method'];
             $order->update_meta('_payment_method_title', $paymentInstance->getName());
             $order->update_meta('_payment_method', AbstractGateway::PAGARME);

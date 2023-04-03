@@ -299,7 +299,7 @@ class PaymentTemp
 
     private function get_customer_address_from_wc_order($wc_order)
     {
-        $order = new Order($wc_order->get_order_number());
+        $order = new Order($wc_order->get_id());
 
         return Utils::build_customer_address_from_order($order);
     }
