@@ -5,17 +5,16 @@ jQuery(function ($) {
         globalThis.wc_pagarme_checkout = wc_pagarme_checkout;
         $.jMaskGlobals.watchDataMask = true;
         wc_pagarme_checkout.validate = function () {
-            var requiredFields = $('[data-required=true]:visible'),
-                isValid = wc_pagarme_checkout.validateNumberAdrress();
-
+            var requiredFields = $('#billing_number, #shipping_number:visible, input[data-required=true]:visible'),
+                isValid = true;
             requiredFields.each(function (index, item) {
                 var field = $(item);
                 const wrapper = field.closest( '.form-row' )
-                if (!$.trim(field.val())) {
+                if (field.val() == 0 || !$.trim(field.val())) {
                     if (field.attr('id') == 'installments') {
                         field = field.next(); //Select2 span
                     }
-                    field.addClass('invalid')
+                    field.addClass('invalid').val('');
                     if (isValid) {
                         field.focus();
                     }
@@ -25,22 +24,8 @@ jQuery(function ($) {
             });
             if (!isValid) {
                 swal('Prencha os campos obrigatórios');
-                $('[data-required=true]:visible.invalid')[0].append('<div className="valid-feedback">Campo Obrigatório</div>');
             }
             return isValid;
-        }
-
-        wc_pagarme_checkout.validateNumberAdrress = function () {
-            var requiredFields = $("#billing_number, #shipping_number:visible, input[name*='[multicustomers][number]']:visible");
-            requiredFields.each(function (index, item) {
-                var field = $(item);
-                if (field.val() == 0) {
-                    field.val('');
-                    field.data('required', true).addClass('invalid');
-                    return false;
-                }
-                return true;
-            });
         }
     }
 });
