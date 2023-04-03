@@ -25,6 +25,11 @@ class Pix extends AbstractTransaction
     protected $_template = 'templates/order/transaction/pix';
 
     /**
+     * @var string[]
+     */
+    protected $scripts = ['checkout/model/payment/pix'];
+
+    /**
      * @return string|null
      */
     public function getQrCodeUrl()
