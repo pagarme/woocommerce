@@ -239,7 +239,7 @@ abstract class AbstractPayment
      */
     private function getCustomerAddressFromWcOrder(WC_Order $wc_order)
     {
-        $order = new Order($wc_order->get_order_number());
+        $order = new Order($wc_order->get_id());
         return Utils::build_customer_address_from_order($order);
     }
 }
