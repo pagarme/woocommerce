@@ -740,7 +740,7 @@ class Utils
     {
 
         $method = $wc_order->get_shipping_method();
-        $order  = new Order($wc_order->get_order_number());
+        $order  = new Order($wc_order->get_id());
 
         if (!$method) {
             $method = 'Não informado';

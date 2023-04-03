@@ -241,7 +241,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function getIncrementId()
     {
-        return $this->getPlatformOrder()->get_order_number();
+        return $this->getPlatformOrder()->get_id();
     }
 
     public function getGrandTotal()
@@ -364,7 +364,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     public function getPagarmeId()
     {
-        $orderId = $this->platformOrder->get_order_number();
+        $orderId = $this->platformOrder->get_id();
         if (empty($orderId)) {
             return null;
         }
@@ -420,7 +420,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     private function getRegisteredCustomer($woocommerceCustomerId)
     {
-        $order = new Order($this->getPlatformOrder()->get_order_number());
+        $order = new Order($this->getPlatformOrder()->get_id());
 
         $address = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
@@ -475,7 +475,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     private function getGuestCustomer()
     {
-        $order = new Order($this->getPlatformOrder()->get_order_number());
+        $order = new Order($this->getPlatformOrder()->get_id());
 
         $address = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
@@ -843,7 +843,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             return null;
         }
 
-        $order = new Order($this->getPlatformOrder()->get_order_number());
+        $order = new Order($this->getPlatformOrder()->get_id());
 
         $fields = [
             "multicustomer_{$paymentMethod}[name]" => "name",
