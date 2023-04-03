@@ -80,6 +80,10 @@ function wcmp_plugins_loaded_check()
     $woocommerce     = class_exists('WooCommerce');
     $checkout_fields = class_exists('Extra_Checkout_Fields_For_Brazil');
 
+    add_action( 'in_plugin_update_message-' . WCMP_PLUGIN_BASE, function( $plugin_data ) {
+        versionUpdateWarning( WCMP_VERSION, $plugin_data['new_version'] );
+    } );
+
     if ($woocommerce && $checkout_fields) {
         _wcmp_load_instances();
         return;
@@ -92,7 +96,36 @@ function wcmp_plugins_loaded_check()
     if (!$checkout_fields) {
         _wcmp_load_notice('admin_notice_error_wecffb');
     }
+}
 
+function versionUpdateWarning($currentVersion, $newVersion)
+{
+    $current_version_major_part = explode( '.', $currentVersion )[0];
+    $new_version_major_part = explode( '.', $newVersion )[0];
+
+    if ( $current_version_major_part >= $new_version_major_part ) {
+        return;
+    }
+    ?>
+    <hr class="pagarme-major-update-warning-separator" />
+    <div class="pagarme-major-update-warning">
+        <p></p>
+        <div>
+            <div class="pagarme-major-update-title">
+                <?= __( 'We recommend backup before upgrading!', 'woo-pagarme-payments' ); ?>
+            </div>
+            <div class="pagarme-major-update-message">
+                <?php
+                printf(
+                    esc_html__( 'This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your site before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging environment before performing the update in production.', 'woo-pagarme-payments' ),
+                    '<a href="https://woocommerce.com/pt-br/posts/how-to-easily-backup-and-restore-woocommerce/">',
+                    '</a>'
+                );
+                ?>
+            </div>
+        </div>
+    </div>
+    <?php
 }
 
 add_action('plugins_loaded', 'wcmp_plugins_loaded_check', 0);

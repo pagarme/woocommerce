@@ -2318,4 +2318,32 @@ body .swal2-animate-x-mark {
     border-color: inherit;
     box-sizing: border-box;
 }
+
+.pagarme-major-update-warning-separator {
+    margin: 15px -12px;
+    border: 2px solid #dba617;
+}
+
+.pagarme-major-update-warning {
+    margin-bottom: 5px;
+    max-width: 1000px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.pagarme-major-update-warning + p {
+    display: none;
+}
+
+.pagarme-major-update-warning p:before {
+    color: #ff0004;
+    content: "\f534";
+}
+
+.pagarme-major-update-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
 /*# sourceMappingURL=assets/stylesheets/admin/style.css.map */
