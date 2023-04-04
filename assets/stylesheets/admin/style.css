@@ -2346,4 +2346,8 @@ body .swal2-animate-x-mark {
     margin-bottom: 10px;
     margin-top: 5px;
 }
+
+#pagarme-qr-code {
+    cursor:pointer;
+}
 /*# sourceMappingURL=assets/stylesheets/admin/style.css.map */

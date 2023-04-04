@@ -1060,4 +1060,8 @@ li.wc_payment_method[class*="pagarme-payments"] img {
     max-width: 30px;
     float: right;
 }
+
+#pagarme-qr-code {
+    cursor:pointer;
+}
 /*# sourceMappingURL=assets/stylesheets/front/style.css.map */
