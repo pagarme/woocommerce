@@ -32,29 +32,31 @@ class InitialModuleConfig extends AbstractMigration implements MigrationInterfac
      */
     public function apply(): void
     {
-        $data = [
-            'multicustomers' => '0',
-            'enable_logs' => '0',
-            'enable_pix' => 'no',
-            'pix_title' => 'Pix',
-            'pix_qrcode_expiration_time' => 3500,
-            'pix_additional_data' => 'Custom Store PIX',
-            'enable_credit_card' => 'no',
-            'credit_card_title' => 'Credit Card',
-            'cc_operation_type' => '2',
-            'cc_soft_descriptor' => 'Credit Card',
-            'cc_installment_type' => '1',
-            'cc_installments_maximum' => '1',
-            'cc_installments_min_amount' => '',
-            'cc_installments_interest' => '',
-            'cc_installments_interest_increase' => '',
-            'cc_installments_without_interest' => '',
-            'cc_allow_save' => '0',
-            'antifraud_enabled' => '0',
-            'antifraud_min_value' => '',
-            self::PARAM => true
-        ];
-        $this->settings->addData($data)->save();
+        if ($this->validate()) {
+            $data = [
+                'multicustomers' => '0',
+                'enable_logs' => '0',
+                'enable_pix' => 'no',
+                'pix_title' => 'Pix',
+                'pix_qrcode_expiration_time' => 3500,
+                'pix_additional_data' => 'Custom Store PIX',
+                'enable_credit_card' => 'no',
+                'credit_card_title' => 'Credit Card',
+                'cc_operation_type' => '2',
+                'cc_soft_descriptor' => 'Credit Card',
+                'cc_installment_type' => '1',
+                'cc_installments_maximum' => '1',
+                'cc_installments_min_amount' => '',
+                'cc_installments_interest' => '',
+                'cc_installments_interest_increase' => '',
+                'cc_installments_without_interest' => '',
+                'cc_allow_save' => '0',
+                'antifraud_enabled' => '0',
+                'antifraud_min_value' => '',
+                self::PARAM => true
+            ];
+            $this->settings->addData($data)->save();
+        }
     }
 
     /**
