@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2022-12-15 11:42-0300\n"
+"PO-Revision-Date: 2023-04-05 11:56-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
@@ -916,6 +916,24 @@ msgstr "Importante! Esta loja está em fase de testes. Os pedidos realizados nes
 
 msgid "Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions."
 msgstr "Importante! Esta loja está vinculada ao ambiente de testes da Pagar.me. Este ambiente é destinado a validação de integração e não gera operações financeiras reais."
+
+msgid "Yes"
+msgstr "Sim"
+
+msgid "No"
+msgstr "Não"
+
+msgid "Hub integration"
+msgstr "Integração de HUB"
+
+msgid "Card Wallet"
+msgstr "Carteira"
+
+msgid "Card wallet"
+msgstr "Carteira"
+
+msgid "Cancel"
+msgstr "Cancelar"
 
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."

@@ -15,6 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <select id="<?= esc_attr($this->getId()); ?>" name="<?= esc_attr($this->getName()); ?>[<?= esc_attr($this->getId()) ?>]" <?= $this->getReadonly() ? '' : 'readonly' ; ?>>
     <?php foreach ($this->getOptions() as $option) : ?>
-        <option value="<?= esc_attr($option['value']) ?>" <?= selected($this->getCurrent(), $option['value'], true) ?>><?= esc_html($option['label']) ?></option>
+        <option value="<?= esc_attr($option['value']) ?>" <?= selected($this->getCurrent(), $option['value'], true) ?>><?= esc_html(__($option['label'], 'woo-pagarme-payments')) ?></option>
     <?php endforeach; ?>
 </select>

@@ -77,22 +77,15 @@ class HubCommand
     private function uninstallCommand()
     {
         $keysToClear = [
-            'hub_install_id',
-            'hub_environment',
-            'production_secret_key',
-            'production_public_key',
-            'sandbox_secret_key',
-            'sandbox_public_key',
-            'environment'
+            'hub_install_id' => null,
+            'hub_environment' => null,
+            'production_secret_key' => null,
+            'production_public_key' => null,
+            'sandbox_secret_key' => null,
+            'sandbox_public_key' => null,
+            'environment' => null
         ];
-
-        foreach ($keysToClear as $key) {
-            $this->settings->setData(
-                $key,
-                null
-            );
-        }
-
+        $this->settings->addData($keysToClear)->save();
         return 'Hub uninstalled successfully';
     }
 }
