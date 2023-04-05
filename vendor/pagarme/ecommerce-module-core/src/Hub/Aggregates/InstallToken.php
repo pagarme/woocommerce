@@ -7,7 +7,7 @@ use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 
 final class InstallToken extends AbstractEntity
 {
-    const LIFE_SPAN = 1800; //time in seconds
+    const LIFE_SPAN = 43200; //time in seconds
 
     /**
      *
