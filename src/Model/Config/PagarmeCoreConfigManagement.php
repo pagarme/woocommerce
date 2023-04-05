@@ -167,6 +167,9 @@ class PagarmeCoreConfigManagement
      */
     public function convertDataHubInstallId($datum)
     {
+        if (!$datum) {
+            $datum = '00000000-0000-0000-0000-000000000000';
+        }
         return new GUID($datum);
     }
 }

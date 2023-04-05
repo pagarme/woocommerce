@@ -37,7 +37,7 @@ class BilletCreditCard extends AbstractGateway
         return array(
             'title'   => __('Enable/Disable', 'woocommerce'),
             'type'     => 'select',
-            'options' => $this->yesnoOptions->toLabelsArray(),
+            'options' => $this->yesnoOptions->toLabelsArray(true),
             'label'   => __('Enable multi-means (Boleto + Credit card)', 'woo-pagarme-payments'),
             'old_name'    => 'multimethods_billet_card',
             'default'     => $this->config->getData('multimethods_billet_card') ?? strtolower(Yesno::NO),

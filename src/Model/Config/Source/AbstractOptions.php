@@ -65,8 +65,7 @@ abstract class AbstractOptions implements OptionSourceInterface
         $const = $reflectionClass->getConstants();
         foreach ($const as $code => $value) {
             if (strpos($code, '_VALUE') === false) {
-                $value = $translate ? __($value) : $value;
-                $options[strtolower($value)] = $value;
+                $options[strtolower($value)] = $translate ? __($value) : $value;
             }
         }
         return $options;
