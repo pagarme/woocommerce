@@ -26,7 +26,7 @@ abstract class AbstractField
     protected $template = 'main.phtml';
 
     /** @var string */
-    protected $templatePath = 'View/Admin/templates/system/config/form/field/';
+    protected $templatePath = 'templates/adminhtml/system/config/form/field/';
 
     /** @var mixed|null */
     protected $default = null;
@@ -136,7 +136,7 @@ abstract class AbstractField
      */
     public function includeTemplate(string $file = 'main.phtml')
     {
-        include plugin_dir_path(WCMP_ROOT_SRC ) . 'src' . DIRECTORY_SEPARATOR . $this->templatePath . $file;
+        include plugin_dir_path(WCMP_ROOT_SRC ) . DIRECTORY_SEPARATOR . $this->templatePath . $file;
     }
 
     /**

@@ -9,7 +9,7 @@ if (!function_exists('add_action')) {
 use Pagarme\Core\Hub\Services\HubIntegrationService;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Config;
 use Exception;
 
 class Hub
@@ -18,7 +18,7 @@ class Hub
 
     public function __construct()
     {
-        $this->settings = Setting::get_instance();
+        $this->settings = new Config();
         add_action('woocommerce_api_' . Core::get_hub_name(), array($this, 'handle_requests'));
     }
 
@@ -46,28 +46,29 @@ class Hub
     {
         $moduleConfig = CoreSetup::getModuleConfiguration();
 
-        $this->settings->set(
+        $this->settings->setData(
             'hub_install_id',
             $moduleConfig->getHubInstallId()->getValue()
         );
 
-        $this->settings->set(
+        $this->settings->setData(
             'hub_environment',
             $moduleConfig->getHubEnvironment()->getValue()
         );
 
-        $this->settings->set(
+        $this->settings->setData(
             'production_secret_key',
             $moduleConfig->getSecretKey()->getValue()
         );
 
-        $this->settings->set(
+        $this->settings->setData(
             'production_public_key',
             $moduleConfig->getPublicKey()->getValue()
         );
 
-        $this->settings->set('sandbox_secret_key', null);
-        $this->settings->set('sandbox_public_key', null);
-        $this->settings->set('environment', null);
+        $this->settings->setData('sandbox_secret_key', null);
+        $this->settings->setData('sandbox_public_key', null);
+        $this->settings->setData('environment', null);
+        $this->settings->save();
     }
 }
