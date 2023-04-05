@@ -9,7 +9,7 @@ if (!function_exists('add_action')) {
 use Pagarme\Core\Hub\Services\HubIntegrationService;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Helper\Utils;
 
 class HubCommand
@@ -21,7 +21,7 @@ class HubCommand
 
     public function __construct()
     {
-        $this->settings = Setting::get_instance();
+        $this->settings = new Config;
         add_action('woocommerce_api_' . Core::get_hub_command_name(), array($this, 'handle_requests'));
     }
 
@@ -87,7 +87,7 @@ class HubCommand
         ];
 
         foreach ($keysToClear as $key) {
-            $this->settings->set(
+            $this->settings->setData(
                 $key,
                 null
             );

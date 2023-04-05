@@ -20,7 +20,7 @@ class PageSettings
 {
     protected $template = 'settings.phtml';
 
-    protected $templatePath = 'src/View/Admin/templates/system/config/page/';
+    protected $templatePath = 'templates/adminhtml/system/config/page/';
 
     /**
      * @var array
