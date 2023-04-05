@@ -14,10 +14,10 @@ namespace Woocommerce\Pagarme\Block\Order\Transaction;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class CreditCard
+ * Class Voucher
  * @package Woocommerce\Pagarme\Block\Order
  */
-class CreditCard extends AbstractCard
+class Voucher extends AbstractCard
 {
 
 }
