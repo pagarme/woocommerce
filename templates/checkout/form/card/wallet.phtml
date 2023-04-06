@@ -21,7 +21,7 @@ if (!function_exists('add_action')) {
         <label for="<?= $this->getElementId('wallet-id') ?>">
             <?= __('Cards save', 'woo-pagarme-payments'); ?>
         </label>
-        <select name="<?= $this->getElementId('wallet-id') ?>" id="<?= $this->getElementId('wallet-id') ?>" data-action="select-card-wallet" data-installments-type="<?= intval($this->getPaymentInstance()->getConfig()->getCcInstallmentType()); ?>" data-element="choose-credit-card">
+        <select name="<?= $this->getElementId('wallet-id') ?>" id="<?= $this->getElementId('wallet-id') ?>" data-action="select-card-wallet" data-installments-type="<?= intval($this->getPaymentInstance()->getConfig()->getCcInstallmentType()); ?>" data-element="choose-credit-card" autocomplete="false">
             <option value=""><?= __('Saved credit card', 'woo-pagarme-payments'); ?></option>
             <?php foreach ($this->getPaymentInstance()->getCards() as $card) : ?>
                 <?php
