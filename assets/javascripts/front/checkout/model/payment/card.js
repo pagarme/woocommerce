@@ -345,7 +345,7 @@ let pagarmeCard = {
             return false;
         }
         if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit) {
-            pagarmeCard.showLoader(pagarmeCard.getCheckoutPaymentElement());
+            // pagarmeCard.showLoader(pagarmeCard.getCheckoutPaymentElement());
             pagarmeCard.execute();
             return false;
         }
@@ -369,9 +369,9 @@ let pagarmeCard = {
 
     },
     start: function () {
-        if (this.isStarted()) {
-            return;
-        }
+        // if (this.isStarted()) {
+        //     return;
+        // }
         this.getCardsMethods();
         this.getBrands();
         this.addEventListener();

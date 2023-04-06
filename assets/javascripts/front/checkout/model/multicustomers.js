@@ -11,9 +11,9 @@ jQuery(function ($) {
             return true;
         },
         start: function () {
-            if (this.isStarted()) {
-                return;
-            }
+            // if (this.isStarted()) {
+            //     return;
+            // }
             this.addEventListener();
         },
         addEventListener: function () {
