@@ -11,9 +11,9 @@ let pagarmeOrderValue = {
         return true;
     },
     start: function () {
-        if (this.isStarted()) {
-            return;
-        }
+        // if (this.isStarted()) {
+        //     return;
+        // }
         this.addEventListener();
     },
     fillAnotherInput: async function (e) {

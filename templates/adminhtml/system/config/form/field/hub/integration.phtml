@@ -61,6 +61,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         '<?= esc_attr(__('Integration keys successfully removed. Reload the page.', 'woo-pagarme-payments')); ?>',
                                         'success'
                                     )
+                                    document.location.reload(true);
                                 },
                                 fail: function (response) {
                                     swal(
