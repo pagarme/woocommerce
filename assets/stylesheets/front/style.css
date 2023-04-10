@@ -961,7 +961,7 @@ body .swal2-animate-x-mark {
   margin: 20px auto 20px auto;
   padding: 6px;
   text-align: center;
-  width: 200px;
+  max-width: 200px;
 }
 
 #wcmp-checkout-errors {

@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-04-05 11:56-0300\n"
+"PO-Revision-Date: 2023-04-10 09:46-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -934,6 +934,51 @@ msgstr "Carteira"
 
 msgid "Cancel"
 msgstr "Cancelar"
+
+msgid "Card"
+msgstr "Cartão"
+
+msgid "CREDIT CARD"
+msgstr "CARTÃO DE CRÉDITO"
+
+msgid "CreditCard"
+msgstr "Cartão de crédito"
+
+msgid "Amount"
+msgstr "Total"
+
+msgid "Pagar.me - Capture/Cancellation"
+msgstr "Pagar.me - Captura/Cancelamento"
+
+msgid "Last Four Digits"
+msgstr "Últimos quatro dígitos"
+
+msgid "Holder Name"
+msgstr "Titular"
+
+msgid "No records found."
+msgstr "Nenhum registro foi encontrado."
+
+msgid "Partially Reversed"
+msgstr "Parcialmente Revertido"
+
+msgid "Partially Canceled"
+msgstr "Parcialmente Cancelado"
+
+msgid "Partially Captured"
+msgstr "Capturado Parcialmente"
+
+msgid "Total Amount"
+msgstr "Total"
+
+msgid "Pagar.me - Additional Information"
+msgstr "Pagar.me - Informações Adicionais"
+
+msgid "This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your site before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging environment before performing the update in production."
+msgstr "Esta nova versão contém atualizações cruciais de arquitetura e funcionalidade. Recomendamos que %1$sfaça backup de seu site antes de atualizar%2$s. É altamente recomendável executar e validar a atualização primeiro no ambiente de teste antes de executar a atualização em produção."
+
+msgid "We recommend backup before upgrading!"
+msgstr "Recomendamos backup antes de atualizar!"
 
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
