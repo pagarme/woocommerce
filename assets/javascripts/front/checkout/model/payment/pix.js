@@ -30,7 +30,16 @@ let pagarmePix = {
         }).appendTo(elem.parent()).select();
         document.execCommand('copy', false);
         input.remove();
-        alert("Código copiado.");
+        const message = {
+            type: 'success',
+            html: 'Código copiado.',
+            allowOutsideClick: false
+        };
+        try {
+            swal(message);
+        } catch (e) {
+            new swal(message);
+        }
     }
 }
 pagarmePix.start();
