@@ -13,6 +13,7 @@ namespace Woocommerce\Pagarme\Block\Checkout\Form;
 
 use Woocommerce\Pagarme\Block\Checkout\Gateway;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\CardInstallments;
 use Woocommerce\Pagarme\View\Checkouts;
 
 global $woocommerce;
@@ -79,11 +80,17 @@ class Installments extends Gateway
         return Utils::get_component('installments');
     }
 
+    public function render_installments($total)
+    {
+        $cardInstallments = new CardInstallments();
+        return $cardInstallments->getInstallmentsByType($total);
+    }
+
     /**
      * @return array
      */
     public function render()
     {
-        return Checkouts::render_installments($this->getCartTotals());
+        return $this->render_installments($this->getCartTotals());
     }
 }
