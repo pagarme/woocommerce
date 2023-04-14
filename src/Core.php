@@ -118,26 +118,45 @@ class Core
     public static function enqueue_scripts($type, $deps = array(), $localize_args = array())
     {
         wp_enqueue_script(
-            'sweetalert2',
-            self::plugins_url("assets/javascripts/vendor/sweetalert2.js"),
-            array_merge(array('jquery'), $deps),
-            self::filemtime("assets/javascripts/vendor/sweetalert2.js"),
-            false
-        );
-        wp_enqueue_script(
-            'izimodal',
-            self::plugins_url("assets/javascripts/admin/vendor/izimodal.js"),
-            array_merge(['jquery'], $deps),
-            self::filemtime("assets/javascripts/admin/vendor/izimodal.js"),
-            false
-        );
-        wp_enqueue_script(
             'jquery.mask',
             self::plugins_url("assets/javascripts/vendor/jquery.mask.js"),
             array('jquery'),
             '1.14.16',
             false
         );
+        wp_enqueue_script(
+            'sweetalert2',
+            self::plugins_url("assets/javascripts/vendor/sweetalert2.js"),
+            array_merge(array('jquery'), $deps),
+            self::filemtime("assets/javascripts/vendor/sweetalert2.js"),
+            false
+        );
+        if ($type == 'admin') {
+            wp_enqueue_script(
+                'izimodal',
+                self::plugins_url("assets/javascripts/admin/vendor/izimodal.js"),
+                array_merge(['jquery'], $deps),
+                self::filemtime("assets/javascripts/admin/vendor/izimodal.js"),
+                false
+            );
+        }
+        if ($type == 'front') {
+            $id = "{$type}-script-" . self::SLUG;
+            wp_enqueue_script(
+                'pagarme-checkout-card',
+                self::plugins_url("assets/javascripts/front/checkout/model/payment.js"),
+                array_merge(array('jquery'), $deps),
+                self::filemtime("assets/javascripts/front/checkout/model/payment.js"),
+                true
+            );
+            $x = self::get_localize_script_args();
+            wp_localize_script(
+                'pagarme-checkout-card',
+                'PagarmeGlobalVars',
+                $x
+            );
+        }
+
     }
 
     public static function enqueue_styles($type)
