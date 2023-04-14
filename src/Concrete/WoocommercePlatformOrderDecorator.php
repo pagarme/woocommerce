@@ -1028,13 +1028,13 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $amount = str_replace('.', '', $amount);
         $amount = str_replace(',', '', $amount);
         $newPaymentData->amount = $amount;
-        
+
         if ($this->formData["enable_multicustomers_voucher"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'voucher'
             );
         }
-        
+
         $voucherDataIndex = NewVoucherPayment::getBaseCode();
         $newPaymentData->saveOnSuccess =
             isset($this->formData["save_credit_card"]);

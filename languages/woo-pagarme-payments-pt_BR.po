@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2022-10-19 23:16-0300\n"
+"PO-Revision-Date: 2023-04-10 09:46-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
@@ -144,6 +144,12 @@ msgstr "Chave pública Produção"
 #: src/Controller/Gateways.php:251
 msgid "Boleto Bancário"
 msgstr "Boleto Bancário"
+
+msgid "Billet Bank"
+msgstr "Boleto Bancário"
+
+msgid "Billet"
+msgstr "Boleto"
 
 #: src/Controller/Gateways.php:253
 msgid "Enables Boleto Bancário"
@@ -551,6 +557,18 @@ msgstr "Código do cartão"
 msgid "Card Holder Document Number"
 msgstr "Documento do titular do cartão"
 
+msgid "Bank "
+msgstr "Banco "
+
+msgid "Integration pending"
+msgstr "Integração pendente"
+
+msgid "Invalid data for payment method: "
+msgstr "Dados inválidos para a forma de pagamento: "
+
+msgid "Invalid payment method: "
+msgstr "Forma de pagamento inválido: "
+
 #: templates/checkout/field-enable-multicustomers.php:31
 msgid "Fill other buyer data"
 msgstr "Preencher com dados de outro comprador"
@@ -898,6 +916,69 @@ msgstr "Importante! Esta loja está em fase de testes. Os pedidos realizados nes
 
 msgid "Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions."
 msgstr "Importante! Esta loja está vinculada ao ambiente de testes da Pagar.me. Este ambiente é destinado a validação de integração e não gera operações financeiras reais."
+
+msgid "Yes"
+msgstr "Sim"
+
+msgid "No"
+msgstr "Não"
+
+msgid "Hub integration"
+msgstr "Integração de HUB"
+
+msgid "Card Wallet"
+msgstr "Carteira"
+
+msgid "Card wallet"
+msgstr "Carteira"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Card"
+msgstr "Cartão"
+
+msgid "CREDIT CARD"
+msgstr "CARTÃO DE CRÉDITO"
+
+msgid "CreditCard"
+msgstr "Cartão de crédito"
+
+msgid "Amount"
+msgstr "Total"
+
+msgid "Pagar.me - Capture/Cancellation"
+msgstr "Pagar.me - Captura/Cancelamento"
+
+msgid "Last Four Digits"
+msgstr "Últimos quatro dígitos"
+
+msgid "Holder Name"
+msgstr "Titular"
+
+msgid "No records found."
+msgstr "Nenhum registro foi encontrado."
+
+msgid "Partially Reversed"
+msgstr "Parcialmente Revertido"
+
+msgid "Partially Canceled"
+msgstr "Parcialmente Cancelado"
+
+msgid "Partially Captured"
+msgstr "Capturado Parcialmente"
+
+msgid "Total Amount"
+msgstr "Total"
+
+msgid "Pagar.me - Additional Information"
+msgstr "Pagar.me - Informações Adicionais"
+
+msgid "This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your site before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging environment before performing the update in production."
+msgstr "Esta nova versão contém atualizações cruciais de arquitetura e funcionalidade. Recomendamos que %1$sfaça backup de seu site antes de atualizar%2$s. É altamente recomendável executar e validar a atualização primeiro no ambiente de teste antes de executar a atualização em produção."
+
+msgid "We recommend backup before upgrading!"
+msgstr "Recomendamos backup antes de atualizar!"
 
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
