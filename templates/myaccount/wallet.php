@@ -5,7 +5,6 @@ if (!function_exists('add_action')) {
 
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Customer;
-use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Account;
 

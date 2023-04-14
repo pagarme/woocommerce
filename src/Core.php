@@ -7,7 +7,6 @@ if (!function_exists('add_action')) {
 }
 
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Setting;
 
 class Core
 {
@@ -55,7 +54,7 @@ class Core
     public static function initialize()
     {
         $controllers = array(
-            'Settings',
+            'Config',
             'Checkout',
             'Webhooks',
             'Hub',

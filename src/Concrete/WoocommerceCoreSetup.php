@@ -8,16 +8,8 @@ use Pagarme\Core\Kernel\Factories\ConfigurationFactory;
 use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\ValueObjects\CardBrand;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\CardConfig;
-use Woocommerce\Pagarme\Concrete\WoocommerceDatabaseDecorator;
-use Woocommerce\Pagarme\Concrete\WoocommerceDataService;
-use Woocommerce\Pagarme\Concrete\WoocommercePlatformCreditmemoDecorator;
-use Woocommerce\Pagarme\Concrete\WoocommercePlatformInvoiceDecorator;
-use Woocommerce\Pagarme\Concrete\WoocommercePlatformOrderDecorator;
-use Woocommerce\Pagarme\Concrete\WoocommercePlatformPaymentMethodDecorator;
-use Woocommerce\Pagarme\Concrete\WoocommercePlatformProductDecorator;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
-use Woocommerce\Pagarme\Model\Setting;
 
 final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 {

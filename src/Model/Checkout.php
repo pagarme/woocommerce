@@ -28,9 +28,6 @@ use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
 
 class Checkout
 {
-    /** @var Setting|null */
-    private $setting;
-
     /** @var Config */
     private $config;
 
@@ -65,7 +62,6 @@ class Checkout
             $wooOrderRepository = new WooOrderRepository;
         }
         $this->config = $config;
-        $this->setting = Setting::get_instance();
         $this->orders = $orders;
         $this->gateway = $gateway;
         $this->wooOrderRepository = $wooOrderRepository;

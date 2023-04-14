@@ -8,13 +8,11 @@ if (!function_exists('add_action')) {
 
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 use Woocommerce\Pagarme\Model\CardInstallments;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer;
-use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model;
-use Woocommerce\Pagarme\Controller\Orders;
 
 use WC_Order;
 
@@ -266,11 +264,11 @@ class Checkout
 
     private function validate_brands($fields)
     {
-        $setting = Setting::get_instance();
+        $config = new Config();
         $brand1  = Utils::get_value_by($fields, 'brand');
         $brand2  = Utils::get_value_by($fields, 'brand2');
 
-        $flags = $setting->cc_flags;
+        $flags = $config->getCcFlags;
 
         if (empty($flags)) {
             return;

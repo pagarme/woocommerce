@@ -8,9 +8,6 @@ if (!function_exists('add_action')) {
 
 use Pagarme\Core\Webhook\Factories\WebhookFactory;
 use Pagarme\Core\Webhook\Services\ChargeHandlerService;
-use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Setting;
 use WC_Order;
 
 class Charge

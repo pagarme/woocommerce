@@ -8,8 +8,8 @@ if (!function_exists('add_action')) {
 
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Order;
-use Woocommerce\Pagarme\Model\Setting;
 use Exception;
 
 class Webhooks
@@ -18,7 +18,7 @@ class Webhooks
 
     public function __construct()
     {
-        $this->settings = Setting::get_instance();
+        $this->settings = new Config();
         add_action('woocommerce_api_' . Core::get_webhook_name(), array($this, 'handle_requests'));
     }
 
