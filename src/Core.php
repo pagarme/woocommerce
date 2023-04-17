@@ -54,7 +54,6 @@ class Core
     public static function initialize()
     {
         $controllers = array(
-            'Settings',
             'Checkout',
             'Webhooks',
             'Hub',
