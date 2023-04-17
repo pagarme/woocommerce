@@ -13,6 +13,8 @@ namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Payment\CreditCard\Brands;
+use Woocommerce\Pagarme\Model\Payment\CreditCard\BrandsInterface;
 
 defined('ABSPATH') || exit;
 
@@ -144,7 +146,7 @@ class CreditCard extends AbstractGateway
             'title' => __('Card Brands', 'woo-pagarme-payments'),
             'select_buttons' => false,
             'class' => 'wc-enhanced-select',
-            'options' => $this->model->settings->get_flags_list(),
+            'options' => $this->getBrandsList(),
             'custom_attributes' => array(
                 'data-field' => 'flags-select',
                 'data-element' => 'flags-select',
@@ -316,7 +318,7 @@ class CreditCard extends AbstractGateway
 
         $data  = wp_parse_args($data, $defaults);
         $value = (array) $this->get_option($key, array());
-        $flags = $this->model->settings->get_flags_list();
+        $flags = $this->getBrandsList();
 
         ob_start();
 
@@ -391,5 +393,24 @@ class CreditCard extends AbstractGateway
             }
         }
         return $value;
+    }
+
+    public function getBrandsList()
+    {
+        //Some brands are hidden for PSP
+        return array(
+            'visa'              => 'Visa',
+            'mastercard'        => 'MasterCard',
+            'amex'              => 'Amex',
+            'hipercard'         => 'HiperCard',
+            'diners'            => 'Diners',
+            'elo'               => 'Elo',
+            'discover'          => 'Discover',
+            'aura'              => 'Aura',
+            'jcb'               => 'JCB',
+            'credz'             => 'Credz',
+            'banese'            => 'Banese',
+            'cabal'             => 'Cabal',
+        );
     }
 }

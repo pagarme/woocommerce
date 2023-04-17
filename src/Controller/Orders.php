@@ -9,7 +9,7 @@ if (!function_exists('add_action')) {
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order as BlockOrder;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Order;
-use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
 use Woocommerce\Pagarme\Concrete\WoocommercePlatformOrderDecorator;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup;
@@ -26,8 +26,8 @@ class Orders
     public function __construct(
         BlockOrder $blockOrder = null
     ) {
-        $this->settings = Setting::get_instance();
-        $this->debug    = $this->settings->is_enabled_logs();
+        $this->settings = new Config();
+        $this->debug    = $this->settings->getData('enable_logs');
         $this->blockOrder = $blockOrder ?? new BlockOrder;
         add_action('on_pagarme_order_paid', array($this, 'set_order_paid'), 20, 2);
         add_action('on_pagarme_order_created', array($this, 'set_order_created'), 20, 2);

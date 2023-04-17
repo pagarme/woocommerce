@@ -232,4 +232,10 @@ class Config extends DataObject
         }
         return $ccFlags;
     }
+
+    public function log()
+    {
+        return new \WC_Logger();
+    }
+
 }

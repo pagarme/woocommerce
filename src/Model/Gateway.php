@@ -15,7 +15,6 @@ use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Payment\PaymentInterface;
-use Woocommerce\Pagarme\Model\Setting;
 
 // WooCommerce
 use WC_Order;
@@ -41,15 +40,12 @@ class Gateway
      */
     const CC_TYPE_BY_FLAG = 2;
 
-    public $settings;
-
     /** @var Config|null */
     public $config;
 
     public function __construct(
         Config $config = null
     ) {
-        $this->settings = Setting::get_instance();
         if (!$config) {
             $config = new Config();
         }

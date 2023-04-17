@@ -7,13 +7,9 @@ if (!function_exists('add_action')) {
 }
 
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
-use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
 use Pagarme\Core\Kernel\Services\OrderService;
-
 // WooCommerce
 use WC_Order;
-use Woocommerce\Pagarme\Model\Setting;
 
 class Order extends Meta
 {
@@ -63,7 +59,7 @@ class Order extends Meta
     {
         parent::__construct($ID);
         $this->wc_order = new WC_Order($this->ID);
-        $this->settings = Setting::get_instance();
+        $this->settings = new Config();
     }
     /** phpcs:enable */
 

@@ -7,7 +7,6 @@ if (!function_exists('add_action')) {
 }
 
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Setting;
 
 class Core
 {

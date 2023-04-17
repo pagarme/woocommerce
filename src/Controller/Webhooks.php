@@ -8,17 +8,17 @@ if (!function_exists('add_action')) {
 
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Order;
-use Woocommerce\Pagarme\Model\Setting;
 use Exception;
 
 class Webhooks
 {
-    private $settings;
+    private $config;
 
     public function __construct()
     {
-        $this->settings = Setting::get_instance();
+        $this->config = new Config();
         add_action('woocommerce_api_' . Core::get_webhook_name(), array($this, 'handle_requests'));
     }
 
@@ -27,10 +27,10 @@ class Webhooks
         $body = Utils::get_json_post_data();
 
         if (empty($body)) {
-            $this->settings->log()->add('woo-pagarme', 'Webhook Received: empty body!');
+            $this->config->log()->add('woo-pagarme', 'Webhook Received: empty body!');
             return;
         }
-        $this->settings->log()->add('woo-pagarme', 'Webhook Received: ' . json_encode($body, JSON_PRETTY_PRINT));
+        $this->config->log()->add('woo-pagarme', 'Webhook Received: ' . json_encode($body, JSON_PRETTY_PRINT));
 
         $event = $this->sanitize_event_name($body->type);
 
