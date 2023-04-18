@@ -1,4 +1,4 @@
-(function ($) {
+(   function ($) {
         const installmentsTypeSelect = $('[data-element="installments-type-select"]');
         const installmentsMax = $('[data-field="installments-maximum"]');
         const installmentsInterest = $('[data-field="installments-interest"]');
@@ -7,8 +7,8 @@
         const installmentsWithoutInterest = $('[data-field="installments-without-interest"]');
         const installmentsInterestIncrease = $('[data-field="installments-interest-increase"]');
         const flagsSelect = $('[data-element="flags-select"]');
-        const ccInstallmentsByFlag = $("woocommerce_woo-pagarme-payments-credit-card_cc_installments_by_flag[max_installment][visa]");
 
+        $.jMaskGlobals.watchDataMask = true;
         handleInstallmentFieldsVisibility(installmentsTypeSelect.val());
         addEventListener();
 
@@ -102,10 +102,6 @@
             });
             flagsSelect.on('select2:selecting', function (event) {
                 setInstallmentsByFlags(event, false);
-            });
-            ccInstallmentsByFlag.on('change', function (event) {
-                alert('oi');
-                maxInstallmentsNoInterest(event);
             });
         };
 
