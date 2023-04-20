@@ -9,7 +9,7 @@
 
 /** @var \Woocommerce\Pagarme\Block\Checkout\Payment\BilletAndCard $this */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 if (!function_exists('add_action')) {
     exit(0);
@@ -37,7 +37,14 @@ if (!function_exists('add_action')) {
     ]
 )->toHtml() ?>
 <script type="text/javascript">
-    if (typeof pagarmeOrderValue == 'object') {
-        pagarmeOrderValue.start();
+    {
+        let paymentTarget = '.payment_method_woo-pagarme-payments-billet_and_card';
+        if (typeof pagarmeCard == 'object') {
+            pagarmeCard.start(paymentTarget);
+        }
+        if (typeof pagarmeOrderValue == 'object') {
+            pagarmeOrderValue.start(paymentTarget);
+        }
+
     }
 </script>

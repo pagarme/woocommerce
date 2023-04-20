@@ -22,3 +22,10 @@ $this->createBlock(
         'qty_cards' =>  $this->getQtyCards()
     ]
 )->toHtml();
+?>
+<script type="text/javascript">
+    if (typeof pagarmeCard == 'object') {
+        let paymentTarget = '.payment_method_woo-pagarme-payments-credit_card';
+        pagarmeCard.start(paymentTarget);
+    }
+</script>

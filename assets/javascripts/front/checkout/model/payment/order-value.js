@@ -2,19 +2,8 @@ const cardValueTarget = 'input[data-pagarmecheckout-element="order-value"]';
 const firstCardValue = '[data-pagarmecheckout-card-num="1"]';
 
 let pagarmeOrderValue = {
-    started: false,
-    isStarted: function () {
-        if (!this.started) {
-            this.started = true;
-            return false;
-        }
-        return true;
-    },
-    start: function () {
-        // if (this.isStarted()) {
-        //     return;
-        // }
-        this.addEventListener();
+    start: function (paymentTarget) {
+        this.addEventListener(paymentTarget);
     },
     fillAnotherInput: async function (e) {
         let input = jQuery(e.currentTarget);
@@ -73,8 +62,8 @@ let pagarmeOrderValue = {
             new swal(message);
         }
     },
-    addEventListener: function () {
-        jQuery(cardValueTarget).on('change', function (e) {
+    addEventListener: function (paymentTarget) {
+        $(paymentTarget + ' ' + cardValueTarget).on('change', function (e) {
             pagarmeOrderValue.keyEventHandler(e);
         });
     },

@@ -1,18 +1,7 @@
 const qrRawCodeTarget = '#pagarme-qr-code';
 $ = jQuery;
 let pagarmePix = {
-    started: false,
-    isStarted: function () {
-        if (!this.started) {
-            this.started = true;
-            return false;
-        }
-        return true;
-    },
     start: function () {
-        // if (this.isStarted()) {
-        //     return;
-        // }
         this.addEventListener();
     },
     addEventListener: function () {

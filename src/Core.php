@@ -148,11 +148,10 @@ class Core
                 self::filemtime("assets/javascripts/front/checkout/model/payment.js"),
                 true
             );
-            $x = self::get_localize_script_args();
             wp_localize_script(
                 'pagarme-checkout-card',
                 'PagarmeGlobalVars',
-                $x
+                self::get_localize_script_args()
             );
         }
 

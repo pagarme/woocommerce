@@ -23,3 +23,9 @@ if (!function_exists('add_action')) {
         'qty_cards' => $this->getQtyCards()
     ]
 )->toHtml() ?>
+<script type="text/javascript">
+    if (typeof pagarmeCard == 'object') {
+        let paymentTarget = '.payment_method_woo-pagarme-payments-voucher';
+        pagarmeCard.start(paymentTarget);
+    }
+</script>

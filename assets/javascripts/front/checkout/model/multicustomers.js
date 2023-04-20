@@ -2,18 +2,7 @@ jQuery(function ($) {
     const multiCustomerTarget = 'input[data-element=enable-multicustomers]';
     const form = 'fieldset[data-pagarme-payment-element=multicustomers]'
     window.pagarmeMultiCustomer = {
-        started: false,
-        isStarted: function (){
-            if (!this.started){
-                this.started = true;
-                return false;
-            }
-            return true;
-        },
         start: function () {
-            // if (this.isStarted()) {
-            //     return;
-            // }
             this.addEventListener();
         },
         addEventListener: function () {

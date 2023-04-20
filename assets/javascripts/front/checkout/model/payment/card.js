@@ -14,14 +14,6 @@ let brands = [];
 let pagarmeCard = {
     limitTokenize: 10,
     canSubmit: false,
-    started: false,
-    isStarted: function (){
-        if (!this.started){
-            this.started = true;
-            return false;
-        }
-        return true;
-    },
     haveCardForm: function (e) {
         let elem = null;
         if (e instanceof $) {
@@ -351,8 +343,8 @@ let pagarmeCard = {
         }
         return true;
     },
-    addEventListener: function () {
-        $(cardNumberTarget).on('blur', function (e) {
+    addEventListener: function (paymentTarget) {
+        $(paymentTarget + ' ' + cardNumberTarget).on('blur', function (e) {
             pagarmeCard.keyEventHandlerCard(e);
         });
         $("form.checkout").on(
@@ -368,12 +360,9 @@ let pagarmeCard = {
         $('input[name="pagarme[voucher][cards][1][document-holder]"]').val($('#billing_cpf').val()).trigger('input');
 
     },
-    start: function () {
-        // if (this.isStarted()) {
-        //     return;
-        // }
+    start: function (cardNumberTarget) {
         this.getCardsMethods();
         this.getBrands();
-        this.addEventListener();
+        this.addEventListener(cardNumberTarget);
     },
 };
