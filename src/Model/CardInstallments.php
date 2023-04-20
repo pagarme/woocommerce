@@ -48,6 +48,7 @@ class CardInstallments
      */
     public function getInstallmentsByType($total, $flag = false)
     {
+        $total = Utils::str_to_float($total);
         $type = $this->config->getCcInstallmentType() ?? 1;
         $maxInstallments = $this->config->getCcInstallmentsMaximum();
         $minAmount = Utils::str_to_float($this->config->getCcInstallmentsMinAmount());
