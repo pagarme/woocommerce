@@ -155,6 +155,15 @@ class PagarmeCoreConfigManagement
      * @param $datum
      * @return bool
      */
+    public function convertDataAntifraudEnabled($datum)
+    {
+        return (bool) $datum;
+    }
+
+    /**
+     * @param $datum
+     * @return bool
+     */
     public function convertDataSaveVoucherCards($datum)
     {
         return (bool) $datum;

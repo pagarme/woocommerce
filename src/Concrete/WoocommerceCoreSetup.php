@@ -142,7 +142,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $dataObj->installmentsEnabled = true;
         $dataObj->cardOperation = $storeConfig->getCardOperationForCore();
         $dataObj->cardStatementDescriptor = $storeConfig->getIsCardStatementDescriptor();
-        $dataObj->antifraudEnabled = $storeConfig->getAntifraudEnabled();
+        $dataObj->antifraudEnabled = (bool) $storeConfig->getAntifraudEnabled();
         $dataObj->antifraudMinAmount = intval($storeConfig->getAntifraudMinValue());
         $dataObj->saveCards = $storeConfig->getCcAllowSave();
         $dataObj->saveVoucherCards = $storeConfig->getVoucherCardWallet();
