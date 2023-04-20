@@ -169,11 +169,6 @@ class PagarmeCoreConfigManagement
         return (bool) $datum;
     }
 
-   public function convertDataAntifraudEnabled($datum)
-    {
-        return (bool) $datum;
-    }
-
     /**
      * @param $datum
      * @return GUID
