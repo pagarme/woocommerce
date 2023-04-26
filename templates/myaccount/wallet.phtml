@@ -1,34 +1,15 @@
 <?php
+/**
+ * @var \Woocommerce\Pagarme\Block\Account\Wallet $this
+ */
 if (!function_exists('add_action')) {
     exit(0);
 }
-
-use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Customer;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Account;
-
-$customer = new Customer(get_current_user_id());
-
 do_action('woocommerce_before_account_wallet');
 
-if ($customer->cards) :
-    $api_route = get_home_url(null, '/wc-api/' . Account::WALLET_ENDPOINT);
-    $swal_data = apply_filters(Core::tag_name('account_wallet_swal_data'), array(
-        'title'          => __('Waiting...', 'woo-pagarme-payments'),
-        'text'           => __('We are processing your request.', 'woo-pagarme-payments'),
-        'confirm_title'  => __('Are you sure?', 'woo-pagarme-payments'),
-        'confirm_text'   => __('You won\'t be able to revert this!', 'woo-pagarme-payments'),
-        'confirm_button' => __('Yes, delete it!', 'woo-pagarme-payments'),
-        'cancel_button'  => __('No, cancel!', 'woo-pagarme-payments'),
-        'confirm_color'  => '#3085d6',
-        'cancel_color'   => '#d33',
-    ));
+if ($this->walletCards) :
 ?>
-
-    <table class="woocommerce-wallet-table shop_table shop_table_responsive" data-swal='<?php echo wp_json_encode($swal_data, JSON_HEX_APOS); ?>' data-api-request="<?php echo esc_url($api_route); ?>" <?php echo
-                                                                                                                                                                                                        /** phpcs:ignore */
-                                                                                                                                                                                                        Utils::get_component('wallet'); ?>>
+    <table class="woocommerce-wallet-table shop_table shop_table_responsive">
         <thead>
             <tr>
                 <th class="woocommerce-wallet-name">
@@ -52,8 +33,7 @@ if ($customer->cards) :
             </tr>
         </thead>
         <tbody>
-
-            <?php foreach ($customer->cards as $card_id => $card) : ?>
+            <?php foreach ($this->walletCards as $card_id => $card) : ?>
 
                 <tr>
                     <td>
@@ -82,7 +62,6 @@ if ($customer->cards) :
 
         </tbody>
     </table>
-
 <?php
 
 else :
@@ -95,3 +74,4 @@ else :
 endif;
 
 do_action('woocommerce_after_account_orders');
+?>
