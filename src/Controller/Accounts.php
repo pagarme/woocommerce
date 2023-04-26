@@ -107,7 +107,7 @@ class Accounts
         foreach ($saved_cards as $saved_card) {
             $saved_card_id = $saved_card->getPagarmeId()->getValue();
             if ($saved_card_id === $card_id) {
-                // $this->remove_core_card($customer, $saved_card);
+                $this->remove_core_card($customer, $saved_card);
                 wp_send_json_success(
                     __('Card removed successfully.', 'woo-pagarme-payments')
                 );
