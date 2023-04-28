@@ -74,14 +74,14 @@ class Checkout
             $fields['billing_number'] == 0 &&
             !key_exists('billing_number_required', $errors->errors)
         ) {
-            $errors->add('billing_number_required', '<strong>O campo "Número" do endereço de faturamento</strong> é um campo obrigatório.');
+            $errors->add('billing_number_required', '<strong>O campo "NÃºmero" do endereÃ§o de faturamento</strong> Ã‰ um campo obrigatÃ³rio.');
         }
         if (
             $fields['ship_to_different_address'] &&
             $fields['shipping_number'] == 0 &&
             !key_exists('shipping_number_required', $errors->errors)
         ) {
-            $errors->add('shipping_number_required', '<strong>O campo "Número" do endereço de entrega</strong> é um campo obrigatório.');
+            $errors->add('shipping_number_required', '<strong>O campo "NÃºmero" do endereÃ§o de entrega</strong> Ã‰ um campo obrigatÃ³rio.');
         }
     }
 
@@ -118,12 +118,8 @@ class Checkout
                 $fields
             );
 
-            $paymentInstance = $this->gateway->getPaymentInstace($fields['payment_method']);
-
             $order = new Order($wc_order->get_id());
             $order->payment_method = $fields['payment_method'];
-            $order->update_meta('_payment_method_title', $paymentInstance->getName());
-            $order->update_meta('_payment_method', AbstractGateway::PAGARME);
             WC()->cart->empty_cart();
             if ($response) {
                 $order->transaction_id     = $response->getPagarmeId()->getValue();
