@@ -49,9 +49,7 @@ class PaymentDetails extends Template
     public function isPagarmePaymentMethod(Order $order)
     {
         if (property_exists($order, 'wc_order')) {
-            $paymentMethod = $order->wc_order->get_payment_method();
-            return $paymentMethod === AbstractGateway::PAGARME ||
-                    str_starts_with($paymentMethod, AbstractGateway::WC_PAYMENT_PAGARME);
+            return $order->wc_order->get_payment_method() === AbstractGateway::PAGARME;
         }
         return false;
     }
