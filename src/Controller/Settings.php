@@ -118,8 +118,8 @@ class Settings
                             'fieldObject' => Select::class,
                             'id' => 'enabled',
                             'title' => 'Enable',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
+                            'options' => $this->yesNoOptions->toLabelsArray(),
+                            'default'     => strtolower(Yesno::NO),
                         ],
                         [
                             'fieldObject' => Integration::class,
@@ -130,14 +130,14 @@ class Settings
                             'fieldObject' => Environment::class,
                             'id' => 'hub_environment',
                             'title' => 'Integration environment',
-                            'default' => 'Develop',
+                            'default' => '',
                         ],
                         [
                             'fieldObject' => Select::class,
                             'id' => 'multicustomers',
                             'title' => 'Multi-buyers',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
+                            'options' => $this->yesNoOptions->toLabelsArray(),
+                            'default'     => strtolower(Yesno::NO),
                         ],
                     ]
                 ],
@@ -150,16 +150,16 @@ class Settings
                             'fieldObject' => Select::class,
                             'id' => 'is_gateway_integration_type',
                             'title' => 'Advanced settings',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
+                            'options' => $this->yesNoOptions->toLabelsArray(),
+                            'default'     => strtolower(Yesno::NO),
                             'description' => 'Configurations that only works for Gateway customers, who have a direct contract with an acquirer.'
                         ],
                         [
                             'fieldObject' => Select::class,
                             'id' => 'enable_logs',
                             'title' => 'Logs',
-                            'options' => $this->yesNoOptions->toOptionArray(),
-                            'default' => Yesno::NO_VALUE,
+                            'options' => $this->yesNoOptions->toLabelsArray(),
+                            'default'     => strtolower(Yesno::NO),
                             'description' => 'Log Pagar.me events, you can check this log in WooCommerce>Status>Logs.'
                         ]
                     ],
@@ -305,15 +305,15 @@ class Settings
      * @param $input
      * @return array
      */
-    public function validate_options($input ) {
-        $output = array();
-        // Loop through each of the incoming options.
-        foreach ( $input as $key => $value ) {
-            // Check to see if the current option has a value. If so, process it.
-            if ( isset( $input[ $key ] ) ) {
-                $output[ $key ] = sanitize_text_field( $input[ $key ] );
-            }
-        }
-        return $output;
-    }
+//    public function validate_options($input ) {
+//        $output = array();
+//        // Loop through each of the incoming options.
+//        foreach ( $input as $key => $value ) {
+//            // Check to see if the current option has a value. If so, process it.
+//            if ( isset( $input[ $key ] ) ) {
+//                $output[ $key ] = sanitize_text_field( $input[ $key ] );
+//            }
+//        }
+//        return $output;
+//    }
 }

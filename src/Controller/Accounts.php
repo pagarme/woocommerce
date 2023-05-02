@@ -28,7 +28,7 @@ class Accounts
     )
     {
         $this->template = $template ?? new Template();
-        
+
         $this->wallet_endpoint = get_option(self::OPT_WALLET_ENDPOINT, self::WALLET_ENDPOINT);
         $this->card_repository = new CoreSavedCardRepository();
         add_action('init', array($this, 'add_endpoints'));

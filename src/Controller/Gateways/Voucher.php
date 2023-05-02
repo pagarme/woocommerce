@@ -62,6 +62,7 @@ class Voucher extends AbstractGateway
             'desc_tip' => __('Description that appears on the voucher bill.', 'woo-pagarme-payments'),
             'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
                 'woo-pagarme-payments'), $maxLength),
+            'default' => $this->config->getData('voucher_soft_descriptor') ?? '',
             'custom_attributes' => [
                 'data-field' => 'voucher-soft-descriptor',
                 'data-action' => 'voucher-soft-descriptor',
@@ -87,6 +88,7 @@ class Voucher extends AbstractGateway
         return [
             'type' => 'multiselect',
             'title' => __('Voucher Card Brands', 'woo-pagarme-payments'),
+            'default'     => $this->config->getData('field_voucher_flags') ?? '',
             'select_buttons' => false,
             'class' => 'wc-enhanced-select',
             'options' => $options,

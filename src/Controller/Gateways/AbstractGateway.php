@@ -256,7 +256,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      * @return bool
      */
     public function isGatewayType(){
-        return $this->model->config->getIsGatewayIntegrationType();
+        return ($this->model->config->getIsGatewayIntegrationType() === 'yes');
     }
 
     /**

@@ -87,7 +87,7 @@ class CreditCard extends AbstractGateway
             'type' => 'select',
             'title' => __('Operation Type', 'woo-pagarme-payments'),
             'class' => 'wc-enhanced-select',
-            'default' => 1,
+            'default' => $this->config->getCcOperationType() ?? 1,
             'options' => array(
                 1 => __('Authorize', 'woo-pagarme-payments'),
                 2 => __('Authorize and Capture', 'woo-pagarme-payments'),
@@ -107,6 +107,7 @@ class CreditCard extends AbstractGateway
             'desc_tip' => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
             'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
                 'woo-pagarme-payments'), $maxLength),
+            'default' => $this->config->getData('cc_soft_descriptor') ?? '',
             'custom_attributes' => array(
                 'data-field' => 'soft-descriptor',
                 'data-action' => 'soft-descriptor',
@@ -127,7 +128,7 @@ class CreditCard extends AbstractGateway
             'type'     => 'select',
             'options' => $this->yesnoOptions->toArray(),
             'label' => __('Enable card wallet', 'woo-pagarme-payments'),
-            'default' => Yesno::NO_VALUE,
+            'default'     => $this->config->getData('cc_allow_save') ?? strtolower(Yesno::NO),
             'description' => __('Allows for cards to be saved for future purchases.', 'woo-pagarme-payments'),
             'desc_tip' => true,
             'custom_attributes' => array(
@@ -147,6 +148,7 @@ class CreditCard extends AbstractGateway
             'select_buttons' => false,
             'class' => 'wc-enhanced-select',
             'options' => $this->getBrandsList(),
+            'default'     => $this->config->getData('cc_flags') ?? '',
             'custom_attributes' => array(
                 'data-field' => 'flags-select',
                 'data-element' => 'flags-select',
@@ -165,7 +167,7 @@ class CreditCard extends AbstractGateway
             'type' => 'select',
             'class' => 'wc-enhanced-select',
             'label' => __('Choose the installment configuration', 'woo-pagarme-payments'),
-            'default' => 1,
+            'default' => $this->config->getData('cc_installment_type') ?? 1,
             'options' => array(
                 Gateway::CC_TYPE_SINGLE => __('For all card brands', 'woo-pagarme-payments'),
                 Gateway::CC_TYPE_BY_FLAG => __('By card brand', 'woo-pagarme-payments'),
@@ -187,7 +189,7 @@ class CreditCard extends AbstractGateway
         $installments['maximum'] = array(
             'title' => __('Max number of installments', 'woo-pagarme-payments'),
             'type' => 'select',
-            'default' => 12,
+            'default' => $this->config->getData('cc_installments_maximum') ?? 12,
             'options' => $this->model->get_installment_options(),
             'custom_attributes' => array(
                 'data-field' => 'installments-maximum',
@@ -197,6 +199,7 @@ class CreditCard extends AbstractGateway
         $installments['installment_min_amount'] = array(
             'title' => __('Minimum installment amount', 'woo-pagarme-payments'),
             'type' => 'text',
+            'default' => $this->config->getData('cc_installments_min_amount') ?? '',
             'description' => __('Defines the minimum value that an installment can assume', 'woo-pagarme-payments'),
             'desc_tip' => true,
             'placeholder' => '0.00',
@@ -210,6 +213,7 @@ class CreditCard extends AbstractGateway
         $installments['interest'] = array(
             'title' => __('Initial interest rate (%)', 'woo-pagarme-payments'),
             'type' => 'text',
+            'default' => $this->config->getData('cc_installments_interest') ?? '',
             'description' => __('Interest rate applied starting with the first installment with interest.', 'woo-pagarme-payments'),
             'desc_tip' => true,
             'placeholder' => '0.00',
@@ -223,6 +227,7 @@ class CreditCard extends AbstractGateway
         $installments['interest_increase'] = array(
             'title' => __('Incremental interest rate (%)', 'woo-pagarme-payments'),
             'type' => 'text',
+            'default' => $this->config->getData('cc_installments_interest_increase') ?? '',
             'description' => __('Interest rate added for each installment with interest.', 'woo-pagarme-payments'),
             'desc_tip' => true,
             'placeholder' => '0.00',
@@ -236,7 +241,7 @@ class CreditCard extends AbstractGateway
         $installments['without_interest'] = array(
             'title' => __('Number of installments without interest', 'woo-pagarme-payments'),
             'type' => 'select',
-            'default' => 3,
+            'default' => $this->config->getData('cc_installments_without_interest') ?? 3,
             'options' => $this->model->get_installment_options(),
             'custom_attributes' => array(
                 'data-field' => 'installments-without-interest',
@@ -246,6 +251,7 @@ class CreditCard extends AbstractGateway
         $installments['flags'] = array(
             'title' => __('Settings by card brand', 'woo-pagarme-payments'),
             'type' => 'installments_by_flag',
+            'default' => $this->config->getData('cc_installments_by_flag') ?? '',
         );
 
         return $installments[$field];
@@ -273,9 +279,9 @@ class CreditCard extends AbstractGateway
         return array(
             'title'   => __('Enable', 'woo-pagarme-payments'),
             'type'     => 'select',
+            'default' => $this->config->getData('antifraud_enabled') ?? Yesno::NO_VALUE,
             'options' => $this->yesnoOptions->toArray(),
             'label'   => __('Enable anti fraud', 'woo-pagarme-payments'),
-            'default' => Yesno::NO_VALUE,
             'custom_attributes' => array(
                 'data-field' => 'antifraud-enabled',
             )
@@ -290,6 +296,7 @@ class CreditCard extends AbstractGateway
         return array(
             'title'             => __('Minimum amount', 'woo-pagarme-payments'),
             'type'              => 'text',
+            'default'           => $this->config->getData('antifraud_min_value') ?? '',
             'description'       => __('Minimum order amount to send it to the anti fraud', 'woo-pagarme-payments'),
             'desc_tip'          => true,
             'placeholder'       => '100,00',
