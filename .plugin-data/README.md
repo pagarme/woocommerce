@@ -4,8 +4,8 @@ Plugin URI: https://github.com/pagarme/woocommerce
 Contributors: pagarme
 Tags: ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, pagarme, payments, creditcard
 Requires at least: 5.0
-Tested up to: 6.0
-Stable tag: 2.1.2
+Tested up to: 7.6.1
+Stable tag: 3.0.0
 Requires PHP: 7.2
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE

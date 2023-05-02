@@ -74,14 +74,14 @@ class Checkout
             $fields['billing_number'] == 0 &&
             !key_exists('billing_number_required', $errors->errors)
         ) {
-            $errors->add('billing_number_required', '<strong>O campo "N�mero" do endere�o de faturamento</strong> � um campo obrigat�rio.');
+            $errors->add('billing_number_required', '<strong>O campo "Número" do endereço de faturamento</strong> é um campo obrigat�rio.');
         }
         if (
             $fields['ship_to_different_address'] &&
             $fields['shipping_number'] == 0 &&
             !key_exists('shipping_number_required', $errors->errors)
         ) {
-            $errors->add('shipping_number_required', '<strong>O campo "N�mero" do endere�o de entrega</strong> � um campo obrigat�rio.');
+            $errors->add('shipping_number_required', '<strong>O campo "Número" do endereço de entrega</strong> é um campo obrigat�rio.');
         }
     }
 
