@@ -309,10 +309,12 @@ final class Configuration extends AbstractEntity
      */
     public function isHubEnabled()
     {
-        if ($this->hubInstallId === null) {
-            return false;
+        if ($this->getHubInstallId() && $this->getHubInstallId() instanceof GUID) {
+            return
+                $this->getHubInstallId()->getValue() !== null &&
+                $this->getHubInstallId()->getValue() !== "00000000-0000-0000-0000-000000000000";
         }
-        return $this->hubInstallId->getValue() !== null;
+        return false;
     }
 
     public function setHubInstallId(GUID $hubInstallId)
@@ -705,7 +707,7 @@ final class Configuration extends AbstractEntity
         if (!is_numeric($boletoDueDays)) {
             throw new InvalidParamException("Boleto due days should be an integer!", $boletoDueDays);
         }
-        
+
         $this->boletoDueDays = (int) $boletoDueDays;
     }
 
