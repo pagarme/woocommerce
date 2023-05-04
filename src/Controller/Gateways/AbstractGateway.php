@@ -114,7 +114,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'process_admin_options']);
         }
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
-        add_action('woocommerce_thankyou_' . $this->vendor, [$this, 'thank_you_page']);
+        add_action('woocommerce_thankyou_' . $this->id, [$this, 'thank_you_page']);
         add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
     }
 
