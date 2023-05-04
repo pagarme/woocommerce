@@ -305,15 +305,22 @@ class Settings
      * @param $input
      * @return array
      */
-//    public function validate_options($input ) {
-//        $output = array();
-//        // Loop through each of the incoming options.
-//        foreach ( $input as $key => $value ) {
-//            // Check to see if the current option has a value. If so, process it.
-//            if ( isset( $input[ $key ] ) ) {
-//                $output[ $key ] = sanitize_text_field( $input[ $key ] );
-//            }
-//        }
-//        return $output;
-//    }
+    public function validate_options($fields ) {
+        $sanitizedData = [];
+        foreach ($fields as $key => $field) {
+             if (isset($fields[$key])) {
+                 $sanitizedData[$key] = $this->sanitize_field($field);
+            }
+        }
+        return $sanitizedData;
+    }
+
+    private function sanitize_field($field)
+    {
+        if (is_array($field)) {
+            return $this->validate_options($field);
+        }
+        return sanitize_text_field($field);
+    }
+
 }

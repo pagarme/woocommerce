@@ -126,7 +126,7 @@ class CreditCard extends AbstractGateway
         return array(
             'title' => __('Card wallet', 'woo-pagarme-payments'),
             'type'     => 'select',
-            'options' => $this->yesnoOptions->toArray(),
+            'options' => $this->yesnoOptions->toLabelsArray(true),
             'label' => __('Enable card wallet', 'woo-pagarme-payments'),
             'default'     => $this->config->getData('cc_allow_save') ?? strtolower(Yesno::NO),
             'description' => __('Allows for cards to be saved for future purchases.', 'woo-pagarme-payments'),
@@ -279,8 +279,8 @@ class CreditCard extends AbstractGateway
         return array(
             'title'   => __('Enable', 'woo-pagarme-payments'),
             'type'     => 'select',
-            'default' => $this->config->getData('antifraud_enabled') ?? Yesno::NO_VALUE,
-            'options' => $this->yesnoOptions->toArray(),
+            'default' => $this->config->getData('antifraud_enabled') ?? strtolower(Yesno::NO),
+            'options' => $this->yesnoOptions->toLabelsArray(true),
             'label'   => __('Enable anti fraud', 'woo-pagarme-payments'),
             'custom_attributes' => array(
                 'data-field' => 'antifraud-enabled',

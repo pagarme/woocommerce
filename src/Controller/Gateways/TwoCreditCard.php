@@ -37,7 +37,7 @@ class TwoCreditCard extends AbstractGateway
         return [
             'title'   => __('Enable/Disable', 'woocommerce'),
             'type'     => 'select',
-            'options' => $this->yesnoOptions->toLabelsArray(),
+            'options' => $this->yesnoOptions->toLabelsArray(true),
             'label' => __('Enable multi-means (2 Credit cards)', 'woo-pagarme-payments'),
             'old_name'    => 'multimethods_2_cards',
             'default'     => $this->config->getData('multimethods_2_cards') ?? strtolower(Yesno::NO),

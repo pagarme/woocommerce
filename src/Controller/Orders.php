@@ -27,7 +27,7 @@ class Orders
         BlockOrder $blockOrder = null
     ) {
         $this->settings = new Config();
-        $this->debug    = $this->settings->getData('enable_logs');
+        $this->debug    = $this->settings->getEnableLogs();
         $this->blockOrder = $blockOrder ?? new BlockOrder;
         add_action('on_pagarme_order_paid', array($this, 'set_order_paid'), 20, 2);
         add_action('on_pagarme_order_created', array($this, 'set_order_created'), 20, 2);

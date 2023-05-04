@@ -233,6 +233,36 @@ class Config extends DataObject
         return $ccFlags;
     }
 
+    public function getMulticustomers()
+    {
+        return $this->getData('multicustomers') === 'yes';
+    }
+
+    public function getCcAllowSave()
+    {
+        return $this->getData('cc-allow-save') === 'yes';
+    }
+
+    public function getVoucherCardWallet()
+    {
+        return $this->getData('enable_logs') === 'yes';
+    }
+
+    public function getEnableLogs()
+    {
+        return $this->getData('enable_logs') === 'yes';
+    }
+
+    public function getIsGatewayIntegrationType()
+    {
+        return $this->getData('is_gateway_integration_type') === 'yes';
+    }
+
+    public function getAntifraudEnabled()
+    {
+        return $this->getData('antifraud_enabled') === 'yes';
+    }
+
     public function log()
     {
         return new \WC_Logger();

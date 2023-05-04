@@ -32,6 +32,10 @@ class InitialModuleConfig extends AbstractMigration implements MigrationInterfac
      */
     public function apply(): void
     {
+        if ($this->isMigrated()) {
+            return;
+        }
+        $data = [self::PARAM => true];
         if ($this->validate()) {
             $data = [
                 'multicustomers' => '0',
@@ -39,7 +43,7 @@ class InitialModuleConfig extends AbstractMigration implements MigrationInterfac
                 'enable_pix' => 'no',
                 'pix_title' => 'Pix',
                 'pix_qrcode_expiration_time' => 3500,
-                'pix_additional_data' => 'Custom Store PIX',
+                'pix_additional_data' => ['name' => '', 'value' => ''],
                 'enable_credit_card' => 'no',
                 'credit_card_title' => 'Credit Card',
                 'cc_operation_type' => '2',
@@ -50,13 +54,13 @@ class InitialModuleConfig extends AbstractMigration implements MigrationInterfac
                 'cc_installments_interest' => '',
                 'cc_installments_interest_increase' => '',
                 'cc_installments_without_interest' => '',
-                'cc_allow_save' => '0',
-                'antifraud_enabled' => '0',
+                'cc_allow_save' => 'no',
+                'antifraud_enabled' => 'no',
                 'antifraud_min_value' => '',
                 self::PARAM => true
             ];
-            $this->settings->addData($data)->save();
         }
+        $this->settings->addData($data)->save();
     }
 
     /**
@@ -64,6 +68,14 @@ class InitialModuleConfig extends AbstractMigration implements MigrationInterfac
      * @return bool
      */
     public function validate(): bool
+    {
+        if (!$this->settings->getData('hub_install_id')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isMigrated(): bool
     {
         if (!$this->settings->getData(self::PARAM)) {
             return true;

@@ -38,4 +38,8 @@ class EnableMulticustomers extends Gateway
         $id = '[multicustomers][' . $this->getSequence() . '][' . $id . ']';
         return parent::getElementId($id);
     }
+
+    public function isEnable() {
+        return $this->getConfig()->getMulticustomers();
+    }
 }

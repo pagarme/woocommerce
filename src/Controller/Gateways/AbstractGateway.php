@@ -40,6 +40,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var string */
     const PAGARME = 'Pagar.me';
 
+    const WC_PAYMENT_PAGARME = 'woo-pagarme-payments';
+
     /** @var string */
     const PAYMENT_OPTION_UPDATE_SLUG = 'woocommerce_update_options_payment_gateways_';
 
@@ -256,7 +258,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      * @return bool
      */
     public function isGatewayType(){
-        return ($this->model->config->getIsGatewayIntegrationType() === 'yes');
+        return $this->model->config->getIsGatewayIntegrationType();
     }
 
     /**
