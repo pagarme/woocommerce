@@ -240,7 +240,7 @@ class Config extends DataObject
 
     public function getCcAllowSave()
     {
-        return $this->getData('cc-allow-save') === 'yes';
+        return $this->getData('cc_allow_save') === 'yes';
     }
 
     public function getVoucherCardWallet()
@@ -258,7 +258,7 @@ class Config extends DataObject
         return $this->getData('is_gateway_integration_type') === 'yes';
     }
 
-    public function getAntifraudEnabled()
+   public function getAntifraudEnabled()
     {
         return $this->getData('antifraud_enabled') === 'yes';
     }

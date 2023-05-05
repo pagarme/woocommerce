@@ -267,7 +267,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param  string|array $key
+     * @param string|array $key
      * @return $this
      */
     public function setPublicKey(AbstractPublicKey $key)
@@ -285,7 +285,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param  string|array $key
+     * @param string|array $key
      * @return $this
      */
     public function setSecretKey(AbstractSecretKey $key)
@@ -339,7 +339,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param  bool $boletoEnabled
+     * @param bool $boletoEnabled
      * @return Configuration
      */
     public function setBoletoEnabled($boletoEnabled)
@@ -353,7 +353,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param  bool $creditCardEnabled
+     * @param bool $creditCardEnabled
      * @return Configuration
      */
     public function setCreditCardEnabled($creditCardEnabled)
@@ -393,7 +393,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param  bool $twoCreditCardsEnabled
+     * @param bool $twoCreditCardsEnabled
      * @return Configuration
      */
     public function setTwoCreditCardsEnabled($twoCreditCardsEnabled)
@@ -407,7 +407,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param  bool $boletoCreditCardEnabled
+     * @param bool $boletoCreditCardEnabled
      * @return Configuration
      */
     public function setBoletoCreditCardEnabled($boletoCreditCardEnabled)
@@ -560,10 +560,7 @@ final class Configuration extends AbstractEntity
         $minAmount = preg_replace($numbers, $replace, $antifraudMinAmount);
 
         if ($minAmount < 0) {
-            throw new InvalidParamException(
-                'AntifraudMinAmount should be at least 0!',
-                $minAmount
-            );
+            $minAmount = 0;
         }
         $this->antifraudMinAmount = $minAmount;
     }
@@ -708,7 +705,7 @@ final class Configuration extends AbstractEntity
             throw new InvalidParamException("Boleto due days should be an integer!", $boletoDueDays);
         }
 
-        $this->boletoDueDays = (int) $boletoDueDays;
+        $this->boletoDueDays = (int)$boletoDueDays;
     }
 
     /**
@@ -871,7 +868,7 @@ final class Configuration extends AbstractEntity
     {
         $methodSplited = explode(
             "_",
-            preg_replace('/(?<=\\w)(?=[A-Z])/',"_$1", $method)
+            preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $method)
         );
 
         $targetObject = $this;
@@ -892,8 +889,9 @@ final class Configuration extends AbstractEntity
         return call_user_func([$targetObject, $method], $arguments);
     }
 
-    private function isMethodsIgnoringFather($method, $methodSplited, $actions, $targetObject) {
-        $methodsIgnoringFather = ["getSecretKey","getPublicKey","isHubEnabled"];
+    private function isMethodsIgnoringFather($method, $methodSplited, $actions, $targetObject)
+    {
+        $methodsIgnoringFather = ["getSecretKey", "getPublicKey", "isHubEnabled"];
 
         if (
             in_array($method, $methodsIgnoringFather) &&
