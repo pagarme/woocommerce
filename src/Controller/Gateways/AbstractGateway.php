@@ -103,7 +103,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->method_title = $this->getPaymentMethodTitle();
         $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->method_title;
         $this->has_fields = false;
-        $this->icon = Core::plugins_url('assets/images/logo.svg');
+//        $this->icon = Core::plugins_url('assets/images/logo.svg');
         $this->init_form_fields();
         $this->init_settings();
         $this->enabled = $this->get_option('enabled', 'no');
