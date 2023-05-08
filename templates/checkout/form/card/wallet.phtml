@@ -36,9 +36,10 @@ if (!function_exists('add_action')) {
             <?php endforeach; ?>
         </select>
     </p>
+    <script type="text/javascript">
+        if (typeof pagarmeCheckoutWallet == 'object') {
+            pagarmeCheckoutWallet.start();
+        }
+    </script>
 <?php endif; ?>
-<script type="text/javascript">
-    if (typeof pagarmeWallet == 'object') {
-        pagarmeWallet.start();
-    }
-</script>
+

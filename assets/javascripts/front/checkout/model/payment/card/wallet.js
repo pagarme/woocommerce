@@ -6,7 +6,7 @@ const cardFields = [
     '[data-element="save-cc-check"]',
     '[data-element="enable-multicustomers-check"]'
 ];
-let pagarmeWallet = {
+let pagarmeCheckoutWallet = {
     started: false,
     isStarted: function (){
         if (!this.started){
@@ -22,19 +22,17 @@ let pagarmeWallet = {
         let brand = select.find('option:selected').data('brand');
         let brandInput = wrapper.find(pagarmeCard.getBrandTarget());
         brandInput.val(brand);
+        pagarmeCard.updateInstallmentsElement(e);
         cardFields.forEach( function (field) {
             wrapper.find(field)[method]();
         });
     },
     addEventListener: function () {
         $(cardSaveTarget).on('change', function (e) {
-            pagarmeWallet.onChangeCard(e);
+            pagarmeCheckoutWallet.onChangeCard(e);
         });
     },
     start: function () {
-        // if (this.isStarted()) {
-        //     return;
-        // }
         this.addEventListener();
-    },
+    }
 }
