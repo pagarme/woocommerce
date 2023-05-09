@@ -231,15 +231,15 @@ let pagarmeCard = {
         }
         let brand = elem.closest('fieldset').find(brandTarget).val();
         let total = elem.closest('fieldset').find(valueTarget).val();
+        let cardForm = elem.closest("fieldset");
+        let select = cardForm.find(installmentsTarget);
         if (!total)
             total = cartTotal;
-        if (!brand || !total)
+        if ((!total) || (!brand && select.data("type") == 2))
             return false;
         let storageName = btoa(brand + total);
         sessionStorage.removeItem(storageName);
         let storage = sessionStorage.getItem(storageName);
-        let cardForm = elem.closest("fieldset");
-        let select = cardForm.find(installmentsTarget);
         if (storage) {
             select.html(storage);
         } else {
@@ -344,7 +344,7 @@ let pagarmeCard = {
         return true;
     },
     addEventListener: function (paymentTarget) {
-        $(paymentTarget + ' ' + cardNumberTarget).on('blur', function (e) {
+        $(paymentTarget + ' ' + cardNumberTarget).on('change', function (e) {
             pagarmeCard.keyEventHandlerCard(e);
         });
         $("form.checkout").on(

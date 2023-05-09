@@ -73,6 +73,13 @@ class Installments extends Gateway
     }
 
     /**
+     * @return boolean
+     */
+    public function isInterestForAllFlags()
+    {
+        return ($this->getInstallmentsType() == CardInstallments::INSTALLMENTS_FOR_ALL_FLAGS);
+    }
+    /**
      * @return String
      */
     public function getInstallmentsComponent()

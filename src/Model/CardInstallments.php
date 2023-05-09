@@ -29,6 +29,9 @@ class CardInstallments
     /** @var  */
     private $config;
 
+    const INSTALLMENTS_FOR_ALL_FLAGS = 1;
+    const INSTALLMENTS_BY_FLAG = 2;
+
     /**
      * @param Config|null $config
      */
