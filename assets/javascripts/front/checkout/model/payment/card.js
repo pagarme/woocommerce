@@ -336,7 +336,8 @@ let pagarmeCard = {
         if (!wc_pagarme_checkout.validate() || wc_pagarme_checkout.errorTokenize === true) {
             return false;
         }
-        if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit) {
+        let el = pagarmeCard.getCheckoutPaymentElement();
+        if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit && pagarmeCard.haveCardForm(el) !== false) {
             // pagarmeCard.showLoader(pagarmeCard.getCheckoutPaymentElement());
             pagarmeCard.execute();
             return false;
