@@ -115,13 +115,6 @@ class Settings
                     'title' => 'General',
                     'fields' => [
                         [
-                            'fieldObject' => Select::class,
-                            'id' => 'enabled',
-                            'title' => 'Enable',
-                            'options' => $this->yesNoOptions->toLabelsArray(),
-                            'default'     => strtolower(Yesno::NO),
-                        ],
-                        [
                             'fieldObject' => Integration::class,
                             'id' => 'hub_button_integration',
                             'title' => 'Hub integration',
