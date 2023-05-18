@@ -15,6 +15,7 @@ use WC_Payment_Gateway;
 use WC_Order;
 use Woocommerce\Pagarme\Block\Template;
 use Woocommerce\Pagarme\Model\Checkout;
+use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
@@ -74,6 +75,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /** @var Yesno */
     protected $yesnoOptions;
+    /**
+     * @var Subscription
+     */
+    private $subscription;
 
     /**
      * @param Gateway|null $gateway
@@ -96,6 +101,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->postFormatter = $postFormatter ?? new PostFormatter;
         $this->model = $gateway ?? new Gateway;
         $this->checkout = $checkout ?? new Checkout;
+        $this->subscription = $subscription ?? new Subscription;
         $this->wooOrderRepository = $wooOrderRepository ?? new WooOrderRepository;
         $this->template = $template ?? new Template;
         $this->id = 'woo-pagarme-payments-' . $this->method;
@@ -116,6 +122,26 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
         add_action('woocommerce_thankyou_' . $this->id, [$this, 'thank_you_page']);
         add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
+
+        //Subscriptions
+        $this->supports = array(
+            'products',
+            'subscriptions',
+            'subscription_cancellation',
+            'subscription_suspension',
+            'subscription_reactivation',
+            'subscription_amount_changes',
+            'subscription_date_changes',
+            'subscription_payment_method_change',
+            'subscription_payment_method_change_customer',
+            'subscription_payment_method_change_admin',
+            'multiple_subscriptions',
+        );
+        add_action('woocommerce_scheduled_subscription_payment_' . $this->id, [$this, 'schedule_subscription_payment'], 10, 2);
+    }
+
+    function schedule_subscription_payment( $amount_to_charge, $order) {
+        $this->subscription->process($order);
     }
 
     public function payments_scripts()
