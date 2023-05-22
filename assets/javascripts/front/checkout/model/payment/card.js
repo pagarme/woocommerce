@@ -135,7 +135,7 @@ let pagarmeCard = {
 
     loadBrand: async function (e) {
         let elem = e.currentTarget;
-        if (!elem.checkVisibility()) {
+        if (!this.isVisible(elem)) {
             return;
         }
         let cardNumber = elem.value.replace(/\s/g, '');
@@ -145,6 +145,9 @@ let pagarmeCard = {
         let card = await this.getCardData(cardNumber);
         this.changeBrand(e, card);
         this.updateInstallmentsElement(e);
+    },
+    isVisible: function (obj) {
+        return obj.offsetWidth > 0 && obj.offsetHeight > 0;
     },
 
     getCardData: async function (cardNumber) {
