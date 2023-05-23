@@ -340,8 +340,9 @@ let pagarmeCard = {
             return false;
         }
         let el = pagarmeCard.getCheckoutPaymentElement();
-        if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit && pagarmeCard.haveCardForm(el) !== false) {
-            // pagarmeCard.showLoader(pagarmeCard.getCheckoutPaymentElement());
+        if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit &&
+            pagarmeCard.haveCardForm(el) && !pagarmeCard.hasSelectedWallet(el)
+        ) {
             pagarmeCard.execute();
             return false;
         }
