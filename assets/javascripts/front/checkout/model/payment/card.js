@@ -153,7 +153,7 @@ let pagarmeCard = {
     getCardData: async function (cardNumber) {
         let result = [];
         let value = await this.getCardDataByApi(cardNumber);
-        if (value === 'error' || typeof value == 'undefined') {
+        if (value === 'error' || typeof value.brandName == 'undefined') {
             value = await this.getCardDataContingency(cardNumber);
         }
         let codeWithArray = {
@@ -178,12 +178,13 @@ let pagarmeCard = {
 
     getCardDataByApi: function (cardNumber) {
         return new Promise((resolve) => {
+            let bin = cardNumber.substring(0, 6);
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: 'https://api.mundipagg.com/bin/v1/' + cardNumber,
+                url: 'https://api.mundipagg.com/bin/v1/' + bin,
                 async: false,
-                cache: true,
+                cache: false,
                 success: function (data) {
                     resolve(data);
                 },

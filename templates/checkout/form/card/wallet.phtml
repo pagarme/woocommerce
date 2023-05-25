@@ -26,8 +26,7 @@ if (!function_exists('add_action')) {
             <?php foreach ($this->getPaymentInstance()->getCards() as $card) : ?>
                 <?php
                 printf(
-                    '<option data-brand="%3$s" value="%2$s">(%1$s) •••• •••• •••• %4$s</option>',
-                    esc_html(strtoupper($card->getBrand()->getName())),
+                    '<option data-brand="%2$s" value="%1$s">•••• •••• •••• %3$s</option>',
                     esc_attr($card->getPagarmeId()->getValue()),
                     esc_html(strtolower($card->getBrand()->getName())),
                     esc_html($card->getLastFourDigits()->getValue())
