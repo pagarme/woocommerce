@@ -16,28 +16,38 @@ if (!function_exists('add_action')) {
 }
 ?>
 <?php if ($this->getQrCodeUrl()) : ?>
-    <p>
-        <img style="margin: auto;" src="<?= $this->getQrCodeUrl() ?>" title="Link to QRCode" />
-    </p>
-    <a id="pagarme-qr-code" rawCode="<?= $this->getRawQrCode() ?>" class="payment-link">
+    <p><img src="<?= $this->getQrCodeUrl() ?>" alt="Pix QRCode" class="pagarme-qr-code-img" /></p>
+    <button type="button"
+            id="pagarme-qr-code-button"
+            rawCode="<?= $this->getRawQrCode() ?>"
+            class="pagarme-payment-button">
         <?= __('Copy Code', 'woo-pagarme-payments'); ?>
-    </a>
-    <?php foreach ($this->getInstructions() as $instruction) : ?>
-        <div class="pix-qr-code-instruction">
-            <?= __($instruction, 'woo-pagarme-payments'); ?>
+    </button>
+    <div class="pagarme-flex-container">
+        <?php foreach ($this->getInstructions() as $instruction) : ?>
+            <div class="pagarme-qr-code-instruction">
+                <p><?= __($instruction, 'woo-pagarme-payments'); ?></p>
+            </div>
+        <?php endforeach; ?>
+        <div class="pagarme-qr-code-instruction pagarme-qr-code-attention">
+            <p>
+                <span>
+                    <?php
+                    printf(
+                        '<img class="pagarme-attention-icon" src="%1$s" alt="%2$s" title="%2$s" />',
+                        esc_url($this->getFilePath('assets/images/pix-checkout-attention.svg')),
+                        esc_html__('pix attention icon', 'woo-pagarme-payments')
+                    );
+                    ?>
+                </span>
+                <?php
+                _e(
+                    'You can also complete the payment by copying and pasting the code into the app.',
+                    'woo-pagarme-payments'
+                );
+                ?>
+            </p>
         </div>
-    <?php endforeach; ?>
-    <div id="pix-image-attention-container">
-        <?php
-        printf(
-            '<img id="pix-image-attention" class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
-            esc_url($this->getFilePath('assets/images/pix-checkout-attention.svg')),
-            esc_html__('pix attention icon', 'woo-pagarme-payments')
-        );
-        ?>
-    </div>
-    <div class="pix-qr-code-instruction pix-attention-instruction">
-        <?php _e('You can also complete the payment by copying and pasting the code into the app.', 'woo-pagarme-payments'); ?>
     </div>
 <?php else : ?>
     <?= $this->createBlock(

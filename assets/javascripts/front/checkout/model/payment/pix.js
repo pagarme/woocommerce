@@ -1,4 +1,4 @@
-const qrRawCodeTarget = '#pagarme-qr-code';
+const qrRawCodeTarget = '#pagarme-qr-code-button';
 $ = jQuery;
 let pagarmePix = {
     start: function () {

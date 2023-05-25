@@ -112,10 +112,10 @@ class Gateway
             __('1x', 'woo-pagarme-payments') . ' (' . wc_price($total) . ')'
         );
 
-        $interest_base = $interest;
+        $interestBase = $interest;
 
         for ($times = 2; $times <= $max_installments; $times++) {
-            $interest = $interest_base;
+            $interest = $interestBase;
             $amount = $total;
 
             if ($interest || $interest_increase) {
@@ -144,10 +144,10 @@ class Gateway
                 wc_price($value)
             );
 
-            $amount = $total;
-
             if ($times > $no_interest && $interest) {
-                $text .= " c/juros de {$interest}%";
+                $text .= " c/juros";
+            } else {
+                $text .= " s/juros";
             }
 
             $output .= sprintf('<option value="%1$s">%2$s</option>', $times, $text);

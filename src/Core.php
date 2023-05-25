@@ -125,10 +125,10 @@ class Core
         );
         wp_enqueue_script(
             'sweetalert2',
-            self::plugins_url("assets/javascripts/vendor/sweetalert2.js"),
-            array_merge(array('jquery'), $deps),
-            self::filemtime("assets/javascripts/vendor/sweetalert2.js"),
-            false
+            self::plugins_url("assets/javascripts/vendor/sweetalert2.all.min.js"),
+            array(),
+            '6.11.5',
+            true
         );
         if ($type == 'admin') {
             wp_enqueue_script(
@@ -140,7 +140,6 @@ class Core
             );
         }
         if ($type == 'front') {
-            $id = "{$type}-script-" . self::SLUG;
             wp_enqueue_script(
                 'pagarme-checkout-card',
                 self::plugins_url("assets/javascripts/front/checkout/model/payment.js"),
@@ -159,6 +158,12 @@ class Core
 
     public static function enqueue_styles($type)
     {
+        wp_enqueue_style(
+            'sweetalert2',
+            self::plugins_url("assets/stylesheets/vendor/sweetalert2.min.css"),
+            array(),
+            '6.11.5'
+        );
         wp_enqueue_style(
             "{$type}-style-" . self::SLUG,
             self::plugins_url("assets/stylesheets/{$type}/style.css"),

@@ -25,7 +25,11 @@ class Billet extends ThankYou
      * @var string
      */
     protected $_template = 'templates/checkout/thankyou/billet';
-
+    
+    /**
+    * @var string
+    */
+    protected $scripts = 'checkout/model/thankyou/billet';
 
     public function getCharge()
     {

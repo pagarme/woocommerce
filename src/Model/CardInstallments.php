@@ -79,9 +79,9 @@ class CardInstallments
             'value' => 1,
             'content' => __('1x', 'woo-pagarme-payments') . ' (' . wc_price($total) . ')'
         ];
-        $interest_base = $interest;
+        $interestBase = $interest;
         for ($times = 2; $times <= $maxInstallments; $times++) {
-            $interest = $interest_base;
+            $interest = $interestBase;
             $amount = $total;
             if ($interest || $interestIncrease) {
                 if ($interestIncrease && $times > $noInterest + 1) {
@@ -103,16 +103,30 @@ class CardInstallments
                 wc_price($price),
                 wc_price($value)
             );
-            $amount = $total;
-            if ($times > $noInterest && $interest) {
-                $text .= " c/juros de {$interest}%";
-            }
+
+            $text .= $this->verifyInterest($times, $noInterest, $interest);
+            
             $options[] = [
                 'value' => $times,
                 'content' => $text
             ];
         }
         return $options;
+    }
+    
+    /**
+    * @param int $times
+    * @param mixed $noInterest
+    * @param mixed $interest
+    * @return string
+    */
+    public function verifyInterest(int $times, $noInterest, $interest): string
+    {
+        if ($times > $noInterest && $interest) {
+            return " c/juros";
+        }
+        
+        return " s/juros";
     }
 
     /**

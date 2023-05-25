@@ -23,7 +23,7 @@ jQuery(function ($) {
                 }
             });
             if (!isValid) {
-                swal('Prencha os campos obrigatórios');
+                swal('Preencha os campos obrigatórios');
             }
             return isValid;
         }
