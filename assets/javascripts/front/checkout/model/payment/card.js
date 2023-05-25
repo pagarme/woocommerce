@@ -135,7 +135,7 @@ let pagarmeCard = {
 
     loadBrand: async function (e) {
         let elem = e.currentTarget;
-        if (!elem.checkVisibility()) {
+        if (!this.isVisible(elem)) {
             return;
         }
         let cardNumber = elem.value.replace(/\s/g, '');
@@ -146,11 +146,14 @@ let pagarmeCard = {
         this.changeBrand(e, card);
         this.updateInstallmentsElement(e);
     },
+    isVisible: function (obj) {
+        return obj.offsetWidth > 0 && obj.offsetHeight > 0;
+    },
 
     getCardData: async function (cardNumber) {
         let result = [];
         let value = await this.getCardDataByApi(cardNumber);
-        if (value === 'error' || typeof value == 'undefined') {
+        if (value === 'error' || typeof value.brandName == 'undefined') {
             value = await this.getCardDataContingency(cardNumber);
         }
         let codeWithArray = {
@@ -175,12 +178,13 @@ let pagarmeCard = {
 
     getCardDataByApi: function (cardNumber) {
         return new Promise((resolve) => {
+            let bin = cardNumber.substring(0, 6);
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: 'https://api.mundipagg.com/bin/v1/' + cardNumber,
+                url: 'https://api.mundipagg.com/bin/v1/' + bin,
                 async: false,
-                cache: true,
+                cache: false,
                 success: function (data) {
                     resolve(data);
                 },
@@ -337,8 +341,9 @@ let pagarmeCard = {
             return false;
         }
         let el = pagarmeCard.getCheckoutPaymentElement();
-        if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit && pagarmeCard.haveCardForm(el) !== false) {
-            // pagarmeCard.showLoader(pagarmeCard.getCheckoutPaymentElement());
+        if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit &&
+            pagarmeCard.haveCardForm(el) && !pagarmeCard.hasSelectedWallet(el)
+        ) {
             pagarmeCard.execute();
             return false;
         }
