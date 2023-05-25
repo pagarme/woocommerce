@@ -144,16 +144,27 @@ class Gateway
                 wc_price($value)
             );
 
-            if ($times > $no_interest && $interest) {
-                $text .= " c/juros";
-            } else {
-                $text .= " s/juros";
-            }
+            $text .= $this->verifyInterest($times, $no_interest, $interest);
 
             $output .= sprintf('<option value="%1$s">%2$s</option>', $times, $text);
         }
 
         return $output;
+    }
+    
+    /**
+    * @param int $times
+    * @param mixed $noInterest
+    * @param mixed $interest
+    * @return string
+    */
+    public function verifyInterest(int $times, $no_interest, $interest): string
+    {
+        if ($times > $no_interest && $interest) {
+            return " c/juros";
+        }
+        
+        return " s/juros";
     }
 
     private function _calc_installments_1(array $params)

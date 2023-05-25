@@ -76,8 +76,7 @@ if (!function_exists('add_action')) {
                                    data-element="pagarme-card-number"
                                    class="input-text wc-credit-card-form-card-number pagarme-card-form-card-number"
                                    data-mask="0000 0000 0000 0000" placeholder="•••• •••• •••• ••••"
-                                   data-required="true" style="background-image: none"
-                                   data-pagarmecheckout-element="number">
+                                   data-required="true" data-pagarmecheckout-element="number">
                         </span>
                         <input type="hidden" name="<?= $this->getElementId('brand'); ?>"
                                data-pagarmecheckout-element="brand-input" />
