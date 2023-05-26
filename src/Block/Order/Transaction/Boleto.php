@@ -25,6 +25,11 @@ class Boleto extends AbstractTransaction
     protected $_template = 'templates/order/transaction/billet';
 
     /**
+     * @var string[]
+     */
+    protected $scripts = ['checkout/model/payment/billet'];
+
+    /**
      * @return string|null
      */
     public function getBilletUrl()

@@ -3,7 +3,7 @@ $ = jQuery;
 
 const cardNumberTarget = 'input[data-element="pagarme-card-number"]';
 const brandTarget = '[data-pagarmecheckout-element="brand-input"]';
-const brandImgTarget = 'span[name="brand-image"]';
+const brandImgTarget = 'span[class="pagarme-brand-image"]';
 const valueTarget = '[data-pagarmecheckout-element="order-value"]';
 const installmentsTarget = '[data-pagarme-component="installments"]';
 const mundiCdn = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
@@ -201,13 +201,13 @@ let pagarmeCard = {
         }
         let elem = e.currentTarget;
         let imageSrc = this.getImageSrc(card);
-        let imgElem = $(elem).parent().find(brandImgTarget).find('img');
-        $(elem).parent().find(brandTarget).attr('value', card[0].brand);
+        let imgElem = $(elem).parent().find('img');
+        $(elem).parents('.pagarme-card-number-row').find(brandTarget).attr('value', card[0].brand);
         if (imgElem.length) {
             imgElem.attr('src', imageSrc);
         } else {
             let img = $(document.createElement('img'));
-            $(elem).parent().find(brandImgTarget).append(
+            $(elem).parent().append(
                 img.attr(
                     'src', imageSrc
                 )

@@ -3,7 +3,7 @@ MONSTER('Pagarme.Components.PagarmeCheckout', function(Model, $, utils) {
     window.Pagarme2Cards = 0;
 
     window.pagarmeQrCodeCopy = function() {
-        const qrCodeElement = document.getElementById("pagarme-qr-code");
+        const qrCodeElement = document.getElementById("pagarme-qr-code-button");
 
         if (!qrCodeElement) {
             return;
