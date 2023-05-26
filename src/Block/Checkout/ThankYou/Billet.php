@@ -29,7 +29,7 @@ class Billet extends ThankYou
     /**
     * @var string
     */
-    protected $scripts = 'checkout/model/thankyou/billet';
+    protected $scripts = 'checkout/model/payment/billet';
 
     public function getCharge()
     {

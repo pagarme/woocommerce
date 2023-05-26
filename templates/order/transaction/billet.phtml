@@ -32,16 +32,6 @@ if (!function_exists('add_action')) {
                     class="pagarme-payment-button">
                 <?php _e('Print', 'woo-pagarme-payments'); ?>
             </button>
-            <script type="text/javascript">
-                $ = jQuery;
-                $('#pagarme-billet-button').on('click', function(e){
-                    e.preventDefault();
-                    // Safari is blocking any call to window.open() which is made inside an async call.
-                    setTimeout(() => {
-                        window.open($(this).attr('data-pagarme-billet-url'), '_blank');
-                    })
-                });
-            </script>
         </td>
     </tr>
 <?php endif; ?>
