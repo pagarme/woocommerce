@@ -1,12 +1,14 @@
-.hub_button_integration-field > div {
-    display: inline;
+.form-table td p.pagarme-hub-desintegration {
+    margin: 1em 0 0;
+    font-style: italic;
 }
 
-.pagarme-hub-desintegration-btn {
-    margin-left: .6em;
+.form-table td p.pagarme-hub-desintegration > a {
+    font-weight: 700;
+    cursor: pointer;
 }
 
-.pagarme-hub-integration-btn img {
+.pagarme-hub-integration-btn > a > img {
     vertical-align: text-top;
     max-height: 1.4em;
     margin-left: .6em;
@@ -17,4 +19,16 @@
     padding: 1em;
     background: #fae5e5;
     color: #e02b27;
+}
+
+.woocommerce_page_woo-pagarme-payments .swal2-modal {
+    line-height: normal;
+}
+
+.woocommerce_page_woo-pagarme-payments .swal2-modal .swal2-title {
+    margin-bottom: 0.6em;
+}
+
+.woocommerce_page_woo-pagarme-payments .swal2-modal .swal2-content {
+    line-height: 1.3em;
 }

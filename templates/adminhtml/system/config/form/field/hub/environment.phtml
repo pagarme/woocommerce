@@ -14,8 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <p><?php echo esc_attr($this->getCurrent()); ?></p>
-<?php if ($this->config->getIsSandboxMode() || $this->getCurrent() === $this->getDefault()) : ?>
-    <div class="pagarme-message-warning">
-        <?= __('Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions.', 'woo-pagarme-payments'); ?>
-    </div>
+<?php if ($this->config->getHubInstallId()) : ?>
+    <?php if ($this->config->getIsSandboxMode() || $this->getCurrent() === $this->getDefault()) : ?>
+        <div class="pagarme-message-warning">
+            <?= __('Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions.', 'woo-pagarme-payments'); ?>
+        </div>
+    <?php endif; ?>
 <?php endif; ?>
