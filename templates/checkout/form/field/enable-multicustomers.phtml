@@ -17,7 +17,8 @@ declare( strict_types=1 );
         ['p' => ['class' => true, 'data-element' => true]]
     ) ?>
     <label data-element="<?= $this->getElementId('label') ?>">
-        <input type="checkbox" name="<?= $this->getElementId('enable') ?>" data-element="enable-multicustomers" value="1" style="margin: 0;">
+        <input type="checkbox" name="<?= $this->getElementId('enable') ?>" data-element="enable-multicustomers"
+               value="1">
         <?php esc_html_e('Fill other buyer data', 'woo-pagarme-payments'); ?>
     </label>
     <?= $this->formatElement(

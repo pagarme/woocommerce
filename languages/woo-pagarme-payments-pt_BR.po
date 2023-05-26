@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-04-18 08:48-0300\n"
+"PO-Revision-Date: 2023-05-26 11:06-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
@@ -534,17 +534,17 @@ msgstr "Quantidade de parcelas"
 msgid "Value (Boleto)"
 msgstr "Valor (Boleto)"
 
-#: templates/checkout/choose-credit-card.php:32
-msgid "Credit cards save"
-msgstr "Cartões de crédito salvos"
+#: templates/checkout/form/card/wallet.phtml:22
+msgid "Saved cards"
+msgstr "Cartões salvos"
 
-#: templates/checkout/choose-credit-card.php:39
-msgid "Saved credit card"
-msgstr "Escolha um cartão"
+#: templates/checkout/form/card/wallet.phtml:25
+msgid "Choose your saved card"
+msgstr "Escolha seu cartão salvo"
 
 #: templates/checkout/common-card-item.php:53
-msgid "Expiration Date (MM/YY)"
-msgstr "Validade (MM/AA)"
+msgid "Expiration Date"
+msgstr "Validade"
 
 #: templates/checkout/common-card-item.php:61
 msgid "MM / YY"
@@ -729,22 +729,22 @@ msgstr "Habilita o gateway de pagamento Pagar.me para o WooCommerce"
 
 #. Author URI of the plugin/theme
 msgid "https://pagarme.me"
-msgstr ""
+msgstr "https://pagarme.me"
 
 msgid "Copy Code"
 msgstr "Copiar Código"
 
-msgid "1. Point your phone at this screen to capture the code."
-msgstr "1. Aponte seu celular para essa tela para capturar o código."
+msgid "<span>1.</span> Point your phone at this screen to capture the code."
+msgstr "<span>1.</span> Aponte seu celular para essa tela para capturar o código."
 
-msgid "2. Open your payments app."
-msgstr "2. Abra seu aplicativo de pagamentos."
+msgid "<span>2.</span> Open your payments app."
+msgstr "<span>2.</span> Abra seu aplicativo de pagamentos."
 
-msgid "3. Confirm the information and complete the payment on the app."
-msgstr "3. Confirme os dados e finalize o pagamento pelo aplicativo."
+msgid "<span>3.</span> Confirm the information and complete the payment on the app."
+msgstr "<span>3.</span> Confirme os dados e finalize o pagamento pelo aplicativo."
 
-msgid "4. We will send you a purchase confirmation."
-msgstr "4. Enviaremos uma confirmação de compra pra você."
+msgid "<span>4.</span> We will send you a purchase confirmation."
+msgstr "<span>4.</span> Enviaremos uma confirmação de compra pra você."
 
 msgid "You can also complete the payment by copying and pasting the code into the app."
 msgstr "Você também pode finalizar o pagamento copiando e colando o código em seu aplicativo."
@@ -762,7 +762,7 @@ msgid "Additional information"
 msgstr "Informações adicionais"
 
 msgid "Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment process."
-msgstr "Conjunto de chave e valor para adicionar informações ao pix gerado. Isso ficará visível para o comprador durante o pagamento"
+msgstr "Conjunto de chave e valor para adicionar informações ao pix gerado. Isso ficará visível para o comprador durante o pagamento."
 
 msgid "Additional Information Name"
 msgstr "Nome da informação adicional"
@@ -875,14 +875,17 @@ msgstr "Integrar com Pagar.me"
 msgid "View Integration"
 msgstr "Visualizar integração"
 
-msgid "Disintegrate"
-msgstr "Desintegrar"
+#: templates/adminhtml/system/config/form/field/hub/integration.phtml:23
+msgid "Have you removed your integration on Pagar.me Hub, but it shows active? Click <a id='pagarme-hub-desintegration-link'>here</a> to remove your keys."
+msgstr "Removeu sua integração no Hub Pagar.me, mas ainda aparece ativa? Clique <a id='pagarme-hub-desintegration-link'>aqui</a> para finalizar removendo suas chaves."
 
+#: templates/adminhtml/system/config/form/field/hub/integration.phtml:28
 msgid "Disintegrate?"
 msgstr "Desintegrar?"
 
-msgid "This removes the integration keys on your platform enabling the opportunity to effect a new integration. However, its integration still remains in our dash and it is necessary to remove the integration manually."
-msgstr "Isso remove as chaves de integração em sua plataforma, permitindo a oportunidade de efetuar uma nova integração. No entanto, sua integração ainda permanece em nosso painel sendo necessário remove-la manualmente."
+#: templates/adminhtml/system/config/form/field/hub/integration.phtml:29
+msgid "Are you shure you wish to delete the keys? This action removes the integration from your store, but first you must access Pagar.me Hub and click on Delete."
+msgstr "Tem certeza que deseja excluir as chaves? Essa ação remove a integração da sua loja, mas primeiro você deve acessar o Hub Pagar.me e clicar em Excluir."
 
 msgid "Yes, remove keys!"
 msgstr "Sim, remova as chaves!"
@@ -891,7 +894,7 @@ msgid "Disintegration Complete"
 msgstr "Desintegração Concluída"
 
 msgid "Integration keys successfully removed. Reload the page."
-msgstr "Chaves de integração removidas com sucesso. Recarregue a pagina"
+msgstr "Chaves de integração removidas com sucesso. Recarregue a página."
 
 msgid "Disintegration Error"
 msgstr "Erro na Desintegração"
@@ -987,7 +990,7 @@ msgid "This new release contains crucial architecture and functionality updates.
 msgstr "Esta nova versão contém atualizações cruciais de arquitetura e funcionalidade. Recomendamos que %1$sfaça backup de seu site antes de atualizar%2$s. É altamente recomendável executar e validar a atualização primeiro no ambiente de teste antes de executar a atualização em produção."
 
 msgid "We recommend backup before upgrading!"
-msgstr "Recomendamos backup antes de atualizar!"
+msgstr "Recomendamos fazer backup antes de atualizar!"
 
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."

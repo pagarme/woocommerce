@@ -69,10 +69,10 @@ class Pix extends AbstractTransaction
     public function getInstructions()
     {
         return [
-            '1. Point your phone at this screen to capture the code.',
-            '2. Open your payments app.',
-            '3. Confirm the information and complete the payment on the app.',
-            '4. We will send you a purchase confirmation.'
+            '<span>1.</span> Point your phone at this screen to capture the code.',
+            '<span>2.</span> Open your payments app.',
+            '<span>3.</span> Confirm the information and complete the payment on the app.',
+            '<span>4.</span> We will send you a purchase confirmation.'
         ];
     }
 }
