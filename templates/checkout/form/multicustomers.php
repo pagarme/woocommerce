@@ -15,6 +15,7 @@ declare( strict_types=1 );
           data-pagarme-payment="<?= $this->getPaymentInstance()->getMethodCode() ?>"
           data-pagarme-sequence="<?= $this->getSequence() ?>" data-pagarme-payment-element="multicustomers"
           style="display:none;">
+    <legend></legend>
     <?= $this->formatElement($this->getTitle(), ['h4' => []]) ?>
     <div class="multicustomer">
         <p class="form-row form-row-wide">

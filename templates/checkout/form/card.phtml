@@ -22,6 +22,7 @@ if (!function_exists('add_action')) {
               class="wc-credit-card-form wc-payment-form"
               data-pagarmecheckout-method="<?= $this->getPaymentInstance()->getMethodCode() ?>"
               data-pagarmecheckout="card" data-pagarmecheckout-card-num="<?= $qty ?>">
+        <legend></legend>
         <?php if ($this->getShowOrderValue()) : ?>
             <?php if ($this->getQuantityCards() > 1) : ?>
                 <h4><?php

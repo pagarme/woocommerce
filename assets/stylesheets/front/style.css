@@ -6,6 +6,10 @@
     font-size: 1em;
 }
 
+#payment .payment_methods li[class*="pagarme"] .payment_box fieldset legend {
+    display: none;
+}
+
 #payment .payment_methods li[class*="pagarme"] .payment_box fieldset label {
     display: flex;
     align-items: center;
