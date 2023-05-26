@@ -19,6 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 use WC_Order;
+use WC_Subscriptions_Cart;
 use Woocommerce\Pagarme\Model\Payment\Data\AbstractPayment;
 use Woocommerce\Pagarme\Model\Payment\Data\Card;
 use Woocommerce\Pagarme\Model\Payment\Data\Cards;
@@ -49,6 +50,9 @@ class Subscription
         Orders $orders = null,
         WooOrderRepository $wooOrderRepository = null
     ) {
+        if (!$this->hasSubscriptionPlugin()) {
+            return;
+        }
         if (!$config) {
             $config = new Config;
         }
@@ -118,84 +122,51 @@ class Subscription
         $fields = [
             'payment_method' => $paymentMethod
         ];
-
-//        if ($cards = $paymentRequest->getCards()) {
-//            foreach ($cards as $key => $card) {
-//                $key++;
-//                if ($key === 1) {
-//                    if ($orderValue = $card->getOrderValue()) {
-//                        $fields['card_order_value'] = $orderValue;
-//                    }
-//                    $fields['brand'] = $card->getBrand();
-//                    $fields['installments'] = $card->getInstallment() ?? 1;
-//                    if ($card->getSaveCard()) {
-//                        $fields['save_credit_card'] = 1;
-//                    }
-//                    if ($value = $card->getWalletId()) {
-//                        $fields['card_id'] = $value;
-//                    }
-//                } else {
-//                    if ($orderValue = $card->getOrderValue()) {
-//                        $fields['card_order_value' . $key] = $orderValue;
-//                    }
-//                    $fields['brand' . $key] = $card->getBrand();
-//                    $fields['installments' . $key] = $card->getInstallment() ?? 1;
-//                    if ($card->getSaveCard()) {
-//                        $fields['save_credit_card' . $key] = 1;
-//                    }
-//                    if ($value = $card->getWalletId()) {
-//                        $fields['card_id' . $key] = $value;
-//                    }
-//                }
-//                $fields['pagarmetoken' . $key] = $card->getToken();
-//            }
-//        }
-//        $this->extractMulticustomers($fields, $paymentRequest);
-//        $this->extractOrderValue($fields, $paymentRequest);
+        $card = $this->getCardDataByParent($order);
+        if ($card !== null) {
+            $fields['card_order_value'] = $order->get_total();
+            $fields['brand'] = $card->brand;
+            $fields['installments'] = 1;
+            $fields['card_id'] = $card->pagarmeId;
+            $fields['pagarmetoken'] = $card->pagarmeId;
+        }
         return $fields;
     }
 
-    private function extractMulticustomers(array &$fields, PaymentRequestInterface $paymentRequest)
+    private function getCardDataByParent(WC_Order $order)
     {
-        foreach ($paymentRequest->getData() as $method => $data) {
-            if ($data instanceof AbstractPayment) {
-                if ($data->getMulticustomers() instanceof Multicustomers) {
-                    foreach ($data->getMulticustomers()->getData() as $key => $value) {
-                        $fields['multicustomer_' . $method][$key] = $value;
-                        $fields['multicustomer_' . $method . '[' . $key . ']'] = $value;
-                        $fields['enable_multicustomers_' . $method] = 1;
-                    }
-                }
-            }
-            if (is_array($data)) {
-                foreach ($data as $sequece => $datum) {
-                    if ($datum instanceof Card) {
-                        $method = 'card';
-                        $sequece++;
-                        if (count($data) > 1) {
-                            $method .= $sequece;
-                        }
-                        if ($datum->getMulticustomers() instanceof Multicustomers) {
-                            foreach ($datum->getMulticustomers()->getData() as $key => $value) {
-                                $fields['multicustomer_' . $method][$key] = $value;
-                                $fields['multicustomer_' . $method . '[' . $key . ']'] = $value;
-                                $fields['enable_multicustomers_' . $method] = $value;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $subscription = $this->getSubscription($order);
+        $parentOrder = $this->getParentOrderBySub($subscription);
+        return $this->getTransactionData($parentOrder)->cardData;
     }
 
-    private function extractOrderValue(array &$fields, PaymentRequestInterface $paymentRequest)
+    private function getTransactionData(WC_Order $order)
     {
-        foreach ($paymentRequest->getData() as $method => $data) {
-            if ($data instanceof AbstractPayment) {
-                if ($orderValue = $data->getOrderValue()) {
-                    $fields[$method . '_value'] = $orderValue;
-                }
-            }
-        }
+        $responseData = json_decode($order->get_meta('_pagarme_response_data'));
+        return $responseData->charges[0]->transactions[0];
     }
+
+    private function getSubscription(WC_Order $order)
+    {
+        return $this->wooOrderRepository->getById($order->get_meta("_subscription_renewal"));
+    }
+
+    private function getParentOrderBySub($subscription)
+    {
+        return $this->wooOrderRepository->getById($subscription->get_parent_id());
+    }
+
+    public static function hasSubscriptionProductInCart(): bool
+    {
+        if (WC_Subscriptions_Cart::cart_contains_subscription() || wcs_cart_contains_renewal()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function hasSubscriptionPlugin(): bool
+    {
+		return class_exists('WC_Subscriptions');
+	}
+
 }
