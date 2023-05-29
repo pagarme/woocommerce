@@ -13,7 +13,6 @@ namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Woocommerce\Pagarme\Model\Payment\Billet\BankInterface;
 use Woocommerce\Pagarme\Model\Payment\Billet\Banks;
-use Woocommerce\Pagarme\Model\Subscription;
 
 defined( 'ABSPATH' ) || exit;
 
