@@ -17,7 +17,6 @@ use Woocommerce\Pagarme\Block\Template;
 use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
@@ -101,7 +100,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->postFormatter = $postFormatter ?? new PostFormatter;
         $this->model = $gateway ?? new Gateway;
         $this->checkout = $checkout ?? new Checkout;
-        $this->subscription = $subscription ?? new Subscription;
         $this->wooOrderRepository = $wooOrderRepository ?? new WooOrderRepository;
         $this->template = $template ?? new Template;
         $this->id = 'woo-pagarme-payments-' . $this->method;
@@ -124,6 +122,24 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
 
         //Subscriptions
+        if ($this->hasSubscriptionSupport() && Subscription::hasSubscriptionPlugin()) {
+            $this->addSupportToSubscription();
+        }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasSubscriptionSupport(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @return void
+     */
+    private function addSupportToSubscription(): void
+    {
         $this->supports = array(
             'products',
             'subscriptions',
@@ -140,7 +156,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         add_action('woocommerce_scheduled_subscription_payment_' . $this->id, [$this, 'schedule_subscription_payment'], 10, 2);
     }
 
-    function schedule_subscription_payment( $amount_to_charge, $order) {
+    function schedule_subscription_payment($amount_to_charge, $order)
+    {
         $this->subscription->process($order);
     }
 

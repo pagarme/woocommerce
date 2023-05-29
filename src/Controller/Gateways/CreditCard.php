@@ -32,6 +32,13 @@ class CreditCard extends AbstractGateway
     protected $method = \Woocommerce\Pagarme\Model\Payment\CreditCard::PAYMENT_CODE;
 
     /**
+     * @return boolean
+     */
+    public function hasSubscriptionSupport(): bool
+    {
+        return true;
+    }
+    /**
      * @return array
      */
     public function append_form_fields()

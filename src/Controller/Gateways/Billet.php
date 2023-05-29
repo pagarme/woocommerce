@@ -13,6 +13,7 @@ namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Woocommerce\Pagarme\Model\Payment\Billet\BankInterface;
 use Woocommerce\Pagarme\Model\Payment\Billet\Banks;
+use Woocommerce\Pagarme\Model\Subscription;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -29,6 +30,13 @@ class Billet extends AbstractGateway
     /** @var string */
     protected $method = \Woocommerce\Pagarme\Model\Payment\Billet::PAYMENT_CODE;
 
+    /**
+     * @return boolean
+     */
+    public function hasSubscriptionSupport(): bool
+    {
+        return true;
+    }
     /**
      * @return array
      */

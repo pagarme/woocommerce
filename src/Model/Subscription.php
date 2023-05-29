@@ -9,10 +9,6 @@
 
 namespace Woocommerce\Pagarme\Model;
 
-use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
-use Woocommerce\Pagarme\Controller\Orders;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Config\Source\CheckoutTypes;
 
 if (!defined('ABSPATH')) {
     exit(0);
@@ -20,12 +16,9 @@ if (!defined('ABSPATH')) {
 
 use WC_Order;
 use WC_Subscriptions_Cart;
-use Woocommerce\Pagarme\Model\Payment\Data\AbstractPayment;
-use Woocommerce\Pagarme\Model\Payment\Data\Card;
-use Woocommerce\Pagarme\Model\Payment\Data\Cards;
-use Woocommerce\Pagarme\Model\Payment\Data\Multicustomers;
-use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequest;
-use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
+use Woocommerce\Pagarme\Controller\Orders;
+use Woocommerce\Pagarme\Model\Config\Source\CheckoutTypes;
+
 
 class Subscription
 {
@@ -164,9 +157,8 @@ class Subscription
         return false;
     }
 
-    public function hasSubscriptionPlugin(): bool
+    public static function hasSubscriptionPlugin(): bool
     {
 		return class_exists('WC_Subscriptions');
 	}
-
 }
