@@ -32,3 +32,81 @@
 .woocommerce_page_woo-pagarme-payments .swal2-modal .swal2-content {
     line-height: 1.3em;
 }
+
+#woo-pagarme-additional-information table.woocommerce-table {
+    max-width: 100%;
+}
+
+#woo-pagarme-additional-information table.woocommerce-table thead th {
+    padding: 1.41575em;
+    text-align: center;
+}
+
+#woo-pagarme-additional-information table.woocommerce-table td {
+    padding: 1em 1.41575em;
+    background-color: #fdfdfd;
+}
+
+#woo-pagarme-additional-information table.woocommerce-table th {
+    padding: 1em 1.41575em;
+    text-align: left;
+    font-weight: 600;
+    background-color: #f8f8f8;
+}
+
+#woo-pagarme-capture .wrapper table {
+    width: 100%;
+}
+
+#woo-pagarme-capture .wrapper table thead th {
+    text-align: left;
+    padding: 1em;
+    font-weight: 600;
+    background: #f8f8f8;
+}
+
+#woo-pagarme-capture .wrapper table thead th.sortable {
+    cursor: pointer;
+}
+
+#woo-pagarme-capture .wrapper table thead th:last-child {
+    padding-right: 2em;
+}
+
+#woo-pagarme-capture .wrapper table thead th:first-child {
+    padding-left: 2em;
+}
+
+#woo-pagarme-capture .wrapper table thead th .wc-arrow {
+    float: right;
+    position: relative;
+    margin-right: -1em;
+}
+
+#woo-pagarme-capture .wrapper table tbody tr td {
+    padding-top: .6em;
+}
+
+#woo-pagarme-capture .wrapper table tbody th textarea,
+#woo-pagarme-capture .wrapper table td textarea {
+    width: 100%;
+}
+
+#woo-pagarme-capture .wrapper table tbody th input,
+#woo-pagarme-capture .wrapper table tbody th textarea,
+#woo-pagarme-capture .wrapper table td input,
+#woo-pagarme-capture .wrapper table td textarea {
+    font-size: 14px;
+    padding: 4px;
+    color: #555;
+}
+
+#woo-pagarme-capture .wrapper table tbody th:last-child,
+#woo-pagarme-capture .wrapper table td:last-child {
+    padding-right: 2em;
+}
+
+#woo-pagarme-capture .wrapper table tbody th:first-child,
+#woo-pagarme-capture .wrapper table td:first-child {
+    padding-left: 2em;
+}

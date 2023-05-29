@@ -24,7 +24,7 @@ if (!function_exists('add_action')) {
             <p><button type="button"
                     id="pagarme-qr-code-button"
                     rawCode="<?= $this->getRawQrCode() ?>"
-                    class="pagarme-payment-button">
+                    class="button">
                 <?= __('Copy Code', 'woo-pagarme-payments'); ?>
             </button></p>
             <?php foreach ($this->getInstructions() as $instruction) : ?>
