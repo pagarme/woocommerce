@@ -157,7 +157,7 @@ class Subscription
         return false;
     }
 
-    public static function hasSubscriptionPlugin(): bool
+    public function hasSubscriptionPlugin(): bool
     {
 		return class_exists('WC_Subscriptions');
 	}

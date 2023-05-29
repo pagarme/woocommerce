@@ -100,6 +100,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->postFormatter = $postFormatter ?? new PostFormatter;
         $this->model = $gateway ?? new Gateway;
         $this->checkout = $checkout ?? new Checkout;
+        $this->subscription = new Subscription;
         $this->wooOrderRepository = $wooOrderRepository ?? new WooOrderRepository;
         $this->template = $template ?? new Template;
         $this->id = 'woo-pagarme-payments-' . $this->method;
@@ -122,7 +123,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
 
         //Subscriptions
-        if ($this->hasSubscriptionSupport() && Subscription::hasSubscriptionPlugin()) {
+        if ($this->hasSubscriptionSupport() && $this->subscription->hasSubscriptionPlugin()) {
             $this->addSupportToSubscription();
         }
     }
@@ -153,10 +154,15 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             'subscription_payment_method_change_admin',
             'multiple_subscriptions',
         );
-        add_action('woocommerce_scheduled_subscription_payment_' . $this->id, [$this, 'schedule_subscription_payment'], 10, 2);
+        add_action(
+            'woocommerce_scheduled_subscription_payment_'.$this->id,
+            [$this, 'schedule_subscription_payment'],
+            10,
+            2
+        );
     }
 
-    function schedule_subscription_payment($amount_to_charge, $order)
+    public function schedule_subscription_payment($amountToCharge, $order)
     {
         $this->subscription->process($order);
     }
