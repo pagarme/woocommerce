@@ -245,7 +245,7 @@ class Config extends DataObject
 
     public function getVoucherCardWallet()
     {
-        return $this->getData('enable_logs') === 'yes';
+        return $this->getData('voucher_card_wallet') === 'yes';
     }
 
     public function getEnableLogs()
@@ -258,7 +258,12 @@ class Config extends DataObject
         return $this->getData('is_gateway_integration_type') === 'yes';
     }
 
-   public function getAntifraudEnabled()
+    public function getIsInstallmentsDefaultConfig()
+    {
+        return $this->getData('cc_installment_type') === '1';
+    }
+
+    public function getAntifraudEnabled()
     {
         return $this->getData('antifraud_enabled') === 'yes';
     }
