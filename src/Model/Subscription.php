@@ -17,8 +17,7 @@ if (!defined('ABSPATH')) {
 use WC_Order;
 use WC_Subscriptions_Cart;
 use Woocommerce\Pagarme\Controller\Orders;
-use Woocommerce\Pagarme\Model\Config\Source\CheckoutTypes;
-
+use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 
 class Subscription
 {
@@ -31,39 +30,59 @@ class Subscription
     /** @var Orders*/
     private $orders;
 
-    /** @var Gateway */
-    private $gateway;
+    /** @var AbstractGateway */
+    private $payment;
 
     /** @var WooOrderRepository*/
     private $wooOrderRepository;
 
     public function __construct(
-        Gateway $gateway = null,
-        Config $config = null,
-        Orders $orders = null,
-        WooOrderRepository $wooOrderRepository = null
+        AbstractGateway $payment = null
     ) {
         if (!$this->hasSubscriptionPlugin()) {
             return;
         }
-        if (!$config) {
-            $config = new Config;
-        }
-        if (!$orders) {
-            $orders = new Orders;
-        }
-        if (!$gateway) {
-            $gateway = new Gateway;
-        }
-        if (!$wooOrderRepository) {
-            $wooOrderRepository = new WooOrderRepository;
-        }
-        $this->config = $config;
-        $this->orders = $orders;
-        $this->gateway = $gateway;
-        $this->wooOrderRepository = $wooOrderRepository;
+        $this->payment = $payment;
+        $this->config = new Config;
+        $this->orders = new Orders;
+        $this->wooOrderRepository = new WooOrderRepository;
+        $this->addSupportToSubscription();
+        $this->setPaymentEnabled();
     }
 
+    private function addSupportToSubscription(): void
+    {
+        if (!$this->payment->hasSubscriptionSupport() || !$this->hasSubscriptionPlugin()) {
+            return ;
+        }
+        
+        $this->payment->supports = array(
+            'products',
+            'subscriptions',
+            'subscription_cancellation',
+            'subscription_suspension',
+            'subscription_reactivation',
+            'subscription_amount_changes',
+            'subscription_date_changes',
+            'subscription_payment_method_change',
+            'subscription_payment_method_change_customer',
+            'subscription_payment_method_change_admin',
+            'multiple_subscriptions',
+        );
+        add_action(
+            'woocommerce_scheduled_subscription_payment_'.$this->payment->id,
+            [$this, 'process'],
+            10,
+            2
+        );
+    }
+
+    private function setPaymentEnabled()
+    {
+        if (!$this->payment->hasSubscriptionSupport() && $this->hasSubscriptionProductInCart()) {
+            $this->payment->enabled = "no";
+        }
+    }
     /**
      * @return Config
      */
@@ -73,38 +92,36 @@ class Subscription
     }
 
     /**
+     * @param float $amountToCharge
      * @param WC_Order|null $wc_order
-     * @param string $type
      * @return bool|void
      * @throws \Exception
      */
-    public function process(WC_Order $wc_order = null, string $type = CheckoutTypes::TRANSPARENT_VALUE)
+    public function process($amountToCharge, WC_Order $wc_order)
     {
         if (!$wc_order) {
             wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
         }
-        if ($type === CheckoutTypes::TRANSPARENT_VALUE) {
-            $fields = $this->convertOrderObject($wc_order);
-            $response = $this->orders->create_order(
-                $wc_order,
-                $fields['payment_method'],
-                $fields
-            );
+        $fields = $this->convertOrderObject($wc_order);
+        $response = $this->orders->create_order(
+            $wc_order,
+            $fields['payment_method'],
+            $fields
+        );
 
-            $order = new Order($wc_order->get_id());
-            $order->payment_method = $fields['payment_method'];
-            if ($response) {
-                $order->transaction_id     = $response->getPagarmeId()->getValue();
-                $order->pagarme_id     = $response->getPagarmeId()->getValue();
-                $order->pagarme_status = $response->getStatus()->getStatus();
-                $order->response_data    = json_encode($response);
-                $order->update_by_pagarme_status($response->getStatus()->getStatus());
-                return true;
-            }
-            $order->pagarme_status = 'failed';
-            $order->update_by_pagarme_status('failed');
-            return false;
+        $order = new Order($wc_order->get_id());
+        $order->payment_method = $fields['payment_method'];
+        if ($response) {
+            $order->transaction_id     = $response->getPagarmeId()->getValue();
+            $order->pagarme_id     = $response->getPagarmeId()->getValue();
+            $order->pagarme_status = $response->getStatus()->getStatus();
+            $order->response_data    = json_encode($response);
+            $order->update_by_pagarme_status($response->getStatus()->getStatus());
+            return true;
         }
+        $order->pagarme_status = 'failed';
+        $order->update_by_pagarme_status('failed');
+        return false;
     }
 
     private function convertOrderObject(WC_Order $order)
