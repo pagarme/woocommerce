@@ -133,9 +133,9 @@ class Core
         if ($type == 'admin') {
             wp_enqueue_script(
                 'izimodal',
-                self::plugins_url("assets/javascripts/admin/vendor/izimodal.js"),
+                self::plugins_url("assets/javascripts/admin/vendor/iziModal.min.js"),
                 array_merge(['jquery'], $deps),
-                self::filemtime("assets/javascripts/admin/vendor/izimodal.js"),
+                '1.6.1',
                 false
             );
         }
@@ -158,6 +158,14 @@ class Core
 
     public static function enqueue_styles($type)
     {
+        if ($type == 'admin') {
+            wp_enqueue_style(
+                'izimodal',
+                self::plugins_url("assets/stylesheets/vendor/iziModal.min.css"),
+                array(),
+                '1.6.1'
+            );
+        }
         wp_enqueue_style(
             'sweetalert2',
             self::plugins_url("assets/stylesheets/vendor/sweetalert2.min.css"),
