@@ -301,11 +301,7 @@ let pagarmeCard = {
             html: text,
             allowOutsideClick: false
         };
-        try {
-            swal(message);
-        } catch (e) {
-            new swal(message);
-        }
+        swal(message);
     },
     execute: async function () {
         let result = pagarmeCard.formHandler(),
