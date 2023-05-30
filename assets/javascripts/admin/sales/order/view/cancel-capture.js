@@ -16,7 +16,6 @@ let pagarmeCancelCapture = {
     },
 
     start: function () {
-        console.log('teste');
         if (this.isStarted()) {
             return;
         }
