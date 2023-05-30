@@ -93,23 +93,23 @@ class Subscription
 
     /**
      * @param float $amountToCharge
-     * @param WC_Order|null $wc_order
+     * @param WC_Order $order
      * @return bool|void
      * @throws \Exception
      */
-    public function process($amountToCharge, WC_Order $wc_order)
+    public function process($amountToCharge, WC_Order $order)
     {
-        if (!$wc_order) {
+        if (!$order) {
             wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
         }
-        $fields = $this->convertOrderObject($wc_order);
+        $fields = $this->convertOrderObject($order);
         $response = $this->orders->create_order(
-            $wc_order,
+            $order,
             $fields['payment_method'],
             $fields
         );
 
-        $order = new Order($wc_order->get_id());
+        $order = new Order($order->get_id());
         $order->payment_method = $fields['payment_method'];
         if ($response) {
             $order->transaction_id     = $response->getPagarmeId()->getValue();
