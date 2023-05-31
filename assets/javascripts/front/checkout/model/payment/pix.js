@@ -24,11 +24,7 @@ let pagarmePix = {
             html: 'Código copiado.',
             allowOutsideClick: false
         };
-        try {
-            swal(message);
-        } catch (e) {
-            new swal(message);
-        }
+        swal(message);
     }
 }
 pagarmePix.start();

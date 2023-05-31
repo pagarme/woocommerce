@@ -121,8 +121,11 @@ if (!function_exists('add_action')) {
                     <?php esc_html_e('Card Holder Document Number', 'woo-pagarme-payments'); ?>
                     <span class="required">*</span>
                 </label>
-                <input type="text" name="<?= $this->getElementId('document-holder'); ?>" class="input-text"
-                       id="<?= $this->getElementId('document-holder'); ?>">
+                <input type="text" required id="<?= $this->getElementId('document-holder'); ?>"
+                       name="<?= $this->getElementId('document-holder'); ?>"
+                       data-element="document-holder" data-mask="000.000.000-00"
+                       class="input-text wc-credit-card-form-card-cvc pagarme-card-form-holder-number" maxlength="14"
+                       placeholder="CPF" data-required="true" data-pagarmecheckout-element="holder_document">
             </p>
             <?= $this->createBlock(
                 '\Woocommerce\Pagarme\Block\Checkout\Field\Wallet',

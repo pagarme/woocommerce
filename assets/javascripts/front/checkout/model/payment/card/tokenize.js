@@ -70,8 +70,8 @@
                     obj['exp_month'] = values[0];
                     obj['exp_year'] = values[1];
                 }
-                if (prop === 'number') {
-                    value = this.value.replace(/\s/g, '');
+                if ((prop === 'number') || (prop === 'holder_document')) {
+                    value = this.value.replace(/\D/g, '');
                 }
                 if (ignore.includes(prop)) {
                     return;
@@ -117,11 +117,7 @@
                 html: text,
                 allowOutsideClick: false
             };
-            try {
-                swal(message);
-            } catch (e) {
-                new swal(message);
-            }
+            swal(message);
         }
 
         function listError(errors) {
