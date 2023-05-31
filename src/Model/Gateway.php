@@ -57,9 +57,13 @@ class Gateway
         return (get_woocommerce_currency() === 'BRL');
     }
 
-    public function get_installment_options()
+    /**
+     * @param bool $isGatewayType
+     * @return array
+     */
+    public function get_installment_options(bool $isGatewayType): array
     {
-        return array(
+        $installments = [
             1  => 1,
             2  => 2,
             3  => 3,
@@ -84,7 +88,22 @@ class Gateway
             22 => 22,
             23 => 23,
             24 => 24,
-        );
+        ];
+
+        return $this->get_installments_options_for_psp($installments, $isGatewayType);
+    }
+
+    /**
+     * @param array $installments
+     * @param bool $isGatewayType
+     * @return array
+     */
+    private function get_installments_options_for_psp(array $installments, bool $isGatewayType): array
+    {
+        if ($isGatewayType) {
+            return $installments;
+        }
+        return array_splice($installments, 0, 12);
     }
 
     public function get_installments_by_type($total, $flag = false)
@@ -151,7 +170,7 @@ class Gateway
 
         return $output;
     }
-    
+
     /**
     * @param int $times
     * @param mixed $noInterest
@@ -163,7 +182,7 @@ class Gateway
         if ($times > $no_interest && $interest) {
             return " c/juros";
         }
-        
+
         return " s/juros";
     }
 

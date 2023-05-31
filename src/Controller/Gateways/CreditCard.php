@@ -190,7 +190,7 @@ class CreditCard extends AbstractGateway
             'title' => __('Max number of installments', 'woo-pagarme-payments'),
             'type' => 'select',
             'default' => $this->config->getData('cc_installments_maximum') ?? 12,
-            'options' => $this->model->get_installment_options(),
+            'options' => $this->model->get_installment_options($this->isGatewayType()),
             'custom_attributes' => array(
                 'data-field' => 'installments-maximum',
             ),
@@ -242,7 +242,7 @@ class CreditCard extends AbstractGateway
             'title' => __('Number of installments without interest', 'woo-pagarme-payments'),
             'type' => 'select',
             'default' => $this->config->getData('cc_installments_without_interest') ?? 3,
-            'options' => $this->model->get_installment_options(),
+            'options' => $this->model->get_installment_options($this->isGatewayType()),
             'custom_attributes' => array(
                 'data-field' => 'installments-without-interest',
             ),
