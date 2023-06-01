@@ -326,6 +326,7 @@ class CreditCard extends AbstractGateway
         $data  = wp_parse_args($data, $defaults);
         $value = (array) $this->get_option($key, array());
         $flags = $this->getBrandsList();
+        $isGatewayType = $this->isGatewayType();
 
         ob_start();
 
@@ -364,13 +365,14 @@ class CreditCard extends AbstractGateway
                         foreach ($flags as $flag_key => $flag_name) :
                             $interest          = isset($value['interest'][$flag_key]) ? $value['interest'][$flag_key] : '';
                             $interest_increase = isset($value['interest_increase'][$flag_key]) ? $value['interest_increase'][$flag_key] : '';
-                            $max_installment   = isset($value['max_installment'][$flag_key]) ? $value['max_installment'][$flag_key] : 12;
+                            $max_installment   = $isGatewayType ? 24 : 12;
+                            $max_installment_value   = isset($value['max_installment'][$flag_key]) ? $value['max_installment'][$flag_key] : 1;
                             $installment_min_amount   = isset($value['installment_min_amount'][$flag_key]) ? $value['installment_min_amount'][$flag_key] : '';
                             $no_interest       = isset($value['no_interest'][$flag_key]) ? $value['no_interest'][$flag_key] : 1;
                             ?>
                             <tr class="account ui-sortable-handle flag" data-flag="<?php echo esc_attr($flag_key); ?>">
                                 <td><input class="align" type="text" value="<?php echo esc_attr($flag_name); ?>" <?php disabled(1, true); ?> /></td>
-                                <td><input class="align" type="number" min="1" max="24" name="<?php echo esc_attr($field_key); ?>[max_installment][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_max_installment_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($max_installment); ?>" /></td>
+                                <td><input class="align" type="number" min="1" max="<?php echo intval($max_installment); ?>" name="<?php echo esc_attr($field_key); ?>[max_installment][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_max_installment_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($max_installment_value); ?>" /></td>
                                 <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[installment_min_amount][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_installment_min_amount_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($installment_min_amount) ?>" /></td>
                                 <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest) ?>" /></td>
                                 <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest_increase][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_increase_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest_increase) ?>" /></td>
