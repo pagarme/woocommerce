@@ -34,7 +34,7 @@ let pagarmeOrderValue = {
             }
             let fieldset = input.closest('fieldset').first();
             if (pagarmeCard.haveCardForm(fieldset)) {
-                pagarmeCard.updateInstallmentsElement(fieldset);
+                pagarmeCard.updateInstallmentsElement(input);
             }
         });
     },

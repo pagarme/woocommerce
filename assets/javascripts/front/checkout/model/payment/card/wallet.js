@@ -18,21 +18,22 @@ let pagarmeCheckoutWallet = {
     onChangeCard: function (e) {
         let select  = $( e.currentTarget );
         let wrapper = select.closest( 'fieldset' );
-        let method  = e.currentTarget.value.trim() ? 'slideUp': 'slideDown';
+        let method  = select.val() ? 'slideUp': 'slideDown';
         let brand = select.find('option:selected').data('brand');
         let brandInput = wrapper.find(pagarmeCard.getBrandTarget());
         brandInput.val(brand);
         pagarmeCard.updateInstallmentsElement(e);
         cardFields.forEach( function (field) {
             wrapper.find(field)[method]();
+            wrapper.find(field).find('input').val('');
         });
     },
-    addEventListener: function () {
-        $(cardSaveTarget).on('change', function (e) {
+    addEventListener: function (paymentTarget) {
+        $(paymentTarget + ' ' + cardSaveTarget).on('change', function (e) {
             pagarmeCheckoutWallet.onChangeCard(e);
         });
     },
-    start: function () {
-        this.addEventListener();
+    start: function (paymentTarget) {
+        this.addEventListener(paymentTarget);
     }
 }
