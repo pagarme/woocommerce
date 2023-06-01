@@ -253,8 +253,8 @@ let pagarmeCard = {
         }
         let cardForm = elem.closest("fieldset");
         let select = cardForm.find(installmentsTarget);
-        if (select.data('type') == '1' && elem.data('pagarmecheckout-element') != 'order-value') {
-            return;
+        if (select.data('type') === '1' && elem.data('pagarmecheckout-element') !== 'order-value') {
+            return false;
         }
         if (!total)
             total = cartTotal;
@@ -282,6 +282,7 @@ let pagarmeCard = {
             });
             pagarmeCard.showLoader(cardForm);
         }
+        return true;
     },
 
     _done: function (select, storageName, e, response) {

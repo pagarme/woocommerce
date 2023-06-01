@@ -18,7 +18,7 @@ let pagarmeCheckoutWallet = {
     onChangeCard: function (e) {
         let select  = $( e.currentTarget );
         let wrapper = select.closest( 'fieldset' );
-        let method  = select.val() ? 'slideUp': 'slideDown';
+        const method= select.val() ? 'slideUp': 'slideDown';
         let brand = select.find('option:selected').data('brand');
         let brandInput = wrapper.find(pagarmeCard.getBrandTarget());
         brandInput.val(brand);
@@ -29,7 +29,8 @@ let pagarmeCheckoutWallet = {
         });
     },
     addEventListener: function (paymentTarget) {
-        $(paymentTarget + ' ' + cardSaveTarget).on('change', function (e) {
+        paymentTarget = paymentTarget + ' ' + cardSaveTarget;
+        $(paymentTarget).on('change', function (e) {
             pagarmeCheckoutWallet.onChangeCard(e);
         });
     },
