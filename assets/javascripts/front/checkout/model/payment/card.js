@@ -222,6 +222,19 @@ let pagarmeCard = {
         return mundiCdn + card[0].brand + '.png';
     },
 
+    formatValue: function (value, raw = true) {
+        if (raw) {
+            if (typeof value !== 'string') {
+                value = value.toString();
+            }
+            return parseFloat(value.replace(',', '.'));
+        }
+        if (typeof value === 'string') {
+            value = parseFloat(value);
+        }
+        return value.toFixed(2).replace('.', ',');
+    },
+
     updateInstallmentsElement: function (e) {
         let elem = null;
         if (e instanceof $) {
@@ -235,8 +248,14 @@ let pagarmeCard = {
         }
         let brand = elem.closest('fieldset').find(brandTarget).val();
         let total = elem.closest('fieldset').find(valueTarget).val();
+        if (total) {
+            total = pagarmeCard.formatValue(total);
+        }
         let cardForm = elem.closest("fieldset");
         let select = cardForm.find(installmentsTarget);
+        if (select.data('type') === '1' && elem.data('pagarmecheckout-element') !== 'order-value') {
+            return false;
+        }
         if (!total)
             total = cartTotal;
         if ((!total) || (!brand && select.data("type") == 2))
@@ -263,6 +282,7 @@ let pagarmeCard = {
             });
             pagarmeCard.showLoader(cardForm);
         }
+        return true;
     },
 
     _done: function (select, storageName, e, response) {
@@ -362,9 +382,13 @@ let pagarmeCard = {
         $('input[name="pagarme[voucher][cards][1][document-holder]"]').val($('#billing_cpf').val()).trigger('input');
 
     },
-    start: function (cardNumberTarget) {
+    start: function (paymentTarget) {
         this.getCardsMethods();
         this.getBrands();
-        this.addEventListener(cardNumberTarget);
+        this.addEventListener(paymentTarget);
+        if (typeof pagarmeCheckoutWallet == 'object') {
+            pagarmeCheckoutWallet.start(paymentTarget);
+        }
+
     },
 };
