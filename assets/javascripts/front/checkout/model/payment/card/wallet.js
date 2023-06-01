@@ -29,7 +29,7 @@ let pagarmeCheckoutWallet = {
         });
     },
     addEventListener: function (paymentTarget) {
-        paymentTarget = paymentTarget + ' ' + cardSaveTarget;
+        paymentTarget = `${paymentTarget} ${cardSaveTarget}`;
         $(paymentTarget).on('change', function (e) {
             pagarmeCheckoutWallet.onChangeCard(e);
         });
