@@ -365,7 +365,7 @@ class CreditCard extends AbstractGateway
                         foreach ($flags as $flag_key => $flag_name) :
                             $interest          = isset($value['interest'][$flag_key]) ? $value['interest'][$flag_key] : '';
                             $interest_increase = isset($value['interest_increase'][$flag_key]) ? $value['interest_increase'][$flag_key] : '';
-                            $max_installment_value   = isset($value['max_installment'][$flag_key]) ? $value['max_installment'][$flag_key] : 1;
+                            $max_installment_value   = isset($value['max_installment'][$flag_key]) && $value['max_installment'][$flag_key] < $max_installment ? $value['max_installment'][$flag_key] : $max_installment;
                             $installment_min_amount   = isset($value['installment_min_amount'][$flag_key]) ? $value['installment_min_amount'][$flag_key] : '';
                             $no_interest       = isset($value['no_interest'][$flag_key]) ? $value['no_interest'][$flag_key] : 1;
                             ?>
