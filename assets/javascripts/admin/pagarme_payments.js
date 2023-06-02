@@ -1,4 +1,4 @@
-(   function ($) {
+(function ($) {
         const installmentsTypeSelect = $('[data-element="installments-type-select"]');
         const installmentsMax = $('[data-field="installments-maximum"]');
         const installmentsInterest = $('[data-field="installments-interest"]');
@@ -7,6 +7,7 @@
         const installmentsWithoutInterest = $('[data-field="installments-without-interest"]');
         const installmentsInterestIncrease = $('[data-field="installments-interest-increase"]');
         const flagsSelect = $('[data-element="flags-select"]');
+        const installmentsMaxByFlags = $('[data-field="installments-maximum-by-flag"]');
 
         $.jMaskGlobals.watchDataMask = true;
         handleInstallmentFieldsVisibility(installmentsTypeSelect.val());
@@ -93,9 +94,47 @@
             }
         };
 
+        function handleInstallmentWithoutInterestMaxValue(value) {
+            setLowestValueToElement(installmentsWithoutInterest, value);
+
+            function toggleInstallmentsWithoutInterestOption() {
+                const optionValueGreaterThanInstallmentMaximumValue = parseInt($(this).val()) > parseInt(value);
+                if (optionValueGreaterThanInstallmentMaximumValue) {
+                    $(this).hide();
+                    return;
+                }
+
+                $(this).show();
+            }
+
+            installmentsWithoutInterest.find('option').each(toggleInstallmentsWithoutInterestOption);
+        }
+
+        function handleInstallmentsWithoutInterestFlagMaxValue(element, value) {
+            const installmentsWithoutInterestByFlag = $(element).closest('tr')
+                .find('[data-field="installments-without-interest-by-flag"]');
+
+            setLowestValueToElement(installmentsWithoutInterestByFlag, value);
+
+            installmentsWithoutInterestByFlag.attr('max', parseInt(value));
+        }
+
+        function setLowestValueToElement(element, value) {
+            const elementValueGreaterThanNewValue = parseInt(value) < parseInt(element.val());
+            if (elementValueGreaterThanNewValue) {
+                element.val(value);
+            }
+        }
+
         function addEventListener() {
             installmentsTypeSelect.on('change', function (event) {
                 handleInstallmentFieldsVisibility(event.currentTarget.value);
+            });
+            installmentsMax.on('change', function (event) {
+                handleInstallmentWithoutInterestMaxValue(event.currentTarget.value);
+            });
+            installmentsMaxByFlags.on('change', function (event) {
+                handleInstallmentsWithoutInterestFlagMaxValue($(this), event.currentTarget.value)
             });
             flagsSelect.on('select2:unselecting', function (event) {
                 setInstallmentsByFlags(event, false);
