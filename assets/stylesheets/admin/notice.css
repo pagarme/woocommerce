@@ -1,0 +1,22 @@
+.pagarme-notice {
+    display: inline-flex;
+    align-items: center;
+}
+
+.pagarme-notice .pagarme-notice-avatar-container {
+    max-height: 2em;
+}
+
+.pagarme-notice .pagarme-notice-avatar-container img.pagarme-notice-avatar {
+    max-height: 2em;
+    margin-right: 1em;
+}
+
+.pagarme-notice .pagarme-notice-message-container ul {
+    margin-left: 1.5em;
+    list-style: inside;
+}
+
+.pagarme-notice .pagarme-notice-message-container ul li {
+    font-style: italic;
+}
