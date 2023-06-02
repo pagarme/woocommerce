@@ -63,47 +63,23 @@ class Gateway
      */
     public function get_installment_options(bool $isGatewayType): array
     {
-        $installments = [
-            1  => 1,
-            2  => 2,
-            3  => 3,
-            4  => 4,
-            5  => 5,
-            6  => 6,
-            7  => 7,
-            8  => 8,
-            9  => 9,
-            10 => 10,
-            11 => 11,
-            12 => 12,
-            13  => 13,
-            14  => 14,
-            15  => 15,
-            16  => 16,
-            17  => 17,
-            18  => 18,
-            19  => 19,
-            20 => 20,
-            21 => 21,
-            22 => 22,
-            23 => 23,
-            24 => 24,
-        ];
+        $installments = [];
+        $installmentsAmount = $this->get_installments_maximum_quantity($isGatewayType);
 
-        return $this->get_installments_options_for_psp($installments, $isGatewayType);
+        for ($i = 1; $i <= $installmentsAmount; ++$i) {
+            $installments[$i] = $i;
+        }
+
+        return $installments;
     }
 
     /**
-     * @param array $installments
      * @param bool $isGatewayType
-     * @return array
+     * @return int
      */
-    private function get_installments_options_for_psp(array $installments, bool $isGatewayType): array
+    public function get_installments_maximum_quantity(bool $isGatewayType): int
     {
-        if ($isGatewayType) {
-            return $installments;
-        }
-        return array_splice($installments, 0, 12);
+        return $isGatewayType ? 24 : 12;
     }
 
     public function get_installments_by_type($total, $flag = false)
