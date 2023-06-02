@@ -253,12 +253,11 @@ let pagarmeCard = {
         }
         let cardForm = elem.closest("fieldset");
         let select = cardForm.find(installmentsTarget);
-        if (select.data('type') === '1' && elem.data('pagarmecheckout-element') !== 'order-value') {
-            return false;
-        }
         if (!total)
             total = cartTotal;
-        if ((!total) || (!brand && select.data("type") == 2))
+        if ((!total) ||
+            (select.data("type") === 2 && !brand) ||
+            (select.data("type") === 1 && elem.data('element') !== "order-value"))
             return false;
         let storageName = btoa(brand + total);
         sessionStorage.removeItem(storageName);
@@ -351,7 +350,7 @@ let pagarmeCard = {
             }
         }
     },
-    canExecute: function(e) {
+    canExecute: function (e) {
         e.preventDefault();
         if (!wc_pagarme_checkout.validate() || wc_pagarme_checkout.errorTokenize === true) {
             return false;
