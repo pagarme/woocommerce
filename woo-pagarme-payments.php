@@ -22,8 +22,7 @@ require_once dirname(__FILE__) . '/constants.php';
  * Renders custom Wordpress Notice on every admin pages.
  * @param string $message Message displayed on the notice.
  * @param string|bool $path The plugin basename or the configuration page file name.
- * Used to generate the message button link.
- * Exemple: plugin-name/plugin-name.php or config-page.php
+ * If string, it's used to generate the message button. Exemple: plugin-name/plugin-name.php or config-page.php
  * @param bool $isConfig If defined true, the button link points to the configuration page.
  * Otherwise, it will genetare a Install or Activate button for the missing plugin.
  * @param mixed $type The type of the notice. Possible options are: 'error' (default), 'warning', 'success' or 'info'.
@@ -63,7 +62,7 @@ function wcmpRenderAdminNoticeHtml(
 <?php
 }
 
-function wcmpAddNoticeButton(string|bool $path, bool $isConfig) : string
+function wcmpAddNoticeButton(string $path, bool $isConfig) : string
 {
     $buttonHtml = '<p><a href="%1$s" class="button button-primary">%2$s</a></p>';
 
@@ -96,7 +95,7 @@ function wcmpAddNoticeButton(string|bool $path, bool $isConfig) : string
         );
     }
 
-    $url = 'http://wordpress.org/plugins/' . $plugin;
+    $url = 'https://wordpress.org/plugins/' . $plugin;
 
     if (current_user_can('install_plugins')) {
         $url = wp_nonce_url(
