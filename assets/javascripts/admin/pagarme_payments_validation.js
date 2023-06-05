@@ -48,12 +48,12 @@
         }
 
         const getErrorMessage = (element, errorType) => {
-            return $(element).data(`${errorMessageDataAttribute}-${errorType}`);
+            return $(element).data(`.${errorMessageDataAttribute}-${errorType}`);
         }
 
         const resetErrorsInfo = () => {
             $(`.${invalidFieldClass}`).removeClass(invalidFieldClass)
-            $(`${fieldErrorMessageClass}`).remove();
+            $(`.${fieldErrorMessageClass}`).remove();
         }
 
         const initializeFormErrorsVariables = (element) => {
