@@ -11,7 +11,7 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\DB\Migration;
 
-use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Config;
 use wpdb;
 
 defined( 'ABSPATH' ) || exit;
@@ -30,19 +30,19 @@ abstract class AbstractMigration
     protected $wpdb;
 
     /**
-     * @var Setting
+     * @var Config
      */
     protected $settings;
 
     /**
-     * @param Setting|null $settings
+     * @param Config|null $settings
      */
     public function __construct(
-        ?Setting $settings = null
+        ?Config $settings = null
     ) {
         global $wpdb;
         $this->wpdb = $wpdb;
-        $this->settings = $settings ?? Setting::get_instance();
+        $this->settings = $settings ?? new Config;
     }
 
     /**
@@ -51,9 +51,9 @@ abstract class AbstractMigration
      */
     public function canApply(MigrationInterface $migration): bool
     {
-        if ( $this->settings->__get(self::MIGRATION_SETTINGS) &&
-            is_array($this->settings->__get(self::MIGRATION_SETTINGS)) &&
-            in_array(get_class($migration), $this->settings->__get(self::MIGRATION_SETTINGS)) ) {
+        if ( $this->settings->getData(self::MIGRATION_SETTINGS) &&
+            is_array($this->settings->getData(self::MIGRATION_SETTINGS)) &&
+            in_array(get_class($migration), $this->settings->getData(self::MIGRATION_SETTINGS)) ) {
             return false;
         }
         return true;
@@ -65,12 +65,33 @@ abstract class AbstractMigration
      */
     public function registerMigration(MigrationInterface $migration)
     {
-        $migrationSetting = $this->settings->__get(self::MIGRATION_SETTINGS);
-        if (empty($migrationSetting)) {
+        $migrationSetting = $this->settings->getData(self::MIGRATION_SETTINGS);
+        if (!is_array($migrationSetting)) {
             $migrationSetting = [];
         }
         $migrationSetting[] = get_class($migration);
-        $this->settings->set(self::MIGRATION_SETTINGS, $migrationSetting);
+        $this->settings->setData(self::MIGRATION_SETTINGS, $migrationSetting);
+        $this->settings->save();
+    }
+
+    /**
+     * @param MigrationInterface $migration
+     * @return void
+     */
+    public function unregisterMigration(MigrationInterface $migration): void
+    {
+        $migrationSetting = $this->settings->getData(self::MIGRATION_SETTINGS);
+        if (!is_array($migrationSetting)) {
+            return;
+        }
+        $class = get_class($migration);
+        $key = array_search($class, $migrationSetting);
+        if (is_int($key) && array_key_exists($key,$migrationSetting)) {
+            unset($migrationSetting[$key]);
+            $migrationSetting = array_values($migrationSetting);
+            $this->settings->setData(self::MIGRATION_SETTINGS, $migrationSetting);
+        }
+        $this->settings->save();
     }
 
     /**

@@ -7,7 +7,6 @@ if (!function_exists('add_action')) {
 }
 
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Setting;
 
 class Core
 {
@@ -23,7 +22,6 @@ class Core
     {
         add_action('init', array(__CLASS__, 'load_textdomain'));
         add_action('admin_init', array(__CLASS__, 'redirect_on_activate'));
-
         self::initialize();
         self::admin_enqueue_scripts();
         self::front_enqueue_scripts();
@@ -118,35 +116,62 @@ class Core
 
     public static function enqueue_scripts($type, $deps = array(), $localize_args = array())
     {
-        $id = "{$type}-script-" . self::SLUG;
-
         wp_enqueue_script(
-            $id,
-            self::plugins_url("assets/javascripts/{$type}/built.js"),
-            array_merge(array('jquery'), $deps),
-            self::filemtime("assets/javascripts/{$type}/built.js"),
+            'jquery.mask',
+            self::plugins_url("assets/javascripts/vendor/jquery.mask.js"),
+            array('jquery'),
+            '1.14.16',
+            false
+        );
+        wp_enqueue_script(
+            'sweetalert2',
+            self::plugins_url("assets/javascripts/vendor/sweetalert2.all.min.js"),
+            array(),
+            '6.11.5',
             true
         );
-
+        if ($type == 'admin') {
+            wp_enqueue_script(
+                'izimodal',
+                self::plugins_url("assets/javascripts/admin/vendor/iziModal.min.js"),
+                array_merge(['jquery'], $deps),
+                '1.6.1',
+                false
+            );
+        }
         if ($type == 'front') {
             wp_enqueue_script(
-                'sweetalert2',
-                self::plugins_url("assets/javascripts/vendor/sweetalert2.js"),
+                'pagarme-checkout-card',
+                self::plugins_url("assets/javascripts/front/checkout/model/payment.js"),
                 array_merge(array('jquery'), $deps),
-                self::filemtime("assets/javascripts/vendor/sweetalert2.js"),
+                self::filemtime("assets/javascripts/front/checkout/model/payment.js"),
                 true
+            );
+            wp_localize_script(
+                'pagarme-checkout-card',
+                'PagarmeGlobalVars',
+                self::get_localize_script_args()
             );
         }
 
-        wp_localize_script(
-            $id,
-            self::LOCALIZE_SCRIPT_ID,
-            self::get_localize_script_args($localize_args)
-        );
     }
 
     public static function enqueue_styles($type)
     {
+        if ($type == 'admin') {
+            wp_enqueue_style(
+                'izimodal',
+                self::plugins_url("assets/stylesheets/vendor/iziModal.min.css"),
+                array(),
+                '1.6.1'
+            );
+        }
+        wp_enqueue_style(
+            'sweetalert2',
+            self::plugins_url("assets/stylesheets/vendor/sweetalert2.min.css"),
+            array(),
+            '6.11.5'
+        );
         wp_enqueue_style(
             "{$type}-style-" . self::SLUG,
             self::plugins_url("assets/stylesheets/{$type}/style.css"),
@@ -196,7 +221,7 @@ class Core
 
     public static function get_page_link()
     {
-        return Utils::get_admin_url('admin.php') . '?page=wc-settings&tab=checkout&section=' . self::SLUG;
+        return Utils::get_admin_url('admin.php') . '?page=' . self::SLUG;
     }
 
     public static function tag_name($name = '')
@@ -268,20 +293,20 @@ class Core
     public static function credit_card_errors_pt_br()
     {
         return array(
-            'A value is required.' => 'Validade: O mês é obrigatório.',
-            'The field exp_month must be between 1 and 12.' => 'Validade: O mês deve estar entre 1 e 12.',
-            "The value 'undefined' is not valid for exp_year." => 'Validade: Ano inválido.',
-            'The card expiration date is invalid.' => 'Validade: Data de expiração inválida.',
-            'Card expired.' => 'Validade: Cartão expirado.',
-            'The holder_name field is required.' => 'O nome impresso no cartão é obrigatório.',
-            'The number field is required.' => 'O número do cartão é obrigatório.',
-            'The number field is not a valid number.' => 'O número do cartão é inválido.',
-            'The number field is not a valid credit card number.' => 'O número do cartão é inválido.',
-            'The field number must be a string with a minimum length of 13 and a maximum length of 19.'
-            => 'O tamanho do número do cartão deve ter entre 13 e 19 caracteres.',
-            'The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
-            => 'O campo cvv deve ter entre 3 e 4 caracteres.',
-            'The cvv field is not a valid number.' => 'O CVV é inválido',
+            'exp_month: A value is required.'                             => 'Validade: O mês é obrigatório.',
+            'exp_month: The field exp_month must be between 1 and 12.'    => 'Validade: O mês deve estar entre 1 e 12.',
+            "exp_year: The value 'undefined' is not valid for exp_year."  => 'Validade: Ano inválido.',
+            'request: The card expiration date is invalid.'               => 'Validade: Data de expiração inválida.',
+            'request: Card expired.'                                      => 'Validade: Cartão expirado.',
+            'holder_name: The holder_name field is required.'             => 'O nome impresso no cartão é obrigatório.',
+            'number: The number field is required.'                       => 'O número do cartão é obrigatório.',
+            'number: The number field is not a valid credit card number.' => 'Este número de cartão é inválido.',
+            'card: The number field is not a valid card number'           => 'Este número de cartão é inválido.',
+            'card.number: The field number must be a string with a minimum length of 13 and a maximum length of 19.'
+            => 'O numéro do cartão deve ter entre 13 e 19 caracteres.',
+            'card: Card expired.'                                         => 'A validade do cartão está expirada',
+            'card.cvv: The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
+            => 'O número cvv deve ter 3 ou 4 caracteres.',
         );
     }
 }

@@ -1,0 +1,39 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\Payment\TwoCards $this */
+
+declare(strict_types=1);
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?= $this->createBlock(
+    '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
+    'pagarme.checkout.form.card',
+    [
+        'payment_instance' => $this->getPaymentInstance(),
+        'qty_cards' => $this->getQtyCards()
+    ]
+)->toHtml() ?>
+
+<?php
+?>
+<script type="text/javascript">
+    {
+        let paymentTarget = '.payment_method_woo-pagarme-payments-2_cards';
+        if (typeof pagarmeCard == 'object') {
+            pagarmeCard.start(paymentTarget);
+        }
+        if (typeof pagarmeOrderValue == 'object') {
+            pagarmeOrderValue.start(paymentTarget);
+        }
+    }
+</script>

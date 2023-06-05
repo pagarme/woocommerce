@@ -29,10 +29,14 @@ class Migrator
     {
         $this->autoLoad();
         $migrationsClasses = $this->getMigrations();
+        $this->sort($migrationsClasses);
         if (count($migrationsClasses)) {
             foreach ($migrationsClasses as $class) {
                 /** @var MigrationInterface $migration */
                 $migration = new $class;
+                if ($migration->validate()) {
+                    $migration->unregisterMigration($migration);
+                }
                 if ($migration->canApply($migration)) {
                     $migration->apply();
                     $migration->registerMigration($migration);
@@ -58,9 +62,22 @@ class Migrator
         $implements = [];
         foreach($classes as $klass) {
             $reflect = new ReflectionClass($klass);
-            if($reflect->implementsInterface(MigrationInterface::class))
-                $implements[] = $klass;
+            if($reflect->implementsInterface(MigrationInterface::class)) {
+                $explodedFileName = explode(DIRECTORY_SEPARATOR, $reflect->getFileName());
+                $implements[end($explodedFileName)] = $klass;
+            }
         }
         return $implements;
+    }
+
+    /**
+     * @param $migrationsClasses
+     * @return void
+     */
+    private function sort(&$migrationsClasses)
+    {
+        if (is_array($migrationsClasses)) {
+            ksort($migrationsClasses);
+        }
     }
 }

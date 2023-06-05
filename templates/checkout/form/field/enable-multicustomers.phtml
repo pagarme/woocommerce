@@ -1,0 +1,28 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers $this */
+
+declare( strict_types=1 );
+?>
+<?php if ($this->isEnable()) : ?>
+    <?= $this->setIncludeContainer()->formatElement(
+        '<p class=\'form-row form-row-wide\' data-element=\'enable-multicustomers-check\'>',
+        ['p' => ['class' => true, 'data-element' => true]]
+    ) ?>
+    <label data-element="<?= $this->getElementId('label') ?>">
+        <input type="checkbox" name="<?= $this->getElementId('enable') ?>" data-element="enable-multicustomers"
+               value="1">
+        <?php esc_html_e('Fill other buyer data', 'woo-pagarme-payments'); ?>
+    </label>
+    <?= $this->formatElement(
+        '</p>',
+        ['p' => []]
+    ) ?>
+<?php endif; ?>

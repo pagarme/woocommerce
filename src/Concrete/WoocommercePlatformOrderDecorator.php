@@ -241,7 +241,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function getIncrementId()
     {
-        return $this->getPlatformOrder()->get_order_number();
+        return $this->getPlatformOrder()->get_id();
     }
 
     public function getGrandTotal()
@@ -364,7 +364,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     public function getPagarmeId()
     {
-        $orderId = $this->platformOrder->get_order_number();
+        $orderId = $this->platformOrder->get_id();
         if (empty($orderId)) {
             return null;
         }
@@ -420,7 +420,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     private function getRegisteredCustomer($woocommerceCustomerId)
     {
-        $order = new Order($this->getPlatformOrder()->get_order_number());
+        $order = new Order($this->getPlatformOrder()->get_id());
 
         $address = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
@@ -475,7 +475,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
      */
     private function getGuestCustomer()
     {
-        $order = new Order($this->getPlatformOrder()->get_order_number());
+        $order = new Order($this->getPlatformOrder()->get_id());
 
         $address = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
@@ -768,7 +768,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $newPaymentData->amount = $amount;
 
-        if ($this->formData["enable_multicustomers_card"]) {
+        if (isset($this->formData["enable_multicustomers_card"]) && $this->formData["enable_multicustomers_card"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'card'
             );
@@ -823,9 +823,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $multiCustomerFlag = empty($index) ? "enable_multicustomers_card1"
                 : "enable_multicustomers_card2";
             if ($this->formData[$multiCustomerFlag]) {
-                $card = array_pop(
-                    explode("_", $multiCustomerFlag)
-                );
+                $flag = explode("_", $multiCustomerFlag);
+                $card = array_pop($flag);
 
                 $newPaymentData->customer = $this->extractMultibuyerData(
                     $card
@@ -844,7 +843,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             return null;
         }
 
-        $order = new Order($this->getPlatformOrder()->get_order_number());
+        $order = new Order($this->getPlatformOrder()->get_id());
 
         $fields = [
             "multicustomer_{$paymentMethod}[name]" => "name",
@@ -952,7 +951,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $paymentData[$boletoDataIndex] = [];
         }
 
-        if ($this->formData["enable_multicustomers_billet"]) {
+        if (isset($this->formData["enable_multicustomers_billet"]) && $this->formData["enable_multicustomers_billet"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'billet'
             );
@@ -977,7 +976,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $paymentData[$boletoDataIndex] = [];
         }
 
-        if ($this->formData["enable_multicustomers_billet"]) {
+        if (isset($this->formData["enable_multicustomers_billet"]) && $this->formData["enable_multicustomers_billet"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'billet'
             );
@@ -1001,7 +1000,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $paymentData[$pixDataIndex] = [];
         }
 
-        if ($this->formData["enable_multicustomers_pix"]) {
+        if (isset($this->formData["enable_multicustomers_pix"]) && $this->formData["enable_multicustomers_pix"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'pix'
             );
@@ -1012,7 +1011,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromVoucher(&$paymentData)
     {
-        $identifier = $this->formData["pagarmetoken6"];
+        $identifier = $this->formData["pagarmetoken1"];
         if (!$identifier) {
             $identifier = $this->formData["card_id"];
         }
@@ -1029,13 +1028,13 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $amount = str_replace('.', '', $amount);
         $amount = str_replace(',', '', $amount);
         $newPaymentData->amount = $amount;
-        
+
         if ($this->formData["enable_multicustomers_voucher"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
                 'voucher'
             );
         }
-        
+
         $voucherDataIndex = NewVoucherPayment::getBaseCode();
         $newPaymentData->saveOnSuccess =
             isset($this->formData["save_credit_card"]);

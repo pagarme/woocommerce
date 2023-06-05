@@ -44,4 +44,16 @@ interface MigrationInterface
      * @return array
      */
     public function getDependencies(): array;
+
+    /**
+     * @param MigrationInterface $migration
+     * @return void
+     */
+    public function unregisterMigration(MigrationInterface $migration): void;
+
+    /**
+     * Checks if the migration has already been run. Returns true if not.
+     * @return bool
+     */
+    public function validate(): bool;
 }

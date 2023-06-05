@@ -87,27 +87,21 @@ abstract class AbstractModuleCoreSetup
 
     protected static function updateModuleConfiguration()
     {
-        $configurationRepository = new ConfigurationRepository;
-
         static::loadSavedConfiguration();
-
         $savedConfig = static::$moduleConfig;
         static::$instance->loadModuleConfigurationFromPlatform();
         static::$moduleConfig->setStoreId(static::getCurrentStoreId());
-
         if (
             $savedConfig !== null &&
             ($savedConfigId = $savedConfig->getId()) !== null
         ) {
             static::$moduleConfig->setid($savedConfigId);
         }
-
         if (self::getDefaultConfigSaved() === null) {
             static::$moduleConfig->setStoreId(static::getDefaultStoreId());
-            $configurationRepository->save(static::$moduleConfig);
+            static::saveModuleConfig();
             static::$moduleConfig->setStoreId(static::getCurrentStoreId());
         }
-
         if (
             static::$moduleConfig->getStoreId() != static::getDefaultStoreId() &&
             $savedConfig === null
@@ -116,8 +110,15 @@ abstract class AbstractModuleCoreSetup
             static::$moduleConfig->setInheritAll(true);
             static::$moduleConfig->setId(null);
         }
+        static::saveModuleConfig();
+    }
 
-        $configurationRepository->save(static::$moduleConfig);
+    protected static function saveModuleConfig()
+    {
+        if (strpos(static::$instance->getPlatformVersion(), 'Wordpress') === false) {
+            $configurationRepository = new ConfigurationRepository;
+            $configurationRepository->save(static::$moduleConfig);
+        }
     }
 
     protected static function loadSavedConfiguration()

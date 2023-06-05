@@ -1,0 +1,77 @@
+<?php
+/**
+ * @var \Woocommerce\Pagarme\Block\Account\Wallet $this
+ */
+if (!function_exists('add_action')) {
+    exit(0);
+}
+do_action('woocommerce_before_account_wallet');
+
+if ($this->walletCards) :
+?>
+    <table class="woocommerce-wallet-table shop_table shop_table_responsive">
+        <thead>
+            <tr>
+                <th class="woocommerce-wallet-name">
+                    <?php esc_html_e('Name', 'woo-pagarme-payments'); ?>
+                </th>
+                <th class="woocommerce-wallet-brand">
+                    <?php esc_html_e('Type', 'woo-pagarme-payments'); ?>
+                </th>
+                <th class="woocommerce-wallet-last-digits">
+                    <?php esc_html_e('Card', 'woo-pagarme-payments'); ?>
+                </th>
+                <th class="woocommerce-wallet-created-at">
+                    <?php esc_html_e('Created At', 'woo-pagarme-payments'); ?>
+                </th>
+                <th class="woocommerce-wallet-brand">
+                    <?php esc_html_e('Brand', 'woo-pagarme-payments'); ?>
+                </th>
+                <th class="woocommerce-wallet-brand">
+                    <?php esc_html_e('Action', 'woo-pagarme-payments'); ?>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->walletCards as $card_id => $card) : ?>
+
+                <tr>
+                    <td>
+                        <?php echo esc_html($card->getOwnerName()); ?>
+                    </td>
+                    <td>
+                        <?php echo esc_html(ucwords(str_replace('_', ' ', $card->getType()))); ?>
+                    </td>
+                    <td>
+                        <?php echo esc_html("******" . $card->getLastFourDigits()->getValue()); ?>
+                    </td>
+                    <td>
+                        <?php echo esc_html($card->getCreatedAt()->format("m/Y")); ?>
+                    </td>
+                    <td>
+                        <?php echo esc_html($card->getBrand()->getName()); ?>
+                    </td>
+                    <td>
+                        <button class="woocommerce-button button" data-action="remove-card" data-value="<?php echo esc_attr($card->getPagarmeId()->getValue()); ?>">
+                            <?php esc_html_e('Remove', 'woo-pagarme-payments'); ?>
+                        </button>
+                    </td>
+                </tr>
+
+            <?php endforeach; ?>
+
+        </tbody>
+    </table>
+<?php
+
+else :
+
+    printf(
+        '<p class="woocommerce-message woocommerce-info">%s</p>',
+        esc_html__('No credit card saved.', 'woo-pagarme-payments')
+    );
+
+endif;
+
+do_action('woocommerce_after_account_orders');
+?>

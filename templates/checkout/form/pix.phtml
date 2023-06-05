@@ -1,0 +1,55 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\Form\Pix $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<fieldset class="wc-credit-card-form wc-payment-form">
+    <?php if ($this->showOrderValue()) : ?>
+        <div class="form-row form-row-first">
+            <label for="billet-value">
+                <?php esc_html_e('Value (Pix)', 'woo-pagarme-payments'); ?>
+                <span class="required">*</span>
+            </label>
+            <input id="<?= $this->getElementId('pix-value') ?>" name="<?= $this->getElementId('pix-value') ?>"
+                   data-element="pix-value" data-value="1" data-required="true" class="input-text">
+        </div>
+    <?php endif; ?>
+    <?php if ($this->showMessage() && $this->getMessage()) : ?>
+        <?= $this->getMessage(true) ?>
+    <?php endif; ?>
+    <?php if ($this->showImage() && $this->getImage()) : ?>
+        <?= $this->getImage(true) ?>
+    <?php endif; ?>
+    <?php if ($this->showMulticustomersForm()) : ?>
+        <?= $this->createBlock(
+            '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
+            'pagarme.checkout.field.multicustomers',
+            [
+                'payment_instance' => $this->getPaymentInstance(),
+                'parent_element_id' => $this->getElementId('multicustomers'),
+                'sequence' => $this->getMulticustomersSequece()
+            ]
+        )->toHtml() ?>
+        <?= $this->createBlock(
+            '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
+            'pagarme.checkout.form.multicustomers',
+            [
+                'payment_instance' => $this->getPaymentInstance(),
+                'parent_element_id' => $this->getElementId('multicustomers'),
+                'sequence' => $this->getMulticustomersSequece()
+            ]
+        )->toHtml() ?>
+    <?php endif; ?>
+</fieldset>

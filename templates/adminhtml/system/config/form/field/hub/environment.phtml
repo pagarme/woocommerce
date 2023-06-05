@@ -1,0 +1,23 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var $this \Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Environment */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+?>
+<p><?php echo esc_attr($this->getCurrent()); ?></p>
+<?php if ($this->config->getHubInstallId() &&
+         ($this->config->getIsSandboxMode() ||
+         $this->getCurrent() === $this->getDefault())) : ?>
+    <div class="pagarme-message-warning">
+        <?= __('Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions.', 'woo-pagarme-payments'); ?>
+    </div>
+<?php endif; ?>

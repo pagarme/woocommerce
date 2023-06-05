@@ -1,0 +1,93 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBox\ChargeActions $this */
+
+declare( strict_types=1 );
+
+use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBox\Modal;
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->getCharges()) : ?>
+    <style>
+        .modal {
+            display: none;
+        }
+        tbody.items {
+            font-size: 11px;
+        }
+    </style>
+    <div class="wrapper">
+        <table cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <?php foreach ($this->getHeaderGrid() as $head) : ?>
+                        <th><?= __($head, 'woo-pagarme-payments') ?></th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <?php foreach ($this->getCharges() as $charge) : ?>
+                <tr>
+                    <td><?= $charge->getPagarmeId()->getValue() ?></td>
+                    <td><?= strtoupper($this->getTransaction($charge)->getTransactionType()->getType()) ?></td>
+                    <?php foreach ($this->getTotals() as $total) : ?>
+                        <td>
+                            <?=
+                            $this->setIncludeContainer()->formatElement(
+                                $this->getAmount($charge, $total),
+                                ['span' => ['class' => true]]
+                            )
+                            ?>
+                        </td>
+                    <?php endforeach; ?>
+                    <td><?= strtoupper(__(ucfirst($charge->getStatus()->getStatus()), 'woo-pagarme-payments')) ?></td>
+                    <td>
+                        <button data-type="cancel" data-ref="<?= $charge->getPagarmeId()->getValue() ?>"
+                            <?= $this->getChargeInstance()->is_allowed_cancel($charge) ? '' : 'disabled=disabled' ?> class="button-primary"><?= __('Cancel', 'woo-pagarme-payments') ?></button>
+                        <?php if ($this->getTransaction($charge)->getTransactionType()->getType() == 'credit_card') : ?>
+                            <button data-type="capture" data-ref="<?= $charge->getPagarmeId()->getValue() ?>"
+                                <?= $this->getChargeInstance()->is_allowed_capture($charge) ? '' : 'disabled=disabled' ?> class="button-primary"><?= __('Capture', 'woo-pagarme-payments') ?></button>
+                        <?php endif; ?>
+                    </td>
+                    <?= $this->createBlock(
+                        '\Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBox\Modal',
+                        'pagarme.sales.order.metabox.modal.cancel',
+                        [
+                            'charge' => $charge,
+                            'modal_type' => Modal::MODAL_TYPE_CANCEL
+                        ]
+                    )->toHtml() ?>
+                    <?= $this->createBlock(
+                        '\Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBox\Modal',
+                        'pagarme.sales.order.metabox.modal.capture',
+                        [
+                            'charge' => $charge,
+                            'modal_type' => Modal::MODAL_TYPE_CAPTURE
+                        ]
+                    )->toHtml() ?>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+<?php else : ?>
+    <?=
+        $this->setIncludeContainer()->formatElement(
+            '<p class="title">' . __('No records found.', 'woo-pagarme-payments') . '</p>',
+            ['p' => []]
+        )
+    ?>
+<?php endif; ?>
+<script type="text/javascript">
+    if (typeof pagarmeCancelCapture == 'object') {
+        pagarmeCancelCapture.start();
+    }
+</script>

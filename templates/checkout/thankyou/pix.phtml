@@ -1,0 +1,57 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\ThankYou\Pix $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->getQrCodeUrl()) : ?>
+    <p><img src="<?= $this->getQrCodeUrl() ?>" alt="Pix QRCode" class="pagarme-qr-code-img" /></p>
+    <button type="button"
+            id="pagarme-qr-code-button"
+            rawCode="<?= $this->getRawQrCode() ?>"
+            class="pagarme-payment-button">
+        <?= __('Copy Code', 'woo-pagarme-payments'); ?>
+    </button>
+    <div class="pagarme-flex-container">
+        <?php foreach ($this->getInstructions() as $instruction) : ?>
+            <div class="pagarme-qr-code-instruction">
+                <p><?= __($instruction, 'woo-pagarme-payments'); ?></p>
+            </div>
+        <?php endforeach; ?>
+        <div class="pagarme-qr-code-instruction pagarme-qr-code-attention">
+            <p>
+                <span>
+                    <?php
+                    printf(
+                        '<img class="pagarme-attention-icon" src="%1$s" alt="%2$s" title="%2$s" />',
+                        esc_url($this->getFilePath('assets/images/pix-checkout-attention.svg')),
+                        esc_html__('pix attention icon', 'woo-pagarme-payments')
+                    );
+                    ?>
+                </span>
+                <?php
+                _e(
+                    'You can also complete the payment by copying and pasting the code into the app.',
+                    'woo-pagarme-payments'
+                );
+                ?>
+            </p>
+        </div>
+    </div>
+<?php else : ?>
+    <?= $this->createBlock(
+        '\Woocommerce\Pagarme\Block\Checkout\ThankYou\StatusTransaction',
+        'pagarme.checkout.thankyou.statustransaction'
+    )->toHtml() ?>
+<?php endif; ?>

@@ -10,10 +10,11 @@ if (!function_exists('add_action')) {
 use Exception;
 
 use Pagarme\Core\Hub\Services\HubIntegrationService;
+use ReflectionClass;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Payment\PaymentInterface;
 
 // WooCommerce
 use WC_Order;
@@ -39,11 +40,16 @@ class Gateway
      */
     const CC_TYPE_BY_FLAG = 2;
 
-    public $settings;
+    /** @var Config|null */
+    public $config;
 
-    public function __construct()
-    {
-        $this->settings = Setting::get_instance();
+    public function __construct(
+        Config $config = null
+    ) {
+        if (!$config) {
+            $config = new Config();
+        }
+        $this->config = $config;
     }
 
     public function supported_currency()
@@ -106,10 +112,10 @@ class Gateway
             __('1x', 'woo-pagarme-payments') . ' (' . wc_price($total) . ')'
         );
 
-        $interest_base = $interest;
+        $interestBase = $interest;
 
         for ($times = 2; $times <= $max_installments; $times++) {
-            $interest = $interest_base;
+            $interest = $interestBase;
             $amount = $total;
 
             if ($interest || $interest_increase) {
@@ -138,16 +144,27 @@ class Gateway
                 wc_price($value)
             );
 
-            $amount = $total;
-
-            if ($times > $no_interest && $interest) {
-                $text .= " c/juros de {$interest}%";
-            }
+            $text .= $this->verifyInterest($times, $no_interest, $interest);
 
             $output .= sprintf('<option value="%1$s">%2$s</option>', $times, $text);
         }
 
         return $output;
+    }
+    
+    /**
+    * @param int $times
+    * @param mixed $noInterest
+    * @param mixed $interest
+    * @return string
+    */
+    public function verifyInterest(int $times, $no_interest, $interest): string
+    {
+        if ($times > $no_interest && $interest) {
+            return " c/juros";
+        }
+        
+        return " s/juros";
     }
 
     private function _calc_installments_1(array $params)
@@ -239,5 +256,61 @@ class Gateway
             strpos($this->settings->production_secret_key, 'sk_test') !== false ||
             strpos($this->settings->production_public_key, 'pk_test') !== false
         );
+    }
+
+    /**
+     * @param $paymentCode
+     * @return PaymentInterface
+     * @throws Exception
+     */
+    public function getPaymentInstace($paymentCode)
+    {
+        foreach ($this->getPayments() as $class) {
+            /** @var PaymentInterface $payment */
+            $payment = new $class;
+            if ($payment->getMethodCode() === $paymentCode) {
+                return $payment;
+            }
+        }
+        throw new \Exception(__('Invalid payment method: ', 'woo-pagarme-payments') . $paymentCode);
+    }
+
+    /**
+     * @return array
+     */
+    private function getPayments()
+    {
+        $this->autoLoad();
+        $payments = [];
+        foreach (get_declared_classes() as $class) {
+            try {
+                $reflect = new ReflectionClass($class);
+                if($reflect->implementsInterface(PaymentInterface::class)) {
+                    $explodedFileName = explode(DIRECTORY_SEPARATOR, $reflect->getFileName());
+                    $payments[end($explodedFileName)] = $class;
+                }
+            } catch (\ReflectionException $e) {}
+        }
+        return $payments;
+    }
+
+    private function autoLoad()
+    {
+        foreach(glob( __DIR__ . '/Payment/*.php') as $file) {
+            include_once($file);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfigDataProvider()
+    {
+        $jsConfigProvider = [];
+        foreach ($this->getPayments() as $class) {
+            $payment = new $class;
+            $jsConfigProvider['payment'][$payment->getMethodCode()] = $payment->getConfigDataProvider();
+        }
+        return $jsConfigProvider;
     }
 }

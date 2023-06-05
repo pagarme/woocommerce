@@ -9,7 +9,7 @@ if (!function_exists('add_action')) {
 use Pagarme\Core\Hub\Services\HubIntegrationService;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Helper\Utils;
 
 class HubCommand
@@ -21,7 +21,7 @@ class HubCommand
 
     public function __construct()
     {
-        $this->settings = Setting::get_instance();
+        $this->settings = new Config;
         add_action('woocommerce_api_' . Core::get_hub_command_name(), array($this, 'handle_requests'));
     }
 
@@ -77,22 +77,15 @@ class HubCommand
     private function uninstallCommand()
     {
         $keysToClear = [
-            'hub_install_id',
-            'hub_environment',
-            'production_secret_key',
-            'production_public_key',
-            'sandbox_secret_key',
-            'sandbox_public_key',
-            'environment'
+            'hub_install_id' => null,
+            'hub_environment' => null,
+            'production_secret_key' => null,
+            'production_public_key' => null,
+            'sandbox_secret_key' => null,
+            'sandbox_public_key' => null,
+            'environment' => null
         ];
-
-        foreach ($keysToClear as $key) {
-            $this->settings->set(
-                $key,
-                null
-            );
-        }
-
+        $this->settings->addData($keysToClear)->save();
         return 'Hub uninstalled successfully';
     }
 }

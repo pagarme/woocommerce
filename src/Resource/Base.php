@@ -6,15 +6,13 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Setting;
 use Unirest\Request;
+use Woocommerce\Pagarme\Model\Config;
 
 abstract class Base
 {
     /**
-     * @var \Woocommerce\Pagarme\Model\Setting
+     * @var \Woocommerce\Pagarme\Model\Config
      */
     protected $settings;
 
@@ -25,7 +23,7 @@ abstract class Base
 
     public function __construct($auth = true)
     {
-        $this->settings = Setting::get_instance();
+        $this->config = new Config();
 
         Request::verifyPeer(false);
         Request::verifyHost(false);
@@ -42,7 +40,7 @@ abstract class Base
      */
     public function auth()
     {
-        Request::auth($this->settings->get_secret_key(), '');
+        Request::auth($this->config->getSecretKey(), '');
     }
 
     /**

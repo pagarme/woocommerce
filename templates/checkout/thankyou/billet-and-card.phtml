@@ -1,0 +1,48 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\ThankYou\BilletAndCard $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->getCharges()) : ?>
+    <?php foreach ($this->getCharges() as $charge) : ?>
+        <?php if ($this->getTransactionType($charge) === 'credit_card') : ?>
+            <?= $this->setIncludeContainer()->formatElement('<p>', ['p' => []]) ?>
+                <?= __('CREDIT CARD', 'woo-pagarme-payments'); ?>
+                <?= $this->createBlock(
+                    '\Woocommerce\Pagarme\Block\Checkout\ThankYou\CreditCard',
+                    'pagarme.checkout.thankyou.credit_card',
+                    [
+                        'charge' => $charge
+                    ]
+                )->toHtml() ?>
+            <?= $this->setIncludeContainer()->formatElement('</p>', ['p' => []]) ?>
+        <?php endif; ?>
+        <?php if ($this->getTransactionType($charge) === 'boleto') : ?>
+            <?= __('BOLETO', 'woo-pagarme-payments'); ?>
+            <?= $this->createBlock(
+                '\Woocommerce\Pagarme\Block\Checkout\ThankYou\Billet',
+                'pagarme.checkout.thankyou.billet',
+                [
+                    'charge' => $charge
+                ]
+            )->toHtml() ?>
+        <?php endif; ?>
+    <?php endforeach ?>
+<?php else : ?>
+    <?= $this->createBlock(
+        '\Woocommerce\Pagarme\Block\Checkout\ThankYou\StatusTransaction',
+        'pagarme.checkout.thankyou.statustransaction'
+    )->toHtml() ?>
+<?php endif; ?>
