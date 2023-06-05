@@ -14,14 +14,14 @@
         addEventListener();
 
         function handleInstallmentFieldsVisibility(value) {
-            var installmentsMaxContainer = installmentsMax.closest('tr'),
+            const installmentsMaxContainer = installmentsMax.closest('tr'),
                 installmentsInterestContainer = installmentsInterest.closest('tr'),
                 installmentsMinAmountContainer = installmentsMinAmount.closest("tr"),
                 installmentsByFlagContainer = installmentsByFlag.closest('tr'),
                 installmentsWithoutInterestContainer = installmentsWithoutInterest.closest('tr'),
                 installmentsInterestIncreaseContainer = installmentsInterestIncrease.closest('tr');
 
-            if (value == 1) {
+            if (parseInt(value) === 1) {
                 installmentsMaxContainer.show();
                 installmentsMinAmountContainer.show();
                 installmentsInterestContainer.show();
@@ -39,12 +39,12 @@
                 installmentsInterestIncreaseContainer.hide();
                 installmentsWithoutInterestContainer.hide();
             }
-        };
+        }
 
         function setInstallmentsByFlags(event, firstLoad) {
-            var flags = flagsSelect.val() || [];
-            var flagsWrapper = installmentsByFlag.closest('tr');
-            var allFlags = $('[data-flag]');
+            const flags = flagsSelect.val() || [];
+            const flagsWrapper = installmentsByFlag.closest('tr');
+            const allFlags = $('[data-flag]');
 
             if (parseInt(installmentsTypeSelect.val()) !== 2) {
                 allFlags.hide();
@@ -53,17 +53,17 @@
             }
 
             if (!firstLoad) {
-                var selectedItem = event.params.args.data.id;
-                var filtered = flags;
+                const selectedItem = event.params.args.data.id;
+                let filtered = flags;
 
                 flagsWrapper.show();
 
-                if (event.params.name == 'unselect') {
+                if (event.params.name === 'unselect') {
                     filtered = flags.filter(function (i) {
-                        return i != selectedItem;
+                        return i !== selectedItem;
                     });
 
-                    if (filtered.length == 0) {
+                    if (filtered.length === 0) {
                         installmentsByFlag.closest('tr').hide();
                     }
                 } else {
@@ -73,7 +73,7 @@
                 allFlags.hide();
 
                 filtered.map(function (item) {
-                    var element = $('[data-flag=' + item + ']');
+                    const element = $('[data-flag=' + item + ']');
                     element.show();
                 });
             } else {
@@ -92,9 +92,16 @@
                     }
                 });
             }
+        }
+
+        const setLowestValueToElement = (element, value) => {
+            const elementValueGreaterThanNewValue = parseInt(value) < parseInt(element.val());
+            if (elementValueGreaterThanNewValue) {
+                element.val(value);
+            }
         };
 
-        function handleInstallmentWithoutInterestMaxValue(value) {
+        const handleInstallmentWithoutInterestMaxValue = (value) => {
             setLowestValueToElement(installmentsWithoutInterest, value);
 
             function toggleInstallmentsWithoutInterestOption() {
@@ -108,23 +115,16 @@
             }
 
             installmentsWithoutInterest.find('option').each(toggleInstallmentsWithoutInterestOption);
-        }
+        };
 
-        function handleInstallmentsWithoutInterestFlagMaxValue(element, value) {
+        const handleInstallmentsWithoutInterestFlagMaxValue = (element, value) => {
             const installmentsWithoutInterestByFlag = $(element).closest('tr')
                 .find('[data-field="installments-without-interest-by-flag"]');
 
             setLowestValueToElement(installmentsWithoutInterestByFlag, value);
 
             installmentsWithoutInterestByFlag.attr('max', parseInt(value));
-        }
-
-        function setLowestValueToElement(element, value) {
-            const elementValueGreaterThanNewValue = parseInt(value) < parseInt(element.val());
-            if (elementValueGreaterThanNewValue) {
-                element.val(value);
-            }
-        }
+        };
 
         function addEventListener() {
             installmentsTypeSelect.on('change', function (event) {
@@ -142,7 +142,7 @@
             flagsSelect.on('select2:selecting', function (event) {
                 setInstallmentsByFlags(event, false);
             });
-        };
+        }
 
     }(jQuery)
 );
