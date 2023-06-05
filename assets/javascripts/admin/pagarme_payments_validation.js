@@ -59,10 +59,11 @@
         const initializeFormErrorsVariables = (element) => {
             const isMultipleSelect = element.is('select') && element.is('[multiple]');
             if (isMultipleSelect) {
+                const multipleSelect = $(element).closest('fieldset').find('.select2-selection--multiple');
                 return {
-                    element: element.closest('fieldset').find('.select2-selection--multiple'),
-                    errorMessageElement: element.closest('.select2-container'),
-                    fieldValue: element.val()
+                    element: multipleSelect,
+                    errorMessageElement: $(multipleSelect).closest('.select2-container'),
+                    fieldValue: $(element).val()
                 }
             }
 
@@ -98,6 +99,8 @@
                     }
 
                     if (fieldHasError) {
+
+                        console.log(getErrorMessage(originalElement, validationType))
                         showErrorMessage(errorMessageElement, getErrorMessage(originalElement, validationType));
                         hasErrors = fieldHasError;
                     }
