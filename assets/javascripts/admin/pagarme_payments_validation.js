@@ -48,7 +48,7 @@
         }
 
         const getErrorMessage = (element, errorType) => {
-            return $(element).data(`.${errorMessageDataAttribute}-${errorType}`);
+            return $(element).data(`${errorMessageDataAttribute}-${errorType}`);
         }
 
         const resetErrorsInfo = () => {
