@@ -110,10 +110,10 @@ class CreditCard extends AbstractGateway
             'default' => $this->config->getData('cc_soft_descriptor') ?? '',
             'custom_attributes' => array(
                 'data-field' => 'soft-descriptor',
-                'data-action' => 'soft-descriptor',
-                'data-element' => 'validate',
-                'maxlength' => $maxLength,
-                'data-error-msg' => __('This field is required.', 'woo-pagarme-payments'),
+                'data-field-validate' => 'required|max-length',
+                'data-max-length' => $maxLength,
+                'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
+                'data-error-message-max-length' => __('This field has exceeded the character limit.', 'woo-pagarme-payments'),
             ),
         );
     }
@@ -153,6 +153,8 @@ class CreditCard extends AbstractGateway
                 'data-field' => 'flags-select',
                 'data-element' => 'flags-select',
                 'data-action' => 'flags',
+                'data-field-validate' => 'required',
+                'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
             ),
         );
     }

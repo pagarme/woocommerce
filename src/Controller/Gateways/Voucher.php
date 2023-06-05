@@ -65,10 +65,10 @@ class Voucher extends AbstractGateway
             'default' => $this->config->getData('voucher_soft_descriptor') ?? '',
             'custom_attributes' => [
                 'data-field' => 'voucher-soft-descriptor',
-                'data-action' => 'voucher-soft-descriptor',
-                'data-element' => 'validate',
-                'maxlength' => $maxLength,
-                'data-error-msg' => __('This field is required.', 'woo-pagarme-payments')
+                'data-field-validate' => 'required|max-length',
+                'data-max-length' => $maxLength,
+                'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
+                'data-error-message-max-length' => sprintf(__('This field has exceeded the character limit of %d.', 'woo-pagarme-payments'), $maxLength),
             ]
         ];
     }
@@ -95,7 +95,9 @@ class Voucher extends AbstractGateway
             'custom_attributes' => [
                 'data-field'   => 'voucher-flags-select',
                 'data-element' => 'voucher-flags-select',
-                'data-action'  => 'flags'
+                'data-action'  => 'flags',
+                'data-field-validate' => 'required',
+                'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
             ]
         ];
     }

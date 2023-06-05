@@ -39,6 +39,7 @@ class Pix extends AbstractGateway
 
     public function field_pix_qrcode_expiration_time()
     {
+        $minValue = 1;
         return [
             'title'       => __('QR code expiration time', 'woo-pagarme-payments'),
             'description' => __('Expiration time in seconds of the generated pix QR code.', 'woo-pagarme-payments'),
@@ -48,6 +49,10 @@ class Pix extends AbstractGateway
             'custom_attributes' => [
                 'data-mask'         => '##0',
                 'data-mask-reverse' => 'true',
+                'data-field-validate' => 'required|min',
+                'data-min' => $minValue,
+                'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
+                'data-error-message-min' => sprintf(__('This field has minumum value of %d.', 'woo-pagarme-payments'), $minValue),
             ]
         ];
     }
