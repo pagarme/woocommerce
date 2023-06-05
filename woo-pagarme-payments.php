@@ -129,8 +129,7 @@ function wcmpAdminNoticeWoocommerce() : void
 {
     wcmpRenderAdminNoticeHtml(
         __('Woocommerce plugin is required for Pagar.me module to work.', 'woo-pagarme-payments'),
-        'woocommerce/woocommerce.php',
-        false
+        'woocommerce/woocommerce.php'
     );
 }
 
@@ -141,8 +140,7 @@ function wcmpAdminNoticeExtraCheckouts()
             'WooCoomerce Extra Checkout Fields For Brazil plugin is required for Pagar.me module to work.',
             'woo-pagarme-payments'
         ),
-        'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php',
-        false
+        'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php'
     );
 }
 
