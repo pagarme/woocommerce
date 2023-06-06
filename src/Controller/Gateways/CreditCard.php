@@ -113,7 +113,7 @@ class CreditCard extends AbstractGateway
                 'data-field-validate' => 'required|max-length',
                 'data-max-length' => $maxLength,
                 'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
-                'data-error-message-max-length' => __('This field has exceeded the character limit.', 'woo-pagarme-payments'),
+                'data-error-message-max-length' => sprintf(__('This field has exceeded the %d character limit.', 'woo-pagarme-payments'), $maxLength),
             ),
         );
     }

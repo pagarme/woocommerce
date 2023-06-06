@@ -52,7 +52,7 @@ class Pix extends AbstractGateway
                 'data-field-validate' => 'required|min',
                 'data-min' => $minValue,
                 'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
-                'data-error-message-min' => sprintf(__('This field has minumum value of %d.', 'woo-pagarme-payments'), $minValue),
+                'data-error-message-min' => sprintf(__('This field does not have the minimum value of %d.', 'woo-pagarme-payments'), $minValue),
             ]
         ];
     }
