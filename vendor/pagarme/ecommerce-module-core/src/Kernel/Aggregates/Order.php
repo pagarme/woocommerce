@@ -15,18 +15,18 @@ final class Order extends AbstractEntity
 
     /**
      *
-     * @var PlatformOrderInterface 
+     * @var PlatformOrderInterface
      */
     private $platformOrder;
 
     /**
      *
-     * @var OrderStatus 
+     * @var OrderStatus
      */
     private $status;
     /**
      *
-     * @var Charge[] 
+     * @var Charge[]
      */
     private $charges;
 
@@ -170,7 +170,7 @@ final class Order extends AbstractEntity
         $charges[] = $newCharge;
         $this->charges = $charges;
 
-        return $this;  
+        return $this;
     }
 
     public function updateCharge(ChargeInterface $updatedCharge, $overwriteId = false)
@@ -200,6 +200,7 @@ final class Order extends AbstractEntity
      * which is a value of any type other than a resource.
      * @since  5.4.0
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $obj = new \stdClass();

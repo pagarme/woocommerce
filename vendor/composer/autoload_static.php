@@ -40,7 +40,7 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         ),
         'Psr\\Log\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+            0 => __DIR__ . '/..' . '/psr/log/src',
         ),
         'Pagarme\\Core\\Test\\Mock\\' => 
         array (
@@ -69,8 +69,8 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         array (
             'Unirest\\' => 
             array (
-                0 => __DIR__ . '/..' . '/mashape/unirest-php/src',
-                1 => __DIR__ . '/..' . '/apimatic/unirest-php/src',
+                0 => __DIR__ . '/..' . '/apimatic/unirest-php/src',
+                1 => __DIR__ . '/..' . '/mashape/unirest-php/src',
             ),
         ),
     );

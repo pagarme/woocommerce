@@ -2,8 +2,6 @@
 
 namespace Pagarme\Core\Test\Recurrence\Aggregates;
 
-use Mockery;
-use PagarmeCoreApiLib\Models\CreateAddressRequest;
 use PagarmeCoreApiLib\Models\CreateCardRequest;
 use PagarmeCoreApiLib\Models\CreateSubscriptionRequest;
 use Pagarme\Core\Kernel\Interfaces\PlatformOrderInterface;
@@ -31,7 +29,7 @@ class SubscriptionTest extends TestCase
      */
     private $subscription;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subscription = new Subscription();
         parent::setUp();
@@ -51,12 +49,12 @@ class SubscriptionTest extends TestCase
         $this->subscription->setDescription("Description");
         $this->subscription->setStatus(SubscriptionStatus::active());
         $this->subscription->setPaymentMethod(PaymentMethod::credit_card());
-        $this->subscription->setPagarmeId(Mockery::mock(SubscriptionId::class));
-        $this->subscription->setSubscriptionId(Mockery::mock(SubscriptionId::class));
-        $this->subscription->setPlatformOrder(Mockery::mock(PlatformOrderInterface::class));
-        $this->subscription->setInvoice(Mockery::mock(Invoice::class));
+        $this->subscription->setPagarmeId($this->createMock(SubscriptionId::class));
+        $this->subscription->setSubscriptionId($this->createMock(SubscriptionId::class));
+        $this->subscription->setPlatformOrder($this->createMock(PlatformOrderInterface::class));
+        $this->subscription->setInvoice($this->createMock(Invoice::class));
         $this->subscription->setCurrentCharge(new Charge());
-        $this->subscription->setPlanId(Mockery::mock(PlanId::class));
+        $this->subscription->setPlanId($this->createMock(PlanId::class));
         $this->subscription->setCustomer(new Customer());
         $this->subscription->setItems([new SubProduct]);
         $this->subscription->setShipping(new Shipping);

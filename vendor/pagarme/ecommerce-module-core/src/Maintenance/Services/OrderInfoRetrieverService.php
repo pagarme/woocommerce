@@ -16,17 +16,41 @@ class OrderInfoRetrieverService implements InfoRetrieverServiceInterface
         $orderInfo->core = $this->getCoreOrderInfo($value);
         $orderInfo->platform = $this->getPlatformOrderInfo($value);
 
+        $this->blurOrderInfo($orderInfo);
+
         return $orderInfo;
     }
 
+    private function blurOrderInfo($orderInfo)
+    {
+        $charges = $orderInfo->core->data->getCharges();
+        foreach ($charges as $charge) {
+            $transactions = $charge->getTransactions();
+
+            foreach ($transactions as $transaction) {
+                if ( !empty( $transaction->getCardData() ) ) {
+                    $ownerName = $transaction->getCardData()
+                        ->getOwnerName();
+                    $transaction->getCardData()
+                        ->setOwnerName(preg_replace('/(?<=\S{2})\S/', '*', $ownerName ?? ""));
+                }
+
+                $transaction->getPostData()
+                    ->card_data = null;
+
+                $transaction->getPostData()
+                    ->tran_data = null;
+            }
+        }
+    }
 
     private function getPlatformOrderInfo($orderIncrementId)
     {
         $platformOrderClass = MPSetup::get(MPSetup::CONCRETE_PLATFORM_ORDER_DECORATOR_CLASS);
         /**
          *
- * @var PlatformOrderInterface $platformOrder 
-*/
+         * @var PlatformOrderInterface $platformOrder 
+        */
         $platformOrder = new $platformOrderClass();
         $platformOrder->loadByIncrementId($orderIncrementId);
 
@@ -43,7 +67,21 @@ class OrderInfoRetrieverService implements InfoRetrieverServiceInterface
         $platformOrderInfo->payments = $platformOrder->getPaymentCollection();
         $platformOrderInfo->invoices = $platformOrder->getInvoiceCollection();
 
+        $this->blurPlatformOrderInfo($platformOrderInfo);
+
         return $platformOrderInfo;
+    }
+
+    private function blurPlatformOrderInfo($platformOrderInfo)
+    {
+        $regex = '/(?<=\S{2})\S/';
+
+        $platformOrderInfo->order['customer_email'] = preg_replace('/^.{3}\K|.(?=.*@)/','*', $platformOrderInfo->order['customer_email'] ?? "");
+        $platformOrderInfo->order['customer_firstname'] = preg_replace($regex, '*', $platformOrderInfo->order['customer_firstname'] ?? "");
+        $platformOrderInfo->order['customer_lastname'] = preg_replace($regex, '*', $platformOrderInfo->order['customer_lastname'] ?? "");
+        $platformOrderInfo->order['customer_middlename'] = preg_replace($regex, '*', $platformOrderInfo->order['customer_middlename'] ?? "");
+        $platformOrderInfo->order['customer_taxvat'] = preg_replace($regex, '*', $platformOrderInfo->order['customer_taxvat'] ?? "");
+        $platformOrderInfo->payments[0]['cc_owner'] = preg_replace($regex, '*', $platformOrderInfo->payments[0]['cc_owner'] ?? "");
     }
 
     private function getCoreOrderInfo($orderIncrementId)
@@ -51,8 +89,8 @@ class OrderInfoRetrieverService implements InfoRetrieverServiceInterface
         $platformOrderClass = MPSetup::get(MPSetup::CONCRETE_PLATFORM_ORDER_DECORATOR_CLASS);
         /**
          *
- * @var PlatformOrderInterface $platformOrder 
-*/
+         * @var PlatformOrderInterface $platformOrder 
+        */
         $platformOrder = new $platformOrderClass();
         $platformOrder->loadByIncrementId($orderIncrementId);
 

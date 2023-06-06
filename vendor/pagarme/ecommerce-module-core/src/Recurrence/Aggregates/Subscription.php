@@ -19,6 +19,7 @@ use Pagarme\Core\Recurrence\ValueObjects\PlanId;
 use Pagarme\Core\Recurrence\ValueObjects\IntervalValueObject;
 use Pagarme\Core\Recurrence\Aggregates\SubProduct;
 use Pagarme\Core\Recurrence\Aggregates\Invoice;
+use Pagarme\Core\Kernel\ValueObjects\ChargeStatus;
 
 class Subscription extends AbstractEntity
 {
@@ -447,6 +448,75 @@ class Subscription extends AbstractEntity
         return $this;
     }
 
+    public function updateCharge(ChargeInterface $updatedCharge, $overwriteId = false)
+    {
+        $charges = $this->getCharges();
+
+        foreach ($charges as &$charge) {
+            if ($charge->getPagarmeId()->equals($updatedCharge->getPagarmeId())) {
+                $chargeId = $charge->getId();
+                $charge = $updatedCharge;
+                if ($overwriteId) {
+                    $charge->setId($chargeId);
+                }
+                $this->charges = $charges;
+                return;
+            }
+        }
+
+        $this->addCharge($updatedCharge);
+    }
+
+    public function applyOrderStatusFromCharges()
+    {
+        if (empty($this->getCharges())) {
+            return;
+        }
+
+        $listChargeStatus = [];
+        foreach ($this->getCharges() as $charge) {
+            $listChargeStatus[$charge->getStatus()->getStatus()] =
+                $charge->getStatus()->getStatus();
+        }
+
+        $chargesStatusEquals = count($listChargeStatus) == 1;
+
+        if (
+            $chargesStatusEquals &&
+            $this->getCharges()[0]->getStatus()->equals(ChargeStatus::overpaid())
+        ) {
+            $this->setStatus(SubscriptionStatus::paid());
+            return;
+        }
+
+        if (
+            in_array(ChargeStatus::paid()->getStatus(), $listChargeStatus) &&
+            in_array(ChargeStatus::overpaid()->getStatus(), $listChargeStatus)
+        ) {
+            $this->setStatus(SubscriptionStatus::paid());
+        }
+
+        if (
+            in_array(ChargeStatus::failed()->getStatus(), $listChargeStatus) &&
+            in_array(ChargeStatus::canceled()->getStatus(), $listChargeStatus)
+        ) {
+            $this->setStatus(SubscriptionStatus::canceled());
+        }
+        if (
+            in_array(ChargeStatus::chargedback()->getStatus(), $listChargeStatus)
+        ) {
+            $this->setStatus(SubscriptionStatus::canceled());
+        }
+
+        if (
+            $chargesStatusEquals &&
+            !$this->getCharges()[0]->getStatus()->equals(ChargeStatus::underpaid())
+        ) {
+            $currentStatus = reset($listChargeStatus);
+            $this->setStatus(SubscriptionStatus::$currentStatus());
+        }
+    }
+    
     /**
      * @param ChargeInterface[] $charges
      */
@@ -588,6 +658,7 @@ class Subscription extends AbstractEntity
         return null;
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [
