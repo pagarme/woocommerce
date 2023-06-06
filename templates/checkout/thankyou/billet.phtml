@@ -1,0 +1,39 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\ThankYou\Billet $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->getBilletUrl()) : ?>
+    <p>
+        <?php
+        _e(
+            'If you have not yet received the boleto, please click the button below to print.',
+            'woo-pagarme-payments'
+        );
+        ?>
+    </p>
+    <button id="pagarme-billet-button"
+            data-pagarme-billet-url="<?= $this->getBilletUrl() ?>"
+            class="pagarme-payment-button">
+        <?php _e('Print', 'woo-pagarme-payments'); ?>
+    </button>
+<?php else : ?>
+    <?=
+    $this->createBlock(
+        '\Woocommerce\Pagarme\Block\Checkout\ThankYou\StatusTransaction',
+        'pagarme.checkout.thankyou.statustransaction'
+    )->toHtml()
+    ?>
+<?php endif; ?>

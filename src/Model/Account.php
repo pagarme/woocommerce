@@ -10,12 +10,12 @@ use Woocommerce\Pagarme\Helper\Utils;
 
 class Account
 {
-    private $setting;
+    private $config;
 
     const WALLET_ENDPOINT = 'zff3yg2have4pcw';
 
     public function __construct()
     {
-        $this->setting = Setting::get_instance();
+        $this->config = new Config();
     }
 }

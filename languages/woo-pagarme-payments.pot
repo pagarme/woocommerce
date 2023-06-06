@@ -531,8 +531,8 @@ msgid "Saved credit card"
 msgstr "Escolha um cartão"
 
 #: templates/checkout/common-card-item.php:53
-msgid "Expiration Date (MM/YY)"
-msgstr "Validade (MM/AA)"
+msgid "Expiration Date"
+msgstr "Validade"
 
 #: templates/checkout/common-card-item.php:61
 msgid "MM / YY"

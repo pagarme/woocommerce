@@ -6,13 +6,13 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
+use Woocommerce\Pagarme\Model\CardInstallments;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer;
-use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Model\Setting;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model;
-use Woocommerce\Pagarme\Controller\Orders;
 
 use WC_Order;
 
@@ -22,16 +22,19 @@ class Checkout
 
     protected $payment_methods = [];
 
-    public function __construct()
-    {
-        $this->ordersController = new Orders();
+    /** @var CardInstallments */
+    protected $cardInstallments;
 
+    public function __construct(
+        CardInstallments $cardInstallments = null
+    ) {
+        $this->ordersController = new Orders();
         add_action('woocommerce_api_' . Model\Checkout::API_REQUEST, array($this, 'process_checkout_transparent'));
-        add_action('woocommerce_view_order', array('Woocommerce\Pagarme\View\Checkouts', 'render_payment_details'));
+        $oaymentDetails = new \Woocommerce\Pagarme\Block\Order\PaymentDetails();
+        add_action('woocommerce_view_order', [$oaymentDetails, 'render']);
         add_action('wp_ajax_xqRhBHJ5sW', array($this, 'build_installments'));
         add_action('wp_ajax_nopriv_xqRhBHJ5sW', array($this, 'build_installments'));
         add_filter('wcbcf_billing_fields', array($this, 'set_required_fields'));
-
         $this->payment_methods = [
             'credit_card'     => __('Credit card', 'woo-pagarme-payments'),
             'billet'          => __('Boleto', 'woo-pagarme-payments'),
@@ -40,6 +43,10 @@ class Checkout
             'billet_and_card' => __('Credit card and Boleto', 'woo-pagarme-payments'),
             'voucher'         => __('Voucher', 'woo-pagarme-payments'),
         ];
+        $this->cardInstallments = $cardInstallments;
+        if (!$this->cardInstallments) {
+            $this->cardInstallments = new CardInstallments;
+        }
     }
 
     public function process_checkout_transparent(WC_Order $wc_order = null): bool
@@ -68,10 +75,10 @@ class Checkout
             $fields
         );
 
-        $order  = new Order($wc_order->get_order_number());
+        $order  = new Order($wc_order->get_id());
         $order->payment_method   = $fields['payment_method'];
         $order->update_meta('_payment_method_title', $this->payment_methods[$fields['payment_method']]);
-        $order->update_meta('_payment_method', Gateways::PAYMENT_METHOD);
+        $order->update_meta('_payment_method', AbstractGateway::PAGARME . ' ' . $this->payment_methods[$fields['payment_method']]);
         WC()->cart->empty_cart();
         if ($response) {
             $order->transaction_id     = $response->getPagarmeId()->getValue();
@@ -87,21 +94,22 @@ class Checkout
         return false;
     }
 
+    /**
+     * @return void
+     */
     public function build_installments()
     {
         if (!Utils::is_request_ajax() || Utils::server('REQUEST_METHOD') !== 'GET') {
             exit(0);
         }
 
-        $flag  = Utils::get('flag', false, 'esc_html');
-        $total = Utils::get('total', false);
+        $html = $this->cardInstallments->renderOptions(
+            $this->cardInstallments->getInstallmentsByType(
+                Utils::get('total', false),
+                Utils::get('flag', false, 'esc_html')
 
-        $gateway = new Gateway();
-        // TODO: get installments from core's installment service;
-        $html    = $gateway->get_installments_by_type($total, $flag);
-
+        ));
         echo wp_kses_no_null($html);
-
         exit();
     }
 
@@ -256,11 +264,11 @@ class Checkout
 
     private function validate_brands($fields)
     {
-        $setting = Setting::get_instance();
+        $config = new Config();
         $brand1  = Utils::get_value_by($fields, 'brand');
         $brand2  = Utils::get_value_by($fields, 'brand2');
 
-        $flags = $setting->cc_flags;
+        $flags = $config->getCcFlags;
 
         if (empty($flags)) {
             return;

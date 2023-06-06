@@ -1,0 +1,84 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var $this \Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Integration */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+?>
+<div class="pagarme-hub-integration-btn">
+    <a href="<?= esc_url($this->config->getHubUrl()); ?>" class="button button-primary">
+        <?= esc_attr($this->getButtonLabel()); ?>
+        <img alt="Pagarme Avatar"
+             src="<?= plugins_url() . '/pagarme-payments-for-woocommerce/assets/images/pagarme-white-avatar.svg' ?>">
+    </a>
+</div>
+<?php if ($this->config->getHubInstallId()) : ?>
+    <p class="pagarme-hub-desintegration"><?= __("Have you removed your integration on Pagar.me Hub, but it shows active? Click <a id='pagarme-hub-desintegration-link'>here</a> to remove your keys.", "woo-pagarme-payments"); ?></p>
+    <script>
+        jQuery(function ($) {
+            swal.close();
+            const content = {
+                title: '<?= esc_attr(__('Disintegrate?', 'woo-pagarme-payments')); ?>',
+                text: '<?= esc_attr(__('Are you shure you wish to delete the keys? This action removes the integration from your store, but first you must access Pagar.me Hub and click on Delete.', 'woo-pagarme-payments')); ?>',
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: '<?= __('Cancel', 'woo-pagarme-payments') ?>',
+                confirmButtonText: '<?= esc_attr(__('Yes, remove keys!', 'woo-pagarme-payments')); ?>'
+            };
+            $('#pagarme-hub-desintegration-link').on('click', function (e) {
+                try {
+                    swal(content).then((result) => {
+                        if (result) {
+                            swal({
+                                title: ' ',
+                                text: '<?= esc_attr(__('Processing', 'woo-pagarme-payments')); ?>',
+                                allowOutsideClick: false
+                            });
+                            swal.showLoading();
+                            $.ajax({
+                                url: '<?= admin_url('/wc-api/pagarme-hubcommand'); ?>',
+                                type: 'POST',
+                                dataType: "json",
+                                data: JSON.stringify({
+                                    command: 'Uninstall',
+                                    force: true
+                                }),
+                                success: function (response) {
+                                    swal(
+                                        '<?= esc_attr(__('Disintegration Complete', 'woo-pagarme-payments')); ?>',
+                                        '<?= esc_attr(__('Integration keys successfully removed. Reload the page.', 'woo-pagarme-payments')); ?>',
+                                        'success'
+                                    )
+                                    document.location.reload(true);
+                                },
+                                fail: function (response) {
+                                    swal(
+                                        '<?= esc_attr(__('Disintegration Error', 'woo-pagarme-payments')); ?>',
+                                        '<?= esc_attr(__('Integration keys not removed.', 'woo-pagarme-payments')); ?>',
+                                        'error'
+                                    )
+                                }
+                            });
+                        }
+                    });
+                } catch (e) {
+                    swal(
+                        '<?= esc_attr(__('Disintegration Error', 'woo-pagarme-payments')); ?>',
+                        '<?= esc_attr(__('Integration keys not removed.', 'woo-pagarme-payments')); ?>',
+                        'error'
+                    )
+                }
+            });
+        });
+    </script>
+<?php endif; ?>

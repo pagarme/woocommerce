@@ -7,7 +7,7 @@ if (!function_exists('add_action')) {
 }
 
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Setting;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Order;
 use WC_Order;
 
@@ -479,7 +479,7 @@ class Utils
      */
     public static function get_option_key()
     {
-        $settings = Setting::get_instance();
+        $settings = new Config();
 
         return $settings->get_option_key();
     }
@@ -561,7 +561,10 @@ class Utils
         $locale = Core::plugin_dir_path() . $file . '.php';
 
         if (!file_exists($locale)) {
-            return;
+            $locale = Core::plugin_dir_path() . $file . '.phtml';
+            if (!file_exists($locale)) {
+                return;
+            }
         }
 
         include $locale;
@@ -737,7 +740,7 @@ class Utils
     {
 
         $method = $wc_order->get_shipping_method();
-        $order  = new Order($wc_order->get_order_number());
+        $order  = new Order($wc_order->get_id());
 
         if (!$method) {
             $method = 'Não informado';

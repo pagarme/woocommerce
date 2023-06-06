@@ -1,0 +1,43 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Order\Transaction\DefaultTransaction $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+</thead>
+<?php if ($this->getQrCodeUrl()) : ?>
+    <tr>
+        <th><?= __('QR Code', 'woo-pagarme-payments'); ?>:</th>
+        <td>
+            <p><img src="<?= $this->getQrCodeUrl() ?>" alt="Pix QRCode" class="pagarme-qr-code-img" /></p>
+            <p><button type="button"
+                    id="pagarme-qr-code-button"
+                    rawCode="<?= $this->getRawQrCode() ?>"
+                    class="button">
+                <?= __('Copy Code', 'woo-pagarme-payments'); ?>
+            </button></p>
+            <?php foreach ($this->getInstructions() as $instruction) : ?>
+                <p><?= __($instruction, 'woo-pagarme-payments'); ?></p>
+            <?php endforeach; ?>
+            <p>
+                <em><?php
+                _e(
+                    'You can also complete the payment by copying and pasting the code into the app.',
+                    'woo-pagarme-payments'
+                );
+                ?></em>
+            </p>
+        </td>
+    </tr>
+<?php endif; ?>

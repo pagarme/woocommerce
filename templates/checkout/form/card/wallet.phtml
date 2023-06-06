@@ -1,0 +1,43 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\Form\Wallet $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+
+?>
+<?php if ($this->isWalletEnable() && $this->getPaymentInstance()->getCards()) : ?>
+    <p class="form-row form-row-wide">
+        <label for="<?= $this->getElementId('wallet-id') ?>">
+            <?= __('Saved cards', 'woo-pagarme-payments'); ?>
+        </label>
+        <select name="<?= $this->getElementId('wallet-id') ?>" id="<?= $this->getElementId('wallet-id') ?>"
+                data-action="select-card-wallet"
+                data-installments-type=
+                    "<?= intval($this->getPaymentInstance()->getConfig()->getCcInstallmentType()); ?>"
+                data-element="choose-credit-card" autocomplete="false">
+            <option value=""><?= __('Choose your saved card', 'woo-pagarme-payments'); ?></option>
+            <?php foreach ($this->getPaymentInstance()->getCards() as $card) : ?>
+                <?php
+                printf(
+                    '<option data-brand="%2$s" value="%1$s">•••• •••• •••• %3$s</option>',
+                    esc_attr($card->getPagarmeId()->getValue()),
+                    esc_html(strtolower($card->getBrand()->getName())),
+                    esc_html($card->getLastFourDigits()->getValue())
+                );
+                ?>
+            <?php endforeach; ?>
+        </select>
+    </p>
+<?php endif; ?>
+

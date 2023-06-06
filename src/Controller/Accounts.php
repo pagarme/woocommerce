@@ -6,25 +6,31 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Woocommerce\Pagarme\Block\Account\Wallet;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Account;
 use Woocommerce\Pagarme\Model\Customer;
 use Pagarme\Core\Payment\Repositories\SavedCardRepository as CoreSavedCardRepository;
+use Woocommerce\Pagarme\Block\Template;
 
 class Accounts
 {
     protected $wallet_endpoint;
     protected $card_repository;
+    protected $template;
 
     const WALLET_ENDPOINT = 'wallet-pagarme';
 
     const OPT_WALLET_ENDPOINT = 'woocommerce_pagarme_wallet_endpoint';
 
-    public function __construct()
+    public function __construct(
+        Template $template = null
+    )
     {
+        $this->template = $template ?? new Template();
+
         $this->wallet_endpoint = get_option(self::OPT_WALLET_ENDPOINT, self::WALLET_ENDPOINT);
         $this->card_repository = new CoreSavedCardRepository();
-
         add_action('init', array($this, 'add_endpoints'));
         add_filter('woocommerce_account_settings', array($this, 'settings_account'));
         add_filter('woocommerce_account_menu_items', array($this, 'menu_items'));
@@ -78,7 +84,10 @@ class Accounts
 
     public function wallet_content()
     {
-        Utils::get_template('templates/myaccount/wallet');
+        $this->template->createBlock(
+            \Woocommerce\Pagarme\Block\Account\Wallet::class,
+            'pagarme-wallet'
+        )->toHtml();
     }
 
     public function remove_credit_card()

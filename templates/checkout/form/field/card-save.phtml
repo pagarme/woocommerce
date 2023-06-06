@@ -1,0 +1,25 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\Field\Wallet $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->getIsEnableWallet()) : ?>
+    <p class="form-row form-row-wide" data-element="save-cc-check">
+        <label class="pagarme-save-card">
+            <input type="checkbox" id="<?= $this->getElementId('save-card'); ?>" data-pagarmecheckout-element="enable-card-save" name="<?= $this->getElementId('save-card'); ?>" value="1" <?php checked($this->getPaymentInstance()->getCustomer()->save_credit_card, true); ?>>
+            <?php esc_html_e('Save this card for future purchases', 'woo-pagarme-payments'); ?>
+        </label>
+    </p>
+<?php endif; ?>

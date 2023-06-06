@@ -8,9 +8,6 @@ if (!function_exists('add_action')) {
 
 use Pagarme\Core\Webhook\Factories\WebhookFactory;
 use Pagarme\Core\Webhook\Services\ChargeHandlerService;
-use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Setting;
 use WC_Order;
 
 class Charge
@@ -220,7 +217,7 @@ class Charge
 
     public function is_allowed_capture($charge)
     {
-        $transaction = array_shift($charge->getTransactions());
+        $transaction = current($charge->getTransactions());
         $method = $transaction->getTransactionType()->getType();
         $chargeStatus = $charge->getStatus()->getStatus();
 
@@ -238,7 +235,8 @@ class Charge
     public function is_allowed_cancel($charge)
     {
         $status = $charge->getStatus()->getStatus();
-        $transaction = array_shift($charge->getTransactions());
+        $transactions = $charge->getTransactions();
+        $transaction = array_shift($transactions);
         $method = $transaction->getTransactionType()->getType();
 
         if ($method == 'boleto' && in_array($status, ['pending'])) {

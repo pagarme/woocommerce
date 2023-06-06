@@ -1,0 +1,19 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var $this \Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Checkbox */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+?>
+<input type="checkbox" id="<?php echo esc_attr( $this->getId() ); ?>" name="<?php echo esc_attr( $this->getName() ) ?>[<?php echo esc_attr( $this->getId() ); ?>]" value="1" <?php checked( 1, $this->getCurrent(), true ) ?> <?= $this->getReadonly() ? '' : 'readonly' ; ?>/>
+<?php if ( $this->getLabel() ) : ?>
+    <label for="<?php echo esc_attr( $this->getId() ); ?>"><?php echo esc_html( $this->getLabel() ); ?></label>
+<?php endif; ?>

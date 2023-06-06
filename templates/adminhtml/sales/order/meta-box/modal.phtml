@@ -1,0 +1,64 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var Modal $this */
+
+declare( strict_types=1 );
+
+use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBox\Modal;
+use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($modalType = $this->getModalType()) : ?>
+    <div data-charge-action="<?= $this->getCharge()->getPagarmeId()->getValue() . '-' . $modalType ?>"
+         data-charge="<?= $this->getCharge()->getPagarmeId()->getValue() ?>"
+         class="modal">
+        <h2><?= AbstractGateway::PAGARME ?> - <?= ucfirst(__($modalType, 'woo-pagarme-payments')); ?></h2>
+        <p>
+            <b><?= ucwords(__('charge id', 'woo-pagarme-payments')) ?>:</b>
+            <?= $this->getCharge()->getPagarmeId()->getValue() ?>
+        </p>
+        <p>
+            <b><?= ucwords(__('type', 'woo-pagarme-payments')) ?>:</b>
+            <?= $this->getTransaction($this->getCharge())->getTransactionType()->getType() ?>
+        </p>
+        <p>
+            <b><?= ucwords(__('total amount', 'woo-pagarme-payments')) ?>:</b>
+            <?= $this->getAmount() ?>
+        </p>
+        <p>
+            <b><?= ucwords(__($this->getPartiallyType(), 'woo-pagarme-payments')) ?>:</b>
+            <?= $this->getPartiallyAmount()?>
+        </p>
+        <p>
+            <b><?= ucwords(__('status', 'woo-pagarme-payments')) ?>:</b>
+            <?= strtoupper(__(ucfirst($this->getCharge()->getStatus()->getStatus()), 'woo-pagarme-payments')) ?>
+        </p>
+        <p>
+            <label><?= $this->getLabelByType() ?>
+                <input data-element="amount"
+                       type="text" value="<?= $this->getActionAmount() ?>"
+                       <?= ($modalType === Modal::MODAL_TYPE_CANCEL &&
+                            $this->getCharge()->getStatus()->getStatus() === 'pending') ?
+                            'disabled=disabled' : '' ?> />
+            </label>
+        </p>
+        <p>
+            <button class="button-primary" data-action="<?= $modalType ?>">
+                <?= ucwords(__('Confirm', 'woo-pagarme-payments')) ?>
+            </button>
+            <button class="button-secondary" data-iziModal-close>
+                <?= ucwords(__('Cancel', 'woo-pagarme-payments')) ?>
+            </button>
+        </p>
+    </div>
+<?php endif; ?>
