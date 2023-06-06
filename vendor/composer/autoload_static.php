@@ -40,7 +40,7 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         ),
         'Psr\\Log\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/log/src',
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
         'Pagarme\\Core\\Test\\Mock\\' => 
         array (

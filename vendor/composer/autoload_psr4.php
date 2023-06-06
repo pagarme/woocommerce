@@ -8,7 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'apimatic\\jsonmapper\\' => array($vendorDir . '/apimatic/jsonmapper/src'),
     'Woocommerce\\Pagarme\\' => array($baseDir . '/src'),
-    'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Pagarme\\Core\\Test\\Mock\\' => array($vendorDir . '/pagarme/ecommerce-module-core/tests/mock'),
     'Pagarme\\Core\\Test\\' => array($vendorDir . '/pagarme/ecommerce-module-core/tests'),
     'Pagarme\\Core\\' => array($vendorDir . '/pagarme/ecommerce-module-core/src'),
