@@ -99,8 +99,6 @@
                     }
 
                     if (fieldHasError) {
-
-                        console.log(getErrorMessage(originalElement, validationType))
                         showErrorMessage(errorMessageElement, getErrorMessage(originalElement, validationType));
                         hasErrors = fieldHasError;
                     }
