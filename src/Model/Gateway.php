@@ -82,6 +82,11 @@ class Gateway
         return $isGatewayType ? 24 : 12;
     }
 
+    public function get_soft_descriptor_max_length(bool $isGatewayType): int
+    {
+        return $isGatewayType ? 22 : 13;
+    }
+
     public function get_installments_by_type($total, $flag = false)
     {
         $flags             = $this->settings->flags;

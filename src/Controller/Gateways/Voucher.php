@@ -11,6 +11,8 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use WC_Admin_Settings;
+use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Payment\Voucher\Brands;
 use Woocommerce\Pagarme\Model\Payment\Voucher\BrandsInterface;
@@ -56,7 +58,7 @@ class Voucher extends AbstractGateway
      */
     public function field_voucher_soft_descriptor()
     {
-        $maxLength = $this->isGatewayType() ? 22 : 13;
+        $maxLength = $this->model->get_soft_descriptor_max_length($this->isGatewayType());
         return [
             'title' => __('Soft descriptor', 'woo-pagarme-payments'),
             'desc_tip' => __('Description that appears on the voucher bill.', 'woo-pagarme-payments'),
@@ -118,5 +120,50 @@ class Voucher extends AbstractGateway
                 'data-field'   => 'voucher-card-wallet',
             ]
         ];
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    public function validate_voucher_soft_descriptor_field($key, $value): string
+    {
+        if (empty($value)) {
+            $requiredErrorMessage = sprintf(
+                __('%s is required.', 'woo-pagarme-payments'),
+                __('Soft descriptor', 'woo-pagarme-payments')
+            );
+            WC_Admin_Settings::add_error($requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::code, $requiredErrorMessage);
+        }
+
+        $maxLength = $this->model->get_soft_descriptor_max_length($this->isGatewayType());
+        if (strlen($value) > $maxLength) {
+            $maximumLengthErrorMessage = sprintf(
+                __('%s has exceeded the %d character limit.', 'woo-pagarme-payments'),
+                __('Soft descriptor', 'woo-pagarme-payments'),
+                $maxLength
+            );
+            WC_Admin_Settings::add_error($maximumLengthErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::code, $maximumLengthErrorMessage);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    public function validate_field_voucher_flags_field($key, $value): string
+    {
+        if (empty($value)) {
+            $requiredErrorMessage = sprintf(
+                __('%s is required.', 'woo-pagarme-payments'),
+                __('Voucher Card Brands', 'woo-pagarme-payments')
+            );
+            WC_Admin_Settings::add_error($requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::code, $requiredErrorMessage);
+        }
+
+        return $value;
     }
 }

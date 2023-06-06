@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use WC_Admin_Settings;
+use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Model\Payment\CreditCard\Brands;
-use Woocommerce\Pagarme\Model\Payment\CreditCard\BrandsInterface;
 
 defined('ABSPATH') || exit;
 
@@ -100,7 +100,7 @@ class CreditCard extends AbstractGateway
      */
     public function field_cc_soft_descriptor()
     {
-        $maxLength = $this->isGatewayType() ? 22 : 13;
+        $maxLength = $this->model->get_soft_descriptor_max_length($this->isGatewayType());
 
         return array(
             'title' => __('Soft descriptor', 'woo-pagarme-payments'),
@@ -402,6 +402,51 @@ class CreditCard extends AbstractGateway
                 $value['no_interest'][$brand] = $maxInstallment;
             }
         }
+        return $value;
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    public function validate_cc_soft_descriptor_field($key, $value): string
+    {
+        if (empty($value)) {
+            $requiredErrorMessage = sprintf(
+                __('%s is required.', 'woo-pagarme-payments'),
+                __('Soft descriptor', 'woo-pagarme-payments')
+            );
+            WC_Admin_Settings::add_error($requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::code, $requiredErrorMessage);
+        }
+
+        $maxLength = $this->model->get_soft_descriptor_max_length($this->isGatewayType());
+        if (strlen($value) > $maxLength) {
+            $maximumLengthErrorMessage = sprintf(
+                __('%s has exceeded the %d character limit.', 'woo-pagarme-payments'),
+                __('Soft descriptor', 'woo-pagarme-payments'),
+                $maxLength
+            );
+            WC_Admin_Settings::add_error($maximumLengthErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::code, $maximumLengthErrorMessage);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    public function validate_cc_flags_field($key, $value): string
+    {
+        if (empty($value)) {
+            $requiredErrorMessage = sprintf(
+                __('%s is required.', 'woo-pagarme-payments'),
+                __('Card Brands', 'woo-pagarme-payments')
+            );
+            WC_Admin_Settings::add_error($requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::code, $requiredErrorMessage);
+        }
+
         return $value;
     }
 
