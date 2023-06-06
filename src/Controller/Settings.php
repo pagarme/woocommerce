@@ -132,13 +132,6 @@ class Settings
                             'options' => $this->yesNoOptions->toLabelsArray(),
                             'default'     => strtolower(Yesno::NO),
                         ],
-                    ]
-                ],
-                [
-
-                    'id' => 'tools_section',
-                    'title' => 'Tools',
-                    'fields' => [
                         [
                             'fieldObject' => Select::class,
                             'id' => 'is_gateway_integration_type',

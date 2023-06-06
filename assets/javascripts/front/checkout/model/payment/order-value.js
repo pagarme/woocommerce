@@ -34,7 +34,7 @@ let pagarmeOrderValue = {
             }
             let fieldset = input.closest('fieldset').first();
             if (pagarmeCard.haveCardForm(fieldset)) {
-                pagarmeCard.updateInstallmentsElement(fieldset);
+                pagarmeCard.updateInstallmentsElement(input);
             }
         });
     },
@@ -65,7 +65,6 @@ let pagarmeOrderValue = {
     },
     keyEventHandler: function (e) {
         this.fillAnotherInput(e);
-        pagarmeCard.updateInstallmentsElement(e);
     },
     getCartTotals: function () {
         return cartTotal;

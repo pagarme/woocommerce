@@ -19,7 +19,7 @@ if (!function_exists('add_action')) {
     <?php esc_html_e('Installments quantity', 'woo-pagarme-payments'); ?><span class="required">*</span>
 </label>
 <select id="<?= $this->getElementId('installment') ?>" <?= $this->getInstallmentsComponent() ?> data-total="<?= esc_html($this->getCartTotals()); ?>" data-type="<?= $this->getInstallmentsType(); ?>" data-action="select2" data-required="true" data-element="installments" name="<?= $this->getElementId('installment') ?>">
-    <?php if ($this->isInterestForAllFlags) : ?>
+    <?php if ($this->isInterestForAllFlags()) : ?>
         <?php foreach  ($this->render() as $options) : ?>
             <option value="<?= $options['value'] ?>"><?= $options['content'] ?></option>
         <?php endforeach; ?>
