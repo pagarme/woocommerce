@@ -16,7 +16,7 @@ class CustomerTests extends TestCase
      */
     private $customer;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->customer = new Customer();
     }

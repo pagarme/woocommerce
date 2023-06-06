@@ -12,7 +12,7 @@ class AddressTests extends TestCase
      */
     private $address;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->address = new Address();
     }

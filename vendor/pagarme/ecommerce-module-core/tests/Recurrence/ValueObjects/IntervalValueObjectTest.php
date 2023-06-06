@@ -13,6 +13,8 @@ class IntervalValueObjectTest extends TestCase
      */
     public function testShouldReturnAExceptionBecauseTheTypeNotExist()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Call to undefined method Pagarme\Core\Recurrence\ValueObjects\IntervalValueObject::hour()");
         IntervalValueObject::hour(2);
     }
 
@@ -22,6 +24,8 @@ class IntervalValueObjectTest extends TestCase
      */
     public function testShouldReturnAExceptionBecauseTheValueIsWrong()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Interval count should be greater than 0: -10!");
         IntervalValueObject::month(-10);
     }
 

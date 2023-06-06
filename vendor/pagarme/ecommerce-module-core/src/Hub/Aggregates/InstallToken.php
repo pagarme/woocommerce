@@ -132,10 +132,7 @@ final class InstallToken extends AbstractEntity
     {
     }
 
-    /**
-     *
-     * @return array|mixed
-     */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $obj = new \stdClass();
