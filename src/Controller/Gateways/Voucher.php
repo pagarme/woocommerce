@@ -153,7 +153,7 @@ class Voucher extends AbstractGateway
     /**
      * @throws InvalidOptionException
      */
-    public function validate_field_voucher_flags_field($key, $value): string
+    public function validate_field_voucher_flags_field($key, $value): array
     {
         if (empty($value)) {
             $requiredErrorMessage = sprintf(
