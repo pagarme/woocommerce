@@ -81,7 +81,7 @@
                 allFlags.hide();
 
                 filtered.map(function (item) {
-                    const element = $('[data-flag=' + item + ']');
+                    const element = $(`[data-flag=${item}]`);
                     element.show();
                 });
             } else {
