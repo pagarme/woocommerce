@@ -382,25 +382,25 @@ class CreditCard extends AbstractGateway
                             $escapedHtmlAttrFieldKey = esc_attr($fieldKey);
                             $escapedHtmlAttrFlagKey = esc_attr($flagKey);
                             $maxInstallmentFieldName =
-                                "{$escapedHtmlAttrFieldKey}[max_installment][${$escapedHtmlAttrFlagKey}]";
+                                "{$escapedHtmlAttrFieldKey}[max_installment][{$escapedHtmlAttrFlagKey}]";
                             $maxInstallmentFieldId =
-                                "{$escapedHtmlAttrFieldKey}_max_installment_${$escapedHtmlAttrFlagKey}";
+                                "{$escapedHtmlAttrFieldKey}_max_installment_{$escapedHtmlAttrFlagKey}";
                             $installmentMinAmountFieldName =
-                                "{$escapedHtmlAttrFieldKey}[installment_min_amount][${$escapedHtmlAttrFlagKey}]";
+                                "{$escapedHtmlAttrFieldKey}[installment_min_amount][{$escapedHtmlAttrFlagKey}]";
                             $installmentMinAmountFieldId =
-                                "{$escapedHtmlAttrFieldKey}_installment_min_amount_${$escapedHtmlAttrFlagKey}";
+                                "{$escapedHtmlAttrFieldKey}_installment_min_amount_{$escapedHtmlAttrFlagKey}";
                             $interestFieldName =
-                                "{$escapedHtmlAttrFieldKey}[interest][${$escapedHtmlAttrFlagKey}]";
+                                "{$escapedHtmlAttrFieldKey}[interest][{$escapedHtmlAttrFlagKey}]";
                             $interestFieldId =
-                                "{$escapedHtmlAttrFieldKey}_interest_${$escapedHtmlAttrFlagKey}";
+                                "{$escapedHtmlAttrFieldKey}_interest_{$escapedHtmlAttrFlagKey}";
                             $interestIncreaseFieldName =
-                                "{$escapedHtmlAttrFieldKey}[interest_increase][${$escapedHtmlAttrFlagKey}]";
+                                "{$escapedHtmlAttrFieldKey}[interest_increase][{$escapedHtmlAttrFlagKey}]";
                             $interestIncreaseFieldId =
-                                "{$escapedHtmlAttrFieldKey}_interest_increase_${$escapedHtmlAttrFlagKey}";
+                                "{$escapedHtmlAttrFieldKey}_interest_increase_{$escapedHtmlAttrFlagKey}";
                             $noInterestFieldName =
-                                "{$escapedHtmlAttrFieldKey}[no_interest][${$escapedHtmlAttrFlagKey}]";
+                                "{$escapedHtmlAttrFieldKey}[no_interest][{$escapedHtmlAttrFlagKey}]";
                             $noInterestFieldId =
-                                "{$escapedHtmlAttrFieldKey}_no_interest_${$escapedHtmlAttrFlagKey}";
+                                "{$escapedHtmlAttrFieldKey}_no_interest_{$escapedHtmlAttrFlagKey}";
 
                             ?>
                             <tr class="account ui-sortable-handle flag" data-flag="<?php echo esc_attr($flagKey); ?>">

@@ -41,7 +41,7 @@
             }
         }
 
-        const toggleItemWhenItemFlagIsInFlags = (flags, item) => {
+        function toggleItemWhenItemFlagIsInFlags(flags, item) {
             if (!flags.includes(item.data('flag'))) {
                 item.hide();
             } else {
