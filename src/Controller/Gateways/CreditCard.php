@@ -102,7 +102,7 @@ class CreditCard extends AbstractGateway
      */
     public function field_cc_soft_descriptor()
     {
-        $maxLength = $this->model->get_soft_descriptor_max_length($this->isGatewayType());
+        $maxLength = $this->model->getSoftDescriptorMaxLength($this->isGatewayType());
 
         return array(
             'title' => __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
@@ -197,7 +197,7 @@ class CreditCard extends AbstractGateway
             'title' => __('Max number of installments', 'woo-pagarme-payments'),
             'type' => 'select',
             'default' => $this->config->getData('cc_installments_maximum') ?? 12,
-            'options' => $this->model->get_installment_options($this->isGatewayType()),
+            'options' => $this->model->getInstallmentOptions($this->isGatewayType()),
             'custom_attributes' => array(
                 'data-field' => 'installments-maximum',
             ),
@@ -249,7 +249,7 @@ class CreditCard extends AbstractGateway
             'title' => __('Number of installments without interest', 'woo-pagarme-payments'),
             'type' => 'select',
             'default' => $this->config->getData('cc_installments_without_interest') ?? 3,
-            'options' => $this->model->get_installment_options($this->isGatewayType()),
+            'options' => $this->model->getInstallmentOptions($this->isGatewayType()),
             'custom_attributes' => array(
                 'data-field' => 'installments-without-interest',
             ),
@@ -333,7 +333,7 @@ class CreditCard extends AbstractGateway
         $data  = wp_parse_args($data, $defaults);
         $value = (array) $this->get_option($key, array());
         $flags = $this->getBrandsList();
-        $maxInstallment = $this->model->get_installments_maximum_quantity($this->isGatewayType());
+        $maxInstallment = $this->model->getInstallmentsMaximumQuantity($this->isGatewayType());
 
         ob_start();
 
@@ -511,10 +511,10 @@ class CreditCard extends AbstractGateway
                 __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments')
             );
             WC_Admin_Settings::add_error($requiredErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::code, $requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $requiredErrorMessage);
         }
 
-        $maxLength = $this->model->get_soft_descriptor_max_length($this->isGatewayType());
+        $maxLength = $this->model->getSoftDescriptorMaxLength($this->isGatewayType());
         $isValueLengthGreaterThanMaxLength = strlen($value) > $maxLength;
         if ($isValueLengthGreaterThanMaxLength) {
             $maximumLengthErrorMessage = sprintf(
@@ -523,7 +523,7 @@ class CreditCard extends AbstractGateway
                 $maxLength
             );
             WC_Admin_Settings::add_error($maximumLengthErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::code, $maximumLengthErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $maximumLengthErrorMessage);
         }
 
         return $value;
@@ -541,7 +541,7 @@ class CreditCard extends AbstractGateway
                 __('Card Brands', 'woo-pagarme-payments')
             );
             WC_Admin_Settings::add_error($requiredErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::code, $requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $requiredErrorMessage);
         }
 
         return $value;

@@ -61,10 +61,10 @@ class Gateway
      * @param bool $isGatewayType
      * @return array
      */
-    public function get_installment_options(bool $isGatewayType): array
+    public function getInstallmentOptions(bool $isGatewayType): array
     {
         $installments = [];
-        $installmentsAmount = $this->get_installments_maximum_quantity($isGatewayType);
+        $installmentsAmount = $this->getInstallmentsMaximumQuantity($isGatewayType);
 
         for ($i = 1; $i <= $installmentsAmount; ++$i) {
             $installments[$i] = $i;
@@ -77,12 +77,12 @@ class Gateway
      * @param bool $isGatewayType
      * @return int
      */
-    public function get_installments_maximum_quantity(bool $isGatewayType): int
+    public function getInstallmentsMaximumQuantity(bool $isGatewayType): int
     {
         return $isGatewayType ? 24 : 12;
     }
 
-    public function get_soft_descriptor_max_length(bool $isGatewayType): int
+    public function getSoftDescriptorMaxLength(bool $isGatewayType): int
     {
         return $isGatewayType ? 22 : 13;
     }

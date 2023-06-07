@@ -41,6 +41,14 @@
             }
         }
 
+        const toggleItemWhenItemFlagIsInFlags = (flags, item) => {
+            if (!flags.includes(item.data('flag'))) {
+                item.hide();
+            } else {
+                item.show();
+            }
+        }
+
         function setInstallmentsByFlags(event, firstLoad) {
             const flags = flagsSelect.val() || [];
             const flagsWrapper = installmentsByFlag.closest('tr');
@@ -85,11 +93,7 @@
 
                 allFlags.each(function (index, item) {
                     item = $(item);
-                    if (!flags.includes(item.data('flag'))) {
-                        item.hide();
-                    } else {
-                        item.show();
-                    }
+                    toggleItemWhenItemFlagIsInFlags(flags, item);
                 });
             }
         }

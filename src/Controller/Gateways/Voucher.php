@@ -32,6 +32,8 @@ class Voucher extends AbstractGateway
     /** @var string */
     protected $method = \Woocommerce\Pagarme\Model\Payment\Voucher::PAYMENT_CODE;
 
+    const SOFT_DESCRIPTOR_FIELD_NAME = "Soft descriptor";
+
     /**
      * @return array
      */
@@ -58,9 +60,9 @@ class Voucher extends AbstractGateway
      */
     public function field_voucher_soft_descriptor()
     {
-        $maxLength = $this->model->get_soft_descriptor_max_length($this->isGatewayType());
+        $maxLength = $this->model->getSoftDescriptorMaxLength($this->isGatewayType());
         return [
-            'title' => __('Soft descriptor', 'woo-pagarme-payments'),
+            'title' => __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
             'desc_tip' => __('Description that appears on the voucher bill.', 'woo-pagarme-payments'),
             'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
                 'woo-pagarme-payments'), $maxLength),
@@ -70,7 +72,10 @@ class Voucher extends AbstractGateway
                 'data-field-validate' => 'required|max-length',
                 'data-max-length' => $maxLength,
                 'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
-                'data-error-message-max-length' => sprintf(__('This field has exceeded the %d character limit.', 'woo-pagarme-payments'), $maxLength),
+                'data-error-message-max-length' => sprintf(
+                    __('This field has exceeded the %d character limit.', 'woo-pagarme-payments'),
+                    $maxLength
+                ),
             ]
         ];
     }
@@ -131,22 +136,22 @@ class Voucher extends AbstractGateway
         if ($isValueEmpty) {
             $requiredErrorMessage = sprintf(
                 __('%s is required.', 'woo-pagarme-payments'),
-                __('Soft descriptor', 'woo-pagarme-payments')
+                __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments')
             );
             WC_Admin_Settings::add_error($requiredErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::code, $requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $requiredErrorMessage);
         }
 
-        $maxLength = $this->model->get_soft_descriptor_max_length($this->isGatewayType());
+        $maxLength = $this->model->getSoftDescriptorMaxLength($this->isGatewayType());
         $isValueLengthGreaterThanMaxLength = strlen($value) > $maxLength;
         if ($isValueLengthGreaterThanMaxLength) {
             $maximumLengthErrorMessage = sprintf(
                 __('%s has exceeded the %d character limit.', 'woo-pagarme-payments'),
-                __('Soft descriptor', 'woo-pagarme-payments'),
+                __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
                 $maxLength
             );
             WC_Admin_Settings::add_error($maximumLengthErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::code, $maximumLengthErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $maximumLengthErrorMessage);
         }
 
         return $value;
@@ -164,7 +169,7 @@ class Voucher extends AbstractGateway
                 __('Voucher Card Brands', 'woo-pagarme-payments')
             );
             WC_Admin_Settings::add_error($requiredErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::code, $requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $requiredErrorMessage);
         }
 
         return $value;
