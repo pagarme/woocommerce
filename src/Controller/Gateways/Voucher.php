@@ -127,7 +127,8 @@ class Voucher extends AbstractGateway
      */
     public function validate_voucher_soft_descriptor_field($key, $value): string
     {
-        if (empty($value)) {
+        $isValueEmpty = empty($value);
+        if ($isValueEmpty) {
             $requiredErrorMessage = sprintf(
                 __('%s is required.', 'woo-pagarme-payments'),
                 __('Soft descriptor', 'woo-pagarme-payments')
@@ -137,7 +138,8 @@ class Voucher extends AbstractGateway
         }
 
         $maxLength = $this->model->get_soft_descriptor_max_length($this->isGatewayType());
-        if (strlen($value) > $maxLength) {
+        $isValueLengthGreaterThanMaxLength = strlen($value) > $maxLength;
+        if ($isValueLengthGreaterThanMaxLength) {
             $maximumLengthErrorMessage = sprintf(
                 __('%s has exceeded the %d character limit.', 'woo-pagarme-payments'),
                 __('Soft descriptor', 'woo-pagarme-payments'),
@@ -155,7 +157,8 @@ class Voucher extends AbstractGateway
      */
     public function validate_field_voucher_flags_field($key, $value): array
     {
-        if (empty($value)) {
+        $isValueEmpty = empty($value);
+        if ($isValueEmpty) {
             $requiredErrorMessage = sprintf(
                 __('%s is required.', 'woo-pagarme-payments'),
                 __('Voucher Card Brands', 'woo-pagarme-payments')

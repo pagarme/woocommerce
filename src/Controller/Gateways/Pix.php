@@ -115,7 +115,8 @@ class Pix extends AbstractGateway
      */
     public function validate_pix_qrcode_expiration_time_field($key, $value): string
     {
-        if (empty($value) && $value !== "0") {
+        $isValueEmpty = empty($value) && $value !== "0";
+        if ($isValueEmpty) {
             $requiredErrorMessage = sprintf(
                 __('%s is required.', 'woo-pagarme-payments'),
                 __('QR code expiration time', 'woo-pagarme-payments')
@@ -124,7 +125,8 @@ class Pix extends AbstractGateway
             throw new InvalidOptionException(InvalidOptionException::code, $requiredErrorMessage);
         }
 
-        if (floatval($value) < self::$minimumValueQrCodeExpirationTime) {
+        $isValueLesserThanMinimum = floatval($value) < self::$minimumValueQrCodeExpirationTime;
+        if ($isValueLesserThanMinimum) {
             $minimumValueErrorMessage = sprintf(
                 __('%s does not have the minimum value of %d.', 'woo-pagarme-payments'),
                 __('QR code expiration time', 'woo-pagarme-payments'),
