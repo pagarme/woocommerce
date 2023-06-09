@@ -222,6 +222,19 @@ let pagarmeCard = {
         return mundiCdn + card[0].brand + '.png';
     },
 
+    formatValue: function (value, raw = true) {
+        if (raw) {
+            if (typeof value !== 'string') {
+                value = value.toString();
+            }
+            return parseFloat(value.replace(',', '.'));
+        }
+        if (typeof value === 'string') {
+            value = parseFloat(value);
+        }
+        return value.toFixed(2).replace('.', ',');
+    },
+
     updateInstallmentsElement: function (e) {
         let elem = null;
         if (e instanceof $) {
@@ -235,11 +248,16 @@ let pagarmeCard = {
         }
         let brand = elem.closest('fieldset').find(brandTarget).val();
         let total = elem.closest('fieldset').find(valueTarget).val();
+        if (total) {
+            total = pagarmeCard.formatValue(total);
+        }
         let cardForm = elem.closest("fieldset");
         let select = cardForm.find(installmentsTarget);
         if (!total)
             total = cartTotal;
-        if ((!total) || (!brand && select.data("type") == 2))
+        if ((!total) ||
+            (select.data("type") === 2 && !brand) ||
+            (select.data("type") === 1 && elem.data('element') !== "order-value"))
             return false;
         let storageName = btoa(brand + total);
         sessionStorage.removeItem(storageName);
@@ -263,6 +281,7 @@ let pagarmeCard = {
             });
             pagarmeCard.showLoader(cardForm);
         }
+        return true;
     },
 
     _done: function (select, storageName, e, response) {
@@ -301,11 +320,7 @@ let pagarmeCard = {
             html: text,
             allowOutsideClick: false
         };
-        try {
-            swal(message);
-        } catch (e) {
-            new swal(message);
-        }
+        swal(message);
     },
     execute: async function () {
         let result = pagarmeCard.formHandler(),
@@ -335,7 +350,7 @@ let pagarmeCard = {
             }
         }
     },
-    canExecute: function(e) {
+    canExecute: function (e) {
         e.preventDefault();
         if (!wc_pagarme_checkout.validate() || wc_pagarme_checkout.errorTokenize === true) {
             return false;
@@ -366,9 +381,13 @@ let pagarmeCard = {
         $('input[name="pagarme[voucher][cards][1][document-holder]"]').val($('#billing_cpf').val()).trigger('input');
 
     },
-    start: function (cardNumberTarget) {
+    start: function (paymentTarget) {
         this.getCardsMethods();
         this.getBrands();
-        this.addEventListener(cardNumberTarget);
+        this.addEventListener(paymentTarget);
+        if (typeof pagarmeCheckoutWallet == 'object') {
+            pagarmeCheckoutWallet.start(paymentTarget);
+        }
+
     },
 };

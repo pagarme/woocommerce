@@ -10,7 +10,7 @@ class ProductSubscriptionTest extends TestCase
 {
     private $productSubscription;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->productSubscription = new ProductSubscription();
     }
@@ -21,6 +21,8 @@ class ProductSubscriptionTest extends TestCase
      */
     public function testShouldNotAddAnEmptyProductId()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Product id should not be empty! Passed value:");
         $this->productSubscription->setProductId("");
     }
 
@@ -36,6 +38,8 @@ class ProductSubscriptionTest extends TestCase
      */
     public function testShouldNotAddAnEmptyBillingType()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Billing type should not be empty! Passed value:");
         $this->productSubscription->setBillingType("");
     }
 
@@ -53,11 +57,13 @@ class ProductSubscriptionTest extends TestCase
     }
 
     /**
+     * TODO: refactor ProductSubscription to return InvalidParamException
      * @requires PHP >= 7.0
-     * @expectedException \Error
+     * @expectedException \TypeError
      */
     public function testShouldThrowAnTypeErrorExceptionIfAddAnWrongTypeOfRepetition()
     {
+        $this->expectError(\TypeError::class);
         $this->productSubscription->addRepetition("WrongType");
     }
 

@@ -21,7 +21,7 @@ class InstallTokenTests extends TestCase
     /**
      * @throws InvalidParamException
      */
-    public function setUp()
+    public function setUp(): void
     {
         $token = hash('sha512', '1' . '|' . microtime());
         $this->hubInstallToken = new HubInstallToken($token);
@@ -50,32 +50,32 @@ class InstallTokenTests extends TestCase
 
     public function testInstallTokenMethodIsUsed()
     {
-        $this->assertInternalType('bool', $this->installToken->isUsed());
+        $this->assertIsBool($this->installToken->isUsed());
     }
 
     public function testInstallTokenIsExpired()
     {
-        $this->assertInternalType('bool', $this->installToken->isExpired());
+        $this->assertIsBool($this->installToken->isExpired());
     }
 
     public function testInstallTokenGetCreatedAtTimestamp()
     {
-        $this->assertInternalType('int', $this->installToken->getCreatedAtTimestamp());
+        $this->assertIsInt($this->installToken->getCreatedAtTimestamp());
     }
 
     public function testInstallTokenGetExpireAtTimestamp()
     {
-        $this->assertInternalType('int', $this->installToken->getExpireAtTimestamp());
+        $this->assertIsInt($this->installToken->getExpireAtTimestamp());
     }
 
     public function testInstallTokenIsDisabled()
     {
-        $this->assertInternalType('bool', $this->installToken->isDisabled());
+        $this->assertIsBool($this->installToken->isDisabled());
     }
 
     public function testInstallTokenJsonSerialize()
     {
-        $this->assertInternalType('object', $this->installToken->jsonSerialize());
+        $this->assertIsObject($this->installToken->jsonSerialize());
         $this->assertInstanceOf(\stdClass::class, $this->installToken->jsonSerialize());
     }
 }

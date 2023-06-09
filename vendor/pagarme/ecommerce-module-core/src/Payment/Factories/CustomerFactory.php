@@ -82,13 +82,13 @@ class CustomerFactory implements FactoryInterface
                 new CustomerId($platformData->getPagarmeId())
             );
         }
-
         $customer->setCode($platformData->getCode());
         $customer->setName($platformData->getName());
         $customer->setEmail($platformData->getEmail());
         $customer->setDocument($platformData->getDocument());
         $customer->setType($platformData->getType());
-        /** @todo set address and phones */
+        $customer->setPhones($platformData->getPhones());
+        /** @todo set address */
 
         return $customer;
     }

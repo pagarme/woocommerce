@@ -9,7 +9,7 @@
 
 /** @var \Woocommerce\Pagarme\Block\Checkout\Form\Card $this */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 if (!function_exists('add_action')) {
     exit(0);
@@ -56,7 +56,7 @@ if (!function_exists('add_action')) {
         )->toHtml() ?>
         <div class="wc-credit-card-info" data-element="fields-cc-data">
             <div <?= $this->getCompoenent() ?>
-                 data-pagarmecheckout-app-id="<?= esc_attr($this->getConfig()->getPublicKey()); ?>">
+                data-pagarmecheckout-app-id="<?= esc_attr($this->getConfig()->getPublicKey()); ?>">
                 <div data-pagarmecheckout-element="fields-cc-data">
                     <p class="form-row form-row-wide">
                         <label for="<?= $this->getElementId('card-holder-name'); ?>">
@@ -80,7 +80,7 @@ if (!function_exists('add_action')) {
                                    data-required="true" data-pagarmecheckout-element="number">
                         </span>
                         <input type="hidden" name="<?= $this->getElementId('brand'); ?>"
-                               data-pagarmecheckout-element="brand-input" />
+                               data-pagarmecheckout-element="brand-input"/>
                     </p>
                     <p class="form-row form-row-first">
                         <label for="<?= $this->getElementId('card-expiry'); ?>">
@@ -116,14 +116,20 @@ if (!function_exists('add_action')) {
                     ]
                 )->toHtml() ?>
             </p>
-            <p class="form-row form-row-wide" style="display: <?= $this->showHolderName() ? 'block' : 'none' ?>">
-                <label for="<?= $this->getElementId('document-holder'); ?>">
-                    <?php esc_html_e('Card Holder Document Number', 'woo-pagarme-payments'); ?>
-                    <span class="required">*</span>
-                </label>
-                <input type="text" name="<?= $this->getElementId('document-holder'); ?>" class="input-text"
-                       id="<?= $this->getElementId('document-holder'); ?>">
-            </p>
+            <?php if ($this->showHolderName()) : ?>
+                <p class="form-row form-row-wide">
+                    <label for="<?= $this->getElementId('document-holder'); ?>">
+                        <?php esc_html_e('Card Holder Document Number', 'woo-pagarme-payments'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" required id="<?= $this->getElementId('document-holder'); ?>"
+                           name="<?= $this->getElementId('document-holder'); ?>"
+                           data-element="document-holder" data-mask="000.000.000-00"
+                           class="input-text wc-credit-card-form-card-cvc pagarme-card-form-holder-number"
+                           maxlength="14"
+                           placeholder="CPF" data-required="true" data-pagarmecheckout-element="holder_document">
+                </p>
+            <?php endif; ?>
             <?= $this->createBlock(
                 '\Woocommerce\Pagarme\Block\Checkout\Field\Wallet',
                 'pagarme.checkout.field.wallet',

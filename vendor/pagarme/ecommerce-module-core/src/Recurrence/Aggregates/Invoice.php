@@ -238,6 +238,7 @@ class Invoice extends AbstractEntity
         return null;
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

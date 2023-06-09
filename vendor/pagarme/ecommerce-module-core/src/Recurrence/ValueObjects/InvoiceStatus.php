@@ -11,7 +11,7 @@ final class InvoiceStatus extends AbstractValueObject
     const PENDING = 'pending';
 
     /**
-     * @var string 
+     * @var string
      */
     private $status;
 
@@ -80,6 +80,7 @@ final class InvoiceStatus extends AbstractValueObject
      * which is a value of any type other than a resource.
      * @since  5.4.0
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->getStatus();

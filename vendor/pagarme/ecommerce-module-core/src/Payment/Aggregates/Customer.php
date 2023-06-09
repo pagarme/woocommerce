@@ -47,7 +47,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
      */
     public function setCode($code)
     {
-        $this->code = substr($code, 0, 52);
+        $this->code = substr($code ?? "", 0, 52);
     }
 
     /**
@@ -64,7 +64,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
      */
     public function setName($name)
     {
-        $this->name = substr($name, 0, 64);
+        $this->name = substr($name ?? "", 0, 64);
     }
 
     /**
@@ -83,7 +83,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     public function setEmail($email)
     {
         $email = trim($email);
-        $email = substr($email, 0, 64);
+        $email = substr($email ?? "", 0, 64);
 
         $this->validateEmail($email);
         $this->email = $email;
@@ -125,6 +125,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
         $this->document = $this->formatDocument($document);
 
         if (empty($this->document) && empty($this->getPagarmeId())) {
+
             $inputName = $this->i18n->getDashboard('document');
             $message = $this->i18n->getDashboard(
                 "The %s should not be empty!",
@@ -170,12 +171,13 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
+      * Specify data which should be serialized to JSON
+      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+      * @return mixed data which can be serialized by <b>json_encode</b>,
+      * which is a value of any type other than a resource.
+      * @since 5.4.0
+    */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $obj = new \stdClass();
@@ -227,11 +229,8 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
         $customerRequest->code = $this->getCode();
         $customerRequest->name = $this->getName();
         $customerRequest->email = $this->getEmail();
-        if ($this->getDocument()) {
-            $customerRequest->document = $this->getDocument();
-            $customerRequest->type = $this->getTypeValue();
-        }
-
+        $customerRequest->document = $this->getDocument();
+        $customerRequest->type = $this->getTypeValue();
         $customerRequest->address = $this->getAddressToSDK();
         $customerRequest->phones = $this->getPhonesToSDK();
 
@@ -263,7 +262,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     {
         $document = preg_replace(
             '/[^0-9]/is', '',
-            substr($document, 0, 16)
+            substr($document ?? "", 0, 16)
         );
 
         return $document;

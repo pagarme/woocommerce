@@ -58,7 +58,7 @@ final class HubIntegrationService
         $rawToken = $installToken;
 
         $installToken = $tokenRepo->findByPagarmeId(new HubInstallToken($installToken));
-
+        
         if (is_null($installToken)) {
             $message = "Received an invalid installToken. NULL: $rawToken";
             $exception = new \Exception($message);
@@ -67,7 +67,9 @@ final class HubIntegrationService
         }
         if (empty($installToken)) {
             $message = "installToken not found in database. Raw Token: $rawToken";
+
             $exception = new \Exception($message);
+
             $this->logService->exception($exception);
             throw $exception;
         }

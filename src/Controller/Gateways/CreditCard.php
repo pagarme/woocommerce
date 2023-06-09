@@ -54,6 +54,7 @@ class CreditCard extends AbstractGateway
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
             'cc_installments_without_interest' => $this->field_cc_installment_fields('without_interest'),
             'cc_installments_by_flag' => $this->field_cc_installment_fields('flags'),
+            'cc_allow_save' => $this->field_cc_allow_save(),
         ];
     }
 
@@ -63,7 +64,6 @@ class CreditCard extends AbstractGateway
     protected function gateway_form_fields()
     {
         return [
-            'cc_allow_save' => $this->field_cc_allow_save(),
             'section_antifraud' => $this->section_antifraud(),
             'antifraud_enabled' => $this->antifraud_enabled(),
             'antifraud_min_value' => $this->antifraud_min_value(),

@@ -18,7 +18,7 @@ class InvoiceServiceTest extends AbstractSetupTest
      */
     protected $service;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->service = \Mockery::mock(InvoiceService::class)->makePartial();
 
