@@ -2,7 +2,6 @@
 
 namespace Pagarme\Core\Test\Recurrence\Repositories;
 
-use Mockery;
 use Pagarme\Core\Kernel\ValueObjects\AbstractValidString;
 use Pagarme\Core\Recurrence\Aggregates\Repetition;
 use Pagarme\Core\Recurrence\Factories\RepetitionFactory;
@@ -98,7 +97,7 @@ class RepetitionRepositoryTest extends AbstractRepositoryTest
 
     public function testShouldReturnARepetitionSearchByPagarmeId()
     {
-        $mockAbstractString = Mockery::mock(AbstractValidString::class);
+        $mockAbstractString = $this->createMock(AbstractValidString::class);
         $this->assertNull($this->repo->findByPagarmeId($mockAbstractString), "Method not implemented");
     }
 

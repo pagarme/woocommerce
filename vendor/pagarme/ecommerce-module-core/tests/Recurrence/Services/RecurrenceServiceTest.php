@@ -16,7 +16,7 @@ class RecurrenceServiceTest extends AbstractSetupTest
      */
     protected $service;
 
-    public function setUp()
+    public function setUp(): void
     {
         $logMock = \Mockery::mock(LogService::class);
         $logMock->shouldReceive('info')->andReturnTrue();

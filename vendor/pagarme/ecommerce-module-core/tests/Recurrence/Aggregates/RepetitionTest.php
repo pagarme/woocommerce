@@ -11,17 +11,20 @@ class RepetitionTest extends TestCase
 {
     private $repetition;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->repetition = new Repetition();
     }
 
     /**
+     * TODO: Change exception type to InvalidArgumentException
      * @expectedException \Exception
      * @expectedExceptionMessage  Recurrence price should be greater than 0: -10!
      */
     public function testShouldNotAddANegativePrice()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Recurrence price should be greater than 0: -10!");
         $this->repetition->setRecurrencePrice(-10);
     }
 
@@ -37,6 +40,8 @@ class RepetitionTest extends TestCase
      */
     public function testShouldNotSetAnWrongIntervalType()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Interval is not available! Passed value: hour");
         $this->repetition->setInterval("hour");
     }
 
@@ -143,6 +148,8 @@ class RepetitionTest extends TestCase
      */
     public function testShouldNotAddANegativeCycle()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Cycles should be greater than or equal to 0: -10!");
         $this->repetition->setCycles(-10);
     }
 

@@ -13,7 +13,7 @@ class MoneyServiceTests extends TestCase
      */
     private $moneyService;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->moneyService = new MoneyService();
     }

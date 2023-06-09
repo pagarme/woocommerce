@@ -18,7 +18,7 @@ final class Transaction extends AbstractEntity
     private $transactionType;
     /**
      *
-     * @var int 
+     * @var int
      */
     private $amount;
     /**
@@ -29,23 +29,23 @@ final class Transaction extends AbstractEntity
 
     /**
      *
-     * @var TransactionStatus 
+     * @var TransactionStatus
      */
     private $status;
     /**
      *
-     * @var \DateTime 
+     * @var \DateTime
      */
     private $createdAt;
     /**
      *
-     * @var ChargeId 
+     * @var ChargeId
      */
     private $chargeId;
 
     /**
      *
-     * @var string 
+     * @var string
      */
     private $acquirerName;
     /**
@@ -65,19 +65,19 @@ final class Transaction extends AbstractEntity
     private $acquirerAuthCode;
     /**
      *
-     * @var string 
+     * @var string
      */
     private $acquirerMessage;
 
     /**
      *
-     * @var string 
+     * @var string
      */
     private $brand;
 
     /**
      *
-     * @var int 
+     * @var int
      */
     private $installments;
 
@@ -398,6 +398,7 @@ final class Transaction extends AbstractEntity
      * which is a value of any type other than a resource.
      * @since  5.4.0
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $obj = new \stdClass();

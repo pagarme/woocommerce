@@ -153,6 +153,9 @@ class StringFunctionsHelper
      */
     public static function removeLineBreaks($text)
     {
+        if($text === null) {
+            return "";
+        }
         $pattern = '/\\\s+\\\s\\\r\\\n|\\\r|\\\t|\\\n\\\r|\\\n/m';
         $textCleanBreakLines = trim(
             preg_replace(

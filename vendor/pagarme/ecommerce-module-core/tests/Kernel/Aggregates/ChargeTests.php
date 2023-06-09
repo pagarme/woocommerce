@@ -9,7 +9,6 @@ use Pagarme\Core\Kernel\ValueObjects\ChargeStatus;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Kernel\ValueObjects\Id\TransactionId;
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Carbon\Carbon;
 
 class ChargeTests extends TestCase
@@ -23,7 +22,7 @@ class ChargeTests extends TestCase
     public function testExpectedAnObjectOrderidToSetOrderId()
     {
         $charge = new Charge();
-        $orderId = Mockery::mock(OrderId::class);
+        $orderId = $this->createMock(OrderId::class);
         $charge->setOrderId($orderId);
 
         $this->assertEquals($orderId, $charge->getOrderId());

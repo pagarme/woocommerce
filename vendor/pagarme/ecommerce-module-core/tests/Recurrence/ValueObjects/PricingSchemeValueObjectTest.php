@@ -13,6 +13,8 @@ class PricingSchemeValueObjectTest extends TestCase
      */
     public function testShouldReturnAExceptionBecauseTheTypeNotExist()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Call to undefined method Pagarme\Core\Recurrence\ValueObjects\PricingSchemeValueObject::time()");
         PricingSchemeValueObject::time(2);
     }
 

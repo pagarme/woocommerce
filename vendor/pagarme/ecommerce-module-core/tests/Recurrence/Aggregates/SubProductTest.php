@@ -12,7 +12,7 @@ class SubProductTest extends TestCase
 {
     private $subProduct;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subProduct = new SubProduct();
     }
@@ -67,10 +67,10 @@ class SubProductTest extends TestCase
         $this->assertEquals($this->subProduct->getRecurrenceType(), $recurrenceType);
 
         $this->subProduct->setCreatedAt($createdAt);
-        $this->assertInternalType('string', $this->subProduct->getCreatedAt());
+        $this->assertIsString($this->subProduct->getCreatedAt());
 
         $this->subProduct->setUpdatedAt($updatedAt);
-        $this->assertInternalType('string', $this->subProduct->getUpdatedAt());
+        $this->assertIsString($this->subProduct->getUpdatedAt());
 
         $this->subProduct->setSelectedRepetition($selectedRepetition);
         $this->assertInstanceOf(Repetition::class, $this->subProduct->getSelectedRepetition());

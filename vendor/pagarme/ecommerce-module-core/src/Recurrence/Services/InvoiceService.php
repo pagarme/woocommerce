@@ -6,6 +6,7 @@ use Pagarme\Core\Kernel\Services\APIService;
 use Pagarme\Core\Kernel\Services\LogService;
 use Pagarme\Core\Kernel\ValueObjects\ChargeStatus;
 use Pagarme\Core\Payment\Services\ResponseHandlers\ErrorExceptionHandler;
+use Pagarme\Core\Recurrence\Aggregates\Charge;
 use Pagarme\Core\Recurrence\Aggregates\Invoice;
 use Pagarme\Core\Recurrence\Factories\ChargeFactory;
 use Pagarme\Core\Recurrence\Factories\InvoiceFactory;
@@ -117,6 +118,12 @@ class InvoiceService
         );
 
         return $apiService->cancelInvoice($invoice);
+    }
+
+    public function setChargedbackStatus(Charge $charge)
+    {
+        $charge->setMetadata(json_decode($charge->getMetadata()));
+        $this->getChargeRepository()->save($charge);
     }
 
     public function getApiService()

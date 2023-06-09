@@ -13,7 +13,7 @@ class CycleTest extends TestCase
      */
     private $cycle;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cycle = new Cycle();
     }
