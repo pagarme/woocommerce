@@ -69,9 +69,8 @@ class Voucher extends AbstractGateway
             'default' => $this->config->getData('voucher_soft_descriptor') ?? '',
             'custom_attributes' => [
                 'data-field' => 'voucher-soft-descriptor',
-                'data-field-validate' => 'required|max-length',
+                'data-field-validate' => 'max-length',
                 'data-max-length' => $maxLength,
-                'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
                 'data-error-message-max-length' => sprintf(
                     __('This field has exceeded the %d character limit.', 'woo-pagarme-payments'),
                     $maxLength
@@ -132,16 +131,6 @@ class Voucher extends AbstractGateway
      */
     public function validate_voucher_soft_descriptor_field($key, $value)
     {
-        $isValueEmpty = empty($value);
-        if ($isValueEmpty) {
-            $requiredErrorMessage = sprintf(
-                __('%s is required.', 'woo-pagarme-payments'),
-                __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments')
-            );
-            WC_Admin_Settings::add_error($requiredErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::CODE, $requiredErrorMessage);
-        }
-
         $maxLength = $this->model->getSoftDescriptorMaxLength($this->isGatewayType());
         $isValueLengthGreaterThanMaxLength = strlen($value) > $maxLength;
         if ($isValueLengthGreaterThanMaxLength) {
