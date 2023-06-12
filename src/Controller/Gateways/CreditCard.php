@@ -502,7 +502,7 @@ class CreditCard extends AbstractGateway
     /**
      * @throws InvalidOptionException
      */
-    public function validate_cc_soft_descriptor_field($key, $value): string
+    public function validate_cc_soft_descriptor_field($key, $value)
     {
         $isValueEmpty = empty($value);
         if ($isValueEmpty) {
@@ -532,7 +532,7 @@ class CreditCard extends AbstractGateway
     /**
      * @throws InvalidOptionException
      */
-    public function validate_cc_flags_field($key, $value): array
+    public function validate_cc_flags_field($key, $value)
     {
         $isValueEmpty = empty($value);
         if ($isValueEmpty) {

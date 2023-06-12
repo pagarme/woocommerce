@@ -118,7 +118,7 @@ class Pix extends AbstractGateway
     /**
      * @throws InvalidOptionException
      */
-    public function validate_pix_qrcode_expiration_time_field($key, $value): string
+    public function validate_pix_qrcode_expiration_time_field($key, $value)
     {
         $isValueEmpty = empty($value) && $value !== "0";
         if ($isValueEmpty) {
