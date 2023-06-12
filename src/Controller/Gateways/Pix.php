@@ -29,7 +29,7 @@ class Pix extends AbstractGateway
     /** @var string */
     protected $method = \Woocommerce\Pagarme\Model\Payment\Pix::PAYMENT_CODE;
 
-    private static int $minimumValueQrCodeExpirationTime = 1;
+    private static $minimumValueQrCodeExpirationTime = 1;
 
     const QR_CODE_EXPIRATION_TIME_FIELD_NAME = 'QR code expiration time';
 
@@ -118,7 +118,7 @@ class Pix extends AbstractGateway
     /**
      * @throws InvalidOptionException
      */
-    public function validate_pix_qrcode_expiration_time_field($key, $value): string
+    public function validate_pix_qrcode_expiration_time_field($key, $value)
     {
         $isValueEmpty = empty($value) && $value !== "0";
         if ($isValueEmpty) {

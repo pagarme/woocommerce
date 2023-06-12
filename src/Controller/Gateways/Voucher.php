@@ -130,7 +130,7 @@ class Voucher extends AbstractGateway
     /**
      * @throws InvalidOptionException
      */
-    public function validate_voucher_soft_descriptor_field($key, $value): string
+    public function validate_voucher_soft_descriptor_field($key, $value)
     {
         $isValueEmpty = empty($value);
         if ($isValueEmpty) {
@@ -160,7 +160,7 @@ class Voucher extends AbstractGateway
     /**
      * @throws InvalidOptionException
      */
-    public function validate_field_voucher_flags_field($key, $value): array
+    public function validate_field_voucher_flags_field($key, $value)
     {
         $isValueEmpty = empty($value);
         if ($isValueEmpty) {
