@@ -12,7 +12,7 @@
  * WC tested up to: 7.7.2
  */
 
-if (!function_exists('add_action')) {
+if (!defined('ABSPATH') || !function_exists('add_action')) {
     exit(0);
 }
 
@@ -21,19 +21,13 @@ require_once dirname(__FILE__) . '/constants.php';
 /**
  * Renders custom Wordpress Notice on every admin pages.
  * @param string $message Message displayed on the notice.
- * @param string|bool $path The plugin basename or the configuration page file name.
+ * @param string $path The plugin basename or the configuration page file name.
  * If string, it's used to generate the message button. Exemple: plugin-name/plugin-name.php or config-page.php
  * @param bool $isConfig If defined true, the button link points to the configuration page.
  * Otherwise, it will genetare a Install or Activate button for the missing plugin.
- * @param mixed $type The type of the notice. Possible options are: 'error' (default), 'warning', 'success' or 'info'.
- * @return string
+ * @param string $type The type of the notice. Possible options are: 'error' (default), 'warning', 'success' or 'info'.
  */
-function wcmpRenderAdminNoticeHtml(
-    string $message,
-    string|bool $path = false,
-    bool $isConfig = false,
-    string $type = 'error'
-) : void
+function wcmpRenderAdminNoticeHtml($message, $path = '', $isConfig = false, $type = 'error')
 {
     wp_enqueue_style(
         'pagarme-notice',
@@ -52,9 +46,9 @@ function wcmpRenderAdminNoticeHtml(
                 <p><strong><? esc_html_e('Pagar.me module for Woocommerce', 'woo-pagarme-payments'); ?>:</strong></p>
                 <p><?= $message ?></p>
                 <?php
-                    if (is_string($path)) {
-                        echo wcmpAddNoticeButton($path, $isConfig);
-                    }
+                if (is_string($path) && $path !== '') {
+                    echo wcmpAddNoticeButton($path, $isConfig);
+                }
                 ?>
             </div>
         </div>
@@ -62,7 +56,7 @@ function wcmpRenderAdminNoticeHtml(
 <?php
 }
 
-function wcmpAddNoticeButton(string $path, bool $isConfig) : string
+function wcmpAddNoticeButton($path, $isConfig)
 {
     $buttonHtml = '<p><a href="%1$s" class="button button-primary">%2$s</a></p>';
 
@@ -74,7 +68,7 @@ function wcmpAddNoticeButton(string $path, bool $isConfig) : string
             $pageName
         );
     }
-    
+
     $isInstalled = false;
     if (function_exists('get_plugins')) {
         $allPlugins  = get_plugins();
@@ -109,23 +103,22 @@ function wcmpAddNoticeButton(string $path, bool $isConfig) : string
         esc_url($url),
         __("Install", 'woo-pagarme-payments') . " {$pluginName}"
     );
+}
 
+
+function wcmpAdminNoticePhpVersion()
+{
+    wcmpRenderAdminNoticeHtml(
+        __('Your PHP version is not supported. Required >= 7.1.', 'woo-pagarme-payments')
+    );
 }
 
 if (version_compare(PHP_VERSION, '7.1', '<')) {
-
-    function wcmpAdminNoticePhpVersion() : void
-    {
-        wcmpRenderAdminNoticeHtml(
-            __('Your PHP version is not supported. Required >= 7.1.', 'woo-pagarme-payments')
-        );
-    }
-
     wcmpLoadNotice('AdminNoticePhpVersion');
     return;
 }
 
-function wcmpAdminNoticeWoocommerce() : void
+function wcmpAdminNoticeWoocommerce()
 {
     wcmpRenderAdminNoticeHtml(
         __('Woocommerce plugin is required for Pagar.me module to work.', 'woo-pagarme-payments'),
@@ -144,25 +137,21 @@ function wcmpAdminNoticeExtraCheckouts()
     );
 }
 
-if (get_option('permalink_structure') === '') {
 
-    function wcmpAdminNoticePermalink(): void
-    {
-        wcmpRenderAdminNoticeHtml(
-            __(
-                'Permalink structure in Wordpress Settings must be different from &ldquo;<b>Plain</b>&rdquo;. ' .
+function wcmpAdminNoticePermalink()
+{
+    wcmpRenderAdminNoticeHtml(
+        __(
+            'Permalink structure in Wordpress Settings must be different from &ldquo;<b>Plain</b>&rdquo;. ' .
                 'Please correct this setting to be able to transact with Pagar.me.',
-                'woo-pagarme-payments'
-            ),
-            'options-permalink.php',
-            true
-        );
-    }
-
-    wcmpLoadNotice('AdminNoticePermalink');
+            'woo-pagarme-payments'
+        ),
+        'options-permalink.php',
+        true
+    );
 }
 
-function wcmpAdminNoticeCheckoutFields() : void
+function wcmpAdminNoticeCheckoutFields()
 {
     if (!function_exists('WC')) {
         return;
@@ -186,8 +175,9 @@ function wcmpAdminNoticeCheckoutFields() : void
     }
 
     if ((in_array('billing_cpf', $missingFields) && !in_array('billing_cnpj', $missingFields)) ||
-        (in_array('billing_cnpj', $missingFields) && !in_array('billing_cpf', $missingFields))) {
-            array_shift($missingFields);
+        (in_array('billing_cnpj', $missingFields) && !in_array('billing_cpf', $missingFields))
+    ) {
+        array_shift($missingFields);
     }
 
     if (empty($missingFields)) {
@@ -207,8 +197,6 @@ function wcmpAdminNoticeCheckoutFields() : void
     wcmpRenderAdminNoticeHtml($message);
 }
 
-wcmpLoadNotice('AdminNoticeCheckoutFields');
-
 function wcmpLoadNotice($name)
 {
     add_action('admin_notices', "wcmp{$name}");
@@ -225,16 +213,11 @@ function wcmpLoadInstances()
 
 function wcmpPluginsLoadedCheck()
 {
-    $woocommerce     = class_exists('WooCommerce');
+    $woocommerce = class_exists('WooCommerce');
     $checkoutFields = class_exists('Extra_Checkout_Fields_For_Brazil');
-    add_action( 'in_plugin_update_message-' . WCMP_PLUGIN_BASE, function( $plugin_data ) {
-        versionUpdateWarning( WCMP_VERSION, $plugin_data['new_version'] );
-    } );
-
-    if ($woocommerce && $checkoutFields) {
-        wcmpLoadInstances();
-        return;
-    }
+    add_action('in_plugin_update_message-' . WCMP_PLUGIN_BASE, function ($pluginData) {
+        versionUpdateWarning(WCMP_VERSION, $pluginData['new_version']);
+    });
 
     if (!$woocommerce) {
         wcmpLoadNotice('AdminNoticeWoocommerce');
@@ -243,32 +226,44 @@ function wcmpPluginsLoadedCheck()
     if (!$checkoutFields) {
         wcmpLoadNotice('AdminNoticeExtraCheckouts');
     }
+
+    if ($woocommerce) {
+        wcmpLoadInstances();
+    }
+
+    if (get_option('permalink_structure') === '') {
+        wcmpLoadNotice('AdminNoticePermalink');
+    }
+
+    wcmpLoadNotice('AdminNoticeCheckoutFields');
 }
+
+add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
 
 function versionUpdateWarning($currentVersion, $newVersion)
 {
-    $currentVersionMajorPart = explode( '.', $currentVersion )[0];
-    $newVersionMajorPart = explode( '.', $newVersion )[0];
+    $currentVersionMajorPart = explode('.', $currentVersion)[0];
+    $newVersionMajorPart = explode('.', $newVersion)[0];
 
-    if ( $currentVersionMajorPart >= $newVersionMajorPart ) {
+    if ($currentVersionMajorPart >= $newVersionMajorPart) {
         return;
     }
-    ?>
+?>
     <hr class="pagarme-major-update-warning-separator" />
     <div class="pagarme-major-update-warning">
         <p></p>
         <div>
             <div class="pagarme-major-update-title">
-                <?= __( 'We recommend backup before upgrading!', 'woo-pagarme-payments' ); ?>
+                <?= __('We recommend backup before upgrading!', 'woo-pagarme-payments'); ?>
             </div>
             <div class="pagarme-major-update-message">
                 <?php
                 printf(
                     esc_html__(
                         'This new release contains crucial architecture and functionality updates. ' .
-                        'We highly recommend you %1$sbackup your site before upgrading%2$s. ' .
-                        'It is highly recommended to perform and validate the update first in the staging ' .
-                        'environment before performing the update in production.',
+                            'We highly recommend you %1$sbackup your site before upgrading%2$s. ' .
+                            'It is highly recommended to perform and validate the update first in the staging ' .
+                            'environment before performing the update in production.',
                         'woo-pagarme-payments'
                     ),
                     '<a href="https://woocommerce.com/pt-br/posts/how-to-easily-backup-and-restore-woocommerce/">',
@@ -278,10 +273,8 @@ function versionUpdateWarning($currentVersion, $newVersion)
             </div>
         </div>
     </div>
-    <?php
+<?php
 }
-
-add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
 
 function wcmpOnActivation()
 {
