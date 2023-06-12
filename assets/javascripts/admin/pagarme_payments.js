@@ -130,6 +130,14 @@
             installmentsWithoutInterestByFlag.attr('max', parseInt(value));
         };
 
+        if (installmentsMax.length) {
+            handleInstallmentWithoutInterestMaxValue($(installmentsMax).val());
+        }
+        
+        installmentsMaxByFlags.each((index, item) => {
+            handleInstallmentsWithoutInterestFlagMaxValue(item, $(item).val());
+        });
+
         function addEventListener() {
             installmentsTypeSelect.on('change', function (event) {
                 handleInstallmentFieldsVisibility(event.currentTarget.value);
