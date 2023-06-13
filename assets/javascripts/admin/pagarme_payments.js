@@ -130,10 +130,10 @@
             installmentsWithoutInterestByFlag.attr('max', parseInt(value));
         };
 
-        if (installmentsMax.length) {
+        installmentsMax.each(() => {
             handleInstallmentWithoutInterestMaxValue($(installmentsMax).val());
-        }
-        
+        });
+
         installmentsMaxByFlags.each((index, item) => {
             handleInstallmentsWithoutInterestFlagMaxValue(item, $(item).val());
         });
