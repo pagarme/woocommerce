@@ -47,7 +47,7 @@ function wcmpRenderAdminNoticeHtml($message, $path = '', $isConfig = false, $typ
                      src="<?= plugins_url('/pagarme-payments-for-woocommerce/assets/images/pagarme-avatar.svg') ?>">
             </div>
             <div class="pagarme-notice-message-container">
-                <p><strong><? esc_html_e('Pagar.me module for Woocommerce', 'woo-pagarme-payments'); ?>:</strong></p>
+                <p><strong><?= __('Pagar.me module for Woocommerce', 'woo-pagarme-payments'); ?>:</strong></p>
                 <p><?= $message ?></p>
                 <?php
                 if (is_string($path) && $path !== '') {
