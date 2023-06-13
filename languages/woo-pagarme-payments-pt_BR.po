@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-06-06 16:31-0300\n"
+"PO-Revision-Date: 2023-06-13 11:27-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.3.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;"
+"_nx:4c,1,2;_nx_noop:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Textdomain-Support: yes\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -88,8 +89,7 @@ msgstr "Geral"
 msgid "Payment settings"
 msgstr "Configurações de Pagamento"
 
-#: src/Controller/Gateways.php:165 src/Controller/Gateways.php:309
-#: src/Controller/Gateways.php:665
+#: src/Controller/Gateways.php:165 src/Controller/Gateways.php:309 src/Controller/Gateways.php:665
 msgid "Enable"
 msgstr "Habilitar"
 
@@ -244,8 +244,12 @@ msgid "Maximum of 13 characters"
 msgstr "Máximo de 13 caracteres"
 
 #: src/Controller/Gateways.php:393
-msgid "It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer's invoice, next to the shop identification, respecting the length of the card brands."
-msgstr "Permite que o lojista envie um texto de até 13 caracteres que será impresso na fatura do portador, ao lado da identificação da loja, respeitando o comprimento das bandeiras."
+msgid ""
+"It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer's invoice, next to "
+"the shop identification, respecting the length of the card brands."
+msgstr ""
+"Permite que o lojista envie um texto de até 13 caracteres que será impresso na fatura do portador, ao lado da "
+"identificação da loja, respeitando o comprimento das bandeiras."
 
 #: src/Controller/Gateways.php:407
 msgid "Operation Type"
@@ -370,15 +374,12 @@ msgstr "Logs"
 msgid "Log Pagar.me events, you can check this log in WooCommerce>Status>Logs."
 msgstr "Registra eventos da Pagar.me, você pode conferir esse arquivo de log em WooCommerce>Status>Logs."
 
-#: src/Controller/Gateways/CreditCard.php:115
-#: src/Controller/Gateways/CreditCard.php:157
-#: src/Controller/Gateways/Pix.php:59 src/Controller/Gateways/Voucher.php:72
-#: src/Controller/Gateways/Voucher.php:102
+#: src/Controller/Gateways/CreditCard.php:115 src/Controller/Gateways/CreditCard.php:157
+#: src/Controller/Gateways/Pix.php:59 src/Controller/Gateways/Voucher.php:72 src/Controller/Gateways/Voucher.php:102
 msgid "This field is required."
 msgstr "Este campo é obrigatório."
 
-#: src/Controller/Gateways/CreditCard.php:116
-#: src/Controller/Gateways/Voucher.php:73
+#: src/Controller/Gateways/CreditCard.php:116 src/Controller/Gateways/Voucher.php:73
 msgid "This field has exceeded the %d character limit."
 msgstr "Este campo ultrapassou o limite de %d caracteres."
 
@@ -386,15 +387,12 @@ msgstr "Este campo ultrapassou o limite de %d caracteres."
 msgid "This field does not have the minimum value of %d."
 msgstr "Este campo não possui o valor mínimo de %d."
 
-#: src/Controller/Gateways/CreditCard.php:414
-#: src/Controller/Gateways/CreditCard.php:441
-#: src/Controller/Gateways/Pix.php:121 src/Controller/Gateways/Voucher.php:132
-#: src/Controller/Gateways/Voucher.php:160
+#: src/Controller/Gateways/CreditCard.php:414 src/Controller/Gateways/CreditCard.php:441
+#: src/Controller/Gateways/Pix.php:121 src/Controller/Gateways/Voucher.php:132 src/Controller/Gateways/Voucher.php:160
 msgid "%s is required."
 msgstr "%s é obrigatório."
 
-#: src/Controller/Gateways/CreditCard.php:424
-#: src/Controller/Gateways/Voucher.php:142
+#: src/Controller/Gateways/CreditCard.php:424 src/Controller/Gateways/Voucher.php:142
 msgid "%s has exceeded the %d character limit."
 msgstr "%s ultrapassou o limite de %d caracteres."
 
@@ -525,8 +523,7 @@ msgstr "Vencimento"
 msgid "Paid value"
 msgstr "Valor pago"
 
-#: src/View/Checkouts.php:214 src/View/Checkouts.php:259
-#: templates/myaccount/wallet.php:43
+#: src/View/Checkouts.php:214 src/View/Checkouts.php:259 templates/myaccount/wallet.php:43
 msgid "Status"
 msgstr "Status"
 
@@ -542,8 +539,7 @@ msgstr "Número do cartão"
 msgid "Installments"
 msgstr "Parcelamento"
 
-#: templates/checkout/2-cards-item.php:32
-#: templates/checkout/2-cards-item.php:106
+#: templates/checkout/2-cards-item.php:32 templates/checkout/2-cards-item.php:106
 #: templates/checkout/billet-and-card-item.php:52
 msgid "Value (Credit card)"
 msgstr "Valor (Cartão de crédito)"
@@ -551,10 +547,8 @@ msgstr "Valor (Cartão de crédito)"
 msgid "Value (Credit Card)"
 msgstr "Valor (Cartão de Crédito)"
 
-#: templates/checkout/2-cards-item.php:55
-#: templates/checkout/2-cards-item.php:133
-#: templates/checkout/billet-and-card-item.php:83
-#: templates/checkout/credit-card-item.php:41
+#: templates/checkout/2-cards-item.php:55 templates/checkout/2-cards-item.php:133
+#: templates/checkout/billet-and-card-item.php:83 templates/checkout/credit-card-item.php:41
 msgid "Installments quantity"
 msgstr "Quantidade de parcelas"
 
@@ -744,12 +738,36 @@ msgid "Your PHP version is not supported. Required >= 5.5."
 msgstr "Sua versão do PHP não é suportada. Obrigatório >= 5.5."
 
 #: woo-pagarme-payments.php:45
-msgid "WooCoomerce plugin is required."
-msgstr "Plugin WooCoomerce é requerido."
+msgid "Woocommerce plugin is required for Pagar.me module to work."
+msgstr "O plugin Woocommerce é necessário para o funcionamento do módulo da Pagar.me."
 
 #: woo-pagarme-payments.php:51
-msgid "WooCoomerce Extra Checkout Fields For Brazil plugin is required."
-msgstr "O plugin WooCoomerce Extra Checkout Fields For Brazil  é obrigatório."
+msgid "WooCoomerce Extra Checkout Fields For Brazil plugin is required for Pagar.me module to work."
+msgstr "O plugin WooCoomerce Extra Checkout Fields For Brazil é necessário para o funcionamento do módulo da Pagar.me."
+
+#: woo-pagarme-payments.php:84
+msgid "Activate"
+msgstr "Ativar"
+
+#: woo-pagarme-payments.php:100
+msgid "Install"
+msgstr "Instalar"
+
+#: woo-pagarme-payments.php:145
+msgid ""
+"Permalink structure in Wordpress Settings must be different from &ldquo;<b>Plain</b>&rdquo;. Please correct this "
+"setting to be able to transact with Pagar.me."
+msgstr ""
+"A estrutura de Links Permanentes nas configurações do Wordpress deve ser diferente de &ldquo;<b>Padrão</b>&rdquo;. "
+"Por favor, corrija essa configuração para poder transacionar com a Pagar.me."
+
+#: woo-pagarme-payments.php:186
+msgid "The following checkout fields are required, but were not found:"
+msgstr "Os seguintes campos de checkout são obrigatórios, mas não foram encontrados:"
+
+#: woo-pagarme-payments.php:194
+msgid "Please, make sure to include them for Pagar.me module to work."
+msgstr "Por favor, certifique-se de incluí-los para que o módulo da Pagar.me funcione."
 
 #. Description of the plugin/theme
 msgid "Enable Pagar.me Gateway for WooCommerce"
@@ -789,8 +807,12 @@ msgstr "Tempo, em segundos, até o QRCode expirar depois de gerado"
 msgid "Additional information"
 msgstr "Informações adicionais"
 
-msgid "Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment process."
-msgstr "Conjunto de chave e valor para adicionar informações ao pix gerado. Isso ficará visível para o comprador durante o pagamento."
+msgid ""
+"Set of key and value used to add information to the generated pix. This will be visible to the buyer during the "
+"payment process."
+msgstr ""
+"Conjunto de chave e valor para adicionar informações ao pix gerado. Isso ficará visível para o comprador durante o "
+"pagamento."
 
 msgid "Additional Information Name"
 msgstr "Nome da informação adicional"
@@ -904,16 +926,24 @@ msgid "View Integration"
 msgstr "Visualizar integração"
 
 #: templates/adminhtml/system/config/form/field/hub/integration.phtml:23
-msgid "Have you removed your integration on Pagar.me Hub, but it shows active? Click <a id='pagarme-hub-desintegration-link'>here</a> to remove your keys."
-msgstr "Removeu sua integração no Hub Pagar.me, mas ainda aparece ativa? Clique <a id='pagarme-hub-desintegration-link'>aqui</a> para finalizar removendo suas chaves."
+msgid ""
+"Have you removed your integration on Pagar.me Hub, but it shows active? Click <a id='pagarme-hub-desintegration-"
+"link'>here</a> to remove your keys."
+msgstr ""
+"Removeu sua integração no Hub Pagar.me, mas ainda aparece ativa? Clique <a id='pagarme-hub-desintegration-link'>aqui</"
+"a> para finalizar removendo suas chaves."
 
 #: templates/adminhtml/system/config/form/field/hub/integration.phtml:28
 msgid "Disintegrate?"
 msgstr "Desintegrar?"
 
 #: templates/adminhtml/system/config/form/field/hub/integration.phtml:29
-msgid "Are you shure you wish to delete the keys? This action removes the integration from your store, but first you must access Pagar.me Hub and click on Delete."
-msgstr "Tem certeza que deseja excluir as chaves? Essa ação remove a integração da sua loja, mas primeiro você deve acessar o Hub Pagar.me e clicar em Excluir."
+msgid ""
+"Are you shure you wish to delete the keys? This action removes the integration from your store, but first you must "
+"access Pagar.me Hub and click on Delete."
+msgstr ""
+"Tem certeza que deseja excluir as chaves? Essa ação remove a integração da sua loja, mas primeiro você deve acessar o "
+"Hub Pagar.me e clicar em Excluir."
 
 msgid "Yes, remove keys!"
 msgstr "Sim, remova as chaves!"
@@ -945,8 +975,12 @@ msgstr "Cartão de crédito e Boleto"
 msgid "Important! This store is in the testing phase. Orders placed in this environment will not be carried out."
 msgstr "Importante! Esta loja está em fase de testes. Os pedidos realizados neste ambiente não serão efetivados."
 
-msgid "Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions."
-msgstr "Importante! Esta loja está vinculada ao ambiente de testes da Pagar.me. Este ambiente é destinado a validação de integração e não gera operações financeiras reais."
+msgid ""
+"Important! This store is linked to the Pagar.me test environment. This environment is intended for integration "
+"validation and does not generate real financial transactions."
+msgstr ""
+"Importante! Esta loja está vinculada ao ambiente de testes da Pagar.me. Este ambiente é destinado a validação de "
+"integração e não gera operações financeiras reais."
 
 msgid "Yes"
 msgstr "Sim"
@@ -1014,8 +1048,14 @@ msgstr "Total"
 msgid "Pagar.me - Additional Information"
 msgstr "Pagar.me - Informações Adicionais"
 
-msgid "This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your site before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging environment before performing the update in production."
-msgstr "Esta nova versão contém atualizações cruciais de arquitetura e funcionalidade. Recomendamos que %1$sfaça backup de seu site antes de atualizar%2$s. É altamente recomendável executar e validar a atualização primeiro no ambiente de teste antes de executar a atualização em produção."
+msgid ""
+"This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your "
+"site before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging "
+"environment before performing the update in production."
+msgstr ""
+"Esta nova versão contém atualizações cruciais de arquitetura e funcionalidade. Recomendamos que %1$sfaça backup de "
+"seu site antes de atualizar%2$s. É altamente recomendável executar e validar a atualização primeiro no ambiente de "
+"teste antes de executar a atualização em produção."
 
 msgid "We recommend backup before upgrading!"
 msgstr "Recomendamos fazer backup antes de atualizar!"
