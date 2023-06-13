@@ -12,7 +12,7 @@ class PTBRTests extends TestCase
      */
     private $ptbr;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->ptbr = new PTBR();
     }

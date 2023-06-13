@@ -11,13 +11,14 @@ final class ChargeStatus extends AbstractValueObject
     const CANCELED = 'canceled';
     const PROCESSING = 'processing';
     const FAILED = 'failed';
+    const CHARGEDBACK = 'chargedback';
 
     const UNDERPAID = 'underpaid';
     const OVERPAID = 'overpaid';
 
     /**
      *
-     * @var string 
+     * @var string
      */
     private $status;
 
@@ -44,6 +45,11 @@ final class ChargeStatus extends AbstractValueObject
     static public function canceled()
     {
         return new self(self::CANCELED);
+    }
+    
+    static public function chargedback()
+    {
+        return new self(self::CHARGEDBACK);
     }
 
     static public function underpaid()
@@ -99,13 +105,14 @@ final class ChargeStatus extends AbstractValueObject
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     *
-     * @link   https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since  5.4.0
-     */
+      * Specify data which should be serialized to JSON
+      *
+      * @link   https://php.net/manual/en/jsonserializable.jsonserialize.php
+      * @return mixed data which can be serialized by <b>json_encode</b>,
+      * which is a value of any type other than a resource.
+      * @since  5.4.0
+    */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->status;

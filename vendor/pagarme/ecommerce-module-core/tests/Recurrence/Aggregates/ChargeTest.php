@@ -3,7 +3,6 @@
 namespace Pagarme\Core\Test\Recurrence\Aggregates;
 
 use Carbon\Carbon;
-use Mockery;
 use Pagarme\Core\Kernel\Aggregates\Transaction;
 use Pagarme\Core\Kernel\ValueObjects\ChargeStatus;
 use Pagarme\Core\Kernel\ValueObjects\Id\ChargeId;
@@ -26,7 +25,7 @@ class ChargeTest extends TestCase
      */
     private $charge;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->charge = new Charge();
     }
@@ -34,8 +33,8 @@ class ChargeTest extends TestCase
     public function testChargeObject()
     {
         $this->charge->setId(1);
-        $this->charge->setPagarmeId(Mockery::mock(ChargeId::class));
-        $this->charge->setOrderId(Mockery::mock(OrderId::class));
+        $this->charge->setPagarmeId($this->createMock(ChargeId::class));
+        $this->charge->setOrderId($this->createMock(OrderId::class));
         $this->charge->setAmount(100);
         $this->charge->setPaidAmount(100);
         $this->charge->setCanceledAmount(0);
@@ -47,10 +46,10 @@ class ChargeTest extends TestCase
         $this->charge->setSubscriptionId(new SubscriptionId('sub_1234567890123457'));
 
         $customer = new Customer();
-        $customer->setPagarmeId(Mockery::mock(CustomerId::class));
+        $customer->setPagarmeId($this->createMock(CustomerId::class));
 
         $invoice = new Invoice();
-        $invoice->setPagarmeId(Mockery::mock(InvoiceId::class));
+        $invoice->setPagarmeId($this->createMock(InvoiceId::class));
 
         $this->charge->setCustomer($customer);
         $this->charge->setInvoice($invoice);
@@ -95,7 +94,7 @@ class ChargeTest extends TestCase
     public function testExpectedAnObjectOrderidToSetOrderId()
     {
         $charge = new Charge();
-        $orderId = Mockery::mock(OrderId::class);
+        $orderId = $this->createMock(OrderId::class);
         $charge->setOrderId($orderId);
 
         $this->assertEquals($orderId, $charge->getOrderId());
@@ -115,6 +114,7 @@ class ChargeTest extends TestCase
      */
     public function testShouldThrowAnExceptionIfAmountIsInvalid()
     {
+        $this->expectException(\Pagarme\Core\Kernel\Exceptions\InvalidParamException::class);
         $charge = new Charge();
         $charge->setAmount(-10);
     }
@@ -125,6 +125,7 @@ class ChargeTest extends TestCase
      */
     public function testShouldThrowAnExceptionIfAmountIsNotNumeric()
     {
+        $this->expectException(\Pagarme\Core\Kernel\Exceptions\InvalidParamException::class);
         $charge = new Charge();
         $charge->setAmount("string");
     }
@@ -148,6 +149,7 @@ class ChargeTest extends TestCase
      */
     public function testShouldThrowAnExceptionIfPaidAmountIsNotNumeric()
     {
+        $this->expectException(\Pagarme\Core\Kernel\Exceptions\InvalidParamException::class);
         $charge = new Charge();
         $charge->setPaidAmount("string");
     }
@@ -179,6 +181,7 @@ class ChargeTest extends TestCase
      */
     public function testShouldThrowAnExceptionIfCanceledAmountIsNotNumeric()
     {
+        $this->expectException(\Pagarme\Core\Kernel\Exceptions\InvalidParamException::class);
         $charge = new Charge();
         $charge->setCanceledAmount("string");
     }
@@ -219,6 +222,7 @@ class ChargeTest extends TestCase
      */
     public function testShouldThrowAnExceptionIfRefoundedAmountIsNotNumeric()
     {
+        $this->expectException(\Pagarme\Core\Kernel\Exceptions\InvalidParamException::class);
         $charge = new Charge();
         $charge->setRefundedAmount("string");
     }

@@ -1,15 +1,19 @@
 <?php
 /*
  * Plugin Name: Pagar.me module for Woocommerce
- * Version:     3.0.0
+ * Version:     3.0.1
  * Author:      Pagar.me
  * Author URI:  https://pagar.me
  * Text Domain: woo-pagarme-payments
  * Domain Path: /languages
  * License:     GPL2
  * Description: Enable Pagar.me Gateway for WooCommerce
+ * Requires at least: 5.0
+ * Tested up to: 6.2.0
  * WC requires at least: 3.9.0
  * WC tested up to: 7.7.2
+ * Domain Path: /languages
+ * Text Domain: woo-pagarme-payments
  */
 
 if (!defined('ABSPATH') || !function_exists('add_action')) {

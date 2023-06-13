@@ -120,7 +120,6 @@ abstract class AbstractModuleCoreSetup
             $configurationRepository->save(static::$moduleConfig);
         }
     }
-
     protected static function loadSavedConfiguration()
     {
         $store = static::getCurrentStoreId();

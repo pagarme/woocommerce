@@ -11,6 +11,9 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use WC_Admin_Settings;
+use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
+
 defined( 'ABSPATH' ) || exit;
 
 if (!function_exists('add_action')) {
@@ -26,6 +29,10 @@ class Pix extends AbstractGateway
     /** @var string */
     protected $method = \Woocommerce\Pagarme\Model\Payment\Pix::PAYMENT_CODE;
 
+    private static $minimumValueQrCodeExpirationTime = 1;
+
+    const QR_CODE_EXPIRATION_TIME_FIELD_NAME = 'QR code expiration time';
+
     /**
      * @return array
      */
@@ -40,7 +47,7 @@ class Pix extends AbstractGateway
     public function field_pix_qrcode_expiration_time()
     {
         return [
-            'title'       => __('QR code expiration time', 'woo-pagarme-payments'),
+            'title'       => __(self::QR_CODE_EXPIRATION_TIME_FIELD_NAME, 'woo-pagarme-payments'),
             'description' => __('Expiration time in seconds of the generated pix QR code.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'placeholder' => 3600,
@@ -48,6 +55,13 @@ class Pix extends AbstractGateway
             'custom_attributes' => [
                 'data-mask'         => '##0',
                 'data-mask-reverse' => 'true',
+                'data-field-validate' => 'required|min',
+                'data-min' => self::$minimumValueQrCodeExpirationTime,
+                'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
+                'data-error-message-min' => sprintf(
+                    __('This field does not have the minimum value of %d.', 'woo-pagarme-payments'),
+                    self::$minimumValueQrCodeExpirationTime
+                ),
             ]
         ];
     }
@@ -98,6 +112,35 @@ class Pix extends AbstractGateway
 
     public function validate_pix_additional_data_field($key, $value)
     {
+        return $value;
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    public function validate_pix_qrcode_expiration_time_field($key, $value)
+    {
+        $isValueEmpty = empty($value) && $value !== "0";
+        if ($isValueEmpty) {
+            $requiredErrorMessage = sprintf(
+                __('%s is required.', 'woo-pagarme-payments'),
+                __(self::QR_CODE_EXPIRATION_TIME_FIELD_NAME, 'woo-pagarme-payments')
+            );
+            WC_Admin_Settings::add_error($requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $requiredErrorMessage);
+        }
+
+        $isValueLesserThanMinimum = floatval($value) < self::$minimumValueQrCodeExpirationTime;
+        if ($isValueLesserThanMinimum) {
+            $minimumValueErrorMessage = sprintf(
+                __('%s does not have the minimum value of %d.', 'woo-pagarme-payments'),
+                __(self::QR_CODE_EXPIRATION_TIME_FIELD_NAME, 'woo-pagarme-payments'),
+                self::$minimumValueQrCodeExpirationTime
+            );
+            WC_Admin_Settings::add_error($minimumValueErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $minimumValueErrorMessage);
+        }
+
         return $value;
     }
 }

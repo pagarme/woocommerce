@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use WC_Admin_Settings;
+use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Model\Payment\CreditCard\Brands;
-use Woocommerce\Pagarme\Model\Payment\CreditCard\BrandsInterface;
 
 defined('ABSPATH') || exit;
 
@@ -30,6 +30,8 @@ class CreditCard extends AbstractGateway
 {
     /** @var string */
     protected $method = \Woocommerce\Pagarme\Model\Payment\CreditCard::PAYMENT_CODE;
+
+    const SOFT_DESCRIPTOR_FIELD_NAME = "Soft descriptor";
 
     /**
      * @return array
@@ -100,20 +102,22 @@ class CreditCard extends AbstractGateway
      */
     public function field_cc_soft_descriptor()
     {
-        $maxLength = $this->isGatewayType() ? 22 : 13;
+        $maxLength = $this->model->getSoftDescriptorMaxLength($this->isGatewayType());
 
         return array(
-            'title' => __('Soft descriptor', 'woo-pagarme-payments'),
+            'title' => __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
             'desc_tip' => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
             'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
                 'woo-pagarme-payments'), $maxLength),
             'default' => $this->config->getData('cc_soft_descriptor') ?? '',
             'custom_attributes' => array(
                 'data-field' => 'soft-descriptor',
-                'data-action' => 'soft-descriptor',
-                'data-element' => 'validate',
-                'maxlength' => $maxLength,
-                'data-error-msg' => __('This field is required.', 'woo-pagarme-payments'),
+                'data-field-validate' => 'max-length',
+                'data-max-length' => $maxLength,
+                'data-error-message-max-length' => sprintf(
+                    __('This field has exceeded the %d character limit.', 'woo-pagarme-payments'),
+                    $maxLength
+                ),
             ),
         );
     }
@@ -153,6 +157,8 @@ class CreditCard extends AbstractGateway
                 'data-field' => 'flags-select',
                 'data-element' => 'flags-select',
                 'data-action' => 'flags',
+                'data-field-validate' => 'required',
+                'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
             ),
         );
     }
@@ -190,7 +196,7 @@ class CreditCard extends AbstractGateway
             'title' => __('Max number of installments', 'woo-pagarme-payments'),
             'type' => 'select',
             'default' => $this->config->getData('cc_installments_maximum') ?? 12,
-            'options' => $this->model->get_installment_options(),
+            'options' => $this->model->getInstallmentOptions($this->isGatewayType()),
             'custom_attributes' => array(
                 'data-field' => 'installments-maximum',
             ),
@@ -242,7 +248,7 @@ class CreditCard extends AbstractGateway
             'title' => __('Number of installments without interest', 'woo-pagarme-payments'),
             'type' => 'select',
             'default' => $this->config->getData('cc_installments_without_interest') ?? 3,
-            'options' => $this->model->get_installment_options(),
+            'options' => $this->model->getInstallmentOptions($this->isGatewayType()),
             'custom_attributes' => array(
                 'data-field' => 'installments-without-interest',
             ),
@@ -310,7 +316,7 @@ class CreditCard extends AbstractGateway
 
     public function generate_installments_by_flag_html($key, $data)
     {
-        $field_key = $this->get_field_key($key);
+        $fieldKey = $this->get_field_key($key);
         $defaults  = array(
             'title'             => '',
             'disabled'          => false,
@@ -326,6 +332,7 @@ class CreditCard extends AbstractGateway
         $data  = wp_parse_args($data, $defaults);
         $value = (array) $this->get_option($key, array());
         $flags = $this->getBrandsList();
+        $maxInstallment = $this->model->getInstallmentsMaximumQuantity($this->isGatewayType());
 
         ob_start();
 
@@ -344,7 +351,7 @@ class CreditCard extends AbstractGateway
         <tr valign="top">
             <th scope="row" class="titledesc">
                 <?php echo esc_html($this->get_tooltip_html($data)); ?>
-                <label for="<?php echo esc_attr($field_key); ?>"><?php echo wp_kses_post($data['title']); ?></label>
+                <label for="<?php echo esc_attr($fieldKey); ?>"><?php echo wp_kses_post($data['title']); ?></label>
             </th>
             <td class="forminp">
                 <fieldset data-field="installments-by-flag">
@@ -361,20 +368,109 @@ class CreditCard extends AbstractGateway
                         </thead>
                         <tbody class="accounts ui-sortable">
                         <?php
-                        foreach ($flags as $flag_key => $flag_name) :
-                            $interest          = isset($value['interest'][$flag_key]) ? $value['interest'][$flag_key] : '';
-                            $interest_increase = isset($value['interest_increase'][$flag_key]) ? $value['interest_increase'][$flag_key] : '';
-                            $max_installment   = isset($value['max_installment'][$flag_key]) ? $value['max_installment'][$flag_key] : 12;
-                            $installment_min_amount   = isset($value['installment_min_amount'][$flag_key]) ? $value['installment_min_amount'][$flag_key] : '';
-                            $no_interest       = isset($value['no_interest'][$flag_key]) ? $value['no_interest'][$flag_key] : 1;
+                        foreach ($flags as $flagKey => $flag_name) :
+                            $interest          = $value['interest'][$flagKey] ?? '';
+                            $interestIncrease = $value['interest_increase'][$flagKey] ?? '';
+                            $maxInstallmentValue   = isset($value['max_installment'][$flagKey])
+                                && $value['max_installment'][$flagKey] < $maxInstallment
+                                ? $value['max_installment'][$flagKey]
+                                : $maxInstallment;
+                            $installmentMinAmount   = $value['installment_min_amount'][$flagKey] ?? '';
+                            $noInterest       = $value['no_interest'][$flagKey] ?? 1;
+
+                            $escapedHtmlAttrFieldKey = esc_attr($fieldKey);
+                            $escapedHtmlAttrFlagKey = esc_attr($flagKey);
+                            $maxInstallmentFieldName =
+                                "{$escapedHtmlAttrFieldKey}[max_installment][{$escapedHtmlAttrFlagKey}]";
+                            $maxInstallmentFieldId =
+                                "{$escapedHtmlAttrFieldKey}_max_installment_{$escapedHtmlAttrFlagKey}";
+                            $installmentMinAmountFieldName =
+                                "{$escapedHtmlAttrFieldKey}[installment_min_amount][{$escapedHtmlAttrFlagKey}]";
+                            $installmentMinAmountFieldId =
+                                "{$escapedHtmlAttrFieldKey}_installment_min_amount_{$escapedHtmlAttrFlagKey}";
+                            $interestFieldName =
+                                "{$escapedHtmlAttrFieldKey}[interest][{$escapedHtmlAttrFlagKey}]";
+                            $interestFieldId =
+                                "{$escapedHtmlAttrFieldKey}_interest_{$escapedHtmlAttrFlagKey}";
+                            $interestIncreaseFieldName =
+                                "{$escapedHtmlAttrFieldKey}[interest_increase][{$escapedHtmlAttrFlagKey}]";
+                            $interestIncreaseFieldId =
+                                "{$escapedHtmlAttrFieldKey}_interest_increase_{$escapedHtmlAttrFlagKey}";
+                            $noInterestFieldName =
+                                "{$escapedHtmlAttrFieldKey}[no_interest][{$escapedHtmlAttrFlagKey}]";
+                            $noInterestFieldId =
+                                "{$escapedHtmlAttrFieldKey}_no_interest_{$escapedHtmlAttrFlagKey}";
+
                             ?>
-                            <tr class="account ui-sortable-handle flag" data-flag="<?php echo esc_attr($flag_key); ?>">
-                                <td><input class="align" type="text" value="<?php echo esc_attr($flag_name); ?>" <?php disabled(1, true); ?> /></td>
-                                <td><input class="align" type="number" min="1" max="24" name="<?php echo esc_attr($field_key); ?>[max_installment][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_max_installment_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($max_installment); ?>" /></td>
-                                <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[installment_min_amount][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_installment_min_amount_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($installment_min_amount) ?>" /></td>
-                                <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest) ?>" /></td>
-                                <td><input class="align" type="text" placeholder="0,00" data-mask="##0,00" data-mask-reverse="true" name="<?php echo esc_attr($field_key); ?>[interest_increase][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_interest_increase_<?php echo esc_attr($flag_key); ?>" value="<?php echo /*phpcs:ignore*/ wc_format_localized_price($interest_increase) ?>" /></td>
-                                <td><input class="align" type="number" min="1" max="<?php echo intval($max_installment); ?>" name="<?php echo esc_attr($field_key); ?>[no_interest][<?php echo esc_attr($flag_key); ?>]" id="<?php echo esc_attr($field_key); ?>_no_interest_<?php echo esc_attr($flag_key); ?>" value="<?php echo intval($no_interest); ?>" /></td>
+                            <tr class="account ui-sortable-handle flag" data-flag="<?php echo esc_attr($flagKey); ?>">
+                                <td>
+                                    <input class="align"
+                                           type="text"
+                                           value="<?php echo esc_attr($flag_name); ?>"
+                                        <?php disabled(1); ?>
+                                    />
+                                </td>
+                                <td>
+                                    <input class="align"
+                                           type="number"
+                                           min="1"
+                                           max="<?php echo $maxInstallment; ?>"
+                                           name="<?php echo $maxInstallmentFieldName; ?>"
+                                           id="<?php echo $maxInstallmentFieldId; ?>"
+                                           value="<?php echo intval($maxInstallmentValue); ?>"
+                                           data-field="installments-maximum-by-flag"
+                                    />
+                                </td>
+                                <td>
+                                    <input class="align"
+                                           type="text"
+                                           placeholder="0,00"
+                                           data-mask="##0,00"
+                                           data-mask-reverse="true"
+                                           name="<?php echo $installmentMinAmountFieldName; ?>"
+                                           id="<?php echo $installmentMinAmountFieldId; ?>"
+                                           value="<?php echo
+                                               /*phpcs:ignore*/ wc_format_localized_price($installmentMinAmount)
+                                           ?>"
+                                    />
+                                </td>
+                                <td>
+                                    <input class="align"
+                                           type="text"
+                                           placeholder="0,00"
+                                           data-mask="##0,00"
+                                           data-mask-reverse="true"
+                                           name="<?php echo $interestFieldName; ?>"
+                                           id="<?php echo $interestFieldId; ?>"
+                                           value="<?php echo
+                                               /*phpcs:ignore*/ wc_format_localized_price($interest)
+                                           ?>"
+                                    />
+                                </td>
+                                <td>
+                                    <input class="align"
+                                           type="text"
+                                           placeholder="0,00"
+                                           data-mask="##0,00"
+                                           data-mask-reverse="true"
+                                           name="<?php echo $interestIncreaseFieldName; ?>"
+                                           id="<?php echo $interestIncreaseFieldId; ?>"
+                                           value="<?php echo
+                                               /*phpcs:ignore*/ wc_format_localized_price($interestIncrease)
+                                           ?>"
+                                    />
+                                </td>
+                                <td>
+                                    <input class="align"
+                                           type="number"
+                                           min="1"
+                                           max="<?php echo $maxInstallment; ?>"
+                                           name="<?php echo $noInterestFieldName; ?>"
+                                           id="<?php echo $noInterestFieldId; ?>"
+                                           value="<?php echo intval($noInterest); ?>"
+                                           data-field="installments-without-interest-by-flag"
+                                    />
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
@@ -399,6 +495,44 @@ class CreditCard extends AbstractGateway
                 $value['no_interest'][$brand] = $maxInstallment;
             }
         }
+        return $value;
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    public function validate_cc_soft_descriptor_field($key, $value)
+    {
+        $maxLength = $this->model->getSoftDescriptorMaxLength($this->isGatewayType());
+        $isValueLengthGreaterThanMaxLength = strlen($value) > $maxLength;
+        if ($isValueLengthGreaterThanMaxLength) {
+            $maximumLengthErrorMessage = sprintf(
+                __('%s has exceeded the %d character limit.', 'woo-pagarme-payments'),
+                __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
+                $maxLength
+            );
+            WC_Admin_Settings::add_error($maximumLengthErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $maximumLengthErrorMessage);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    public function validate_cc_flags_field($key, $value)
+    {
+        $isValueEmpty = empty($value);
+        if ($isValueEmpty) {
+            $requiredErrorMessage = sprintf(
+                __('%s is required.', 'woo-pagarme-payments'),
+                __('Card Brands', 'woo-pagarme-payments')
+            );
+            WC_Admin_Settings::add_error($requiredErrorMessage);
+            throw new InvalidOptionException(InvalidOptionException::CODE, $requiredErrorMessage);
+        }
+
         return $value;
     }
 

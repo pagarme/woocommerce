@@ -91,22 +91,20 @@ class MoreThanOneRecurrenceProductTest extends TestCase
 
     protected function getRecurrenceConfig($allow = true, $error = "")
     {
-        $recurrenceConfigMock = \Mockery::mock(RecurrenceConfig::class);
-
-        $recurrenceConfigMock
-            ->shouldReceive('getConflictMessageRecurrenceProductWithRecurrenceProduct')
-            ->andReturn($error);
+        $recurrenceConfigMock = $this->getMockBuilder(RecurrenceConfig::class)->getMock();
+        $recurrenceConfigMock->method('getConflictMessageRecurrenceProductWithRecurrenceProduct')
+            ->willReturn($error);
 
         if ($allow) {
             $recurrenceConfigMock
-                ->shouldReceive('isPurchaseRecurrenceProductWithRecurrenceProduct')
-                ->andReturnTrue();
+                ->method('isPurchaseRecurrenceProductWithRecurrenceProduct')
+                ->willReturn(true);
 
             return $recurrenceConfigMock;
         }
         $recurrenceConfigMock
-            ->shouldReceive('isPurchaseRecurrenceProductWithRecurrenceProduct')
-            ->andReturnFalse();
+            ->method('isPurchaseRecurrenceProductWithRecurrenceProduct')
+            ->willReturn(false);
 
         return $recurrenceConfigMock;
     }

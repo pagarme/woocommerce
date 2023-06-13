@@ -15,7 +15,7 @@ class ProductSubscriptionServiceTest extends AbstractSetupTest
      */
     protected $service;
 
-    public function setUp()
+    public function setUp(): void
     {
         $logMock = \Mockery::mock(LogService::class);
         $logMock->shouldReceive('info')->andReturnTrue();
@@ -76,6 +76,8 @@ class ProductSubscriptionServiceTest extends AbstractSetupTest
      */
     public function testShouldThrowAnExceptionBecauseTheRecurrenceProductIdNotExists()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Subscription Product not found - ID : 23");
         $this->service->delete(23);
     }
 
@@ -115,6 +117,8 @@ class ProductSubscriptionServiceTest extends AbstractSetupTest
      */
     public function testShouldNotAllowSaveProductSubscriptionWithProductIdAlreadyExisting()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Product already exists on recurrence product- Product ID : 23");
         $product = [
             "product_id" => "23",
             "boleto" => true,

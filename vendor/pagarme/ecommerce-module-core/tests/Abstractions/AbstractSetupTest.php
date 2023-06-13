@@ -8,13 +8,13 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractSetupTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         PlatformCoreSetup::bootstrap();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         $migrate = new Migrate(PlatformCoreSetup::getDatabaseAccessObject());

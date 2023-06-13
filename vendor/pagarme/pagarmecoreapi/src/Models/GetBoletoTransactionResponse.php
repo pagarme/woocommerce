@@ -194,6 +194,7 @@ class GetBoletoTransactionResponse extends GetTransactionResponse implements Jso
     /**
      * Encode this object to JSON
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $json = array();

@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-06-02 13:48-0300\n"
+"PO-Revision-Date: 2023-06-13 11:27-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -243,9 +243,13 @@ msgstr "Soft descriptor"
 msgid "Maximum of 13 characters"
 msgstr "Máximo de 13 caracteres"
 
-#: src/Controller/Gateways.php:398
-msgid "This field is required."
-msgstr "Este campo é obrigatório."
+#: src/Controller/Gateways.php:393
+msgid ""
+"It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer's invoice, next to "
+"the shop identification, respecting the length of the card brands."
+msgstr ""
+"Permite que o lojista envie um texto de até 13 caracteres que será impresso na fatura do portador, ao lado da "
+"identificação da loja, respeitando o comprimento das bandeiras."
 
 #: src/Controller/Gateways.php:407
 msgid "Operation Type"
@@ -369,6 +373,32 @@ msgstr "Logs"
 #: src/Controller/Gateways.php:667
 msgid "Log Pagar.me events, you can check this log in WooCommerce>Status>Logs."
 msgstr "Registra eventos da Pagar.me, você pode conferir esse arquivo de log em WooCommerce>Status>Logs."
+
+#: src/Controller/Gateways/CreditCard.php:115 src/Controller/Gateways/CreditCard.php:157
+#: src/Controller/Gateways/Pix.php:59 src/Controller/Gateways/Voucher.php:72 src/Controller/Gateways/Voucher.php:102
+msgid "This field is required."
+msgstr "Este campo é obrigatório."
+
+#: src/Controller/Gateways/CreditCard.php:116 src/Controller/Gateways/Voucher.php:73
+msgid "This field has exceeded the %d character limit."
+msgstr "Este campo ultrapassou o limite de %d caracteres."
+
+#: src/Controller/Gateways/Pix.php:60
+msgid "This field does not have the minimum value of %d."
+msgstr "Este campo não possui o valor mínimo de %d."
+
+#: src/Controller/Gateways/CreditCard.php:414 src/Controller/Gateways/CreditCard.php:441
+#: src/Controller/Gateways/Pix.php:121 src/Controller/Gateways/Voucher.php:132 src/Controller/Gateways/Voucher.php:160
+msgid "%s is required."
+msgstr "%s é obrigatório."
+
+#: src/Controller/Gateways/CreditCard.php:424 src/Controller/Gateways/Voucher.php:142
+msgid "%s has exceeded the %d character limit."
+msgstr "%s ultrapassou o limite de %d caracteres."
+
+#: src/Controller/Gateways/Pix.php:130
+msgid "%s does not have the minimum value of %d."
+msgstr "%s não possui o valor mínimo de %d."
 
 #: src/Controller/Settings.php:32
 msgid "Settings"
