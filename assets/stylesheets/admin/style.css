@@ -110,3 +110,12 @@
 #woo-pagarme-capture .wrapper table td:first-child {
     padding-left: 2em;
 }
+
+#mainform .invalid-field{
+    border-color: #d63638;
+    box-shadow: 0 0 2px rgba(214,54,56,.8);
+}
+
+#mainform .field-error-message{
+    color: #d63638;
+}

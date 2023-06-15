@@ -136,7 +136,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function payments_scripts()
     {
         wp_register_script('pagarme_payments', $this->jsUrl('pagarme_payments'), [], false, true);
+        wp_register_script('pagarme_payments_validation', $this->jsUrl('pagarme_payments_validation'), [], false, true);
         wp_enqueue_script('pagarme_payments');
+        wp_enqueue_script('pagarme_payments_validation');
     }
 
     public function jsUrl($jsFileName)
