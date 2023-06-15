@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-05-26 11:06-0300\n"
+"PO-Revision-Date: 2023-06-15 12:12-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -991,6 +991,12 @@ msgstr "Esta nova versão contém atualizações cruciais de arquitetura e funci
 
 msgid "We recommend backup before upgrading!"
 msgstr "Recomendamos fazer backup antes de atualizar!"
+
+msgid "<strong>The billing address &quot;Number&quot; field</strong> is a required field."
+msgstr "<strong>O campo &quot;Número&quot; do endereço de faturamento</strong> é um campo obrigatório."
+
+msgid "<strong>The shipping address &quot;Number&quot; field</strong> is a required field."
+msgstr "<strong>O campo &quot;Número&quot; do endereço de entrega</strong> é um campo obrigatório."
 
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
