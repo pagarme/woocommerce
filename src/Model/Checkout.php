@@ -65,7 +65,12 @@ class Checkout
         $this->orders = $orders;
         $this->gateway = $gateway;
         $this->wooOrderRepository = $wooOrderRepository;
-        add_action('woocommerce_after_checkout_validation', array($this, 'validateCheckout'), 10, 2);
+        add_action(
+            'woocommerce_after_checkout_validation',
+            array($this, 'validateCheckout'),
+            10,
+            2
+        );
     }
 
     public function validateCheckout($fields, $errors)
@@ -74,14 +79,20 @@ class Checkout
             $fields['billing_number'] == 0 &&
             !key_exists('billing_number_required', $errors->errors)
         ) {
-            $errors->add('billing_number_required', '<strong>O campo "Número" do endereço de faturamento</strong> é um campo obrigatório.');
+            $errors->add(
+                'billing_number_required',
+                '<strong>O campo "Número" do endereço de faturamento</strong> é um campo obrigatório.'
+            );
         }
         if (
             $fields['ship_to_different_address'] &&
             $fields['shipping_number'] == 0 &&
             !key_exists('shipping_number_required', $errors->errors)
         ) {
-            $errors->add('shipping_number_required', '<strong>O campo "Número" do endereço de entrega</strong> é um campo obrigatório.');
+            $errors->add(
+                'shipping_number_required',
+                '<strong>O campo "Número" do endereço de entrega</strong> é um campo obrigatório.'
+            );
         }
     }
 
@@ -122,10 +133,11 @@ class Checkout
             $order->payment_method = $fields['payment_method'];
             WC()->cart->empty_cart();
             if ($response) {
-                $order->transaction_id     = $response->getPagarmeId()->getValue();
-                $order->pagarme_id     = $response->getPagarmeId()->getValue();
+                do_action("on_pagarme_response", $wc_order->get_id(), $response);
+                $order->transaction_id = $response->getPagarmeId()->getValue();
+                $order->pagarme_id = $response->getPagarmeId()->getValue();
                 $order->pagarme_status = $response->getStatus()->getStatus();
-                $order->response_data    = json_encode($response);
+                $order->response_data = json_encode($response);
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
             }

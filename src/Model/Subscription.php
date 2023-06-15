@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @author      Open Source Team
- * @copyright   2022 Pagar.me (https://pagar.me)
+ * @copyright   2023 Pagar.me (https://pagar.me)
  * @license     https://pagar.me Copyright
  *
  * @link        https://pagar.me
@@ -15,6 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 use WC_Order;
+use WC_Subscription;
 use WC_Subscriptions_Cart;
 use Woocommerce\Pagarme\Controller\Orders;
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
@@ -33,9 +35,6 @@ class Subscription
     /** @var AbstractGateway */
     private $payment;
 
-    /** @var WooOrderRepository*/
-    private $wooOrderRepository;
-
     public function __construct(
         AbstractGateway $payment = null
     ) {
@@ -45,7 +44,6 @@ class Subscription
         $this->payment = $payment;
         $this->config = new Config;
         $this->orders = new Orders;
-        $this->wooOrderRepository = new WooOrderRepository;
         $this->addSupportToSubscription();
         $this->setPaymentEnabled();
     }
@@ -53,9 +51,9 @@ class Subscription
     private function addSupportToSubscription(): void
     {
         if (!$this->payment->hasSubscriptionSupport() || !$this->hasSubscriptionPlugin()) {
-            return ;
+            return;
         }
-        
+
         $this->payment->supports = array(
             'products',
             'subscriptions',
@@ -70,8 +68,14 @@ class Subscription
             'multiple_subscriptions',
         );
         add_action(
-            'woocommerce_scheduled_subscription_payment_'.$this->payment->id,
-            [$this, 'process'],
+            'woocommerce_scheduled_subscription_payment_' . $this->payment->id,
+            [$this, 'processSubscription'],
+            10,
+            2
+        );
+        add_action(
+            'on_pagarme_response',
+            [$this, 'addMetaDataCard'],
             10,
             2
         );
@@ -91,13 +95,32 @@ class Subscription
         return $this->config;
     }
 
+    public function addMetaDataCard($orderId, $response)
+    {
+        $subscriptions = wcs_get_subscriptions_for_order($orderId);
+        $cardData = $this->getCardDataByResponse($response);
+        if (!$cardData) {
+            return;
+        }
+        $paymentInformation = json_encode(
+            [
+                "brand" => strtolower($cardData->getBrand()->getName()),
+                "cardId" => $cardData->getPagarmeId()
+            ]
+        );
+        foreach ($subscriptions as $subs_id => $subscription) {
+            $subscription->add_meta_data('_pagarme_payment_subscription', $paymentInformation, true);
+            $subscription->save();
+        }
+    }
+
     /**
      * @param float $amountToCharge
      * @param WC_Order $order
      * @return bool|void
      * @throws \Exception
      */
-    public function process($amountToCharge, WC_Order $order)
+    public function processSubscription($amountToCharge, WC_Order $order)
     {
         if (!$order) {
             wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
@@ -112,10 +135,10 @@ class Subscription
         $order = new Order($order->get_id());
         $order->payment_method = $fields['payment_method'];
         if ($response) {
-            $order->transaction_id     = $response->getPagarmeId()->getValue();
-            $order->pagarme_id     = $response->getPagarmeId()->getValue();
+            $order->transaction_id = $response->getPagarmeId()->getValue();
+            $order->pagarme_id = $response->getPagarmeId()->getValue();
             $order->pagarme_status = $response->getStatus()->getStatus();
-            $order->response_data    = json_encode($response);
+            $order->response_data = json_encode($response);
             $order->update_by_pagarme_status($response->getStatus()->getStatus());
             return true;
         }
@@ -126,47 +149,68 @@ class Subscription
 
     private function convertOrderObject(WC_Order $order)
     {
-
+        
         $paymentMethod = str_replace('woo-pagarme-payments-', '', $order->get_payment_method());
         $paymentMethod = str_replace('-', '_', $paymentMethod);
         $fields = [
             'payment_method' => $paymentMethod
         ];
-        $card = $this->getCardDataByParent($order);
+        $card = $this->getCardSubscriptionData($order);
         if ($card !== null) {
             $fields['card_order_value'] = $order->get_total();
-            $fields['brand'] = $card->brand;
+            $fields['brand'] = $card['brand'];
             $fields['installments'] = 1;
-            $fields['card_id'] = $card->pagarmeId;
-            $fields['pagarmetoken'] = $card->pagarmeId;
+            $fields['card_id'] = $card['cardId'];
+            $fields['pagarmetoken'] = $card['cardId'];
         }
         return $fields;
     }
 
-    private function getCardDataByParent(WC_Order $order)
+    private function getCardSubscriptionData($order)
     {
-        $subscription = $this->getSubscription($order);
-        $parentOrder = $this->getParentOrderBySub($subscription);
-        return $this->getTransactionData($parentOrder)->cardData;
+        $cardData = $order->get_meta("_pagarme_payment_subscription", true);
+        if (!$cardData) {
+            return false;
+        }
+        return json_decode($cardData, true);
     }
 
-    private function getTransactionData(WC_Order $order)
+
+    private function getCardDataByResponse($response)
     {
-        $responseData = json_decode($order->get_meta('_pagarme_response_data'));
-        return $responseData->charges[0]->transactions[0];
+        $charges = $this->getChargesByResponse($response);
+        $transactions = $this->getTransactionsByCharges($charges);
+        return $this->getCardDataByTransaction($transactions);
     }
 
-    private function getSubscription(WC_Order $order)
+    private function getChargesByResponse($response)
     {
-        return $this->wooOrderRepository->getById($order->get_meta("_subscription_renewal"));
+        if (!$response) {
+            return false;
+        }
+        return current($response->getCharges());
     }
 
-    private function getParentOrderBySub($subscription)
+    private function getTransactionsByCharges($charge)
     {
-        return $this->wooOrderRepository->getById($subscription->get_parent_id());
+        if (!$charge) {
+            return false;
+        }
+        return current($charge->getTransactions());
     }
 
-    public static function hasSubscriptionProductInCart(): bool
+    private function getCardDataByTransaction($transactions)
+    {
+        if (!$transactions) {
+            return false;
+        }
+        return $transactions->getCardData();
+    }
+
+    /**
+     * @return boolean
+     */
+    public static function hasSubscriptionProductInCart()
     {
         if (WC_Subscriptions_Cart::cart_contains_subscription() || wcs_cart_contains_renewal()) {
             return true;
@@ -174,8 +218,11 @@ class Subscription
         return false;
     }
 
-    public function hasSubscriptionPlugin(): bool
+    /**
+     * @return boolean
+     */
+    public function hasSubscriptionPlugin()
     {
-		return class_exists('WC_Subscriptions');
-	}
+        return class_exists('WC_Subscriptions');
+    }
 }
