@@ -125,7 +125,8 @@ class Checkout
                 $order->transaction_id     = $response->getPagarmeId()->getValue();
                 $order->pagarme_id     = $response->getPagarmeId()->getValue();
                 $order->pagarme_status = $response->getStatus()->getStatus();
-                $order->response_data    = json_encode($response);
+                $this->addInstallmentsOnMetaData($order, $fields);
+                $order->response_data = json_encode($response);
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
             }
@@ -174,6 +175,17 @@ class Checkout
         $this->extractMulticustomers($fields, $paymentRequest);
         $this->extractOrderValue($fields, $paymentRequest);
         return $fields;
+    }
+
+    private function addInstallmentsOnMetaData(&$order, $fields)
+    {
+        if (!$fields["installments"]) {
+            return false;
+        }
+        $order->pagarme_installments_card1 = $fields["installments"];
+        if ($fields["installments2"]) {
+            $order->pagarme_installments_card2 = $fields["installments2"];
+        }
     }
 
     private function extractMulticustomers(array &$fields, PaymentRequestInterface $paymentRequest)
