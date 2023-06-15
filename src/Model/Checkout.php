@@ -91,7 +91,7 @@ class Checkout
         ) {
             $errors->add(
                 'shipping_number_required',
-                __("<strong>O campo &quot;Número&quot; do endereço de entrega</strong> é um campo obrigatório.")
+                __("<strong>The shipping address &quot;Number&quot; field</strong> is a required field.")
             );
         }
     }
