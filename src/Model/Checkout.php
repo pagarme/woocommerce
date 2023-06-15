@@ -81,7 +81,7 @@ class Checkout
         ) {
             $errors->add(
                 'billing_number_required',
-                '<strong>O campo "Número" do endereço de faturamento</strong> é um campo obrigatório.'
+                __("<strong>The billing address &quot;Number&quot; field</strong> is a required field.")
             );
         }
         if (
@@ -91,7 +91,7 @@ class Checkout
         ) {
             $errors->add(
                 'shipping_number_required',
-                '<strong>O campo "Número" do endereço de entrega</strong> é um campo obrigatório.'
+                __("<strong>O campo &quot;Número&quot; do endereço de entrega</strong> é um campo obrigatório.")
             );
         }
     }
