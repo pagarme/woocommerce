@@ -16,35 +16,30 @@ if (!function_exists('add_action')) {
 }
 ?>
 <?= $this->createBlock(
-    '\Woocommerce\Pagarme\Block\Checkout\Form\Billet',
-    'pagarme.checkout.form.billet',
-    [
-        'payment_instance' => $this->getPaymentInstance(),
-        'show_order_value' => true,
-        'show_multicustomers_form' => true,
-        'multicustomers_sequence' => 1
-    ]
+        '\Woocommerce\Pagarme\Block\Checkout\Form\Billet',
+        'pagarme.checkout.form.billet',
+        [
+            'payment_instance' => $this->getPaymentInstance(),
+            'show_order_value' => true,
+            'show_multicustomers_form' => true,
+            'multicustomers_sequence' => 1
+        ]
 )->toHtml() ?>
 <?= $this->createBlock(
-    '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
-    'pagarme.checkout.form.card',
-    [
-        'payment_instance' => $this->getPaymentInstance(),
-        'qty_cards' => $this->getQtyCards(),
-        'show_order_value' => true,
-        'show_multicustomers_form' => true,
-        'multicustomers_sequence' => 2
-    ]
+        '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
+        'pagarme.checkout.form.card',
+        [
+            'payment_instance' => $this->getPaymentInstance(),
+            'qty_cards' => $this->getQtyCards(),
+            'show_order_value' => true,
+            'show_multicustomers_form' => true,
+            'multicustomers_sequence' => 2
+        ]
 )->toHtml() ?>
 <script type="text/javascript">
     {
-        let paymentTarget = '.payment_method_woo-pagarme-payments-billet_and_card';
-        if (typeof pagarmeCard == 'object') {
-            pagarmeCard.start(paymentTarget);
-        }
         if (typeof pagarmeOrderValue == 'object') {
-            pagarmeOrderValue.start(paymentTarget);
+            pagarmeOrderValue.start();
         }
-
     }
 </script>

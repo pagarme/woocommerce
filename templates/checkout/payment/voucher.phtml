@@ -9,23 +9,17 @@
 
 /** @var \Woocommerce\Pagarme\Block\Checkout\Payment\Voucher $this */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 if (!function_exists('add_action')) {
     exit(0);
 }
 ?>
 <?= $this->createBlock(
-    '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
-    'pagarme.checkout.form.card',
-    [
-        'payment_instance' => $this->getPaymentInstance(),
-        'qty_cards' => $this->getQtyCards()
-    ]
+        '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
+        'pagarme.checkout.form.card',
+        [
+            'payment_instance' => $this->getPaymentInstance(),
+            'qty_cards' => $this->getQtyCards()
+        ]
 )->toHtml() ?>
-<script type="text/javascript">
-    if (typeof pagarmeCard == 'object') {
-        let paymentTarget = '.payment_method_woo-pagarme-payments-voucher';
-        pagarmeCard.start(paymentTarget);
-    }
-</script>
