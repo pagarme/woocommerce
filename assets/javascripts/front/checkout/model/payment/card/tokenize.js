@@ -82,7 +82,7 @@
 
         function getApiData(url, data, field, success, fail) {
             return new Promise((resolve) => {
-                let xhr = new XMLHttpRequest();
+                const xhr = new XMLHttpRequest();
                 xhr.open('POST', url);
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState < 4) {
@@ -147,7 +147,7 @@
 
         function translateErrors(error, message) {
             error = error.replace('request.', '');
-            const output = error + ': ' + message;
+            const output = `${error}: ${message}`;
             const ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
 
             if (PagarmeGlobalVars.WPLANG != 'pt_BR') {

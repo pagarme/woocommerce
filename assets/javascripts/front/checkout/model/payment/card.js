@@ -7,6 +7,7 @@ const valueTarget = '[data-pagarmecheckout-element="order-value"]';
 const installmentsTarget = '[data-pagarme-component="installments"]';
 const mundiCdn = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
 const tokenElement = '[data-pagarmecheckout-element="token"]';
+const billingCpfId = '#billing_cpf';
 let cardsMethods = [];
 
 let pagarmeCard = {
@@ -95,12 +96,12 @@ let pagarmeCard = {
             types = await this.getBrands(true),
             bin = cardNumber.substring(0, 6),
             data;
-        for (let current_type of types) {
-            for (let prefix of current_type.prefixes) {
+        for (const currentType of types) {
+            for (const prefix of currentType.prefixes) {
                 const prefixText = prefix.toString();
                 if (bin.indexOf(prefixText) === 0 && oldPrefix.length < prefixText.length) {
                     oldPrefix = prefixText;
-                    data = current_type;
+                    data = currentType;
                 }
             }
         }
@@ -388,11 +389,11 @@ let pagarmeCard = {
         const voucherDocumentHolder = $('input[name="pagarme[voucher][cards][1][document-holder]"]');
         const handleCpfChange = () => {
             voucherDocumentHolder.empty();
-            voucherDocumentHolder.val($('#billing_cpf').val()).trigger('input');
+            voucherDocumentHolder.val($(billingCpfId).val()).trigger('input');
         };
-        this.bindListenerToEvent('#billing_cpf', 'change', handleCpfChange);
+        this.bindListenerToEvent(billingCpfId, 'change', handleCpfChange);
 
-        voucherDocumentHolder.val($('#billing_cpf').val()).trigger('input');
+        voucherDocumentHolder.val($(billingCpfId).val()).trigger('input');
 
     },
     start: function () {
