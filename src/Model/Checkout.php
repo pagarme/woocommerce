@@ -25,6 +25,7 @@ use Woocommerce\Pagarme\Model\Payment\Data\Cards;
 use Woocommerce\Pagarme\Model\Payment\Data\Multicustomers;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequest;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
+use Woocommerce\Pagarme\Model\Subscription;
 
 class Checkout
 {
@@ -34,21 +35,22 @@ class Checkout
     /** @var string */
     const API_REQUEST = 'e3hpgavff3cw';
 
-    /** @var Orders*/
+    /** @var Orders */
     private $orders;
 
     /** @var Gateway */
     private $gateway;
 
-    /** @var WooOrderRepository*/
+    /** @var WooOrderRepository */
     private $wooOrderRepository;
 
     public function __construct(
-        Gateway $gateway = null,
-        Config $config = null,
-        Orders $orders = null,
+        Gateway            $gateway = null,
+        Config             $config = null,
+        Orders             $orders = null,
         WooOrderRepository $wooOrderRepository = null
-    ) {
+    )
+    {
         if (!$config) {
             $config = new Config;
         }
@@ -123,6 +125,9 @@ class Checkout
         }
         if ($type === CheckoutTypes::TRANSPARENT_VALUE) {
             $fields = $this->convertCheckoutObject($_POST[PaymentRequestInterface::PAGARME_PAYMENT_REQUEST_KEY]);
+            if (Subscription::hasSubscriptionProductInCart()) {
+                $fields['recurrence_cycle'] = "first";
+            }
             $response = $this->orders->create_order(
                 $wc_order,
                 $fields['payment_method'],

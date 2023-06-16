@@ -114,48 +114,51 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
     public $recurrencyCycle;
 
     /**
+     * Defines whether the card has been used one or more times.
+     * @maps recurrence_cycle
+     * @var string|null $recurrenceCycle public property
+     */
+    public $recurrenceCycle;
+
+    /**
      * Constructor to set initial or default values of member properties
-     * @param integer                             $installments         Initialization value for $this->installments
-     * @param string                              $statementDescriptor  Initialization value for $this-
-     *                                                                    >statementDescriptor
-     * @param CreateCardRequest                   $card                 Initialization value for $this->card
-     * @param string                              $cardId               Initialization value for $this->cardId
-     * @param string                              $cardToken            Initialization value for $this->cardToken
-     * @param bool                                $recurrence           Initialization value for $this->recurrence
-     * @param bool                                $capture              Initialization value for $this->capture
-     * @param bool                                $extendedLimitEnabled Initialization value for $this-
-     *                                                                    >extendedLimitEnabled
-     * @param string                              $extendedLimitCode    Initialization value for $this-
-     *                                                                    >extendedLimitCode
-     * @param integer                             $merchantCategoryCode Initialization value for $this-
-     *                                                                    >merchantCategoryCode
-     * @param CreatePaymentAuthenticationRequest  $authentication       Initialization value for $this-
-     *                                                                    >authentication
-     * @param CreateCardPaymentContactlessRequest $contactless          Initialization value for $this->contactless
-     * @param bool                                $autoRecovery         Initialization value for $this->autoRecovery
-     * @param string                              $operationType        Initialization value for $this->operationType
-     * @param string                              $recurrencyCycle      Initialization value for $this-
-     *                                                                    >recurrencyCycle
+     * @param integer $installments Initialization value for $this->installments
+     * @param string $statementDescriptor Initialization value for $this->statementDescriptor
+     * @param CreateCardRequest $card Initialization value for $this->card
+     * @param string $cardId Initialization value for $this->cardId
+     * @param string $cardToken Initialization value for $this->cardToken
+     * @param bool $recurrence Initialization value for $this->recurrence
+     * @param bool $capture Initialization value for $this->capture
+     * @param bool $extendedLimitEnabled Initialization value for $this->extendedLimitEnabled
+     * @param string $extendedLimitCode Initialization value for $this->extendedLimitCode
+     * @param integer $merchantCategoryCode Initialization value for $this->merchantCategoryCode
+     * @param CreatePaymentAuthenticationRequest $authentication Initialization value for $this->authentication
+     * @param CreateCardPaymentContactlessRequest $contactless Initialization value for $this->contactless
+     * @param bool $autoRecovery Initialization value for $this->autoRecovery
+     * @param string $operationType Initialization value for $this->operationType
+     * @param string $recurrencyCycle Initialization value for $this->recurrencyCycle
+     * @param string $recurrenceCycle Initialization value for $this->recurrenceCycle
      */
     public function __construct()
     {
         switch (func_num_args()) {
-            case 15:
-                $this->installments         = func_get_arg(0);
-                $this->statementDescriptor  = func_get_arg(1);
-                $this->card                 = func_get_arg(2);
-                $this->cardId               = func_get_arg(3);
-                $this->cardToken            = func_get_arg(4);
-                $this->recurrence           = func_get_arg(5);
-                $this->capture              = func_get_arg(6);
+            case 16:
+                $this->installments = func_get_arg(0);
+                $this->statementDescriptor = func_get_arg(1);
+                $this->card = func_get_arg(2);
+                $this->cardId = func_get_arg(3);
+                $this->cardToken = func_get_arg(4);
+                $this->recurrence = func_get_arg(5);
+                $this->capture = func_get_arg(6);
                 $this->extendedLimitEnabled = func_get_arg(7);
-                $this->extendedLimitCode    = func_get_arg(8);
+                $this->extendedLimitCode = func_get_arg(8);
                 $this->merchantCategoryCode = func_get_arg(9);
-                $this->authentication       = func_get_arg(10);
-                $this->contactless          = func_get_arg(11);
-                $this->autoRecovery         = func_get_arg(12);
-                $this->operationType        = func_get_arg(13);
-                $this->recurrencyCycle      = func_get_arg(14);
+                $this->authentication = func_get_arg(10);
+                $this->contactless = func_get_arg(11);
+                $this->autoRecovery = func_get_arg(12);
+                $this->operationType = func_get_arg(13);
+                $this->recurrencyCycle = func_get_arg(14);
+                $this->recurrenceCycle = func_get_arg(15);
                 break;
 
             default:
@@ -165,7 +168,6 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
         }
     }
 
-
     /**
      * Encode this object to JSON
      */
@@ -173,21 +175,22 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
     public function jsonSerialize()
     {
         $json = array();
-        $json['installments']           = $this->installments;
-        $json['statement_descriptor']   = $this->statementDescriptor;
-        $json['card']                   = $this->card;
-        $json['card_id']                = $this->cardId;
-        $json['card_token']             = $this->cardToken;
-        $json['recurrence']             = $this->recurrence;
-        $json['capture']                = $this->capture;
+        $json['installments'] = $this->installments;
+        $json['statement_descriptor'] = $this->statementDescriptor;
+        $json['card'] = $this->card;
+        $json['card_id'] = $this->cardId;
+        $json['card_token'] = $this->cardToken;
+        $json['recurrence'] = $this->recurrence;
+        $json['capture'] = $this->capture;
         $json['extended_limit_enabled'] = $this->extendedLimitEnabled;
-        $json['extended_limit_code']    = $this->extendedLimitCode;
+        $json['extended_limit_code'] = $this->extendedLimitCode;
         $json['merchant_category_code'] = $this->merchantCategoryCode;
-        $json['authentication']         = $this->authentication;
-        $json['contactless']            = $this->contactless;
-        $json['auto_recovery']          = $this->autoRecovery;
-        $json['operation_type']         = $this->operationType;
-        $json['recurrency_cycle']       = $this->recurrencyCycle;
+        $json['authentication'] = $this->authentication;
+        $json['contactless'] = $this->contactless;
+        $json['auto_recovery'] = $this->autoRecovery;
+        $json['operation_type'] = $this->operationType;
+        $json['recurrency_cycle'] = $this->recurrencyCycle;
+        $json['recurrence_cycle'] = $this->recurrenceCycle;
 
         return $json;
     }

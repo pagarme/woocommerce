@@ -29,7 +29,7 @@ class Subscription
     /** @var string */
     const API_REQUEST = 'e3hpgavff3cw';
 
-    /** @var Orders*/
+    /** @var Orders */
     private $orders;
 
     /** @var AbstractGateway */
@@ -37,7 +37,8 @@ class Subscription
 
     public function __construct(
         AbstractGateway $payment = null
-    ) {
+    )
+    {
         if (!$this->hasSubscriptionPlugin()) {
             return;
         }
@@ -87,6 +88,7 @@ class Subscription
             $this->payment->enabled = "no";
         }
     }
+
     /**
      * @return Config
      */
@@ -149,7 +151,7 @@ class Subscription
 
     private function convertOrderObject(WC_Order $order)
     {
-        
+
         $paymentMethod = str_replace('woo-pagarme-payments-', '', $order->get_payment_method());
         $paymentMethod = str_replace('-', '_', $paymentMethod);
         $fields = [
@@ -162,6 +164,7 @@ class Subscription
             $fields['installments'] = 1;
             $fields['card_id'] = $card['cardId'];
             $fields['pagarmetoken'] = $card['cardId'];
+            $fields['recurrence_cycle'] = "subsequent";
         }
         return $fields;
     }
@@ -212,6 +215,9 @@ class Subscription
      */
     public static function hasSubscriptionProductInCart()
     {
+        if (!self::hasSubscriptionPlugin()) {
+            return false;
+        }
         if (WC_Subscriptions_Cart::cart_contains_subscription() || wcs_cart_contains_renewal()) {
             return true;
         }
@@ -221,7 +227,7 @@ class Subscription
     /**
      * @return boolean
      */
-    public function hasSubscriptionPlugin()
+    public static function hasSubscriptionPlugin()
     {
         return class_exists('WC_Subscriptions');
     }
