@@ -47,12 +47,12 @@ if (!function_exists('add_action')) {
             </p>
         <?php endif; ?>
         <?= $this->createBlock(
-            '\Woocommerce\Pagarme\Block\Checkout\Form\Wallet',
-            'pagarme.checkout.form.wallet',
-            [
-                'payment_instance' => $this->getPaymentInstance(),
-                'sequence' => $qty
-            ]
+                '\Woocommerce\Pagarme\Block\Checkout\Form\Wallet',
+                'pagarme.checkout.form.wallet',
+                [
+                    'payment_instance' => $this->getPaymentInstance(),
+                    'sequence' => $qty
+                ]
         )->toHtml() ?>
         <div class="wc-credit-card-info" data-element="fields-cc-data">
             <div <?= $this->getCompoenent() ?>
@@ -108,12 +108,12 @@ if (!function_exists('add_action')) {
             </div>
             <p class="form-row form-row-wide" style="display: <?= $this->showInstallments() ? 'block' : 'none' ?>">
                 <?= $this->createBlock(
-                    '\Woocommerce\Pagarme\Block\Checkout\Form\Installments',
-                    'pagarme.checkout.form.installments',
-                    [
-                        'payment_instance' => $this->getPaymentInstance(),
-                        'sequence' => $qty
-                    ]
+                        '\Woocommerce\Pagarme\Block\Checkout\Form\Installments',
+                        'pagarme.checkout.form.installments',
+                        [
+                            'payment_instance' => $this->getPaymentInstance(),
+                            'sequence' => $qty
+                        ]
                 )->toHtml() ?>
             </p>
             <?php if ($this->showHolderName()) : ?>
@@ -131,35 +131,43 @@ if (!function_exists('add_action')) {
                 </p>
             <?php endif; ?>
             <?= $this->createBlock(
-                '\Woocommerce\Pagarme\Block\Checkout\Field\Wallet',
-                'pagarme.checkout.field.wallet',
-                [
-                    'payment_instance' => $this->getPaymentInstance(),
-                    'parent_element_id' => $this->getElementId(),
-                    'sequence' => $qty
-                ]
+                    '\Woocommerce\Pagarme\Block\Checkout\Field\Wallet',
+                    'pagarme.checkout.field.wallet',
+                    [
+                        'payment_instance' => $this->getPaymentInstance(),
+                        'parent_element_id' => $this->getElementId(),
+                        'sequence' => $qty
+                    ]
             )->toHtml() ?>
         </div>
         <?php if ($this->showMulticustomersForm()) : ?>
             <?= $this->createBlock(
-                '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
-                'pagarme.checkout.field.multicustomers',
-                [
-                    'payment_instance' => $this->getPaymentInstance(),
-                    'parent_element_id' => $this->getElementId('multicustomers'),
-                    'sequence' => $qty
-                ]
+                    '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
+                    'pagarme.checkout.field.multicustomers',
+                    [
+                        'payment_instance' => $this->getPaymentInstance(),
+                        'parent_element_id' => $this->getElementId('multicustomers'),
+                        'sequence' => $qty
+                    ]
             )->toHtml() ?>
             <?= $this->createBlock(
-                '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
-                'pagarme.checkout.form.multicustomers',
-                [
-                    'payment_instance' => $this->getPaymentInstance(),
-                    'parent_element_id' => $this->getElementId('multicustomers'),
-                    'sequence' => $qty
-                ]
+                    '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
+                    'pagarme.checkout.form.multicustomers',
+                    [
+                        'payment_instance' => $this->getPaymentInstance(),
+                        'parent_element_id' => $this->getElementId('multicustomers'),
+                        'sequence' => $qty
+                    ]
             )->toHtml() ?>
         <?php endif; ?>
     </fieldset>
 <?php endfor; ?>
+
+<script type="text/javascript">
+    {
+        if (typeof pagarmeCard == 'object') {
+            pagarmeCard.start();
+        }
+    }
+</script>
 

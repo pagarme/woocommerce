@@ -30,13 +30,13 @@ let pagarmeCheckoutWallet = {
             pagarmeCard.updateInstallmentsElement(e);
         }
     },
-    addEventListener: function (paymentTarget) {
-        paymentTarget = `${paymentTarget} ${cardSaveTarget}`;
-        $(paymentTarget).on('change', function (e) {
+    addEventListener: function () {
+        const handleCardSaveChange = (e) => {
             pagarmeCheckoutWallet.onChangeCard(e);
-        });
+        }
+        pagarmeCard.bindListenerToEvent(cardSaveTarget, 'change', handleCardSaveChange);
     },
-    start: function (paymentTarget) {
-        this.addEventListener(paymentTarget);
+    start: function () {
+        this.addEventListener();
     }
 }
