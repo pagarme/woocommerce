@@ -21,9 +21,7 @@ if (!defined('ABSPATH')) {
 use WC_Order;
 use Woocommerce\Pagarme\Model\Payment\Data\AbstractPayment;
 use Woocommerce\Pagarme\Model\Payment\Data\Card;
-use Woocommerce\Pagarme\Model\Payment\Data\Cards;
 use Woocommerce\Pagarme\Model\Payment\Data\Multicustomers;
-use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequest;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
 use Woocommerce\Pagarme\Model\Subscription;
 
