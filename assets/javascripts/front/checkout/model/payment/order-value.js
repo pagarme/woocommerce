@@ -26,7 +26,7 @@ let pagarmeOrderValue = {
         nextInput.val(this.formatValue((total - value), false));
         input.val(this.formatValue(value, false));
         [e, nextInput].forEach(function (input) {
-            if (!(input instanceof $)) {
+            if (!(input instanceof $) && !(input instanceof $.Event)) {
                 input = $(input);
             }
             if (input instanceof $.Event) {
