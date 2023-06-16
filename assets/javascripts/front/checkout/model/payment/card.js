@@ -403,7 +403,7 @@ let pagarmeCard = {
         if (typeof pagarmeCheckoutWallet == 'object') {
             pagarmeCheckoutWallet.start();
         }
-        if (typeof pagarmeCheckoutWallet == 'object') {
+        if (typeof pagarmeOrderValue == 'object') {
             pagarmeOrderValue.start();
         }
 
