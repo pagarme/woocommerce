@@ -70,7 +70,7 @@ test.describe('Cartão de Crédito', () => {
         await proceedCheckout(page);
         await informFirstAndLastName(page, user.first_name, user.last_name);
         await selectPersonTypeCnpj(page, person.cnpj_type);
-        await informCnpj(page, 'Ramses Almeida inc', person.valid_cnpj);
+        await informCnpj(page, person.cnpj_name, person.valid_cnpj);
         await selectCountry(page, address.country);
         await informZipCode(page, address.zip_code);
         await informAddress(page, address.address_line, address.address_number);

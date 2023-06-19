@@ -16,6 +16,7 @@ const personal_legal_information = () => {
         valid_cpf: '81007396091',
         cnpj_type: 'Legal Person',
         valid_cnpj: '07288037000106',
+        cnpj_name: 'Woocommerce Tests Inc'
     }
 }
 
