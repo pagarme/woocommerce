@@ -55,6 +55,7 @@ test.describe('Cartão de Crédito', () => {
         await informCvvAndExpirationDate(page, credit_card.credit_card_date, credit_card.credit_card_cvv);
         await selectPlaceOrder(page);
         await expect(page.getByText('Thank you. Your order has been received.')).toBeVisible();
+        await expect(page.getByText('The status of your transaction is PAID.')).toBeVisible();
 
     })
 
@@ -81,6 +82,7 @@ test.describe('Cartão de Crédito', () => {
         await informCvvAndExpirationDate(page, credit_card.credit_card_date, credit_card.credit_card_cvv);
         await selectPlaceOrder(page);
         await expect(page.getByText('Thank you. Your order has been received.')).toBeVisible();
+        await expect(page.getByText('The status of your transaction is PAID.')).toBeVisible();
 
     })
 })
