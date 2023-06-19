@@ -31,16 +31,20 @@ const selectPersonType = async (page, personType) => {
 
 }
 
+const selectPersonTypeCnpj = async (page, personType) => {
+    await page.click(locators.person_id);
+    await page.getByRole('option', { name: personType }).click();
+
+}
+
 const informCpf = async (page, cpfNumber) => {
-    await page.click(locators.cpf_id)
-    await page.type(locators.cpf_id, '81007396091');
+    await page.type(locators.cpf_id, cpfNumber, {delay: 100});
 }
 
 const informCnpj = async (page, cnpjCompanyName, cnpjNumber) => {
     await page.click(locators.company_name_id)
     await page.type(locators.company_name_id, cnpjCompanyName);
-    await page.click(locators.cnpj_id)
-    await page.type(locators.cnpj_id, cnpjNumber);
+    await page.type(locators.cnpj_id, cnpjNumber, {delay: 100});
 }
 
 const selectCountry = async (page, countryInfo) => {
@@ -90,6 +94,7 @@ const selectPlaceOrder = async (page) => {
 module.exports = {
     informFirstAndLastName,
     selectPersonType,
+    selectPersonTypeCnpj,
     informCpf,
     informCnpj,
     selectCountry,

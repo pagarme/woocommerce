@@ -32,7 +32,7 @@ const address_information = () => {
 
 const credit_card_information_valid = () => {
     return {
-        credit_card_holder_name: faker.name.fullName(),
+        credit_card_holder_name: faker.name.firstName(),
         credit_card_number: '4000000000000010',
         credit_card_date: '03 / 32',
         credit_card_cvv: '997'
