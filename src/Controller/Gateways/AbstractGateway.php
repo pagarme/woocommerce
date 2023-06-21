@@ -46,7 +46,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     const PAYMENT_OPTION_UPDATE_SLUG = 'woocommerce_update_options_payment_gateways_';
 
     /** @var string  */
-    const PAYMENT_OPTIONS_SETTINGS = 'woocommerce_%s_settings';
+    const PAYMENT_OPTIONS_SETTINGS_NAME = 'woocommerce_%s_settings';
 
     /** @var Gateway|null */
     public $model;
@@ -323,7 +323,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function beforeUpdateAdminOptions($optionName, $oldValue, $values)
     {
-        $isValidOption = $optionName !== sprintf(self::PAYMENT_OPTIONS_SETTINGS, $this->id);
+        $isValidOption = $optionName !== sprintf(self::PAYMENT_OPTIONS_SETTINGS_NAME, $this->id);
         if ($isValidOption) {
             return;
         }
@@ -338,7 +338,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function beforeAddAdminOptions($optionName, $values)
     {
-        $isValidOption = $optionName !== sprintf(self::PAYMENT_OPTIONS_SETTINGS, $this->id);
+        $isValidOption = $optionName !== sprintf(self::PAYMENT_OPTIONS_SETTINGS_NAME, $this->id);
         if ($isValidOption) {
             return;
         }
