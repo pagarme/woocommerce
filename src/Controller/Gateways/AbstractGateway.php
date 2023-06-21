@@ -112,22 +112,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->title = $this->getTitle();
         $this->has_fields = true;
         if (is_admin()) {
-            $hasNotUpdateOptionActionRegistered = has_action(
-                'update_option',
-                [$this, 'beforeUpdateAdminOptions']
-            ) === false;
-            if ($hasNotUpdateOptionActionRegistered) {
-                add_action("update_option", [$this, 'beforeUpdateAdminOptions'], 10, 3);
-            }
-
-            $hasNotAddOptionActionRegistered = has_action(
-                'add_option',
-                [$this, 'beforeAddAdminOptions']
-            ) === false;
-            if ($hasNotAddOptionActionRegistered) {
-                add_action("add_option", [$this, 'beforeAddAdminOptions'], 10, 2);
-            }
-
+            add_action("update_option", [$this, 'beforeUpdateAdminOptions'], 10, 3);
+            add_action("add_option", [$this, 'beforeAddAdminOptions'], 10, 2);
             add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'process_admin_options']);
         }
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
