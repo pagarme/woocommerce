@@ -114,6 +114,13 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
     public $recurrencyCycle;
 
     /**
+     * Defines whether the card has been used one or more times.
+     * @maps recurrence_cycle
+     * @var string|null $recurrenceCycle public property
+     */
+    public $recurrenceCycle;
+
+    /**
      * Constructor to set initial or default values of member properties
      * @param integer                             $installments         Initialization value for $this->installments
      * @param string                              $statementDescriptor  Initialization value for $this-
@@ -136,11 +143,13 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
      * @param string                              $operationType        Initialization value for $this->operationType
      * @param string                              $recurrencyCycle      Initialization value for $this-
      *                                                                    >recurrencyCycle
+     * @param string                              $recurrenceCycle      Initialization value for $this-
+     *                                                                    >recurrenceCycle
      */
     public function __construct()
     {
         switch (func_num_args()) {
-            case 15:
+            case 16:
                 $this->installments         = func_get_arg(0);
                 $this->statementDescriptor  = func_get_arg(1);
                 $this->card                 = func_get_arg(2);
@@ -156,6 +165,7 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
                 $this->autoRecovery         = func_get_arg(12);
                 $this->operationType        = func_get_arg(13);
                 $this->recurrencyCycle      = func_get_arg(14);
+                $this->recurrenceCycle      = func_get_arg(15);
                 break;
 
             default:
@@ -164,7 +174,6 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
                 break;
         }
     }
-
 
     /**
      * Encode this object to JSON
@@ -188,6 +197,7 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
         $json['auto_recovery']          = $this->autoRecovery;
         $json['operation_type']         = $this->operationType;
         $json['recurrency_cycle']       = $this->recurrencyCycle;
+        $json['recurrence_cycle']       = $this->recurrenceCycle;
 
         return $json;
     }
