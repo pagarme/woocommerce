@@ -197,15 +197,7 @@
             });
         }
 
-        $("form.checkout").on(
-            "checkout_place_order",
-            function () {
-                try {
-                    execute();
-                } catch (e) {
-                    return false;
-                }
-            }
-        );
+        $('form.checkout').on('checkout_place_order', execute());
+        $('form#order_review').on('submit', execute());
     }(jQuery)
 );
