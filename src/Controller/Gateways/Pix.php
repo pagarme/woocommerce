@@ -71,7 +71,7 @@ class Pix extends AbstractGateway
         return [
             'title' => __('Additional information', 'woo-pagarme-payments'),
             'description' => __(
-                'Set of key and value used to add information to the generated pix.' .
+                'Set of key and value used to add information to the generated pix. ' .
                 'This will be visible to the buyer during the payment process.',
                 'woo-pagarme-payments'
             ),
