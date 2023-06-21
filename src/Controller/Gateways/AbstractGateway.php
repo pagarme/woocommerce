@@ -7,7 +7,7 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
@@ -25,7 +25,7 @@ use Woocommerce\Pagarme\Model\Payment\PostFormatter;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
 use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 if (!function_exists('add_action')) {
     exit(0);
@@ -44,6 +44,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /** @var string */
     const PAYMENT_OPTION_UPDATE_SLUG = 'woocommerce_update_options_payment_gateways_';
+
+    /** @var string  */
+    const PAYMENT_OPTIONS_SETTINGS_NAME = 'woocommerce_%s_settings';
 
     /** @var Gateway|null */
     public $model;
@@ -103,14 +106,14 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->method_title = $this->getPaymentMethodTitle();
         $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->method_title;
         $this->has_fields = false;
-//        $this->icon = Core::plugins_url('assets/images/logo.svg');
         $this->init_form_fields();
         $this->init_settings();
         $this->enabled = $this->get_option('enabled', 'no');
         $this->title = $this->getTitle();
         $this->has_fields = true;
         if (is_admin()) {
-            add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'beforeProcessAdminOptions']);
+            add_action("update_option", [$this, 'beforeUpdateAdminOptions'], 10, 3);
+            add_action("add_option", [$this, 'beforeAddAdminOptions'], 10, 2);
             add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'process_admin_options']);
         }
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
@@ -158,12 +161,12 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     }
 
     /**
-     * @param $order_id
+     * @param $orderId
      * @return void
      */
-    public function receipt_page($order_id)
+    public function receipt_page($orderId)
     {
-        $this->checkout_transparent($order_id);
+        $this->checkout_transparent($orderId);
     }
 
     /**
@@ -225,7 +228,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     {
         $this->form_fields['enabled'] = $this->field_enabled();
         $this->form_fields['title'] = $this->field_title();
-        $this->form_fields = array_merge( $this->form_fields, $this->append_form_fields(), $this->append_gateway_form_fields());
+        $this->form_fields = array_merge(
+            $this->form_fields,
+            $this->append_form_fields(),
+            $this->append_gateway_form_fields()
+        );
     }
 
     /**
@@ -258,7 +265,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /**
      * @return bool
      */
-    public function isGatewayType(){
+    public function isGatewayType()
+    {
         return $this->model->config->getIsGatewayIntegrationType();
     }
 
@@ -273,7 +281,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             'options' => $this->yesnoOptions->toLabelsArray(true),
             'label'   => __('Enable', 'woo-pagarme-payments') . ' ' .
                 __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
-            'default' => __($this->config->getData('enable_' . $this->method), 'woo-pagarme-payments') ?? strtolower(Yesno::NO),
+            'default' => __(
+                $this->config->getData('enable_' . $this->method),
+                'woo-pagarme-payments'
+                ) ?? strtolower(Yesno::NO),
         ];
     }
 
@@ -291,24 +302,50 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     }
 
     /**
+     * @param mixed $optionName
+     * @param mixed $oldValue
+     * @param mixed $values
      * @return void
      */
-    public function beforeProcessAdminOptions()
+    public function beforeUpdateAdminOptions($optionName, $oldValue, $values)
     {
-        foreach ($_POST as $key => $value) {
-            $paymentOptionsSlug = 'woocommerce_'  . $this->id;
-            if (strpos($key, $paymentOptionsSlug) !== false) {
-                if (array_key_exists(1, explode($paymentOptionsSlug . '_', $key))) {
-                    $field = explode($paymentOptionsSlug . '_', $key)[1];
-                    if ($field === 'title') {
-                        $field = $this->method . '_' . $field;
-                    }
-                    if ($field === 'enabled') {
-                        $field = $this->form_fields['enabled']['old_name'] ?? 'enable_' . $this->method;
-                    }
-                    $this->config->setData($field, $value);
-                }
+        $isValidOption = $optionName !== sprintf(self::PAYMENT_OPTIONS_SETTINGS_NAME, $this->id);
+        if ($isValidOption) {
+            return;
+        }
+
+        $this->saveAdminOptionsInCoreConfig($values);
+    }
+
+    /**
+     * @param mixed $optionName
+     * @param mixed $values
+     * @return void
+     */
+    public function beforeAddAdminOptions($optionName, $values)
+    {
+        $isValidOption = $optionName !== sprintf(self::PAYMENT_OPTIONS_SETTINGS_NAME, $this->id);
+        if ($isValidOption) {
+            return;
+        }
+
+        $this->saveAdminOptionsInCoreConfig($values);
+    }
+
+    /**
+     * @param array $values
+     * @return void
+     */
+    protected function saveAdminOptionsInCoreConfig($values)
+    {
+        foreach ($values as $field => $value) {
+            if ($field === 'title') {
+                $field = $this->method . '_' . $field;
             }
+            if ($field === 'enabled') {
+                $field = $this->form_fields['enabled']['old_name'] ?? 'enable_' . $this->method;
+            }
+            $this->config->setData($field, $value);
         }
         $this->config->save();
     }
