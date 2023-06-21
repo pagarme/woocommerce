@@ -56,9 +56,9 @@
             'dev_requirement' => false,
         ),
         'pagarme/pagarmecoreapi' => array(
-            'pretty_version' => 'v5.6.1',
-            'version' => '5.6.1.0',
-            'reference' => '6b694a1a830c20b3ead44c5476fdad75c58bcf0d',
+            'pretty_version' => '5.6.2',
+            'version' => '5.6.2.0',
+            'reference' => '1e6caa95deb7b17223c0458e8f4c901e851e8590',
             'type' => 'library',
             'install_path' => __DIR__ . '/../pagarme/pagarmecoreapi',
             'aliases' => array(),
