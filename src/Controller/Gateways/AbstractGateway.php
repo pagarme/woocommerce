@@ -100,7 +100,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->postFormatter = $postFormatter ?? new PostFormatter;
         $this->model = $gateway ?? new Gateway;
         $this->checkout = $checkout ?? new Checkout;
-        
         $this->wooOrderRepository = $wooOrderRepository ?? new WooOrderRepository;
         $this->template = $template ?? new Template;
         $this->id = 'woo-pagarme-payments-' . $this->method;
@@ -108,7 +107,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->method_title = $this->getPaymentMethodTitle();
         $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->method_title;
         $this->has_fields = false;
-//        $this->icon = Core::plugins_url('assets/images/logo.svg');
+        //$this->icon = Core::plugins_url('assets/images/logo.svg');
         $this->init_form_fields();
         $this->init_settings();
         $this->enabled = $this->get_option('enabled', 'no');
@@ -154,6 +153,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function process_payment($orderId): array
     {
         $wooOrder = $this->wooOrderRepository->getById($orderId);
+        if ($this->subscription->isChangePaymentSubscription()) {
+            return $this->subscription->processChangePaymentSubscription($wooOrder);
+        }
         $this->postFormatter->assemblePaymentRequest();
         $this->checkout->process($wooOrder);
         return [

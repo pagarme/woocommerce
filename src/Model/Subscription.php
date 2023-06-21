@@ -80,6 +80,8 @@ class Subscription
             10,
             2
         );
+        add_filter('woocommerce_subscriptions_update_payment_via_pay_shortcode',
+            __CLASS__ . '::maybe_dont_update_payment_method', 10, 3);
     }
 
     private function setPaymentEnabled()
@@ -147,6 +149,20 @@ class Subscription
         $order->pagarme_status = 'failed';
         $order->update_by_pagarme_status('failed');
         return false;
+    }
+
+    public function processChangePaymentSubscription(WC_Order $subscription)
+    {
+        $new_payment_method = wc_clean( $_POST['payment_method'] );;
+
+        if ( 'woo-pagarme-payments-credit_card' == $new_payment_method ) {
+            self::update_payment_method($subscription, $new_payment_method);
+//            throw new \Exception("Nao Rolou Mesmo!!!!");
+        }
+        return [
+            'result'   => 'success',
+            'redirect' => $this->payment->get_return_url($order)
+        ];
     }
 
     private function convertOrderObject(WC_Order $order)
@@ -230,5 +246,19 @@ class Subscription
     public static function hasSubscriptionPlugin()
     {
         return class_exists('WC_Subscriptions');
+    }
+
+    public function isChangePaymentSubscription() {
+        if (isset($_POST['woocommerce_change_payment'])) {
+            return wcs_is_subscription(wc_clean($_POST['woocommerce_change_payment']));
+        }
+        return false;
+    }
+
+    public static function maybe_dont_update_payment_method( $update, $new_payment_method, $subscription ) {
+        if ('woo-pagarme-payments-credit_card' == $new_payment_method ) {
+            $update = false;
+        }
+        return $update;
     }
 }
