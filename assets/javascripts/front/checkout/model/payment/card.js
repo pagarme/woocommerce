@@ -58,7 +58,7 @@ let pagarmeCard = {
     formHandler: function () {
         if (this.isPagarmePayment()) {
             let e = this.getCheckoutPaymentElement();
-            let cardsForm = e.find(fieldsetCardElements);
+            const cardsForm = e.find(fieldsetCardElements);
             return this.checkTokenCard(cardsForm);
         }
         return true;
@@ -173,7 +173,7 @@ let pagarmeCard = {
             value = await this.getCardDataContingency(cardNumber);
         }
         if (typeof value === 'undefined') {
-            return;
+            return undefined;
         }
         let codeWithArray = {
             name: 'CVV',

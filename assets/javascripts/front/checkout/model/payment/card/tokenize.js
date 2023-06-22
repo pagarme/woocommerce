@@ -142,7 +142,8 @@
         };
 
         function parseErrorsList (error, message) {
-            wc_pagarme_checkout.errorList += '<li>' + pagarmeCard.translateErrors(error, message) + '<li>';
+            const translatedError = pagarmeCard.translateErrors(error, message);
+            wc_pagarme_checkout.errorList += `<li>${translatedError}<li>`;
         };
 
         async function createTokenInput(response, field) {
