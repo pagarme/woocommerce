@@ -142,23 +142,7 @@
         };
 
         function parseErrorsList (error, message) {
-            wc_pagarme_checkout.errorList += '<li>' + translateErrors(error, message) + '<li>';
-        };
-
-        function translateErrors(error, message) {
-            error = error.replace('request.', '');
-            const output = `${error}: ${message}`;
-            const ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
-
-            if (PagarmeGlobalVars.WPLANG != 'pt_BR') {
-                return output;
-            }
-
-            if (ptBrMessages.hasOwnProperty(output)) {
-                return ptBrMessages[output];
-            }
-
-            return output;
+            wc_pagarme_checkout.errorList += '<li>' + pagarmeCard.translateErrors(error, message) + '<li>';
         };
 
         async function createTokenInput(response, field) {

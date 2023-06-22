@@ -18,6 +18,8 @@ class Core
 
     const LOCALIZE_SCRIPT_ID = 'PagarmeGlobalVars';
 
+    const INVALID_CARD_ERROR_MESSAGE = 'This card number is invalid.';
+
     private function __construct()
     {
         add_action('init', array(__CLASS__, 'load_textdomain'));
@@ -293,20 +295,36 @@ class Core
     public static function credit_card_errors_pt_br()
     {
         return array(
-            'exp_month: A value is required.'                             => 'Validade: O mês é obrigatório.',
-            'exp_month: The field exp_month must be between 1 and 12.'    => 'Validade: O mês deve estar entre 1 e 12.',
-            "exp_year: The value 'undefined' is not valid for exp_year."  => 'Validade: Ano inválido.',
-            'request: The card expiration date is invalid.'               => 'Validade: Data de expiração inválida.',
-            'request: Card expired.'                                      => 'Validade: Cartão expirado.',
-            'holder_name: The holder_name field is required.'             => 'O nome impresso no cartão é obrigatório.',
-            'number: The number field is required.'                       => 'O número do cartão é obrigatório.',
-            'number: The number field is not a valid credit card number.' => 'Este número de cartão é inválido.',
-            'card: The number field is not a valid card number'           => 'Este número de cartão é inválido.',
+            'exp_month: A value is required.'                             =>
+                __('Expiration Date: The month is required.', 'woo-pagarme-payments'),
+            'exp_month: The field exp_month must be between 1 and 12.'    =>
+                __('Expiration Date: The month must be between 1 and 12.', 'woo-pagarme-payments'),
+            "exp_year: The value 'undefined' is not valid for exp_year."  =>
+                __('Expiration Date: Invalid year.', 'woo-pagarme-payments'),
+            'request: The card expiration date is invalid.'               =>
+                __('Expiration Date: Invalid expiration date.', 'woo-pagarme-payments'),
+            'request: Card expired.'                                      =>
+                __('Expiration Date: Expired card.', 'woo-pagarme-payments'),
+            'holder_name: The holder_name field is required.'             =>
+                __('The card holder name is required.', 'woo-pagarme-payments'),
+            'number: The number field is required.'                       =>
+                __('The card number is required.', 'woo-pagarme-payments'),
+            'number: The number field is not a valid credit card number.' =>
+                __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
+            'card: The number field is not a valid card number'           =>
+                __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
             'card.number: The field number must be a string with a minimum length of 13 and a maximum length of 19.'
-            => 'O numéro do cartão deve ter entre 13 e 19 caracteres.',
-            'card: Card expired.'                                         => 'A validade do cartão está expirada',
+            => __('The card number must be between 13 and 19 characters.', 'woo-pagarme-payments'),
+            'card: Card expired.'                                         =>
+                __('The expiration date is expired.', 'woo-pagarme-payments'),
             'card.cvv: The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
-            => 'O número cvv deve ter 3 ou 4 caracteres.',
+            => __('The card code must be between 3 and 4 characters.', 'woo-pagarme-payments'),
+            'card: Invalid data to change card brand'                     =>
+                __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
+            'card: Tokenize timeout'                                      =>
+                __('Timeout na tokenização.', 'woo-pagarme-payments'),
+            'card: Cant check card form: Invalid element received'        =>
+                __('Cant check card form: Invalid element received.', 'woo-pagarme-payments'),
         );
     }
 }
