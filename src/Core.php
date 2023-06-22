@@ -323,8 +323,8 @@ class Core
                 __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
             'card: Tokenize timeout'                                      =>
                 __('Timeout na tokenização.', 'woo-pagarme-payments'),
-            'card: Cant check card form: Invalid element received'        =>
-                __('Cant check card form: Invalid element received.', 'woo-pagarme-payments'),
+            'card: Can\'t check card form: Invalid element received'        =>
+                __('Can\'t check card form: Invalid element received.', 'woo-pagarme-payments'),
         );
     }
 }

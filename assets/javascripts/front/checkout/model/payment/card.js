@@ -24,7 +24,7 @@ let pagarmeCard = {
             elem = $(e.currentTarget);
         }
         if (!elem) {
-            throw new Error("Cant check card form: Invalid element received");
+            throw new Error("Can't check card form: Invalid element received");
         }
         if (elem.is("fieldset") && elem.attr("data-pagarmecheckout") === 'card') {
             return true;
