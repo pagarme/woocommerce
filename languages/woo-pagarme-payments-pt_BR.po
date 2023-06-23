@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-06-13 11:27-0300\n"
+"PO-Revision-Date: 2023-06-22 16:12-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -20,6 +20,58 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "X-Textdomain-Support: yes\n"
 "X-Poedit-SearchPath-0: .\n"
+
+#: src/Core.php:299
+msgid "Expiration Date: The month is required."
+msgstr "Validade: O mês é obrigatório."
+
+#: src/Core.php:301
+msgid "Expiration Date: The month must be between 1 and 12."
+msgstr "Validade: O mês deve estar entre 1 e 12."
+
+#: src/Core.php:303
+msgid "Expiration Date: Invalid year."
+msgstr "Validade: Ano inválido."
+
+#: src/Core.php:305
+msgid "Expiration Date: Invalid expiration date."
+msgstr "Validade: Data de expiração inválida."
+
+#: src/Core.php:307
+msgid "Expiration Date: Expired card."
+msgstr "Validade: Cartão expirado."
+
+#: src/Core.php:309
+msgid "The card holder name is required."
+msgstr "O nome impresso no cartão é obrigatório."
+
+#: src/Core.php:311
+msgid "The card number is required."
+msgstr "O número do cartão é obrigatório."
+
+#: src/Core.php:313 src/Core.php:315 src/Core.php:323
+msgid "This card number is invalid."
+msgstr "Este número de cartão é inválido."
+
+#: src/Core.php:317
+msgid "The card number must be between 13 and 19 characters."
+msgstr "O numéro do cartão deve ter entre 13 e 19 caracteres."
+
+#: src/Core.php:319
+msgid "The expiration date is expired."
+msgstr "A validade do cartão está expirada."
+
+#: src/Core.php:321
+msgid "The card code must be between 3 and 4 characters."
+msgstr "O número cvv deve ter 3 ou 4 caracteres."
+
+#: src/Core.php:325
+msgid "Tokenize timeout."
+msgstr "O tempo limite de tokenização expirou."
+
+#: src/Core.php:327
+msgid "Can't check card form: Invalid element received."
+msgstr "Não é possível verificar o formulário do cartão: Elemento inválido recebido."
 
 #: src/Controller/Accounts.php:41 src/Controller/Accounts.php:64
 msgid "Wallet"
