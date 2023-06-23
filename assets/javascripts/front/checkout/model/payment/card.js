@@ -1,4 +1,5 @@
 /* globals wc_pagarme_checkout */
+
 $ = jQuery;
 
 const cardNumberTarget = 'input[data-element="pagarme-card-number"]';
@@ -32,11 +33,11 @@ let pagarmeCard = {
         return !!elem.has(fieldsetCardElements).length;
     },
     getCheckoutPaymentElement: function () {
-        let value = $('form.checkout input[name="payment_method"]:checked').val();
+        let value = $('.woocommerce form input[name="payment_method"]:checked').val();
         return $('.wc_payment_method.payment_method_' + value);
     },
     isPagarmePayment: function () {
-        return $('form.checkout input[name="payment_method"]:checked').val().indexOf('pagarme');
+        return $('.woocommerce form input[name="payment_method"]:checked').val().indexOf('pagarme');
     },
     keyEventHandlerCard: function (e) {
         this.clearToken(e);
@@ -376,7 +377,7 @@ let pagarmeCard = {
             }
 
             this.canSubmit = true;
-            $("form.checkout, form#order_review").submit();
+            $('form.checkout, form#order_review').submit();
         } catch (er) {
             if (typeof er === 'string') {
                 this.showError(er);
@@ -400,8 +401,11 @@ let pagarmeCard = {
         return true;
     },
     bindListenerToEvent: (element, eventName, handlerCallback) => {
-        if (!(element instanceof jQuery)) {
+        if (!(element instanceof jQuery) && !(element instanceof $.Event)) {
             element = $(element);
+        }
+        if (element.length == 0) {
+            return;
         }
         const rawDOMElement = element.get(0);
         const events = $._data(rawDOMElement, 'events') || {};
@@ -424,10 +428,12 @@ let pagarmeCard = {
         };
         this.bindListenerToEvent(`${fieldsetCardElements} input`, 'change', handleInvalidCardFieldsChange);
 
-        const handlePlaceOrder = (e) => {
+        $('form.checkout').on('checkout_place_order', function (e) {
             return pagarmeCard.canExecute(e);
-        };
-        this.bindListenerToEvent('form.checkout', 'checkout_place_order', handlePlaceOrder)
+        });
+        $('form#order_review').on('submit', function (e) {
+            return pagarmeCard.canExecute(e);
+        });
 
         const voucherDocumentHolder = $('input[name="pagarme[voucher][cards][1][document-holder]"]');
         const handleCpfChange = () => {
@@ -452,3 +458,5 @@ let pagarmeCard = {
 
     },
 };
+$( document.body).on('updated_checkout', pagarmeCard.start());
+pagarmeCard.start();

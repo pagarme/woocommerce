@@ -15,8 +15,8 @@ use WC_Payment_Gateway;
 use WC_Order;
 use Woocommerce\Pagarme\Block\Template;
 use Woocommerce\Pagarme\Model\Checkout;
+use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
@@ -77,6 +77,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /** @var Yesno */
     protected $yesnoOptions;
+    /**
+     * @var Subscription
+     */
+    private $subscription;
 
     /**
      * @param Gateway|null $gateway
@@ -119,7 +123,17 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
         add_action('woocommerce_thankyou_' . $this->id, [$this, 'thank_you_page']);
         add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
+        $this->subscription = new Subscription($this);
     }
+
+    /**
+     * @return boolean
+     */
+    public function hasSubscriptionSupport(): bool
+    {
+        return false;
+    }
+
 
     public function payments_scripts()
     {
@@ -142,6 +156,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function process_payment($orderId): array
     {
         $wooOrder = $this->wooOrderRepository->getById($orderId);
+        if ($this->subscription->isChangePaymentSubscription()) {
+            return $this->subscription->processChangePaymentSubscription($wooOrder);
+        }
         $this->postFormatter->assemblePaymentRequest();
         $this->checkout->process($wooOrder);
         return [

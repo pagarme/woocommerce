@@ -34,6 +34,13 @@ class CreditCard extends AbstractGateway
     const SOFT_DESCRIPTOR_FIELD_NAME = "Soft descriptor";
 
     /**
+     * @return boolean
+     */
+    public function hasSubscriptionSupport(): bool
+    {
+        return true;
+    }
+    /**
      * @return array
      */
     public function append_form_fields()
