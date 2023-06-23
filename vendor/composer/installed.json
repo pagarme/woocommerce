@@ -328,17 +328,17 @@
         },
         {
             "name": "pagarme/pagarmecoreapi",
-            "version": "v5.6.1",
-            "version_normalized": "5.6.1.0",
+            "version": "5.6.2",
+            "version_normalized": "5.6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pagarme/pagarme-core-api-php.git",
-                "reference": "6b694a1a830c20b3ead44c5476fdad75c58bcf0d"
+                "reference": "1e6caa95deb7b17223c0458e8f4c901e851e8590"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/pagarme-core-api-php/zipball/6b694a1a830c20b3ead44c5476fdad75c58bcf0d",
-                "reference": "6b694a1a830c20b3ead44c5476fdad75c58bcf0d",
+                "url": "https://api.github.com/repos/pagarme/pagarme-core-api-php/zipball/1e6caa95deb7b17223c0458e8f4c901e851e8590",
+                "reference": "1e6caa95deb7b17223c0458e8f4c901e851e8590",
                 "shasum": ""
             },
             "require": {
@@ -352,7 +352,7 @@
             "require-dev": {
                 "squizlabs/php_codesniffer": "^2.7"
             },
-            "time": "2023-02-24T13:44:33+00:00",
+            "time": "2023-06-19T19:03:26+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -381,7 +381,7 @@
             ],
             "support": {
                 "issues": "https://github.com/pagarme/pagarme-core-api-php/issues",
-                "source": "https://github.com/pagarme/pagarme-core-api-php/tree/v5.6.1"
+                "source": "https://github.com/pagarme/pagarme-core-api-php/tree/5.6.2"
             },
             "install-path": "../pagarme/pagarmecoreapi"
         },

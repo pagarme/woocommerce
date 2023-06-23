@@ -62,7 +62,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         ];
     }
 
-    static public function getDatabaseAccessObject()
+    public static function getDatabaseAccessObject()
     {
         global $wpdb;
         return $wpdb;
@@ -81,6 +81,15 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
     public function _getStoreLanguage()
     {
         return get_bloginfo('language');
+    }
+
+    public static function reloadModuleConfigurationData()
+    {
+        if (WoocommerceCoreSetup::$instance !== null) {
+            $oldIdConfig = self::$moduleConfig->getId() ?? null;
+            WoocommerceCoreSetup::$instance->loadModuleConfigurationFromPlatform();
+            self::$moduleConfig->setId($oldIdConfig);
+        }
     }
 
     public function loadModuleConfigurationFromPlatform()
@@ -116,7 +125,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return true;
     }
 
-    static private function fillWithVoucherConfig($dataObj, $storeConfig)
+    private static function fillWithVoucherConfig($dataObj, $storeConfig)
     {
         $voucherConfig = new \stdClass();
         $voucherConfig->enabled = $storeConfig->getEnableVoucher();
@@ -129,12 +138,12 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return $dataObj;
     }
 
-    static private function fillWithDebitConfig($dataObj, $storeConfig)
+    private static function fillWithDebitConfig($dataObj, $storeConfig)
     {
         // Not implemented on Woocommerce because there is no debit config
     }
 
-    static private function fillWithCardConfig($dataObj, $storeConfig)
+    private static function fillWithCardConfig($dataObj, $storeConfig)
     {
         $moneyService = new MoneyService();
 
@@ -161,7 +170,10 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
     private static function fillWithPixConfig($dataObj, $storeConfig)
     {
         $pixConfig = new \stdClass();
-        $pixConfig->enabled = $storeConfig->getEnablePix();
+        $pixConfig->enabled = filter_var(
+            $storeConfig->getEnablePix(),
+            FILTER_VALIDATE_BOOLEAN
+        );
         $pixConfig->expirationQrCode = $storeConfig->getPixQrcodeExpirationTime();
         $pixConfig->bankType = 'Pagar.me';
         $pixAdditionalData = $storeConfig->getPixAdditionalData();
@@ -181,7 +193,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return $dataObj;
     }
 
-    static private function fillWithBoletoConfig($dataObj, $storeConfig)
+    private static function fillWithBoletoConfig($dataObj, $storeConfig)
     {
         $dataObj->boletoEnabled = $storeConfig->getEnableBillet();
         $dataObj->boletoInstructions = $storeConfig->getBilletInstructions();
@@ -191,28 +203,28 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return $dataObj;
     }
 
-    static private function fillWithBoletoCreditCardConfig($dataObj, $storeConfig)
+    private static function fillWithBoletoCreditCardConfig($dataObj, $storeConfig)
     {
         $dataObj->boletoCreditCardEnabled = $storeConfig->getMultimethodsBilletCard();
 
         return $dataObj;
     }
 
-    static private function fillWithTwoCreditCardsConfig($dataObj, $storeConfig)
+    private static function fillWithTwoCreditCardsConfig($dataObj, $storeConfig)
     {
         $dataObj->twoCreditCardsEnabled = $storeConfig->getMultimethods2Card();
 
         return $dataObj;
     }
 
-    static private function fillWithMultiBuyerConfig($dataObj, $storeConfig)
+    private static function fillWithMultiBuyerConfig($dataObj, $storeConfig)
     {
         $dataObj->multibuyer = $storeConfig->getMulticustomers();
 
         return $dataObj;
     }
 
-    static private function fillWithPagarmeKeys($dataObj, $storeConfig)
+    private static function fillWithPagarmeKeys($dataObj, $storeConfig)
     {
         $options = [
             Configuration::KEY_SECRET => $storeConfig->getSecretKey(),
@@ -225,22 +237,29 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return $dataObj;
     }
 
-    static private function fillWithGeneralConfig($dataObj, $storeConfig)
+    private static function fillWithGeneralConfig($dataObj, $storeConfig)
     {
         $dataObj->enabled = (bool)$storeConfig->getEnabled();
         $dataObj->testMode = $storeConfig->getIsSandboxMode();
         $dataObj->sendMail = false;
         $dataObj->createOrder = false;
 
+        if (self::$moduleConfig !== null) {
+            $oldStoreId = self::$moduleConfig->getStoreId();
+            if (!empty($oldStoreId)) {
+                $dataObj->storeId = $oldStoreId;
+            }
+        }
+
         return $dataObj;
     }
 
-    static private function fillWithAddressConfig($dataObj, $storeConfig)
+    private static function fillWithAddressConfig($dataObj, $storeConfig)
     {
         // Not implemented on Woocommerce because there is no address configuration
     }
 
-    static private function getBrandConfig($storeConfig)
+    private static function getBrandConfig($storeConfig)
     {
         $brands = array_merge(
             [''],
@@ -309,12 +328,12 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return wp_timezone_string();
     }
 
-    static private function fillWithRecurrenceConfig(&$dataObj, $storeConfig)
+    private static function fillWithRecurrenceConfig(&$dataObj, $storeConfig)
     {
         // Not implemented on Woocommerce because there is no recurrence config
     }
 
-    static private function fillWithHubConfig($dataObj, $storeConfig)
+    private static function fillWithHubConfig($dataObj, $storeConfig)
     {
         $dataObj->hubInstallId = $storeConfig->getHubInstallId();
         $dataObj->hubEnvironment = $storeConfig->getHubEnvironment();
