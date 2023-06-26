@@ -364,6 +364,52 @@ final class ChargeOrderService extends AbstractHandlerService
     }
 
     /**
+     * @param Webhook $webhook
+     * @return array
+     */
+    protected function handleChargedback(Webhook $webhook)
+    {
+        $order = $this->order;
+        /**
+         * @var Charge $charge
+         */
+        $charge = $webhook->getEntity();
+
+        $transaction = $charge->getLastTransaction();
+
+        $outdatedCharge = $this->chargeRepository->findByPagarmeId(
+            $charge->getPagarmeId()
+        );
+
+        if ($outdatedCharge !== null) {
+            $charge = $outdatedCharge;
+        }
+        /**
+         * @var Charge $outdatedCharge
+         */
+        if ($transaction !== null) {
+            $charge->addTransaction($transaction);
+        }
+
+        $charge->chargedback();
+        $order->updateCharge($charge);
+        $this->orderRepository->save($order);
+
+        $history = $this->prepareHistoryComment($charge);
+        $order->getPlatformOrder()->addHistoryComment($history, false);
+
+        $this->orderService->syncPlatformWith($order, false);
+
+        $returnMessage = $this->prepareReturnMessage($charge);
+
+        return [
+            "code" => 200,
+            "message" => $returnMessage
+        ];
+
+    }
+
+    /**
      * @return string
      */
     private function tryCancelMultiMethodsWithOrder()
@@ -488,6 +534,10 @@ final class ChargeOrderService extends AbstractHandlerService
 
         if ($charge->getStatus()->equals(ChargeStatus::failed())) {
             return $this->i18n->getDashboard('Charge failed.');
+        }
+
+        if ($charge->getStatus()->equals(ChargeStatus::chargedback())) {
+            return $this->i18n->getDashboard('Charge chargedback.');
         }
 
         $amountInCurrency = $this->moneyService->centsToFloat($charge->getRefundedAmount());
