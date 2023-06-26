@@ -392,7 +392,7 @@ let pagarmeCard = {
         }
     },
     canExecute: function (e) {
-        e.preventDefault();
+        // e.preventDefault();
         if (!wc_pagarme_checkout.validate() || wc_pagarme_checkout.errorTokenize === true) {
             return false;
         }
@@ -400,7 +400,7 @@ let pagarmeCard = {
         if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit &&
             pagarmeCard.haveCardForm(el)
         ) {
-            pagarmeCard.execute(e);
+            await this.execute(e);
             return false;
         }
         return true;
@@ -414,11 +414,8 @@ let pagarmeCard = {
         $(this.voucherDocumentHolder).val(cpf);
     },
     addEventListener: function () {
-        $(this.cardNumberTarget).on('change', function (event) {
-            pagarmeCard.keyEventHandlerCard(event);
-        });
-        $(`${this.fieldsetCardElements} input`).on('change', function () {
-            pagarmeCard.clearErrorMessages();
+        $(document.body).on('updated_checkout', function () {
+            pagarmeCard.renewEventListener();
         });
         $('form.checkout').on('checkout_place_order', function (e) {
             pagarmeTokenize.execute();
@@ -432,21 +429,27 @@ let pagarmeCard = {
             pagarmeCard.onChangeBillingCpf();
         });
     },
-    start: function () {
-        console.log("oi");
-        this.getCardsMethods();
-        this.getBrands();
-        this.addEventListener();
+    renewEventListener: function () {
+        $(this.cardNumberTarget).on('change', function (event) {
+            pagarmeCard.keyEventHandlerCard(event);
+        });
+        $(`${this.fieldsetCardElements} input`).on('change', function () {
+            pagarmeCard.clearErrorMessages();
+        });
         if (typeof pagarmeCheckoutWallet == 'object') {
             pagarmeCheckoutWallet.start();
         }
         if (typeof pagarmeOrderValue == 'object') {
             pagarmeOrderValue.start();
         }
+    },
+    start: function () {
+        console.log("oi");
+        this.getCardsMethods();
+        this.getBrands();
+        this.addEventListener();
+        this.renewEventListener();
         this.onChangeBillingCpf();
     },
 };
-$(document.body).on('updated_checkout', function () {
-    pagarmeCard.start();
-});
 pagarmeCard.start();
