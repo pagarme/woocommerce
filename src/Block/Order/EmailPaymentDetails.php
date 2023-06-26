@@ -26,7 +26,7 @@ class EmailPaymentDetails extends Template
     /**
      * @var string
      */
-    protected $_template = 'templates/order/email';
+    protected $_template = 'templates/order/email-payment-details';
 
     /**
      * @param int|null $orderId

@@ -7,7 +7,7 @@
  * @link        https://pagar.me
  */
 
-/** @var \Woocommerce\Pagarme\Block\Checkout\ThankYou\Pix $this */
+/** @var \Woocommerce\Pagarme\Block\Order\Email\Pix $this */
 
 declare(strict_types=1);
 
@@ -16,7 +16,7 @@ if (!function_exists('add_action')) {
 }
 ?>
 <?php if ($this->getQrCodeUrl()) : ?>
-    <p>> transaction/email.phtml</p>
+    <p>> email/pix.phtml</p>
     <p><img src="<?= $this->getQrCodeUrl() ?>" alt="Pix QRCode" class="pagarme-qr-code-img" /></p>
     <a type="button"
         id="pagarme-qr-code-button"
