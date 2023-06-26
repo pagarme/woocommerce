@@ -1,4 +1,4 @@
-const qrRawCodeTarget = '#pagarme-qr-code';
+const qrRawCodeTarget = '#pagarme-qr-code-button';
 $ = jQuery;
 let pagarmePix = {
     start: function () {
@@ -24,11 +24,7 @@ let pagarmePix = {
             html: 'Código copiado.',
             allowOutsideClick: false
         };
-        try {
-            swal(message);
-        } catch (e) {
-            new swal(message);
-        }
+        swal(message);
     }
 }
 pagarmePix.start();

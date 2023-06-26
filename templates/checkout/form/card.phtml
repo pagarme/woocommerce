@@ -9,7 +9,7 @@
 
 /** @var \Woocommerce\Pagarme\Block\Checkout\Form\Card $this */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 if (!function_exists('add_action')) {
     exit(0);
@@ -18,7 +18,11 @@ if (!function_exists('add_action')) {
 ?>
 <?php for ($qty = 1; $qty <= $this->getQuantityCards(); $qty++) : ?>
     <?php $this->setData('sequence', $qty); ?>
-    <fieldset id="<?= WCMP_PREFIX; ?>-fieldset-<?= $this->getPaymentInstance()->getMethodCode() . '-' . $qty ?>" class="wc-credit-card-form wc-payment-form" data-pagarmecheckout-method="<?= $this->getPaymentInstance()->getMethodCode() ?>" data-pagarmecheckout="card" data-pagarmecheckout-card-num="<?= $qty ?>">
+    <fieldset id="<?= WCMP_PREFIX; ?>-fieldset-<?= $this->getPaymentInstance()->getMethodCode() . '-' . $qty ?>"
+              class="wc-credit-card-form wc-payment-form"
+              data-pagarmecheckout-method="<?= $this->getPaymentInstance()->getMethodCode() ?>"
+              data-pagarmecheckout="card" data-pagarmecheckout-card-num="<?= $qty ?>">
+        <legend></legend>
         <?php if ($this->getShowOrderValue()) : ?>
             <?php if ($this->getQuantityCards() > 1) : ?>
                 <h4><?php
@@ -29,95 +33,132 @@ if (!function_exists('add_action')) {
                     ); ?>
                 </h4>
             <?php endif; ?>
-            <p class="form-row form-row-first">
-                <label for="<?= $this->getElementId('order-value'); ?>"><?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
-                <input id="<?= $this->getElementId('order-value'); ?>" name="<?= $this->getElementId('order-value'); ?>" data-element="order-value" data-mask="#.##0,00" data-mask-reverse="true" data-pagarmecheckout-element="order-value" data-required="true" data-value="1" data-pagarmecheckout-card-num="<?= $qty ?>" data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>" class="input-text">
+            <p class="form-row form-row-wide">
+                <label for="<?= $this->getElementId('order-value'); ?>">
+                    <?php esc_html_e('Value (Credit Card)', 'woo-pagarme-payments'); ?>
+                    <span class="required">*</span>
+                </label>
+                <input type="text" id="<?= $this->getElementId('order-value') ?>"
+                       name="<?= $this->getElementId('order-value') ?>" data-element="order-value"
+                       data-pagarmecheckout-element="order-value" data-mask="#.##0,00" data-mask-reverse="true"
+                       data-value="1" data-required="true"
+                       data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>"
+                       class="input-text">
             </p>
         <?php endif; ?>
         <?= $this->createBlock(
-            '\Woocommerce\Pagarme\Block\Checkout\Form\Wallet',
-            'pagarme.checkout.form.wallet',
-            [
-                'payment_instance' => $this->getPaymentInstance(),
-                'sequence' => $qty
-            ]
+                '\Woocommerce\Pagarme\Block\Checkout\Form\Wallet',
+                'pagarme.checkout.form.wallet',
+                [
+                    'payment_instance' => $this->getPaymentInstance(),
+                    'sequence' => $qty
+                ]
         )->toHtml() ?>
         <div class="wc-credit-card-info" data-element="fields-cc-data">
-            <div <?= $this->getCompoenent() ?> data-pagarmecheckout-app-id="<?= esc_attr($this->getConfig()->getPublicKey()); ?>">
+            <div <?= $this->getCompoenent() ?>
+                data-pagarmecheckout-app-id="<?= esc_attr($this->getConfig()->getPublicKey()); ?>">
                 <div data-pagarmecheckout-element="fields-cc-data">
                     <p class="form-row form-row-wide">
                         <label for="<?= $this->getElementId('card-holder-name'); ?>">
-                            <?php esc_html_e('Card Holder Name', 'woo-pagarme-payments'); ?> <span class="required">*</span>
-                            <input id="<?= $this->getElementId('card-holder-name'); ?>" onkeydown="return /[a-z, ]/i.test(event.key)" data-element="card-holder-name" data-required="true" class="input-text" data-pagarmecheckout-element="holder_name">
+                            <?php esc_html_e('Card Holder Name', 'woo-pagarme-payments'); ?>
+                            <span class="required">*</span>
                         </label>
+                        <input type="text" id="<?= $this->getElementId('card-holder-name'); ?>"
+                               onkeydown="return /[a-z, ]/i.test(event.key)" data-element="card-holder-name"
+                               data-required="true" class="input-text" data-pagarmecheckout-element="holder_name">
                     </p>
-                    <p class="form-row form-row-wide">
-                        <label for="<?= $this->getElementId('card-number'); ?>"><?php esc_html_e('Card number', 'woo-pagarme-payments'); ?> <span class="required">*</span></label>
-                        <input id="<?= $this->getElementId('card-number'); ?>" data-element="pagarme-card-number" class="input-text wc-credit-card-form-card-number pagarme-card-form-card-number" data-mask="0000 0000 0000 0000" placeholder="•••• •••• •••• ••••" data-required="true" style="background-image: none" data-pagarmecheckout-element="number">
-                        <input type="hidden" name="<?= $this->getElementId('brand'); ?>" data-pagarmecheckout-element="brand-input" />
-                        <span name="brand-image" data-pagarmecheckout-element="brand"></span>
+                    <p class="form-row form-row-wide pagarme-card-number-row">
+                        <label for="<?= $this->getElementId('card-number'); ?>">
+                            <?php esc_html_e('Card number', 'woo-pagarme-payments'); ?>
+                            <span class="required">*</span>
+                        </label>
+                        <span class="pagarme-brand-image" data-pagarmecheckout-element="brand">
+                            <input type="text" id="<?= $this->getElementId('card-number'); ?>"
+                                   data-element="pagarme-card-number"
+                                   class="input-text wc-credit-card-form-card-number pagarme-card-form-card-number"
+                                   data-mask="0000 0000 0000 0000" placeholder="•••• •••• •••• ••••"
+                                   data-required="true" data-pagarmecheckout-element="number">
+                        </span>
+                        <input type="hidden" name="<?= $this->getElementId('brand'); ?>"
+                               data-pagarmecheckout-element="brand-input"/>
                     </p>
                     <p class="form-row form-row-first">
                         <label for="<?= $this->getElementId('card-expiry'); ?>">
-                            <?php esc_html_e('Expiration Date (MM/YY)', 'woo-pagarme-payments'); ?>
+                            <?php esc_html_e('Expiration Date', 'woo-pagarme-payments'); ?>
                             <span class="required">*</span>
                         </label>
-                        <input required id="<?= $this->getElementId('card-expiry'); ?>" data-element="card-expiry" class="input-text wc-credit-card-form-card-expiry pagarme-card-form-card-expiry" data-mask="00 / 00" data-required="true" placeholder="<?php esc_html_e('MM / YY', 'woo-pagarme-payments'); ?>" data-pagarmecheckout-element="exp_date">
+                        <input type="text" required id="<?= $this->getElementId('card-expiry'); ?>"
+                               data-element="card-expiry"
+                               class="input-text wc-credit-card-form-card-expiry pagarme-card-form-card-expiry"
+                               data-mask="00 / 00" data-required="true"
+                               placeholder="<?php esc_html_e('MM / YY', 'woo-pagarme-payments'); ?>"
+                               data-pagarmecheckout-element="exp_date">
                     </p>
                     <p class="form-row form-row-last">
                         <label for="<?= $this->getElementId('card-cvc'); ?>">
-                            <?php esc_html_e('Card code', 'woo-pagarme-payments'); ?> <span class="required">*</span>
+                            <?php esc_html_e('Card code', 'woo-pagarme-payments'); ?>
+                            <span class="required">*</span>
                         </label>
-                        <input required id="<?= $this->getElementId('card-cvc'); ?>" data-element="card-cvc" data-mask="0000" class="input-text wc-credit-card-form-card-cvc pagarme-card-form-card-cvc" maxlength="4" placeholder="CVC" data-required="true" data-pagarmecheckout-element="cvv">
+                        <input type="text" required id="<?= $this->getElementId('card-cvc'); ?>"
+                               data-element="card-cvc" data-mask="0000"
+                               class="input-text wc-credit-card-form-card-cvc pagarme-card-form-card-cvc" maxlength="4"
+                               placeholder="CVC" data-required="true" data-pagarmecheckout-element="cvv">
                     </p>
                 </div>
             </div>
             <p class="form-row form-row-wide" style="display: <?= $this->showInstallments() ? 'block' : 'none' ?>">
                 <?= $this->createBlock(
-                    '\Woocommerce\Pagarme\Block\Checkout\Form\Installments',
-                    'pagarme.checkout.form.installments',
-                    [
-                        'payment_instance' => $this->getPaymentInstance(),
-                        'sequence' => $qty
-                    ]
+                        '\Woocommerce\Pagarme\Block\Checkout\Form\Installments',
+                        'pagarme.checkout.form.installments',
+                        [
+                            'payment_instance' => $this->getPaymentInstance(),
+                            'sequence' => $qty
+                        ]
                 )->toHtml() ?>
             </p>
-            <p class="form-row form-row-wide" style="display: <?= $this->showHolderName() ? 'block' : 'none' ?>">
-                <label>
-                    <?php esc_html_e('Card Holder Document Number', 'woo-pagarme-payments'); ?> <span class="required">*</span>
-                    <input name="<?= $this->getElementId('document-holder'); ?>" class="input-text" id="<?= $this->getElementId('document-holder'); ?>">
-                </label>
-            </p>
+            <?php if ($this->showHolderName()) : ?>
+                <p class="form-row form-row-wide">
+                    <label for="<?= $this->getElementId('document-holder'); ?>">
+                        <?php esc_html_e('Card Holder Document Number', 'woo-pagarme-payments'); ?>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" required id="<?= $this->getElementId('document-holder'); ?>"
+                           name="<?= $this->getElementId('document-holder'); ?>"
+                           data-element="document-holder" data-mask="000.000.000-00"
+                           class="input-text wc-credit-card-form-card-cvc pagarme-card-form-holder-number"
+                           maxlength="14"
+                           placeholder="CPF" data-required="true" data-pagarmecheckout-element="holder_document">
+                </p>
+            <?php endif; ?>
             <?= $this->createBlock(
-                '\Woocommerce\Pagarme\Block\Checkout\Field\Wallet',
-                'pagarme.checkout.field.wallet',
-                [
-                    'payment_instance' => $this->getPaymentInstance(),
-                    'parent_element_id' => $this->getElementId(),
-                    'sequence' => $qty
-                ]
+                    '\Woocommerce\Pagarme\Block\Checkout\Field\Wallet',
+                    'pagarme.checkout.field.wallet',
+                    [
+                        'payment_instance' => $this->getPaymentInstance(),
+                        'parent_element_id' => $this->getElementId(),
+                        'sequence' => $qty
+                    ]
             )->toHtml() ?>
         </div>
         <?php if ($this->showMulticustomersForm()) : ?>
             <?= $this->createBlock(
-                '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
-                'pagarme.checkout.field.multicustomers',
-                [
-                    'payment_instance' => $this->getPaymentInstance(),
-                    'parent_element_id' => $this->getElementId('multicustomers'),
-                    'sequence' => $qty
-                ]
+                    '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
+                    'pagarme.checkout.field.multicustomers',
+                    [
+                        'payment_instance' => $this->getPaymentInstance(),
+                        'parent_element_id' => $this->getElementId('multicustomers'),
+                        'sequence' => $qty
+                    ]
             )->toHtml() ?>
             <?= $this->createBlock(
-                '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
-                'pagarme.checkout.form.multicustomers',
-                [
-                    'payment_instance' => $this->getPaymentInstance(),
-                    'parent_element_id' => $this->getElementId('multicustomers'),
-                    'sequence' => $qty
-                ]
+                    '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
+                    'pagarme.checkout.form.multicustomers',
+                    [
+                        'payment_instance' => $this->getPaymentInstance(),
+                        'parent_element_id' => $this->getElementId('multicustomers'),
+                        'sequence' => $qty
+                    ]
             )->toHtml() ?>
         <?php endif; ?>
     </fieldset>
 <?php endfor; ?>
-

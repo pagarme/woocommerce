@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model;
 
+use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 
@@ -53,7 +54,7 @@ class CardInstallments
     {
         $total = Utils::str_to_float($total);
         $type = $this->config->getCcInstallmentType() ?? 1;
-        $maxInstallments = $this->config->getCcInstallmentsMaximum();
+        $maxInstallments = $this->getMaxCcInstallments($type, $flag);
         $minAmount = Utils::str_to_float($this->config->getCcInstallmentsMinAmount());
         $noInterest = intval($this->config->getCcInstallmentsWithoutInterest());
         $interest = Utils::str_to_float($this->config->getCcInstallmentsInterest());
@@ -79,9 +80,9 @@ class CardInstallments
             'value' => 1,
             'content' => __('1x', 'woo-pagarme-payments') . ' (' . wc_price($total) . ')'
         ];
-        $interest_base = $interest;
+        $interestBase = $interest;
         for ($times = 2; $times <= $maxInstallments; $times++) {
-            $interest = $interest_base;
+            $interest = $interestBase;
             $amount = $total;
             if ($interest || $interestIncrease) {
                 if ($interestIncrease && $times > $noInterest + 1) {
@@ -103,16 +104,30 @@ class CardInstallments
                 wc_price($price),
                 wc_price($value)
             );
-            $amount = $total;
-            if ($times > $noInterest && $interest) {
-                $text .= " c/juros de {$interest}%";
-            }
+
+            $text .= $this->verifyInterest($times, $noInterest, $interest);
+            
             $options[] = [
                 'value' => $times,
                 'content' => $text
             ];
         }
         return $options;
+    }
+    
+    /**
+    * @param int $times
+    * @param mixed $noInterest
+    * @param mixed $interest
+    * @return string
+    */
+    public function verifyInterest(int $times, $noInterest, $interest): string
+    {
+        if ($times > $noInterest && $interest) {
+            return " c/juros";
+        }
+        
+        return " s/juros";
     }
 
     /**
@@ -155,7 +170,7 @@ class CardInstallments
                 'content' =>  __('This card brand not is allowed on checkout.', Core::SLUG)
             ]];
         }
-        $maxInstallments  = intval($configByFlags['max_installment'][$flag]);
+        $maxInstallments  = $this->getMaxCcInstallments(self::INSTALLMENTS_BY_FLAG, $flag);
         $minAmount = Utils::str_to_float($configByFlags['installment_min_amount'][$flag]);
         $noInterest = intval($configByFlags['no_interest'][$flag]);
         $interest = Utils::str_to_float($configByFlags['interest'][$flag]);
@@ -163,5 +178,22 @@ class CardInstallments
         return $this->getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest);
     }
 
-
+    /**
+     * Undocumented function
+     *
+     * @param int $type
+     * @param string|bool $flag
+     * @return int
+     */
+    private function getMaxCcInstallments($type, $flag)
+    {
+        if (Subscription::hasSubscriptionProductInCart()) {
+            return 1;
+        }
+        if ($type === self::INSTALLMENTS_BY_FLAG) {
+            $configByFlags = $this->config->getCcInstallmentsByFlag();
+            return intval($configByFlags['max_installment'][$flag]);
+        }
+        return $this->config->getCcInstallmentsMaximum();
+    }
 }

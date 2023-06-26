@@ -17,34 +17,39 @@ if (!function_exists('add_action')) {
 ?>
 <fieldset class="wc-credit-card-form wc-payment-form">
     <?php if ($this->showOrderValue()) : ?>
-        <div class="form-row form-row-first">
-            <label for="billet-value">
-                <?php esc_html_e('Value (Boleto)', 'woo-pagarme-payments'); ?><span class="required">*</span>
+        <p class="form-row form-row-wide">
+            <label for="<?= $this->getElementId('order-value') ?>">
+                <?php esc_html_e('Value (Boleto)', 'woo-pagarme-payments'); ?>
+                <span class="required">*</span>
             </label>
-            <input id="<?= $this->getElementId('order-value') ?>" name="<?= $this->getElementId('order-value') ?>" data-element="order-value" data-pagarmecheckout-element="order-value" data-mask="#.##0,00" data-mask-reverse="true" data-value="1" data-required="true" data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>" class="input-text">
-        </div>
+            <input type="text" id="<?= $this->getElementId('order-value') ?>"
+                   name="<?= $this->getElementId('order-value') ?>" data-element="order-value"
+                   data-pagarmecheckout-element="order-value" data-mask="#.##0,00" data-mask-reverse="true"
+                   data-value="1" data-required="true"
+                   data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>"
+                   class="input-text">
+        </p>
     <?php endif; ?>
     <?= $this->getMessage(true) ?>
     <?= $this->getImage(true) ?>
+    <?php if ($this->showMulticustomersForm()) : ?>
+        <?= $this->createBlock(
+            '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
+            'pagarme.checkout.field.multicustomers',
+            [
+                'payment_instance' => $this->getPaymentInstance(),
+                'parent_element_id' => $this->getElementId('multicustomers'),
+                'sequence' => $this->getMulticustomersSequece()
+            ]
+        )->toHtml() ?>
+        <?= $this->createBlock(
+            '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
+            'pagarme.checkout.form.multicustomers',
+            [
+                'payment_instance' => $this->getPaymentInstance(),
+                'parent_element_id' => $this->getElementId('multicustomers'),
+                'sequence' => $this->getMulticustomersSequece()
+            ]
+        )->toHtml() ?>
+    <?php endif; ?>
 </fieldset>
-<?php if ($this->showMulticustomersForm()) : ?>
-    <?= $this->createBlock(
-        '\Woocommerce\Pagarme\Block\Checkout\Field\EnableMulticustomers',
-        'pagarme.checkout.field.multicustomers',
-        [
-            'payment_instance' => $this->getPaymentInstance(),
-            'parent_element_id' => $this->getElementId('multicustomers'),
-            'sequence' => $this->getMulticustomersSequece()
-        ]
-    )->toHtml() ?>
-    <?= $this->createBlock(
-        '\Woocommerce\Pagarme\Block\Checkout\Form\Multicustomers',
-        'pagarme.checkout.form.multicustomers',
-        [
-            'payment_instance' => $this->getPaymentInstance(),
-            'parent_element_id' => $this->getElementId('multicustomers'),
-            'sequence' => $this->getMulticustomersSequece()
-        ]
-    )->toHtml() ?>
-<?php endif; ?>
-

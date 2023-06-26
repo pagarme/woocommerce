@@ -2,8 +2,8 @@ const cardValueTarget = 'input[data-pagarmecheckout-element="order-value"]';
 const firstCardValue = '[data-pagarmecheckout-card-num="1"]';
 
 let pagarmeOrderValue = {
-    start: function (paymentTarget) {
-        this.addEventListener(paymentTarget);
+    start: function () {
+        this.addEventListener();
     },
     fillAnotherInput: async function (e) {
         let input = jQuery(e.currentTarget);
@@ -26,7 +26,7 @@ let pagarmeOrderValue = {
         nextInput.val(this.formatValue((total - value), false));
         input.val(this.formatValue(value, false));
         [e, nextInput].forEach(function (input) {
-            if (!input instanceof $) {
+            if (!(input instanceof $) && !(input instanceof $.Event)) {
                 input = $(input);
             }
             if (input instanceof $.Event) {
@@ -34,7 +34,7 @@ let pagarmeOrderValue = {
             }
             let fieldset = input.closest('fieldset').first();
             if (pagarmeCard.haveCardForm(fieldset)) {
-                pagarmeCard.updateInstallmentsElement(fieldset);
+                pagarmeCard.updateInstallmentsElement(input);
             }
         });
     },
@@ -56,20 +56,16 @@ let pagarmeOrderValue = {
             html: text,
             allowOutsideClick: false
         };
-        try {
-            swal(message);
-        } catch (e) {
-            new swal(message);
-        }
+        swal(message);
     },
-    addEventListener: function (paymentTarget) {
-        $(paymentTarget + ' ' + cardValueTarget).on('change', function (e) {
+    addEventListener: function () {
+        const handleCardValueKeyEventChange = (e) => {
             pagarmeOrderValue.keyEventHandler(e);
-        });
+        };
+        pagarmeCard.bindListenerToEvent(cardValueTarget, 'change', handleCardValueKeyEventChange);
     },
     keyEventHandler: function (e) {
         this.fillAnotherInput(e);
-        pagarmeCard.updateInstallmentsElement(e);
     },
     getCartTotals: function () {
         return cartTotal;

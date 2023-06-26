@@ -57,34 +57,34 @@ class Gateway
         return (get_woocommerce_currency() === 'BRL');
     }
 
-    public function get_installment_options()
+    /**
+     * @param bool $isGatewayType
+     * @return array
+     */
+    public function getInstallmentOptions($isGatewayType = false)
     {
-        return array(
-            1  => 1,
-            2  => 2,
-            3  => 3,
-            4  => 4,
-            5  => 5,
-            6  => 6,
-            7  => 7,
-            8  => 8,
-            9  => 9,
-            10 => 10,
-            11 => 11,
-            12 => 12,
-            13  => 13,
-            14  => 14,
-            15  => 15,
-            16  => 16,
-            17  => 17,
-            18  => 18,
-            19  => 19,
-            20 => 20,
-            21 => 21,
-            22 => 22,
-            23 => 23,
-            24 => 24,
-        );
+        $installments = [];
+        $installmentsAmount = $this->getInstallmentsMaximumQuantity($isGatewayType);
+
+        for ($i = 1; $i <= $installmentsAmount; ++$i) {
+            $installments[$i] = $i;
+        }
+
+        return $installments;
+    }
+
+    /**
+     * @param bool $isGatewayType
+     * @return int
+     */
+    public function getInstallmentsMaximumQuantity($isGatewayType)
+    {
+        return $isGatewayType ? 24 : 12;
+    }
+
+    public function getSoftDescriptorMaxLength($isGatewayType)
+    {
+        return $isGatewayType ? 22 : 13;
     }
 
     public function get_installments_by_type($total, $flag = false)
@@ -112,10 +112,10 @@ class Gateway
             __('1x', 'woo-pagarme-payments') . ' (' . wc_price($total) . ')'
         );
 
-        $interest_base = $interest;
+        $interestBase = $interest;
 
         for ($times = 2; $times <= $max_installments; $times++) {
-            $interest = $interest_base;
+            $interest = $interestBase;
             $amount = $total;
 
             if ($interest || $interest_increase) {
@@ -144,16 +144,27 @@ class Gateway
                 wc_price($value)
             );
 
-            $amount = $total;
-
-            if ($times > $no_interest && $interest) {
-                $text .= " c/juros de {$interest}%";
-            }
+            $text .= $this->verifyInterest($times, $no_interest, $interest);
 
             $output .= sprintf('<option value="%1$s">%2$s</option>', $times, $text);
         }
 
         return $output;
+    }
+
+    /**
+    * @param int $times
+    * @param mixed $noInterest
+    * @param mixed $interest
+    * @return string
+    */
+    public function verifyInterest(int $times, $no_interest, $interest): string
+    {
+        if ($times > $no_interest && $interest) {
+            return " c/juros";
+        }
+
+        return " s/juros";
     }
 
     private function _calc_installments_1(array $params)

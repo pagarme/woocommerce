@@ -258,7 +258,7 @@ final class OrderService
             //build PaymentOrder based on platformOrder
             $paymentOrder =  $this->extractPaymentOrderFromPlatformOrder($platformOrder);
             $orderInfo = $this->getOrderInfo($platformOrder);
-
+            
             $i18n = new LocalizationService();
 
             //Send through the APIService to pagarme

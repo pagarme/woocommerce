@@ -20,29 +20,24 @@ if (!function_exists('add_action')) {
     <tr>
         <th><?= __('QR Code', 'woo-pagarme-payments'); ?>:</th>
         <td>
-            <p>
-                <img style="margin: auto;" src="<?= $this->getQrCodeUrl() ?>" title="Link to QRCode" />
-            </p>
-            <a id="pagarme-qr-code" rawCode="<?= $this->getRawQrCode() ?>" class="payment-link">
+            <p><img src="<?= $this->getQrCodeUrl() ?>" alt="Pix QRCode" class="pagarme-qr-code-img" /></p>
+            <p><button type="button"
+                    id="pagarme-qr-code-button"
+                    rawCode="<?= $this->getRawQrCode() ?>"
+                    class="button">
                 <?= __('Copy Code', 'woo-pagarme-payments'); ?>
-            </a>
+            </button></p>
             <?php foreach ($this->getInstructions() as $instruction) : ?>
-                <div class="pix-qr-code-instruction">
-                    <?= __($instruction, 'woo-pagarme-payments'); ?>
-                </div>
+                <p><?= __($instruction, 'woo-pagarme-payments'); ?></p>
             <?php endforeach; ?>
-            <div id="pix-image-attention-container">
-                <?php
-                printf(
-                    '<img id="pix-image-attention" class="logo" src="%1$s" alt="%2$s" title="%2$s" />',
-                    esc_url($this->getFilePath('assets/images/pix-checkout-attention.svg')),
-                    esc_html__('pix attention icon', 'woo-pagarme-payments')
+            <p>
+                <em><?php
+                _e(
+                    'You can also complete the payment by copying and pasting the code into the app.',
+                    'woo-pagarme-payments'
                 );
-                ?>
-            </div>
-            <div class="pix-qr-code-instruction pix-attention-instruction">
-                <?php _e('You can also complete the payment by copying and pasting the code into the app.', 'woo-pagarme-payments'); ?>
-            </div>
+                ?></em>
+            </p>
         </td>
     </tr>
 <?php endif; ?>

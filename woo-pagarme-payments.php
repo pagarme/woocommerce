@@ -1,72 +1,212 @@
 <?php
 /*
  * Plugin Name: Pagar.me module for Woocommerce
- * Version:     3.0.0
+ * Version:     3.0.1
  * Author:      Pagar.me
  * Author URI:  https://pagar.me
  * Text Domain: woo-pagarme-payments
  * Domain Path: /languages
  * License:     GPL2
  * Description: Enable Pagar.me Gateway for WooCommerce
+ * Requires at least: 5.0
+ * Tested up to: 6.2.0
  * WC requires at least: 3.9.0
- * WC tested up to: 5.4.0
+ * WC tested up to: 7.7.2
+ * Domain Path: /languages
+ * Text Domain: woo-pagarme-payments
  */
 
-if (!function_exists('add_action')) {
+if (!defined('ABSPATH') || !function_exists('add_action')) {
     exit(0);
 }
 
 require_once dirname(__FILE__) . '/constants.php';
 
-function wcmp_render_admin_notice_html($message, $type = 'error')
+/**
+ * Renders custom Wordpress Notice on every admin pages.
+ * @param string $message Message displayed on the notice.
+ * @param string $path The plugin basename or the configuration page file name.
+ * If string, it's used to generate the message button. Exemple: plugin-name/plugin-name.php or config-page.php
+ * @param bool $isConfig If defined true, the button link points to the configuration page.
+ * Otherwise, it will genetare a Install or Activate button for the missing plugin.
+ * @param string $type The type of the notice. Possible options are: 'error' (default), 'warning', 'success' or 'info'.
+ */
+function wcmpRenderAdminNoticeHtml($message, $path = '', $isConfig = false, $type = 'error')
 {
+    wp_enqueue_style(
+        'pagarme-notice',
+        plugins_url('/pagarme-payments-for-woocommerce/assets/stylesheets/admin/notice.css'),
+        array(),
+        filemtime(__FILE__ . '/../assets/stylesheets/admin/notice.css')
+    );
 ?>
-    <div class="<?php echo esc_html($type); ?> notice is-dismissible">
-        <p>
-            <strong><?php esc_html_e('Pagar.me module for Woocommerce', 'woo-pagarme-payments'); ?>: </strong>
-
-            <?php echo /*phpcs:ignore*/ esc_attr($message); ?>
-        </p>
+    <div class="notice <?= esc_html($type); ?> is-dismissible">
+        <div class="pagarme-notice">
+            <div class="pagarme-notice-avatar-container">
+                <img alt="Pagarme Avatar" class="pagarme-notice-avatar"
+                     src="<?= plugins_url('/pagarme-payments-for-woocommerce/assets/images/pagarme-avatar.svg') ?>">
+            </div>
+            <div class="pagarme-notice-message-container">
+                <p><strong><?= __('Pagar.me module for Woocommerce', 'woo-pagarme-payments'); ?>:</strong></p>
+                <p><?= $message ?></p>
+                <?php
+                if (is_string($path) && $path !== '') {
+                    echo wcmpAddNoticeButton($path, $isConfig);
+                }
+                ?>
+            </div>
+        </div>
     </div>
 <?php
 }
 
-if (version_compare(PHP_VERSION, '7.1', '<')) {
+function wcmpAddNoticeButton($path, $isConfig)
+{
+    $buttonHtml = '<p><a href="%1$s" class="button button-primary">%2$s</a></p>';
 
-    function wcmp_admin_notice_php_version()
-    {
-        wcmp_render_admin_notice_html(
-            __('Your PHP version is not supported. Required >= 7.1.', 'woo-pagarme-payments')
+    if ($isConfig) {
+        $pageName = explode('.', ucwords(str_replace('-', ' ', $path)))[0];
+        return sprintf(
+            $buttonHtml,
+            esc_url(self_admin_url($path)),
+            $pageName
         );
     }
 
-    _wcmp_load_notice('admin_notice_php_version');
+    $isInstalled = false;
+    if (function_exists('get_plugins')) {
+        $allPlugins  = get_plugins();
+        $isInstalled = !empty($allPlugins[$path]);
+    }
+
+    $plugin = explode('/', $path)[0];
+    $pluginName = ucwords(str_replace('-', ' ', $plugin));
+
+    if ($isInstalled && current_user_can('install_plugins')) {
+        return sprintf(
+            $buttonHtml,
+            wp_nonce_url(
+                self_admin_url("plugins.php?action=activate&plugin={$path}&plugin_status=active"),
+                "activate-plugin_{$path}"
+            ),
+            __("Activate", 'woo-pagarme-payments') . " {$pluginName}"
+        );
+    }
+
+    $url = 'https://wordpress.org/plugins/' . $plugin;
+
+    if (current_user_can('install_plugins')) {
+        $url = wp_nonce_url(
+            self_admin_url("update.php?action=install-plugin&plugin={$plugin}"),
+            "install-plugin_{$plugin}"
+        );
+    }
+
+    return sprintf(
+        $buttonHtml,
+        esc_url($url),
+        __("Install", 'woo-pagarme-payments') . " {$pluginName}"
+    );
+}
+
+
+function wcmpAdminNoticePhpVersion()
+{
+    wcmpRenderAdminNoticeHtml(
+        __('Your PHP version is not supported. Required >= 7.1.', 'woo-pagarme-payments')
+    );
+}
+
+if (version_compare(PHP_VERSION, '7.1', '<')) {
+    wcmpLoadNotice('AdminNoticePhpVersion');
     return;
 }
 
-function wcmp_admin_notice_error()
+function wcmpAdminNoticeWoocommerce()
 {
-    wcmp_render_admin_notice_html(
-        __('WooCoomerce plugin is required.', 'woo-pagarme-payments')
+    wcmpRenderAdminNoticeHtml(
+        __('Woocommerce plugin is required for Pagar.me module to work.', 'woo-pagarme-payments'),
+        'woocommerce/woocommerce.php'
     );
 }
 
-function wcmp_admin_notice_error_wecffb()
+function wcmpAdminNoticeExtraCheckouts()
 {
-    wcmp_render_admin_notice_html(
+    wcmpRenderAdminNoticeHtml(
         __(
-            'WooCoomerce Extra Checkout Fields For Brazil plugin is required.',
+            'WooCoomerce Extra Checkout Fields For Brazil plugin is required for Pagar.me module to work.',
             'woo-pagarme-payments'
-        )
+        ),
+        'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php'
     );
 }
 
-function _wcmp_load_notice($name)
+
+function wcmpAdminNoticePermalink()
 {
-    add_action('admin_notices', "wcmp_{$name}");
+    wcmpRenderAdminNoticeHtml(
+        __(
+            'Permalink structure in Wordpress Settings must be different from &ldquo;<b>Plain</b>&rdquo;. ' .
+                'Please correct this setting to be able to transact with Pagar.me.',
+            'woo-pagarme-payments'
+        ),
+        'options-permalink.php',
+        true
+    );
 }
 
-function _wcmp_load_instances()
+function wcmpAdminNoticeCheckoutFields()
+{
+    if (!function_exists('WC')) {
+        return;
+    }
+
+    $missingFields = [];
+    $requiredFields = [
+        'billing_cpf',
+        'billing_cnpj',
+        'billing_address_1',
+        'billing_number',
+        'billing_address_2',
+        'billing_neighborhood',
+    ];
+    $checkoutFields = WC()->countries->get_address_fields(WC()->countries->get_base_country());
+
+    foreach ($requiredFields as $field) {
+        if (!array_key_exists($field, $checkoutFields)) {
+            $missingFields[] = $field;
+        }
+    }
+
+    if ((in_array('billing_cpf', $missingFields) && !in_array('billing_cnpj', $missingFields)) ||
+        (in_array('billing_cnpj', $missingFields) && !in_array('billing_cpf', $missingFields))
+    ) {
+        array_shift($missingFields);
+    }
+
+    if (empty($missingFields)) {
+        return;
+    }
+
+    $message = __('The following checkout fields are required, but were not found:', 'woo-pagarme-payments');
+    $message .= '</p><ul>';
+
+    foreach ($missingFields as $field) {
+        $message .= "<li>{$field}</li>";
+    }
+
+    $message .= '</ul><p>';
+    $message .= __('Please, make sure to include them for Pagar.me module to work.', 'woo-pagarme-payments');
+
+    wcmpRenderAdminNoticeHtml($message);
+}
+
+function wcmpLoadNotice($name)
+{
+    add_action('admin_notices', "wcmp{$name}");
+}
+
+function wcmpLoadInstances()
 {
     require_once 'vendor/autoload.php';
 
@@ -75,48 +215,61 @@ function _wcmp_load_instances()
     do_action('wcmp_init');
 }
 
-function wcmp_plugins_loaded_check()
+function wcmpPluginsLoadedCheck()
 {
-    $woocommerce     = class_exists('WooCommerce');
-    $checkout_fields = class_exists('Extra_Checkout_Fields_For_Brazil');
-    add_action( 'in_plugin_update_message-' . WCMP_PLUGIN_BASE, function( $plugin_data ) {
-        versionUpdateWarning( WCMP_VERSION, $plugin_data['new_version'] );
-    } );
-
-    if ($woocommerce && $checkout_fields) {
-        _wcmp_load_instances();
-        return;
-    }
+    $woocommerce = class_exists('WooCommerce');
+    $checkoutFields = class_exists('Extra_Checkout_Fields_For_Brazil');
+    add_action('in_plugin_update_message-' . WCMP_PLUGIN_BASE, function ($pluginData) {
+        versionUpdateWarning(WCMP_VERSION, $pluginData['new_version']);
+    });
 
     if (!$woocommerce) {
-        _wcmp_load_notice('admin_notice_error');
+        wcmpLoadNotice('AdminNoticeWoocommerce');
     }
 
-    if (!$checkout_fields) {
-        _wcmp_load_notice('admin_notice_error_wecffb');
+    if (!$checkoutFields) {
+        wcmpLoadNotice('AdminNoticeExtraCheckouts');
     }
+
+    if ($woocommerce) {
+        wcmpLoadInstances();
+    }
+
+    if (get_option('permalink_structure') === '') {
+        wcmpLoadNotice('AdminNoticePermalink');
+    }
+
+    wcmpLoadNotice('AdminNoticeCheckoutFields');
 }
+
+add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
 
 function versionUpdateWarning($currentVersion, $newVersion)
 {
-    $current_version_major_part = explode( '.', $currentVersion )[0];
-    $new_version_major_part = explode( '.', $newVersion )[0];
+    $currentVersionMajorPart = explode('.', $currentVersion)[0];
+    $newVersionMajorPart = explode('.', $newVersion)[0];
 
-    if ( $current_version_major_part >= $new_version_major_part ) {
+    if ($currentVersionMajorPart >= $newVersionMajorPart) {
         return;
     }
-    ?>
+?>
     <hr class="pagarme-major-update-warning-separator" />
     <div class="pagarme-major-update-warning">
         <p></p>
         <div>
             <div class="pagarme-major-update-title">
-                <?= __( 'We recommend backup before upgrading!', 'woo-pagarme-payments' ); ?>
+                <?= __('We recommend backup before upgrading!', 'woo-pagarme-payments'); ?>
             </div>
             <div class="pagarme-major-update-message">
                 <?php
                 printf(
-                    esc_html__( 'This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your site before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging environment before performing the update in production.', 'woo-pagarme-payments' ),
+                    esc_html__(
+                        'This new release contains crucial architecture and functionality updates. ' .
+                            'We highly recommend you %1$sbackup your site before upgrading%2$s. ' .
+                            'It is highly recommended to perform and validate the update first in the staging ' .
+                            'environment before performing the update in production.',
+                        'woo-pagarme-payments'
+                    ),
                     '<a href="https://woocommerce.com/pt-br/posts/how-to-easily-backup-and-restore-woocommerce/">',
                     '</a>'
                 );
@@ -124,12 +277,10 @@ function versionUpdateWarning($currentVersion, $newVersion)
             </div>
         </div>
     </div>
-    <?php
+<?php
 }
 
-add_action('plugins_loaded', 'wcmp_plugins_loaded_check', 0);
-
-function wcmp_on_activation()
+function wcmpOnActivation()
 {
     if (!class_exists('WooCommerce')) {
         return;
@@ -137,27 +288,29 @@ function wcmp_on_activation()
 
     add_option(WCMP_OPTION_ACTIVATE, true);
 
-    wcmp_create_core_configuration_table();
-    wcmp_create_core_customer_table();
-    wcmp_create_core_charge_table();
-    wcmp_create_core_order_table();
-    wcmp_create_core_saved_card_table();
-    wcmp_create_core_transaction_table();
-    wcmp_create_core_hub_install_token();
+    $upgradePath = ABSPATH . 'wp-admin/includes/upgrade.php';
 
-    register_uninstall_hook(__FILE__, 'wcmp_on_uninstall');
+    wcmpCreateCoreConfigurationTable($upgradePath);
+    wcmpCreateCoreCustomerTable($upgradePath);
+    wcmpCreateCoreChargeTable($upgradePath);
+    wcmpCreateCoreOrderTable($upgradePath);
+    wcmpCreateCoreSavedCardTable($upgradePath);
+    wcmpCreateCoreTransactionTable($upgradePath);
+    wcmpCreateCoreHubInstallToken($upgradePath);
+
+    register_uninstall_hook(__FILE__, 'wcmpOnUninstall');
 }
 
-function wcmp_create_core_configuration_table()
+function wcmpCreateCoreConfigurationTable($upgradePath)
 {
     global $wpdb;
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    require_once $upgradePath;
 
     $charset    = $wpdb->get_charset_collate();
-    $table_name = $wpdb->prefix . 'pagarme_module_core_configuration';
+    $tableName = $wpdb->prefix . 'pagarme_module_core_configuration';
 
-    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    $query = "CREATE TABLE IF NOT EXISTS {$tableName}
     (
         id       int unsigned auto_increment comment 'ID' primary key,
         data     text not null comment 'data',
@@ -167,16 +320,16 @@ function wcmp_create_core_configuration_table()
     dbDelta($query);
 }
 
-function wcmp_create_core_customer_table()
+function wcmpCreateCoreCustomerTable($upgradePath)
 {
     global $wpdb;
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    require_once $upgradePath;
 
     $charset    = $wpdb->get_charset_collate();
-    $table_name = $wpdb->prefix . 'pagarme_module_core_customer';
+    $tableName = $wpdb->prefix . 'pagarme_module_core_customer';
 
-    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    $query = "CREATE TABLE IF NOT EXISTS {$tableName}
     (
         id         int unsigned auto_increment comment 'ID' primary key,
         code       varchar(100) not null comment 'platform customer id',
@@ -186,16 +339,16 @@ function wcmp_create_core_customer_table()
     dbDelta($query);
 }
 
-function wcmp_create_core_charge_table()
+function wcmpCreateCoreChargeTable($upgradePath)
 {
     global $wpdb;
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    require_once $upgradePath;
 
     $charset    = $wpdb->get_charset_collate();
-    $table_name = $wpdb->prefix . 'pagarme_module_core_charge';
+    $tableName = $wpdb->prefix . 'pagarme_module_core_charge';
 
-    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    $query = "CREATE TABLE IF NOT EXISTS {$tableName}
     (
         id              int unsigned auto_increment comment 'ID' primary key,
         pagarme_id      varchar(19)  not null comment 'format: ch_xxxxxxxxxxxxxxxx',
@@ -213,16 +366,16 @@ function wcmp_create_core_charge_table()
     dbDelta($query);
 }
 
-function wcmp_create_core_order_table()
+function wcmpCreateCoreOrderTable($upgradePath)
 {
     global $wpdb;
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    require_once $upgradePath;
 
     $charset    = $wpdb->get_charset_collate();
-    $table_name = $wpdb->prefix . 'pagarme_module_core_order';
+    $tableName = $wpdb->prefix . 'pagarme_module_core_order';
 
-    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    $query = "CREATE TABLE IF NOT EXISTS {$tableName}
     (
         id           int unsigned auto_increment comment 'ID' primary key,
         pagarme_id   varchar(19)  not null comment 'format: or_xxxxxxxxxxxxxxxx',
@@ -233,16 +386,16 @@ function wcmp_create_core_order_table()
     dbDelta($query);
 }
 
-function wcmp_create_core_transaction_table()
+function wcmpCreateCoreTransactionTable($upgradePath)
 {
     global $wpdb;
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    require_once $upgradePath;
 
     $charset    = $wpdb->get_charset_collate();
-    $table_name = $wpdb->prefix . 'pagarme_module_core_transaction';
+    $tableName = $wpdb->prefix . 'pagarme_module_core_transaction';
 
-    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    $query = "CREATE TABLE IF NOT EXISTS {$tableName}
     (
         id                 int unsigned auto_increment comment 'ID' primary key,
         pagarme_id         varchar(21)  not null comment 'format: tran_xxxxxxxxxxxxxxxx',
@@ -265,16 +418,16 @@ function wcmp_create_core_transaction_table()
     dbDelta($query);
 }
 
-function wcmp_create_core_saved_card_table()
+function wcmpCreateCoreSavedCardTable($upgradePath)
 {
     global $wpdb;
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    require_once $upgradePath;
 
     $charset    = $wpdb->get_charset_collate();
-    $table_name = $wpdb->prefix . 'pagarme_module_core_saved_card';
+    $tableName = $wpdb->prefix . 'pagarme_module_core_saved_card';
 
-    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    $query = "CREATE TABLE IF NOT EXISTS {$tableName}
     (
         id               int unsigned auto_increment comment 'ID' primary key,
         pagarme_id       varchar(21) not null comment 'format: card_xxxxxxxxxxxxxxxx',
@@ -289,16 +442,16 @@ function wcmp_create_core_saved_card_table()
     dbDelta($query);
 }
 
-function wcmp_create_core_hub_install_token()
+function wcmpCreateCoreHubInstallToken($upgradePath)
 {
     global $wpdb;
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    require_once $upgradePath;
 
     $charset    = $wpdb->get_charset_collate();
-    $table_name = $wpdb->prefix . 'pagarme_module_core_hub_install_token';
+    $tableName = $wpdb->prefix . 'pagarme_module_core_hub_install_token';
 
-    $query = "CREATE TABLE IF NOT EXISTS {$table_name}
+    $query = "CREATE TABLE IF NOT EXISTS {$tableName}
     (
         id                   int unsigned auto_increment comment 'ID' primary key,
         token                varchar(255) not null comment 'hub install token',
@@ -310,13 +463,15 @@ function wcmp_create_core_hub_install_token()
     dbDelta($query);
 }
 
-function wcmp_on_deactivation()
+function wcmpOnDeactivation()
 {
+    // @todo
 }
 
-function wcmp_on_uninstall()
+function wcmpOnUninstall()
 {
+    // @todo
 }
 
-register_activation_hook(__FILE__, 'wcmp_on_activation');
-register_deactivation_hook(__FILE__, 'wcmp_on_deactivation');
+register_activation_hook(__FILE__, 'wcmpOnActivation');
+register_deactivation_hook(__FILE__, 'wcmpOnDeactivation');

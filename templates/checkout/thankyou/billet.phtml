@@ -17,14 +17,23 @@ if (!function_exists('add_action')) {
 ?>
 <?php if ($this->getBilletUrl()) : ?>
     <p>
-        <?php _e('If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments'); ?>
+        <?php
+        _e(
+            'If you have not yet received the boleto, please click the button below to print.',
+            'woo-pagarme-payments'
+        );
+        ?>
     </p>
-    <a href="<?= $this->getBilletUrl() ?>" target="_blank" class="payment-link">
+    <button id="pagarme-billet-button"
+            data-pagarme-billet-url="<?= $this->getBilletUrl() ?>"
+            class="pagarme-payment-button">
         <?php _e('Print', 'woo-pagarme-payments'); ?>
-    </a>
+    </button>
 <?php else : ?>
-    <?= $this->createBlock(
+    <?=
+    $this->createBlock(
         '\Woocommerce\Pagarme\Block\Checkout\ThankYou\StatusTransaction',
         'pagarme.checkout.thankyou.statustransaction'
-    )->toHtml() ?>
+    )->toHtml()
+    ?>
 <?php endif; ?>

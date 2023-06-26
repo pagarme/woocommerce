@@ -20,11 +20,18 @@ if (!function_exists('add_action')) {
         <th><?= __('Billet', 'woo-pagarme-payments'); ?>:</th>
         <td>
             <p>
-                <?= __('If you have not yet received the boleto, please click the button below to print.', 'woo-pagarme-payments'); ?>
+                <?=
+                __(
+                    'If you have not yet received the boleto, please click the button below to print.',
+                    'woo-pagarme-payments'
+                );
+                ?>
             </p>
-            <a href="<?= $this->getBilletUrl() ?>" target="_blank" class="payment-link">
-                <?= __('Print', 'woo-pagarme-payments'); ?>
-            </a>
+            <button id="pagarme-billet-button"
+                    data-pagarme-billet-url="<?= $this->getBilletUrl() ?>"
+                    class="button">
+                <?php _e('Print', 'woo-pagarme-payments'); ?>
+            </button>
         </td>
     </tr>
 <?php endif; ?>

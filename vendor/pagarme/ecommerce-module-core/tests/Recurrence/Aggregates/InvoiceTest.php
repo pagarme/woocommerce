@@ -17,7 +17,7 @@ class InvoiceTest extends TestCase
      */
     private $invoice;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->invoice = new Invoice();
     }

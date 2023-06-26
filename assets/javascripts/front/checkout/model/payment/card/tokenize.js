@@ -9,9 +9,8 @@
         const paymentMethodTarget = 'data-pagarmecheckout-method';
         const sequenceTarget = 'data-pagarmecheckout-card-num';
         const tokenElementTarget = 'data-pagarmecheckout-element';
-        const form = $('form.checkout');
 
-        var pagarme = {
+        const pagarme = {
             getEndpoint: function () {
                 let url = new URL(apiUrl);
                 url.searchParams.append('appId', appId);
@@ -33,7 +32,7 @@
         }
 
         async function tokenize() {
-            if (pagarmeCard.hasSelectedWallet(this) === false) {
+            if (pagarmeCard.hasSelectedWallet(this) === false && !pagarmeCard.checkToken(this)) {
                 wc_pagarme_checkout.errorTokenize = false;
                 let endpoint = pagarme.getEndpoint(),
                     card = createCardObject(this),
@@ -42,8 +41,8 @@
                     endpoint,
                     card,
                     field,
-                    function (data) {
-                        createTokenInput(data, field);
+                    async function (data) {
+                        await createTokenInput(data, field);
                     },
                     function (error) {
                         wc_pagarme_checkout.errorTokenize = true;
@@ -70,8 +69,8 @@
                     obj['exp_month'] = values[0];
                     obj['exp_year'] = values[1];
                 }
-                if (prop === 'number') {
-                    value = this.value.replace(/\s/g, '');
+                if ((prop === 'number') || (prop === 'holder_document')) {
+                    value = this.value.replace(/\D/g, '');
                 }
                 if (ignore.includes(prop)) {
                     return;
@@ -83,7 +82,7 @@
 
         function getApiData(url, data, field, success, fail) {
             return new Promise((resolve) => {
-                var xhr = new XMLHttpRequest();
+                const xhr = new XMLHttpRequest();
                 xhr.open('POST', url);
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState < 4) {
@@ -92,7 +91,7 @@
                     if (xhr.status == 200) {
                         success.call(null, xhr.responseText, field);
                     } else {
-                        var errorObj = {};
+                        let errorObj = {};
                         if (xhr.response) {
                             errorObj = JSON.parse(xhr.response);
                             errorObj.statusCode = xhr.status;
@@ -117,16 +116,12 @@
                 html: text,
                 allowOutsideClick: false
             };
-            try {
-                swal(message);
-            } catch (e) {
-                new swal(message);
-            }
+            swal(message);
         }
 
         function listError(errors) {
-            var error, rect;
-            var element = $('input[name$="payment_method"]:checked').closest('li').find('#wcmp-checkout-errors');
+            let error, rect;
+            const element = $('input[name$="payment_method"]:checked').closest('li').find('#wcmp-checkout-errors');
 
             swal.close();
 
@@ -147,28 +142,13 @@
         };
 
         function parseErrorsList (error, message) {
-            wc_pagarme_checkout.errorList += '<li>' + translateErrors(error, message) + '<li>';
-        };
-
-        function translateErrors(error, message) {
-            error = error.replace('request.', '');
-            var output = error + ': ' + message;
-            var ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
-
-            if (PagarmeGlobalVars.WPLANG != 'pt_BR') {
-                return output;
-            }
-
-            if (ptBrMessages.hasOwnProperty(output)) {
-                return ptBrMessages[output];
-            }
-
-            return output;
+            const translatedError = pagarmeCard.translateErrors(error, message);
+            wc_pagarme_checkout.errorList += `<li>${translatedError}<li>`;
         };
 
         async function createTokenInput(response, field) {
             try {
-                let clear = await clearInputTokens(field);
+                await clearInputTokens(field);
             } catch (e) {
                 showError(e.message);
             }
@@ -182,7 +162,8 @@
                 .attr('name',  inputName)
                 .attr('id', inputName)
                 .attr('value', objJSON.id)
-                .attr(tokenElementTarget, token);
+                .attr(tokenElementTarget, token)
+                .attr(pagarmeCard.tokenExpirationAttribute, objJSON.expires_at);
             field.append(input);
         }
 
@@ -201,15 +182,7 @@
             });
         }
 
-        $("form.checkout").on(
-            "checkout_place_order",
-            function () {
-                try {
-                    execute();
-                } catch (e) {
-                    return false;
-                }
-            }
-        );
+        $('form.checkout').on('checkout_place_order', execute());
+        $('form#order_review').on('submit', execute());
     }(jQuery)
 );

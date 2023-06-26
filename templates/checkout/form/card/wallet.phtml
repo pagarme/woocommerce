@@ -19,15 +19,18 @@ if (!function_exists('add_action')) {
 <?php if ($this->isWalletEnable() && $this->getPaymentInstance()->getCards()) : ?>
     <p class="form-row form-row-wide">
         <label for="<?= $this->getElementId('wallet-id') ?>">
-            <?= __('Cards save', 'woo-pagarme-payments'); ?>
+            <?= __('Saved cards', 'woo-pagarme-payments'); ?>
         </label>
-        <select name="<?= $this->getElementId('wallet-id') ?>" id="<?= $this->getElementId('wallet-id') ?>" data-action="select-card-wallet" data-installments-type="<?= intval($this->getPaymentInstance()->getConfig()->getCcInstallmentType()); ?>" data-element="choose-credit-card" autocomplete="false">
-            <option value=""><?= __('Saved credit card', 'woo-pagarme-payments'); ?></option>
+        <select name="<?= $this->getElementId('wallet-id') ?>" id="<?= $this->getElementId('wallet-id') ?>"
+                data-action="select-card-wallet"
+                data-installments-type=
+                    "<?= intval($this->getPaymentInstance()->getConfig()->getCcInstallmentType()); ?>"
+                data-element="choose-credit-card" autocomplete="false">
+            <option value=""><?= __('Choose your saved card', 'woo-pagarme-payments'); ?></option>
             <?php foreach ($this->getPaymentInstance()->getCards() as $card) : ?>
                 <?php
                 printf(
-                    '<option data-brand="%3$s" value="%2$s">(%1$s) •••• •••• •••• %4$s</option>',
-                    esc_html(strtoupper($card->getBrand()->getName())),
+                    '<option data-brand="%2$s" value="%1$s">•••• •••• •••• %3$s</option>',
                     esc_attr($card->getPagarmeId()->getValue()),
                     esc_html(strtolower($card->getBrand()->getName())),
                     esc_html($card->getLastFourDigits()->getValue())
@@ -36,10 +39,5 @@ if (!function_exists('add_action')) {
             <?php endforeach; ?>
         </select>
     </p>
-    <script type="text/javascript">
-        if (typeof pagarmeCheckoutWallet == 'object') {
-            pagarmeCheckoutWallet.start();
-        }
-    </script>
 <?php endif; ?>
 
