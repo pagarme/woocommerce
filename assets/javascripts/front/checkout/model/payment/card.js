@@ -382,7 +382,7 @@ let pagarmeCard = {
             }
 
             this.canSubmit = true;
-            this.canExecute(e);
+            $('form#order_review').submit();
         } catch (er) {
             if (typeof er === 'string') {
                 this.showError(er);
@@ -400,7 +400,8 @@ let pagarmeCard = {
         if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit &&
             pagarmeCard.haveCardForm(el)
         ) {
-            await this.execute(e);
+            pagarmeTokenize.execute();
+            pagarmeCard.execute(e);
             return false;
         }
         return true;
@@ -418,11 +419,9 @@ let pagarmeCard = {
             pagarmeCard.renewEventListener();
         });
         $('form.checkout').on('checkout_place_order', function (e) {
-            pagarmeTokenize.execute();
             return pagarmeCard.canExecute(e);
         });
         $('form#order_review').on('submit', function (event) {
-            pagarmeTokenize.execute();
             return pagarmeCard.canExecute(event);
         });
         $(this.billingCpfId).on('change', function () {
