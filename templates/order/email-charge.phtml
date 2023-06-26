@@ -1,7 +1,7 @@
 <?php
 /**
  * @author      Open Source Team
- * @copyright   2022 Pagar.me (https://pagar.me)
+ * @copyright   2023 Pagar.me (https://pagar.me)
  * @license     https://pagar.me Copyright
  *
  * @link        https://pagar.me
@@ -14,21 +14,33 @@ declare( strict_types=1 );
 if (!function_exists('add_action')) {
     exit(0);
 }
+
+// date_default_timezone_set('America/Sao_Paulo');
+// $fileMelazzo = fopen(get_site_url(null, "/wp-content/uploads/wc-logs/teste.txt"), "a");
+// fwrite($fileMelazzo, "### " . date('Y-m-d H:i:s') . " ###\n• accessed email-payment-details.phtml\n");
+// fwrite($fileMelazzo, json_encode((array)$minValue, JSON_PRETTY_PRINT));
+
 ?>
+<p>email-payment-details.phtml</p>
 <?php if ($this->getCharge() && $this->getCharge()->getTransactions()) : ?>
+
+    <?php // fwrite($fileMelazzo, "if (this->getCharge() && this->getCharge()->getTransactions())\n"); ?>
+
     <?php foreach ($this->getCharge()->getTransactions() as $transaction) : ?>
-        <p>> charge.phtml</p>
-        <table class="woocommerce-table">
+
+        <?php // fwrite($fileMelazzo, "foreach (this->getCharge()->getTransactions() as transaction)\n\n"); ?>
+        
+        <table aria-describedby="mydesc" class="woocommerce-table">
             <thead>
                 <tr>
-                    <th colspan="2"><?= __($this->getTransactionType($transaction), 'woo-pagarme-payments'); ?></th>
+                    <th colspan="2"><?= __($this->getEmailType($transaction), 'woo-pagarme-payments'); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?=
                     $this->createBlock(
-                        $this->getTransactionClass($transaction),
-                        'pagarme.order.charge.transaction',
+                        $this->getEmailClass($transaction),
+                        'pagarme.order.email-payment-details.email',
                         [
                             'transaction' => $transaction
                         ]
@@ -40,6 +52,7 @@ if (!function_exists('add_action')) {
                 </tr>
             </tbody>
         </table>
-        <?php break; ?>
     <?php endforeach; ?>
 <?php endif; ?>
+
+<?php // fclose($fileMelazzo); ?>

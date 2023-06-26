@@ -12,18 +12,17 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use WC_Payment_Gateway;
-use WC_Order;
+use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
+use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
 use Woocommerce\Pagarme\Block\Template;
-use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Payment\PostFormatter;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
-use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -113,9 +112,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'beforeProcessAdminOptions']);
             add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'process_admin_options']);
         }
-        add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
+        add_action('woocommerce_receipt_' . $this->id, [$this, 'receipt_page']);
         add_action('woocommerce_thankyou_' . $this->id, [$this, 'thank_you_page']);
-        add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
+        add_action('admin_enqueue_scripts', [$this, 'payments_scripts']);
+        add_action('woocommerce_email_after_order_table', [$this, 'pagarme_email_payment_info'], 15 );
     }
 
     public function payments_scripts()
@@ -311,5 +311,17 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             }
         }
         $this->config->save();
+    }
+
+    /**
+     * @param mixed $order
+     * @return void
+     */
+    public function pagarme_email_payment_info($order)
+    {
+        if ($this->id === $order->payment_method) {
+            $paymentDetails = new EmailPaymentDetails();
+            $paymentDetails->render($order->get_id());
+        }
     }
 }

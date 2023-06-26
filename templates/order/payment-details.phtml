@@ -20,6 +20,7 @@ if (!function_exists('add_action')) {
 <?php if ($this->isPagarmePaymentMethod($this->getOrder())) : ?>
     <section>
         <h2><?= __('Payment Data', 'woo-pagarme-payments'); ?></h2>
+        <p>> payment-details.phtml</p>
         <?php if ($this->getCharges()) : ?>
             <?php foreach ($this->getCharges() as $charge) : ?>
                 <?=
