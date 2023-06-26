@@ -7,7 +7,7 @@
  * @link        https://pagar.me
  */
 
-/** @var \Woocommerce\Pagarme\Block\Order\Email $this */
+/** @var \Woocommerce\Pagarme\Block\Order\EmailCharge $this */
 
 declare(strict_types=1);
 
@@ -20,7 +20,7 @@ if (!function_exists('add_action')) {
 <?php if ($this->isPagarmePaymentMethod($this->getOrder())) : ?>
     <h2><?= __('Payment Data', 'woo-pagarme-payments'); ?></h2>
     <div id="pagarme-payment-detail" style="margin-bottom: 40px;">
-        <p>> email.phtml</p>
+        <p>> email-payment-details.phtml</p>
         <?php if ($this->getCharges()) : ?>
             <?php foreach ($this->getCharges() as $charge) : ?>
                 <?=

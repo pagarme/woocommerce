@@ -15,7 +15,7 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 ?>
-<p>email-payment-details.phtml</p>
+<p>email-charge.phtml</p>
 <?php if ($this->getCharge() && $this->getCharge()->getTransactions()) : ?>
     <?php foreach ($this->getCharge()->getTransactions() as $transaction) : ?>
         <table aria-describedby="mydesc" class="woocommerce-table">

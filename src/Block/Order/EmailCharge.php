@@ -25,7 +25,7 @@ class EmailCharge extends Template
     /**
      * @var string
      */
-    protected $_template = 'templates/order/email-payment-details';
+    protected $_template = 'templates/order/email-charge';
 
     private $basePath = '\Woocommerce\Pagarme\Block\Order\Email\\';
 
