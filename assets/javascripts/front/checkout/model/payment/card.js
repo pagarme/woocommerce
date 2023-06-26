@@ -2,19 +2,30 @@
 
 $ = jQuery;
 
-const cardNumberTarget = 'input[data-element="pagarme-card-number"]';
-const brandTarget = '[data-pagarmecheckout-element="brand-input"]';
-const valueTarget = '[data-pagarmecheckout-element="order-value"]';
-const installmentsTarget = '[data-pagarme-component="installments"]';
-const mundiCdn = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
-const tokenElement = '[data-pagarmecheckout-element="token"]';
-const billingCpfId = '#billing_cpf';
 let cardsMethods = [];
 
 let pagarmeCard = {
     limitTokenize: 10,
     canSubmit: false,
     tokenExpirationAttribute: 'data-pagarmecheckout-expiration',
+    cardNumberTarget: 'input[data-element="pagarme-card-number"]',
+    brandTarget: 'input[data-pagarmecheckout-element="brand-input"]',
+    valueTarget: 'input[data-pagarmecheckout-element="order-value"]',
+    installmentsTarget: '[data-pagarme-component="installments"]',
+    mundiCdn: 'https://cdn.mundipagg.com/assets/images/logos/brands/png/',
+    tokenElement: '[data-pagarmecheckout-element="token"]',
+    fieldsetCardElements: 'fieldset[data-pagarmecheckout="card"]',
+    billingCpfId: '#billing_cpf',
+    voucherDocumentHolder: 'input[name="pagarme[voucher][cards][1][document-holder]"]',
+    formatEventToJQuery: function (event) {
+        if (event instanceof $.Event) {
+            return $(event.currentTarget);
+        }
+        if (!(event instanceof $)) {
+            return $(event);
+        }
+        return event;
+    },
     haveCardForm: function (e) {
         let elem = null;
         if (e instanceof $) {
@@ -24,12 +35,12 @@ let pagarmeCard = {
             elem = $(e.currentTarget);
         }
         if (!elem) {
-            throw new Error("Cant check card form: Invalid element received");
+            throw new Error("Can't check card form: Invalid element received");
         }
         if (elem.is("fieldset") && elem.attr("data-pagarmecheckout") === 'card') {
             return true;
         }
-        return !!elem.has('fieldset[data-pagarmecheckout="card"]').length;
+        return !!elem.has(this.fieldsetCardElements).length;
     },
     getCheckoutPaymentElement: function () {
         let value = $('.woocommerce form input[name="payment_method"]:checked').val();
@@ -39,12 +50,26 @@ let pagarmeCard = {
         return $('.woocommerce form input[name="payment_method"]:checked').val().indexOf('pagarme');
     },
     keyEventHandlerCard: function (e) {
+        this.clearToken(e);
         this.loadBrand(e);
+    },
+    clearErrorMessages: function () {
+        $('input[name$="payment_method"]:checked')
+            .closest('li')
+            .find('#wcmp-checkout-errors')
+            .hide();
+        wc_pagarme_checkout.errorTokenize = false;
+    },
+    clearToken: function (e) {
+        const token = $(e.currentTarget).closest(this.fieldsetCardElements)
+            .find(this.tokenElement);
+        $(token).remove();
+        this.canSubmit = false;
     },
     formHandler: function () {
         if (this.isPagarmePayment()) {
             let e = this.getCheckoutPaymentElement();
-            let cardsForm = e.find('fieldset[data-pagarmecheckout="card"]');
+            const cardsForm = e.find(this.fieldsetCardElements);
             return this.checkTokenCard(cardsForm);
         }
         return true;
@@ -74,16 +99,11 @@ let pagarmeCard = {
             setTimeout(resolve, ms);
         });
     },
-
-    getBrandTarget: function () {
-        return brandTarget;
-    },
-
     checkToken: function (e) {
         if (!(e instanceof jQuery)) {
             e = $(e);
         }
-        return !!e.find(tokenElement).length && this.checkTokenExpirationDate(e.find(tokenElement));
+        return !!e.find(this.tokenElement).length && this.checkTokenExpirationDate(e.find(this.tokenElement));
     },
 
     checkTokenExpirationDate: function (e) {
@@ -140,9 +160,13 @@ let pagarmeCard = {
         if (cardNumber.length < 6) {
             return;
         }
-        let card = await this.getCardData(cardNumber);
-        this.changeBrand(e, card);
-        this.updateInstallmentsElement(e);
+        try {
+            let card = await this.getCardData(cardNumber);
+            this.changeBrand(e, card);
+            this.updateInstallmentsElement(e);
+        } catch (exception) {
+            this.showError(exception.message);
+        }
     },
     isVisible: function (obj) {
         return obj.offsetWidth > 0 && obj.offsetHeight > 0;
@@ -153,6 +177,9 @@ let pagarmeCard = {
         let value = await this.getCardDataByApi(cardNumber);
         if (value === 'error' || typeof value.brandName == 'undefined') {
             value = await this.getCardDataContingency(cardNumber);
+        }
+        if (typeof value === 'undefined') {
+            return undefined;
         }
         let codeWithArray = {
             name: 'CVV',
@@ -186,7 +213,7 @@ let pagarmeCard = {
                 success: function (data) {
                     resolve(data);
                 },
-                error: function (xhr, textStatus, errorThrown) {
+                error: function (xhr, textStatus) {
                     resolve(textStatus);
                 }
             });
@@ -200,7 +227,7 @@ let pagarmeCard = {
         let elem = e.currentTarget;
         let imageSrc = this.getImageSrc(card);
         let imgElem = $(elem).parent().find('img');
-        $(elem).parents('.pagarme-card-number-row').find(brandTarget).attr('value', card[0].brand);
+        $(elem).parents('.pagarme-card-number-row').find(this.brandTarget).attr('value', card[0].brand);
         if (imgElem.length) {
             imgElem.attr('src', imageSrc);
         } else {
@@ -217,7 +244,7 @@ let pagarmeCard = {
         if (card[0].image) {
             return card[0].image;
         }
-        return mundiCdn + card[0].brand + '.png';
+        return this.mundiCdn + card[0].brand + '.png';
     },
 
     formatValue: function (value, raw = true) {
@@ -244,13 +271,13 @@ let pagarmeCard = {
         if (!elem) {
             return false;
         }
-        let brand = elem.closest('fieldset').find(brandTarget).val();
-        let total = elem.closest('fieldset').find(valueTarget).val();
+        let brand = elem.closest('fieldset').find(this.brandTarget).val();
+        let total = elem.closest('fieldset').find(this.valueTarget).val();
         if (total) {
             total = pagarmeCard.formatValue(total);
         }
         let cardForm = elem.closest("fieldset");
-        let select = cardForm.find(installmentsTarget);
+        let select = cardForm.find(this.installmentsTarget);
         if (!total)
             total = cartTotal;
         if ((!total) ||
@@ -313,14 +340,30 @@ let pagarmeCard = {
     },
 
     showError: function (text) {
+        const errorMessageText = this.translateErrors('card', text);
         const message = {
             type: 'error',
-            html: text,
+            html: errorMessageText,
             allowOutsideClick: false
         };
         swal(message);
     },
-    execute: async function () {
+    translateErrors: function (error, message) {
+        error = error.replace('request.', '');
+        const output = `${error}: ${message}`;
+        const ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
+
+        if (PagarmeGlobalVars.WPLANG !== 'pt_BR') {
+            return output;
+        }
+
+        if (ptBrMessages.hasOwnProperty(output)) {
+            return ptBrMessages[output];
+        }
+
+        return output;
+    },
+    execute: async function (e) {
         let result = pagarmeCard.formHandler(),
             i = 1;
         try {
@@ -339,7 +382,7 @@ let pagarmeCard = {
             }
 
             this.canSubmit = true;
-            $('form.checkout, form#order_review').submit();
+            this.canExecute(e);
         } catch (er) {
             if (typeof er === 'string') {
                 this.showError(er);
@@ -349,7 +392,7 @@ let pagarmeCard = {
         }
     },
     canExecute: function (e) {
-        e.preventDefault();
+        // e.preventDefault();
         if (!wc_pagarme_checkout.validate() || wc_pagarme_checkout.errorTokenize === true) {
             return false;
         }
@@ -357,63 +400,56 @@ let pagarmeCard = {
         if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit &&
             pagarmeCard.haveCardForm(el)
         ) {
-            pagarmeCard.execute();
+            await this.execute(e);
             return false;
         }
         return true;
     },
-    bindListenerToEvent: (element, eventName, handlerCallback) => {
-        if (!(element instanceof jQuery) && !(element instanceof $.Event)) {
-            element = $(element);
-        }
-        if (element.length == 0) {
-            return;
-        }
-        const rawDOMElement = element.get(0);
-        const events = $._data(rawDOMElement, 'events') || {};
-
-        const eventHandlers = events[eventName] || [];
-        const hasHandlerBound = eventHandlers.find((item) => item.handler.name === handlerCallback.name);
-
-        if(!hasHandlerBound) {
-            element.on(eventName,handlerCallback);
-        }
+    onChangeBillingCpf: function () {
+        // if ($(this.voucherDocumentHolder).length === 0) {
+        //     return;
+        // }
+        let cpf = $(this.billingCpfId).val();
+        $(this.voucherDocumentHolder).empty();
+        $(this.voucherDocumentHolder).val(cpf);
     },
     addEventListener: function () {
-        const handleCardNumberKeyEventChange = (e) => {
-            pagarmeCard.keyEventHandlerCard(e);
-        };
-        this.bindListenerToEvent(cardNumberTarget, 'change', handleCardNumberKeyEventChange)
-
+        $(document.body).on('updated_checkout', function () {
+            pagarmeCard.renewEventListener();
+        });
         $('form.checkout').on('checkout_place_order', function (e) {
+            pagarmeTokenize.execute();
             return pagarmeCard.canExecute(e);
         });
-        $('form#order_review').on('submit', function (e) {
-            return pagarmeCard.canExecute(e);
+        $('form#order_review').on('submit', function (event) {
+            pagarmeTokenize.execute();
+            return pagarmeCard.canExecute(event);
         });
-
-        const voucherDocumentHolder = $('input[name="pagarme[voucher][cards][1][document-holder]"]');
-        const handleCpfChange = () => {
-            voucherDocumentHolder.empty();
-            voucherDocumentHolder.val($(billingCpfId).val()).trigger('input');
-        };
-        this.bindListenerToEvent(billingCpfId, 'change', handleCpfChange);
-
-        voucherDocumentHolder.val($(billingCpfId).val()).trigger('input');
-
+        $(this.billingCpfId).on('change', function () {
+            pagarmeCard.onChangeBillingCpf();
+        });
     },
-    start: function () {
-        this.getCardsMethods();
-        this.getBrands();
-        this.addEventListener();
+    renewEventListener: function () {
+        $(this.cardNumberTarget).on('change', function (event) {
+            pagarmeCard.keyEventHandlerCard(event);
+        });
+        $(`${this.fieldsetCardElements} input`).on('change', function () {
+            pagarmeCard.clearErrorMessages();
+        });
         if (typeof pagarmeCheckoutWallet == 'object') {
             pagarmeCheckoutWallet.start();
         }
         if (typeof pagarmeOrderValue == 'object') {
             pagarmeOrderValue.start();
         }
-
+    },
+    start: function () {
+        console.log("oi");
+        this.getCardsMethods();
+        this.getBrands();
+        this.addEventListener();
+        this.renewEventListener();
+        this.onChangeBillingCpf();
     },
 };
-$( document.body).on('updated_checkout', pagarmeCard.start());
 pagarmeCard.start();
