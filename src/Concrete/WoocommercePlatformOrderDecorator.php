@@ -699,8 +699,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromCreditCard(
         &$paymentData
-    )
-    {
+    ) {
         $newPaymentData = $this->extractBasePaymentData();
 
         $creditCardDataIndex = AbstractCreditCardPayment::getBaseCode();
@@ -715,8 +714,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $additionalInformation,
         &$paymentData,
         $payment
-    )
-    {
+    ) {
         $newPaymentData = $this->extractBasePaymentData();
 
         $creditCardDataIndex = NewVoucherPayment::getBaseCode();
@@ -730,8 +728,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $additionalInformation,
         &$paymentData,
         $payment
-    )
-    {
+    ) {
         $newPaymentData = $this->extractBasePaymentData();
 
         $creditCardDataIndex = NewDebitCardPayment::getBaseCode();
@@ -758,7 +755,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $newPaymentData->brand = $brand;
         $newPaymentData->identifier = $identifier;
         $newPaymentData->installments = intval($this->formData["installments"]);
-        $newPaymentData->recurrenceCycle = $this->formData["recurrence_cycle"];
         $newPaymentData->saveOnSuccess =
             isset($this->formData["save_credit_card"]);
 
@@ -841,8 +837,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractMultibuyerData(
         $paymentMethod
-    )
-    {
+    ) {
 
         if (empty($paymentMethod)) {
             return null;
@@ -1022,7 +1017,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
         $newPaymentData = new \stdClass();
         $newPaymentData->customerId = $this->getCustomer()->getPagarmeId() ?
-            $this->getCustomer()->getPagarmeId()->getValue() : null;
+        $this->getCustomer()->getPagarmeId()->getValue() : null;
         $newPaymentData->identifier = $identifier;
         $newPaymentData->brand = strtolower($this->formData["brand"]);
         $newPaymentData->installments = (int)1;

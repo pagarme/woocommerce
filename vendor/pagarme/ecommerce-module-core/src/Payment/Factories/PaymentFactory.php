@@ -27,7 +27,7 @@ final class PaymentFactory
 {
     /** @var string[] */
     private $primitiveFactories;
-    /** @var Configuration */
+    /** @var Configuration  */
     private $moduleConfig;
     /** @var string */
     private $cardStatementDescriptor;
@@ -117,8 +117,7 @@ final class PaymentFactory
         $cardData,
         $cardDataIndex,
         $config
-    )
-    {
+    ) {
         $payment = $this->createBaseCardPayment($cardData, $cardDataIndex);
 
         if ($payment === null) {
@@ -135,7 +134,6 @@ final class PaymentFactory
 
         $payment->setAmount($cardData->amount);
         $payment->setInstallments($cardData->installments);
-        $payment->setRecurrenceCycle($cardData->recurrenceCycle);
 
         //setting amount with interest
         if (strcmp($cardDataIndex, \Pagarme\Core\Kernel\ValueObjects\PaymentMethod::VOUCHER)) {
@@ -191,9 +189,8 @@ final class PaymentFactory
 
     private function getAmountWithInterestForCreditCard(
         AbstractCreditCardPayment $payment,
-                                  $config
-    )
-    {
+        $config
+    ) {
         $installmentService = new InstallmentService();
 
         $validInstallments = $installmentService->getInstallmentsFor(
@@ -292,7 +289,7 @@ final class PaymentFactory
         $identifier = $data->identifier;
         try {
             $cardToken = new CardToken($identifier);
-            $payment = $this->getNewPaymentMethod($method);
+            $payment =  $this->getNewPaymentMethod($method);
             $payment->setIdentifier($cardToken);
 
             if (isset($data->saveOnSuccess)) {
@@ -305,7 +302,7 @@ final class PaymentFactory
 
         try {
             $cardId = new CardId($identifier);
-            $payment = $this->getSavedPaymentMethod($method);
+            $payment =  $this->getSavedPaymentMethod($method);
             $payment->setIdentifier($cardId);
 
             if (isset($data->cvvCard)) {

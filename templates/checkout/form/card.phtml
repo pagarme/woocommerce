@@ -162,3 +162,12 @@ if (!function_exists('add_action')) {
         <?php endif; ?>
     </fieldset>
 <?php endfor; ?>
+
+<script type="text/javascript">
+    {
+        if (typeof pagarmeCard == 'object') {
+            pagarmeCard.start();
+        }
+    }
+</script>
+

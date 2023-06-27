@@ -20,8 +20,6 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
     /** @var int */
     protected $installments;
     /** @var string */
-    protected $recurrenceCycle;
-    /** @var string */
     protected $statementDescriptor;
     /** @var boolean */
     protected $capture;
@@ -86,7 +84,6 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
 
         $this->installments = $installments;
     }
-
     /**
      * @return bool
      */
@@ -124,16 +121,6 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
             $exception,
             $installments
         );
-    }
-
-    public function getRecurrenceCycle()
-    {
-        return $this->recurrenceCycle;
-    }
-
-    public function setRecurrenceCycle($recurrenceCycle)
-    {
-        $this->recurrenceCycle = $recurrenceCycle;
     }
 
     /**
@@ -196,7 +183,7 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-        $obj = parent::jsonSerialize();
+        $obj =  parent::jsonSerialize();
 
         $obj->installments = $this->installments;
         $obj->brand = $this->brand;
@@ -206,6 +193,7 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
 
         return $obj;
     }
+
 
     /**
      * @param AbstractCardIdentifier $identifier
@@ -229,7 +217,6 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $cardRequest->card = $createCardRequest;
         $cardRequest->capture = $this->isCapture();
         $cardRequest->installments = $this->getInstallments();
-        $cardRequest->recurrenceCycle = $this->getRecurrenceCycle();
         $cardRequest->statementDescriptor = $this->getStatementDescriptor();
 
         return $cardRequest;

@@ -34,13 +34,6 @@ class Pix extends AbstractGateway
     const QR_CODE_EXPIRATION_TIME_FIELD_NAME = 'QR code expiration time';
 
     /**
-     * @return boolean
-     */
-    public function hasSubscriptionSupport(): bool
-    {
-        return true;
-    }
-    /**
      * @return array
      */
     public function append_form_fields()

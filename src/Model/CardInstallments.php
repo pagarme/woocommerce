@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model;
 
-use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 
@@ -54,7 +53,7 @@ class CardInstallments
     {
         $total = Utils::str_to_float($total);
         $type = $this->config->getCcInstallmentType() ?? 1;
-        $maxInstallments = $this->getMaxCcInstallments($type, $flag);
+        $maxInstallments = $this->config->getCcInstallmentsMaximum();
         $minAmount = Utils::str_to_float($this->config->getCcInstallmentsMinAmount());
         $noInterest = intval($this->config->getCcInstallmentsWithoutInterest());
         $interest = Utils::str_to_float($this->config->getCcInstallmentsInterest());
@@ -170,7 +169,7 @@ class CardInstallments
                 'content' =>  __('This card brand not is allowed on checkout.', Core::SLUG)
             ]];
         }
-        $maxInstallments  = $this->getMaxCcInstallments(self::INSTALLMENTS_BY_FLAG, $flag);
+        $maxInstallments  = intval($configByFlags['max_installment'][$flag]);
         $minAmount = Utils::str_to_float($configByFlags['installment_min_amount'][$flag]);
         $noInterest = intval($configByFlags['no_interest'][$flag]);
         $interest = Utils::str_to_float($configByFlags['interest'][$flag]);
@@ -178,22 +177,5 @@ class CardInstallments
         return $this->getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest);
     }
 
-    /**
-     * Undocumented function
-     *
-     * @param int $type
-     * @param string|bool $flag
-     * @return int
-     */
-    private function getMaxCcInstallments($type, $flag)
-    {
-        if (Subscription::hasSubscriptionProductInCart()) {
-            return 1;
-        }
-        if ($type === self::INSTALLMENTS_BY_FLAG) {
-            $configByFlags = $this->config->getCcInstallmentsByFlag();
-            return intval($configByFlags['max_installment'][$flag]);
-        }
-        return $this->config->getCcInstallmentsMaximum();
-    }
+
 }

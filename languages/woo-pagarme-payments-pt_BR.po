@@ -1112,12 +1112,6 @@ msgstr ""
 msgid "We recommend backup before upgrading!"
 msgstr "Recomendamos fazer backup antes de atualizar!"
 
-msgid "<strong>The billing address &quot;Number&quot; field</strong> is a required field."
-msgstr "<strong>O campo &quot;Número&quot; do endereço de faturamento</strong> é um campo obrigatório."
-
-msgid "<strong>The shipping address &quot;Number&quot; field</strong> is a required field."
-msgstr "<strong>O campo &quot;Número&quot; do endereço de entrega</strong> é um campo obrigatório."
-
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
 
