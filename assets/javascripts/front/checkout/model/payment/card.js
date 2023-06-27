@@ -364,10 +364,9 @@ let pagarmeCard = {
         return output;
     },
     execute: async function (e) {
-        let result = pagarmeCard.formHandler(),
-            i = 1;
+        let i = 1;
         try {
-            while (!result && i <= this.limitTokenize) {
+            while (!pagarmeCard.formHandler() && i <= this.limitTokenize) {
                 if (i === this.limit) {
                     this.removeLoader(this.getCheckoutPaymentElement());
                     throw new Error("Tokenize timeout");
@@ -377,12 +376,12 @@ let pagarmeCard = {
                     return;
                 }
                 await pagarmeCard.wait();
-                result = pagarmeCard.formHandler();
                 i++;
             }
 
             this.canSubmit = true;
-            $('form#order_review').submit();
+
+            $(this.formatEventToJQuery(e)).submit();
         } catch (er) {
             if (typeof er === 'string') {
                 this.showError(er);
@@ -451,4 +450,4 @@ let pagarmeCard = {
         this.onChangeBillingCpf();
     },
 };
-pagarmeCard.start();
+$(window).on("load", pagarmeCard.start());
