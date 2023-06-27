@@ -422,7 +422,11 @@ let pagarmeCard = {
         const handleInvalidCardFieldsChange = () => {
             pagarmeCard.clearErrorMessages();
         };
-        this.bindListenerToEvent(`${fieldsetCardElements} input`, 'change', handleInvalidCardFieldsChange);
+        this.bindListenerToEvent(
+            `${fieldsetCardElements} input, ${fieldsetCardElements} select`,
+            'change',
+            handleInvalidCardFieldsChange
+        );
 
         const handlePlaceOrder = (e) => {
             return pagarmeCard.canExecute(e);
