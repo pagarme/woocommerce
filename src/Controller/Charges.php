@@ -102,6 +102,8 @@ class Charges
             'charge_paid',
             'charge_refunded',
             'charge_pending',
+            'charge_payment_failed',
+            'charge_chargedback',
         );
 
         foreach ($events as $event) {
