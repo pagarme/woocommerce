@@ -16,7 +16,7 @@ let pagarmeCheckoutWallet = {
             wrapper.find(field).find('input').val('');
         });
         let brand = select.find('option:selected').data('brand');
-        let brandInput = wrapper.find(pagarmeCard.getBrandTarget());
+        let brandInput = wrapper.find(pagarmeCard.brandTarget);
         brandInput.val(brand);
         if (select.val()) {
             pagarmeCard.updateInstallmentsElement(event);

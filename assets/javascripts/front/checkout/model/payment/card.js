@@ -391,7 +391,6 @@ let pagarmeCard = {
         }
     },
     canExecute: function (e) {
-        // e.preventDefault();
         if (!wc_pagarme_checkout.validate() || wc_pagarme_checkout.errorTokenize === true) {
             return false;
         }
@@ -406,9 +405,6 @@ let pagarmeCard = {
         return true;
     },
     onChangeBillingCpf: function () {
-        // if ($(this.voucherDocumentHolder).length === 0) {
-        //     return;
-        // }
         let cpf = $(this.billingCpfId).val();
         $(this.voucherDocumentHolder).empty();
         $(this.voucherDocumentHolder).val(cpf);
@@ -442,7 +438,6 @@ let pagarmeCard = {
         }
     },
     start: function () {
-        console.log("oi");
         this.getCardsMethods();
         this.getBrands();
         this.addEventListener();
