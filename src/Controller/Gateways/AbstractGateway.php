@@ -74,6 +74,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var Yesno */
     protected $yesnoOptions;
 
+    /** @var array */
+    protected $sendEmailStatus = ['pending', 'on-hold'];
+
     /**
      * @param Gateway|null $gateway
      * @param WooOrderRepository|null $wooOrderRepository
@@ -115,7 +118,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         add_action('woocommerce_receipt_' . $this->id, [$this, 'receipt_page']);
         add_action('woocommerce_thankyou_' . $this->id, [$this, 'thank_you_page']);
         add_action('admin_enqueue_scripts', [$this, 'payments_scripts']);
-        add_action('woocommerce_email_after_order_table', [$this, 'pagarme_email_payment_info'], 15 );
+        add_action('woocommerce_email_after_order_table', [$this, 'pagarme_email_payment_info'], 15, 2 );
     }
 
     public function payments_scripts()
@@ -225,7 +228,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     {
         $this->form_fields['enabled'] = $this->field_enabled();
         $this->form_fields['title'] = $this->field_title();
-        $this->form_fields = array_merge( $this->form_fields, $this->append_form_fields(), $this->append_gateway_form_fields());
+        $this->form_fields = array_merge(
+            $this->form_fields,
+            $this->append_form_fields(),
+            $this->append_gateway_form_fields()
+        );
     }
 
     /**
@@ -273,7 +280,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             'options' => $this->yesnoOptions->toLabelsArray(true),
             'label'   => __('Enable', 'woo-pagarme-payments') . ' ' .
                 __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
-            'default' => __($this->config->getData('enable_' . $this->method), 'woo-pagarme-payments') ?? strtolower(Yesno::NO),
+            'default' => __($this->config->getData('enable_' . $this->method), 'woo-pagarme-payments')
+                ?? strtolower(Yesno::NO),
         ];
     }
 
@@ -317,11 +325,15 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      * @param mixed $order
      * @return void
      */
-    public function pagarme_email_payment_info($order)
+    public function pagarme_email_payment_info($order, $sent_to_admin)
     {
-        if ($this->id === $order->payment_method) {
-            $paymentDetails = new EmailPaymentDetails();
-            $paymentDetails->render($order->get_id());
+        if ($sent_to_admin
+            || $this->id !== $order->payment_method
+            || !in_array($order->get_status(), $this->sendEmailStatus)) {
+            return;
         }
+
+        $paymentDetails = new EmailPaymentDetails();
+        $paymentDetails->render($order->get_id());
     }
 }

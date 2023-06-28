@@ -50,7 +50,7 @@ class EmailPaymentDetails extends Template
     }
 
     /**
-     * @param \Woocommerce\Pagarme\Model\Order $order
+     * @param Order $order
      * @return bool
      */
     public function isPagarmePaymentMethod(Order $order)

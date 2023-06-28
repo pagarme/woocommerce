@@ -17,7 +17,6 @@ if (!function_exists('add_action')) {
 ?>
 <?php if ($this->getCharge() && $this->getCharge()->getTransactions()) : ?>
     <?php foreach ($this->getCharge()->getTransactions() as $transaction) : ?>
-        <p>> charge.phtml</p>
         <table class="woocommerce-table">
             <thead>
                 <tr>
@@ -40,6 +39,5 @@ if (!function_exists('add_action')) {
                 </tr>
             </tbody>
         </table>
-        <?php break; ?>
     <?php endforeach; ?>
 <?php endif; ?>

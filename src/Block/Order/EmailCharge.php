@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Woocommerce\Pagarme\Block\Order;
 
 use Woocommerce\Pagarme\Block\Template;
+use Woocommerce\Pagarme\Model\Charge;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
 defined('ABSPATH') || exit;
@@ -29,21 +30,21 @@ class EmailCharge extends Template
 
     private $basePath = '\Woocommerce\Pagarme\Block\Order\Email\\';
 
-    /** @var \Woocommerce\Pagarme\Model\Charge */
+    /** @var Charge */
     private $modelCharge;
 
     public function __construct(
         Json $jsonSerialize = null,
         array $data = [],
-        \Woocommerce\Pagarme\Model\Charge $modelCharge = null
+        Charge $modelCharge = null
     ) {
         parent::__construct($jsonSerialize, $data);
-        $this->modelCharge = $modelCharge ?? new \Woocommerce\Pagarme\Model\Charge;
+        $this->modelCharge = $modelCharge ?? new Charge;
     }
 
     public function getEmailClass($transaction)
     {
-        $class = $this->getPaymentMethod($transaction->getEmailType()->getType());
+        $class = $this->getPaymentMethod($transaction->getTransactionType()->getType());
         if (!class_exists($this->basePath . $class)) {
             $class = 'DefaultEmail';
         }
@@ -69,8 +70,10 @@ class EmailCharge extends Template
      */
     public function getEmailType($transaction)
     {
-        if ($transaction && $transaction->getEmailType()->getType()) {
-            return str_replace(' ', '', ucwords(str_replace('_', ' ', $transaction->getEmailType()->getType())));
+        if ($transaction && $transaction->getTransactionType()->getType()) {
+            return str_replace(' ', '', ucwords(
+                str_replace('_', ' ', $transaction->getTransactionType()->getType())
+            ));
         }
     }
 }

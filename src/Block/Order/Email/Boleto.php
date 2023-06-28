@@ -7,11 +7,11 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Block\Order\Email;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class Boleto
@@ -22,7 +22,7 @@ class Boleto extends AbstractEmail
     /**
      * @var string
      */
-    protected $_template = 'templates/order/transaction/billet';
+    protected $_template = 'templates/order/email/billet';
 
     /**
      * @var string[]
@@ -36,7 +36,22 @@ class Boleto extends AbstractEmail
     {
         try {
             return $this->getTransaction()->getBoletoUrl();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            // @todo
+        }
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBilletLine()
+    {
+        try {
+            return json_decode($this->getTransaction()->getPostData()->tran_data)->line;
+        } catch (\Exception $e) {
+            // @todo
+        }
         return null;
     }
 }

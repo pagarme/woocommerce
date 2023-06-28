@@ -18,25 +18,25 @@ if (!function_exists('add_action')) {
 }
 ?>
 <?php if ($this->isPagarmePaymentMethod($this->getOrder())) : ?>
-    <h2><?= __('Payment Data', 'woo-pagarme-payments'); ?></h2>
-    <div id="pagarme-payment-detail" style="margin-bottom: 40px;">
-        <p>> email-payment-details.phtml</p>
-        <?php if ($this->getCharges()) : ?>
-            <?php foreach ($this->getCharges() as $charge) : ?>
+    <h2 id="pagarme-payment-detail-title"><?= __('Payment Data', 'woo-pagarme-payments'); ?></h2>
+    <?php if ($this->getCharges()) : ?>
+        <?php foreach ($this->getCharges() as $charge) : ?>
+            <div id="pagarme-payment-detail" style="margin-bottom: 40px;">
                 <?=
                 $this->createBlock(EmailCharge::class,
                     'pagarme.order.email',
                     [
-                        'charge' => $charge,
-                        // 'template' => 'templates/order/email-charge'
+                        'charge' => $charge
                     ]
                 )->toHtml()
                 ?>
-            <?php endforeach; ?>
-        <?php else : ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else : ?>
+        <div id="pagarme-payment-detail" style="margin-bottom: 40px;">
             <p>
                 <?= __('No records found.', 'woo-pagarme-payments'); ?>
             </p>
-        <?php endif; ?>
-    </div>
+        </div>
+    <?php endif; ?>
 <?php endif; ?>

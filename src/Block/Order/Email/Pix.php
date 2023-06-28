@@ -11,15 +11,13 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Block\Order\Email;
 
-use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
-
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class Pix
- * @package Woocommerce\Pagarme\Block\Order\Email
+ * @package Woocommerce\Pagarme\Block\Order
  */
-class Pix extends EmailPaymentDetails
+class Pix extends AbstractEmail
 {
     /**
      * @var string
@@ -27,18 +25,26 @@ class Pix extends EmailPaymentDetails
     protected $_template = 'templates/order/email/pix';
 
     /**
+     * @var string[]
+     */
+    protected $scripts = ['checkout/model/payment/pix'];
+
+    /**
      * @return string|null
      */
     public function getQrCodeUrl()
     {
         try {
-            if ($response = $this->getResponseData()) {
-                $charges = $response->charges;
-                $charge = array_shift($charges);
-                $transaction = array_shift($charge->transactions);
-                return $transaction->postData->qr_code_url;
+            if ($this->getTransaction() && $this->getTransaction()->getPostData()) {
+                $postData = $this->getTransaction()->getPostData();
+                if (property_exists($postData, 'tran_data')) {
+                    $data = $this->jsonSerialize->unserialize($postData->tran_data);
+                    return $data['qr_code_url'];
+                }
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            // @todo
+        }
         return null;
     }
 
@@ -48,13 +54,16 @@ class Pix extends EmailPaymentDetails
     public function getRawQrCode()
     {
         try {
-            if ($response = $this->getResponseData()) {
-                $charges = $response->charges;
-                $charge = array_shift($charges);
-                $transaction = array_shift($charge->transactions);
-                return $transaction->postData->qr_code;
+            if ($this->getTransaction() && $this->getTransaction()->getPostData()) {
+                $postData = $this->getTransaction()->getPostData();
+                if (property_exists($postData, 'tran_data')) {
+                    $data = $this->jsonSerialize->unserialize($postData->tran_data);
+                    return $data['qr_code'];
+                }
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            // @todo
+        }
         return null;
     }
 

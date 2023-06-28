@@ -20,7 +20,6 @@ if (!function_exists('add_action')) {
     <tr>
         <th><?= __('QR Code', 'woo-pagarme-payments'); ?>:</th>
         <td>
-            <p>> transaction/pix.phtml</p>
             <p><img src="<?= $this->getQrCodeUrl() ?>" alt="Pix QRCode" class="pagarme-qr-code-img" /></p>
             <p><button type="button"
                     id="pagarme-qr-code-button"

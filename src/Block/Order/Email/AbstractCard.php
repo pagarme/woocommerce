@@ -7,13 +7,13 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Block\Order\Email;
 
 use Woocommerce\Pagarme\Helper\Utils;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class AbstractCard
@@ -41,26 +41,33 @@ abstract class AbstractCard extends AbstractEmail
     {
         $value = [];
         try {
-            if ($this->getTransaction() && $this->getTransaction()->getPostData()) {
-                $postData = $this->getTransaction()->getPostData();
-                if (property_exists($postData, 'tran_data')) {
-                    $data = $this->jsonSerialize->unserialize($postData->tran_data);
-                    foreach ($data as $key => $datum) {
-                        if ($key === 'card' && is_array($datum)) {
-                            foreach ($datum as $key2 => $datum2) {
-                                if (in_array($key2, $this->cardData)) {
-                                    $value[$this->getLabel($key2)] = $this->convertData($key2, $datum2);
-                                }
-                            }
-                            continue;
-                        }
-                        if (in_array($key, $this->cardData)) {
-                            $value[$this->getLabel($key)] =  $this->convertData($key, $datum);
-                        }
-                    }
+            if (!$this->getTransaction() && !$this->getTransaction()->getPostData()) {
+                return [];
+            }
+
+            $postData = $this->getTransaction()->getPostData();
+            if (!property_exists($postData, 'tran_data')) {
+                return [];
+            }
+
+            $tranData = $this->jsonSerialize->unserialize($postData->tran_data);
+            $tranDataCard = $tranData['card'];
+
+            foreach ($tranDataCard as $key => $data) {
+                if (is_array($tranData) && in_array($key, $this->cardData)) {
+                    $value[$this->getLabel($key)] = $this->convertData($key, $data);
                 }
             }
-        } catch (\Exception $e) {}
+
+            foreach ($tranData as $key => $data) {
+                if (is_array($tranDataCard) && in_array($key, $this->cardData)) {
+                    $value[$this->getLabel($key)] =  $this->convertData($key, $data);
+                }
+            }
+        } catch (\Exception $e) {
+            // @todo
+        }
+
         return $value;
     }
 
