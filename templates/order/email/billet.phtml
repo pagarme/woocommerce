@@ -19,7 +19,7 @@ if (!function_exists('add_action')) {
     <tr>
         <th class="td" scope="row"><?= __('Bank Billet', 'woo-pagarme-payments'); ?>:</th>
         <td class="td">
-            <a href="<?= $this->getBilletUrl() ?>" target="_blank" class="button">
+            <a href="<?= $this->getBilletUrl() ?>" target="_blank" rel="noreferrer noopener">
                 <?= __('Click here to print the bank billet', 'woo-pagarme-payments'); ?>
             </a>
         </td>
