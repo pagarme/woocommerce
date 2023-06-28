@@ -2,11 +2,8 @@
 
 $ = jQuery;
 
-let cardsMethods = [];
-
 let pagarmeCard = {
     limitTokenize: 10,
-    canSubmit: false,
     tokenExpirationAttribute: 'data-pagarmecheckout-expiration',
     cardNumberTarget: 'input[data-element="pagarme-card-number"]',
     brandTarget: 'input[data-pagarmecheckout-element="brand-input"]',
@@ -26,14 +23,8 @@ let pagarmeCard = {
         }
         return event;
     },
-    haveCardForm: function (e) {
-        let elem = null;
-        if (e instanceof $) {
-            elem = e;
-        }
-        if (e instanceof $.Event) {
-            elem = $(e.currentTarget);
-        }
+    haveCardForm: function (event) {
+        let elem = this.formatEventToJQuery(event);
         if (!elem) {
             throw new Error("Can't check card form: Invalid element received");
         }
@@ -49,9 +40,9 @@ let pagarmeCard = {
     isPagarmePayment: function () {
         return $('.woocommerce form input[name="payment_method"]:checked').val().indexOf('pagarme');
     },
-    keyEventHandlerCard: function (e) {
-        this.clearToken(e);
-        this.loadBrand(e);
+    keyEventHandlerCard: function (event) {
+        this.clearToken(event);
+        this.loadBrand(event);
     },
     clearErrorMessages: function () {
         $('input[name$="payment_method"]:checked')
@@ -60,16 +51,15 @@ let pagarmeCard = {
             .hide();
         wc_pagarme_checkout.errorTokenize = false;
     },
-    clearToken: function (e) {
-        const token = $(e.currentTarget).closest(this.fieldsetCardElements)
+    clearToken: function (event) {
+        const token = this.formatEventToJQuery(event).closest(this.fieldsetCardElements)
             .find(this.tokenElement);
         $(token).remove();
-        this.canSubmit = false;
     },
-    formHandler: function () {
+    isTokenized: function () {
         if (this.isPagarmePayment()) {
-            let e = this.getCheckoutPaymentElement();
-            const cardsForm = e.find(this.fieldsetCardElements);
+            const checkoutPaymentElement = this.getCheckoutPaymentElement();
+            const cardsForm = checkoutPaymentElement.find(this.fieldsetCardElements);
             return this.checkTokenCard(cardsForm);
         }
         return true;
@@ -81,10 +71,9 @@ let pagarmeCard = {
         }
         return false;
     },
-
-    checkTokenCard: function (e) {
+    checkTokenCard: function (event) {
         let allResult = [];
-        e.each(async function () {
+        event.each(async function () {
             if (pagarmeCard.hasSelectedWallet(this)) {
                 allResult.push(true);
                 return;
@@ -93,28 +82,23 @@ let pagarmeCard = {
         });
         return !allResult.includes(false);
     },
-
     wait: async function (ms = 1000) {
         return new Promise(resolve => {
             setTimeout(resolve, ms);
         });
     },
-    checkToken: function (e) {
-        if (!(e instanceof jQuery)) {
-            e = $(e);
-        }
-        return !!e.find(this.tokenElement).length && this.checkTokenExpirationDate(e.find(this.tokenElement));
+    checkToken: function (event) {
+        event = this.formatEventToJQuery(event);
+        return !!event.find(this.tokenElement).length && this.checkTokenExpirationDate(event.find(this.tokenElement));
     },
-
-    checkTokenExpirationDate: function (e) {
-        const expirationDateTimeAttribute = e.attr(this.tokenExpirationAttribute);
+    checkTokenExpirationDate: function (event) {
+        const expirationDateTimeAttribute = event.attr(this.tokenExpirationAttribute);
         const expirationDate = new Date(expirationDateTimeAttribute);
         return expirationDate > new Date();
     },
-
     getCardDataContingency: async function (cardNumber) {
         let oldPrefix = '',
-            types = await this.getBrands(true),
+            types= this.getBrands(),
             bin = cardNumber.substring(0, 6),
             data;
         for (const currentType of types) {
@@ -128,31 +112,27 @@ let pagarmeCard = {
         }
         return data;
     },
-
-    getBrands: function (onlyBrands = false) {
-        return new Promise((resolve) => {
-            if (onlyBrands) {
-                let types = [];
-                cardsMethods.forEach(function (key) {
-                    $.each(wc_pagarme_checkout.config.payment[key].brands, function () {
-                        types.push(this);
-                    });
-                });
-                resolve(types);
-            }
+    getBrands: function () {
+        let types = [];
+        let cardsMethods = this.getCardsMethods();
+        cardsMethods.forEach(function (key) {
+            $.each(wc_pagarme_checkout.config.payment[key].brands, function () {
+                types.push(this);
+            });
         });
+        return types;
     },
-
     getCardsMethods: function () {
+        let cardsMethods = [];
         $.each(wc_pagarme_checkout.config.payment, function (method) {
             if (wc_pagarme_checkout.config.payment[method].is_card) {
                 cardsMethods.push(method);
             }
         });
+        return cardsMethods;
     },
-
-    loadBrand: async function (e) {
-        let elem = e.currentTarget;
+    loadBrand: async function (event) {
+        let elem = event.currentTarget;
         if (!this.isVisible(elem)) {
             return;
         }
@@ -162,8 +142,8 @@ let pagarmeCard = {
         }
         try {
             let card = await this.getCardData(cardNumber);
-            this.changeBrand(e, card);
-            this.updateInstallmentsElement(e);
+            this.changeBrand(event, card);
+            this.updateInstallmentsElement(event);
         } catch (exception) {
             this.showError(exception.message);
         }
@@ -171,7 +151,6 @@ let pagarmeCard = {
     isVisible: function (obj) {
         return obj.offsetWidth > 0 && obj.offsetHeight > 0;
     },
-
     getCardData: async function (cardNumber) {
         let result = [];
         let value = await this.getCardDataByApi(cardNumber);
@@ -200,7 +179,6 @@ let pagarmeCard = {
         result.push($.extend(true, {}, value));
         return result;
     },
-
     getCardDataByApi: function (cardNumber) {
         return new Promise((resolve) => {
             let bin = cardNumber.substring(0, 6);
@@ -219,12 +197,11 @@ let pagarmeCard = {
             });
         });
     },
-
-    changeBrand: function (e, card) {
-        if (typeof e == 'undefined' || typeof card == 'undefined') {
+    changeBrand: function (event, card) {
+        if (typeof event == 'undefined' || typeof card == 'undefined') {
             throw new Error("Invalid data to change card brand");
         }
-        let elem = e.currentTarget;
+        let elem = event.currentTarget;
         let imageSrc = this.getImageSrc(card);
         let imgElem = $(elem).parent().find('img');
         $(elem).parents('.pagarme-card-number-row').find(this.brandTarget).attr('value', card[0].brand);
@@ -239,14 +216,12 @@ let pagarmeCard = {
             );
         }
     },
-
     getImageSrc: function (card) {
         if (card[0].image) {
             return card[0].image;
         }
         return this.mundiCdn + card[0].brand + '.png';
     },
-
     formatValue: function (value, raw = true) {
         if (raw) {
             if (typeof value !== 'string') {
@@ -259,15 +234,8 @@ let pagarmeCard = {
         }
         return value.toFixed(2).replace('.', ',');
     },
-
-    updateInstallmentsElement: function (e) {
-        let elem = null;
-        if (e instanceof $) {
-            elem = e;
-        }
-        if (e instanceof $.Event) {
-            elem = $(e.currentTarget);
-        }
+    updateInstallmentsElement: function (event) {
+        let elem= this.formatEventToJQuery(event);
         if (!elem) {
             return false;
         }
@@ -309,28 +277,23 @@ let pagarmeCard = {
         return true;
     },
 
-    _done: function (select, storageName, e, response) {
+    _done: function (select, storageName, event, response) {
         select.html(response);
         sessionStorage.setItem(storageName, response);
-        this.removeLoader(e);
+        this.removeLoader(event);
     },
-
-    _fail: function (e) {
-        this.removeLoader(e);
+    _fail: function (event) {
+        this.removeLoader(event);
     },
-
-    removeLoader: function (e) {
-        if (!(e instanceof jQuery)) {
-            e = $(e);
+    removeLoader: function (event) {
+        if (!(event instanceof jQuery)) {
+            event = $(event);
         }
-        e.unblock();
+        event.unblock();
     },
-
-    showLoader: function (e) {
-        if (!(e instanceof jQuery)) {
-            e = $(e);
-        }
-        e.block({
+    showLoader: function (event) {
+        event = this.formatEventToJQuery(event)
+        event.block({
             message: null,
             overlayCSS: {
                 background: '#fff',
@@ -338,7 +301,6 @@ let pagarmeCard = {
             }
         });
     },
-
     showError: function (text) {
         const errorMessageText = this.translateErrors('card', text);
         const message = {
@@ -352,36 +314,30 @@ let pagarmeCard = {
         error = error.replace('request.', '');
         const output = `${error}: ${message}`;
         const ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
-
         if (PagarmeGlobalVars.WPLANG !== 'pt_BR') {
             return output;
         }
-
         if (ptBrMessages.hasOwnProperty(output)) {
             return ptBrMessages[output];
         }
-
         return output;
     },
-    execute: async function (e) {
-        let i = 1;
+    execute: async function (event) {
+        const checkoutPaymentElement = this.getCheckoutPaymentElement();
         try {
-            while (!pagarmeCard.formHandler() && i <= this.limitTokenize) {
+            for (let i = 1; !pagarmeCard.isTokenized() && i <= this.limitTokenize; i++) {
                 if (i === this.limit) {
-                    this.removeLoader(this.getCheckoutPaymentElement());
+                    this.removeLoader(checkoutPaymentElement);
                     throw new Error("Tokenize timeout");
                 }
                 if (wc_pagarme_checkout.errorTokenize === true) {
-                    this.removeLoader(this.getCheckoutPaymentElement());
+                    this.removeLoader(checkoutPaymentElement);
                     return;
                 }
                 await pagarmeCard.wait();
-                i++;
             }
-
-            this.canSubmit = true;
-
-            $(this.formatEventToJQuery(e)).submit();
+            let formCheckout = this.formatEventToJQuery(event);
+            formCheckout.submit();
         } catch (er) {
             if (typeof er === 'string') {
                 this.showError(er);
@@ -390,16 +346,17 @@ let pagarmeCard = {
             }
         }
     },
-    canExecute: function (e) {
+    canExecute: function (event) {
         if (!wc_pagarme_checkout.validate() || wc_pagarme_checkout.errorTokenize === true) {
             return false;
         }
-        let el = pagarmeCard.getCheckoutPaymentElement();
-        if (pagarmeCard.isPagarmePayment() && !pagarmeCard.canSubmit &&
-            pagarmeCard.haveCardForm(el)
+        let checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
+        if (pagarmeCard.isPagarmePayment() &&
+            !pagarmeCard.isTokenized() &&
+            pagarmeCard.haveCardForm(checkoutPaymentElement)
         ) {
             pagarmeTokenize.execute();
-            pagarmeCard.execute(e);
+            pagarmeCard.execute(event);
             return false;
         }
         return true;
@@ -413,8 +370,8 @@ let pagarmeCard = {
         $(document.body).on('updated_checkout', function () {
             pagarmeCard.renewEventListener();
         });
-        $('form.checkout').on('checkout_place_order', function (e) {
-            return pagarmeCard.canExecute(e);
+        $('form.checkout').on('checkout_place_order', function (event) {
+            return pagarmeCard.canExecute(event);
         });
         $('form#order_review').on('submit', function (event) {
             return pagarmeCard.canExecute(event);
@@ -445,9 +402,8 @@ let pagarmeCard = {
     },
     start: function () {
         this.getCardsMethods();
-        this.getBrands();
         this.addEventListener();
         this.onChangeBillingCpf();
-    },
+    }
 };
 pagarmeCard.start();

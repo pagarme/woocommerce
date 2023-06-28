@@ -46,7 +46,7 @@ let pagarmeTokenize = {
                 function (error) {
                     wc_pagarme_checkout.errorTokenize = true;
                     if (error.statusCode == 503) {
-                        pagarmeTokenize.showError('Não foi possível gerar a transação segura. Serviço indisponível.')
+                        pagarmeTokenize.showError('Não foi possível gerar uma transação. Serviço indisponível.');
                     } else {
                         pagarmeTokenize.listError(error.errors);
                     }
@@ -142,7 +142,7 @@ let pagarmeTokenize = {
 
     parseErrorsList: function (error, message) {
         const translatedError = pagarmeCard.translateErrors(error, message);
-        wc_pagarme_checkout.errorList += `<li>${translatedError}<li>`;
+        wc_pagarme_checkout.errorList += `<li>${translatedError}<\li>`;
     },
 
     createTokenInput: async function (response, field) {
@@ -180,4 +180,4 @@ let pagarmeTokenize = {
             resolve(true);
         });
     }
-}
+};
