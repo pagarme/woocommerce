@@ -11,7 +11,7 @@
  * Requires at least: 5.0
  * Tested up to: 6.2.0
  * WC requires at least: 3.9.0
- * WC tested up to: 7.8.0
+ * WC tested up to: 7.8.1
  * Domain Path: /languages
  * Text Domain: woo-pagarme-payments
  */
