@@ -422,6 +422,12 @@ let pagarmeCard = {
         $(this.billingCpfId).on('change', function () {
             pagarmeCard.onChangeBillingCpf();
         });
+        $(this.cardNumberTarget).on('change', function (event) {
+            pagarmeCard.keyEventHandlerCard(event);
+        });
+        $(`${this.fieldsetCardElements} input`).on('change', function () {
+            pagarmeCard.clearErrorMessages();
+        });
     },
     renewEventListener: function () {
         $(this.cardNumberTarget).on('change', function (event) {
@@ -431,18 +437,17 @@ let pagarmeCard = {
             pagarmeCard.clearErrorMessages();
         });
         if (typeof pagarmeCheckoutWallet == 'object') {
-            pagarmeCheckoutWallet.start();
+            pagarmeCheckoutWallet.addEventListener();
         }
         if (typeof pagarmeOrderValue == 'object') {
-            pagarmeOrderValue.start();
+            pagarmeOrderValue.addEventListener();
         }
     },
     start: function () {
         this.getCardsMethods();
         this.getBrands();
         this.addEventListener();
-        this.renewEventListener();
         this.onChangeBillingCpf();
     },
 };
-$(window).on("load", pagarmeCard.start());
+pagarmeCard.start();

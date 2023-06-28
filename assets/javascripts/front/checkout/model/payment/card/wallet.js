@@ -31,3 +31,4 @@ let pagarmeCheckoutWallet = {
         this.addEventListener();
     }
 };
+pagarmeCheckoutWallet.start();

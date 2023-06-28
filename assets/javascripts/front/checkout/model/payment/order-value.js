@@ -57,3 +57,4 @@ let pagarmeOrderValue = {
         return cartTotal;
     },
 }
+pagarmeOrderValue.start();
