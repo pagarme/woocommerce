@@ -8,6 +8,7 @@ const installmentsTarget = '[data-pagarme-component="installments"]';
 const mundiCdn = 'https://cdn.mundipagg.com/assets/images/logos/brands/png/';
 const tokenElement = '[data-pagarmecheckout-element="token"]';
 const billingCpfId = '#billing_cpf';
+const fieldsetCardElements = 'fieldset[data-pagarmecheckout="card"]';
 let cardsMethods = [];
 
 let pagarmeCard = {
@@ -23,12 +24,12 @@ let pagarmeCard = {
             elem = $(e.currentTarget);
         }
         if (!elem) {
-            throw new Error("Cant check card form: Invalid element received");
+            throw new Error("Can't check card form: Invalid element received");
         }
         if (elem.is("fieldset") && elem.attr("data-pagarmecheckout") === 'card') {
             return true;
         }
-        return !!elem.has('fieldset[data-pagarmecheckout="card"]').length;
+        return !!elem.has(fieldsetCardElements).length;
     },
     getCheckoutPaymentElement: function () {
         let value = $('form.checkout input[name="payment_method"]:checked').val();
@@ -38,12 +39,26 @@ let pagarmeCard = {
         return $('form.checkout input[name="payment_method"]:checked').val().indexOf('pagarme');
     },
     keyEventHandlerCard: function (e) {
+        this.clearToken(e);
         this.loadBrand(e);
+    },
+    clearErrorMessages: function () {
+        $('input[name$="payment_method"]:checked')
+            .closest('li')
+            .find('#wcmp-checkout-errors')
+            .hide();
+        wc_pagarme_checkout.errorTokenize = false;
+    },
+    clearToken: function (e) {
+        const token = $(e.currentTarget).closest(fieldsetCardElements)
+            .find(tokenElement);
+        $(token).remove();
+        this.canSubmit = false;
     },
     formHandler: function () {
         if (this.isPagarmePayment()) {
             let e = this.getCheckoutPaymentElement();
-            let cardsForm = e.find('fieldset[data-pagarmecheckout="card"]');
+            const cardsForm = e.find(fieldsetCardElements);
             return this.checkTokenCard(cardsForm);
         }
         return true;
@@ -139,9 +154,13 @@ let pagarmeCard = {
         if (cardNumber.length < 6) {
             return;
         }
-        let card = await this.getCardData(cardNumber);
-        this.changeBrand(e, card);
-        this.updateInstallmentsElement(e);
+        try {
+            let card = await this.getCardData(cardNumber);
+            this.changeBrand(e, card);
+            this.updateInstallmentsElement(e);
+        } catch (exception) {
+            this.showError(exception.message);
+        }
     },
     isVisible: function (obj) {
         return obj.offsetWidth > 0 && obj.offsetHeight > 0;
@@ -152,6 +171,9 @@ let pagarmeCard = {
         let value = await this.getCardDataByApi(cardNumber);
         if (value === 'error' || typeof value.brandName == 'undefined') {
             value = await this.getCardDataContingency(cardNumber);
+        }
+        if (typeof value === 'undefined') {
+            return undefined;
         }
         let codeWithArray = {
             name: 'CVV',
@@ -312,12 +334,28 @@ let pagarmeCard = {
     },
 
     showError: function (text) {
+        const errorMessageText = this.translateErrors('card', text);
         const message = {
             type: 'error',
-            html: text,
+            html: errorMessageText,
             allowOutsideClick: false
         };
         swal(message);
+    },
+    translateErrors: function(error, message) {
+        error = error.replace('request.', '');
+        const output = `${error}: ${message}`;
+        const ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
+
+        if (PagarmeGlobalVars.WPLANG !== 'pt_BR') {
+            return output;
+        }
+
+        if (ptBrMessages.hasOwnProperty(output)) {
+            return ptBrMessages[output];
+        }
+
+        return output;
     },
     execute: async function () {
         let result = pagarmeCard.formHandler(),
@@ -380,6 +418,15 @@ let pagarmeCard = {
             pagarmeCard.keyEventHandlerCard(e);
         };
         this.bindListenerToEvent(cardNumberTarget, 'change', handleCardNumberKeyEventChange)
+
+        const handleInvalidCardFieldsChange = () => {
+            pagarmeCard.clearErrorMessages();
+        };
+        this.bindListenerToEvent(
+            `${fieldsetCardElements} input, ${fieldsetCardElements} select`,
+            'change',
+            handleInvalidCardFieldsChange
+        );
 
         const handlePlaceOrder = (e) => {
             return pagarmeCard.canExecute(e);

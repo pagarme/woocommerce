@@ -77,7 +77,7 @@ class BaseController
             throw new Exceptions\ErrorException('Invalid request', $_httpContext);
         }
         if ($response->getStatusCode() == 401) {
-            throw new Exceptions\ErrorException('Invalid API key', $_httpContext);
+            throw new APIException('Invalid API key', $_httpContext);
         }
         if ($response->getStatusCode() == 404) {
             throw new Exceptions\ErrorException('An informed resource was not found', $_httpContext);
