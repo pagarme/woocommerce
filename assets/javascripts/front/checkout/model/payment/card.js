@@ -404,13 +404,15 @@ let pagarmeCard = {
             element = $(element);
         }
         const rawDOMElement = element.get(0);
-        const events = $._data(rawDOMElement, 'events') || {};
+        if (rawDOMElement) {
+            const events = $._data(rawDOMElement, 'events') || {};
 
-        const eventHandlers = events[eventName] || [];
-        const hasHandlerBound = eventHandlers.find((item) => item.handler.name === handlerCallback.name);
+            const eventHandlers = events[eventName] || [];
+            const hasHandlerBound = eventHandlers.find((item) => item.handler.name === handlerCallback.name);
 
-        if(!hasHandlerBound) {
-            element.on(eventName,handlerCallback);
+            if(!hasHandlerBound) {
+                element.on(eventName,handlerCallback);
+            }
         }
     },
     addEventListener: function () {
