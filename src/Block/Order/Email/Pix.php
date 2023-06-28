@@ -25,11 +25,6 @@ class Pix extends AbstractEmail
     protected $_template = 'templates/order/email/pix';
 
     /**
-     * @var string[]
-     */
-    protected $scripts = ['checkout/model/payment/pix'];
-
-    /**
      * @return string|null
      */
     public function getQrCodeUrl()

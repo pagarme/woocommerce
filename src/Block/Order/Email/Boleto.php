@@ -25,11 +25,6 @@ class Boleto extends AbstractEmail
     protected $_template = 'templates/order/email/billet';
 
     /**
-     * @var string[]
-     */
-    protected $scripts = ['checkout/model/payment/billet'];
-
-    /**
      * @return string|null
      */
     public function getBilletUrl()
