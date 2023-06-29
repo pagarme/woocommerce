@@ -110,4 +110,10 @@ class Customer
     {
         return array_filter((array) $cards);
     }
+
+    public function getPagarmeCustomerId()
+    {
+        $customer = $this->customerRepository->findByCode($this->ID);
+        return $customer->getPagarmeId();
+    }
 }
