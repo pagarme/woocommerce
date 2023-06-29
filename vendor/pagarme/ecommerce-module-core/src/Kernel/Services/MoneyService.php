@@ -36,7 +36,7 @@ final class MoneyService
         return str_replace(
             ['.', ','],
             "",
-            $amount
+            $amount ?? ''
         );
     }
 }

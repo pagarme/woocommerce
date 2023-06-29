@@ -241,7 +241,7 @@ abstract class AbstractModuleCoreSetup
 
         $moduleCoreSetupReflection = new ReflectionClass($concretePlatformCoreSetupClass);
         $concreteCoreSetupFilename = $moduleCoreSetupReflection->getFileName();
-        $concreteDir = explode(DIRECTORY_SEPARATOR, $concreteCoreSetupFilename);
+        $concreteDir = explode(DIRECTORY_SEPARATOR, $concreteCoreSetupFilename ?? '');
         array_pop($concreteDir);
 
         self::$moduleConcreteDir = implode(DIRECTORY_SEPARATOR, $concreteDir);

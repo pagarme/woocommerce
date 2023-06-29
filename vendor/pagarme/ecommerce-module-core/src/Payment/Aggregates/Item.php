@@ -67,8 +67,8 @@ final class Item extends AbstractEntity implements ConvertibleToSDKRequestsInter
      */
     public function setName($name)
     {
-        if (preg_match('/[^a-zA-Z0-9 ]+/i', $name)) {
-            $name = preg_replace('/[^a-zA-Z0-9 ]+/i', '', $name);
+        if (preg_match('/[^a-zA-Z0-9 ]+/i', $name ?? '')) {
+            $name = preg_replace('/[^a-zA-Z0-9 ]+/i', '', $name ?? '');
         }
         $this->name = $name;
     }

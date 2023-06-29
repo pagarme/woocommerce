@@ -5,6 +5,7 @@ namespace Pagarme\Core\Kernel\Factories;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Aggregates\Configuration;
 use Pagarme\Core\Kernel\Factories\Configurations\DebitConfigFactory;
+use Pagarme\Core\Kernel\Factories\Configurations\MarketplaceConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\PixConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\RecurrenceConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\VoucherConfigFactory;
@@ -220,6 +221,13 @@ class ConfigurationFactory implements FactoryInterface
         if (!empty($data->pixConfig)) {
             $config->setPixConfig(
                 (new PixConfigFactory())->createFromDbData($data->pixConfig)
+            );
+        }
+
+        if (!empty($data->marketplaceConfig)) {
+            $config->setMarketplaceConfig(
+                (new MarketplaceConfigFactory())
+                    ->createFromDbData($data->marketplaceConfig)
             );
         }
 

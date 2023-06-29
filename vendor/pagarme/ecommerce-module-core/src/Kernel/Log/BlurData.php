@@ -23,7 +23,7 @@ class BlurData
      */
     public function getBlurMethod(string $method)
     {
-        return 'blur' . str_replace(' ', '', ucwords(str_replace('_', ' ', $method)));
+        return 'blur' . str_replace(' ', '', ucwords(str_replace('_', ' ', $method ?? '')));
     }
 
     /**
@@ -94,7 +94,7 @@ class BlurData
      */
     public function blurDocument(string $document)
     {
-        return preg_replace('/\B[^@.]/', '*', $document);
+        return preg_replace('/\B[^@.]/', '*', $document ?? '');
     }
 
     /**
@@ -176,7 +176,7 @@ class BlurData
     public function blurHolderName(?string $holderName)
     {
         $holderName = $holderName ?? "";
-        return preg_replace('/^.{8}/', '$1**', $holderName);
+        return preg_replace('/^.{8}/', '$1**', $holderName ?? '');
     }
 
     /**

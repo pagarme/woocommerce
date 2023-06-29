@@ -22,7 +22,7 @@ class ConfigurationRepository extends AbstractRepository
             preg_replace(
                 $this->pattern,
                 ' ',
-                $jsonEncoded
+                $jsonEncoded ?? ''
             )
         );
     }

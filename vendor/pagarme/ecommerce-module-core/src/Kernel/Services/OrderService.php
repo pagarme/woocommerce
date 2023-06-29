@@ -257,8 +257,7 @@ final class OrderService
 
             //build PaymentOrder based on platformOrder
             $paymentOrder =  $this->extractPaymentOrderFromPlatformOrder($platformOrder);
-            $orderInfo = $this->getOrderInfo($platformOrder);
-            
+
             $i18n = new LocalizationService();
 
             //Send through the APIService to pagarme
@@ -293,6 +292,14 @@ final class OrderService
             $orderFactory = new OrderFactory();
             $order = $orderFactory->createFromPostData($response);
             $order->setPlatformOrder($platformOrder);
+
+            $split = $order->getSplitInfo();
+            foreach ($split as $chargeId => $splitInfo) {
+                $platformOrder->addHistoryComment(
+                    $i18n->getDashboard('ChargeId: %s - Split rules:',
+                        $chargeId) . '<br/>' . join('<br/>', $splitInfo)
+                );
+            }
 
             $handler = $this->getResponseHandler($order);
             $handler->handle($order, $paymentOrder);
@@ -332,7 +339,7 @@ final class OrderService
     private function getResponseHandler($response)
     {
         $responseClass = get_class($response);
-        $responseClass = explode('\\', $responseClass);
+        $responseClass = explode('\\', $responseClass ?? '');
 
         $responseClass =
             'Pagarme\\Core\\Payment\\Services\\ResponseHandlers\\' .
@@ -397,6 +404,11 @@ final class OrderService
         $shipping = $platformOrder->getShipping();
         if (!$shipping && $shipping !== null) {
             $order->setShipping($shipping);
+        }
+
+        $splitData = $platformOrder->handleSplitOrder();
+        if ($splitData !== null) {
+            $order->setSplitData($splitData);
         }
 
         return $order;

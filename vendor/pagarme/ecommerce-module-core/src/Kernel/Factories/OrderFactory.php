@@ -132,7 +132,7 @@ class OrderFactory implements FactoryInterface
 
         $order->setPagarmeId(new OrderId($orderId));
 
-        $baseStatus = explode('_', $platformOrder->getStatus());
+        $baseStatus = explode('_', $platformOrder->getStatus() ?? '');
         $status = $baseStatus[0];
         for ($i = 1; $i < count($baseStatus); $i++) {
             $status .= ucfirst(($baseStatus[$i]));

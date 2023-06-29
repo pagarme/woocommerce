@@ -1122,4 +1122,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         return $this->getPlatformOrder()->get_total_refunded();
     }
+
+    public function handleSplitOrder()
+    {
+        // woocommerce does not have split order;
+    }
 }

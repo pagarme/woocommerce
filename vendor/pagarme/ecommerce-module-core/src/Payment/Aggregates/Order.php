@@ -5,6 +5,7 @@ namespace Pagarme\Core\Payment\Aggregates;
 use PagarmeCoreApiLib\Models\CreateOrderRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Services\LocalizationService;
+use Pagarme\Core\Marketplace\Aggregates\Split;
 use Pagarme\Core\Payment\Aggregates\Payments\AbstractPayment;
 use Pagarme\Core\Payment\Aggregates\Payments\SavedCreditCardPayment;
 use Pagarme\Core\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
@@ -30,6 +31,8 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
     private $payments;
     /** @var boolean */
     private $closed;
+
+    private $splitData;
 
     /** @var boolean */
     private $antifraudEnabled;
@@ -99,7 +102,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
      */
     public function setPaymentMethod($paymentMethodName)
     {
-        $replace = str_replace('_', '', $paymentMethodName);
+        $replace = str_replace('_', '', $paymentMethodName ?? '');
         $paymentMethodObject = $replace . 'PaymentMethod';
 
         $this->paymentMethod = $this->$paymentMethodObject();
@@ -201,7 +204,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
     private function discoverPaymentMethod(AbstractPayment $payment)
     {
         $paymentClass = get_class($payment);
-        $paymentClass = explode ('\\', $paymentClass);
+        $paymentClass = explode ('\\', $paymentClass ?? '');
         $paymentClass = end($paymentClass);
         return $paymentClass;
     }
@@ -276,13 +279,31 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
     }
 
     /**
-      * Specify data which should be serialized to JSON
-      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-      * @return mixed data which can be serialized by <b>json_encode</b>,
-      * which is a value of any type other than a resource.
-      * @since 5.4.0
+
+     * @return Split|null
+     */
+    public function getSplitData()
+    {
+        return $this->splitData;
+    }
+
+    /**
+     * @param Split|null $splitData
+     */
+    public function setSplitData($splitData)
+    {
+        $this->splitData = $splitData;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
     */
     #[\ReturnTypeWillChange]
+
     public function jsonSerialize()
     {
         $obj = new \stdClass();
@@ -320,6 +341,10 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
             $orderRequest->payments[] = $payment->convertToSDKRequest();
         }
 
+        if (!empty($this->getSplitData())){
+            $orderRequest = $this->fixRoundedValuesInCharges($orderRequest);
+        }
+
         $orderRequest->items = [];
         foreach ($this->getItems() as $item) {
             $orderRequest->items[] = $item->convertToSDKRequest();
@@ -330,6 +355,103 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
             $orderRequest->shipping = $shipping->convertToSDKRequest();
         }
 
+        return $orderRequest;
+    }
+
+    private function fixRoundedValuesInCharges(&$orderRequest){
+
+        if(count($orderRequest->payments) < 2){
+            return $orderRequest;
+        }
+
+        $firstChargeAmount = $orderRequest->payments[0]->amount;
+        $firstChargePercentageOfTotal = $firstChargeAmount / $this->getAmount();
+
+        if ($firstChargePercentageOfTotal !== 0.5){
+            return $orderRequest;
+        }
+
+        $orderSplitData = $this->getSplitData();
+        
+        $wrongValuesPerRecipient = $this->getRecipientWrongValuesMap($orderRequest, $orderSplitData);
+
+        if (!$wrongValuesPerRecipient){
+            return $orderRequest;
+        }
+
+        $orderRequest = $this->fixRoundedValues($wrongValuesPerRecipient, $orderRequest);
+        
+        return $orderRequest;
+
+    }
+
+    private function getRecipientWrongValuesMap($orderRequest, $splitData){
+        $map = [];
+
+        $marketplaceId = $splitData->getMainRecipientOptionConfig();
+        $map[$marketplaceId] = $splitData->getMarketplaceComission();
+
+        foreach ($splitData->getSellersData() as $key => $sellerData) {
+            $sellerId = $sellerData['pagarmeId'];
+            $sellerCommission = $sellerData['commission'];
+
+            $map[$sellerId] = $sellerCommission; 
+        }
+
+
+        foreach ($orderRequest->payments as $key => $paymentObject) {
+            $paymentSplitDetails = $paymentObject->split;
+
+            foreach ($paymentSplitDetails as $key => $paymentSplitDetailsObject) {
+                $amountPerCharge = $paymentSplitDetailsObject->amount;
+                $chargeRecipientId = $paymentSplitDetailsObject->recipientId;
+
+                $map[$chargeRecipientId] -= $amountPerCharge;
+            }
+        }
+
+        foreach ($map as $recipientId => $wrongValue) {
+            if ($wrongValue !== 0){
+                return $map;
+            }
+        }
+
+        return false;
+    }
+
+    private function fixRoundedValues($wrongValuesMap, &$orderRequest){
+
+        foreach ($wrongValuesMap as $recipientId => $wrongValue) {
+            $payments = $orderRequest->payments;
+
+            foreach ($payments as $key => &$paymentRequest) {
+                $paymentRequestAmount = $paymentRequest->amount;
+                $splitedAmount = 0;
+                $recipientSplitData = null;
+
+                foreach ($paymentRequest->split as $key => &$splitRequest) {
+                    $splitedAmount += $splitRequest->amount;
+
+                    if($splitRequest->recipientId === $recipientId){
+                        $recipientSplitData = $splitRequest;
+                    }
+                }
+
+                if ($splitedAmount === $paymentRequestAmount){
+                    continue;
+                }
+
+                $amountRemovableFromCharge = $splitedAmount - $paymentRequestAmount;
+
+                $recipientSplitData->amount -= $amountRemovableFromCharge;
+
+                $mustRemoveFromOtherCharges = $wrongValue + $amountRemovableFromCharge;
+
+                if (!$mustRemoveFromOtherCharges){
+                    break;
+                }
+            }
+        }
         return $orderRequest;
     }
 

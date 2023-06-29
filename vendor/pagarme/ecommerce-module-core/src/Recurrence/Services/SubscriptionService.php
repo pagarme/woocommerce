@@ -462,7 +462,7 @@ final class SubscriptionService
     private function getResponseHandler($response)
     {
         $responseClass = get_class($response);
-        $responseClass = explode('\\', $responseClass);
+        $responseClass = explode('\\', $responseClass ?? '');
 
         $responseClass =
             'Pagarme\\Core\\Recurrence\\Services\\ResponseHandlers\\' .

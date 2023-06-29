@@ -9,6 +9,7 @@ use Pagarme\Core\Kernel\Helper\StringFunctionsHelper;
 use Pagarme\Core\Kernel\ValueObjects\AbstractValidString;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\AddressAttributes;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\CardConfig;
+use Pagarme\Core\Kernel\ValueObjects\Configuration\MarketplaceConfig;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\PixConfig;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\RecurrenceConfig;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\VoucherConfig;
@@ -160,6 +161,11 @@ final class Configuration extends AbstractEntity
      */
     private $pixConfig;
 
+    /**
+     * @var MarketplaceConfig
+     */
+    private $marketplaceConfig;
+
     public function __construct()
     {
         $this->saveCards = false;
@@ -227,6 +233,22 @@ final class Configuration extends AbstractEntity
     }
 
     /**
+     * @param MarketplaceConfig $marketplaceConfig
+     */
+    public function setMarketplaceConfig(MarketplaceConfig $marketplaceConfig)
+    {
+        $this->marketplaceConfig = $marketplaceConfig;
+    }
+
+    /**
+     * @return MarketplaceConfig
+     */
+    public function getMarketplaceConfig()
+    {
+        return $this->marketplaceConfig;
+    }
+
+    /**
      * @return VoucherConfig
      */
     public function getVoucherConfig()
@@ -267,7 +289,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param string|array $key
+     * @param  string|array $key
      * @return $this
      */
     public function setPublicKey(AbstractPublicKey $key)
@@ -285,7 +307,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param string|array $key
+     * @param  string|array $key
      * @return $this
      */
     public function setSecretKey(AbstractSecretKey $key)
@@ -339,7 +361,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param bool $boletoEnabled
+     * @param  bool $boletoEnabled
      * @return Configuration
      */
     public function setBoletoEnabled($boletoEnabled)
@@ -353,7 +375,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param bool $creditCardEnabled
+     * @param  bool $creditCardEnabled
      * @return Configuration
      */
     public function setCreditCardEnabled($creditCardEnabled)
@@ -393,7 +415,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param bool $twoCreditCardsEnabled
+     * @param  bool $twoCreditCardsEnabled
      * @return Configuration
      */
     public function setTwoCreditCardsEnabled($twoCreditCardsEnabled)
@@ -407,7 +429,7 @@ final class Configuration extends AbstractEntity
 
     /**
      *
-     * @param bool $boletoCreditCardEnabled
+     * @param  bool $boletoCreditCardEnabled
      * @return Configuration
      */
     public function setBoletoCreditCardEnabled($boletoCreditCardEnabled)
@@ -557,7 +579,7 @@ final class Configuration extends AbstractEntity
         $numbers = '/([^0-9])/i';
         $replace = '';
 
-        $minAmount = preg_replace($numbers, $replace, $antifraudMinAmount);
+        $minAmount = preg_replace($numbers, $replace, $antifraudMinAmount ?? '');
 
         if ($minAmount < 0) {
             $minAmount = 0;
@@ -705,7 +727,7 @@ final class Configuration extends AbstractEntity
             throw new InvalidParamException("Boleto due days should be an integer!", $boletoDueDays);
         }
 
-        $this->boletoDueDays = (int)$boletoDueDays;
+        $this->boletoDueDays = (int) $boletoDueDays;
     }
 
     /**
@@ -769,7 +791,8 @@ final class Configuration extends AbstractEntity
             "createOrder" => $this->isCreateOrderEnabled(),
             "voucherConfig" => $this->getVoucherConfig(),
             "debitConfig" => $this->getDebitConfig(),
-            "pixConfig" => $this->getPixConfig()
+            "pixConfig" => $this->getPixConfig(),
+            "marketplaceConfig" => $this->getMarketplaceConfig()
         ];
     }
 
@@ -869,7 +892,7 @@ final class Configuration extends AbstractEntity
     {
         $methodSplited = explode(
             "_",
-            preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $method)
+            preg_replace('/(?<=\\w)(?=[A-Z])/',"_$1", $method ?? '')
         );
 
         $targetObject = $this;
@@ -890,9 +913,8 @@ final class Configuration extends AbstractEntity
         return call_user_func([$targetObject, $method], $arguments);
     }
 
-    private function isMethodsIgnoringFather($method, $methodSplited, $actions, $targetObject)
-    {
-        $methodsIgnoringFather = ["getSecretKey", "getPublicKey", "isHubEnabled"];
+    private function isMethodsIgnoringFather($method, $methodSplited, $actions, $targetObject) {
+        $methodsIgnoringFather = ["getSecretKey","getPublicKey","isHubEnabled"];
 
         if (
             in_array($method, $methodsIgnoringFather) &&
