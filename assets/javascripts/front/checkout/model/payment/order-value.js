@@ -55,5 +55,6 @@ let pagarmeOrderValue = {
     },
     getCartTotals: function () {
         return cartTotal;
-    },
-}
+    }
+};
+pagarmeOrderValue.start();

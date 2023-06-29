@@ -1,8 +1,13 @@
 /* globals pagarmeCard */
 
-const pagarme = {
+let pagarmeTokenize = {
     appId: $('[data-pagarmecheckout-app-id]').data('pagarmecheckoutAppId'),
     apiUrl: 'https://api.mundipagg.com/core/v1/tokens',
+    token: 'token',
+    vendor: 'pagarme',
+    paymentMethodTarget: 'data-pagarmecheckout-method',
+    sequenceTarget: 'data-pagarmecheckout-card-num',
+    tokenElementTarget: 'data-pagarmecheckout-element',
     getEndpoint: function () {
         let url = new URL(this.apiUrl);
         url.searchParams.append('appId', this.appId);
@@ -10,15 +15,7 @@ const pagarme = {
     },
     getCardsForm: function (el) {
         return el.find('fieldset[data-pagarmecheckout="card"]');
-    }
-};
-
-let pagarmeTokenize = {
-    token: 'token',
-    vendor: 'pagarme',
-    paymentMethodTarget: 'data-pagarmecheckout-method',
-    sequenceTarget: 'data-pagarmecheckout-card-num',
-    tokenElementTarget: 'data-pagarmecheckout-element',
+    },
 
     execute: async function () {
         if (wc_pagarme_checkout.validate() === false) {
@@ -26,14 +23,14 @@ let pagarmeTokenize = {
         }
         let el = pagarmeCard.getCheckoutPaymentElement();
         if (pagarmeCard.isPagarmePayment() && pagarmeCard.haveCardForm(el) !== false) {
-            pagarme.getCardsForm(el).each(await pagarmeTokenize.tokenize);
+            this.getCardsForm(el).each(await pagarmeTokenize.tokenize);
         }
     },
 
     tokenize: async function () {
         if (pagarmeCard.hasSelectedWallet(this) === false && !pagarmeCard.checkToken(this)) {
             wc_pagarme_checkout.errorTokenize = false;
-            let endpoint = pagarme.getEndpoint(),
+            let endpoint = this.getEndpoint(),
                 card = pagarmeTokenize.createCardObject(this),
                 field = $(this);
             await pagarmeTokenize.getApiData(
@@ -46,7 +43,7 @@ let pagarmeTokenize = {
                 function (error) {
                     wc_pagarme_checkout.errorTokenize = true;
                     if (error.statusCode == 503) {
-                        pagarmeTokenize.showError('Não foi possível gerar a transação segura. Serviço indisponível.')
+                        pagarmeTokenize.showError('Não foi possível gerar uma transação. Serviço indisponível.');
                     } else {
                         pagarmeTokenize.listError(error.errors);
                     }
@@ -142,7 +139,7 @@ let pagarmeTokenize = {
 
     parseErrorsList: function (error, message) {
         const translatedError = pagarmeCard.translateErrors(error, message);
-        wc_pagarme_checkout.errorList += `<li>${translatedError}<li>`;
+        wc_pagarme_checkout.errorList += `<li>${translatedError}<\li>`;
     },
 
     createTokenInput: async function (response, field) {
@@ -180,4 +177,4 @@ let pagarmeTokenize = {
             resolve(true);
         });
     }
-}
+};
