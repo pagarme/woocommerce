@@ -23,14 +23,14 @@ let pagarmeTokenize = {
         }
         let el = pagarmeCard.getCheckoutPaymentElement();
         if (pagarmeCard.isPagarmePayment() && pagarmeCard.haveCardForm(el) !== false) {
-            this.getCardsForm(el).each(await pagarmeTokenize.tokenize);
+            pagarmeTokenize.getCardsForm(el).each(await pagarmeTokenize.tokenize);
         }
     },
 
     tokenize: async function () {
         if (pagarmeCard.hasSelectedWallet(this) === false && !pagarmeCard.checkToken(this)) {
             wc_pagarme_checkout.errorTokenize = false;
-            let endpoint = this.getEndpoint(),
+            let endpoint = pagarmeTokenize.getEndpoint(),
                 card = pagarmeTokenize.createCardObject(this),
                 field = $(this);
             await pagarmeTokenize.getApiData(
