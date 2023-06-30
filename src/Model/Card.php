@@ -2,10 +2,10 @@
 
 namespace Woocommerce\Pagarme\Model;
 
-use Pagarme\Core\Mark1\Service\CardService;
+use Pagarme\Core\Middle\Service\CardService;
 use Woocommerce\Pagarme\Model\CoreAuth;
-use Pagarme\Core\Mark1\Model\Card as CoreCard;
-use Pagarme\Core\Mark1\Interface\CardInterface;
+use Pagarme\Core\Middle\Model\Card as CoreCard;
+use Pagarme\Core\Middle\Interfaces\CardInterface;
 
 /**
  * This class implement Card
@@ -15,7 +15,8 @@ class Card implements CardInterface
 
 
     protected $coreAuth;
-    public function __construct() {
+    public function __construct()
+    {
         $this->coreAuth = new CoreAuth();
     }
 
@@ -28,22 +29,28 @@ class Card implements CardInterface
      */
     public function create(string $token, $customer)
     {
-        try {
-
-            $card = new CoreCard();
-            $card->setToken($token);
-            $response = $this->createCardOnPagarme($card, $customer);
-            return $this->convertData($response);
-
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
+        $card = new CoreCard();
+        $card->setToken($token);
+        $response = $this->createCardOnPagarme($card, $customer);
+        return $this->convertData($response);
     }
 
+    public function getCard($cardId, $customer)
+    {
+        $card = new CoreCard();
+        $card->setCardId($cardId);
+        $response = $this->getCardOnPagarme($card, $customer);
+        return $this->convertData($response);
+    }
     private function createCardOnPagarme(CoreCard $card, $customer)
     {
         $cardService = new CardService($this->coreAuth);
         return $cardService->createCard($card, $customer);
+    }
+    private function getCardOnPagarme(CoreCard $card, $customer)
+    {
+        $cardService = new CardService($this->coreAuth);
+        return $cardService->getCard($customer, $card);
     }
 
     public function convertData($response)

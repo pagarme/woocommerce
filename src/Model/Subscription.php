@@ -156,22 +156,34 @@ class Subscription
         return false;
     }
 
-    public function processChangePaymentSubscription(WC_Order $subscription)
+    public function processChangePaymentSubscription($subscription)
     {
-        $new_payment_method = wc_clean($_POST['payment_method']);
-        ;
-
-        if ('woo-pagarme-payments-credit_card' == $new_payment_method) {
-            $pagarmeCustomer = $this->getPagarmeCustomer($subscription);
-            $cardResponse = $this->createCreditCard($subscription, $new_payment_method, $pagarmeCustomer);
-            $this->saveCardInSubscription($cardResponse, $subscription);
-            // \WC_Subscriptions_Change_Payment_Gateway::update_payment_method($subscription, $new_payment_method, true);
+        try {
+            $subscription = new WC_Subscription($subscription);
+            $newPaymentMethod = wc_clean($_POST['payment_method']);
+            if ('woo-pagarme-payments-credit_card' == $newPaymentMethod) {
+                $pagarmeCustomer = $this->getPagarmeCustomer($subscription);
+                $cardResponse = $this->createCreditCard($pagarmeCustomer);
+                $this->saveCardInSubscription($cardResponse, $subscription);
+                \WC_Subscriptions_Change_Payment_Gateway::update_payment_method($subscription, $newPaymentMethod);
+            }
+            return [
+                'result' => 'success',
+                'redirect' => $this->payment->get_return_url($subscription)
+            ];
+        } catch (\Throwable $th) {
+            wc_add_notice(
+                'Ocorreu um problema ao processar a troca de pagamento. Tente novamente mais tarde!',
+                'error'
+            );
+            return [
+                'result' => 'error',
+                'redirect' => $this->payment->get_return_url($subscription)
+            ];
         }
-        return [
-            'result' => 'success',
-            'redirect' => $this->payment->get_return_url($subscription)
-        ];
+
     }
+
     private function getPagarmeCustomer($subscription)
     {
         $customer = new Customer($subscription->get_user_id());
@@ -180,29 +192,29 @@ class Subscription
         }
         return $customer;
     }
-    private function createCreditCard($subscription, $new_payment_method, $pagarmeCustomer)
+    private function createCreditCard($pagarmeCustomer)
     {
-        $token = $_POST['pagarme']['credit_card']['cards'][1]['token'];
+        $data = wc_clean($_POST['pagarme']);
         $card = new Card();
+        if ($data['credit_card']['cards'][1]['wallet-id']) {
+            $cardId = $data['credit_card']['cards'][1]['wallet-id'];
+            return $card->getCard($cardId, $pagarmeCustomer);
+        }
+        $token = $data['credit_card']['cards'][1]['token'];
         return $card->create($token, $pagarmeCustomer);
     }
 
 
     /**
-     * Undocumented function
-     *
-     * @param [type] $card
+     * Save card information on table post_meta
+     * @param array $card
      * @param WC_Subscription $subscription
      * @return void
      */
-    private function saveCardInSubscription($card, $subscription)
+    private function saveCardInSubscription(array $card, WC_Subscription $subscription)
     {
-        try {
-            $subscription->add_meta_data('_pagarme_payment_subscription', json_encode($card), true);
-            $subscription->save();
-        } catch (\Throwable $th) {
-            throw new \Exception("Error Processing Request", 1);
-        }
+        $subscription->add_meta_data('_pagarme_payment_subscription', json_encode($card), true);
+        $subscription->save();
     }
     private function convertOrderObject(WC_Order $order)
     {

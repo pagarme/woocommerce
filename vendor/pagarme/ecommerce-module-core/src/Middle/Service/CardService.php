@@ -1,22 +1,22 @@
 <?php
 
-namespace Pagarme\Core\Mark1\Service;
+namespace Pagarme\Core\Middle\Service;
 
-use Pagarme\Core\Mark1\Mark1Client;
+use Pagarme\Core\Middle\Client;
 use PagarmeCoreApiLib\PagarmeCoreApiClient;
-use Pagarme\Core\Mark1\Model\Card;
+use Pagarme\Core\Middle\Model\Card;
 
 /**
- * 
+ * This class is responsible for communicating with PagarmeCoreApi
  */
 class CardService
 {
     private PagarmeCoreApiClient $client;
 
     /**
-     * @param Mark1Client $auth
+     * @param Client $auth
      */
-    public function __construct(Mark1Client $auth)
+    public function __construct(Client $auth)
     {
         $this->client = $auth->services();
     }
@@ -40,7 +40,7 @@ class CardService
     }
 
 
-    public function getCard($customer, $card)
+    public function getCard($customer, Card $card)
     {
         $response = $this->client->getCustomers()->getCard(
             $customer->getPagarmeCustomerId(),

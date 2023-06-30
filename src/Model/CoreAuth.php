@@ -2,9 +2,10 @@
 
 namespace Woocommerce\Pagarme\Model;
 
-use Pagarme\Core\Mark1\Mark1Client;
+use Pagarme\Core\Middle\Client;
 use Woocommerce\Pagarme\Model\Config;
-class CoreAuth extends Mark1Client
+
+class CoreAuth extends Client
 {
     public function getHubToken()
     {

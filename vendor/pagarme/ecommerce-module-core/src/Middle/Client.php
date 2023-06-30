@@ -1,10 +1,14 @@
 <?php
 
-namespace Pagarme\Core\Mark1;
+namespace Pagarme\Core\Middle;
 
 use PagarmeCoreApiLib\PagarmeCoreApiClient;
 use PagarmeCoreApiLib\Configuration;
-abstract class Mark1Client 
+
+/**
+ * This class is responsible for authentication.
+ */
+abstract class Client 
 {
     public PagarmeCoreApiClient $client;
 
