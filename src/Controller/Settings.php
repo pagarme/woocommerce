@@ -72,6 +72,7 @@ class Settings
         add_filter(Core::plugin_basename('plugin_action_links_'), array($this, 'plugin_link'));
         add_action('admin_menu', array($this, 'settings_menu'), 58);
         add_action('admin_init', array($this, 'plugin_settings'));
+        add_filter('woocommerce_defer_transactional_emails', '__return_true');
 
         $this->gateway_load();
         $this->select = $select;

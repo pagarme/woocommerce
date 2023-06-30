@@ -34,6 +34,11 @@ class CreditCard extends AbstractGateway
     const SOFT_DESCRIPTOR_FIELD_NAME = "Soft descriptor";
 
     /**
+     * @var array
+     */
+    protected $sendEmailStatus = ['pending', 'on-hold', 'processing'];
+
+    /**
      * @return array
      */
     public function append_form_fields()
@@ -104,10 +109,11 @@ class CreditCard extends AbstractGateway
     {
         $maxLength = $this->model->getSoftDescriptorMaxLength($this->isGatewayType());
 
-        return array(
+        return [
             'title' => __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
             'desc_tip' => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
-            'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
+            'description' => sprintf(
+                __("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
                 'woo-pagarme-payments'), $maxLength),
             'default' => $this->config->getData('cc_soft_descriptor') ?? '',
             'custom_attributes' => array(
@@ -119,7 +125,7 @@ class CreditCard extends AbstractGateway
                     $maxLength
                 ),
             ),
-        );
+        ];
     }
 
     /**
@@ -127,7 +133,7 @@ class CreditCard extends AbstractGateway
      */
     public function field_cc_allow_save()
     {
-        return array(
+        return [
             'title' => __('Card wallet', 'woo-pagarme-payments'),
             'type'     => 'select',
             'options' => $this->yesnoOptions->toLabelsArray(true),
@@ -138,7 +144,7 @@ class CreditCard extends AbstractGateway
             'custom_attributes' => array(
                 'data-field' => 'cc-allow-save',
             ),
-        );
+        ];
     }
 
     /**
@@ -168,7 +174,7 @@ class CreditCard extends AbstractGateway
      */
     public function field_cc_installment_type()
     {
-        return array(
+        return [
             'title' => __('Installment configuration', 'woo-pagarme-payments'),
             'type' => 'select',
             'class' => 'wc-enhanced-select',
@@ -182,7 +188,7 @@ class CreditCard extends AbstractGateway
                 'data-element' => 'installments-type-select',
                 'data-action' => 'installments-type',
             ),
-        );
+        ];
     }
 
     /**
@@ -190,9 +196,9 @@ class CreditCard extends AbstractGateway
      */
     public function field_cc_installment_fields($field)
     {
-        $installments = array();
+        $installments = [];
 
-        $installments['maximum'] = array(
+        $installments['maximum'] = [
             'title' => __('Max number of installments', 'woo-pagarme-payments'),
             'type' => 'select',
             'default' => $this->config->getData('cc_installments_maximum') ?? 12,
@@ -200,9 +206,9 @@ class CreditCard extends AbstractGateway
             'custom_attributes' => array(
                 'data-field' => 'installments-maximum',
             ),
-        );
+        ];
 
-        $installments['installment_min_amount'] = array(
+        $installments['installment_min_amount'] = [
             'title' => __('Minimum installment amount', 'woo-pagarme-payments'),
             'type' => 'text',
             'default' => $this->config->getData('cc_installments_min_amount') ?? '',
@@ -214,13 +220,15 @@ class CreditCard extends AbstractGateway
                 'data-mask' => '##0.00',
                 'data-mask-reverse' => 'true',
             ),
-        );
+        ];
 
-        $installments['interest'] = array(
+        $installments['interest'] = [
             'title' => __('Initial interest rate (%)', 'woo-pagarme-payments'),
             'type' => 'text',
             'default' => $this->config->getData('cc_installments_interest') ?? '',
-            'description' => __('Interest rate applied starting with the first installment with interest.', 'woo-pagarme-payments'),
+            'description' => __(
+                'Interest rate applied starting with the first installment with interest.',
+                'woo-pagarme-payments'),
             'desc_tip' => true,
             'placeholder' => '0.00',
             'custom_attributes' => array(
@@ -228,9 +236,9 @@ class CreditCard extends AbstractGateway
                 'data-mask' => '##0.00',
                 'data-mask-reverse' => 'true',
             ),
-        );
+        ];
 
-        $installments['interest_increase'] = array(
+        $installments['interest_increase'] = [
             'title' => __('Incremental interest rate (%)', 'woo-pagarme-payments'),
             'type' => 'text',
             'default' => $this->config->getData('cc_installments_interest_increase') ?? '',
@@ -242,9 +250,9 @@ class CreditCard extends AbstractGateway
                 'data-mask' => '##0.00',
                 'data-mask-reverse' => 'true',
             ),
-        );
+        ];
 
-        $installments['without_interest'] = array(
+        $installments['without_interest'] = [
             'title' => __('Number of installments without interest', 'woo-pagarme-payments'),
             'type' => 'select',
             'default' => $this->config->getData('cc_installments_without_interest') ?? 3,
@@ -252,13 +260,13 @@ class CreditCard extends AbstractGateway
             'custom_attributes' => array(
                 'data-field' => 'installments-without-interest',
             ),
-        );
+        ];
 
-        $installments['flags'] = array(
+        $installments['flags'] = [
             'title' => __('Settings by card brand', 'woo-pagarme-payments'),
             'type' => 'installments_by_flag',
             'default' => $this->config->getData('cc_installments_by_flag') ?? '',
-        );
+        ];
 
         return $installments[$field];
     }
@@ -268,13 +276,13 @@ class CreditCard extends AbstractGateway
      */
     public function section_antifraud()
     {
-        return array(
+        return [
             'title' => __('Anti fraud settings', 'woo-pagarme-payments'),
             'type'  => 'title',
             'custom_attributes' => array(
                 'data-field' => 'antifraud-section',
             )
-        );
+        ];
     }
 
     /**
@@ -282,7 +290,7 @@ class CreditCard extends AbstractGateway
      */
     public function antifraud_enabled()
     {
-        return array(
+        return [
             'title'   => __('Enable', 'woo-pagarme-payments'),
             'type'     => 'select',
             'default' => $this->config->getData('antifraud_enabled') ?? strtolower(Yesno::NO),
@@ -291,7 +299,7 @@ class CreditCard extends AbstractGateway
             'custom_attributes' => array(
                 'data-field' => 'antifraud-enabled',
             )
-        );
+        ];
     }
 
     /**
@@ -299,7 +307,7 @@ class CreditCard extends AbstractGateway
      */
     public function antifraud_min_value()
     {
-        return array(
+        return [
             'title'             => __('Minimum amount', 'woo-pagarme-payments'),
             'type'              => 'text',
             'default'           => $this->config->getData('antifraud_min_value') ?? '',
@@ -311,13 +319,13 @@ class CreditCard extends AbstractGateway
                 'data-mask-reverse' => 'true',
                 'data-field'        => 'antifraud-min-value',
             ),
-        );
+        ];
     }
 
     public function generate_installments_by_flag_html($key, $data)
     {
         $fieldKey = $this->get_field_key($key);
-        $defaults  = array(
+        $defaults  = [
             'title'             => '',
             'disabled'          => false,
             'class'             => '',
@@ -327,7 +335,7 @@ class CreditCard extends AbstractGateway
             'desc_tip'          => false,
             'description'       => '',
             'custom_attributes' => array(),
-        );
+        ];
 
         $data  = wp_parse_args($data, $defaults);
         $value = (array) $this->get_option($key, array());
@@ -348,14 +356,17 @@ class CreditCard extends AbstractGateway
                 vertical-align: middle;
             }
         </style>
-        <tr valign="top">
+        <tr>
             <th scope="row" class="titledesc">
                 <?php echo esc_html($this->get_tooltip_html($data)); ?>
-                <label for="<?php echo esc_attr($fieldKey); ?>"><?php echo wp_kses_post($data['title']); ?></label>
+                <label for="<?php echo esc_attr($fieldKey); ?>" id="installments-by-flag-label">
+                    <?php echo wp_kses_post($data['title']); ?>
+                </label>
             </th>
             <td class="forminp">
                 <fieldset data-field="installments-by-flag">
-                    <table class="widefat wc_input_table sortable">
+                    <legend></legend>
+                    <table aria-describedby="installments-by-flag-label" class="widefat wc_input_table sortable">
                         <thead>
                         <tr>
                             <th class="align"><?php _e('Card Brand', 'woo-pagarme-payments'); ?></th>
@@ -363,20 +374,22 @@ class CreditCard extends AbstractGateway
                             <th class="align"><?php _e('Minimum installment amount', 'woo-pagarme-payments'); ?></th>
                             <th class="align"><?php _e('Initial interest rate (%)', 'woo-pagarme-payments'); ?></th>
                             <th class="align"><?php _e('Incremental interest rate (%)', 'woo-pagarme-payments'); ?></th>
-                            <th class="align"><?php _e('Number of installments<br/>without interest', 'woo-pagarme-payments'); ?></th>
+                            <th class="align">
+                                <?php _e('Number of installments<br />without interest', 'woo-pagarme-payments'); ?>
+                            </th>
                         </tr>
                         </thead>
                         <tbody class="accounts ui-sortable">
                         <?php
                         foreach ($flags as $flagKey => $flag_name) :
-                            $interest          = $value['interest'][$flagKey] ?? '';
+                            $interest = $value['interest'][$flagKey] ?? '';
                             $interestIncrease = $value['interest_increase'][$flagKey] ?? '';
-                            $maxInstallmentValue   = isset($value['max_installment'][$flagKey])
+                            $maxInstallmentValue = isset($value['max_installment'][$flagKey])
                                 && $value['max_installment'][$flagKey] < $maxInstallment
                                 ? $value['max_installment'][$flagKey]
                                 : $maxInstallment;
-                            $installmentMinAmount   = $value['installment_min_amount'][$flagKey] ?? '';
-                            $noInterest       = $value['no_interest'][$flagKey] ?? 1;
+                            $installmentMinAmount = $value['installment_min_amount'][$flagKey] ?? '';
+                            $noInterest = $value['no_interest'][$flagKey] ?? 1;
 
                             $escapedHtmlAttrFieldKey = esc_attr($fieldKey);
                             $escapedHtmlAttrFlagKey = esc_attr($flagKey);

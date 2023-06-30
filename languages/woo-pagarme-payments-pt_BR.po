@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-06-22 16:12-0300\n"
+"PO-Revision-Date: 2023-06-28 15:33-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3.1\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;"
 "_nx:4c,1,2;_nx_noop:4c,1,2\n"
@@ -193,19 +193,16 @@ msgstr "Chave secreta Produção"
 msgid "Production public key"
 msgstr "Chave pública Produção"
 
-#: src/Controller/Gateways.php:251
-msgid "Boleto Bancário"
+#: templates/order/email/billet.phtml:20
+msgid "Bank Billet"
 msgstr "Boleto Bancário"
 
-msgid "Billet Bank"
-msgstr "Boleto Bancário"
+#: templates/order/email/billet.phtml:20
+msgid "Digitable Line"
+msgstr "Linha Digitável"
 
 msgid "Billet"
 msgstr "Boleto"
-
-#: src/Controller/Gateways.php:253
-msgid "Enables Boleto Bancário"
-msgstr "Ativar Boleto Bancário"
 
 #: src/Controller/Gateways.php:261 src/View/Checkouts.php:234
 msgid "Credit card"
@@ -275,7 +272,7 @@ msgstr "Número de Dias"
 msgid "Expiration days of the boleto after printing."
 msgstr "Dias de expiração do boleto depois de impresso."
 
-#: src/Controller/Gateways.php:372
+#: src/Controller/Gateways.php:372 templates/order/email/pix.phtml:30
 msgid "Instructions"
 msgstr "Instruções"
 
@@ -538,6 +535,10 @@ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abai
 #: src/View/Checkouts.php:60 src/View/Checkouts.php:127
 msgid "Print"
 msgstr "Imprimir"
+
+#: templates/order/email/billet.phtml:23
+msgid "Click here to print the bank billet"
+msgstr "Clique aqui para imprimir o boleto bancário"
 
 #: src/View/Checkouts.php:85
 msgid "The status of your transaction is %s."
@@ -832,6 +833,9 @@ msgstr "https://pagarme.me"
 msgid "Copy Code"
 msgstr "Copiar Código"
 
+msgid "Copyable Code"
+msgstr "Código Copiável"
+
 msgid "<span>1.</span> Point your phone at this screen to capture the code."
 msgstr "<span>1.</span> Aponte seu celular para essa tela para capturar o código."
 
@@ -1117,9 +1121,6 @@ msgstr "Recomendamos fazer backup antes de atualizar!"
 
 #~ msgid "BILLET: If you have not yet received the billet, please click the button below to print."
 #~ msgstr "BOLETO: Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
-
-#~ msgid "Bank Billet"
-#~ msgstr "Boleto Bancário"
 
 #~ msgid "The sum of billet and credit card is less than the total"
 #~ msgstr "A soma do boleto com o cartão é menor do que o total"

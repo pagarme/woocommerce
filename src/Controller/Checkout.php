@@ -30,8 +30,8 @@ class Checkout
     ) {
         $this->ordersController = new Orders();
         add_action('woocommerce_api_' . Model\Checkout::API_REQUEST, array($this, 'process_checkout_transparent'));
-        $oaymentDetails = new \Woocommerce\Pagarme\Block\Order\PaymentDetails();
-        add_action('woocommerce_view_order', [$oaymentDetails, 'render']);
+        $paymentDetails = new \Woocommerce\Pagarme\Block\Order\PaymentDetails();
+        add_action('woocommerce_view_order', [$paymentDetails, 'render']);
         add_action('wp_ajax_xqRhBHJ5sW', array($this, 'build_installments'));
         add_action('wp_ajax_nopriv_xqRhBHJ5sW', array($this, 'build_installments'));
         add_filter('wcbcf_billing_fields', array($this, 'set_required_fields'));
