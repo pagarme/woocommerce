@@ -758,7 +758,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $newPaymentData->brand = $brand;
         $newPaymentData->identifier = $identifier;
         $newPaymentData->installments = intval($this->formData["installments"]);
-        $newPaymentData->recurrenceCycle = $this->formData["recurrence_cycle"];
+        $newPaymentData->recurrenceCycle = $this->formData["recurrence_cycle"] ?? null;
         $newPaymentData->saveOnSuccess =
             isset($this->formData["save_credit_card"]);
 

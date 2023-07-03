@@ -194,11 +194,11 @@ class Checkout
 
     private function addInstallmentsOnMetaData(&$order, $fields)
     {
-        if (!$fields["installments"]) {
+        if (!array_key_exists("installments" , $fields)) {
             return false;
         }
         $order->pagarme_installments_card1 = $fields["installments"];
-        if ($fields["installments2"]) {
+        if (array_key_exists("installments2", $fields)) {
             $order->pagarme_installments_card2 = $fields["installments2"];
         }
     }
