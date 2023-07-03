@@ -119,9 +119,7 @@ class Checkout
         }
         if ($type === CheckoutTypes::TRANSPARENT_VALUE) {
             $fields = $this->convertCheckoutObject($_POST[PaymentRequestInterface::PAGARME_PAYMENT_REQUEST_KEY]);
-            if (Subscription::hasSubscriptionProductInCart()) {
-                $fields['recurrence_cycle'] = Subscription::getRecurrenceCycle();
-            }
+            $fields['recurrence_cycle'] = Subscription::getRecurrenceCycle();
             $response = $this->orders->create_order(
                 $wc_order,
                 $fields['payment_method'],
