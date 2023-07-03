@@ -9,21 +9,18 @@
 
 namespace Woocommerce\Pagarme\Model;
 
-use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
-use Woocommerce\Pagarme\Controller\Orders;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Config\Source\CheckoutTypes;
-
 if (!defined('ABSPATH')) {
     exit(0);
 }
 
 use WC_Order;
+use Woocommerce\Pagarme\Controller\Orders;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Config\Source\CheckoutTypes;
 use Woocommerce\Pagarme\Model\Payment\Data\AbstractPayment;
 use Woocommerce\Pagarme\Model\Payment\Data\Card;
 use Woocommerce\Pagarme\Model\Payment\Data\Multicustomers;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
-use Woocommerce\Pagarme\Model\Subscription;
 
 class Checkout
 {
@@ -47,8 +44,7 @@ class Checkout
         Config             $config = null,
         Orders             $orders = null,
         WooOrderRepository $wooOrderRepository = null
-    )
-    {
+    ) {
         if (!$config) {
             $config = new Config;
         }

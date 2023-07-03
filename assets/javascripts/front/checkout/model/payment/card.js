@@ -82,6 +82,7 @@ let pagarmeCard = {
         });
         return !allResult.includes(false);
     },
+
     wait: async function (ms = 1000) {
         return new Promise(resolve => {
             setTimeout(resolve, ms);

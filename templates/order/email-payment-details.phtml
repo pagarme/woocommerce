@@ -1,0 +1,42 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2023 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Order\EmailCharge $this */
+
+declare(strict_types=1);
+
+use Woocommerce\Pagarme\Block\Order\EmailCharge;
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->isPagarmePaymentMethod($this->getOrder())) : ?>
+    <h2 id="pagarme-payment-detail-title"><?= __('Payment Data', 'woo-pagarme-payments'); ?></h2>
+    <?php if ($this->getCharges()) : ?>
+        <?php foreach ($this->getCharges() as $charge) : ?>
+            <div id="pagarme-payment-detail" style="margin-bottom: 40px;">
+                <?=
+                $this->createBlock(EmailCharge::class,
+                    'pagarme.order.email',
+                    [
+                        'charge' => $charge
+                    ]
+                )->toHtml()
+                ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else : ?>
+        <div id="pagarme-payment-detail" style="margin-bottom: 40px;">
+            <p>
+                <?= __('No records found.', 'woo-pagarme-payments'); ?>
+            </p>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>

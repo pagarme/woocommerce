@@ -106,7 +106,7 @@ class CardInstallments
             );
 
             $text .= $this->verifyInterest($times, $noInterest, $interest);
-            
+
             $options[] = [
                 'value' => $times,
                 'content' => $text
@@ -114,7 +114,7 @@ class CardInstallments
         }
         return $options;
     }
-    
+
     /**
     * @param int $times
     * @param mixed $noInterest
@@ -126,7 +126,7 @@ class CardInstallments
         if ($times > $noInterest && $interest) {
             return " c/juros";
         }
-        
+
         return " s/juros";
     }
 
@@ -179,8 +179,6 @@ class CardInstallments
     }
 
     /**
-     * Undocumented function
-     *
      * @param int $type
      * @param string|bool $flag
      * @return int

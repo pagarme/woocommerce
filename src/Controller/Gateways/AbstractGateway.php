@@ -77,6 +77,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /** @var Yesno */
     protected $yesnoOptions;
+
+    /** @var array */
+    protected $sendEmailStatus = ['pending', 'on-hold'];
+
     /**
      * @var Subscription
      */
@@ -365,5 +369,21 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             $this->config->setData($field, $value);
         }
         $this->config->save();
+    }
+
+    /**
+     * @param mixed $order
+     * @return void
+     */
+    public function pagarme_email_payment_info($order, $sent_to_admin)
+    {
+        if ($sent_to_admin
+            || $this->id !== $order->payment_method
+            || !in_array($order->get_status(), $this->sendEmailStatus)) {
+            return;
+        }
+
+        $paymentDetails = new EmailPaymentDetails();
+        $paymentDetails->render($order->get_id());
     }
 }

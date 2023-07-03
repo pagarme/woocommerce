@@ -64,8 +64,10 @@ class Voucher extends AbstractGateway
         return [
             'title' => __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
             'desc_tip' => __('Description that appears on the voucher bill.', 'woo-pagarme-payments'),
-            'description' => sprintf(__("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
-                'woo-pagarme-payments'), $maxLength),
+            'description' => sprintf(
+                __("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
+                    'woo-pagarme-payments'),
+                $maxLength),
             'default' => $this->config->getData('voucher_soft_descriptor') ?? '',
             'custom_attributes' => [
                 'data-field' => 'voucher-soft-descriptor',

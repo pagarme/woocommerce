@@ -27,7 +27,7 @@ final class PaymentFactory
 {
     /** @var string[] */
     private $primitiveFactories;
-    /** @var Configuration */
+    /** @var Configuration  */
     private $moduleConfig;
     /** @var string */
     private $cardStatementDescriptor;
@@ -117,8 +117,7 @@ final class PaymentFactory
         $cardData,
         $cardDataIndex,
         $config
-    )
-    {
+    ) {
         $payment = $this->createBaseCardPayment($cardData, $cardDataIndex);
 
         if ($payment === null) {
@@ -191,9 +190,8 @@ final class PaymentFactory
 
     private function getAmountWithInterestForCreditCard(
         AbstractCreditCardPayment $payment,
-                                  $config
-    )
-    {
+        $config
+    ) {
         $installmentService = new InstallmentService();
 
         $validInstallments = $installmentService->getInstallmentsFor(

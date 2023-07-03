@@ -699,8 +699,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromCreditCard(
         &$paymentData
-    )
-    {
+    ) {
         $newPaymentData = $this->extractBasePaymentData();
 
         $creditCardDataIndex = AbstractCreditCardPayment::getBaseCode();
@@ -715,8 +714,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $additionalInformation,
         &$paymentData,
         $payment
-    )
-    {
+    ) {
         $newPaymentData = $this->extractBasePaymentData();
 
         $creditCardDataIndex = NewVoucherPayment::getBaseCode();
@@ -730,8 +728,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $additionalInformation,
         &$paymentData,
         $payment
-    )
-    {
+    ) {
         $newPaymentData = $this->extractBasePaymentData();
 
         $creditCardDataIndex = NewDebitCardPayment::getBaseCode();
@@ -841,8 +838,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractMultibuyerData(
         $paymentMethod
-    )
-    {
+    ) {
 
         if (empty($paymentMethod)) {
             return null;
