@@ -34,11 +34,6 @@ class CreditCard extends AbstractGateway
     const SOFT_DESCRIPTOR_FIELD_NAME = "Soft descriptor";
 
     /**
-     * @var array
-     */
-    protected $sendEmailStatus = ['pending', 'on-hold', 'processing'];
-
-    /**
      * @return array
      */
     public function append_form_fields()
