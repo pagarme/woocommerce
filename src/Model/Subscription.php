@@ -82,7 +82,7 @@ class Subscription
         );
         add_filter(
             'woocommerce_subscriptions_update_payment_via_pay_shortcode',
-            __CLASS__ . '::maybe_dont_update_payment_method',
+            __CLASS__ . '::canUpdatePaymentMethod',
             10,
             3
         );
@@ -316,17 +316,17 @@ class Subscription
         return class_exists('WC_Subscriptions');
     }
 
-    public function isChangePaymentSubscription()
+    public static function isChangePaymentSubscription()
     {
-        if (isset($_POST['woocommerce_change_payment'])) {
+        if (isset($_POST['woocommerce_change_payment']) || isset($_REQUEST['change_payment_method'])) {
             return wcs_is_subscription(wc_clean($_POST['woocommerce_change_payment']));
         }
         return false;
     }
 
-    public static function maybe_dont_update_payment_method($update, $new_payment_method, $subscription)
+    public static function canUpdatePaymentMethod($update, $new_payment_method, $subscription)
     {
-        if ('woo-pagarme-payments-credit_card' == $new_payment_method) {
+        if ('woo-pagarme-payments-credit_card' === $new_payment_method) {
             $update = false;
         }
         return $update;
