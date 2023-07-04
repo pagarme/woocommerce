@@ -1,16 +1,16 @@
-const qrRawCodeTarget = '#pagarme-qr-code-button';
 $ = jQuery;
 let pagarmePix = {
+    qrRawCodeTarget: '#pagarme-qr-code-button',
     start: function () {
         this.addEventListener();
     },
     addEventListener: function () {
-        $(qrRawCodeTarget).on('click', function (e) {
+        $(this.qrRawCodeTarget).on('click', function (e) {
             pagarmePix.copyRawCode();
         });
     },
     copyRawCode: function () {
-        let elem = $(qrRawCodeTarget)
+        let elem = $(this.qrRawCodeTarget);
         if (!elem.length) {
             return;
         }
@@ -26,5 +26,5 @@ let pagarmePix = {
         };
         swal(message);
     }
-}
+};
 pagarmePix.start();

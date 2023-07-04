@@ -14,6 +14,7 @@ namespace Woocommerce\Pagarme\Block\Checkout\Form;
 use Woocommerce\Pagarme\Block\Checkout\Gateway;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Payment\Voucher;
+use Woocommerce\Pagarme\Model\Subscription;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -84,10 +85,12 @@ class Card extends Gateway
      */
     public function showInstallments()
     {
-        $methods = [
+        $hideInstallmentsInMethods = [
             Voucher::PAYMENT_CODE
         ];
-        if (in_array($this->getPaymentInstance()->getMethodCode(), $methods)) {
+        $isHideInstallments = in_array($this->getPaymentInstance()->getMethodCode(), $hideInstallmentsInMethods);
+
+        if (Subscription::isChangePaymentSubscription() || $isHideInstallments) {
             return false;
         }
         return true;

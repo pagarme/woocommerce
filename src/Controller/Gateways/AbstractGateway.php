@@ -12,17 +12,19 @@ declare(strict_types=1);
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use WC_Payment_Gateway;
-use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
-use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
 use Woocommerce\Pagarme\Block\Template;
+
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Checkout;
+use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Payment\PostFormatter;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
+use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
+use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
 
 defined('ABSPATH') || exit;
 
@@ -81,6 +83,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     protected $sendEmailStatus = ['pending', 'on-hold'];
 
     /**
+     * @var Subscription
+     */
+    private $subscription;
+
+    /**
      * @param Gateway|null $gateway
      * @param WooOrderRepository|null $wooOrderRepository
      * @param PostFormatter|null $postFormatter
@@ -118,11 +125,21 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             add_action("add_option", [$this, 'beforeAddAdminOptions'], 10, 2);
             add_action(self::PAYMENT_OPTION_UPDATE_SLUG . $this->id, [$this, 'process_admin_options']);
         }
-        add_action('woocommerce_receipt_' . $this->id, [$this, 'receipt_page']);
+        add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
         add_action('woocommerce_thankyou_' . $this->id, [$this, 'thank_you_page']);
-        add_action('admin_enqueue_scripts', [$this, 'payments_scripts']);
+        add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
         add_action('woocommerce_email_after_order_table', [$this, 'pagarme_email_payment_info'], 15, 2 );
+        $this->subscription = new Subscription($this);
     }
+
+    /**
+     * @return boolean
+     */
+    public function hasSubscriptionSupport(): bool
+    {
+        return false;
+    }
+
 
     public function payments_scripts()
     {
@@ -145,6 +162,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function process_payment($orderId): array
     {
         $wooOrder = $this->wooOrderRepository->getById($orderId);
+        if ($this->subscription->isChangePaymentSubscription()) {
+            return $this->subscription->processChangePaymentSubscription($wooOrder);
+        }
         $this->postFormatter->assemblePaymentRequest();
         $this->checkout->process($wooOrder);
         return [
