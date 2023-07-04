@@ -87,7 +87,8 @@ class Card extends Gateway
         $methods = [
             Voucher::PAYMENT_CODE
         ];
-        if (in_array($this->getPaymentInstance()->getMethodCode(), $methods)) {
+        if (isset($_REQUEST["change_payment_method"]) ||
+            in_array($this->getPaymentInstance()->getMethodCode(), $methods)) {
             return false;
         }
         return true;
