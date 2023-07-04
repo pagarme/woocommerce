@@ -47,9 +47,9 @@
             'dev_requirement' => false,
         ),
         'pagarme/ecommerce-module-core' => array(
-            'pretty_version' => 'dev-feature/PAOPN-490-compatibization-with-woocommerce',
-            'version' => 'dev-feature/PAOPN-490-compatibization-with-woocommerce',
-            'reference' => '0ba8c543174952c5d058234ba67019116b2b3d73',
+            'pretty_version' => '2.2.2',
+            'version' => '2.2.2.0',
+            'reference' => '343fb02c32da6d66baca81367021c8df697614bd',
             'type' => 'library',
             'install_path' => __DIR__ . '/../pagarme/ecommerce-module-core',
             'aliases' => array(),

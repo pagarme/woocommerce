@@ -276,17 +276,17 @@
         },
         {
             "name": "pagarme/ecommerce-module-core",
-            "version": "dev-feature/PAOPN-490-compatibization-with-woocommerce",
-            "version_normalized": "dev-feature/PAOPN-490-compatibization-with-woocommerce",
+            "version": "2.2.2",
+            "version_normalized": "2.2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pagarme/ecommerce-module-core.git",
-                "reference": "0ba8c543174952c5d058234ba67019116b2b3d73"
+                "reference": "343fb02c32da6d66baca81367021c8df697614bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/0ba8c543174952c5d058234ba67019116b2b3d73",
-                "reference": "0ba8c543174952c5d058234ba67019116b2b3d73",
+                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/343fb02c32da6d66baca81367021c8df697614bd",
+                "reference": "343fb02c32da6d66baca81367021c8df697614bd",
                 "shasum": ""
             },
             "require": {
@@ -301,7 +301,7 @@
                 "nesbot/carbon": "1.39.0",
                 "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9"
             },
-            "time": "2023-07-04T11:06:20+00:00",
+            "time": "2023-07-04T15:17:16+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -322,7 +322,7 @@
             ],
             "description": "Core component for Pagar.me e-commerce platform modules.",
             "support": {
-                "source": "https://github.com/pagarme/ecommerce-module-core/tree/feature/PAOPN-490-compatibization-with-woocommerce"
+                "source": "https://github.com/pagarme/ecommerce-module-core/tree/2.2.2"
             },
             "install-path": "../pagarme/ecommerce-module-core"
         },

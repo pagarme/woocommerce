@@ -13,7 +13,7 @@ This is the repository of Pagar.me's payment module core for all supported e-com
 -   [Pagar.me Magento payment module for Magento 2.3+](https://github.com/pagarme/magento2).
 
 ## Dependencies
-*   ``PHP`` Version 7.1 - 7.4
+*   ``PHP`` Version 7.1 - 8.1
 
 ## Install
 Require by composer

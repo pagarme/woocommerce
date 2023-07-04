@@ -11,7 +11,7 @@
     },
     "require": {
         "mashape/unirest-php": "^3.0",
-        "pagarme/ecommerce-module-core": "dev-feature/PAOPN-490-compatibization-with-woocommerce",
+        "pagarme/ecommerce-module-core": "2.2.2",
         "psr/log": "1.1.4"
     }
 }
