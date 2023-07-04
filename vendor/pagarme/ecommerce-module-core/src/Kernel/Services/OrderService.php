@@ -287,7 +287,9 @@ final class OrderService
                 throw new \Exception($message, 400);
             }
 
-            $platformOrder->save();
+            if (strpos(MPSetup::getPlatformVersion(), 'Wordpress') === false) {
+                $platformOrder->save();
+            }
 
             $orderFactory = new OrderFactory();
             $order = $orderFactory->createFromPostData($response);

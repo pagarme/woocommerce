@@ -281,12 +281,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pagarme/ecommerce-module-core.git",
-                "reference": "2a7271ebc88a42c570c201f896c8b9551b5c4f65"
+                "reference": "0ba8c543174952c5d058234ba67019116b2b3d73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/2a7271ebc88a42c570c201f896c8b9551b5c4f65",
-                "reference": "2a7271ebc88a42c570c201f896c8b9551b5c4f65",
+                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/0ba8c543174952c5d058234ba67019116b2b3d73",
+                "reference": "0ba8c543174952c5d058234ba67019116b2b3d73",
                 "shasum": ""
             },
             "require": {
@@ -301,7 +301,7 @@
                 "nesbot/carbon": "1.39.0",
                 "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9"
             },
-            "time": "2023-06-29T19:11:18+00:00",
+            "time": "2023-07-04T11:06:20+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
