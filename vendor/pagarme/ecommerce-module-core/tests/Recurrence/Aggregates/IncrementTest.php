@@ -14,7 +14,7 @@ class IncrementTest extends TestCase
      */
     private $increment;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->increment = new Increment();
     }

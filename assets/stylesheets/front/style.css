@@ -31,6 +31,11 @@
     height: 2.8em;
     padding: 0.6em;
     font-size: 1em;
+    z-index: unset;
+}
+
+#payment ul.payment_methods li[class*="pagarme"] p img.logo {
+    margin: 0;
 }
 
 #payment .payment_methods li[class*="pagarme"] .payment_box fieldset .form-row input[type=checkbox] {

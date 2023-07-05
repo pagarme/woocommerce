@@ -12,14 +12,14 @@ class LogObjectTests extends TestCase
      */
     private $logObject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->logObject = new LogObject();
     }
 
     public function testJsonSerialize()
     {
-        $this->assertInternalType('object', $this->logObject->jsonSerialize());
+        $this->assertIsObject($this->logObject->jsonSerialize());
         $this->assertInstanceOf(\stdClass::class, $this->logObject->jsonSerialize());
     }
 }

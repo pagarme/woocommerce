@@ -258,7 +258,7 @@ final class OrderService
             //build PaymentOrder based on platformOrder
             $paymentOrder =  $this->extractPaymentOrderFromPlatformOrder($platformOrder);
             $orderInfo = $this->getOrderInfo($platformOrder);
-
+            
             $i18n = new LocalizationService();
 
             //Send through the APIService to pagarme
@@ -288,7 +288,9 @@ final class OrderService
                 throw new \Exception($message, 400);
             }
 
-            $platformOrder->save();
+            if (strpos(MPSetup::getPlatformVersion(), 'Wordpress') === false) {
+                $platformOrder->save();
+            }
 
             $orderFactory = new OrderFactory();
             $order = $orderFactory->createFromPostData($response);

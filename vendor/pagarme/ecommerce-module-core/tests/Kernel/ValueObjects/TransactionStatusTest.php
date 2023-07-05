@@ -44,6 +44,10 @@ class TransactionStatusTest extends TestCase
             'method' => 'failed',
             'value' => 'failed'
         ],
+        'CHARGEDBACK' => [
+            'method' => 'chargedback',
+            'value' => 'chargedback'
+        ],
         'GENERATED' => [
             'method' => 'generated',
             'value' => 'generated'

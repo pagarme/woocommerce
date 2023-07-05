@@ -7,20 +7,20 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Model\Config;
 
-use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Kernel\Factories\ConfigurationFactory;
 use Pagarme\Core\Kernel\Repositories\ConfigurationRepository;
 use Pagarme\Core\Kernel\ValueObjects\Id\GUID;
+use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as MPSetup;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Data\DataObject;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class PagarmeCoreConfigManagement
@@ -57,6 +57,7 @@ class PagarmeCoreConfigManagement
     public function update(Config $config)
     {
         $data = $config->getData();
+        MPSetup::reloadModuleConfigurationData();
         /** @var \Pagarme\Core\Kernel\Aggregates\Configuration */
         $moduleConfig = MPSetup::getModuleConfiguration();
         foreach ($data as $key => $datum) {

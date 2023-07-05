@@ -14,7 +14,7 @@ class PlanTest extends TestCase
 {
     private $plan;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->plan = new Plan();
     }
@@ -83,10 +83,10 @@ class PlanTest extends TestCase
         $this->assertEquals($this->plan->getAllowInstallments(), $allowInstallments);
 
         $this->plan->setCreatedAt($createdAt);
-        $this->assertInternalType('string', $this->plan->getCreatedAt());
+        $this->assertIsString($this->plan->getCreatedAt());
 
         $this->plan->setUpdatedAt($updatedAt);
-        $this->assertInternalType('string', $this->plan->getUpdatedAt());
+        $this->assertIsString($this->plan->getUpdatedAt());
 
         $this->plan->setIntervalType($intervalType);
         $this->assertEquals($this->plan->getIntervalType(), $intervalType);
@@ -101,6 +101,7 @@ class PlanTest extends TestCase
      */
     public function testShouldNotAddAnEmptyProductId()
     {
+        $this->expectException(\Exception::class);
         $this->plan->setProductId("");
     }
 
@@ -116,6 +117,7 @@ class PlanTest extends TestCase
      */
     public function testShouldNotAddAnEmptyBillingType()
     {
+        $this->expectException(\Exception::class);
         $this->plan->setBillingType("");
     }
 
@@ -131,6 +133,7 @@ class PlanTest extends TestCase
      */
     public function testShouldNotAddAnEmptyStatus()
     {
+        $this->expectException(\Exception::class);
         $this->plan->setStatus("");
     }
 
@@ -146,6 +149,7 @@ class PlanTest extends TestCase
      */
     public function testShouldNotAddAnNotIntegerTrialPeriodDays()
     {
+        $this->expectException(\Exception::class);
         $this->plan->setTrialPeriodDays("");
     }
 
@@ -256,6 +260,8 @@ class PlanTest extends TestCase
      */
     public function testShouldReturnAnExceptionIfTrySetAnInvalidIntervalType()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Interval not find");
         $this->plan->setIntervalType("wrong interval Type");
     }
 
@@ -265,6 +271,8 @@ class PlanTest extends TestCase
      */
     public function testShouldReturnAnExceptionIfTrySetAnInvalidIntervalCount()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Interval count not compatible");
         $this->plan->setIntervalCount("wrong interval count");
     }
 }

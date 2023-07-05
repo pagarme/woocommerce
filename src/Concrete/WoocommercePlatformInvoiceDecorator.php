@@ -55,6 +55,7 @@ class WoocommercePlatformInvoiceDecorator extends AbstractInvoiceDecorator imple
         // Not necessary to be implemented on Woocommerce, there is no Invoice concept
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         // Not necessary to be implemented on Woocommerce, there is no Invoice concept

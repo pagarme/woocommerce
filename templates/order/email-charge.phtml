@@ -1,0 +1,46 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2023 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Order\EmailCharge $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->getCharge() && $this->getCharge()->getTransactions()) : ?>
+    <?php foreach ($this->getCharge()->getTransactions() as $transaction) : ?>
+        <table aria-describedby="pagarme-payment-detail-title" class="td" cellspacing="0" cellpadding="6" border="1"
+            style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">
+            <thead>
+                <tr>
+                    <th class="td" scope="row" colspan="2">
+                        <?= __($this->getEmailType($transaction), 'woo-pagarme-payments'); ?>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <?=
+                    $this->createBlock(
+                        $this->getEmailClass($transaction),
+                        'pagarme.order.email-charge.email',
+                        [
+                            'transaction' => $transaction
+                        ]
+                    )->toHtml();
+                ?>
+                <tr>
+                    <th class="td" scope="row"><?= __('Status', 'woo-pagarme-payments'); ?>:</th>
+                    <td class="td"><?= $this->getChargeStatus(); ?></td>
+                </tr>
+            </tbody>
+        </table>
+    <?php endforeach; ?>
+<?php endif; ?>

@@ -17,7 +17,7 @@ if (!function_exists('add_action')) {
 ?>
 <?php if ($this->getCharge() && $this->getCharge()->getTransactions()) : ?>
     <?php foreach ($this->getCharge()->getTransactions() as $transaction) : ?>
-        <table class="woocommerce-table">
+        <table aria-describedby="pagarme-payment-detail-title"  class="woocommerce-table">
             <thead>
                 <tr>
                     <th colspan="2"><?= __($this->getTransactionType($transaction), 'woo-pagarme-payments'); ?></th>
@@ -39,6 +39,5 @@ if (!function_exists('add_action')) {
                 </tr>
             </tbody>
         </table>
-        <?php break; ?>
     <?php endforeach; ?>
 <?php endif; ?>

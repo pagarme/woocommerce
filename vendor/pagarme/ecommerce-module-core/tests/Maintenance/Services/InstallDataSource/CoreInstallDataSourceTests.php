@@ -12,14 +12,14 @@ class CoreInstallDataSourceTests extends TestCase
      */
     private $coreInstallDataSource;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->coreInstallDataSource = new CoreInstallDataSource();
     }
 
     public function testGetIntegrityFilePath()
     {
-        $this->assertContains(
+        $this->assertStringEndsWith(
             DIRECTORY_SEPARATOR . 'Assets' . DIRECTORY_SEPARATOR . 'integrityData',
             $this->coreInstallDataSource->getIntegrityFilePath()
         );

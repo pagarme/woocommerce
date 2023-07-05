@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-05-26 11:06-0300\n"
+"PO-Revision-Date: 2023-07-05 16:59-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,12 +13,65 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3.1\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;"
+"_nx:4c,1,2;_nx_noop:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Textdomain-Support: yes\n"
 "X-Poedit-SearchPath-0: .\n"
+
+#: src/Core.php:299
+msgid "Expiration Date: The month is required."
+msgstr "Validade: O mês é obrigatório."
+
+#: src/Core.php:301
+msgid "Expiration Date: The month must be between 1 and 12."
+msgstr "Validade: O mês deve estar entre 1 e 12."
+
+#: src/Core.php:303
+msgid "Expiration Date: Invalid year."
+msgstr "Validade: Ano inválido."
+
+#: src/Core.php:305
+msgid "Expiration Date: Invalid expiration date."
+msgstr "Validade: Data de expiração inválida."
+
+#: src/Core.php:307
+msgid "Expiration Date: Expired card."
+msgstr "Validade: Cartão expirado."
+
+#: src/Core.php:309
+msgid "The card holder name is required."
+msgstr "O nome impresso no cartão é obrigatório."
+
+#: src/Core.php:311
+msgid "The card number is required."
+msgstr "O número do cartão é obrigatório."
+
+#: src/Core.php:313 src/Core.php:315 src/Core.php:323
+msgid "This card number is invalid."
+msgstr "Este número de cartão é inválido."
+
+#: src/Core.php:317
+msgid "The card number must be between 13 and 19 characters."
+msgstr "O numéro do cartão deve ter entre 13 e 19 caracteres."
+
+#: src/Core.php:319
+msgid "The expiration date is expired."
+msgstr "A validade do cartão está expirada."
+
+#: src/Core.php:321
+msgid "The card code must be between 3 and 4 characters."
+msgstr "O número cvv deve ter 3 ou 4 caracteres."
+
+#: src/Core.php:325
+msgid "Tokenize timeout."
+msgstr "O tempo limite de tokenização expirou."
+
+#: src/Core.php:327
+msgid "Can't check card form: Invalid element received."
+msgstr "Não é possível verificar o formulário do cartão: Elemento inválido recebido."
 
 #: src/Controller/Accounts.php:41 src/Controller/Accounts.php:64
 msgid "Wallet"
@@ -88,8 +141,7 @@ msgstr "Geral"
 msgid "Payment settings"
 msgstr "Configurações de Pagamento"
 
-#: src/Controller/Gateways.php:165 src/Controller/Gateways.php:309
-#: src/Controller/Gateways.php:665
+#: src/Controller/Gateways.php:165 src/Controller/Gateways.php:309 src/Controller/Gateways.php:665
 msgid "Enable"
 msgstr "Habilitar"
 
@@ -141,19 +193,16 @@ msgstr "Chave secreta Produção"
 msgid "Production public key"
 msgstr "Chave pública Produção"
 
-#: src/Controller/Gateways.php:251
-msgid "Boleto Bancário"
+#: templates/order/email/billet.phtml:20
+msgid "Bank Billet"
 msgstr "Boleto Bancário"
 
-msgid "Billet Bank"
-msgstr "Boleto Bancário"
+#: templates/order/email/billet.phtml:20
+msgid "Digitable Line"
+msgstr "Linha Digitável"
 
 msgid "Billet"
 msgstr "Boleto"
-
-#: src/Controller/Gateways.php:253
-msgid "Enables Boleto Bancário"
-msgstr "Ativar Boleto Bancário"
 
 #: src/Controller/Gateways.php:261 src/View/Checkouts.php:234
 msgid "Credit card"
@@ -223,7 +272,7 @@ msgstr "Número de Dias"
 msgid "Expiration days of the boleto after printing."
 msgstr "Dias de expiração do boleto depois de impresso."
 
-#: src/Controller/Gateways.php:372
+#: src/Controller/Gateways.php:372 templates/order/email/pix.phtml:30
 msgid "Instructions"
 msgstr "Instruções"
 
@@ -244,12 +293,12 @@ msgid "Maximum of 13 characters"
 msgstr "Máximo de 13 caracteres"
 
 #: src/Controller/Gateways.php:393
-msgid "It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer's invoice, next to the shop identification, respecting the length of the card brands."
-msgstr "Permite que o lojista envie um texto de até 13 caracteres que será impresso na fatura do portador, ao lado da identificação da loja, respeitando o comprimento das bandeiras."
-
-#: src/Controller/Gateways.php:398
-msgid "This field is required."
-msgstr "Este campo é obrigatório."
+msgid ""
+"It allows the shopkeeper to send a text of up to 13 characters that will be printed on the bearer's invoice, next to "
+"the shop identification, respecting the length of the card brands."
+msgstr ""
+"Permite que o lojista envie um texto de até 13 caracteres que será impresso na fatura do portador, ao lado da "
+"identificação da loja, respeitando o comprimento das bandeiras."
 
 #: src/Controller/Gateways.php:407
 msgid "Operation Type"
@@ -374,6 +423,32 @@ msgstr "Logs"
 msgid "Log Pagar.me events, you can check this log in WooCommerce>Status>Logs."
 msgstr "Registra eventos da Pagar.me, você pode conferir esse arquivo de log em WooCommerce>Status>Logs."
 
+#: src/Controller/Gateways/CreditCard.php:115 src/Controller/Gateways/CreditCard.php:157
+#: src/Controller/Gateways/Pix.php:59 src/Controller/Gateways/Voucher.php:72 src/Controller/Gateways/Voucher.php:102
+msgid "This field is required."
+msgstr "Este campo é obrigatório."
+
+#: src/Controller/Gateways/CreditCard.php:116 src/Controller/Gateways/Voucher.php:73
+msgid "This field has exceeded the %d character limit."
+msgstr "Este campo ultrapassou o limite de %d caracteres."
+
+#: src/Controller/Gateways/Pix.php:60
+msgid "This field does not have the minimum value of %d."
+msgstr "Este campo não possui o valor mínimo de %d."
+
+#: src/Controller/Gateways/CreditCard.php:414 src/Controller/Gateways/CreditCard.php:441
+#: src/Controller/Gateways/Pix.php:121 src/Controller/Gateways/Voucher.php:132 src/Controller/Gateways/Voucher.php:160
+msgid "%s is required."
+msgstr "%s é obrigatório."
+
+#: src/Controller/Gateways/CreditCard.php:424 src/Controller/Gateways/Voucher.php:142
+msgid "%s has exceeded the %d character limit."
+msgstr "%s ultrapassou o limite de %d caracteres."
+
+#: src/Controller/Gateways/Pix.php:130
+msgid "%s does not have the minimum value of %d."
+msgstr "%s não possui o valor mínimo de %d."
+
 #: src/Controller/Settings.php:32
 msgid "Settings"
 msgstr "Configurações"
@@ -461,6 +536,10 @@ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abai
 msgid "Print"
 msgstr "Imprimir"
 
+#: templates/order/email/billet.phtml:23
+msgid "Click here to print the bank billet"
+msgstr "Clique aqui para imprimir o boleto bancário"
+
 #: src/View/Checkouts.php:85
 msgid "The status of your transaction is %s."
 msgstr "O status da sua transação é %s."
@@ -497,8 +576,7 @@ msgstr "Vencimento"
 msgid "Paid value"
 msgstr "Valor pago"
 
-#: src/View/Checkouts.php:214 src/View/Checkouts.php:259
-#: templates/myaccount/wallet.php:43
+#: src/View/Checkouts.php:214 src/View/Checkouts.php:259 templates/myaccount/wallet.php:43
 msgid "Status"
 msgstr "Status"
 
@@ -514,8 +592,7 @@ msgstr "Número do cartão"
 msgid "Installments"
 msgstr "Parcelamento"
 
-#: templates/checkout/2-cards-item.php:32
-#: templates/checkout/2-cards-item.php:106
+#: templates/checkout/2-cards-item.php:32 templates/checkout/2-cards-item.php:106
 #: templates/checkout/billet-and-card-item.php:52
 msgid "Value (Credit card)"
 msgstr "Valor (Cartão de crédito)"
@@ -523,10 +600,8 @@ msgstr "Valor (Cartão de crédito)"
 msgid "Value (Credit Card)"
 msgstr "Valor (Cartão de Crédito)"
 
-#: templates/checkout/2-cards-item.php:55
-#: templates/checkout/2-cards-item.php:133
-#: templates/checkout/billet-and-card-item.php:83
-#: templates/checkout/credit-card-item.php:41
+#: templates/checkout/2-cards-item.php:55 templates/checkout/2-cards-item.php:133
+#: templates/checkout/billet-and-card-item.php:83 templates/checkout/credit-card-item.php:41
 msgid "Installments quantity"
 msgstr "Quantidade de parcelas"
 
@@ -716,12 +791,36 @@ msgid "Your PHP version is not supported. Required >= 5.5."
 msgstr "Sua versão do PHP não é suportada. Obrigatório >= 5.5."
 
 #: woo-pagarme-payments.php:45
-msgid "WooCoomerce plugin is required."
-msgstr "Plugin WooCoomerce é requerido."
+msgid "Woocommerce plugin is required for Pagar.me module to work."
+msgstr "O plugin Woocommerce é necessário para o funcionamento do módulo da Pagar.me."
 
 #: woo-pagarme-payments.php:51
-msgid "WooCoomerce Extra Checkout Fields For Brazil plugin is required."
-msgstr "O plugin WooCoomerce Extra Checkout Fields For Brazil  é obrigatório."
+msgid "WooCoomerce Extra Checkout Fields For Brazil plugin is required for Pagar.me module to work."
+msgstr "O plugin WooCoomerce Extra Checkout Fields For Brazil é necessário para o funcionamento do módulo da Pagar.me."
+
+#: woo-pagarme-payments.php:84
+msgid "Activate"
+msgstr "Ativar"
+
+#: woo-pagarme-payments.php:100
+msgid "Install"
+msgstr "Instalar"
+
+#: woo-pagarme-payments.php:145
+msgid ""
+"Permalink structure in Wordpress Settings must be different from &ldquo;<b>Plain</b>&rdquo;. Please correct this "
+"setting to be able to transact with Pagar.me."
+msgstr ""
+"A estrutura de Links Permanentes nas configurações do Wordpress deve ser diferente de &ldquo;<b>Padrão</b>&rdquo;. "
+"Por favor, corrija essa configuração para poder transacionar com a Pagar.me."
+
+#: woo-pagarme-payments.php:186
+msgid "The following checkout fields are required, but were not found:"
+msgstr "Os seguintes campos de checkout são obrigatórios, mas não foram encontrados:"
+
+#: woo-pagarme-payments.php:194
+msgid "Please, make sure to include them for Pagar.me module to work."
+msgstr "Por favor, certifique-se de incluí-los para que o módulo da Pagar.me funcione."
 
 #. Description of the plugin/theme
 msgid "Enable Pagar.me Gateway for WooCommerce"
@@ -733,6 +832,9 @@ msgstr "https://pagarme.me"
 
 msgid "Copy Code"
 msgstr "Copiar Código"
+
+msgid "Copyable Code"
+msgstr "Código Copiável"
 
 msgid "<span>1.</span> Point your phone at this screen to capture the code."
 msgstr "<span>1.</span> Aponte seu celular para essa tela para capturar o código."
@@ -761,8 +863,12 @@ msgstr "Tempo, em segundos, até o QRCode expirar depois de gerado"
 msgid "Additional information"
 msgstr "Informações adicionais"
 
-msgid "Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment process."
-msgstr "Conjunto de chave e valor para adicionar informações ao pix gerado. Isso ficará visível para o comprador durante o pagamento."
+msgid ""
+"Set of key and value used to add information to the generated pix. This will be visible to the buyer during the "
+"payment process."
+msgstr ""
+"Conjunto de chave e valor para adicionar informações ao pix gerado. Isso ficará visível para o comprador durante o "
+"pagamento."
 
 msgid "Additional Information Name"
 msgstr "Nome da informação adicional"
@@ -876,16 +982,24 @@ msgid "View Integration"
 msgstr "Visualizar integração"
 
 #: templates/adminhtml/system/config/form/field/hub/integration.phtml:23
-msgid "Have you removed your integration on Pagar.me Hub, but it shows active? Click <a id='pagarme-hub-desintegration-link'>here</a> to remove your keys."
-msgstr "Removeu sua integração no Hub Pagar.me, mas ainda aparece ativa? Clique <a id='pagarme-hub-desintegration-link'>aqui</a> para finalizar removendo suas chaves."
+msgid ""
+"Have you removed your integration on Pagar.me Hub, but it shows active? Click <a id='pagarme-hub-desintegration-"
+"link'>here</a> to remove your keys."
+msgstr ""
+"Removeu sua integração no Hub Pagar.me, mas ainda aparece ativa? Clique <a id='pagarme-hub-desintegration-link'>aqui</"
+"a> para finalizar removendo suas chaves."
 
 #: templates/adminhtml/system/config/form/field/hub/integration.phtml:28
 msgid "Disintegrate?"
 msgstr "Desintegrar?"
 
 #: templates/adminhtml/system/config/form/field/hub/integration.phtml:29
-msgid "Are you shure you wish to delete the keys? This action removes the integration from your store, but first you must access Pagar.me Hub and click on Delete."
-msgstr "Tem certeza que deseja excluir as chaves? Essa ação remove a integração da sua loja, mas primeiro você deve acessar o Hub Pagar.me e clicar em Excluir."
+msgid ""
+"Are you shure you wish to delete the keys? This action removes the integration from your store, but first you must "
+"access Pagar.me Hub and click on Delete."
+msgstr ""
+"Tem certeza que deseja excluir as chaves? Essa ação remove a integração da sua loja, mas primeiro você deve acessar o "
+"Hub Pagar.me e clicar em Excluir."
 
 msgid "Yes, remove keys!"
 msgstr "Sim, remova as chaves!"
@@ -917,8 +1031,12 @@ msgstr "Cartão de crédito e Boleto"
 msgid "Important! This store is in the testing phase. Orders placed in this environment will not be carried out."
 msgstr "Importante! Esta loja está em fase de testes. Os pedidos realizados neste ambiente não serão efetivados."
 
-msgid "Important! This store is linked to the Pagar.me test environment. This environment is intended for integration validation and does not generate real financial transactions."
-msgstr "Importante! Esta loja está vinculada ao ambiente de testes da Pagar.me. Este ambiente é destinado a validação de integração e não gera operações financeiras reais."
+msgid ""
+"Important! This store is linked to the Pagar.me test environment. This environment is intended for integration "
+"validation and does not generate real financial transactions."
+msgstr ""
+"Importante! Esta loja está vinculada ao ambiente de testes da Pagar.me. Este ambiente é destinado a validação de "
+"integração e não gera operações financeiras reais."
 
 msgid "Yes"
 msgstr "Sim"
@@ -986,20 +1104,29 @@ msgstr "Total"
 msgid "Pagar.me - Additional Information"
 msgstr "Pagar.me - Informações Adicionais"
 
-msgid "This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your site before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging environment before performing the update in production."
-msgstr "Esta nova versão contém atualizações cruciais de arquitetura e funcionalidade. Recomendamos que %1$sfaça backup de seu site antes de atualizar%2$s. É altamente recomendável executar e validar a atualização primeiro no ambiente de teste antes de executar a atualização em produção."
+msgid ""
+"This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your "
+"site before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging "
+"environment before performing the update in production."
+msgstr ""
+"Esta nova versão contém atualizações cruciais de arquitetura e funcionalidade. Recomendamos que %1$sfaça backup de "
+"seu site antes de atualizar%2$s. É altamente recomendável executar e validar a atualização primeiro no ambiente de "
+"teste antes de executar a atualização em produção."
 
 msgid "We recommend backup before upgrading!"
 msgstr "Recomendamos fazer backup antes de atualizar!"
+
+msgid "<strong>The billing address &quot;Number&quot; field</strong> is a required field."
+msgstr "<strong>O campo &quot;Número&quot; do endereço de faturamento</strong> é um campo obrigatório."
+
+msgid "<strong>The shipping address &quot;Number&quot; field</strong> is a required field."
+msgstr "<strong>O campo &quot;Número&quot; do endereço de entrega</strong> é um campo obrigatório."
 
 #~ msgid "If you have not yet received the billet, please click the button below to print."
 #~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
 
 #~ msgid "BILLET: If you have not yet received the billet, please click the button below to print."
 #~ msgstr "BOLETO: Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
-
-#~ msgid "Bank Billet"
-#~ msgstr "Boleto Bancário"
 
 #~ msgid "The sum of billet and credit card is less than the total"
 #~ msgstr "A soma do boleto com o cartão é menor do que o total"

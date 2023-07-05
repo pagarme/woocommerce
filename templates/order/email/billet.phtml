@@ -1,0 +1,31 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2023 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Order\Email\Boleto $this */
+
+declare(strict_types=1);
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+?>
+<?php if ($this->getBilletUrl()) : ?>
+    <tr>
+        <th class="td" scope="row"><?= __('Bank Billet', 'woo-pagarme-payments'); ?>:</th>
+        <td class="td">
+            <a href="<?= $this->getBilletUrl() ?>" target="_blank" rel="noreferrer noopener">
+                <?= __('Click here to print the bank billet', 'woo-pagarme-payments'); ?>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <th class="td" scope="row"><?= __('Digitable Line', 'woo-pagarme-payments'); ?>:</th>
+        <td class="td"><?= $this->getBilletLine(); ?></td>
+    </tr>
+<?php endif; ?>

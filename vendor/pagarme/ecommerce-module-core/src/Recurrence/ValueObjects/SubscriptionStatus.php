@@ -10,9 +10,10 @@ final class SubscriptionStatus extends AbstractValueObject
     const CANCELED = 'canceled';
     const FUTURE = 'future';
     const FAILED = 'failed';
+    const CHARGEDBACK = 'chargedback';
 
     /**
-     * @var string 
+     * @var string
      */
     private $status;
 
@@ -44,6 +45,11 @@ final class SubscriptionStatus extends AbstractValueObject
     public static function failed()
     {
         return new self(self::FAILED);
+    }
+    
+    public static function chargedback()
+    {
+        return new self(self::CHARGEDBACK);
     }
 
     /**
@@ -86,6 +92,7 @@ final class SubscriptionStatus extends AbstractValueObject
      * which is a value of any type other than a resource.
      * @since  5.4.0
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->getStatus();

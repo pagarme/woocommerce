@@ -30,6 +30,7 @@ final class SavedCreditCardPayment extends AbstractCreditCardPayment
         $this->owner = $owner;
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $obj = parent::jsonSerialize();

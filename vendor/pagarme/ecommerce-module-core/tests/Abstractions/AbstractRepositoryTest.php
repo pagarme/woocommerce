@@ -11,7 +11,7 @@ abstract class AbstractRepositoryTest extends AbstractSetupTest
      */
     protected $repo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->getRepository();

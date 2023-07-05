@@ -16,8 +16,10 @@ use Pagarme\Core\Kernel\Services\OrderService;
 use Pagarme\Core\Kernel\ValueObjects\ChargeStatus;
 use Pagarme\Core\Kernel\ValueObjects\Id\SubscriptionId;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
+use Pagarme\Core\Kernel\ValueObjects\TransactionStatus;
 use Pagarme\Core\Recurrence\Repositories\ChargeRepository;
 use Pagarme\Core\Recurrence\Repositories\SubscriptionRepository;
+use Pagarme\Core\Recurrence\Services\InvoiceService;
 use Pagarme\Core\Webhook\Aggregates\Webhook;
 
 final class ChargeRecurrenceService extends AbstractHandlerService
@@ -261,6 +263,59 @@ final class ChargeRecurrenceService extends AbstractHandlerService
         ];
 
         return $result;
+    }
+
+    /**
+     * @param Webhook $webhook
+     * @return array
+     */
+    protected function handleChargedback(Webhook $webhook)
+    {
+        
+        $order = $this->order;
+        $invoiceService = new InvoiceService();
+        $subscriptionRepository = new SubscriptionRepository();
+        $i18n = new LocalizationService();
+
+        /**
+         * @var Charge $charge
+         */
+        $charge = $webhook->getEntity();
+
+        $transaction = $charge->getLastTransaction();
+        
+        $outdatedCharge = $this->chargeRepository->findByPagarmeId(
+            $charge->getPagarmeId()
+        );
+
+        if ($outdatedCharge !== null) {
+            $charge = $outdatedCharge;
+        }
+         /**
+         * @var Charge $outdatedCharge
+         */
+        if ($transaction !== null) {
+            $outdatedCharge->addTransaction($transaction);
+        }
+
+        
+        $charge->cancel();
+        $order->updateCharge($charge);
+        $order->applyOrderStatusFromCharges();
+        
+        $charge->failed();
+        $invoiceService->setChargedbackStatus($charge);
+        
+        $history = $i18n->getDashboard('Subscription canceled');
+        $order->getPlatformOrder()->addHistoryComment($history);
+
+        $subscriptionRepository->save($order);
+        
+        return [
+            "message" => 'Subscription cancel registered',
+            "code" => 200
+        ];
+
     }
 
     //@todo handleProcessing
