@@ -40,7 +40,7 @@ if (!function_exists('add_action')) {
                 </label>
                 <input type="text" id="<?= $this->getElementId('order-value') ?>"
                        name="<?= $this->getElementId('order-value') ?>" data-element="order-value"
-                       data-pagarmecheckout-element="order-value" data-mask="#.##0,00" data-mask-reverse="true"
+                       data-pagarmecheckout-element="order-value" data-mask="#0,00" data-mask-reverse="true"
                        data-value="1" data-required="true"
                        data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>"
                        class="input-text">
