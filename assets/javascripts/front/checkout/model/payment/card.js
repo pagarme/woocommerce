@@ -134,6 +134,7 @@ let pagarmeCard = {
     },
     loadBrand: async function (event) {
         let elem = event.currentTarget;
+        this.removeBrand(elem);
         if (!this.isVisible(elem)) {
             return;
         }
@@ -148,6 +149,11 @@ let pagarmeCard = {
         } catch (exception) {
             this.showError(exception.message);
         }
+    },
+    removeBrand: function (elem) {
+        const imgElem = $(elem).parent().find('img');
+        imgElem.remove();
+        $(elem).parents('.pagarme-card-number-row').find(this.brandTarget).val('');
     },
     isVisible: function (obj) {
         return obj.offsetWidth > 0 && obj.offsetHeight > 0;
@@ -315,9 +321,6 @@ let pagarmeCard = {
         error = error.replace('request.', '');
         const output = `${error}: ${message}`;
         const ptBrMessages = PagarmeGlobalVars.checkoutErrors.pt_BR;
-        if (PagarmeGlobalVars.WPLANG !== 'pt_BR') {
-            return output;
-        }
         if (ptBrMessages.hasOwnProperty(output)) {
             return ptBrMessages[output];
         }
