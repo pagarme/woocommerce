@@ -30,11 +30,6 @@ class TwoCreditCard extends AbstractGateway
     protected $method = TwoCards::PAYMENT_CODE;
 
     /**
-     * @var array
-     */
-    protected $sendEmailStatus = ['pending', 'on-hold', 'processing'];
-
-    /**
      * @return array
      */
     public function field_enabled()

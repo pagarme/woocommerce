@@ -9,21 +9,17 @@
 
 namespace Woocommerce\Pagarme\Model;
 
-use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
-use Woocommerce\Pagarme\Controller\Orders;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Config\Source\CheckoutTypes;
-
 if (!defined('ABSPATH')) {
     exit(0);
 }
 
 use WC_Order;
+use Woocommerce\Pagarme\Controller\Orders;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Config\Source\CheckoutTypes;
 use Woocommerce\Pagarme\Model\Payment\Data\AbstractPayment;
 use Woocommerce\Pagarme\Model\Payment\Data\Card;
-use Woocommerce\Pagarme\Model\Payment\Data\Cards;
 use Woocommerce\Pagarme\Model\Payment\Data\Multicustomers;
-use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequest;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
 
 class Checkout
@@ -34,19 +30,19 @@ class Checkout
     /** @var string */
     const API_REQUEST = 'e3hpgavff3cw';
 
-    /** @var Orders*/
+    /** @var Orders */
     private $orders;
 
     /** @var Gateway */
     private $gateway;
 
-    /** @var WooOrderRepository*/
+    /** @var WooOrderRepository */
     private $wooOrderRepository;
 
     public function __construct(
-        Gateway $gateway = null,
-        Config $config = null,
-        Orders $orders = null,
+        Gateway            $gateway = null,
+        Config             $config = null,
+        Orders             $orders = null,
         WooOrderRepository $wooOrderRepository = null
     ) {
         if (!$config) {
@@ -65,7 +61,12 @@ class Checkout
         $this->orders = $orders;
         $this->gateway = $gateway;
         $this->wooOrderRepository = $wooOrderRepository;
-        add_action('woocommerce_after_checkout_validation', array($this, 'validateCheckout'), 10, 2);
+        add_action(
+            'woocommerce_after_checkout_validation',
+            array($this, 'validateCheckout'),
+            10,
+            2
+        );
     }
 
     public function validateCheckout($fields, $errors)
@@ -74,14 +75,20 @@ class Checkout
             $fields['billing_number'] == 0 &&
             !key_exists('billing_number_required', $errors->errors)
         ) {
-            $errors->add('billing_number_required', '<strong>O campo "Número" do endereço de faturamento</strong> é um campo obrigatório.');
+            $errors->add(
+                'billing_number_required',
+                __("<strong>The billing address &quot;Number&quot; field</strong> is a required field.")
+            );
         }
         if (
             $fields['ship_to_different_address'] &&
             $fields['shipping_number'] == 0 &&
             !key_exists('shipping_number_required', $errors->errors)
         ) {
-            $errors->add('shipping_number_required', '<strong>O campo "Número" do endereço de entrega</strong> é um campo obrigatório.');
+            $errors->add(
+                'shipping_number_required',
+                __("<strong>The shipping address &quot;Number&quot; field</strong> is a required field.")
+            );
         }
     }
 
@@ -112,6 +119,7 @@ class Checkout
         }
         if ($type === CheckoutTypes::TRANSPARENT_VALUE) {
             $fields = $this->convertCheckoutObject($_POST[PaymentRequestInterface::PAGARME_PAYMENT_REQUEST_KEY]);
+            $fields['recurrence_cycle'] = Subscription::getRecurrenceCycle();
             $response = $this->orders->create_order(
                 $wc_order,
                 $fields['payment_method'],
@@ -122,8 +130,9 @@ class Checkout
             $order->payment_method = $fields['payment_method'];
             WC()->cart->empty_cart();
             if ($response) {
-                $order->transaction_id     = $response->getPagarmeId()->getValue();
-                $order->pagarme_id     = $response->getPagarmeId()->getValue();
+                do_action("on_pagarme_response", $wc_order->get_id(), $response);
+                $order->transaction_id = $response->getPagarmeId()->getValue();
+                $order->pagarme_id = $response->getPagarmeId()->getValue();
                 $order->pagarme_status = $response->getStatus()->getStatus();
                 $this->addInstallmentsOnMetaData($order, $fields);
                 $order->response_data = json_encode($response);
@@ -179,11 +188,11 @@ class Checkout
 
     private function addInstallmentsOnMetaData(&$order, $fields)
     {
-        if (!$fields["installments"]) {
+        if (!array_key_exists("installments" , $fields)) {
             return false;
         }
         $order->pagarme_installments_card1 = $fields["installments"];
-        if ($fields["installments2"]) {
+        if (array_key_exists("installments2", $fields)) {
             $order->pagarme_installments_card2 = $fields["installments2"];
         }
     }
