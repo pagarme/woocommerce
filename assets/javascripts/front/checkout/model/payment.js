@@ -8,8 +8,8 @@ jQuery(function ($) {
             const checkedPayment = $('.woocommerce form input[name="payment_method"]:checked').val();
             const requiredFields = $('#billing_number, #shipping_number:visible, input[data-required=true]:visible,' +
                 'select[data-required=true]:visible,' +
-                `.wc_payment_method.payment_method_${checkedPayment} [data-pagarmecheckout-element="brand-input"]`),
-                isValid = true;
+                `.wc_payment_method.payment_method_${checkedPayment} [data-pagarmecheckout-element="brand-input"]`);
+            let isValid = true;
             requiredFields.each(function (index, item) {
                 const field = $(item);
                 const wrapper = field.closest( '.form-row' )
