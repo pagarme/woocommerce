@@ -32,6 +32,9 @@ abstract class AbstractBlock extends DataObject
     /** @var Json */
     protected $scripts;
 
+    /** @var array */
+    protected $deps = [];
+
     /** @var string */
     protected $areaCode = 'front';
 
@@ -81,7 +84,7 @@ abstract class AbstractBlock extends DataObject
         return '';
     }
 
-    public function enqueue_scripts($scripts = null)
+    public function enqueue_scripts($scripts = null, $deps = [])
     {
         if (!$scripts) {
             $scripts = $this->scripts;
@@ -92,13 +95,20 @@ abstract class AbstractBlock extends DataObject
         if (!is_array($scripts)) {
             $scripts = [$scripts];
         }
+
+        if (empty($deps)) {
+            $deps = $this->deps;
+        }
+        $defaultDeps = ['jquery', 'jquery.mask'];
+        $deps = array_merge($defaultDeps, $deps);
+
         foreach ($scripts as $script) {
             $fileName = explode('/', $script);
             $id = "pagarme_scripts_" . end($fileName);
             wp_enqueue_script(
                 $id,
                 $this->getScriptUrl($script),
-                array('jquery', 'jquery.mask'),
+                $deps,
                 $this->getScriptVer($script), true
             );
         }
