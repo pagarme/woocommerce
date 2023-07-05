@@ -34,6 +34,11 @@ class Wallet extends Gateway
     protected $_template = 'templates/checkout/form/card/wallet';
 
     /**
+     * @var string[]
+     */
+    protected $deps = ['pagarme_scripts_card'];
+
+    /**
      * @param int $qtyCards
      * @return $this
      */

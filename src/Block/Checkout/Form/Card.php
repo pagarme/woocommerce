@@ -34,6 +34,11 @@ class Card extends Gateway
      */
     protected $scripts = ['checkout/model/payment/card', 'checkout/model/payment/card/tokenize'];
 
+    /**
+     * @var string[]
+     */
+    protected $deps = ['pagarme-checkout-card'];
+
     /** @var int  */
     protected $sequence = 1;
 

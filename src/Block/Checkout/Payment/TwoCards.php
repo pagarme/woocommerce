@@ -32,6 +32,11 @@ class TwoCards extends Gateway
     protected $scripts = ['checkout/model/payment/order-value'];
 
     /**
+     * @var string[]
+     */
+    protected $deps = ['pagarme_scripts_card'];
+
+    /**
      * @return int
      */
     public function getQtyCards()
