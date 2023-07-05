@@ -11,7 +11,7 @@ use Pagarme\Core\Middle\Model\Card;
  */
 class CardService
 {
-    private PagarmeCoreApiClient $client;
+    private $client;
 
     /**
      * @param Client $auth

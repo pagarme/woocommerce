@@ -8,9 +8,9 @@ use PagarmeCoreApiLib\Configuration;
 /**
  * This class is responsible for authentication.
  */
-abstract class Client 
+abstract class Client
 {
-    public PagarmeCoreApiClient $client;
+    public $client;
 
     abstract public function getHubToken();
     public function __construct()

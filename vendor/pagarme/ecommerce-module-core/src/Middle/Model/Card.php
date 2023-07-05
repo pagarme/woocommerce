@@ -11,8 +11,8 @@ use InvalidArgumentException;
  */
 class Card implements CardInterface
 {
-    private string $token;
-    private string $cardId;
+    private $token;
+    private $cardId;
     public function setToken($token)
     {
         $this->token = $token;
@@ -38,7 +38,7 @@ class Card implements CardInterface
         }
         return true;
     }
-    
+
     public function convertToSdk()
     {
         $cardRequest = new CreateCardRequest();
