@@ -1,5 +1,7 @@
 /* globals pagarmeCard */
 
+$ = jQuery;
+
 let pagarmeTokenize = {
     appId: $('[data-pagarmecheckout-app-id]').data('pagarmecheckoutAppId'),
     apiUrl: 'https://api.mundipagg.com/core/v1/tokens',
