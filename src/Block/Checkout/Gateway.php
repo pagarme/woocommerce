@@ -217,7 +217,7 @@ class Gateway extends Template
         $content = $this->getPaymentInstance()->getImage();
         if ($htmlFormat) {
             $name = esc_html__($this->getPaymentInstance()->getName(), 'woo-pagarme-payments');
-            $content = "<img class='logo' src='{$content}' alt='{$name}' title='{$name}' />";
+            $content = "<p><img class='logo' src='{$content}' alt='{$name}' title='{$name}' /></p>";
         }
 
         return $content;
