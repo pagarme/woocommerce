@@ -151,7 +151,7 @@ let pagarmeCard = {
         }
     },
     removeBrand: function (elem) {
-        let imgElem = $(elem).parent().find('img');
+        const imgElem = $(elem).parent().find('img');
         imgElem.remove();
         $(elem).parents('.pagarme-card-number-row').find(this.brandTarget).val('');
     },
