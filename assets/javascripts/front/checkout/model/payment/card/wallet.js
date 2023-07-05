@@ -1,5 +1,7 @@
 /* globals pagarmeCard */
 
+$ = jQuery;
+
 let pagarmeCheckoutWallet = {
     cardSaveTarget: 'select[data-element="choose-credit-card"]',
     cardFields: [

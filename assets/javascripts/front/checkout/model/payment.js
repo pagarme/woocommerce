@@ -12,7 +12,7 @@ jQuery(function ($) {
             let isValid = true;
             requiredFields.each(function (index, item) {
                 const field = $(item);
-                const wrapper = field.closest( '.form-row' )
+                const wrapper = field.closest( '.form-row' );
                 if (field.val() == 0 || !$.trim(field.val())) {
                     field.addClass('invalid').val('');
                     if (isValid) {

@@ -8,7 +8,7 @@ use Pagarme\Core\Payment\Aggregates\SavedCard;
 final class WoocommerceSavedCardAdapter
 {
     private $adaptee;
-    private Customer $customer;
+    private $customer;
 
     public function __construct(SavedCard $adaptee)
     {
