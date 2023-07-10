@@ -72,7 +72,7 @@ class Checkout
     public function validateCheckout($fields, $errors)
     {
         if (
-            $fields['billing_number'] == 0 &&
+            $fields['billing_number'] === 0 &&
             !key_exists('billing_number_required', $errors->errors)
         ) {
             $errors->add(
@@ -82,7 +82,7 @@ class Checkout
         }
         if (
             $fields['ship_to_different_address'] &&
-            $fields['shipping_number'] == 0 &&
+            $fields['shipping_number'] === 0 &&
             !key_exists('shipping_number_required', $errors->errors)
         ) {
             $errors->add(
