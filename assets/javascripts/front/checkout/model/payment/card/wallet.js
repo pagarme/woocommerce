@@ -1,5 +1,7 @@
 /* globals pagarmeCard */
 
+$ = jQuery;
+
 let pagarmeCheckoutWallet = {
     cardSaveTarget: 'select[data-element="choose-credit-card"]',
     cardFields: [
@@ -23,7 +25,7 @@ let pagarmeCheckoutWallet = {
         }
     },
     addEventListener: function (paymentTarget) {
-        jQuery(this.cardSaveTarget).on('change', function (event) {
+        $(this.cardSaveTarget).on('change', function (event) {
             pagarmeCheckoutWallet.onChangeCardWallet(event);
         });
     },
