@@ -1,7 +1,5 @@
 /* globals pagarmeCard */
 
-$ = jQuery;
-
 let pagarmeOrderValue = {
     valueTarget: 'input[data-pagarmecheckout-element="order-value"]',
     firstCardFildset: 'fieldset[data-pagarmecheckout-card-num="1"]',
@@ -45,13 +43,13 @@ let pagarmeOrderValue = {
         swal(message);
     },
     addEventListener: function () {
-        $(this.valueTarget).on('change', function (event){
+        jQuery(this.valueTarget).on('change', function (event){
             pagarmeOrderValue.fillAnotherInput(event)
         });
     },
     start: function () {
         this.addEventListener();
-        $(this.firstCardFildset).find(this.valueTarget).each(function () {
+        jQuery(this.firstCardFildset).find(this.valueTarget).each(function () {
             pagarmeOrderValue.fillAnotherInput(this);
         });
     },

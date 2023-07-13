@@ -1,9 +1,7 @@
 /* globals pagarmeCard */
 
-$ = jQuery;
-
 let pagarmeTokenize = {
-    appId: $('[data-pagarmecheckout-app-id]').data('pagarmecheckoutAppId'),
+    appId: jQuery('[data-pagarmecheckout-app-id]').data('pagarmecheckoutAppId'),
     apiUrl: 'https://api.mundipagg.com/core/v1/tokens',
     token: 'token',
     vendor: 'pagarme',
@@ -34,7 +32,7 @@ let pagarmeTokenize = {
             wc_pagarme_checkout.errorTokenize = false;
             let endpoint = pagarmeTokenize.getEndpoint(),
                 card = pagarmeTokenize.createCardObject(this),
-                field = $(this);
+                field = jQuery(this);
             await pagarmeTokenize.getApiData(
                 endpoint,
                 card,
@@ -56,7 +54,7 @@ let pagarmeTokenize = {
 
     createCardObject: function (field) {
         let obj = {};
-        $.each($(field).find('input'), function () {
+        jQuery.each(jQuery(field).find('input'), function () {
             let prop = this.getAttribute('data-pagarmecheckout-element'),
                 ignore = ['brand-input', 'exp_date', 'card-order-value', null],
                 value;
@@ -119,7 +117,7 @@ let pagarmeTokenize = {
 
     listError: function (errors) {
         let error, rect;
-        const element = $('input[name$="payment_method"]:checked').closest('li').find('#wcmp-checkout-errors');
+        const element = jQuery('input[name$="payment_method"]:checked').closest('li').find('#wcmp-checkout-errors');
 
         swal.close();
 
@@ -151,9 +149,9 @@ let pagarmeTokenize = {
             this.showError(e.message);
         }
         const objJSON = JSON.parse(response);
-        let input = $(document.createElement('input'));
+        let input = jQuery(document.createElement('input'));
         if (!(field instanceof jQuery)) {
-            field = $(field);
+            field = jQuery(field);
         }
         let inputName = this.vendor + '[' + field.attr(this.paymentMethodTarget) + '][cards][' + field.attr(this.sequenceTarget) + '][' + this.token + ']'
         input.attr('type', 'hidden')
@@ -168,11 +166,11 @@ let pagarmeTokenize = {
     clearInputTokens: function (field) {
         return new Promise((resolve) => {
             if (!(field instanceof jQuery)) {
-                field = $(field);
+                field = jQuery(field);
             }
             let inputs = field.find('[' + this.tokenElementTarget + '=' + this.token + ']');
             if (inputs.length) {
-                $.each(inputs, function () {
+                jQuery.each(inputs, function () {
                     this.remove();
                 });
             }
