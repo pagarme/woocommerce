@@ -4,7 +4,7 @@ Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, 
 Requires at least: 4.1
 Tested up to: 6.2.2
 Requires PHP: 7.1
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -21,6 +21,13 @@ Nosso processo de instalação é simples e bem detalhado:
 
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
+
+= 3.1.1 (10/07/2023) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.1)
+
+* **Correções:**
+  * Erro na validação do campo número de endereço no checkout do PHP 7.
+
 = 3.1.0 (05/07/2023) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.0)
 
@@ -39,19 +46,6 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
   * Guardar número de parcelas do pedido;
   * Recebimento de webhooks chargeback e payment_failed.
 
-= 3.0.0 (05/06/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.0.0)
-
-* **Novas implementações:**
-  * Os métodos de pagamento agora são independentes;
-  * Possibilidade de aplicar descontos para cada método de pagamento.
-
-* **Correções:**
-  * Permitir plugins de pedidos sequenciais.
-
-* **Melhorias:**
-  * As funções da carteira foram revisadas;
-  * O design do front-end foi refinado.
 
 Para consultar versões anteriores, acesse nosso [Github](https://github.com/pagarme/woocommerce/releases).
 
