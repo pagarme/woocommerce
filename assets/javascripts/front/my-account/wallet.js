@@ -1,4 +1,3 @@
-$ = jQuery
 const removeCard = '[data-action="remove-card"]'
 
 let pagarmeWallet = {
@@ -6,7 +5,7 @@ let pagarmeWallet = {
         this.addEventListener();
     },
     addEventListener: function () {
-        $(removeCard).click(function (e) {
+        jQuery(removeCard).click(function (e) {
             pagarmeWallet._onClickRemoveCard(e);
 
         });
@@ -28,7 +27,7 @@ let pagarmeWallet = {
         },
     _request: function (cardId) {
         swal.showLoading();
-        $.ajax({
+        jQuery.ajax({
             method: 'post',
             url: apiRoute,
             data: {
