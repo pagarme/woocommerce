@@ -199,6 +199,7 @@ class Subscription
         }
         return $customer->getPagarmeCustomerId();
     }
+
     private function createCreditCard($pagarmeCustomer)
     {
         $data = wc_clean($_POST['pagarme']);
@@ -209,7 +210,7 @@ class Subscription
         }
         $cardInfo = $data['credit_card']['cards'][1];
         $response = $card->create($cardInfo['token'], $pagarmeCustomer);
-        if (array_key_exists('save-card', $cardInfo) && $cardInfo['save-card'] == 1) {
+        if (array_key_exists('save-card', $cardInfo) && $cardInfo['save-card'] === "1") {
             $card->saveOnWalletPlatform($response);
         }
         return $response;
@@ -227,6 +228,7 @@ class Subscription
         $subscription->add_meta_data('_pagarme_payment_subscription', json_encode($card), true);
         $subscription->save();
     }
+
     private function convertOrderObject(WC_Order $order)
     {
 

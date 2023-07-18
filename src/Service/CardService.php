@@ -6,7 +6,6 @@ use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
 use Pagarme\Core\Middle\Proxy\CardProxy;
 use Woocommerce\Pagarme\Model\CoreAuth;
 use Pagarme\Core\Middle\Model\Card;
-use Pagarme\Core\Middle\Interfaces\CardInterface;
 use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use Pagarme\Core\Payment\Aggregates\SavedCard;
 use Pagarme\Core\Kernel\ValueObjects\CardBrand;
@@ -16,7 +15,7 @@ use Pagarme\Core\Payment\ValueObjects\CardId;
 /**
  * This class implement Card
  */
-class CardService implements CardInterface
+class CardService
 {
 
 
