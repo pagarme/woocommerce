@@ -44,7 +44,7 @@ class Customer implements ConvertToLegacyInterface
         if(strlen($document) === 11) {
             return self::INDIVIDUAL;
         }
-        return self::INDIVIDUAL;
+        return self::COMPANY;
     }
 
     public function getCode()
