@@ -114,6 +114,9 @@ class Customer
     public function getPagarmeCustomerId()
     {
         $customer = $this->customerRepository->findByCode($this->ID);
-        return $customer->getPagarmeId();
+        if (empty($customer)) {
+            return false;
+        }
+        return $customer->getPagarmeId()->getValue();
     }
 }
