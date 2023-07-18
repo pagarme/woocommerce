@@ -58,6 +58,7 @@ class Phones implements ConvertToLegacyInterface
         $value = preg_replace('/(?!\d)./', '', $value);
         return sprintf("%05s", $value);
     }
+    
     private function createPhoneRequest($phone)
     {
         $phone = $this->cleanInput($phone);

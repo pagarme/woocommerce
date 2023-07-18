@@ -10,7 +10,6 @@
 
 namespace Woocommerce\Pagarme\Model;
 
-use Woocommerce\Pagarme\Service\LogService;
 
 
 if (!defined('ABSPATH')) {
@@ -21,9 +20,10 @@ use WC_Order;
 use WC_Subscription;
 use WC_Subscriptions_Cart;
 use Woocommerce\Pagarme\Controller\Orders;
-use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
+use Woocommerce\Pagarme\Service\LogService;
 use Woocommerce\Pagarme\Service\CardService;
 use Woocommerce\Pagarme\Service\CustomerService;
+use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 
 class Subscription
 {

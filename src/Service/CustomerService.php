@@ -18,6 +18,7 @@ class CustomerService
     {
         $this->coreAuth = new CoreAuth();
     }
+
     public function createCustomerByOrder($wcOrder)
     {
         $customerData = $this->extractCustomerDataByWcOrder($wcOrder);
@@ -27,7 +28,7 @@ class CustomerService
         $customer->setCode($customerData['code']);
         $customer->setEmail($customerData['email']);
         $customer->setName($customerData['name']);
-        $customer->setDocument(preg_replace('/[^0-9]/', '', $customerData['document']));
+        $customer->setDocument($customerData['document']);
         $customer->setPhones($phones->convertToSdk());
         $customer->setAddress($address->convertToSdk());
         $customerId = $this->createCustomerOnPagarme($customer);
@@ -42,6 +43,7 @@ class CustomerService
         $data = $customerProxy->createCustomer($customer->convertToSdk());
         return $data->id;
     }
+
     public function createPhones($phoneData)
     {
         $phone = new Phones();
@@ -63,6 +65,7 @@ class CustomerService
         $address->setComplement($addressData['complement']);
         return $address;
     }
+    
     public function extractCustomerDataByWcOrder($wcOrder)
     {
         $billingData = $wcOrder->get_data()['billing'];

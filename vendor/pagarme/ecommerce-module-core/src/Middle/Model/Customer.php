@@ -9,6 +9,9 @@ use PagarmeCoreApiLib\Models\CreateCustomerRequest;
 
 class Customer implements ConvertToLegacyInterface
 {
+
+    public const INDIVIDUAL = 'individual';
+    public const COMPANY = 'company';
     private $code;
     private $pagarmeId;
     private $email;
@@ -25,12 +28,23 @@ class Customer implements ConvertToLegacyInterface
 
     public function getType()
     {
-        return 'individual';
+        return $this->getCustomerTypeByDocument($this->getDocument());
     }
 
     public function getDocumentType()
     {
-        return 'cpf';
+        if ($this->getCustomerTypeByDocument($this->getDocument()) === self::INDIVIDUAL) {
+            return 'cpf';
+        }
+        return 'cnpj';
+    }
+
+    public function getCustomerTypeByDocument($document)
+    {
+        if(strlen($document) === 11) {
+            return self::INDIVIDUAL;
+        }
+        return self::INDIVIDUAL;
     }
 
     public function getCode()
@@ -90,7 +104,7 @@ class Customer implements ConvertToLegacyInterface
 
     public function setDocument($document)
     {
-        $this->document = $document;
+        $this->document = preg_replace('/\D/', '', $document);
     }
 
     public function setAddress($address)

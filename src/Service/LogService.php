@@ -9,8 +9,9 @@ class LogService
 {
 
     public const START_LOG_NAME = "Pagarme_PaymentModule";
+
     public function __construct() {
-        $this->logger = new WC_Logger();
+        // $this->logger = new WC_Logger(); //Log by platform
         $this->coreLog = new CoreLogService("Subscription", true);
     }
 
