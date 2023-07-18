@@ -11,6 +11,7 @@
 namespace Woocommerce\Pagarme\Model;
 
 
+
 if (!defined('ABSPATH')) {
     exit(0);
 }
@@ -19,8 +20,10 @@ use WC_Order;
 use WC_Subscription;
 use WC_Subscriptions_Cart;
 use Woocommerce\Pagarme\Controller\Orders;
+use Woocommerce\Pagarme\Service\LogService;
+use Woocommerce\Pagarme\Service\CardService;
+use Woocommerce\Pagarme\Service\CustomerService;
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
-use Woocommerce\Pagarme\Model\Card;
 
 class Subscription
 {
@@ -172,6 +175,8 @@ class Subscription
                 'redirect' => $this->payment->get_return_url($subscription)
             ];
         } catch (\Throwable $th) {
+            $logger = new LogService();
+            $logger->log($th);
             wc_add_notice(
                 'Ocorreu um problema ao processar a troca de pagamento. Tente novamente mais tarde!',
                 'error'
@@ -187,21 +192,28 @@ class Subscription
     private function getPagarmeCustomer($subscription)
     {
         $customer = new Customer($subscription->get_user_id());
-        if (!$customer->getPagarmeCustomerId()->getValue()) {
-            // todo: Create request and return customer_id
+        if (!$customer->getPagarmeCustomerId()) {
+            $customer = new CustomerService();
+            return $customer->createCustomerByOrder($subscription);
+
         }
-        return $customer;
+        return $customer->getPagarmeCustomerId();
     }
+
     private function createCreditCard($pagarmeCustomer)
     {
         $data = wc_clean($_POST['pagarme']);
-        $card = new Card();
+        $card = new CardService();
         if ($data['credit_card']['cards'][1]['wallet-id']) {
             $cardId = $data['credit_card']['cards'][1]['wallet-id'];
             return $card->getCard($cardId, $pagarmeCustomer);
         }
-        $token = $data['credit_card']['cards'][1]['token'];
-        return $card->create($token, $pagarmeCustomer);
+        $cardInfo = $data['credit_card']['cards'][1];
+        $response = $card->create($cardInfo['token'], $pagarmeCustomer);
+        if (array_key_exists('save-card', $cardInfo) && $cardInfo['save-card'] === "1") {
+            $card->saveOnWalletPlatform($response);
+        }
+        return $response;
     }
 
 
@@ -216,6 +228,7 @@ class Subscription
         $subscription->add_meta_data('_pagarme_payment_subscription', json_encode($card), true);
         $subscription->save();
     }
+
     private function convertOrderObject(WC_Order $order)
     {
 

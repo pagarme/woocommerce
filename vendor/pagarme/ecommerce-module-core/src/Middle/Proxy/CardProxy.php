@@ -1,15 +1,14 @@
 <?php
 
-namespace Pagarme\Core\Middle\Service;
+namespace Pagarme\Core\Middle\Proxy;
 
 use Pagarme\Core\Middle\Client;
-use PagarmeCoreApiLib\PagarmeCoreApiClient;
 use Pagarme\Core\Middle\Model\Card;
 
 /**
  * This class is responsible for communicating with PagarmeCoreApi
  */
-class CardService
+class CardProxy
 {
     private $client;
 
@@ -21,29 +20,27 @@ class CardService
         $this->client = $auth->services();
     }
 
-
-    public function createCard(Card $card, $customer)
+    public function createCard(Card $card, $customerId)
     {
         $response = $this->client->getCustomers()->createCard(
-            $customer->getPagarmeCustomerId(),
+            $customerId,
             $card->convertToSdk()
         );
         return $response;
     }
 
-    public function getCards($customer)
+    public function getCards($customerId)
     {
         $response = $this->client->getCustomers()->getCards(
-            $customer->getPagarmeCustomerId
+            $customerId
         );
         return $response;
     }
 
-
-    public function getCard($customer, Card $card)
+    public function getCard($customerId, Card $card)
     {
         $response = $this->client->getCustomers()->getCard(
-            $customer->getPagarmeCustomerId(),
+            $customerId,
             $card->getCardId()
         );
         return $response;
