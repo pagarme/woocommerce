@@ -23,7 +23,7 @@ let pagarmePix = {
             html: 'Código copiado.',
             allowOutsideClick: false
         };
-        new swal(message);
+        swal(message);
     }
 };
 pagarmePix.start();
