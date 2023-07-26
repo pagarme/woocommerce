@@ -206,7 +206,7 @@ function wcmpLoadNotice($name)
 
 function wcmpLoadInstances()
 {
-    require_once 'vendor/autoload.php';
+    require_once __DIR__ . '/vendor/autoload.php';
 
     Woocommerce\Pagarme\Core::instance();
     (new Woocommerce\Pagarme\DB\Migration\Migrator)->execute();
