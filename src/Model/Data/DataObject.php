@@ -11,6 +11,7 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Data;
 
+use ReturnTypeWillChange;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
 defined( 'ABSPATH' ) || exit;
@@ -427,6 +428,7 @@ class DataObject implements \ArrayAccess
      * @param mixed $value
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->_data[$offset] = $value;
@@ -436,6 +438,7 @@ class DataObject implements \ArrayAccess
      * @param string $offset
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->_data[$offset]) || array_key_exists($offset, $this->_data);
@@ -446,6 +449,7 @@ class DataObject implements \ArrayAccess
      * @param string $offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->_data[$offset]);
@@ -456,6 +460,7 @@ class DataObject implements \ArrayAccess
      * @param string $offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if (isset($this->_data[$offset])) {
