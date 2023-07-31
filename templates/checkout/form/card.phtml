@@ -87,7 +87,7 @@ if (!function_exists('add_action')) {
                             <?php esc_html_e('Expiration Date', 'woo-pagarme-payments'); ?>
                             <span class="required">*</span>
                         </label>
-                        <input type="text" required id="<?= $this->getElementId('card-expiry'); ?>"
+                        <input type="text" id="<?= $this->getElementId('card-expiry'); ?>"
                                data-element="card-expiry"
                                class="input-text wc-credit-card-form-card-expiry pagarme-card-form-card-expiry"
                                data-mask="00 / 00" data-required="true"
@@ -99,7 +99,7 @@ if (!function_exists('add_action')) {
                             <?php esc_html_e('Card code', 'woo-pagarme-payments'); ?>
                             <span class="required">*</span>
                         </label>
-                        <input type="text" required id="<?= $this->getElementId('card-cvc'); ?>"
+                        <input type="text" id="<?= $this->getElementId('card-cvc'); ?>"
                                data-element="card-cvc" data-mask="0000"
                                class="input-text wc-credit-card-form-card-cvc pagarme-card-form-card-cvc" maxlength="4"
                                placeholder="CVC" data-required="true" data-pagarmecheckout-element="cvv">
