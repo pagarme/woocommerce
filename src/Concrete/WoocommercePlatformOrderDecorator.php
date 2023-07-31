@@ -405,7 +405,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getCustomer()
     {
         $customerId = get_current_user_id();
-
+        if ($customerId === 0) {
+            $customerId = $this->getPlatformOrder()->get_user()->ID ?? null;
+        }
         if (!empty($customerId)) {
             return $this->getRegisteredCustomer($customerId);
         }

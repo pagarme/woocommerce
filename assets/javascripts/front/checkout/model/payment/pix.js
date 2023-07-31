@@ -1,20 +1,19 @@
-$ = jQuery;
 let pagarmePix = {
     qrRawCodeTarget: '#pagarme-qr-code-button',
     start: function () {
         this.addEventListener();
     },
     addEventListener: function () {
-        $(this.qrRawCodeTarget).on('click', function (e) {
+        jQuery(this.qrRawCodeTarget).on('click', function (e) {
             pagarmePix.copyRawCode();
         });
     },
     copyRawCode: function () {
-        let elem = $(this.qrRawCodeTarget);
+        let elem = jQuery(this.qrRawCodeTarget);
         if (!elem.length) {
             return;
         }
-        let input = $('<input>').attr({
+        let input = jQuery('<input>').attr({
             value: elem.attr('rawCode')
         }).appendTo(elem.parent()).select();
         document.execCommand('copy', false);
@@ -24,7 +23,7 @@ let pagarmePix = {
             html: 'Código copiado.',
             allowOutsideClick: false
         };
-        swal(message);
+        new swal(message);
     }
 };
 pagarmePix.start();
