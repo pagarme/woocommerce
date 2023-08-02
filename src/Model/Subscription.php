@@ -109,7 +109,7 @@ class Subscription
     public function addMetaDataCardByResponse($orderId, $response)
     {
         $cardData = $this->getCardDataByResponse($response);
-        $this->addMetaDataCardByResponse($orderId, $cardData);
+        $this->addMetaDataCard($orderId, $cardData);
     }
 
     public function addMetaDataCard($orderId, $cardData)
