@@ -166,6 +166,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             return $this->subscription->processChangePaymentSubscription($wooOrder);
         }
         $this->postFormatter->assemblePaymentRequest();
+        if ($this->subscription->hasSubscriptionFreeTrial()) {
+            return $this->subscription->processFreeTrialSubscription($wooOrder);
+        }
         $this->checkout->process($wooOrder);
         return [
             'result'   => 'success',

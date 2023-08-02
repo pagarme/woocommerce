@@ -10,8 +10,6 @@
 
 namespace Woocommerce\Pagarme\Model;
 
-
-
 if (!defined('ABSPATH')) {
     exit(0);
 }
@@ -24,6 +22,7 @@ use Woocommerce\Pagarme\Service\LogService;
 use Woocommerce\Pagarme\Service\CardService;
 use Woocommerce\Pagarme\Service\CustomerService;
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
+use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 
 class Subscription
 {
@@ -41,7 +40,8 @@ class Subscription
 
     public function __construct(
         AbstractGateway $payment = null
-    ) {
+    )
+    {
         if (!$this->hasSubscriptionPlugin()) {
             return;
         }
@@ -79,7 +79,7 @@ class Subscription
         );
         add_action(
             'on_pagarme_response',
-            [$this, 'addMetaDataCard'],
+            [$this, 'addMetaDataCardByResponse'],
             10,
             2
         );
@@ -106,23 +106,20 @@ class Subscription
         return $this->config;
     }
 
-    public function addMetaDataCard($orderId, $response)
+    public function addMetaDataCardByResponse($orderId, $response)
     {
-        $subscriptions = wcs_get_subscriptions_for_order($orderId);
         $cardData = $this->getCardDataByResponse($response);
+        $this->addMetaDataCardByResponse($orderId, $cardData);
+    }
+
+    public function addMetaDataCard($orderId, $cardData)
+    {
         if (!$cardData) {
             return;
         }
-        $paymentInformation = [
-            'cardId' => $cardData->getPagarmeId(),
-            'brand' => $cardData->getBrand()->getName(),
-            'holder_name' => $cardData->getOwnerName(),
-            'first_six_digits' => $cardData->getFirstSixDigits()->getValue(),
-            'last_four_digits' => $cardData->getLastFourDigits()->getValue()
-        ];
-
+        $subscriptions = wcs_get_subscriptions_for_order($orderId);
         foreach ($subscriptions as $subs_id => $subscription) {
-            $this->saveCardInSubscription($paymentInformation, $subscription);
+            $this->saveCardInSubscription($cardData, $subscription);
         }
     }
 
@@ -134,29 +131,39 @@ class Subscription
      */
     public function processSubscription($amountToCharge, WC_Order $order)
     {
-        if (!$order) {
-            wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
-        }
-        $fields = $this->convertOrderObject($order);
-        $response = $this->orders->create_order(
-            $order,
-            $fields['payment_method'],
-            $fields
-        );
+        try {
+            if (!$order) {
+                wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
+            }
+            $fields = $this->convertOrderObject($order);
+            $response = $this->orders->create_order(
+                $order,
+                $fields['payment_method'],
+                $fields
+            );
 
-        $order = new Order($order->get_id());
-        $order->payment_method = $fields['payment_method'];
-        if ($response) {
-            $order->transaction_id = $response->getPagarmeId()->getValue();
-            $order->pagarme_id = $response->getPagarmeId()->getValue();
-            $order->pagarme_status = $response->getStatus()->getStatus();
-            $order->response_data = json_encode($response);
-            $order->update_by_pagarme_status($response->getStatus()->getStatus());
-            return true;
+            $order = new Order($order->get_id());
+            $order->payment_method = $fields['payment_method'];
+            if ($response) {
+                $order->transaction_id = $response->getPagarmeId()->getValue();
+                $order->pagarme_id = $response->getPagarmeId()->getValue();
+                $order->pagarme_status = $response->getStatus()->getStatus();
+                $order->response_data = json_encode($response);
+                $order->update_by_pagarme_status($response->getStatus()->getStatus());
+                return true;
+            }
+            $order->pagarme_status = 'failed';
+            $order->update_by_pagarme_status('failed');
+            return false;
+        } catch (\Throwable $th) {
+            $logger = new LogService();
+            $logger->log($th);
+            wc_add_notice(
+                'Ocorreu um problema ao renovar a assinatura',
+                'error'
+            );
+            return false;
         }
-        $order->pagarme_status = 'failed';
-        $order->update_by_pagarme_status('failed');
-        return false;
     }
 
     public function processChangePaymentSubscription($subscription)
@@ -186,7 +193,38 @@ class Subscription
                 'redirect' => $this->payment->get_return_url($subscription)
             ];
         }
+    }
 
+    public function processFreeTrialSubscription($wc_order)
+    {
+        try {
+            $payment_method = $this->formatPaymentMethod($_POST['payment_method']);
+            if ('credit_card' == $payment_method) {
+                $pagarmeCustomer = $this->getPagarmeCustomer($wc_order);
+                $cardResponse = $this->createCreditCard($pagarmeCustomer);
+                $this->addMetaDataCard($wc_order->get_id(), $cardResponse);
+//                $subscription->payment_method = $payment_method;
+            }
+            WC()->cart->empty_cart();
+            $order = new Order($wc_order->get_id());
+            $order->update_by_pagarme_status(OrderStatus::PROCESSING);
+            $redirect = $this->payment->get_return_url($wc_order);
+            return [
+                'result' => 'success',
+                'redirect' => $redirect
+            ];
+        } catch (\Throwable $th) {
+            $logger = new LogService();
+            $logger->log($th);
+            wc_add_notice(
+                'Ocorreu um problema ao criar o teste grátis da assinatura. Tente novamente mais tarde!',
+                'error'
+            );
+            return [
+                'result' => 'error',
+                'redirect' => $this->payment->get_return_url($subscription)
+            ];
+        }
     }
 
     private function getPagarmeCustomer($subscription)
@@ -229,13 +267,14 @@ class Subscription
         $subscription->save();
     }
 
+    /**
+     * @param WC_Order $order
+     * @return array
+     */
     private function convertOrderObject(WC_Order $order)
     {
-
-        $paymentMethod = str_replace('woo-pagarme-payments-', '', $order->get_payment_method());
-        $paymentMethod = str_replace('-', '_', $paymentMethod);
         $fields = [
-            'payment_method' => $paymentMethod
+            'payment_method' => $this->formatPaymentMethod($order->get_payment_method())
         ];
         $card = $this->getCardSubscriptionData($order);
         if ($card !== null) {
@@ -247,6 +286,16 @@ class Subscription
             $fields['recurrence_cycle'] = "subsequent";
         }
         return $fields;
+    }
+
+    /**
+     * @param $paymentMethod
+     * @return array
+     */
+    private function formatPaymentMethod($paymentMethod)
+    {
+        $paymentMethod = str_replace('woo-pagarme-payments-', '', $paymentMethod);
+        return str_replace('-', '_', $paymentMethod);
     }
 
     private function getCardSubscriptionData($order)
@@ -263,7 +312,14 @@ class Subscription
     {
         $charges = $this->getChargesByResponse($response);
         $transactions = $this->getTransactionsByCharges($charges);
-        return $this->getCardDataByTransaction($transactions);
+        $cardData = $this->getCardDataByTransaction($transactions);
+        return [
+            'cardId' => $cardData->getPagarmeId(),
+            'brand' => $cardData->getBrand()->getName(),
+            'holder_name' => $cardData->getOwnerName(),
+            'first_six_digits' => $cardData->getFirstSixDigits()->getValue(),
+            'last_four_digits' => $cardData->getLastFourDigits()->getValue()
+        ];
     }
 
     private function getChargesByResponse($response)
@@ -298,10 +354,18 @@ class Subscription
         if (!self::hasSubscriptionPlugin()) {
             return false;
         }
-        if (WC_Subscriptions_Cart::cart_contains_subscription() || wcs_cart_contains_renewal()) {
-            return true;
+        return WC_Subscriptions_Cart::cart_contains_subscription() || wcs_cart_contains_renewal();
+    }
+
+    /**
+     * @return boolean
+     */
+    public static function hasSubscriptionFreeTrial()
+    {
+        if (!self::hasSubscriptionPlugin()) {
+            return false;
         }
-        return false;
+        return WC_Subscriptions_Cart::all_cart_items_have_free_trial();
     }
 
     /**
