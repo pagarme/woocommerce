@@ -195,20 +195,19 @@ class Subscription
         }
     }
 
-    public function processFreeTrialSubscription($wc_order)
+    public function processFreeTrialSubscription($wcOrder)
     {
         try {
-            $payment_method = $this->formatPaymentMethod($_POST['payment_method']);
-            if ('credit_card' == $payment_method) {
-                $pagarmeCustomer = $this->getPagarmeCustomer($wc_order);
+            $paymentMethod = $this->formatPaymentMethod($_POST['payment_method']);
+            if ('credit_card' == $paymentMethod) {
+                $pagarmeCustomer = $this->getPagarmeCustomer($wcOrder);
                 $cardResponse = $this->createCreditCard($pagarmeCustomer);
-                $this->addMetaDataCard($wc_order->get_id(), $cardResponse);
-//                $subscription->payment_method = $payment_method;
+                $this->addMetaDataCard($wcOrder->get_id(), $cardResponse);
             }
             WC()->cart->empty_cart();
-            $order = new Order($wc_order->get_id());
+            $order = new Order($wcOrder->get_id());
             $order->update_by_pagarme_status(OrderStatus::PROCESSING);
-            $redirect = $this->payment->get_return_url($wc_order);
+            $redirect = $this->payment->get_return_url($wcOrder);
             return [
                 'result' => 'success',
                 'redirect' => $redirect
@@ -222,7 +221,7 @@ class Subscription
             );
             return [
                 'result' => 'error',
-                'redirect' => $this->payment->get_return_url($subscription)
+                'redirect' => $this->payment->get_return_url($wcOrder)
             ];
         }
     }
