@@ -118,7 +118,7 @@ class Subscription
             return;
         }
         $subscriptions = wcs_get_subscriptions_for_order($orderId);
-        foreach ($subscriptions as $subs_id => $subscription) {
+        foreach ($subscriptions as $subscription) {
             $this->saveCardInSubscription($cardData, $subscription);
         }
     }
@@ -394,8 +394,9 @@ class Subscription
 
     public static function isChangePaymentSubscription()
     {
-        if (isset($_POST['woocommerce_change_payment']) || isset($_REQUEST['change_payment_method'])) {
-            return wcs_is_subscription(wc_clean($_POST['woocommerce_change_payment']));
+        $subsId = $_POST['woocommerce_change_payment'] ?? ($_REQUEST['change_payment_method'] ?? null);
+        if ($subsId) {
+            return wcs_is_subscription(wc_clean($subsId));
         }
         return false;
     }
