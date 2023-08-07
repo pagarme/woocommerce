@@ -159,7 +159,7 @@ class Subscription
             $logger = new LogService();
             $logger->log($th);
             wc_add_notice(
-                _('There was a problem renewing the subscription.'),
+                __('There was a problem renewing the subscription.'),
                 'error'
             );
             return false;
@@ -185,7 +185,7 @@ class Subscription
             $logger = new LogService();
             $logger->log($th);
             wc_add_notice(
-                'There was a problem with the payment exchange.',
+                __('There was a problem with the payment exchange.'),
                 'error'
             );
             return [
@@ -216,7 +216,7 @@ class Subscription
             $logger = new LogService();
             $logger->log($th);
             wc_add_notice(
-                'Error creating subscription free trial.',
+                __('Error creating subscription free trial.'),
                 'error'
             );
             return [
