@@ -15,6 +15,12 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+wp_localize_script(
+    'pagarme_scripts_card',
+    'wc_pagarme_checkout',
+    ['config' => $this->getConfigDataProvider()]
+);
+
 ?>
 <?php for ($qty = 1; $qty <= $this->getQuantityCards(); $qty++) : ?>
     <?php $this->setData('sequence', $qty); ?>
