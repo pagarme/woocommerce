@@ -2,9 +2,9 @@
 Contributors: Pagar.me
 Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, creditcard
 Requires at least: 4.1
-Tested up to: 6.2.2
+Tested up to: 6.3
 Requires PHP: 7.1
-Stable tag: 3.1.1
+Stable tag: 3.1.2
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -21,6 +21,13 @@ Nosso processo de instalação é simples e bem detalhado:
 
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
+
+= 3.1.2 (31/07/2023) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.2)
+
+* **Correções:**
+  * Correção de erro ao renovar assinatura com cartão de crédito.
+  * Alterado forma de chamadas ao jQuery
 
 = 3.1.1 (10/07/2023) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.1)
