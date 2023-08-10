@@ -5,7 +5,7 @@ const informCreditCardInfo = async (page, creditCardName, creditCardNumber) => {
 
 const informCvvAndExpirationDate = async (page, expirationDate, cvvNumber) => {
     await page.getByPlaceholder('MM / YY').fill(expirationDate);
-    await page.getByPlaceholder('CVC').fill(cvvNumber);
+    await page.getByPlaceholder('CVV').fill(cvvNumber);
 }
 
 module.exports = {
