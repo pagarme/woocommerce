@@ -15,6 +15,12 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+wp_localize_script(
+    'pagarme_scripts_card',
+    'wc_pagarme_checkout',
+    ['config' => $this->getConfigDataProvider()]
+);
+
 ?>
 <?php for ($qty = 1; $qty <= $this->getQuantityCards(); $qty++) : ?>
     <?php $this->setData('sequence', $qty); ?>
@@ -95,14 +101,14 @@ if (!function_exists('add_action')) {
                                data-pagarmecheckout-element="exp_date">
                     </p>
                     <p class="form-row form-row-last">
-                        <label for="<?= $this->getElementId('card-cvc'); ?>">
+                        <label for="<?= $this->getElementId('card-cvv'); ?>">
                             <?php esc_html_e('Card code', 'woo-pagarme-payments'); ?>
                             <span class="required">*</span>
                         </label>
-                        <input type="text" id="<?= $this->getElementId('card-cvc'); ?>"
-                               data-element="card-cvc" data-mask="0000"
-                               class="input-text wc-credit-card-form-card-cvc pagarme-card-form-card-cvc" maxlength="4"
-                               placeholder="CVC" data-required="true" data-pagarmecheckout-element="cvv">
+                        <input type="text" id="<?= $this->getElementId('card-cvv'); ?>"
+                               data-element="card-cvv" data-mask="0000"
+                               class="input-text wc-credit-card-form-card-cvv pagarme-card-form-card-cvv" maxlength="4"
+                               placeholder="CVV" data-required="true" data-pagarmecheckout-element="cvv">
                     </p>
                 </div>
             </div>
@@ -122,10 +128,10 @@ if (!function_exists('add_action')) {
                         <?php esc_html_e('Card Holder Document Number', 'woo-pagarme-payments'); ?>
                         <span class="required">*</span>
                     </label>
-                    <input type="text" required id="<?= $this->getElementId('document-holder'); ?>"
+                    <input type="text" id="<?= $this->getElementId('document-holder'); ?>"
                            name="<?= $this->getElementId('document-holder'); ?>"
                            data-element="document-holder" data-mask="000.000.000-00"
-                           class="input-text wc-credit-card-form-card-cvc pagarme-card-form-holder-number"
+                           class="input-text wc-credit-card-form-card-cvv pagarme-card-form-holder-number"
                            maxlength="14"
                            placeholder="CPF" data-required="true" data-pagarmecheckout-element="holder_document">
                 </p>

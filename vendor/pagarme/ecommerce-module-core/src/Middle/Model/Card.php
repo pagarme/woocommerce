@@ -13,10 +13,12 @@ class Card implements CardInterface
 {
     private $token;
     private $cardId;
+
     public function setToken($token)
     {
         $this->token = $token;
     }
+
     public function getToken()
     {
         return $this->token;
@@ -26,6 +28,7 @@ class Card implements CardInterface
     {
         $this->cardId = $cardId;
     }
+    
     public function getCardId()
     {
         return $this->cardId;
