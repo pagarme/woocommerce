@@ -4,7 +4,7 @@ Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, 
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 7.1
-Stable tag: 3.1.2
+Stable tag: 3.1.3
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -22,37 +22,22 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.1.3 (10/08/2023) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.3)
+
+* **Novas implementações:**
+  * Suporte a produtos com teste grátis na assinatura.
+
+* **Correções:**
+  * Compatibilização com versões mais antigas do Wordpress;
+  * Compatibilização com temas não suportados pelo Woocommerce.
+
 = 3.1.2 (31/07/2023) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.2)
 
 * **Correções:**
-  * Correção de erro ao renovar assinatura com cartão de crédito.
-  * Alterado forma de chamadas ao jQuery
-
-= 3.1.1 (10/07/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.1)
-
-* **Correções:**
-  * Erro na validação do campo número de endereço no checkout do PHP 7.
-
-= 3.1.0 (05/07/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.0)
-
-* **Novas implementações:**
-  * Compatibilidade com [Woocommerce Subscriptions](https://woocommerce.com/pt-br/products/woocommerce-subscriptions/);
-  * Adicionar informações de pagamento nos emails enviados pelo Woocommerce;
-  * Validações de configurações;
-  * Validação se os campos obrigatórios estão ativos;
-
-* **Correções:**
-  * Valor divergente em multi-meios com a casa do milhar;
-  * Finalizar pagamento sem uma bandeira de cartão valida;
-
-* **Melhorias:**
-  * Compatibilização com plugins;
-  * Guardar número de parcelas do pedido;
-  * Recebimento de webhooks chargeback e payment_failed.
-
+  * Correção de erro ao renovar assinatura com cartão de crédito;
+  * Alterado forma de chamadas ao jQuery.
 
 Para consultar versões anteriores, acesse nosso [Github](https://github.com/pagarme/woocommerce/releases).
 
