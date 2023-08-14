@@ -34,6 +34,7 @@ class Voucher extends AbstractGateway
 
     const SOFT_DESCRIPTOR_FIELD_NAME = "Soft descriptor";
 
+    const DEFAULT_BRANDS = ['alelo', 'sodexo', 'vr'];
     /**
      * @return array
      */
@@ -96,7 +97,7 @@ class Voucher extends AbstractGateway
         return [
             'type' => 'multiselect',
             'title' => __('Voucher Card Brands', 'woo-pagarme-payments'),
-            'default'     => $this->config->getData('field_voucher_flags') ?? '',
+            'default'     => $this->config->getData('field_voucher_flags') ?? self::DEFAULT_BRANDS,
             'select_buttons' => false,
             'class' => 'wc-enhanced-select',
             'options' => $options,
