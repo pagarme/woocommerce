@@ -33,6 +33,8 @@ class CreditCard extends AbstractGateway
 
     const SOFT_DESCRIPTOR_FIELD_NAME = "Soft descriptor";
 
+    const DEFAULT_BRANDS = ['visa', 'mastercard', 'elo', 'hipercard'];
+
     /**
      * @return boolean
      */
@@ -160,7 +162,7 @@ class CreditCard extends AbstractGateway
             'select_buttons' => false,
             'class' => 'wc-enhanced-select',
             'options' => $this->getBrandsList(),
-            'default'     => $this->config->getData('cc_flags') ?? '',
+            'default'     => $this->config->getData('cc_flags') ?? self::DEFAULT_BRANDS,
             'custom_attributes' => array(
                 'data-field' => 'flags-select',
                 'data-element' => 'flags-select',
