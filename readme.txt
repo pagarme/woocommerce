@@ -4,7 +4,7 @@ Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, 
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 7.1
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -40,6 +40,7 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
 * **Correções:**
   * Compatibilização com versões mais antigas do Wordpress;
   * Compatibilização com temas não suportados pelo Woocommerce.
+
 
 Para consultar versões anteriores, acesse nosso [Github](https://github.com/pagarme/woocommerce/releases).
 
