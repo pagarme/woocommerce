@@ -312,6 +312,9 @@ class Subscription
         $charges = $this->getChargesByResponse($response);
         $transactions = $this->getTransactionsByCharges($charges);
         $cardData = $this->getCardDataByTransaction($transactions);
+        if (!$cardData) {
+            return $cardData;
+        }
         return [
             'cardId' => $cardData->getPagarmeId(),
             'brand' => $cardData->getBrand()->getName(),
