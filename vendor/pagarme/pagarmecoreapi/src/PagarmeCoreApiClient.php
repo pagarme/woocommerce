@@ -104,4 +104,12 @@ class PagarmeCoreApiClient
     {
         return Controllers\TransactionsController::getInstance();
     }
+    /**
+     * Singleton access to Transactions controller
+     * @return Controllers\AccountsController The *Singleton* instance
+     */
+    public function getAccounts()
+    {
+        return Controllers\AccountsController::getInstance();
+    }
 }
