@@ -1,0 +1,118 @@
+{
+    "id": "acc_0000000000000000",
+    "secret_key": "sk_test_0000000000000000",//retiraremos do retorno
+    "public_key": "pk_test_0000000000000000",
+    "name": "test0",
+    "time_zone": "E. South America Standard Time",
+    "default_currency": "BRL",
+    "status": "active",
+    "antifraud_settings": {
+        "auto_cancel": true,
+        "auto_capture": true
+    },
+    "mundipagg_settings": {
+        "merchant_key": "00000000-0000-0000-0000-000000000000",//retiraremos do retorno
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "pagarme_settings": {
+        "api_key": "ak_test_000000000000000000000000000000",//retiraremos do retorno
+        "crypto_key": "ek_test_000000000000000000000000000000",//retiraremos do retorno
+        "updated_at": "2021-08-25T22:42:45Z",
+        "version": 4
+    },
+    "credit_card_settings": {
+        "enabled": true,
+        "gateway": "simulator",
+        "updated_at": "2022-05-18T02:53:17Z"
+    },
+    "debit_card_settings": {
+        "enabled": true,
+        "gateway": "simulator",
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "voucher_settings": {
+        "enabled": true,
+        "gateway": "simulator"
+    },
+    "boleto_settings": {
+        "enabled": true,
+        "bank": "001",
+        "instructions": "Pay until payday.",
+        "gateway": "pagarme",
+        "updated_at": "2021-08-25T22:44:09Z",
+        "due_days": 3
+    },
+    "bank_transfer_settings": {
+        "enabled": true,
+        "bank": "001",
+        "gateway": "mundipagg",
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "wallet_settings": {
+        "max_cards": 10,
+        "enabled": true,
+        "updated_at": "2021-04-12T23:46:47Z",
+        "shared": false,
+        "customer_default": {}
+    },
+    "safetypay_settings": {
+        "enabled": true,
+        "gateway": "mundipagg",
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "facebook_settings": {
+        "app_id": null,
+        "app_secret": null,
+        "permissions": null,
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "general_settings": {
+        "display_name": "Ka testes - test",
+        "logo": null,
+        "email": null,
+        "website": null,
+        "theme": null,
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "split_settings": {
+        "enabled": true,
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "subscription_settings": {
+        "enabled": true,
+        "boleto_due_days": null,
+        "usage_report_enabled": false
+    },
+    "order_settings": {
+        "multi_payments_enabled": true,
+        "multi_buyers_enabled": true,
+        "open_orders_enabled": true,
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "notification_settings": {
+        "enabled": true,
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "guaranteed_cancellation_settings": {
+        "enabled": true,
+        "updated_At": "2021-04-12T23:46:47Z"
+    },
+    "renew_card_settings": {
+        "renew_on_payment_enabled": true,
+        "manual_renew_enabled": true,
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "cash_Settings": {
+        "enabled": true,
+        "updated_At": "2021-04-12T23:46:47Z"
+    },
+    "checkout_settings": {
+        "address_type": "brazilian",
+        "enabled": true,
+        "updated_at": "2021-04-12T23:46:47Z"
+    },
+    "pix_settings": {
+        "enabled": false,
+        "updated_at": "2023-06-12T20:36:54Z"
+    }
+}

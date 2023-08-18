@@ -54,6 +54,11 @@ class Settings
      */
     private $gateways;
 
+    /**
+     * @var \Woocommerce\Pagarme\Controller\AccountInfo
+     */
+    private $accountInfo;
+
     public function __construct(
         Select $select = null,
         Config $config = null
@@ -67,6 +72,7 @@ class Settings
             $this->config = new Config();
         }
         $this->model = new Gateway();
+        $this->accountInfo = new AccountInfo();
         $this->yesNoOptions = new Yesno();
         add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
         add_filter(Core::plugin_basename('plugin_action_links_'), array($this, 'plugin_link'));

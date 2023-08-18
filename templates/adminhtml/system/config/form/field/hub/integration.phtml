@@ -32,6 +32,12 @@ $success = 'Integration keys successfully removed. Reload the page.';
                 "woo-pagarme-payments"
             ); ?>
     </p>
+    <p class="pagarme-hub-desintegration">
+        <?= __(
+            "Click <a id='pagarme-get-account-link'>here</a> to get account info.",
+            "woo-pagarme-payments"
+        ); ?>
+    </p>
     <script>
         jQuery(function ($) {
             swal.close();
@@ -85,6 +91,46 @@ $success = 'Integration keys successfully removed. Reload the page.';
                     swal(
                         '<?= esc_attr(__('Disintegration Error', 'woo-pagarme-payments')); ?>',
                         '<?= esc_attr(__('Integration keys not removed.', 'woo-pagarme-payments')); ?>',
+                        'error'
+                    )
+                }
+            });
+
+            $('#pagarme-get-account-link').on('click', function (e) {
+                try {
+                    swal({
+                        title: ' ',
+                        text: '<?= esc_attr(__('Processing', 'woo-pagarme-payments')); ?>',
+                        allowOutsideClick: false
+                    });
+                    swal.showLoading();
+                    $.ajax({
+                        url: '<?= admin_url('/wc-api/pagarme-account-info'); ?>',
+                        type: 'POST',
+                        dataType: "json",
+                        data: JSON.stringify({
+                            command: 'get'
+                        }),
+                        success: function (response) {
+                            console.log(response);
+                            swal(
+                                '<?= esc_attr(__('Get Account Information Complete', 'woo-pagarme-payments')); ?>',
+                                '<?= esc_attr(__($success, 'woo-pagarme-payments')); ?>',
+                                'success'
+                            )
+                            document.location.reload(true);
+                        },
+                        fail: function (response) {
+                            swal(
+                                '<?= esc_attr(__('Get Account Information Error', 'woo-pagarme-payments')); ?>',
+                                'error'
+                            )
+                        }
+
+                    });
+                } catch (e) {
+                    swal(
+                        '<?= esc_attr(__('Get Account Information Error', 'woo-pagarme-payments')); ?>',
                         'error'
                     )
                 }
