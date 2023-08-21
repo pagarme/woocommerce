@@ -32,11 +32,11 @@ let pagarmeCard = {
         return !!elem.has(this.fieldsetCardElements).length;
     },
     getCheckoutPaymentElement: function () {
-        let value = jQuery('.woocommerce form input[name="payment_method"]:checked').val();
+        const value = jQuery('form .payment_methods input[name="payment_method"]:checked').val();
         return jQuery('.wc_payment_method.payment_method_' + value);
     },
     isPagarmePayment: function () {
-        return jQuery('.woocommerce form input[name="payment_method"]:checked').val().indexOf('pagarme');
+        return jQuery('form .payment_methods input[name="payment_method"]:checked').val().indexOf('pagarme');
     },
     keyEventHandlerCard: function (event) {
         this.clearToken(event);
