@@ -19,7 +19,7 @@ class AccountProxy
 
     public function getAccount($accountId)
     {
-        $response = $this->client->getAccounts(
+        $response = $this->client->getAccounts()->getAccountById(
             $accountId
         );
         return $response;

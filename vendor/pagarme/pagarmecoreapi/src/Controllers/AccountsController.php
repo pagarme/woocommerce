@@ -94,6 +94,6 @@ class AccountsController extends BaseController
 
         $mapper = $this->getJsonMapper();
 
-        return $mapper->mapClass($response->body, 'PagarmeCoreApiLib\\Models\\GetAccount');
+        return $mapper->mapClass($response->body, 'PagarmeCoreApiLib\\Models\\GetAccountResponse');
     }
 }
