@@ -22,8 +22,15 @@ class GetAccountResponse implements JsonSerializable
     public $id;
 
     /**
+     * @maps secret_key
+     * @var string $secretKey public property
+     */
+    public $secretKey;
+
+    /**
      * @todo Write general description for this property
      * @required
+     * @maps public_key
      * @var string $publicKey public property
      */
     public $publicKey;
@@ -31,7 +38,6 @@ class GetAccountResponse implements JsonSerializable
     /**
      * @todo Write general description for this property
      * @required
-     * @maps gateway_id
      * @var string $name public property
      */
     public $name;
@@ -40,6 +46,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var string $timeZone public property
+     * @maps time_zone
      */
     public $timeZone;
 
@@ -47,13 +54,14 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var string $defaultCurrency public property
+     * @maps default_currency
      */
+
     public $defaultCurrency;
 
     /**
      * @todo Write general description for this property
      * @required
-     * @maps payment_method
      * @var string $status public property
      */
     public $status;
@@ -62,6 +70,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $antifraudSettings public property
+     * @maps antifraud_settings
      */
     public $antifraudSettings;
 
@@ -69,6 +78,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $mundipaggSettings public property
+     * @maps mundipagg_settings
      */
     public $mundipaggSettings;
 
@@ -76,6 +86,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $pagarmeSettings public property
+     * @maps pagarme_settings
      */
     public $pagarmeSettings;
 
@@ -83,6 +94,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $creditCardSettings public property
+     * @maps credit_card_settings
      */
     public $creditCardSettings;
 
@@ -90,6 +102,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $debitCardSettings public property
+     * @maps debit_card_settings
      */
     public $debitCardSettings;
 
@@ -97,6 +110,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $voucherSettings public property
+     * @maps voucher_settings
      */
     public $voucherSettings;
 
@@ -104,6 +118,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $boletoSettings public property
+     * @maps boleto_settings
      */
     public $boletoSettings;
 
@@ -111,6 +126,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $bankTransferSettings public property
+     * @maps bank_transfer_settings
      */
     public $bankTransferSettings;
 
@@ -118,6 +134,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $walletSettings public property
+     * @maps wallet_settings
      */
     public $walletSettings;
 
@@ -125,6 +142,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $safetypaySettings public property
+     * @maps safetypay_settings
      */
     public $safetypaySettings;
 
@@ -132,6 +150,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $facebookSettings public property
+     * @maps facebook_settings
      */
     public $facebookSettings;
 
@@ -139,13 +158,21 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $generalSettings public property
+     * @maps general_settings
      */
     public $generalSettings;
+
+    /**
+     * @var array $webhookSettings public property
+     * @maps webhook_settings
+     */
+    public $webhookSettings;
 
     /**
      * @todo Write general description for this property
      * @required
      * @var array $splitSettings public property
+     * @maps split_settings
      */
     public $splitSettings;
 
@@ -153,6 +180,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $subscriptionSettings public property
+     * @maps subscription_settings
      */
     public $subscriptionSettings;
 
@@ -160,6 +188,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $orderSettings public property
+     * @maps order_settings
      */
     public $orderSettings;
 
@@ -167,13 +196,15 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $notificationSettings public property
+     * @maps notification_settings
      */
     public $notificationSettings;
 
     /**
      * @todo Write general description for this property
      * @required
-     * @var array $guaranteedCancellationSettings public property
+     * @var array $cancellationSettings public property
+     * @maps guaranteed_cancellation_settings
      */
     public $cancellationSettings;
 
@@ -181,6 +212,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $renewCardSettings public property
+     * @maps renew_card_settings
      */
     public $renewCardSettings;
 
@@ -188,6 +220,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $cashSettings public property
+     * @maps cash_settings
      */
     public $cashSettings;
 
@@ -195,6 +228,7 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $checkoutSettings public property
+     * @maps checkout_settings
      */
     public $checkoutSettings;
 
@@ -202,12 +236,10 @@ class GetAccountResponse implements JsonSerializable
      * @todo Write general description for this property
      * @required
      * @var array $pixSettings public property
+     * @maps pix_settings
      */
     public $pixSettings;
-    /**
-     * @var false|mixed
-     */
-    public $webhookSettings;
+
 
     public function __construct()
     {
@@ -254,36 +286,34 @@ class GetAccountResponse implements JsonSerializable
     {
         $json = array();
         $json['id']                               = $this->id;
+        $json['secret_key']                       = $this->secretKey;
         $json['public_key']                       = $this->publicKey;
         $json['name']                             = $this->name;
         $json['time_zone']                        = $this->timeZone;
         $json['default_currency']                 = $this->defaultCurrency;
         $json['status']                           = $this->status;
         $json['antifraud_settings']               = $this->antifraudSettings;
-        $json['mundipagg_settings']               = isset($this->mundipaggSettings) ?
-            $this->mundipaggSettings : null;
-        $json['pagarme_settings']                 = isset($this->pagarmeSettings) ?
-            $this->pagarmeSettings : null;
+        $json['mundipagg_settings']               = $this->mundipaggSettings;
+        $json['pagarme_settings']                 = $this->pagarmeSettings;
         $json['credit_card_settings']             = $this->creditCardSettings;
         $json['debit_card_settings']              = $this->debitCardSettings;
         $json['voucher_settings']                 = $this->voucherSettings;
         $json['boleto_settings']                  = $this->boletoSettings;
         $json['bank_transfer_settings']           = $this->bankTransferSettings;
         $json['wallet_settings']                  = $this->walletSettings;
-        $json['safetypay_settings']               = isset($this->safetypaySettings) ?
-            $this->safetypaySettings : null;
-        $json['facebook_settings']                = isset($this->facebookSettings) ?
-            $this->facebookSettings : null;
+        $json['safetypay_settings']               = $this->safetypaySettings;
+        $json['facebook_settings']                = $this->facebookSettings;
         $json['general_settings']                 = $this->generalSettings;
+        $json['webhook_settings']                 = $this->webhookSettings;
         $json['split_settings']                   = $this->splitSettings;
         $json['subscription_settings']            = $this->subscriptionSettings;
+        $json['order_settings']                   = $this->orderSettings;
         $json['notification_settings']            = $this->notificationSettings;
         $json['guaranteed_cancellation_settings'] = $this->cancellationSettings;
         $json['renew_card_settings']              = $this->renewCardSettings;
         $json['cash_Settings']                    = $this->cashSettings;
         $json['checkout_settings']                = $this->checkoutSettings;
         $json['pix_settings']                     = $this->pixSettings;
-
         return $json;
     }
 }
