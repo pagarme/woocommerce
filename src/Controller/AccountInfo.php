@@ -25,6 +25,7 @@ class AccountInfo
         $accountId = "acc_6qwpj5RWuEFJaWGY";
         $response = $accountService->getAccount($accountId);
         $this->isAccountInfoOk();
+        return $response;
     }
 
     public function isAccountInfoOk($response)
