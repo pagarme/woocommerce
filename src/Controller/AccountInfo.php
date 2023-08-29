@@ -23,6 +23,21 @@ class AccountInfo
     {
         $accountService = new AccountService();
         $accountId = "acc_6qwpj5RWuEFJaWGY";
-        return $accountService->getAccount($accountId);
+        $response = $accountService->getAccount($accountId);
+        $this->isAccountInfoOk();
+    }
+
+    public function isAccountInfoOk($response)
+    {
+        $orderSettings = $response[orderSettings];
+        if (!$orderSettings[multi_payments_enabled] || !$orderSettings[multi_buyers_enabled]) {
+            $this->showMesg("Erro na Dash");
+        }
+
+    }
+
+    private function showMesg(string $string)
+    {
+        return ;
     }
 }
