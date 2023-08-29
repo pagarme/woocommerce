@@ -372,12 +372,16 @@ let pagarmeCard = {
         jQuery(document.body).on('updated_checkout', function () {
             pagarmeCard.renewEventListener();
         });
-        jQuery('form.checkout').on('checkout_place_order', function (event) {
-            return pagarmeCard.canExecute(event);
+
+        jQuery(document).ready(function() {
+            jQuery('form.checkout').on('checkout_place_order', function (event) {
+                return pagarmeCard.canExecute(event);
+            });
+            jQuery('form#order_review').on('submit', function (event) {
+                return pagarmeCard.canExecute(event);
+            });
         });
-        jQuery('form#order_review').on('submit', function (event) {
-            return pagarmeCard.canExecute(event);
-        });
+
         jQuery(this.billingCpfId).on('change', function () {
             pagarmeCard.onChangeBillingCpf();
         });
