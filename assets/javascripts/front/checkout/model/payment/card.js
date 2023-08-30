@@ -371,6 +371,12 @@ let pagarmeCard = {
     addEventListener: function () {
         jQuery(document.body).on('updated_checkout', function () {
             pagarmeCard.renewEventListener();
+            let creditCardField = jQuery(pagarmeCard.cardNumberTarget);
+            creditCardField.each(function( index ) {
+                if (jQuery(creditCardField[index])?.val()) {
+                    jQuery(creditCardField[index]).change();
+                }
+            });
         });
 
         jQuery(document).ready(function() {
