@@ -32,12 +32,14 @@ class AccountInfo
     {
         $orderSettings = $response[orderSettings];
         if (!$orderSettings[multi_payments_enabled] || !$orderSettings[multi_buyers_enabled]) {
-            $this->showMesg("Erro na Dash");
+            $this->showMsg("Erro na Dash");
         }
+
 
     }
 
-    private function showMesg(string $string)
+
+    private function showMsg(string $string)
     {
         return ;
     }

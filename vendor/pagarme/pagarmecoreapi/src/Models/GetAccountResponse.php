@@ -68,6 +68,12 @@ class GetAccountResponse implements JsonSerializable
 
     /**
      * @todo Write general description for this property
+     * @var array $domains public property
+     */
+    public $domains;
+
+    /**
+     * @todo Write general description for this property
      * @required
      * @var array $antifraudSettings public property
      * @maps antifraud_settings
@@ -243,38 +249,6 @@ class GetAccountResponse implements JsonSerializable
 
     public function __construct()
     {
-        $x = func_num_args();
-        if (29 == func_num_args()) {
-            $this->id                   = func_get_arg(0);
-            $this->secretKey            = func_get_arg(1);
-            $this->publicKey            = func_get_arg(2);
-            $this->name                 = func_get_arg(3);
-            $this->timeZone             = func_get_arg(4);
-            $this->defaultCurrency      = func_get_arg(5);
-            $this->status               = func_get_arg(6);
-            $this->antifraudSettings    = func_get_arg(7);
-            $this->mundipaggSettings    = func_get_arg(8);
-            $this->pagarmeSettings      = func_get_arg(9);
-            $this->creditCardSettings   = func_get_arg(10);
-            $this->debitCardSettings    = func_get_arg(11);
-            $this->voucherSettings      = func_get_arg(12);
-            $this->boletoSettings       = func_get_arg(13);
-            $this->bankTransferSettings = func_get_arg(14);
-            $this->walletSettings       = func_get_arg(15);
-            $this->safetypaySettings    = func_get_arg(16);
-            $this->facebookSettings     = func_get_arg(17);
-            $this->generalSettings      = func_get_arg(18);
-            $this->webhookSettings      = func_get_arg(19);
-            $this->splitSettings        = func_get_arg(20);
-            $this->subscriptionSettings = func_get_arg(21);
-            $this->orderSettings =        func_get_arg(22);
-            $this->notificationSettings = func_get_arg(23);
-            $this->cancellationSettings = func_get_arg(24);
-            $this->renewCardSettings    = func_get_arg(25);
-            $this->cashSettings         = func_get_arg(26);
-            $this->checkoutSettings     = func_get_arg(27);
-            $this->pixSettings          = func_get_arg(28);
-        }
     }
 
 
@@ -292,6 +266,7 @@ class GetAccountResponse implements JsonSerializable
         $json['time_zone']                        = $this->timeZone;
         $json['default_currency']                 = $this->defaultCurrency;
         $json['status']                           = $this->status;
+        $json['domains']                          = $this->domains;
         $json['antifraud_settings']               = $this->antifraudSettings;
         $json['mundipagg_settings']               = $this->mundipaggSettings;
         $json['pagarme_settings']                 = $this->pagarmeSettings;
