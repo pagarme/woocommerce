@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-08-07 11:09-0300\n"
+"PO-Revision-Date: 2023-08-30 18:27-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;"
 "_nx:4c,1,2;_nx_noop:4c,1,2\n"
@@ -811,8 +811,8 @@ msgid ""
 "Permalink structure in Wordpress Settings must be different from &ldquo;<b>Plain</b>&rdquo;. Please correct this "
 "setting to be able to transact with Pagar.me."
 msgstr ""
-"A estrutura de Links Permanentes nas configurações do Wordpress deve ser diferente de &ldquo;<b>Padrão</b>&rdquo;. "
-"Por favor, corrija essa configuração para poder transacionar com a Pagar.me."
+"A estrutura de Links Permanentes nas configurações do Wordpress deve ser diferente de &ldquo;<b>Padrão</b>&rdquo;. Por "
+"favor, corrija essa configuração para poder transacionar com a Pagar.me."
 
 #: woo-pagarme-payments.php:186
 msgid "The following checkout fields are required, but were not found:"
@@ -864,8 +864,8 @@ msgid "Additional information"
 msgstr "Informações adicionais"
 
 msgid ""
-"Set of key and value used to add information to the generated pix. This will be visible to the buyer during the "
-"payment process."
+"Set of key and value used to add information to the generated pix. This will be visible to the buyer during the payment "
+"process."
 msgstr ""
 "Conjunto de chave e valor para adicionar informações ao pix gerado. Isso ficará visível para o comprador durante o "
 "pagamento."
@@ -1105,13 +1105,13 @@ msgid "Pagar.me - Additional Information"
 msgstr "Pagar.me - Informações Adicionais"
 
 msgid ""
-"This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your "
-"site before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging "
-"environment before performing the update in production."
+"This new release contains crucial architecture and functionality updates. We highly recommend you %1$sbackup your site "
+"before upgrading%2$s. It is highly recommended to perform and validate the update first in the staging environment "
+"before performing the update in production."
 msgstr ""
-"Esta nova versão contém atualizações cruciais de arquitetura e funcionalidade. Recomendamos que %1$sfaça backup de "
-"seu site antes de atualizar%2$s. É altamente recomendável executar e validar a atualização primeiro no ambiente de "
-"teste antes de executar a atualização em produção."
+"Esta nova versão contém atualizações cruciais de arquitetura e funcionalidade. Recomendamos que %1$sfaça backup de seu "
+"site antes de atualizar%2$s. É altamente recomendável executar e validar a atualização primeiro no ambiente de teste "
+"antes de executar a atualização em produção."
 
 msgid "We recommend backup before upgrading!"
 msgstr "Recomendamos fazer backup antes de atualizar!"
@@ -1131,74 +1131,17 @@ msgstr "Houve um problema com a troca de pagamento."
 msgid "Error creating subscription free trial."
 msgstr "Erro ao criar a avaliação gratuita da assinatura."
 
-#~ msgid "If you have not yet received the billet, please click the button below to print."
-#~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
+msgid "Please enable Multibuyers option on the Dash."
+msgstr "Por favor, habilite a opção Multicompradores na Dash."
 
-#~ msgid "BILLET: If you have not yet received the billet, please click the button below to print."
-#~ msgstr "BOLETO: Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
+msgid "Please enable Multipayment option on the Dash."
+msgstr "Por favor, habilite a opção Multimeio de pagamentos na Dash."
 
-#~ msgid "The sum of billet and credit card is less than the total"
-#~ msgstr "A soma do boleto com o cartão é menor do que o total"
+msgid "Your account is disabled. Please contact the commercial sector to enable it."
+msgstr "Sua conta está desativada. Entre em contato com o setor comercial para habilitá-la."
 
-#~ msgid "The sum of billet and credit card is greater than the total"
-#~ msgstr "A soma do boleto com o cartão é maior do que o total"
+msgid "No domain registered. Please enter your website`s domain on Dash."
+msgstr "Nenhum domínio cadastrado. Por favor, insira o domínio do seu site na Dash."
 
-#~ msgid "Value (Billet)"
-#~ msgstr "Valor (Boleto)"
-
-#~ msgid "Choose a credit card save"
-#~ msgstr "Escolha um cartão"
-
-#~ msgid "Pay with billet banking"
-#~ msgstr "Pagar com boleto bancário"
-
-#~ msgid "Pay with billet and credit card"
-#~ msgstr "Pagar com boleto e cartão"
-
-#~ msgid "Fill out the field"
-#~ msgstr "Preencha o campo"
-
-#~ msgid "Go to setup"
-#~ msgstr "Ir para as configurações"
-
-#~ msgid "Your transaction has been processed by Pagar.me."
-#~ msgstr "Sua transação foi processada pela Pagar.me."
-
-#~ msgid "Payment Data - Pagar.me"
-#~ msgstr "Dados do Pagamento - Pagar.me"
-
-#~ msgid "Interest"
-#~ msgstr "Juros"
-
-#~ msgid "Invalid request"
-#~ msgstr "Requisição inválida"
-
-#~ msgid "Instruction Line 1"
-#~ msgstr "Primeira linha de instrução"
-
-#~ msgid "First line instruction for the billet."
-#~ msgstr "Primeira linha de instrução para o boleto."
-
-#~ msgid "Instruction Line 2"
-#~ msgstr "Segunda linha de instrução"
-
-#~ msgid "Second line instruction for the billet."
-#~ msgstr "Segunda linha de instrução para o boleto."
-
-#~ msgid "Instruction Line 3"
-#~ msgstr "Terceira linha de instrução"
-
-#~ msgid "Third line instruction for the billet."
-#~ msgstr "Terceira linha de instrução para o boleto"
-
-#~ msgid "Enable Installments"
-#~ msgstr "Habilitar parcelamento"
-
-#~ msgid "Sandbox"
-#~ msgstr "Modo de desenvolvedor"
-
-#~ msgid "Multimethods"
-#~ msgstr "Multimeios"
-
-#~ msgid "Enable Multimethods"
-#~ msgstr "Habilitar multimeios"
+msgid "The registered domain is different from the URL of your website. Please correct the domain configured on the Dash."
+msgstr "O domínio cadastrado é diferente da URL do seu site. Por favor, corrija o domínio configurado na Dash."
