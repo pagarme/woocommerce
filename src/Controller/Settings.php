@@ -21,9 +21,11 @@ use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Select;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Section;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Page\PageSettings;
 use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Controller\HubAccounts;
 
 /**
  * Abstract Settings
@@ -55,14 +57,19 @@ class Settings
     private $gateways;
 
     /**
-     * @var \Woocommerce\Pagarme\Controller\AccountInfo
+     * @var \Woocommerce\Pagarme\Controller\HubAccounts
      */
-    private $accountInfo;
+    private $hubAccounts;
 
     public function __construct(
         Select $select = null,
         Config $config = null
     ) {
+        if (!Utils::is_request_ajax()) {
+            $this->hubAccounts = new HubAccounts();
+            $this->hubAccounts->getAccountInfo();
+        }
+
         $this->select = $select;
         if (!$select) {
             $this->select = new Select();
@@ -72,7 +79,6 @@ class Settings
             $this->config = new Config();
         }
         $this->model = new Gateway();
-        $this->accountInfo = new AccountInfo();
         $this->yesNoOptions = new Yesno();
         add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
         add_filter(Core::plugin_basename('plugin_action_links_'), array($this, 'plugin_link'));
