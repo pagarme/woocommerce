@@ -35,7 +35,7 @@ function wcmpRenderAdminNoticeHtml($message, $path = '', $isConfig = false, $typ
         'pagarme-notice',
         plugins_url('/pagarme-payments-for-woocommerce/assets/stylesheets/admin/notice.css'),
         array(),
-        filemtime(__FILE__ . '/../assets/stylesheets/admin/notice.css')
+        "1.0"
     );
 ?>
     <div class="notice <?= esc_html($type); ?> is-dismissible">
