@@ -33,6 +33,8 @@ class CreditCard extends AbstractGateway
 
     const SOFT_DESCRIPTOR_FIELD_NAME = "Soft descriptor";
 
+    const CARD_BRANDS_FIELD_NAME = 'Card Brands';
+
     const DEFAULT_BRANDS = ['visa', 'mastercard', 'elo', 'hipercard'];
 
     /**
@@ -158,7 +160,7 @@ class CreditCard extends AbstractGateway
     {
         return array(
             'type' => 'multiselect',
-            'title' => __('Card Brands', 'woo-pagarme-payments'),
+            'title' => __(self::CARD_BRANDS_FIELD_NAME, 'woo-pagarme-payments'),
             'select_buttons' => false,
             'class' => 'wc-enhanced-select',
             'options' => $this->getBrandsList(),
@@ -540,16 +542,7 @@ class CreditCard extends AbstractGateway
      */
     public function validate_cc_flags_field($key, $value)
     {
-        $isValueEmpty = empty($value);
-        if ($isValueEmpty) {
-            $requiredErrorMessage = sprintf(
-                __('%s is required.', 'woo-pagarme-payments'),
-                __('Card Brands', 'woo-pagarme-payments')
-            );
-            WC_Admin_Settings::add_error($requiredErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::CODE, $requiredErrorMessage);
-        }
-
+        $this->validateRequired($value, self::CARD_BRANDS_FIELD_NAME);
         return $value;
     }
 
