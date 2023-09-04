@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-09-01 16:49-0300\n"
+"PO-Revision-Date: 2023-09-04 12:02-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -433,8 +433,8 @@ msgid "This field has exceeded the %d character limit."
 msgstr "Este campo ultrapassou o limite de %d caracteres."
 
 #: src/Controller/Gateways/Billet.php:125
-msgid "This field must only contain letters, numbers, spaces and punctuations."
-msgstr "Este campo deve conter apenas letras, números, espaços e pontuações."
+msgid "This field must only contain letters, numbers, spaces and punctuations(Except quotes)."
+msgstr "Este campo deve conter apenas letras, números, espaços e pontuações(Exceto aspas)."
 
 #: src/Controller/Gateways/Pix.php:60
 msgid "This field does not have the minimum value of %d."
