@@ -323,6 +323,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     {
         return [
             'title'       => __('Checkout title', 'woo-pagarme-payments'),
+            'type'        => 'text',
             'description' => __('Name shown to the customer in the checkout page.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'default'     => __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
@@ -446,9 +447,12 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     protected function validateAlphanumericAndSpacesAndPunctuation($value, $fieldName)
     {
-        if (!preg_match('/^[A-Za-z0-9À-ú \-:()%@*_.,!?$;]+$/', $value)) {
+        if (!empty($value) && !preg_match('/^[A-Za-z0-9À-ú \-:()%@*_.,!?$;]+$/', $value)) {
             $alphanumericAndSpacesAndPunctuationErrorMessage = sprintf(
-                __('%s must only contain letters, numbers, spaces and punctuations.', 'woo-pagarme-payments'),
+                __(
+                    '%s must only contain letters, numbers, spaces and punctuations (except quotation marks).',
+                    'woo-pagarme-payments'
+                ),
                 __($fieldName, 'woo-pagarme-payments')
             );
             $this->addValidationError($alphanumericAndSpacesAndPunctuationErrorMessage);
