@@ -113,8 +113,9 @@ class Billet extends AbstractGateway
     public function field_billet_instructions()
     {
         return [
-            'title'       => __(self::PAYMENT_INSTRUCTIONS_FIELD_NAME, 'woo-pagarme-payments'),
-            'type'        => 'text',
+            'title' => __(self::PAYMENT_INSTRUCTIONS_FIELD_NAME, 'woo-pagarme-payments'),
+            'type' => 'textarea',
+            'class' => ['pagarme-option-text-area'],
             'default' => $this->config->getData('billet_instructions') ?? '',
             'description' => __('Instructions printed on the billet.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
@@ -122,7 +123,7 @@ class Billet extends AbstractGateway
                 'data-field-validate' => 'alphanumeric-spaces-punctuation|max-length',
                 'data-error-message-alphanumeric-spaces-punctuation' =>
                     __(
-                        'This field must only contain letters, numbers, spaces and punctuations.',
+                        'This field must only contain letters, numbers, spaces and punctuations(Except quotes).',
                         'woo-pagarme-payments'
                     ),
                 'data-max-length' => self::PAYMENT_INSTRUCTIONS_MAX_LENGTH,
