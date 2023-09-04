@@ -242,6 +242,26 @@ final class Configuration extends AbstractEntity
         $this->voucherConfig = $voucherConfig;
     }
 
+    public function setAccountId($setAccountId)
+    {
+        $this->accountId = $setAccountId;
+    }
+
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    public function setMerchantId($setMerchantId)
+    {
+        $this->merchantId = $setMerchantId;
+    }
+
+    public function getMerchantId()
+    {
+        return $this->merchantId;
+    }
+
     protected function isEnabled()
     {
         return $this->enabled;
@@ -749,6 +769,8 @@ final class Configuration extends AbstractEntity
             "testMode" => $this->testMode,
             "hubInstallId" => $this->isHubEnabled() ? $this->hubInstallId->getValue() : null,
             "hubEnvironment" => $this->hubEnvironment,
+            "merchantId" => $this->merchantId,
+            "accountId" => $this->accountId,
             "addressAttributes" => $this->getAddressAttributes(),
             "keys" => $this->keys,
             "cardOperation" => $this->cardOperation,

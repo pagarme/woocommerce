@@ -26,15 +26,24 @@ class HubAccounts
 
    public function getAccountInfo()
     {
+        if (empty($this->config->getHubInstallId())) {
+            return false;
+        }
         $accountService = new AccountService();
-        $accountId = "acc_6qwpj5RWuEFJaWGY";
-        $this->accountInfo = $accountService->getAccount($accountId);
+        try {
+            $this->accountInfo = $accountService->getAccount($this->getAccountId());
+        } catch (\Exception $e) {
+            if ($e->getMessage() == 'Invalid API key') {
+            }
+            return false;
+        }
         $this->isDashCorrect();
     }
 
     public function getAccountId()
     {
-
+        $accountId = $this->config->getAccountId();
+//        $accountId = "acc_6qwpj5RWuEFJaWGY";
         return $accountId ?? false;
     }
 
@@ -84,6 +93,9 @@ class HubAccounts
 
     public function isDomainCorrect() // https://dash.pagar.me/merch_1qQzW0iEph7krlAe/acc_6qwpj5RWuEFJaWGY/settings/account-config
     {
+        if ($this->config->getIsSandboxMode()) {
+            return true;
+        }
         $domains = $this->accountInfo->domains;
         if (empty($domains)) {
             $this->notices[] =  __('No domain registered. Please enter your website`s domain on Dash.', 'woo-pagarme-payments');
@@ -92,7 +104,7 @@ class HubAccounts
 
         $siteUrl = Utils::get_site_url();
         foreach ($domains as $domain){
-            if (strpos($siteUrl, $domain) >= 0) {
+            if (strpos($siteUrl, $domain) !== false) {
                 return true;
             }
         }

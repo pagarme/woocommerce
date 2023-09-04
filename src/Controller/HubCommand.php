@@ -83,7 +83,9 @@ class HubCommand
             'production_public_key' => null,
             'sandbox_secret_key' => null,
             'sandbox_public_key' => null,
-            'environment' => null
+            'environment' => null,
+            'account_id' => null,
+            'merchant_id' => null
         ];
         $this->settings->addData($keysToClear)->save();
         return 'Hub uninstalled successfully';
