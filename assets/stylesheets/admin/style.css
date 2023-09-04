@@ -120,6 +120,6 @@
     color: #d63638;
 }
 
-.woocommerce table.form-table textarea.wide-input .pagarme-option-text-area {
+.woocommerce table.form-table textarea.wide-input.pagarme-option-text-area {
     width: 400px;
 }

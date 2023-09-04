@@ -115,7 +115,7 @@ class Billet extends AbstractGateway
         return [
             'title' => __(self::PAYMENT_INSTRUCTIONS_FIELD_NAME, 'woo-pagarme-payments'),
             'type' => 'textarea',
-            'class' => ['pagarme-option-text-area'],
+            'class' => 'pagarme-option-text-area',
             'default' => $this->config->getData('billet_instructions') ?? '',
             'description' => __('Instructions printed on the billet.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
