@@ -117,6 +117,7 @@ class CreditCard extends AbstractGateway
 
         return [
             'title' => __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
+            'type' => 'text',
             'desc_tip' => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
             'description' => sprintf(
                 __("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
