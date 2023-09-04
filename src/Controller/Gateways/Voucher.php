@@ -34,6 +34,8 @@ class Voucher extends AbstractGateway
 
     const SOFT_DESCRIPTOR_FIELD_NAME = "Soft descriptor";
 
+    const VOUCHER_CARD_BRANDS_FIELD_NAME = 'Voucher Card Brands';
+
     const DEFAULT_BRANDS = ['alelo', 'sodexo', 'vr'];
     /**
      * @return array
@@ -135,17 +137,7 @@ class Voucher extends AbstractGateway
     public function validate_voucher_soft_descriptor_field($key, $value)
     {
         $maxLength = $this->model->getSoftDescriptorMaxLength($this->isGatewayType());
-        $isValueLengthGreaterThanMaxLength = strlen($value) > $maxLength;
-        if ($isValueLengthGreaterThanMaxLength) {
-            $maximumLengthErrorMessage = sprintf(
-                __('%s has exceeded the %d character limit.', 'woo-pagarme-payments'),
-                __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
-                $maxLength
-            );
-            WC_Admin_Settings::add_error($maximumLengthErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::CODE, $maximumLengthErrorMessage);
-        }
-
+        $this->validateMaxLength($value, self::SOFT_DESCRIPTOR_FIELD_NAME, $maxLength);
         return $value;
     }
 
@@ -154,16 +146,7 @@ class Voucher extends AbstractGateway
      */
     public function validate_field_voucher_flags_field($key, $value)
     {
-        $isValueEmpty = empty($value);
-        if ($isValueEmpty) {
-            $requiredErrorMessage = sprintf(
-                __('%s is required.', 'woo-pagarme-payments'),
-                __('Voucher Card Brands', 'woo-pagarme-payments')
-            );
-            WC_Admin_Settings::add_error($requiredErrorMessage);
-            throw new InvalidOptionException(InvalidOptionException::CODE, $requiredErrorMessage);
-        }
-
+        $this->validateRequired($value, self::VOUCHER_CARD_BRANDS_FIELD_NAME);
         return $value;
     }
 }

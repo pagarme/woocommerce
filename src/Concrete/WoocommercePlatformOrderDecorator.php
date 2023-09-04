@@ -540,8 +540,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
                 $moneyService->floatToCents($price)
             );
 
-            if (!empty($woocommerceProduct->id)) {
-                $item->setCode($woocommerceProduct->id);
+            if (!empty($woocommerceProduct->get_id())) {
+                $item->setCode($woocommerceProduct->get_id());
             }
 
             $itemQuantity = absint($woocommerceItem['qty']);
