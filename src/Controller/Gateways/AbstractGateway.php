@@ -446,7 +446,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     protected function validateAlphanumericAndSpacesAndPunctuation($value, $fieldName)
     {
-        if (!preg_match('/^[A-Za-z0-9À-ú \-:()%@*_.,!?$]+$/', $value)) {
+        if (!preg_match('/^[A-Za-z0-9À-ú \-:()%@*_.,!?$;]+$/', $value)) {
             $alphanumericAndSpacesAndPunctuationErrorMessage = sprintf(
                 __('%s must only contain letters, numbers, spaces and punctuations.', 'woo-pagarme-payments'),
                 __($fieldName, 'woo-pagarme-payments')
