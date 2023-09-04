@@ -55,6 +55,7 @@ class Pix extends AbstractGateway
     {
         return [
             'title' => __(self::QR_CODE_EXPIRATION_TIME_FIELD_NAME, 'woo-pagarme-payments'),
+            'type' => 'text',
             'description' => __('Expiration time in seconds of the generated pix QR code.', 'woo-pagarme-payments'),
             'desc_tip' => true,
             'placeholder' => 3600,

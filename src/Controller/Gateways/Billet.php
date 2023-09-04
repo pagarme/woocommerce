@@ -93,6 +93,7 @@ class Billet extends AbstractGateway
     {
         return [
             'title'       => __('Default expiration days', 'woo-pagarme-payments'),
+            'type'        => 'text',
             'description' => __(
                 'Number of days until the expiration date of the generated billet.',
                 'woo-pagarme-payments'
