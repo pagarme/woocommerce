@@ -21,7 +21,7 @@ class HubAccounts
     public function __construct()
     {
         $this->config = new Config;
-//        add_action('woocommerce_api_pagarme-account-info', array($this, 'getAccountInfo'));
+        // add_action('woocommerce_api_pagarme-account-info', array($this, 'getAccountInfo'));
     }
 
    public function getAccountInfo()
@@ -43,7 +43,6 @@ class HubAccounts
     public function getAccountId()
     {
         $accountId = $this->config->getAccountId();
-//        $accountId = "acc_6qwpj5RWuEFJaWGY";
         return $accountId ?? false;
     }
 
@@ -70,13 +69,16 @@ class HubAccounts
     {
         $orderSettings = $this->accountInfo->orderSettings;
         if (!$orderSettings['multi_buyers_enabled']) {
-            $this->notices[] =  __('Please enable Multibuyers option in Dash.', 'woo-pagarme-payments');
+            $this->notices[] = __('Please enable Multibuyers option in Dash.', 'woo-pagarme-payments');
         }
         return true;
     }
 
     function adminNotices()
     {
+        if (!$this->notices) {
+            return;
+        }
         foreach ($this->notices as $notice) {
             wcmpRenderAdminNoticeHtml($notice);
         }
@@ -94,11 +96,11 @@ class HubAccounts
     public function isDomainCorrect() // https://dash.pagar.me/merch_1qQzW0iEph7krlAe/acc_6qwpj5RWuEFJaWGY/settings/account-config
     {
         if ($this->config->getIsSandboxMode()) {
-            return true;
+           return true;
         }
         $domains = $this->accountInfo->domains;
         if (empty($domains)) {
-            $this->notices[] =  __('No domain registered. Please enter your website`s domain on Dash.', 'woo-pagarme-payments');
+            $this->notices[] = __('No domain registered. Please enter your website`s domain on Dash.', 'woo-pagarme-payments');
             return false;
         }
 
@@ -109,7 +111,7 @@ class HubAccounts
             }
         }
 
-        $this->notices[] =  __('The registered domain is different from the URL of your website. ' .
+        $this->notices[] = __('The registered domain is different from the URL of your website. ' .
             'Please correct the domain configured on the Dash.', 'woo-pagarme-payments');
         return false;
     }
