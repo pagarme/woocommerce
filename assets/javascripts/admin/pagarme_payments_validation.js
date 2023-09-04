@@ -8,35 +8,22 @@
 
         const validateRequiredField = (element, value) => {
             const isMultipleSelect = element.is('select') && element.is('[multiple]');
-            const isEmptyField = (!$.trim(value) && !isMultipleSelect) || (value.length === 0 && isMultipleSelect);
-            if (isEmptyField) {
-                element.addClass(invalidFieldClass);
-                return true;
-            }
-
-            return false;
+            return (!$.trim(value) && !isMultipleSelect) || (value.length === 0 && isMultipleSelect);
         };
 
         const validateMaxLengthField = (element, value) => {
             const maxLength = parseInt($(element).data(maxLengthDataAttribute));
-            const isValueSizeGreaterThanMaxLength = value.length > maxLength;
-            if (isValueSizeGreaterThanMaxLength) {
-                element.addClass(invalidFieldClass);
-                return true;
-            }
-
-            return false;
+            return  value.length > maxLength;
         };
 
         const validateMinValueField = (element, value) => {
             const minValue = parseFloat($(element).data(minDataAttribute));
-            const isValueLesserThanMinValue = value < minValue;
-            if (isValueLesserThanMinValue) {
-                element.addClass(invalidFieldClass);
-                return true;
-            }
+            return value < minValue;
+        }
 
-            return false;
+        const validateAlphanumericAndSpacesAndPunctuation = (element, value) => {
+            const regex = /^[A-Za-z0-9À-ú \-:()%@*_.,!?$]+$/;
+            return !value.match(regex);
         }
 
         const showErrorMessage = (element, errorMessage) => {
@@ -96,9 +83,13 @@
                         case 'min':
                             fieldHasError = validateMinValueField(element, parseFloat(fieldValue));
                             break;
+                        case 'alphanumeric-spaces-punctuation':
+                            fieldHasError = validateAlphanumericAndSpacesAndPunctuation(element, fieldValue);
+                            break;
                     }
 
                     if (fieldHasError) {
+                        element.addClass(invalidFieldClass);
                         showErrorMessage(errorMessageElement, getErrorMessage(originalElement, validationType));
                         hasErrors = fieldHasError;
                     }

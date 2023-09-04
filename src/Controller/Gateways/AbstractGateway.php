@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use WC_Admin_Settings;
 use WC_Payment_Gateway;
 use Woocommerce\Pagarme\Block\Template;
 
+use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Model\Subscription;
@@ -390,5 +392,75 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
         $paymentDetails = new EmailPaymentDetails();
         $paymentDetails->render($order->get_id());
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    protected function validateMaxLength($value, $fieldName, $maxLength)
+    {
+        $isValueLengthGreaterThanMaxLength = mb_strlen($value) > $maxLength;
+        if ($isValueLengthGreaterThanMaxLength) {
+            $maximumLengthErrorMessage = sprintf(
+                __('%s has exceeded the %d character limit.', 'woo-pagarme-payments'),
+                __($fieldName, 'woo-pagarme-payments'),
+                $maxLength
+            );
+            $this->addValidationError($maximumLengthErrorMessage);
+        }
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    protected function validateRequired($value, $fieldName)
+    {
+        $isValueEmpty = empty($value) && $value !== "0";
+        if ($isValueEmpty) {
+            $requiredErrorMessage = sprintf(
+                __('%s is required.', 'woo-pagarme-payments'),
+                __($fieldName, 'woo-pagarme-payments')
+            );
+            $this->addValidationError($requiredErrorMessage);
+        }
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    protected function validateMinValue($value, $fieldName, $minValue)
+    {
+        $isValueLesserThanMinimum = floatval($value) < $minValue;
+        if ($isValueLesserThanMinimum) {
+            $minimumValueErrorMessage = sprintf(
+                __('%s does not have the minimum value of %d.', 'woo-pagarme-payments'),
+                __($fieldName, 'woo-pagarme-payments'),
+                $minValue
+            );
+            $this->addValidationError($minimumValueErrorMessage);
+        }
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    protected function validateAlphanumericAndSpacesAndPunctuation($value, $fieldName)
+    {
+        if (!preg_match('/^[A-Za-z0-9À-ú \-:()%@*_.,!?$]+$/', $value)) {
+            $alphanumericAndSpacesAndPunctuationErrorMessage = sprintf(
+                __('%s must only contain letters, numbers, spaces and punctuations.', 'woo-pagarme-payments'),
+                __($fieldName, 'woo-pagarme-payments')
+            );
+            $this->addValidationError($alphanumericAndSpacesAndPunctuationErrorMessage);
+        }
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    protected function addValidationError($errorMessage)
+    {
+        WC_Admin_Settings::add_error($errorMessage);
+        throw new InvalidOptionException(InvalidOptionException::CODE, $errorMessage);
     }
 }
