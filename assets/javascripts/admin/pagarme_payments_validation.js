@@ -23,7 +23,7 @@
 
         const validateAlphanumericAndSpacesAndPunctuation = (element, value) => {
             const regex = /^[A-Za-z0-9À-ú \-:()%@*_.,!?$;]+$/;
-            return !value.match(regex);
+            return value?.length > 0 && !value.match(regex);
         }
 
         const showErrorMessage = (element, errorMessage) => {

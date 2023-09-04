@@ -123,7 +123,7 @@ class Billet extends AbstractGateway
                 'data-field-validate' => 'alphanumeric-spaces-punctuation|max-length',
                 'data-error-message-alphanumeric-spaces-punctuation' =>
                     __(
-                        'This field must only contain letters, numbers, spaces and punctuations(Except quotes).',
+                        'This field must only contain letters, numbers, spaces and punctuations (except quotation marks).',
                         'woo-pagarme-payments'
                     ),
                 'data-max-length' => self::PAYMENT_INSTRUCTIONS_MAX_LENGTH,
