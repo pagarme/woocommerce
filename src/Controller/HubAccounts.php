@@ -35,7 +35,6 @@ class HubAccounts
             $this->accountInfo = $accountService->getAccount($this->getAccountId());
         } catch (\Exception $e) {
             if ($e->getMessage() == 'Invalid API key') {
-
             }
             return false;
         }
@@ -70,7 +69,7 @@ class HubAccounts
     {
         $orderSettings = $this->accountInfo->orderSettings;
         if (!$orderSettings['multi_buyers_enabled']) {
-            $this->notices[] =  __('Please enable Multibuyers option in Dash.', 'woo-pagarme-payments');
+            $this->notices[] = __('Please enable Multibuyers option in Dash.', 'woo-pagarme-payments');
         }
         return true;
     }
@@ -101,7 +100,7 @@ class HubAccounts
         }
         $domains = $this->accountInfo->domains;
         if (empty($domains)) {
-            $this->notices[] =  __('No domain registered. Please enter your website`s domain on Dash.', 'woo-pagarme-payments');
+            $this->notices[] = __('No domain registered. Please enter your website`s domain on Dash.', 'woo-pagarme-payments');
             return false;
         }
 
@@ -112,7 +111,7 @@ class HubAccounts
             }
         }
 
-        $this->notices[] =  __('The registered domain is different from the URL of your website. ' .
+        $this->notices[] = __('The registered domain is different from the URL of your website. ' .
             'Please correct the domain configured on the Dash.', 'woo-pagarme-payments');
         return false;
     }
