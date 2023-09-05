@@ -4,7 +4,7 @@ Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, 
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 7.1
-Stable tag: 3.1.3
+Stable tag: 3.1.5
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -22,22 +22,24 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
-= 3.1.3 (10/08/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.3)
-
-* **Novas implementações:**
-  * Suporte a produtos com teste grátis na assinatura.
+= 3.1.5 (04/09/2023) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.5)
 
 * **Correções:**
-  * Compatibilização com versões mais antigas do Wordpress;
-  * Compatibilização com temas não suportados pelo Woocommerce.
+  * Incompatibilidade de seletores css de alguns temas para arquivos js.
+  * Quando atualiza algum dado de checkout o cartão perde a bandeira já consultada.
+  * Incompatibilidade com métodos de pagamento que utilizam o evento checkout_place_order.
+  * Recorrência não finaliza compra com Boleto ou PIX.
+  * Incompatibilidade com caracteres especiais nas instruções de pagamento do boleto.
 
-= 3.1.2 (31/07/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.2)
+= 3.1.4 (17/08/2023) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.4)
 
 * **Correções:**
-  * Correção de erro ao renovar assinatura com cartão de crédito;
-  * Alterado forma de chamadas ao jQuery.
+  * Problema ao criar assinatura com pix e boleto.
+
+* **Melhorias:**
+  * Valor padrão para bandeiras de Cartão de Crédito e Voucher.
 
 Para consultar versões anteriores, acesse nosso [Github](https://github.com/pagarme/woocommerce/releases).
 

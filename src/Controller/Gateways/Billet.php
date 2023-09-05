@@ -7,14 +7,15 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Payment\Billet\BankInterface;
 use Woocommerce\Pagarme\Model\Payment\Billet\Banks;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 if (!function_exists('add_action')) {
     exit(0);
@@ -26,6 +27,10 @@ if (!function_exists('add_action')) {
  */
 class Billet extends AbstractGateway
 {
+    const PAYMENT_INSTRUCTIONS_FIELD_NAME = 'Payment instructions';
+
+    const PAYMENT_INSTRUCTIONS_MAX_LENGTH = 255;
+
     /** @var string */
     protected $method = \Woocommerce\Pagarme\Model\Payment\Billet::PAYMENT_CODE;
 
@@ -88,7 +93,11 @@ class Billet extends AbstractGateway
     {
         return [
             'title'       => __('Default expiration days', 'woo-pagarme-payments'),
-            'description' => __('Number of days until the expiration date of the generated boleto.', 'woo-pagarme-payments'),
+            'type'        => 'text',
+            'description' => __(
+                'Number of days until the expiration date of the generated billet.',
+                'woo-pagarme-payments'
+            ),
             'desc_tip'    => true,
             'placeholder' => 5,
             'default'     => $this->config->getData('billet_deadline_days') ?? 5,
@@ -105,11 +114,39 @@ class Billet extends AbstractGateway
     public function field_billet_instructions()
     {
         return [
-            'title'       => __('Payment instructions', 'woo-pagarme-payments'),
-            'type'        => 'text',
+            'title' => __(self::PAYMENT_INSTRUCTIONS_FIELD_NAME, 'woo-pagarme-payments'),
+            'type' => 'textarea',
+            'class' => 'pagarme-option-text-area',
             'default' => $this->config->getData('billet_instructions') ?? '',
-            'description' => __('Instructions printed on the boleto.', 'woo-pagarme-payments'),
+            'description' => __('Instructions printed on the billet.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
+            'custom_attributes' => [
+                'data-field-validate' => 'alphanumeric-spaces-punctuation|max-length',
+                'data-error-message-alphanumeric-spaces-punctuation' =>
+                    __(
+                        'This field must only contain letters, numbers, spaces and punctuations (except quotation marks).',
+                        'woo-pagarme-payments'
+                    ),
+                'data-max-length' => self::PAYMENT_INSTRUCTIONS_MAX_LENGTH,
+                'data-error-message-max-length' => sprintf(
+                    __('This field has exceeded the %d character limit.', 'woo-pagarme-payments'),
+                    self::PAYMENT_INSTRUCTIONS_MAX_LENGTH
+                ),
+            ]
         ];
+    }
+
+    /**
+     * @throws InvalidOptionException
+     */
+    public function validate_billet_instructions_field($key, $value)
+    {
+        $this->validateAlphanumericAndSpacesAndPunctuation($value, self::PAYMENT_INSTRUCTIONS_FIELD_NAME);
+        $this->validateMaxLength(
+            $value,
+            self::PAYMENT_INSTRUCTIONS_FIELD_NAME,
+            self::PAYMENT_INSTRUCTIONS_MAX_LENGTH
+        );
+        return $value;
     }
 }
