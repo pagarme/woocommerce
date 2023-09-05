@@ -21,7 +21,8 @@ class HubAccounts
     public function __construct()
     {
         $this->config = new Config;
-//        add_action('woocommerce_api_pagarme-account-info', array($this, 'getAccountInfo'));
+        add_action('woocommerce_api_pagarme-account-info', array($this, 'getAccountInfo'));
+        add_action('on_pagarme_charge_paid', array($this, 'getAccountIdFromWebhook'));
     }
 
    public function getAccountInfo()
@@ -34,6 +35,7 @@ class HubAccounts
             $this->accountInfo = $accountService->getAccount($this->getAccountId());
         } catch (\Exception $e) {
             if ($e->getMessage() == 'Invalid API key') {
+
             }
             return false;
         }
@@ -42,9 +44,7 @@ class HubAccounts
 
     public function getAccountId()
     {
-        $accountId = $this->config->getAccountId();
-//        $accountId = "acc_6qwpj5RWuEFJaWGY";
-        return $accountId ?? false;
+        return $this->config->getAccountId() ?? false;
     }
 
     public function isDashCorrect()
@@ -77,6 +77,9 @@ class HubAccounts
 
     function adminNotices()
     {
+        if (empty($this->notices)) {
+            return;
+        }
         foreach ($this->notices as $notice) {
             wcmpRenderAdminNoticeHtml($notice);
         }
@@ -112,5 +115,18 @@ class HubAccounts
         $this->notices[] =  __('The registered domain is different from the URL of your website. ' .
             'Please correct the domain configured on the Dash.', 'woo-pagarme-payments');
         return false;
+    }
+
+    public function getAccountIdFromWebhook($body)
+    {
+        if ($this->getAccountId() || empty($body->account) || empty($body->account->id)){
+            return;
+        }
+
+        $this->config->setData(
+            'account_id',
+            $body->account->id
+        );
+        $this->config->save();
     }
 }
