@@ -65,11 +65,6 @@ class Settings
         Select $select = null,
         Config $config = null
     ) {
-        if (!Utils::is_request_ajax()) {
-            $this->hubAccounts = new HubAccounts();
-            $this->hubAccounts->getAccountInfo();
-        }
-
         $this->select = $select;
         if (!$select) {
             $this->select = new Select();

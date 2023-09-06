@@ -64,6 +64,7 @@ class Core
             'Orders',
             'Charges',
             'Accounts',
+            'HubAccounts',
         );
 
         self::load_controllers($controllers);
