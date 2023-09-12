@@ -236,12 +236,17 @@ function wcmpPluginsLoadedCheck()
     if (get_option('permalink_structure') === '') {
         wcmpLoadNotice('AdminNoticePermalink');
     }
-
     wcmpLoadNotice('AdminNoticeCheckoutFields');
 }
 
 add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
+add_action( 'before_woocommerce_init', 'checkCompatibilityWithFeatures', 0);
 
+function checkCompatibilityWithFeatures()
+{
+    $compatibilization = new \Woocommerce\Pagarme\Model\FeatureCompatibilization();
+    $compatibilization->callCompatibilization();
+}
 function versionUpdateWarning($currentVersion, $newVersion)
 {
     $currentVersionMajorPart = explode('.', $currentVersion)[0];
