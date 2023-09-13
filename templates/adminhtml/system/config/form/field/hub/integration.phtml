@@ -23,7 +23,7 @@ $success = 'Integration keys successfully removed. Reload the page.';
             src="<?= plugins_url('/pagarme-payments-for-woocommerce/assets/images/pagarme-avatar-white.svg') ?>">
 </a>
 <?php if ($this->config->isAccAndMerchSaved()) : ?>
-    <a href="<?= $this->config->getDashUrl(); ?>" target="_blank" class="button button-secondary">
+    <a href="<?= $this->config->getDashUrl(); ?>" target="_blank" rel="noopener" class="button button-secondary">
         <?= __('Access Pagar.me Dash'); ?>
     </a>
 <?php endif; ?>
