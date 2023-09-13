@@ -1,5 +1,10 @@
+.woocommerce-input-toggle {
+    border: 2px solid #007cba;
+    background-color: #007cba;
+}
+
 .form-table td p.pagarme-hub-desintegration {
-    margin: 1em 0 0;
+    margin: 0;
     font-style: italic;
 }
 
@@ -13,10 +18,17 @@
     align-items: center;
 }
 
+.hub_button_integration-field > * {
+    margin-right: 1rem !important;
+}
+
+.hub_button_integration-field > *:last-child {
+    margin-right: 0;
+}
+
 .hub_button_integration-field > a.button.pagarme-hub-integration-btn {
     position: relative;
     padding-right: 38px;
-    margin-right: 1rem;
 }
 
 .hub_button_integration-field > a.button.pagarme-hub-integration-btn > img {

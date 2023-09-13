@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-09-12 18:07-0300\n"
-"Last-Translator: Rafael Seiffer Melazzo <rafael.melazzo@stone.com.br>\n"
+"PO-Revision-Date: 2023-09-13 11:43-0300\n"
+"Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -991,6 +991,41 @@ msgstr "Integrar com Pagar.me"
 
 msgid "View Integration"
 msgstr "Visualizar integração"
+
+#: templates/adminhtml/system/config/form/field/hub/integration.phtml:23
+msgid ""
+"Have you removed your integration on Pagar.me Hub, but it shows active? Click <a id='pagarme-hub-desintegration-"
+"link'>here</a> to remove your keys."
+msgstr ""
+"Removeu sua integração no Hub Pagar.me, mas ainda aparece ativa? Clique <a id='pagarme-hub-desintegration-link'>aqui</"
+"a> para finalizar removendo suas chaves."
+
+#: templates/adminhtml/system/config/form/field/hub/integration.phtml:28
+msgid "Disintegrate?"
+msgstr "Desintegrar?"
+
+#: templates/adminhtml/system/config/form/field/hub/integration.phtml:29
+msgid ""
+"Are you shure you wish to delete the keys? This action removes the integration from your store, but first you must "
+"access Pagar.me Hub and click on Delete."
+msgstr ""
+"Tem certeza que deseja excluir as chaves? Essa ação remove a integração da sua loja, mas primeiro você deve acessar o "
+"Hub Pagar.me e clicar em Excluir."
+
+msgid "Yes, remove keys!"
+msgstr "Sim, remova as chaves!"
+
+msgid "Disintegration Complete"
+msgstr "Desintegração Concluída"
+
+msgid "Integration keys successfully removed. Reload the page."
+msgstr "Chaves de integração removidas com sucesso. Recarregue a página."
+
+msgid "Disintegration Error"
+msgstr "Erro na Desintegração"
+
+msgid "Integration keys not removed."
+msgstr "Chaves de integração não removidas."
 
 msgid "2 credit cards"
 msgstr "2 cartões de crédito"

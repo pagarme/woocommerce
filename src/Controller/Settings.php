@@ -21,11 +21,9 @@ use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Select;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Section;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Page\PageSettings;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Controller\HubAccounts;
 
 /**
  * Abstract Settings
@@ -50,16 +48,6 @@ class Settings
     protected $config;
 
     protected $sectionsFields = [];
-
-    /**
-     * @var array
-     */
-    private $gateways;
-
-    /**
-     * @var \Woocommerce\Pagarme\Controller\HubAccounts
-     */
-    private $hubAccounts;
 
     public function __construct(
         Select $select = null,
