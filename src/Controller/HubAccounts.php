@@ -55,6 +55,11 @@ class HubAccounts
         return $this->config->getAccountId() ?? null;
     }
 
+    public function getMerchantId()
+    {
+        return $this->config->getMerchantId() ?? null;
+    }
+
     public function isDashCorrect()
     {
         if (empty($this->accountInfo)) {
@@ -80,11 +85,15 @@ class HubAccounts
             return;
         }
         foreach ($this->notices as $notice) {
+            if (is_array($notice)) {
+                wcmpRenderAdminNoticeHtml($notice['message'], $notice['buttons'], 'error', true);
+                continue;
+            }
             wcmpRenderAdminNoticeHtml($notice);
         }
     }
 
-    private function isMultiPaymentsEnabled() // https://dash.pagar.me/merch_1qQzW0iEph7krlAe/acc_blwnJNw5umT0QOZk/settings/order-config
+    private function isMultiPaymentsEnabled()
     {
         $orderSettings = $this->accountInfo->orderSettings;
         if (!$orderSettings['multi_payments_enabled']) {
@@ -94,7 +103,7 @@ class HubAccounts
         return true;
     }
 
-    private function isMultiBuyersEnabled() // https://dash.pagar.me/merch_1qQzW0iEph7krlAe/acc_blwnJNw5umT0QOZk/settings/order-config
+    private function isMultiBuyersEnabled()
     {
         $orderSettings = $this->accountInfo->orderSettings;
         if (!$orderSettings['multi_buyers_enabled']) {
@@ -112,7 +121,7 @@ class HubAccounts
         return true;
     }
 
-    private function isDomainCorrect() // https://dash.pagar.me/merch_1qQzW0iEph7krlAe/acc_6qwpj5RWuEFJaWGY/settings/account-config
+    private function isDomainCorrect()
     {
         if ($this->config->getIsSandboxMode()) {
             return true;
@@ -134,6 +143,34 @@ class HubAccounts
         return false;
     }
 
+    /**
+     * @param string $dashPage
+     * @return array
+     */
+    private function getHubNoticeButtons($dashPage)
+    {
+        $buttons = [];
+        if ($this->config->isAccAndMerchSaved()) {
+            $dashUrl = "https://dash.pagar.me/{$this->getMerchantId()}/{$this->getAccountId()}/settings/{$dashPage}/";
+            $buttons[] = wcmpSingleButtonArray(
+                __('Access Dash Configurations', 'woo-pagarme-payments'),
+                $dashUrl,
+                'primary',
+                '_blank'
+            );
+        }
+        if ($this->getAccountId()) {
+            $buttons[] = wcmpSingleButtonArray(
+                __('Verify Dash Configurations', 'woo-pagarme-payments'),
+                '',
+                'secondary',
+                '',
+                'pagarme-get-hub-account-info'
+            );
+        }
+        return $buttons;
+    }
+
     private function getHubAccountErrorsNotices()
     {
         if ($this->onPagarmePage()) {
@@ -145,12 +182,24 @@ class HubAccounts
         }
 
         $noticesList = [
-            'multiPaymentsDisabled' => 'Please enable Multipayment option on Dash.',
-            'multiBuyersDisabled' => 'Please enable Multibuyers option in Dash.',
             'accountDisabled' => 'Your account is disabled. Please contact the commercial sector to enable it.',
-            'domainEmpty' => 'No domain registered. Please enter your website`s domain on Dash.',
-            'domainIncorrect' => 'The registered domain is different from the URL of your website. ' .
-                'Please correct the domain configured on the Dash.',
+            'domainEmpty' => [
+                'message' => 'No domain registered. Please enter your website\'s domain on Dash.',
+                'buttons' => $this->getHubNoticeButtons('account-config')
+            ],
+            'domainIncorrect' => [
+                'message' => 'The registered domain is different from the URL of your website. '
+                    . 'Please correct the domain configured on the Dash.',
+                'buttons' => $this->getHubNoticeButtons('account-config')
+            ],
+            'multiPaymentsDisabled' => [
+                'message' => 'Please enable Multipayment option on Dash.',
+                'buttons' => $this->getHubNoticeButtons('order-config')
+            ],
+            'multiBuyersDisabled' => [
+                'message' => 'Please enable Multibuyers option in Dash.',
+                'buttons' => $this->getHubNoticeButtons('order-config')
+            ],
         ];
 
         foreach ($this->hubAccountErrors as $error) {
@@ -191,10 +240,10 @@ class HubAccounts
     {
         if (!isset($_GET['page'])) {
             return false;
-        };
+        }
         if ($_GET['page'] == 'woo-pagarme-payments'){
             return true;
-        };
+        }
         if (!isset($_GET['section'])){
             return false;
         }
