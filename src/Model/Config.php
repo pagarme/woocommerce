@@ -202,7 +202,7 @@ class Config extends DataObject
     /**
      * @return mixed
      */
-    public function getDashUrl(): mixed {
+    public function getDashUrl() {
         if (!$this->isAccAndMerchSaved()) {
             return null;
         }

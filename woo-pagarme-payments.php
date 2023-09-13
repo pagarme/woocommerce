@@ -49,7 +49,7 @@ function wcmpRenderAdminNoticeHtml($message, $buttons = [], $type = 'error', $in
         wp_set_script_translations(
             'pagarme-notice-js',
             'woo-pagarme-payments',
-            plugin_dir_path( __FILE__ ) . 'languages'
+            plugin_dir_path( __FILE__ ) . 'languages/'
         );
         wp_localize_script('pagarme-notice-js', 'pagarmeNotice', $noticesL10n);
     }

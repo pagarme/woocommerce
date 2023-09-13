@@ -42,7 +42,7 @@ class HubAccounts
         try {
             $this->accountInfo = $accountService->getAccount($this->getAccountId());
         } catch (\Exception $e) {
-            if ($e->getMessage() == 'Invalid API key') {
+            if ($e->getMessage() === 'Invalid API key') {
                 $this->removeHubIntegration();
             }
             return false;
@@ -86,10 +86,14 @@ class HubAccounts
         }
         foreach ($this->notices as $notice) {
             if (is_array($notice)) {
-                wcmpRenderAdminNoticeHtml($notice['message'], $notice['buttons'], 'error', true);
+                wcmpRenderAdminNoticeHtml(
+                    __($notice['message'], 'woo-pagarme-payments'),
+                    $notice['buttons'],
+                    'error',
+                    true);
                 continue;
             }
-            wcmpRenderAdminNoticeHtml($notice);
+            wcmpRenderAdminNoticeHtml(__($notice, 'woo-pagarme-payments'));
         }
     }
 
@@ -114,7 +118,7 @@ class HubAccounts
 
     private function isAccountEnabled()
     {
-        if ($this->accountInfo->status != 'active') {
+        if ($this->accountInfo->status !== 'active') {
             $this->hubAccountErrors[] = 'accountDisabled';
             return false;
         }
@@ -182,28 +186,32 @@ class HubAccounts
         }
 
         $noticesList = [
-            'accountDisabled' => 'Your account is disabled. Please contact the commercial sector to enable it.',
+            'accountDisabled' => 'Your account is disabled on Pagar.me Dash. '
+                . 'Please contact the commercial sector to enable it.',
             'domainEmpty' => [
-                'message' => 'No domain registered. Please enter your website\'s domain on Dash.',
+                'message' => 'No domain registered on Pagar.me Dash. Please enter your website\'s domain on the Dash '
+                    . 'to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('account-config')
             ],
             'domainIncorrect' => [
-                'message' => 'The registered domain is different from the URL of your website. '
-                    . 'Please correct the domain configured on the Dash.',
+                'message' => 'The registered domain is different from the URL of your website. Please correct the '
+                    . 'domain configured on the Dash to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('account-config')
             ],
             'multiPaymentsDisabled' => [
-                'message' => 'Please enable Multipayment option on Dash.',
+                'message' => 'Multipayment option is disabled on Pagar.me Dash. Please, access the Dash configurations '
+                    . 'and enable it to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('order-config')
             ],
             'multiBuyersDisabled' => [
-                'message' => 'Please enable Multibuyers option in Dash.',
+                'message' => 'Multibuyers option is disabled on Pagar.me Dash. Please, access the Dash configurations '
+                    . 'and enable it to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('order-config')
             ],
         ];
 
         foreach ($this->hubAccountErrors as $error) {
-            $this->notices[] = __($noticesList[$error], 'woo-pagarme-payments');
+            $this->notices[] = $noticesList[$error];
         }
         add_action('admin_notices', array($this, 'adminNotices'));
     }

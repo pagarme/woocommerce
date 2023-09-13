@@ -1,5 +1,5 @@
+const { __ } = wp.i18n;
 jQuery(function ($) {
-    const { __ } = wp.i18n;
     $('.pagarme-get-hub-account-info').on('click', function (e) {
         try {
             swal({
@@ -16,7 +16,6 @@ jQuery(function ($) {
                     command: 'get'
                 }),
                 success: function (response) {
-                    console.log(response);
                     swal(
                         __('Success!', 'woo-pagarme-payments'),
                         __('Dash configuration was retrieved successfully. The page is reloading. Please, wait a moment.',
