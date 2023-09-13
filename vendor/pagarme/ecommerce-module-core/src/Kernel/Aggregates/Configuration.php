@@ -252,9 +252,9 @@ final class Configuration extends AbstractEntity
         $this->voucherConfig = $voucherConfig;
     }
 
-    public function setAccountId($setAccountId)
+    public function setAccountId($accountId)
     {
-        $this->accountId = $setAccountId;
+        $this->accountId = $accountId;
     }
 
     public function getAccountId()
@@ -262,9 +262,9 @@ final class Configuration extends AbstractEntity
         return $this->accountId;
     }
 
-    public function setMerchantId($setMerchantId)
+    public function setMerchantId($merchantId)
     {
-        $this->merchantId = $setMerchantId;
+        $this->merchantId = $merchantId;
     }
 
     public function getMerchantId()
@@ -779,8 +779,8 @@ final class Configuration extends AbstractEntity
             "testMode" => $this->testMode,
             "hubInstallId" => $this->isHubEnabled() ? $this->hubInstallId->getValue() : null,
             "hubEnvironment" => $this->hubEnvironment,
-            "merchantId" => $this->merchantId,
-            "accountId" => $this->accountId,
+            "merchantId" => $this->getMerchantId(),
+            "accountId" => $this->getAccountId(),
             "addressAttributes" => $this->getAddressAttributes(),
             "keys" => $this->keys,
             "cardOperation" => $this->cardOperation,

@@ -154,8 +154,9 @@ class HubAccounts
     private function getHubNoticeButtons($dashPage)
     {
         $buttons = [];
-        if ($this->config->isAccAndMerchSaved()) {
-            $dashUrl = "https://dash.pagar.me/{$this->getMerchantId()}/{$this->getAccountId()}/settings/{$dashPage}/";
+        $dashUrl = $this->config->getDashUrl();
+        if ($dashUrl) {
+            $dashUrl .= "/settings/{$dashPage}/";
             $buttons[] = wcmpSingleButtonArray(
                 __('Access Dash Configurations', 'woo-pagarme-payments'),
                 $dashUrl,

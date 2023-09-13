@@ -25,9 +25,7 @@ class AccountService
     public function getAccount($accountId)
     {
         $account = new Account();
-        $response = $this->getAccountOnPagarme($accountId);
-
-        return $this->convertData($response);
+        return $this->getAccountOnPagarme($accountId);
     }
 
     private function getAccountOnPagarme($accountId)
@@ -36,9 +34,4 @@ class AccountService
         return $accountService->getAccount($accountId);
     }
 
-    public function convertData($response)
-    {
-        $account = new Account();
-        return $response;
-    }
 }
