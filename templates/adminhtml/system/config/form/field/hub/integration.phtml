@@ -12,8 +12,6 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-$logger = new \WC_Logger(); //Log by platform
-$logger->add('logPagarme', json_encode($this->config->isAccAndMerchSaved())); //Log by platform
 ?>
 <a href="<?= esc_url($this->config->getHubUrl()); ?>" class="button button-primary pagarme-hub-integration-btn">
     <?= esc_attr($this->getButtonLabel()); ?>

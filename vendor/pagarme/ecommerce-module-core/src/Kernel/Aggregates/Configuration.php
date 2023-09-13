@@ -160,6 +160,16 @@ final class Configuration extends AbstractEntity
      */
     private $pixConfig;
 
+    /**
+     * @var string
+     */
+    private $merchantId;
+
+    /**
+     * @var string
+     */
+    private $accountId;
+
     public function __construct()
     {
         $this->saveCards = false;
@@ -769,8 +779,8 @@ final class Configuration extends AbstractEntity
             "testMode" => $this->testMode,
             "hubInstallId" => $this->isHubEnabled() ? $this->hubInstallId->getValue() : null,
             "hubEnvironment" => $this->hubEnvironment,
-            "merchantId" => $this->merchantId ?? null,
-            "accountId" => $this->accountId ?? null,
+            "merchantId" => $this->merchantId,
+            "accountId" => $this->accountId,
             "addressAttributes" => $this->getAddressAttributes(),
             "keys" => $this->keys,
             "cardOperation" => $this->cardOperation,
