@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-09-04 15:55-0300\n"
-"Last-Translator: Pagar.me\n"
+"PO-Revision-Date: 2023-09-12 18:07-0300\n"
+"Last-Translator: Rafael Seiffer Melazzo <rafael.melazzo@stone.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -805,11 +805,15 @@ msgstr "O plugin Woocommerce é necessário para o funcionamento do módulo da P
 msgid "WooCoomerce Extra Checkout Fields For Brazil plugin is required for Pagar.me module to work."
 msgstr "O plugin WooCoomerce Extra Checkout Fields For Brazil é necessário para o funcionamento do módulo da Pagar.me."
 
-#: woo-pagarme-payments.php:84
+#: woo-pagarme-payments.php:211
+msgid "Permalink Settings"
+msgstr "Configurações de links permanentes"
+
+#: woo-pagarme-payments.php:153
 msgid "Activate"
 msgstr "Ativar"
 
-#: woo-pagarme-payments.php:100
+#: woo-pagarme-payments.php:166
 msgid "Install"
 msgstr "Instalar"
 
@@ -818,8 +822,8 @@ msgid ""
 "Permalink structure in Wordpress Settings must be different from &ldquo;<b>Plain</b>&rdquo;. Please correct this "
 "setting to be able to transact with Pagar.me."
 msgstr ""
-"A estrutura de Links Permanentes nas configurações do Wordpress deve ser diferente de &ldquo;<b>Padrão</b>&rdquo;. Por "
-"favor, corrija essa configuração para poder transacionar com a Pagar.me."
+"A estrutura de Links Permanentes nas configurações do Wordpress deve ser diferente de &ldquo;<b>Padrão</b>&rdquo;. "
+"Por favor, corrija essa configuração para poder transacionar com a Pagar.me."
 
 #: woo-pagarme-payments.php:186
 msgid "The following checkout fields are required, but were not found:"
@@ -988,41 +992,6 @@ msgstr "Integrar com Pagar.me"
 msgid "View Integration"
 msgstr "Visualizar integração"
 
-#: templates/adminhtml/system/config/form/field/hub/integration.phtml:23
-msgid ""
-"Have you removed your integration on Pagar.me Hub, but it shows active? Click <a id='pagarme-hub-desintegration-"
-"link'>here</a> to remove your keys."
-msgstr ""
-"Removeu sua integração no Hub Pagar.me, mas ainda aparece ativa? Clique <a id='pagarme-hub-desintegration-link'>aqui</"
-"a> para finalizar removendo suas chaves."
-
-#: templates/adminhtml/system/config/form/field/hub/integration.phtml:28
-msgid "Disintegrate?"
-msgstr "Desintegrar?"
-
-#: templates/adminhtml/system/config/form/field/hub/integration.phtml:29
-msgid ""
-"Are you shure you wish to delete the keys? This action removes the integration from your store, but first you must "
-"access Pagar.me Hub and click on Delete."
-msgstr ""
-"Tem certeza que deseja excluir as chaves? Essa ação remove a integração da sua loja, mas primeiro você deve acessar o "
-"Hub Pagar.me e clicar em Excluir."
-
-msgid "Yes, remove keys!"
-msgstr "Sim, remova as chaves!"
-
-msgid "Disintegration Complete"
-msgstr "Desintegração Concluída"
-
-msgid "Integration keys successfully removed. Reload the page."
-msgstr "Chaves de integração removidas com sucesso. Recarregue a página."
-
-msgid "Disintegration Error"
-msgstr "Erro na Desintegração"
-
-msgid "Integration keys not removed."
-msgstr "Chaves de integração não removidas."
-
 msgid "2 credit cards"
 msgstr "2 cartões de crédito"
 
@@ -1138,17 +1107,52 @@ msgstr "Houve um problema com a troca de pagamento."
 msgid "Error creating subscription free trial."
 msgstr "Erro ao criar a avaliação gratuita da assinatura."
 
+#: src/Controller/HubAccounts.php:156
+msgid "Access Dash Configurations"
+msgstr "Acessar Configurações da Dash"
+
+#: src/Controller/HubAccounts.php:164
+msgid "Verify Dash Configurations"
+msgstr "Verificar Configurações da Dash"
+
+#: src/Controller/HubAccounts.php:206
 msgid "Please enable Multibuyers option on the Dash."
 msgstr "Por favor, habilite a opção Multicompradores na Dash."
 
+#: src/Controller/HubAccounts.php:206
 msgid "Please enable Multipayment option on the Dash."
 msgstr "Por favor, habilite a opção Multimeio de pagamentos na Dash."
 
+#: src/Controller/HubAccounts.php:206
 msgid "Your account is disabled. Please contact the commercial sector to enable it."
 msgstr "Sua conta está desativada. Entre em contato com o setor comercial para habilitá-la."
 
-msgid "No domain registered. Please enter your website`s domain on Dash."
+#: src/Controller/HubAccounts.php:206
+msgid "No domain registered. Please enter your website's domain on Dash."
 msgstr "Nenhum domínio cadastrado. Por favor, insira o domínio do seu site na Dash."
 
-msgid "The registered domain is different from the URL of your website. Please correct the domain configured on the Dash."
+#: src/Controller/HubAccounts.php:206
+msgid ""
+"The registered domain is different from the URL of your website. Please correct the domain configured on the Dash."
 msgstr "O domínio cadastrado é diferente da URL do seu site. Por favor, corrija o domínio configurado na Dash."
+
+#: assets/javascripts/admin/pagarme_notices.js:21
+msgid "Success!"
+msgstr "Sucesso!"
+
+#: assets/javascripts/admin/pagarme_notices.js:22
+msgid "Dash configuration was retrieved successfully. The page is reloading. Please, wait a moment."
+msgstr ""
+"As configurações da Dash foram recuperadas com sucesso. A página está recarregando. Por favor, aguarde um momento."
+
+#: assets/javascripts/admin/pagarme_notices.js:31 assets/javascripts/admin/pagarme_notices.js:40
+msgid "Fail!"
+msgstr "Falha!"
+
+#: assets/javascripts/admin/pagarme_notices.js:32 assets/javascripts/admin/pagarme_notices.js:41
+msgid "Dash configuration was not retrieved. Please, try again."
+msgstr "As configurações da Dash não foram recuperadas. Por favor, tente novamente."
+
+#: templates/adminhtml/system/config/form/field/hub/integration.phtml:25
+msgid "Access Pagar.me Dash"
+msgstr "Acessar o Dash da Pagar.me"

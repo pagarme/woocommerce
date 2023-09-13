@@ -160,6 +160,16 @@ final class Configuration extends AbstractEntity
      */
     private $pixConfig;
 
+    /**
+     * @var string
+     */
+    private $merchantId;
+
+    /**
+     * @var string
+     */
+    private $accountId;
+
     public function __construct()
     {
         $this->saveCards = false;

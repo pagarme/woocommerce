@@ -8,10 +8,23 @@
     cursor: pointer;
 }
 
-.pagarme-hub-integration-btn > a > img {
-    vertical-align: text-top;
+.hub_button_integration-field {
+    display: flex;
+    align-items: center;
+}
+
+.hub_button_integration-field > a.button.pagarme-hub-integration-btn {
+    position: relative;
+    padding-right: 38px;
+    margin-right: 1rem;
+}
+
+.hub_button_integration-field > a.button.pagarme-hub-integration-btn > img {
+    position: absolute;
+    top: 50%;
+    right: 11px;
     max-height: 1.4em;
-    margin-left: .6em;
+    margin-top: -0.7em;
 }
 
 .pagarme-message-warning {
