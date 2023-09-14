@@ -108,7 +108,7 @@ class HubAccounts
     {
         $orderSettings = $this->accountInfo->orderSettings;
         if (!$orderSettings['multi_payments_enabled']) {
-            $this->hubAccountErrors[] = SELF::MULTIPAYMENTS_DISABLED;
+            $this->hubAccountErrors[] = self::MULTIPAYMENTS_DISABLED;
             return false;
         }
         return true;
@@ -118,7 +118,7 @@ class HubAccounts
     {
         $orderSettings = $this->accountInfo->orderSettings;
         if (!$orderSettings['multi_buyers_enabled']) {
-            $this->hubAccountErrors[] = SELF::MULTIBUYERS_DISABLED;
+            $this->hubAccountErrors[] = self::MULTIBUYERS_DISABLED;
         }
         return true;
     }
@@ -126,7 +126,7 @@ class HubAccounts
     private function isAccountEnabled()
     {
         if ($this->accountInfo->status !== 'active') {
-            $this->hubAccountErrors[] = SELF::ACCOUNT_DISABLED;
+            $this->hubAccountErrors[] = self::ACCOUNT_DISABLED;
             return false;
         }
         return true;
@@ -139,7 +139,7 @@ class HubAccounts
         }
         $domains = $this->accountInfo->domains;
         if (empty($domains)) {
-            $this->hubAccountErrors[] = SELF::DOMAIN_EMPTY;
+            $this->hubAccountErrors[] = self::DOMAIN_EMPTY;
             return false;
         }
 
@@ -150,7 +150,7 @@ class HubAccounts
             }
         }
 
-        $this->hubAccountErrors[] = SELF::DOMAIN_INCORRECT;
+        $this->hubAccountErrors[] = self::DOMAIN_INCORRECT;
         return false;
     }
 
@@ -194,24 +194,24 @@ class HubAccounts
         }
 
         $noticesList = [
-            SELF::ACCOUNT_DISABLED => 'Your account is disabled on Pagar.me Dash. '
+            self::ACCOUNT_DISABLED => 'Your account is disabled on Pagar.me Dash. '
                 . 'Please contact the commercial sector to enable it.',
-            SELF::DOMAIN_EMPTY => [
+            self::DOMAIN_EMPTY => [
                 'message' => 'No domain registered on Pagar.me Dash. Please enter your website\'s domain on the Dash '
                     . 'to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('account-config')
             ],
-            SELF::DOMAIN_INCORRECT => [
+            self::DOMAIN_INCORRECT => [
                 'message' => 'The registered domain is different from the URL of your website. Please correct the '
                     . 'domain configured on the Dash to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('account-config')
             ],
-            SELF::MULTIPAYMENTS_DISABLED => [
+            self::MULTIPAYMENTS_DISABLED => [
                 'message' => 'Multipayment option is disabled on Pagar.me Dash. Please, access the Dash configurations '
                     . 'and enable it to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('order-config')
             ],
-            SELF::MULTIBUYERS_DISABLED => [
+            self::MULTIBUYERS_DISABLED => [
                 'message' => 'Multibuyers option is disabled on Pagar.me Dash. Please, access the Dash configurations '
                     . 'and enable it to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('order-config')
