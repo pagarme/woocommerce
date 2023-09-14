@@ -12,6 +12,13 @@ use Woocommerce\Pagarme\Service\AccountService;
 
 class HubAccounts
 {
+    const
+        ACCOUNT_DISABLED = 'accountDisabled',
+        DOMAIN_EMPTY = 'domainEmpty',
+        DOMAIN_INCORRECT = 'domainIncorrect',
+        MULTIPAYMENTS_DISABLED = 'multiPaymentsDisabled',
+        MULTIBUYERS_DISABLED = 'multiBuyersDisabled';
+
     private $config;
 
     private $accountInfo;
@@ -101,7 +108,7 @@ class HubAccounts
     {
         $orderSettings = $this->accountInfo->orderSettings;
         if (!$orderSettings['multi_payments_enabled']) {
-            $this->hubAccountErrors[] = 'multiPaymentsDisabled';
+            $this->hubAccountErrors[] = SELF::MULTIPAYMENTS_DISABLED;
             return false;
         }
         return true;
@@ -111,7 +118,7 @@ class HubAccounts
     {
         $orderSettings = $this->accountInfo->orderSettings;
         if (!$orderSettings['multi_buyers_enabled']) {
-            $this->hubAccountErrors[] = 'multiBuyersDisabled';
+            $this->hubAccountErrors[] = SELF::MULTIBUYERS_DISABLED;
         }
         return true;
     }
@@ -119,7 +126,7 @@ class HubAccounts
     private function isAccountEnabled()
     {
         if ($this->accountInfo->status !== 'active') {
-            $this->hubAccountErrors[] = 'accountDisabled';
+            $this->hubAccountErrors[] = SELF::ACCOUNT_DISABLED;
             return false;
         }
         return true;
@@ -132,7 +139,7 @@ class HubAccounts
         }
         $domains = $this->accountInfo->domains;
         if (empty($domains)) {
-            $this->hubAccountErrors[] = 'domainEmpty';
+            $this->hubAccountErrors[] = SELF::DOMAIN_EMPTY;
             return false;
         }
 
@@ -143,7 +150,7 @@ class HubAccounts
             }
         }
 
-        $this->hubAccountErrors[] = 'domainIncorrect';
+        $this->hubAccountErrors[] = SELF::DOMAIN_INCORRECT;
         return false;
     }
 
@@ -187,24 +194,24 @@ class HubAccounts
         }
 
         $noticesList = [
-            'accountDisabled' => 'Your account is disabled on Pagar.me Dash. '
+            SELF::ACCOUNT_DISABLED => 'Your account is disabled on Pagar.me Dash. '
                 . 'Please contact the commercial sector to enable it.',
-            'domainEmpty' => [
+            SELF::DOMAIN_EMPTY => [
                 'message' => 'No domain registered on Pagar.me Dash. Please enter your website\'s domain on the Dash '
                     . 'to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('account-config')
             ],
-            'domainIncorrect' => [
+            SELF::DOMAIN_INCORRECT => [
                 'message' => 'The registered domain is different from the URL of your website. Please correct the '
                     . 'domain configured on the Dash to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('account-config')
             ],
-            'multiPaymentsDisabled' => [
+            SELF::MULTIPAYMENTS_DISABLED => [
                 'message' => 'Multipayment option is disabled on Pagar.me Dash. Please, access the Dash configurations '
                     . 'and enable it to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('order-config')
             ],
-            'multiBuyersDisabled' => [
+            SELF::MULTIBUYERS_DISABLED => [
                 'message' => 'Multibuyers option is disabled on Pagar.me Dash. Please, access the Dash configurations '
                     . 'and enable it to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('order-config')
