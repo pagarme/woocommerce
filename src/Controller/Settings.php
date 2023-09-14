@@ -49,11 +49,6 @@ class Settings
 
     protected $sectionsFields = [];
 
-    /**
-     * @var array
-     */
-    private $gateways;
-
     public function __construct(
         Select $select = null,
         Config $config = null

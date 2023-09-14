@@ -193,6 +193,27 @@ class Config extends DataObject
     }
 
     /**
+     * @return bool
+     */
+    public function isAccAndMerchSaved() : bool {
+        return $this->getMerchantId() && $this->getAccountId();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDashUrl() {
+        if (!$this->isAccAndMerchSaved()) {
+            return null;
+        }
+        return sprintf(
+            'https://dash.pagar.me/%s/%s/',
+            $this->getMerchantId(),
+            $this->getAccountId()
+        );
+    }
+
+    /**
      * @return string
      */
     public function getPublicKey()

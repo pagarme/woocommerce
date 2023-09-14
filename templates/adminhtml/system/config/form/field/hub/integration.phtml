@@ -17,14 +17,18 @@ $confirm = 'Are you shure you wish to delete the keys? This action removes the i
            'store, but first you must access Pagar.me Hub and click on Delete.';
 $success = 'Integration keys successfully removed. Reload the page.';
 ?>
-<div class="pagarme-hub-integration-btn">
-    <a href="<?= esc_url($this->config->getHubUrl()); ?>" class="button button-primary">
-        <?= esc_attr($this->getButtonLabel()); ?>
-        <img alt="Pagarme Avatar"
-             src="<?= plugins_url('/pagarme-payments-for-woocommerce/assets/images/pagarme-avatar-white.svg') ?>">
+<a href="<?= esc_url($this->config->getHubUrl()); ?>" class="button button-primary pagarme-hub-integration-btn">
+    <?= esc_attr($this->getButtonLabel()); ?>
+    <img alt="Pagarme Avatar"
+            src="<?= plugins_url('/pagarme-payments-for-woocommerce/assets/images/pagarme-avatar-white.svg') ?>">
+</a>
+<?php if ($this->config->isAccAndMerchSaved()) : ?>
+    <a href="<?= $this->config->getDashUrl(); ?>" target="_blank" rel="noopener" class="button button-secondary">
+        <?= __('Access Pagar.me Dash'); ?>
     </a>
-</div>
-<?php if ($this->config->getHubInstallId()) : ?>
+<?php endif; ?>
+
+<?php if ($this->config->getHubInstallId() && !$this->config->getAccountId()) : ?>
     <p class="pagarme-hub-desintegration">
         <?= __(
                 "Have you removed your integration on Pagar.me Hub, but it shows active? " .

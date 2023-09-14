@@ -12,6 +12,15 @@
     margin-right: 1em;
 }
 
+.pagarme-notice .pagarme-notice-message-container a {
+    margin-right: 1em;
+    cursor: pointer;
+}
+
+.pagarme-notice .pagarme-notice-message-container a:last-child {
+    margin-right: 0;
+}
+
 .pagarme-notice .pagarme-notice-message-container ul {
     margin-left: 1.5em;
     list-style: inside;
