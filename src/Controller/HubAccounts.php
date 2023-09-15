@@ -12,12 +12,15 @@ use Woocommerce\Pagarme\Service\AccountService;
 
 class HubAccounts
 {
-    const
-        ACCOUNT_DISABLED = 'accountDisabled',
-        DOMAIN_EMPTY = 'domainEmpty',
-        DOMAIN_INCORRECT = 'domainIncorrect',
-        MULTIPAYMENTS_DISABLED = 'multiPaymentsDisabled',
-        MULTIBUYERS_DISABLED = 'multiBuyersDisabled';
+    const ACCOUNT_DISABLED = 'accountDisabled';
+    const DOMAIN_EMPTY = 'domainEmpty';
+    const DOMAIN_INCORRECT = 'domainIncorrect';
+    const MULTIPAYMENTS_DISABLED = 'multiPaymentsDisabled';
+    const MULTIBUYERS_DISABLED = 'multiBuyersDisabled';
+    const PIX_DISABLED = 'pixDisabled';
+    const CREDIT_CARD_DISABLED = 'creditCardDisabled';
+    const BILLET_DISABLED = 'billetDisabled';
+    const VOUCHER_DISABLED = 'voucherDisabled';
 
     private $config;
 
@@ -77,6 +80,10 @@ class HubAccounts
         $this->isDomainCorrect();
         $this->isMultiBuyersEnabled();
         $this->isMultiPaymentsEnabled();
+        $this->isPixEnabled();
+        $this->isCreditCardEnabled();
+        $this->isBilletEnabled();
+        $this->isVoucherEnabled();
         $this->setHubAccountErrors();
     }
 
@@ -154,6 +161,49 @@ class HubAccounts
         return false;
     }
 
+    private function isPixEnabled()
+    {
+        $storePixEnabled = $this->config->getData('enable_pix') === 'yes';
+        $dashPixDisabled = !$this->accountInfo->pixSettings['enabled'];
+        if ($dashPixDisabled && $storePixEnabled) {
+            $this->hubAccountErrors[] = self::PIX_DISABLED;
+        }
+        return true;
+    }
+
+    private function isCreditCardEnabled()
+    {
+        $storeCreditCardEnabled = $this->config->getData('enable_credit_card') === 'yes'
+            || $this->config->getData('multimethods_billet_card') === 'yes'
+            || $this->config->getData('multimethods_2_cards') === 'yes';
+        $dashCreditCardDisabled = !$this->accountInfo->creditCardSettings['enabled'];
+        if ($dashCreditCardDisabled && $storeCreditCardEnabled) {
+            $this->hubAccountErrors[] = self::CREDIT_CARD_DISABLED;
+        }
+        return true;
+    }
+
+    private function isBilletEnabled()
+    {
+        $storeBilletEnabled = $this->config->getData('enable_billet') === 'yes'
+            || $this->config->getData('multimethods_billet_card') === 'yes';
+        $dashBilletDisabled = !$this->accountInfo->boletoSettings['enabled'];
+        if ($dashBilletDisabled && $storeBilletEnabled) {
+            $this->hubAccountErrors[] = self::BILLET_DISABLED;
+        }
+        return true;
+    }
+
+    private function isVoucherEnabled()
+    {
+        $storeVoucherEnabled = $this->config->getData('enable_voucher') === 'yes';
+        $dashVoucherDisabled = !$this->accountInfo->voucherSettings['enabled'];
+        if ($dashVoucherDisabled && $storeVoucherEnabled) {
+            $this->hubAccountErrors[] = self::VOUCHER_DISABLED;
+        }
+        return true;
+    }
+
     /**
      * @param string $dashPage
      * @return array
@@ -163,9 +213,9 @@ class HubAccounts
         $buttons = [];
         $dashUrl = $this->config->getDashUrl();
         if ($dashUrl) {
-            $dashUrl .= "/settings/{$dashPage}/";
+            $dashUrl .= "settings/{$dashPage}/";
             $buttons[] = wcmpSingleButtonArray(
-                __('Access Dash Configurations', 'woo-pagarme-payments'),
+                'Access Dash Configurations',
                 $dashUrl,
                 'primary',
                 '_blank'
@@ -173,7 +223,7 @@ class HubAccounts
         }
         if ($this->getAccountId()) {
             $buttons[] = wcmpSingleButtonArray(
-                __('Verify Dash Configurations', 'woo-pagarme-payments'),
+                'Verify Dash Configurations',
                 '',
                 'secondary',
                 '',
@@ -216,6 +266,30 @@ class HubAccounts
                     . 'and enable it to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('order-config')
             ],
+            self::PIX_DISABLED => [
+                'message' => 'Pix payment method is enabled on your store, but disabled on Pagar.me Dash. '
+                    . 'Please, access the Dash configurations and enable it to be able to process Pix payment '
+                    . 'on your store.',
+                'buttons' => $this->getHubNoticeButtons('payment-methods')
+            ],
+            self::CREDIT_CARD_DISABLED => [
+                'message' => 'Credit Card payment method is enabled on your store, but disabled on Pagar.me Dash. '
+                    . 'Please, access the Dash configurations and enable it to be able to process Credit Card payment '
+                    . 'on your store.',
+                'buttons' => $this->getHubNoticeButtons('payment-methods')
+            ],
+            self::BILLET_DISABLED => [
+                'message' => 'Billet payment method is enabled on your store, but disabled on Pagar.me Dash. '
+                    . 'Please, access the Dash configurations and enable it to be able to process Billet payment '
+                    . 'on your store.',
+                'buttons' => $this->getHubNoticeButtons('payment-methods')
+            ],
+            self::VOUCHER_DISABLED => [
+                'message' => 'Voucher payment method is enabled on your store, but disabled on Pagar.me Dash. '
+                    . 'Please, access the Dash configurations and enable it to be able to process Voucher payment '
+                    . 'on your store.',
+                'buttons' => $this->getHubNoticeButtons('payment-methods')
+            ]
         ];
 
         foreach ($this->hubAccountErrors as $error) {

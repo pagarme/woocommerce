@@ -112,7 +112,7 @@ class Settings
                         [
                             'fieldObject' => Integration::class,
                             'id' => 'hub_button_integration',
-                            'title' => 'Hub integration',
+                            'title' => 'Pagar.me integration',
                         ],
                         [
                             'fieldObject' => Environment::class,

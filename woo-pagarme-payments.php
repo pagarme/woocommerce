@@ -113,7 +113,7 @@ function wcmpAddNoticeButton($buttons)
             $button['target'] !== '' ? " target='{$button['target']}'" : '',
             $button['type'] !== '' ? "button button-{$button['type']} " : '',
             $button['class'],
-            $button['label']
+            __($button['label'], 'woo-pagarme-payments'),
         );
     }
     $html .= '</p>';
@@ -208,7 +208,7 @@ function wcmpAdminNoticePermalink()
         ),
         array(
             wcmpSingleButtonArray(
-                __('Permalink Settings'),
+                'Permalink Settings',
                 self_admin_url('options-permalink.php')
             )
         )
