@@ -21,6 +21,8 @@ class HubAccounts
     const CREDIT_CARD_DISABLED = 'creditCardDisabled';
     const BILLET_DISABLED = 'billetDisabled';
     const VOUCHER_DISABLED = 'voucherDisabled';
+    const PAYMENT_DISABLED_MESSAGE = '%1$s payment method is enabled on your store, but disabled on Pagar.me Dash. '
+        . 'Please, access the Dash configurations and enable it to be able to process %1$s payment on your store.';
 
     private $config;
 
@@ -267,27 +269,19 @@ class HubAccounts
                 'buttons' => $this->getHubNoticeButtons('order-config')
             ],
             self::PIX_DISABLED => [
-                'message' => 'Pix payment method is enabled on your store, but disabled on Pagar.me Dash. '
-                    . 'Please, access the Dash configurations and enable it to be able to process Pix payment '
-                    . 'on your store.',
+                'message' => sprintf(self::PAYMENT_DISABLED_MESSAGE, 'Pix'),
                 'buttons' => $this->getHubNoticeButtons('payment-methods')
             ],
             self::CREDIT_CARD_DISABLED => [
-                'message' => 'Credit Card payment method is enabled on your store, but disabled on Pagar.me Dash. '
-                    . 'Please, access the Dash configurations and enable it to be able to process Credit Card payment '
-                    . 'on your store.',
+                'message' => sprintf(self::PAYMENT_DISABLED_MESSAGE, 'Credit Card'),
                 'buttons' => $this->getHubNoticeButtons('payment-methods')
             ],
             self::BILLET_DISABLED => [
-                'message' => 'Billet payment method is enabled on your store, but disabled on Pagar.me Dash. '
-                    . 'Please, access the Dash configurations and enable it to be able to process Billet payment '
-                    . 'on your store.',
+                'message' => sprintf(self::PAYMENT_DISABLED_MESSAGE, 'Billet'),
                 'buttons' => $this->getHubNoticeButtons('payment-methods')
             ],
             self::VOUCHER_DISABLED => [
-                'message' => 'Voucher payment method is enabled on your store, but disabled on Pagar.me Dash. '
-                    . 'Please, access the Dash configurations and enable it to be able to process Voucher payment '
-                    . 'on your store.',
+                'message' => sprintf(self::PAYMENT_DISABLED_MESSAGE, 'Voucher'),
                 'buttons' => $this->getHubNoticeButtons('payment-methods')
             ]
         ];
