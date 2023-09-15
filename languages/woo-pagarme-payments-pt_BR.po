@@ -1156,7 +1156,7 @@ msgid ""
 "process payment in your store."
 msgstr ""
 "A opção Multicompradores está desabilitada na Dash da Pagar.me. Por favor, acesse as configurações da Dash e "
-"habilitepara poder processar o pagamento em sua loja."
+"habilite para poder processar o pagamento em sua loja."
 
 #: src/Controller/HubAccounts.php:90 src/Controller/HubAccounts.php:96
 msgid ""
