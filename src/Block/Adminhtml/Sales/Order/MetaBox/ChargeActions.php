@@ -80,6 +80,9 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
      */
     private function getOrderId()
     {
+        if (isset($this->getRequest()['id'])) {
+            return $this->getRequest()['id'];
+        }
         if (isset($this->getRequest()['post'])) {
             return $this->getRequest()['post'];
         }

@@ -94,7 +94,7 @@ class Orders
                 $metaBox->getCode(),
                 $metaBox->getTitle(),
                 [$metaBox, 'toHtml'],
-                'shop_order',
+                ['shop_order', 'woocommerce_page_wc-orders'],
                 'advanced',
                 'high'
             );
