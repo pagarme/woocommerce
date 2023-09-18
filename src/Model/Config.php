@@ -279,6 +279,14 @@ class Config extends DataObject
         return $this->getData('is_gateway_integration_type') === 'yes';
     }
 
+    public function getIsVoucherSettingsEnabled()
+    {
+        if (!$this->getAccountId() || !$this->getIsPaymentEnabled()) {
+            return $this->getIsGatewayIntegrationType();
+        }
+        return $this->getIsPaymentEnabled()['voucher'];
+    }
+
     public function getIsInstallmentsDefaultConfig()
     {
         return $this->getData('cc_installment_type') === '1';
