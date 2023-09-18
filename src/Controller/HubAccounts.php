@@ -78,6 +78,7 @@ class HubAccounts
             return;
         }
         $this->hubAccountErrors = [];
+        $this->setPaymentsType();
         $this->isAccountEnabled();
         $this->isDomainCorrect();
         $this->isMultiBuyersEnabled();
@@ -111,6 +112,29 @@ class HubAccounts
             }
             wcmpRenderAdminNoticeHtml(__($notice, 'woo-pagarme-payments'));
         }
+    }
+
+    public function setPaymentsType()
+    {
+        $paymentTypes = [
+            'credit_card' => 'creditCardSettings',
+            'pix' => 'pixSettings',
+            'voucher' => 'voucherSettings',
+            'billet' => 'boletoSettings'
+        ];
+
+        if (!$this->accountInfo) {
+            return null;
+        }
+        foreach ($paymentTypes as $key => $paymentType) {
+            $paymentSettings = $this->accountInfo->$paymentType ?? null;
+            $paymentGateway[$key] = $paymentSettings['gateway'] === 'mundipag';
+            $paymentEnabled[$key] = $paymentSettings['enabled'];
+        }
+        $this->config->setData('is_payment_gateway', $paymentGateway);
+        $this->config->setData('is_payment_enabled', $paymentEnabled);
+        $this->config->save();
+
     }
 
     private function isMultiPaymentsEnabled()

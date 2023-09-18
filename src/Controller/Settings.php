@@ -7,7 +7,7 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller;
 
@@ -125,28 +125,32 @@ class Settings
                             'id' => 'multicustomers',
                             'title' => 'Multi-buyers',
                             'options' => $this->yesNoOptions->toLabelsArray(),
-                            'default'     => strtolower(Yesno::NO),
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'is_gateway_integration_type',
-                            'title' => 'Advanced settings',
-                            'options' => $this->yesNoOptions->toLabelsArray(),
-                            'default'     => strtolower(Yesno::NO),
-                            'description' => 'Configurations that only works for Gateway customers, who have a direct contract with an acquirer.'
+                            'default' => strtolower(Yesno::NO),
                         ],
                         [
                             'fieldObject' => Select::class,
                             'id' => 'enable_logs',
                             'title' => 'Logs',
                             'options' => $this->yesNoOptions->toLabelsArray(),
-                            'default'     => strtolower(Yesno::NO),
+                            'default' => strtolower(Yesno::NO),
                             'description' => 'Log Pagar.me events, you can check this log in WooCommerce>Status>Logs.'
                         ]
                     ],
                 ]
             ]
         ];
+
+        if (empty($this->config->getIsPaymentEnabled()) && $this->config->getHubInstallId()) {
+            $this->sectionsFields['section'][0]['fields'][] =
+                [
+                    'fieldObject' => Select::class,
+                    'id' => 'is_gateway_integration_type',
+                    'title' => 'Advanced settings',
+                    'options' => $this->yesNoOptions->toLabelsArray(),
+                    'default' => strtolower(Yesno::NO),
+                    'description' => 'Configurations that only works for Gateway customers, who have a direct contract with an acquirer.'
+                ];
+        }
     }
 
     /**
@@ -195,8 +199,10 @@ class Settings
     {
         $this->autoLoad();
         $gateways = [];
-        foreach(get_declared_classes() as $class){
-            if(is_subclass_of( $class, Gateways\AbstractGateway::class)) {
+        foreach (get_declared_classes() as $class) {
+            if (is_subclass_of($class, Gateways\AbstractGateway::class)) {
+                if (strpos($class, "Voucher") !== false && !$this->config->getIsVoucherSettingsEnabled())
+                    continue;
                 $gateways[] = $class;
             }
         }
@@ -213,21 +219,23 @@ class Settings
     /**
      * Add the settings page.
      */
-    public function settings_menu() {
+    public function settings_menu()
+    {
         add_submenu_page(
             'woocommerce',
             "Pagar.me",
             "Pagar.me",
             'manage_options',
             'woo-pagarme-payments',
-            array( $this, 'settings_page' )
+            array($this, 'settings_page')
         );
     }
 
     /**
      * Render the settings page for this plugin.
      */
-    public function settings_page() {
+    public function settings_page()
+    {
         $options = $this->get_option_key();
         $pageSettings = new PageSettings($options, $this->getGateways());
         $pageSettings->includeTemplate();
@@ -260,7 +268,8 @@ class Settings
     /**
      * Plugin settings form fields.
      */
-    public function plugin_settings() {
+    public function plugin_settings()
+    {
         $option = $this->get_option_key();
         foreach ($this->sectionsFields['section'] as $key => $value) {
             $section = new Section(
@@ -279,18 +288,19 @@ class Settings
             }
         }
         // Register settings.
-        register_setting( $option, $option, array( $this, 'validate_options' ) );
+        register_setting($option, $option, array($this, 'validate_options'));
     }
 
     /**
      * @param $input
      * @return array
      */
-    public function validate_options($fields ) {
+    public function validate_options($fields)
+    {
         $sanitizedData = [];
         foreach ($fields as $key => $field) {
-             if (isset($fields[$key])) {
-                 $sanitizedData[$key] = $this->sanitize_field($field);
+            if (isset($fields[$key])) {
+                $sanitizedData[$key] = $this->sanitize_field($field);
             }
         }
         return $sanitizedData;
