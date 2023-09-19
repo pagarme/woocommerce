@@ -15,6 +15,7 @@ class HubAccounts
     const ACCOUNT_DISABLED = 'accountDisabled';
     const DOMAIN_EMPTY = 'domainEmpty';
     const DOMAIN_INCORRECT = 'domainIncorrect';
+    const WEBHOOK_INCORRECT = 'webhookIncorrect';
     const MULTIPAYMENTS_DISABLED = 'multiPaymentsDisabled';
     const MULTIBUYERS_DISABLED = 'multiBuyersDisabled';
     const PIX_DISABLED = 'pixDisabled';
@@ -81,6 +82,7 @@ class HubAccounts
         $this->setPaymentsType();
         $this->isAccountEnabled();
         $this->isDomainCorrect();
+        $this->isWebHookCorrect();
         $this->isMultiBuyersEnabled();
         $this->isMultiPaymentsEnabled();
         $this->isPixEnabled();
@@ -187,6 +189,17 @@ class HubAccounts
         return false;
     }
 
+    private function isWebHookCorrect()
+    {
+        foreach ( $this->accountInfo->webhookSettings as $webhook){
+            if (strpos($webhook->url, Utils::get_site_url()) !== false) {
+                return true;
+            }
+        }
+        $this->hubAccountErrors[] = self::WEBHOOK_INCORRECT;
+        return false;
+    }
+
     private function isPixEnabled()
     {
         $storePixEnabled = $this->config->getData('enable_pix') === 'yes';
@@ -281,6 +294,15 @@ class HubAccounts
                 'message' => 'The registered domain is different from the URL of your website. Please correct the '
                     . 'domain configured on the Dash to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('account-config')
+            ],
+            self::WEBHOOK_INCORRECT => [
+                'message' => 'The URL for receiving webhook registered in Pagar.me Dash is different from the URL of '
+                    . 'your website. Please, click the button below to access the Hub and click the Delete > Confirm button. '
+                    . 'Then return to your store and integrate again.',
+                'buttons' => [wcmpSingleButtonArray(
+                    'View Integration',
+                    $this->config->getHubUrl()
+                )]
             ],
             self::MULTIPAYMENTS_DISABLED => [
                 'message' => 'Multipayment option is disabled on Pagar.me Dash. Please, access the Dash configurations '
