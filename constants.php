@@ -19,3 +19,4 @@ wc_pagarme_define('WCMP_ROOT_FILE', WCMP_ROOT_PATH . WCMP_SLUG . '.php');
 wc_pagarme_define('WCMP_OPTION_ACTIVATE', 'wcmp_official_activate');
 wc_pagarme_define('WCMP__FILE__', __FILE__ );
 wc_pagarme_define('WCMP_PLUGIN_BASE', plugin_basename( WCMP_ROOT_FILE ) );
+wc_pagarme_define('WCMP_JS_HANDLER_BASE_NAME', 'pagarme_scripts_' );
