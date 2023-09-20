@@ -295,8 +295,9 @@ class Core
     }
 
     public function addNoDeferToPagespeed($tag, $handle) {
-        if( strpos($handle, WCMP_JS_HANDLER_BASE_NAME) !== 0)
+        if ( strpos($handle, WCMP_JS_HANDLER_BASE_NAME) !== 0) {
             return $tag;
+        }
         return str_replace( ' src', ' data-pagespeed-no-defer src', $tag );
     }
 
