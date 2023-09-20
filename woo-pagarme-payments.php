@@ -113,7 +113,7 @@ function wcmpAddNoticeButton($buttons)
             $button['target'] !== '' ? " target='{$button['target']}'" : '',
             $button['type'] !== '' ? "button button-{$button['type']} " : '',
             $button['class'],
-            __($button['label'], 'woo-pagarme-payments'),
+            __($button['label'], 'woo-pagarme-payments')
         );
     }
     $html .= '</p>';
