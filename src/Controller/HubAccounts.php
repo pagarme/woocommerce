@@ -130,8 +130,8 @@ class HubAccounts
         }
         foreach ($paymentTypes as $key => $paymentType) {
             $paymentSettings = $this->accountInfo->$paymentType ?? null;
-            $paymentGateway[$key] = $paymentSettings['gateway'] === 'mundipag';
-            $paymentEnabled[$key] = $paymentSettings['enabled'];
+            $paymentGateway[$key] = ($paymentSettings['gateway'] ?? '') === 'mundipagg';
+            $paymentEnabled[$key] = $paymentSettings['enabled'] ?? false;
         }
         $this->config->setData('is_payment_gateway', $paymentGateway);
         $this->config->setData('is_payment_enabled', $paymentEnabled);
