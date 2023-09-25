@@ -68,7 +68,7 @@ class Webhooks
     private function orderByWoocommerce($orderId, $metadata, $webhookId)
     {
         if(!wc_get_order($orderId)) {
-            if( str_contains($this->getMetadata($metadata), "Woocommerce") ) {
+            if(strpos($this->getMetadata($metadata), "Woocommerce") !== false) {
                 $this->config->log()->add('woo-pagarme', 'Webhook Received but not proccessed: ' . $webhookId);
             }
             return false;
