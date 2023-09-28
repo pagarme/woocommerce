@@ -353,7 +353,7 @@ class HubAccounts
         return $this->hubAccountErrors;
     }
 
-    private function getAccountIdFromWebhook($body)
+    public function getAccountIdFromWebhook($body)
     {
         if ($this->getAccountId() || empty($body->account) || empty($body->account->id)){
             return;

@@ -52,14 +52,13 @@ abstract class Meta
 
     public function get_meta($meta_key, $sanitize = 'rm_tags')
     {
-        $value = get_metadata($this->type, $this->ID, $this->get_meta_key($meta_key), true);
-
+        $value = $this->wc_order->get_meta($this->get_meta_key($meta_key), true);
         return Utils::sanitize($value, $sanitize);
     }
 
     public function update_meta($key, $value)
     {
-        update_metadata($this->type, $this->ID, $key, Utils::rm_tags($value));
+        $this->wc_order->update_meta_data($key, Utils::rm_tags($value));
     }
 
     private function get_meta_key($prop_name)

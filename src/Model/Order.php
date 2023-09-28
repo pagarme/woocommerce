@@ -71,12 +71,12 @@ class Order extends Meta
             $this->wc_order->update_status('on-hold', __('Pagar.me: Awaiting payment confirmation.', 'woo-pagarme-payments'));
             wc_reduce_stock_levels($this->wc_order->get_id());
         }
-
+        
         $statusArray = [
             'previous_status' => $current_status,
             'new_status' => $this->wc_order->get_status()
         ];
-
+        $this->wc_order->save();
         $this->log($statusArray);
     }
 
@@ -91,14 +91,13 @@ class Order extends Meta
 
         if (!$this->needs_processing()) {
             $this->wc_order->set_status('completed');
-            $this->wc_order->save();
         }
 
         $statusArray = [
             'previous_status' => $current_status,
             'new_status' => $this->wc_order->get_status()
         ];
-
+        $this->wc_order->save();
         $this->log($statusArray);
     }
 
