@@ -10,7 +10,6 @@ use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Order;
-use Exception;
 
 class Webhooks
 {
@@ -30,6 +29,10 @@ class Webhooks
             $this->config->log()->add('woo-pagarme', 'Webhook Received: empty body!');
             return;
         }
+        if (!$this->orderByWoocommerce($body->data->code, $body->data->order->metadata, $body->id) ) {
+            return;
+        }
+
         $this->config->log()->add('woo-pagarme', 'Webhook Received: ' . json_encode($body, JSON_PRETTY_PRINT));
 
         $event = $this->sanitize_event_name($body->type);
@@ -62,6 +65,27 @@ class Webhooks
         return str_replace('.', '_', strtolower($event));
     }
 
+    private function orderByWoocommerce($orderId, $metadata, $webhookId)
+    {
+        if(!wc_get_order($orderId)) {
+            if(strpos($this->getMetadata($metadata), "Woocommerce") !== false) {
+                $this->config->log()->add('woo-pagarme', 'Webhook Received but not proccessed: ' . $webhookId);
+            }
+            return false;
+        }
+        
+        return true;
+    }
+    private function getMetadata($metadata)
+    {
+        if(empty($metadata)) {
+            return "";
+        }
+        if(property_exists($metadata, 'platformVersion')) {
+            return $metadata->platformVersion;
+        }
+        return "";
+    }
     public function was_sent($event_name, $event_id, $order_id)
     {
         $value = get_post_meta($order_id, "webhook_{$event_name}_{$event_id}", true);
