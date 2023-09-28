@@ -284,7 +284,7 @@ class HubAccounts
 
         $noticesList = [
             self::ACCOUNT_DISABLED => 'Your account is disabled on Pagar.me Dash. '
-                . 'Please contact the commercial sector to enable it.',
+                . 'Please, contact our support team to enable it.',
             self::DOMAIN_EMPTY => [
                 'message' => 'No domain registered on Pagar.me Dash. Please enter your website\'s domain on the Dash '
                     . 'to be able to process payment in your store.',
@@ -297,8 +297,8 @@ class HubAccounts
             ],
             self::WEBHOOK_INCORRECT => [
                 'message' => 'The URL for receiving webhook registered in Pagar.me Dash is different from the URL of '
-                    . 'your website. Please, click the button below to access the Hub and click the Delete > Confirm button. '
-                    . 'Then return to your store and integrate again.',
+                    . 'your website. Please, click the button below to access the Hub and click the Delete > Confirm '
+                    . 'button. Then return to your store and integrate again.',
                 'buttons' => [wcmpSingleButtonArray(
                     'View Integration',
                     $this->config->getHubUrl()
