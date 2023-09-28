@@ -76,7 +76,7 @@ class Order extends Meta
             'previous_status' => $current_status,
             'new_status' => $this->wc_order->get_status()
         ];
-
+        $this->wc_order->save();
         $this->log($statusArray);
     }
 
@@ -91,14 +91,13 @@ class Order extends Meta
 
         if (!$this->needs_processing()) {
             $this->wc_order->set_status('completed');
-            $this->wc_order->save();
         }
 
         $statusArray = [
             'previous_status' => $current_status,
             'new_status' => $this->wc_order->get_status()
         ];
-
+        $this->wc_order->save();
         $this->log($statusArray);
     }
 
