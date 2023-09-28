@@ -32,4 +32,15 @@ class FeatureCompatibilization
         }
         \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility($featureId, WCMP_PLUGIN_BASE, $state);
     }
+
+    public static function isHposActivated()
+    {
+        if(!class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class)) {
+            return false;
+        }
+        if(!method_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class, 'custom_orders_table_usage_is_enabled')){
+            return false;
+        }
+        return \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+    }
 }
