@@ -63,9 +63,9 @@ abstract class Meta
     {
         if (FeatureCompatibilization::isHposActivated()) {
             $this->wc_order->update_meta_data($key, Utils::rm_tags($value));
-        } else {
-            update_metadata($this->type, $this->ID, $key, Utils::rm_tags($value));
+            return;
         }
+        update_metadata($this->type, $this->ID, $key, Utils::rm_tags($value));
     }
 
     private function get_meta_key($prop_name)
