@@ -95,7 +95,10 @@ final class BoletoPayment extends AbstractPayment
     {
         $paymentRequest = new CreateBoletoPaymentRequest();
 
-        $paymentRequest->bank = $this->getBank()->getCode();
+        $bank = $this->getBank();
+        if ($bank && method_exists($bank, 'getCode')) {
+            $paymentRequest->bank = $this->getBank()->getCode();
+        }
         $paymentRequest->instructions = $this->getInstructions();
         $paymentRequest->dueAt = $this->getDueAt();
 

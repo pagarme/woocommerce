@@ -222,7 +222,12 @@ final class PaymentFactory
             }
 
             $payment->setAmount($boletoData->amount);
-            $payment->setBank(BoletoBank::createFromCode($boletoData->bank));
+            if (property_exists($boletoData, 'bank')) {
+                $bank = BoletoBank::createFromCode($boletoData->bank);
+                if ($bank) {
+                    $payment->setBank($bank);
+                }
+            }
             $payment->setInstructions($boletoData->instructions);
             $payment->setDueAt($boletoData->due_at);
 
