@@ -1,6 +1,6 @@
 <?php
 
-namespace Pagarme\Core\Payment\Services\ResponseHandlers;
+namespace Pagarme\Core\Recurrence\Services\ResponseHandlers;
 
 use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Payment\Aggregates\Order as PaymentOrder;

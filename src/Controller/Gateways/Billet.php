@@ -29,6 +29,8 @@ class Billet extends AbstractGateway
 {
     const PAYMENT_INSTRUCTIONS_FIELD_NAME = 'Payment instructions';
 
+    const BILLET_BANK_FIELD_NAME = 'Bank';
+
     const PAYMENT_INSTRUCTIONS_MAX_LENGTH = 255;
 
     /** @var string */
@@ -76,12 +78,14 @@ class Billet extends AbstractGateway
         }
         return [
             'type'    => 'select',
-            'title'   => __('Bank', 'woo-pagarme-payments'),
+            'title'   => __(self::BILLET_BANK_FIELD_NAME, 'woo-pagarme-payments'),
             'class'   => 'wc-enhanced-select',
             'default' => $this->config->getData('billet-bank') ?? 0,
             'options' => $options,
             'custom_attributes' => [
                 'data-field' => 'billet-bank',
+                'data-field-validate' => 'required',
+                'data-error-message-required' => __('This field is required.', 'woo-pagarme-payments'),
             ]
         ];
     }
@@ -147,6 +151,19 @@ class Billet extends AbstractGateway
             self::PAYMENT_INSTRUCTIONS_FIELD_NAME,
             self::PAYMENT_INSTRUCTIONS_MAX_LENGTH
         );
+        return $value;
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return mixed
+     * @throws InvalidOptionException
+     */
+    public function validate_billet_bank_field($key, $value)
+    {
+        $this->validateRequired($value, self::BILLET_BANK_FIELD_NAME);
+
         return $value;
     }
 }

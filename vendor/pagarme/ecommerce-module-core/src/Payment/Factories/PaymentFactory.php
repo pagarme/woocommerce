@@ -32,12 +32,6 @@ final class PaymentFactory
     /** @var string */
     private $cardStatementDescriptor;
 
-    /** @var BoletoBank */
-    private $boletoBank;
-
-    /** @var string */
-    private $boletoInstructions;
-
     public function __construct()
     {
         $this->primitiveFactories = [
@@ -51,8 +45,6 @@ final class PaymentFactory
         $this->moduleConfig = MPSetup::getModuleConfiguration();
 
         $this->cardStatementDescriptor = $this->moduleConfig->getCardStatementDescriptor();
-        $this->boletoBank = BoletoBank::itau();
-        $this->boletoInstructions = $this->moduleConfig->getBoletoInstructions();
     }
 
     public function createFromJson($json)
@@ -230,8 +222,14 @@ final class PaymentFactory
             }
 
             $payment->setAmount($boletoData->amount);
-            $payment->setBank($this->boletoBank);
-            $payment->setInstructions($this->boletoInstructions);
+            if (property_exists($boletoData, 'bank')) {
+                $bank = BoletoBank::createFromCode($boletoData->bank);
+                if ($bank) {
+                    $payment->setBank($bank);
+                }
+            }
+            $payment->setInstructions($boletoData->instructions);
+            $payment->setDueAt($boletoData->due_at);
 
             $payments[] = $payment;
         }

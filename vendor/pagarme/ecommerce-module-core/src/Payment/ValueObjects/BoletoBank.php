@@ -88,6 +88,32 @@ class BoletoBank extends AbstractValueObject
         return new self(self::CODE_CEF, self::NAME_CEF);
     }
 
+    static public function createFromCode($code) {
+        $billetBank = null;
+        switch ($code) {
+            case self::CODE_BB:
+                $billetBank = self::bb();
+                break;
+            case self::CODE_SANTANDER:
+                $billetBank = self::santander();
+                break;
+            case self::CODE_BRADESCO:
+                $billetBank = self::bradesco();
+                break;
+            case self::CODE_ITAU:
+                $billetBank = self::itau();
+                break;
+            case self::CODE_CITIBANK:
+                $billetBank = self::citibank();
+                break;
+            case self::CODE_CEF:
+                $billetBank = self::cef();
+                break;
+        }
+
+        return $billetBank;
+    }
+
     /**
      * To check the structural equality of value objects,
      * this method should be implemented in this class children.

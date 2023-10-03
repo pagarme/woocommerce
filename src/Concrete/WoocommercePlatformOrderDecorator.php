@@ -48,8 +48,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     protected $platformOrder;
 
     private $i18n;
+
     private $formData;
+
     private $paymentMethod;
+
+    private $paymentInformation;
 
     public function __construct($formData = null, $paymentMethod = null)
     {
@@ -589,13 +593,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $customer->id = $pagarmeCustomer->getPagarmeId() ?
                 $pagarmeCustomer->getPagarmeId()->getValue() : null;
 
-            $newPayment = $payment->get_payment_data(
+            $this->paymentInformation = $payment->get_payment_data(
                 $this->getPlatformOrder(),
                 $this->formData,
                 $customer
             );
-
-            $payments = $newPayment;
         }
 
         $paymentData = [];
@@ -609,90 +611,90 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $paymentMethods;
     }
 
-    private function isBilletAndCreditCardPayment($payments)
+    private function isBilletAndCreditCardPayment()
     {
-        $firstPaymentMethod = $payments[0]['payment_method'];
-        $secondPaymentMethod = $payments[1]['payment_method'];
+        $firstPaymentMethod = $this->paymentInformation[0]['payment_method'];
+        $secondPaymentMethod = $this->paymentInformation[1]['payment_method'];
 
         return ($firstPaymentMethod === 'boleto' && $secondPaymentMethod === 'credit_card')
             || ($firstPaymentMethod === 'credit_card' && $secondPaymentMethod === 'boleto');
     }
 
-    private function isTwoCreditCardPayment($payments)
+    private function isTwoCreditCardPayment()
     {
-        $firstPaymentMethod = $payments[0]['payment_method'];
-        $secondPaymentMethod = $payments[1]['payment_method'];
+        $firstPaymentMethod = $this->paymentInformation[0]['payment_method'];
+        $secondPaymentMethod = $this->paymentInformation[1]['payment_method'];
 
         return $firstPaymentMethod === 'credit_card' &&
             $secondPaymentMethod === 'credit_card';
     }
 
-    private function isBilletPayment($payments)
+    private function isBilletPayment()
     {
-        if (count($payments) > 1) {
+        if (count($this->paymentInformation) > 1) {
             return false;
         }
 
-        $payment = $payments[0];
+        $payment = $this->paymentInformation[0];
         return $payment['payment_method'] === 'boleto';
     }
 
-    private function isCreditCardPayment($payments)
+    private function isCreditCardPayment()
     {
-        if (count($payments) > 1) {
+        if (count($this->paymentInformation) > 1) {
             return false;
         }
 
-        $payment = $payments[0];
+        $payment = $this->paymentInformation[0];
         return $payment['payment_method'] === 'credit_card';
     }
 
-    private function isPixPayment($payments)
+    private function isPixPayment()
     {
-        if (count($payments) > 1) {
+        if (count($this->paymentInformation) > 1) {
             return false;
         }
 
-        $payment = $payments[0];
+        $payment = $this->paymentInformation[0];
         return $payment['payment_method'] === 'pix';
     }
 
-    private function isVoucherPayment($payments)
+    private function isVoucherPayment()
     {
-        if (count($payments) > 1) {
+        if (count($this->paymentInformation) > 1) {
             return false;
         }
 
-        $payment = $payments[0];
+        $payment = $this->paymentInformation[0];
         return $payment['payment_method'] === 'voucher';
     }
 
-    private function getPaymentHandler($payments)
+    private function getPaymentHandler()
     {
-        if (count($payments) > 1) {
+        if (count($this->paymentInformation) > 1) {
 
-            if ($this->isBilletAndCreditCardPayment($payments)) {
+            if ($this->isBilletAndCreditCardPayment()) {
                 return 'BilletCreditCard';
             }
 
-            if ($this->isTwoCreditCardPayment($payments)) {
+            if ($this->isTwoCreditCardPayment()) {
                 return 'TwoCreditCards';
             }
         }
 
-        if ($this->isBilletPayment($payments)) {
+        if ($this->isBilletPayment()) {
             return 'Billet';
         }
 
-        if ($this->isCreditCardPayment($payments)) {
+        if ($this->isCreditCardPayment()) {
             return 'CreditCard';
         }
 
-        if ($this->isPixPayment($payments)) {
+        if ($this->isPixPayment()) {
             return 'Pix';
         }
 
-        if ($this->isVoucherPayment($payments)) {
+        if ($this->isVoucherPayment()) {
             return 'Voucher';
         }
 
@@ -966,7 +968,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private function extractPaymentDataFromBillet(&$paymentData)
     {
         $moneyService = new MoneyService();
-        $newPaymentData = new \stdClass();
+        $billetDataIndex = BoletoPayment::getBaseCode();
+        $newPaymentData = (object) $this->paymentInformation[0][$billetDataIndex];
 
         $amount = isset($this->formData["billet_value"]) ?
             $this->formData["billet_value"] : $this->getGrandTotal();
@@ -974,10 +977,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $newPaymentData->amount =
             $moneyService->floatToCents($amount);
 
-        $boletoDataIndex = BoletoPayment::getBaseCode();
-        if (!isset($paymentData[$boletoDataIndex])) {
-            $paymentData[$boletoDataIndex] = [];
-        }
+        $paymentData[$billetDataIndex] = $paymentData[$billetDataIndex] ?? [];
 
         if (isset($this->formData["enable_multicustomers_billet"]) && $this->formData["enable_multicustomers_billet"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
@@ -985,7 +985,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             );
         }
 
-        $paymentData[$boletoDataIndex][] = $newPaymentData;
+        $paymentData[$billetDataIndex][] = $newPaymentData;
     }
 
     private function extractPaymentDataFromPix(&$paymentData)
