@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-09-04 15:55-0300\n"
+"PO-Revision-Date: 2023-09-18 18:31-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -805,11 +805,15 @@ msgstr "O plugin Woocommerce é necessário para o funcionamento do módulo da P
 msgid "WooCoomerce Extra Checkout Fields For Brazil plugin is required for Pagar.me module to work."
 msgstr "O plugin WooCoomerce Extra Checkout Fields For Brazil é necessário para o funcionamento do módulo da Pagar.me."
 
-#: woo-pagarme-payments.php:84
+#: woo-pagarme-payments.php:211
+msgid "Permalink Settings"
+msgstr "Configurações de links permanentes"
+
+#: woo-pagarme-payments.php:153
 msgid "Activate"
 msgstr "Ativar"
 
-#: woo-pagarme-payments.php:100
+#: woo-pagarme-payments.php:166
 msgid "Install"
 msgstr "Instalar"
 
@@ -1051,8 +1055,8 @@ msgstr "Sim"
 msgid "No"
 msgstr "Não"
 
-msgid "Hub integration"
-msgstr "Integração de HUB"
+msgid "Pagar.me integration"
+msgstr "Integração Pagar.me"
 
 msgid "Card Wallet"
 msgstr "Carteira"
@@ -1138,74 +1142,105 @@ msgstr "Houve um problema com a troca de pagamento."
 msgid "Error creating subscription free trial."
 msgstr "Erro ao criar a avaliação gratuita da assinatura."
 
-#~ msgid "If you have not yet received the billet, please click the button below to print."
-#~ msgstr "Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
+#: src/Controller/HubAccounts.php:160
+msgid "Access Dash Configurations"
+msgstr "Acessar Configurações da Dash"
 
-#~ msgid "BILLET: If you have not yet received the billet, please click the button below to print."
-#~ msgstr "BOLETO: Se você ainda não efetuou o pagamento, por favor clique no botão abaixo para pagar."
+#: src/Controller/HubAccounts.php:168
+msgid "Verify Dash Configurations"
+msgstr "Verificar Configurações da Dash"
 
-#~ msgid "The sum of billet and credit card is less than the total"
-#~ msgstr "A soma do boleto com o cartão é menor do que o total"
+#: src/Controller/HubAccounts.php:90 src/Controller/HubAccounts.php:96
+msgid ""
+"Multibuyers option is disabled on Pagar.me Dash. Please, access the Dash configurations and enable it to be able to "
+"process payment in your store."
+msgstr ""
+"A opção Multicompradores está desabilitada na Dash da Pagar.me. Por favor, acesse as configurações da Dash e habilite "
+"para poder processar o pagamento em sua loja."
 
-#~ msgid "The sum of billet and credit card is greater than the total"
-#~ msgstr "A soma do boleto com o cartão é maior do que o total"
+#: src/Controller/HubAccounts.php:90 src/Controller/HubAccounts.php:96
+msgid ""
+"Multipayment option is disabled on Pagar.me Dash. Please, access the Dash configurations and enable it to be able to "
+"process payment in your store."
+msgstr ""
+"A opção Multimeio de pagamentos está desabilitada na Dash da Pagar.me. Por favor, acesse as configurações da Dash e "
+"habilite para poder processar o pagamento em sua loja."
 
-#~ msgid "Value (Billet)"
-#~ msgstr "Valor (Boleto)"
+#: src/Controller/HubAccounts.php:90 src/Controller/HubAccounts.php:96
+msgid "Your account is disabled on Pagar.me Dash. Please, contact our support team to enable it."
+msgstr ""
+"Sua conta está desativada na Dash da Pagar.me. Por favor, entre em contato com o nosso time de atendimento para "
+"habilitá-la."
 
-#~ msgid "Choose a credit card save"
-#~ msgstr "Escolha um cartão"
+#: src/Controller/HubAccounts.php:90 src/Controller/HubAccounts.php:96
+msgid ""
+"No domain registered on Pagar.me Dash. Please enter your website's domain on the Dash to be able to process payment "
+"in your store."
+msgstr ""
+"Nenhum domínio cadastrado na Dash da Pagar.me. Por favor, insira o domínio do seu site na Dash para poder processar o "
+"pagamento em sua loja."
 
-#~ msgid "Pay with billet banking"
-#~ msgstr "Pagar com boleto bancário"
+#: src/Controller/HubAccounts.php:90 src/Controller/HubAccounts.php:96
+msgid ""
+"The registered domain is different from the URL of your website. Please correct the domain configured on the Dash to "
+"be able to process payment in your store."
+msgstr ""
+"O domínio cadastrado é diferente da URL do seu site. Por favor, corrija o domínio configurado na Dash para poder "
+"processar o pagamento em sua loja."
 
-#~ msgid "Pay with billet and credit card"
-#~ msgstr "Pagar com boleto e cartão"
+msgid ""
+"Pix payment method is enabled on your store, but disabled on Pagar.me Dash. Please, access the Dash configurations "
+"and enable it to be able to process Pix payment on your store."
+msgstr ""
+"A forma de pagamento Pix está habilitada na sua loja, mas desabilitada na Dash da Pagar.me. Por favor, acesse as "
+"configurações da Dash e habilite para poder processar o pagamento via Pix na sua loja."
 
-#~ msgid "Fill out the field"
-#~ msgstr "Preencha o campo"
+msgid ""
+"Credit Card payment method is enabled on your store, but disabled on Pagar.me Dash. Please, access the Dash "
+"configurations and enable it to be able to process Credit Card payment on your store."
+msgstr ""
+"A forma de pagamento Cartão de Crédito está habilitada na sua loja, mas desabilitada na Dash da Pagar.me. Por favor, "
+"acesse as configurações da Dash e habilite para poder processar o pagamento via Cartão de Crédito na sua loja."
 
-#~ msgid "Go to setup"
-#~ msgstr "Ir para as configurações"
+msgid ""
+"Billet payment method is enabled on your store, but disabled on Pagar.me Dash. Please, access the Dash configurations "
+"and enable it to be able to process Billet payment on your store."
+msgstr ""
+"A forma de pagamento Boleto está habilitada na sua loja, mas desabilitada na Dash da Pagar.me. Por favor, acesse as "
+"configurações da Dash e habilite para poder processar o pagamento via Boleto na sua loja."
 
-#~ msgid "Your transaction has been processed by Pagar.me."
-#~ msgstr "Sua transação foi processada pela Pagar.me."
+msgid ""
+"Voucher payment method is enabled on your store, but disabled on Pagar.me Dash. Please, access the Dash "
+"configurations and enable it to be able to process Voucher payment on your store."
+msgstr ""
+"A forma de pagamento Voucher está habilitada na sua loja, mas desabilitada na Dash da Pagar.me. Por favor, acesse as "
+"configurações da Dash e habilite para poder processar o pagamento via Voucher na sua loja."
 
-#~ msgid "Payment Data - Pagar.me"
-#~ msgstr "Dados do Pagamento - Pagar.me"
+msgid ""
+"The URL for receiving webhook registered in Pagar.me Dash is different from the URL of your website. Please, click "
+"the button below to access the Hub and click the Delete > Confirm button. Then return to your store and integrate "
+"again."
+msgstr ""
+"A URL de recebimento de webhook cadastrado na Dash da Pagar.me é diferente da URL do seu site. Por favor, clique no "
+"botão abaixo para acessar o Hub e clique no botão Excluir > Confirmar. Depois retorne à sua loja e integre novamente."
 
-#~ msgid "Interest"
-#~ msgstr "Juros"
+#: assets/javascripts/admin/pagarme_notices.js:20
+msgid "Success!"
+msgstr "Sucesso!"
 
-#~ msgid "Invalid request"
-#~ msgstr "Requisição inválida"
+#: assets/javascripts/admin/pagarme_notices.js:21
+msgid "Dash configuration was retrieved successfully. The page is reloading. Please, wait a moment."
+msgstr ""
+"As configurações da Dash foram recuperadas com sucesso. A página está recarregando. Por favor, aguarde um momento."
 
-#~ msgid "Instruction Line 1"
-#~ msgstr "Primeira linha de instrução"
+#: assets/javascripts/admin/pagarme_notices.js:30 assets/javascripts/admin/pagarme_notices.js:39
+msgid "Fail!"
+msgstr "Falha!"
 
-#~ msgid "First line instruction for the billet."
-#~ msgstr "Primeira linha de instrução para o boleto."
+#: assets/javascripts/admin/pagarme_notices.js:31 assets/javascripts/admin/pagarme_notices.js:40
+msgid "Dash configuration was not retrieved. Please, try again."
+msgstr "As configurações da Dash não foram recuperadas. Por favor, tente novamente."
 
-#~ msgid "Instruction Line 2"
-#~ msgstr "Segunda linha de instrução"
-
-#~ msgid "Second line instruction for the billet."
-#~ msgstr "Segunda linha de instrução para o boleto."
-
-#~ msgid "Instruction Line 3"
-#~ msgstr "Terceira linha de instrução"
-
-#~ msgid "Third line instruction for the billet."
-#~ msgstr "Terceira linha de instrução para o boleto"
-
-#~ msgid "Enable Installments"
-#~ msgstr "Habilitar parcelamento"
-
-#~ msgid "Sandbox"
-#~ msgstr "Modo de desenvolvedor"
-
-#~ msgid "Multimethods"
-#~ msgstr "Multimeios"
-
-#~ msgid "Enable Multimethods"
-#~ msgstr "Habilitar multimeios"
+#: templates/adminhtml/system/config/form/field/hub/integration.phtml:25
+msgid "Access Pagar.me Dash"
+msgstr "Acessar o Dash da Pagar.me"

@@ -1,5 +1,10 @@
+.woocommerce-input-toggle {
+    border: 2px solid #007cba;
+    background-color: #007cba;
+}
+
 .form-table td p.pagarme-hub-desintegration {
-    margin: 1em 0 0;
+    margin: 0;
     font-style: italic;
 }
 
@@ -8,10 +13,30 @@
     cursor: pointer;
 }
 
-.pagarme-hub-integration-btn > a > img {
-    vertical-align: text-top;
+.hub_button_integration-field {
+    display: flex;
+    align-items: center;
+}
+
+.hub_button_integration-field > * {
+    margin-right: 1rem !important;
+}
+
+.hub_button_integration-field > *:last-child {
+    margin-right: 0;
+}
+
+.hub_button_integration-field > a.button.pagarme-hub-integration-btn {
+    position: relative;
+    padding-right: 38px;
+}
+
+.hub_button_integration-field > a.button.pagarme-hub-integration-btn > img {
+    position: absolute;
+    top: 50%;
+    right: 11px;
     max-height: 1.4em;
-    margin-left: .6em;
+    margin-top: -0.7em;
 }
 
 .pagarme-message-warning {

@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Pagar.me module for Woocommerce
- * Version:     3.1.5
+ * Version:     3.1.6
  * Author:      Pagar.me
  * Author URI:  https://pagar.me
  * License:     GPL2
@@ -9,7 +9,7 @@
  * Requires at least: 4.1
  * Tested up to: 6.3.1
  * WC requires at least: 3.9.0
- * WC tested up to: 8.0.3
+ * WC tested up to: 8.2.0
  * Domain Path: /languages
  * Text Domain: woo-pagarme-payments
  */
@@ -23,20 +23,36 @@ require_once dirname(__FILE__) . '/constants.php';
 /**
  * Renders custom Wordpress Notice on every admin pages.
  * @param string $message Message displayed on the notice.
- * @param string $path The plugin basename or the configuration page file name.
- * If string, it's used to generate the message button. Exemple: plugin-name/plugin-name.php or config-page.php
- * @param bool $isConfig If defined true, the button link points to the configuration page.
- * Otherwise, it will genetare a Install or Activate button for the missing plugin.
- * @param string $type The type of the notice. Possible options are: 'error' (default), 'warning', 'success' or 'info'.
+ * @param array $buttons Optional. An array of buttons arrays, generated with the wcmpSingleButtonArray function.
+ * @param string $type Optional. The type of the notice.
+ * Possible options are: `'error'` (default), `'warning'`, `'success'` or `'info'`.
+ * @param bool $includeScript Optional. Message displayed on the notice.
  */
-function wcmpRenderAdminNoticeHtml($message, $path = '', $isConfig = false, $type = 'error')
+function wcmpRenderAdminNoticeHtml($message, $buttons = [], $type = 'error', $includeScript = false)
 {
     wp_enqueue_style(
-        'pagarme-notice',
+        'pagarme-notice-css',
         plugins_url('/pagarme-payments-for-woocommerce/assets/stylesheets/admin/notice.css'),
         array(),
-        filemtime(__FILE__ . '/../assets/stylesheets/admin/notice.css')
+        "1.0.1"
     );
+    if ($includeScript) {
+        $noticesL10n = array(
+            'accountInfoUrl' => admin_url('/wc-api/pagarme-account-info')
+        );
+        wp_enqueue_script(
+            'pagarme-notice-js',
+            plugins_url('/pagarme-payments-for-woocommerce/assets/javascripts/admin/pagarme_notices.js'),
+            array('jquery', 'wp-i18n'),
+            "1.0.0"
+        );
+        wp_set_script_translations(
+            'pagarme-notice-js',
+            'woo-pagarme-payments',
+            plugin_dir_path( __FILE__ ) . 'languages/'
+        );
+        wp_localize_script('pagarme-notice-js', 'pagarmeNotice', $noticesL10n);
+    }
 ?>
     <div class="notice <?= esc_html($type); ?> is-dismissible">
         <div class="pagarme-notice">
@@ -48,8 +64,8 @@ function wcmpRenderAdminNoticeHtml($message, $path = '', $isConfig = false, $typ
                 <p><strong><?= __('Pagar.me module for Woocommerce', 'woo-pagarme-payments'); ?>:</strong></p>
                 <p><?= $message ?></p>
                 <?php
-                if (is_string($path) && $path !== '') {
-                    echo wcmpAddNoticeButton($path, $isConfig);
+                if (!empty($buttons)) {
+                    echo wcmpAddNoticeButton($buttons);
                 }
                 ?>
             </div>
@@ -58,53 +74,51 @@ function wcmpRenderAdminNoticeHtml($message, $path = '', $isConfig = false, $typ
 <?php
 }
 
-function wcmpAddNoticeButton($path, $isConfig)
+/**
+ * @param string $label Name displayed on the button.
+ * @param string $url URL of destiny on click.
+ * If an empty string is provided, the link will have no 'href' attribute.
+ * @param string $type Optional. The type of button.
+ * Possible options are: `'primary'` (default), `'secondary'` or `''` (empty string).
+ * If an empty string is provided, the button will be rendered as a simple link.
+ * @param string $target Optional. Target of of the URL link.
+ * Possible options are: `'_blank'`, `'_self'`, `'_parent'`, `'_top'`, any framename or `''` (empty string - default).
+ * If an empty string is provided, the link will have no 'target' attribute.
+ * @param string $class Optional. Additional class value(s) for custom style or script purposes.
+ * @return array
+ */
+function wcmpSingleButtonArray($label, $url, $type = 'primary', $target = '', $class = '')
 {
-    $buttonHtml = '<p><a href="%1$s" class="button button-primary">%2$s</a></p>';
-
-    if ($isConfig) {
-        $pageName = explode('.', ucwords(str_replace('-', ' ', $path)))[0];
-        return sprintf(
-            $buttonHtml,
-            esc_url(self_admin_url($path)),
-            $pageName
-        );
-    }
-
-    $isInstalled = false;
-    if (function_exists('get_plugins')) {
-        $allPlugins  = get_plugins();
-        $isInstalled = !empty($allPlugins[$path]);
-    }
-
-    $plugin = explode('/', $path)[0];
-    $pluginName = ucwords(str_replace('-', ' ', $plugin));
-
-    if ($isInstalled && current_user_can('install_plugins')) {
-        return sprintf(
-            $buttonHtml,
-            wp_nonce_url(
-                self_admin_url("plugins.php?action=activate&plugin={$path}&plugin_status=active"),
-                "activate-plugin_{$path}"
-            ),
-            __("Activate", 'woo-pagarme-payments') . " {$pluginName}"
-        );
-    }
-
-    $url = 'https://wordpress.org/plugins/' . $plugin;
-
-    if (current_user_can('install_plugins')) {
-        $url = wp_nonce_url(
-            self_admin_url("update.php?action=install-plugin&plugin={$plugin}"),
-            "install-plugin_{$plugin}"
-        );
-    }
-
-    return sprintf(
-        $buttonHtml,
-        esc_url($url),
-        __("Install", 'woo-pagarme-payments') . " {$pluginName}"
+    return array(
+        'label' => $label,
+        'url' => $url,
+        'type' => $type,
+        'target' => $target,
+        'class' => $class
     );
+}
+
+/**
+ * @param array $buttons Array of arrays, each containing the keys `label`, `url`, `type`, `target` and `class`.
+ * @return string
+ */
+function wcmpAddNoticeButton($buttons)
+{
+    $html = '<p>';
+    foreach ($buttons as $button) {
+        $buttonHtml = '<a%1$s%2$s class="%3$s%4$s">%5$s</a>';
+        $html .= sprintf(
+            $buttonHtml,
+            $button['url'] !== '' ? ' href="' . esc_url($button['url']) . '"' : '',
+            $button['target'] !== '' ? " target='{$button['target']}'" : '',
+            $button['type'] !== '' ? "button button-{$button['type']} " : '',
+            $button['class'],
+            __($button['label'], 'woo-pagarme-payments')
+        );
+    }
+    $html .= '</p>';
+
+    return $html;
 }
 
 
@@ -120,11 +134,52 @@ if (version_compare(PHP_VERSION, '7.1', '<')) {
     return;
 }
 
+function wcmpIsPluginInstalled($pluginBasename) {
+    $isInstalled = false;
+    if (function_exists('get_plugins')) {
+        $allPlugins  = get_plugins();
+        $isInstalled = !empty($allPlugins[$pluginBasename]);
+    }
+
+    return $isInstalled;
+}
+
+function wcmpGetPluginButton($pluginBasename, $pluginName) {
+    $button = [];
+
+    if (wcmpIsPluginInstalled($pluginBasename) && current_user_can('install_plugins')) {
+        return array(
+            wcmpSingleButtonArray(
+                __("Activate", 'woo-pagarme-payments') . " {$pluginName}",
+                wp_nonce_url(
+                    self_admin_url("plugins.php?action=activate&plugin={$pluginBasename}&plugin_status=active"),
+                    "activate-plugin_{$pluginBasename}"
+                )
+            )
+        );
+    }
+
+    if (current_user_can('install_plugins')) {
+        $plugin = explode('/', $pluginBasename)[0];
+        $button = array(
+            wcmpSingleButtonArray(
+                __("Install", 'woo-pagarme-payments') . " {$pluginName}",
+                wp_nonce_url(
+                    self_admin_url("update.php?action=install-plugin&plugin={$plugin}"),
+                    "install-plugin_{$plugin}"
+                )
+            )
+        );
+    }
+
+    return $button;
+}
+
 function wcmpAdminNoticeWoocommerce()
 {
     wcmpRenderAdminNoticeHtml(
         __('Woocommerce plugin is required for Pagar.me module to work.', 'woo-pagarme-payments'),
-        'woocommerce/woocommerce.php'
+        wcmpGetPluginButton('woocommerce/woocommerce.php', 'WooCommerce')
     );
 }
 
@@ -135,7 +190,10 @@ function wcmpAdminNoticeExtraCheckouts()
             'WooCoomerce Extra Checkout Fields For Brazil plugin is required for Pagar.me module to work.',
             'woo-pagarme-payments'
         ),
-        'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php'
+        wcmpGetPluginButton(
+            'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php',
+            'Brazilian Market on WooCommerce'
+        )
     );
 }
 
@@ -148,8 +206,12 @@ function wcmpAdminNoticePermalink()
                 'Please correct this setting to be able to transact with Pagar.me.',
             'woo-pagarme-payments'
         ),
-        'options-permalink.php',
-        true
+        array(
+            wcmpSingleButtonArray(
+                'Permalink Settings',
+                self_admin_url('options-permalink.php')
+            )
+        )
     );
 }
 
@@ -236,12 +298,17 @@ function wcmpPluginsLoadedCheck()
     if (get_option('permalink_structure') === '') {
         wcmpLoadNotice('AdminNoticePermalink');
     }
-
     wcmpLoadNotice('AdminNoticeCheckoutFields');
 }
 
 add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
+add_action( 'before_woocommerce_init', 'checkCompatibilityWithFeatures', 0);
 
+function checkCompatibilityWithFeatures()
+{
+    $compatibilization = new \Woocommerce\Pagarme\Model\FeatureCompatibilization();
+    $compatibilization->callCompatibilization();
+}
 function versionUpdateWarning($currentVersion, $newVersion)
 {
     $currentVersionMajorPart = explode('.', $currentVersion)[0];

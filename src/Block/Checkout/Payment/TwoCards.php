@@ -34,7 +34,7 @@ class TwoCards extends Gateway
     /**
      * @var string[]
      */
-    protected $deps = ['pagarme_scripts_card'];
+    protected $deps = [ WCMP_JS_HANDLER_BASE_NAME . 'card'];
 
     /**
      * @return int

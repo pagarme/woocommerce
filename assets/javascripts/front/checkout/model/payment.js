@@ -6,7 +6,7 @@ jQuery(function ($) {
         $.jMaskGlobals.watchDataMask = true;
         wc_pagarme_checkout.validate = function () {
             const checkedPayment = $('form .payment_methods input[name="payment_method"]:checked').val();
-            const requiredFields = $('#billing_number, #shipping_number:visible, input[data-required=true]:visible,' +
+            const requiredFields = $('#shipping_number:visible, input[data-required=true]:visible,' +
                 'select[data-required=true]:visible,' +
                 `.wc_payment_method.payment_method_${checkedPayment} [data-pagarmecheckout-element="brand-input"]`);
             let isValid = true;

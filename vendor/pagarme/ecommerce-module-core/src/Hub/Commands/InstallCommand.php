@@ -18,6 +18,10 @@ class InstallCommand extends AbstractCommand
             throw $exception;
         }
 
+        $moduleConfig->setAccountId($this->getAccountId());
+
+        $moduleConfig->setMerchantId($this->getMerchantId());
+
         $moduleConfig->setHubInstallId($this->getInstallId());
 
         $moduleConfig->setHubEnvironment($this->getType());

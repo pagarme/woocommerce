@@ -104,7 +104,7 @@ abstract class AbstractBlock extends DataObject
 
         foreach ($scripts as $script) {
             $fileName = explode('/', $script);
-            $id = "pagarme_scripts_" . end($fileName);
+            $id = WCMP_JS_HANDLER_BASE_NAME . end($fileName);
             wp_enqueue_script(
                 $id,
                 $this->getScriptUrl($script),

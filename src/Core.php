@@ -27,6 +27,7 @@ class Core
         self::initialize();
         self::admin_enqueue_scripts();
         self::front_enqueue_scripts();
+        add_filter('script_loader_tag', [$this, 'addNoDeferToPagespeed'], 10, 2);
     }
 
     public static function load_textdomain()
@@ -64,6 +65,7 @@ class Core
             'Orders',
             'Charges',
             'Accounts',
+            'HubAccounts',
         );
 
         self::load_controllers($controllers);
@@ -290,6 +292,13 @@ class Core
     public static function get_hub_name()
     {
         return Utils::add_prefix('-hub');
+    }
+
+    public function addNoDeferToPagespeed($tag, $handle) {
+        if ( strpos($handle, WCMP_JS_HANDLER_BASE_NAME) !== 0) {
+            return $tag;
+        }
+        return str_replace( ' src', ' data-pagespeed-no-defer src', $tag );
     }
 
     public static function credit_card_errors_pt_br()

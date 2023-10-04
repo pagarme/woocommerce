@@ -160,6 +160,16 @@ final class Configuration extends AbstractEntity
      */
     private $pixConfig;
 
+    /**
+     * @var string
+     */
+    private $merchantId;
+
+    /**
+     * @var string
+     */
+    private $accountId;
+
     public function __construct()
     {
         $this->saveCards = false;
@@ -240,6 +250,26 @@ final class Configuration extends AbstractEntity
     public function setVoucherConfig(VoucherConfig $voucherConfig)
     {
         $this->voucherConfig = $voucherConfig;
+    }
+
+    public function setAccountId($accountId)
+    {
+        $this->accountId = $accountId;
+    }
+
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    public function setMerchantId($merchantId)
+    {
+        $this->merchantId = $merchantId;
+    }
+
+    public function getMerchantId()
+    {
+        return $this->merchantId;
     }
 
     protected function isEnabled()
@@ -627,7 +657,7 @@ final class Configuration extends AbstractEntity
     /**
      * @return string
      */
-    protected function getBoletoInstructions()
+    public function getBoletoInstructions()
     {
         return $this->boletoInstructions;
     }
@@ -749,6 +779,8 @@ final class Configuration extends AbstractEntity
             "testMode" => $this->testMode,
             "hubInstallId" => $this->isHubEnabled() ? $this->hubInstallId->getValue() : null,
             "hubEnvironment" => $this->hubEnvironment,
+            "merchantId" => $this->getMerchantId(),
+            "accountId" => $this->getAccountId(),
             "addressAttributes" => $this->getAddressAttributes(),
             "keys" => $this->keys,
             "cardOperation" => $this->cardOperation,

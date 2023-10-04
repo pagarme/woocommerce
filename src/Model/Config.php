@@ -193,6 +193,27 @@ class Config extends DataObject
     }
 
     /**
+     * @return bool
+     */
+    public function isAccAndMerchSaved() : bool {
+        return $this->getMerchantId() && $this->getAccountId();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDashUrl() {
+        if (!$this->isAccAndMerchSaved()) {
+            return null;
+        }
+        return sprintf(
+            'https://dash.pagar.me/%s/%s/',
+            $this->getMerchantId(),
+            $this->getAccountId()
+        );
+    }
+
+    /**
      * @return string
      */
     public function getPublicKey()
@@ -256,6 +277,14 @@ class Config extends DataObject
     public function getIsGatewayIntegrationType()
     {
         return $this->getData('is_gateway_integration_type') === 'yes';
+    }
+
+    public function getIsVoucherSettingsEnabled()
+    {
+        if (!$this->getAccountId() || !$this->getIsPaymentEnabled()) {
+            return $this->getIsGatewayIntegrationType();
+        }
+        return $this->getIsPaymentEnabled()['voucher'];
     }
 
     public function getIsInstallmentsDefaultConfig()

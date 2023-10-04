@@ -16,7 +16,7 @@ if (!function_exists('add_action')) {
 }
 
 wp_localize_script(
-    'pagarme_scripts_card',
+    WCMP_JS_HANDLER_BASE_NAME . 'card',
     'wc_pagarme_checkout',
     ['config' => $this->getConfigDataProvider()]
 );

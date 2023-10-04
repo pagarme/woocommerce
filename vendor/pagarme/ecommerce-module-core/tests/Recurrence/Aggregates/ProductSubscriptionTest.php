@@ -56,17 +56,6 @@ class ProductSubscriptionTest extends TestCase
         $this->assertCount(2, $this->productSubscription->getRepetitions());
     }
 
-    /**
-     * TODO: refactor ProductSubscription to return InvalidParamException
-     * @requires PHP >= 7.0
-     * @expectedException \TypeError
-     */
-    public function testShouldThrowAnTypeErrorExceptionIfAddAnWrongTypeOfRepetition()
-    {
-        $this->expectError(\TypeError::class);
-        $this->productSubscription->addRepetition("WrongType");
-    }
-
     public function testShouldReturnTheRecurrenceType()
     {
         $this->assertEquals(

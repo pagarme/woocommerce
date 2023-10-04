@@ -550,19 +550,26 @@ class CreditCard extends AbstractGateway
     public function getBrandsList()
     {
         //Some brands are hidden for PSP
-        return array(
+        $cardList = array(
             'visa'              => 'Visa',
             'mastercard'        => 'MasterCard',
             'amex'              => 'Amex',
             'hipercard'         => 'HiperCard',
-            'diners'            => 'Diners',
             'elo'               => 'Elo',
-            'discover'          => 'Discover',
-            'aura'              => 'Aura',
-            'jcb'               => 'JCB',
-            'credz'             => 'Credz',
-            'banese'            => 'Banese',
-            'cabal'             => 'Cabal',
         );
+
+        if ($this->isGatewayType()){
+            $cardList = array_merge($cardList, array(
+                'diners' => 'Diners',
+                'discover' => 'Discover',
+                'aura' => 'Aura',
+                'jcb' => 'JCB',
+                'credz' => 'Credz',
+                'banese' => 'Banese',
+                'cabal' => 'Cabal'
+            ));
+        }
+        
+        return $cardList;
     }
 }

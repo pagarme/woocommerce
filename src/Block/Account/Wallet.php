@@ -54,12 +54,12 @@ class Wallet extends Template
     private function addDataToJs()
     {
         wp_localize_script(
-            'pagarme_scripts_wallet',
+            WCMP_JS_HANDLER_BASE_NAME . 'wallet',
             'apiRoute',
             $this->getApiRoute()
         );
         wp_localize_script(
-            'pagarme_scripts_wallet',
+            WCMP_JS_HANDLER_BASE_NAME . 'wallet',
             'dataSwal',
             $this->getSwalData()
         );

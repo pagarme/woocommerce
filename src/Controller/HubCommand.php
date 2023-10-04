@@ -74,7 +74,7 @@ class HubCommand
         return wp_send_json($responseObject, $code);
     }
 
-    private function uninstallCommand()
+    public function uninstallCommand()
     {
         $keysToClear = [
             'hub_install_id' => null,
@@ -83,7 +83,10 @@ class HubCommand
             'production_public_key' => null,
             'sandbox_secret_key' => null,
             'sandbox_public_key' => null,
-            'environment' => null
+            'environment' => null,
+            'account_id' => null,
+            'merchant_id' => null,
+            'hub_account_errors' => null
         ];
         $this->settings->addData($keysToClear)->save();
         return 'Hub uninstalled successfully';

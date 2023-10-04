@@ -83,6 +83,9 @@ class AdditionalInformation extends AbstractMetaBox implements MetaBoxInterface
     private function getOrderId()
     {
         if (!$this->getData('order_id')) {
+            if (isset($this->getRequest()['id'])) {
+                $this->setData('order_id', (int)$this->getRequest()['id']);
+            }
             if (isset($this->getRequest()['post'])) {
                 $this->setData('order_id', (int)$this->getRequest()['post']);
             }

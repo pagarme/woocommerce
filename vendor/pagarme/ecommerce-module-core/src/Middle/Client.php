@@ -16,6 +16,7 @@ abstract class Client
     public function __construct()
     {
         Configuration::$basicAuthPassword = '';
+        Configuration::$BASEURI = 'https://hubapi.pagar.me/core/v1';
         $this->client = $this->services();
     }
     private function auth()
