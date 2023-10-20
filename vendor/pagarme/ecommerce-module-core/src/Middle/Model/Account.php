@@ -294,7 +294,7 @@ class Account extends ModelWithErrors
         $siteUrls = $storeSettings->getStoreUrls();
         foreach ($this->getWebhooks() as $webhook) {
             if ($webhook->status !== 'active') {
-                return;
+                continue;
             }
             foreach ($siteUrls as $siteUrl) {
                 if (strpos($webhook->url, $siteUrl) !== false) {
