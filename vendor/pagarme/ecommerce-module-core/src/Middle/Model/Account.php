@@ -265,6 +265,10 @@ class Account extends ModelWithErrors
         }
     }
 
+    /**
+     * @param StoreSettings|null $storeSettings
+     * @return void
+     */
     private function validateDomain($storeSettings = null)
     {
         $domains = $this->getDomains();
@@ -289,6 +293,10 @@ class Account extends ModelWithErrors
         $this->setError(self::DOMAIN_INCORRECT);
     }
 
+    /**
+     * @param StoreSettings|null $storeSettings
+     * @return void
+     */
     private function validateWebhooks($storeSettings = null)
     {
         if ($this->canNotValidateUrlSetting($storeSettings)) {
@@ -320,11 +328,20 @@ class Account extends ModelWithErrors
         $this->validateEnabledSetting('MultiPayments', self::MULTIPAYMENTS_DISABLED);
     }
 
+    /**
+     * @param StoreSettings|null $storeSettings
+     * @return bool
+     */
     private function canNotValidateUrlSetting($storeSettings = null)
     {
         return !$storeSettings || $storeSettings->isSandbox();
     }
 
+    /**
+     * @param mixed $setting
+     * @param mixed $error
+     * @return void
+     */
     private function validateEnabledSetting($setting, $error)
     {
         $methodName = "is{$setting}Enabled";
