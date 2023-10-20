@@ -116,7 +116,7 @@ class Account extends ModelWithErrors
     }
 
     /**
-     * @param mixed $multiBuyerEnabled
+     * @param bool $multiBuyerEnabled
      */
     public function setMultiBuyerEnabled($multiBuyerEnabled)
     {
@@ -235,7 +235,11 @@ class Account extends ModelWithErrors
         $this->debitCardSettings = $debitCardSettings;
     }
 
-    public function validate(StoreSettings $storeSettings = null)
+    /**
+     * @param StoreSettings|null $storeSettings
+     * @return $this
+     */
+    public function validate($storeSettings = null)
     {
         $this->validateAccountEnabled();
         $this->validateDomain($storeSettings);
@@ -261,7 +265,7 @@ class Account extends ModelWithErrors
         }
     }
 
-    private function validateDomain(StoreSettings $storeSettings = null)
+    private function validateDomain($storeSettings = null)
     {
         $domains = $this->getDomains();
         if (empty($domains) && (empty($storeSettings) || !$storeSettings->isSandbox())) {
@@ -285,7 +289,7 @@ class Account extends ModelWithErrors
         $this->setError(self::DOMAIN_INCORRECT);
     }
 
-    private function validateWebhooks(StoreSettings $storeSettings = null)
+    private function validateWebhooks($storeSettings = null)
     {
         if ($this->canNotValidateUrlSetting($storeSettings)) {
             return;
@@ -316,7 +320,7 @@ class Account extends ModelWithErrors
         $this->validateEnabledSetting('MultiPayments', self::MULTIPAYMENTS_DISABLED);
     }
 
-    private function canNotValidateUrlSetting(StoreSettings $storeSettings = null)
+    private function canNotValidateUrlSetting($storeSettings = null)
     {
         return !$storeSettings || $storeSettings->isSandbox();
     }
@@ -329,7 +333,11 @@ class Account extends ModelWithErrors
         }
     }
 
-    public static function createFromSdk(GetAccountResponse $accountInfo)
+    /**
+     * @param GetAccountResponse $accountInfo
+     * @return Account
+     */
+    public static function createFromSdk($accountInfo)
     {
         $account = new Account();
         $orderSettings = $accountInfo->orderSettings;

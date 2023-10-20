@@ -34,7 +34,7 @@ class PaymentMethodSettings
     /**
      * @return bool
      */
-    public function isEnabled(): bool
+    public function isEnabled()
     {
         return $this->enabled;
     }
@@ -82,17 +82,27 @@ class PaymentMethodSettings
         $this->gatewayType = $gatewayType;
     }
 
+    /**
+     * @return bool
+     */
     public function isGateway()
     {
         return $this->gatewayType === 'mundipagg';
     }
 
+    /**
+     * @return bool
+     */
     public function isPSP()
     {
         return $this->gatewayType === 'pagarme';
     }
 
-    public function validate(StoreSettings $storeSettings)
+    /**
+     * @param StoreSettings $storeSettings
+     * @return mixed|string
+     */
+    public function validate($storeSettings)
     {
         $storePaymentMethodEnabled = $storeSettings->isPaymentMethodEnabled($this->getName());
         if (!$this->isEnabled() && $storePaymentMethodEnabled) {
@@ -103,10 +113,16 @@ class PaymentMethodSettings
         return '';
     }
 
+    /**
+     * @param GetAccountResponse $accountInfo
+     * @param string $paymentMethodName
+     * @param string|null $paymentMethodSettingKey
+     * @return PaymentMethodSettings
+     */
     public static function createFromSdk(
-        GetAccountResponse $accountInfo,
-        string $paymentMethodName,
-        string $paymentMethodSettingKey = null
+        $accountInfo,
+        $paymentMethodName,
+        $paymentMethodSettingKey = null
     ) {
         $paymentMethodSettingKey = $paymentMethodSettingKey ?? $paymentMethodName;
         $paymentMethodSettings = new PaymentMethodSettings();

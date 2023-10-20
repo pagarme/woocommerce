@@ -19,17 +19,27 @@ class StoreSettings
      */
     private $storeUrls;
 
-    public function isSandbox(): bool
+    /**
+     * @return bool
+     */
+    public function isSandbox()
     {
         return $this->sandbox;
     }
 
-    public function setSandbox(bool $sandbox): void
+    /**
+     * @param bool $sandbox
+     * @return void
+     */
+    public function setSandbox(bool $sandbox)
     {
         $this->sandbox = $sandbox;
     }
 
-    public function getEnabledPaymentMethods(): array
+    /**
+     * @return array
+     */
+    public function getEnabledPaymentMethods()
     {
         return $this->enabledPaymentMethods;
     }
@@ -38,24 +48,35 @@ class StoreSettings
      * @param string $paymentMethodName
      * @return bool
      */
-    public function isPaymentMethodEnabled(string $paymentMethodName)
+    public function isPaymentMethodEnabled($paymentMethodName)
     {
         return (bool) isset($this->enabledPaymentMethods[$paymentMethodName])
             ? $this->enabledPaymentMethods[$paymentMethodName]
             : false;
     }
 
-    public function setEnabledPaymentMethods(array $enabledPaymentMethods): void
+    /**
+     * @param array $enabledPaymentMethods
+     * @return void
+     */
+    public function setEnabledPaymentMethods($enabledPaymentMethods)
     {
         $this->enabledPaymentMethods = $enabledPaymentMethods;
     }
 
-    public function getStoreUrls(): array
+    /**
+     * @return array
+     */
+    public function getStoreUrls()
     {
         return $this->storeUrls;
     }
 
-    public function setStoreUrls(array $storeUrls): void
+    /**
+     * @param array $storeUrls
+     * @return void
+     */
+    public function setStoreUrls($storeUrls)
     {
         $this->storeUrls = $storeUrls;
     }

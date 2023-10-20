@@ -9,17 +9,28 @@ abstract class ModelWithErrors
      */
     private $errors = [];
 
-    public function getErrors(): array
+    /**
+     * @return array
+     */
+    public function getErrors()
     {
         return $this->errors;
     }
 
-    public function setErrors(array $errors): void
+    /**
+     * @param array $errors
+     * @return void
+     */
+    public function setErrors(array $errors)
     {
         $this->errors = $errors;
     }
 
-    public function setError(string $error = null)
+    /**
+     * @param string|null $error
+     * @return void
+     */
+    public function setError($error = null)
     {
         if (empty($error)) {
             return;
