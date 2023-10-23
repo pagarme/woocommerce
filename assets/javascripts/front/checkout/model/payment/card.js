@@ -408,7 +408,7 @@ let pagarmeCard = {
             pagarmeCheckoutWallet.addEventListener();
         }
         if (typeof pagarmeOrderValue == 'object') {
-            pagarmeOrderValue.addEventListener();
+            pagarmeOrderValue.start();
         }
     },
     start: function () {

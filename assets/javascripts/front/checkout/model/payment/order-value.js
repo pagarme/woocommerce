@@ -12,7 +12,7 @@ let pagarmeOrderValue = {
         if (value > total) {
             this.showError('O valor não pode ser maior que total do pedido!');
             input.val('');
-            nextInput.val('');
+            input.change();
             return;
         }
         this.changeValueInput(input, value);
