@@ -409,8 +409,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getCustomer()
     {
         $customerId = get_current_user_id();
-        if ($customerId === 0) {
-            $customerId = $this->getPlatformOrder()->get_user()->ID ?? null;
+        if (!empty($this->getPlatformOrder()->get_user_id())) {
+            $customerId = $this->getPlatformOrder()->get_user_id() ?? null;
         }
         if (!empty($customerId)) {
             return $this->getRegisteredCustomer($customerId);
@@ -431,7 +431,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $address = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
         $phones = Utils::build_customer_phones_from_order($order);
-
+        if(empty($document['value'])) {
+            $customerPlatform = new \WC_Customer($woocommerceCustomerId);
+            $document['value'] = $customerPlatform->get_meta("billing_cpf") ??
+                                    $customerPlatform->get_meta("billing_cnpj");
+        }
         $homeNumber = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
