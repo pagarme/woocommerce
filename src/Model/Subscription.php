@@ -158,10 +158,10 @@ class Subscription
         } catch (\Throwable $th) {
             $logger = new LogService();
             $logger->log($th);
-            // wc_add_notice(
-            //     __('There was a problem renewing the subscription.'),
-            //     'error'
-            // );
+            wc_add_notice(
+                __('There was a problem renewing the subscription.'),
+                'error'
+            );
             return false;
         }
     }
