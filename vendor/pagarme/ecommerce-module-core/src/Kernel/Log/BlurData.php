@@ -31,8 +31,9 @@ class BlurData
      * @param $delimiter
      * @return string
      */
-    private function blurStringSensitiveData(string $value, $delimiter)
+    private function blurStringSensitiveData(?string $value, $delimiter)
     {
+        $value = $value ?? "";
         $displayed = substr($value, 0, $delimiter);
         $blur = str_repeat("*", strlen($value));
         $blur = substr($blur, $delimiter);
