@@ -12,8 +12,12 @@ final class OrderLogService extends LogService
 
     public function orderInfo($orderCode, $message, $sourceObject = null)
     {
-        $orderMessage = "Order #$orderCode : $message";
-        parent::info($orderMessage, $sourceObject);
+        try {
+            $orderMessage = "Order #$orderCode : $message";
+            parent::info($orderMessage, $sourceObject);
+        } catch (\Throwable $throwable) {
+
+        }
     }
 
     public function orderException($exception, $orderCode)
