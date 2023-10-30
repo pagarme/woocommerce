@@ -74,7 +74,7 @@ class Modal extends Template
     {
         if ($this->getModalType() === self::MODAL_TYPE_CANCEL) {
             $canceled = $this->getCharge()->getCanceledAmount() ? $this->getCharge()->getCanceledAmount() : 0;
-            $refunded = $this->getCharge()->getRefundedAmount() ? $this->getRefundedAmount()->getCanceledAmount() : 0;
+            $refunded = $this->getCharge()->getRefundedAmount() ? $this->getCharge()->getRefundedAmount() : 0;
             $paid = $this->getCharge()->getPaidAmount() ? $this->getCharge()->getPaidAmount() : 0;
             $toCancel = $this->getCharge()->getAmount();
             if ($paid) {
