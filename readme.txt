@@ -4,7 +4,7 @@ Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, 
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 7.1
-Stable tag: 3.1.6
+Stable tag: 3.1.7
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -22,6 +22,16 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.1.7 (07/11/2023) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.7)
+
+* **Correções:**
+  * Falha ao renovar pedido manualmente com cartão de crédito.
+  * Falha na validação do cartão de crédito ao trocar meio de entrega.
+  * Alto uso de memória no recebimento de webhook de Charge.
+  * Falha na visualização do parcelamento para 2 cartões de crédito
+  * Pedidos com reembolso na charge exibem erro no admin
+
 = 3.1.6 (04/10/2023) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.6)
 
@@ -34,16 +44,6 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
 * **Correções:**
   * Envio de informações do boleto na criação de pedido.
   * Modal de dados obrigatórios para número de endereço.
-
-= 3.1.5 (04/09/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.5)
-
-* **Correções:**
-  * Incompatibilidade de seletores css de alguns temas para arquivos js.
-  * Quando atualiza algum dado de checkout o cartão perde a bandeira já consultada.
-  * Incompatibilidade com métodos de pagamento que utilizam o evento checkout_place_order.
-  * Recorrência não finaliza compra com Boleto ou PIX.
-  * Incompatibilidade com caracteres especiais nas instruções de pagamento do boleto.
 
 == Upgrade Notice ==
 Nosso plugin agora é compatível com Woocommerce Subscriptions
