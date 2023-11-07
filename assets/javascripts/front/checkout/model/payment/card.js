@@ -142,8 +142,8 @@ let pagarmeCard = {
         }
         try {
             let card = await this.getCardData(cardNumber);
-            this.changeBrand(event, card);
-            this.updateInstallmentsElement(event);
+            this.changeBrand(elem, card);
+            this.updateInstallmentsElement(elem);
         } catch (exception) {
             this.showError(exception.message);
         }
@@ -202,11 +202,11 @@ let pagarmeCard = {
             });
         });
     },
-    changeBrand: function (event, card) {
-        if (typeof event == 'undefined' || typeof card == 'undefined') {
+    changeBrand: function (elem, card) {
+        if (typeof card == 'undefined') {
             throw new Error("Invalid data to change card brand");
         }
-        let elem = event.target;
+
         let imageSrc = this.getImageSrc(card);
         let imgElem = jQuery(elem).parent().find('img');
         jQuery(elem).parents('.pagarme-card-number-row').find(this.brandTarget).attr('value', card[0].brand);
@@ -239,8 +239,8 @@ let pagarmeCard = {
         }
         return value.toFixed(2).replace('.', ',');
     },
-    updateInstallmentsElement: function (event) {
-        let elem = this.formatEventToJQuery(event);
+    updateInstallmentsElement: function (eventElement) {
+        const elem = this.formatEventToJQuery(eventElement);
         if (!elem) {
             return false;
         }
@@ -409,7 +409,7 @@ let pagarmeCard = {
             pagarmeCheckoutWallet.addEventListener();
         }
         if (typeof pagarmeOrderValue == 'object') {
-            pagarmeOrderValue.addEventListener();
+            pagarmeOrderValue.start();
         }
     },
     start: function () {

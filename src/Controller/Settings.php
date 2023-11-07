@@ -199,10 +199,12 @@ class Settings
     {
         $this->autoLoad();
         $gateways = [];
+        $this->config = new Config();
         foreach (get_declared_classes() as $class) {
             if (is_subclass_of($class, Gateways\AbstractGateway::class)) {
-                if (strpos($class, "Voucher") !== false && !$this->config->getIsVoucherSettingsEnabled())
+                if (strpos($class, "Voucher") !== false && $this->config->getIsVoucherPSP()) {
                     continue;
+                }
                 $gateways[] = $class;
             }
         }

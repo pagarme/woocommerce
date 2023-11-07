@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Model;
 
 use Pagarme\Core\Hub\Services\HubIntegrationService;
+use Pagarme\Core\Middle\Model\Account\PaymentEnum;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Config\PagarmeCoreConfigManagement;
 use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
@@ -27,6 +28,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Config extends DataObject
 {
+    const ENABLED = 'yes';
+
     /** @var string */
     const HUB_SANDBOX_ENVIRONMENT = 'Sandbox';
 
@@ -256,35 +259,33 @@ class Config extends DataObject
 
     public function getMulticustomers()
     {
-        return $this->getData('multicustomers') === 'yes';
+        return $this->isEnabled('multicustomers');
     }
 
     public function getCcAllowSave()
     {
-        return $this->getData('cc_allow_save') === 'yes';
+        return $this->isEnabled('cc_allow_save');
     }
 
     public function getVoucherCardWallet()
     {
-        return $this->getData('voucher_card_wallet') === 'yes';
+        return $this->isEnabled('voucher_card_wallet');
     }
 
     public function getEnableLogs()
     {
-        return $this->getData('enable_logs') === 'yes';
+        return $this->isEnabled('enable_logs');
     }
 
     public function getIsGatewayIntegrationType()
     {
-        return $this->getData('is_gateway_integration_type') === 'yes';
+        return $this->isEnabled('is_gateway_integration_type');
     }
 
-    public function getIsVoucherSettingsEnabled()
+    public function getIsVoucherPSP()
     {
-        if (!$this->getAccountId() || !$this->getIsPaymentEnabled()) {
-            return $this->getIsGatewayIntegrationType();
-        }
-        return $this->getIsPaymentEnabled()['voucher'];
+        return isset($this->getIsPaymentPsp()['voucher'])
+            && $this->getIsPaymentPsp()['voucher'];
     }
 
     public function getIsInstallmentsDefaultConfig()
@@ -294,12 +295,74 @@ class Config extends DataObject
 
     public function getAntifraudEnabled()
     {
-        return $this->getData('antifraud_enabled') === 'yes';
+        return $this->isEnabled('antifraud_enabled');
+    }
+
+    public function isPixEnabled()
+    {
+        return $this->isEnabled('enable_pix');
+    }
+
+    public function isBilletEnabled()
+    {
+        return $this->isEnabled('enable_billet');
+    }
+
+    public function isBilletAndCreditCardEnabled()
+    {
+        return $this->isEnabled('multimethods_billet_card');
+    }
+
+    public function isCreditCardEnabled()
+    {
+        return $this->isEnabled('enable_credit_card');
+    }
+
+    public function isTwoCreditCardEnabled()
+    {
+        return $this->isEnabled('multimethods_2_cards');
+    }
+
+    public function isVoucherEnabled()
+    {
+        return $this->isEnabled('enable_voucher');
+    }
+
+    public function isAnyBilletMethodEnabled()
+    {
+        return $this->isBilletEnabled()
+            || $this->isBilletAndCreditCardEnabled();
+    }
+
+    public function isAnyCreditCardMethodEnabled()
+    {
+        return $this->isCreditCardEnabled()
+            || $this->isBilletAndCreditCardEnabled()
+            || $this->isTwoCreditCardEnabled();
+    }
+
+    public function availablePaymentMethods()
+    {
+        return [
+            PaymentEnum::PIX => $this->isPixEnabled(),
+            PaymentEnum::BILLET => $this->isAnyBilletMethodEnabled(),
+            PaymentEnum::CREDIT_CARD => $this->isAnyCreditCardMethodEnabled(),
+            PaymentEnum::VOUCHER => $this->isVoucherEnabled()
+        ];
     }
 
     public function log()
     {
         return new \WC_Logger();
+    }
+
+    /**
+     * @param string $configKey
+     * @return bool
+     */
+    private function isEnabled($configKey)
+    {
+        return $this->getData($configKey) === self::ENABLED;
     }
 
 }
