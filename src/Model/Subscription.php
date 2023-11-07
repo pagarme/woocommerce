@@ -129,20 +129,20 @@ class Subscription
      * @return bool|void
      * @throws \Exception
      */
-    public function processSubscription($amountToCharge, WC_Order $order)
+    public function processSubscription($amountToCharge, WC_Order $wc_order)
     {
         try {
-            if (!$order) {
+            if (!$wc_order) {
                 wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
             }
+            $order = new Order($wc_order->get_id());
             $fields = $this->convertOrderObject($order);
             $response = $this->orders->create_order(
-                $order,
+                $wc_order,
                 $fields['payment_method'],
                 $fields
             );
 
-            $order = new Order($order->get_id());
             $order->payment_method = $fields['payment_method'];
             if ($response) {
                 $order->transaction_id = $response->getPagarmeId()->getValue();
@@ -270,14 +270,14 @@ class Subscription
      * @param WC_Order $order
      * @return array
      */
-    private function convertOrderObject(WC_Order $order)
+    private function convertOrderObject(Order $order)
     {
         $fields = [
-            'payment_method' => $this->formatPaymentMethod($order->get_payment_method())
+            'payment_method' => $this->formatPaymentMethod($order->wc_order->get_payment_method())
         ];
         $card = $this->getCardSubscriptionData($order);
         if ($card !== null) {
-            $fields['card_order_value'] = $order->get_total();
+            $fields['card_order_value'] = $order->wc_order->get_total();
             $fields['brand'] = $card['brand'];
             $fields['installments'] = 1;
             $fields['card_id'] = $card['cardId'];
@@ -299,7 +299,7 @@ class Subscription
 
     private function getCardSubscriptionData($order)
     {
-        $cardData = $order->get_meta("_pagarme_payment_subscription", true);
+        $cardData = $order->get_meta("pagarme_payment_subscription");
         if (!$cardData) {
             return false;
         }

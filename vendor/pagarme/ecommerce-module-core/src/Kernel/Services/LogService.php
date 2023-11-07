@@ -75,9 +75,13 @@ class LogService
      */
     public function info($message, $sourceObject = null)
     {
-        $logObject = $this->prepareObject($sourceObject);
-        $logObject = $this->blurSensitiveData($logObject);
-        $this->monolog->info($message, $logObject);
+        try {
+            $logObject = $this->prepareObject($sourceObject);
+            $logObject = $this->blurSensitiveData($logObject);
+            $this->monolog->info($message, $logObject);
+        } catch (\Throwable $throwable) {
+
+        }
     }
 
     /**
