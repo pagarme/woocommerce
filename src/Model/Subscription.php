@@ -15,8 +15,6 @@ if (!defined('ABSPATH')) {
 }
 
 use WC_Order;
-use WC_Subscription;
-use WC_Subscriptions_Cart;
 use Woocommerce\Pagarme\Controller\Orders;
 use Woocommerce\Pagarme\Service\LogService;
 use Woocommerce\Pagarme\Service\CardService;
@@ -169,7 +167,7 @@ class Subscription
     public function processChangePaymentSubscription($subscription)
     {
         try {
-            $subscription = new WC_Subscription($subscription);
+            $subscription = new \WC_Subscription($subscription);
             $newPaymentMethod = wc_clean($_POST['payment_method']);
             if ('woo-pagarme-payments-credit_card' == $newPaymentMethod) {
                 $pagarmeCustomer = $this->getPagarmeCustomer($subscription);
@@ -257,10 +255,10 @@ class Subscription
     /**
      * Save card information on table post_meta
      * @param array $card
-     * @param WC_Subscription $subscription
+     * @param \WC_Subscription $subscription
      * @return void
      */
-    private function saveCardInSubscription(array $card, WC_Subscription $subscription)
+    private function saveCardInSubscription(array $card, \WC_Subscription $subscription)
     {
         $subscription->add_meta_data('_pagarme_payment_subscription', json_encode($card), true);
         $subscription->save();
@@ -356,7 +354,7 @@ class Subscription
         if (!self::hasSubscriptionPlugin()) {
             return false;
         }
-        return WC_Subscriptions_Cart::cart_contains_subscription() || wcs_cart_contains_renewal();
+        return \WC_Subscriptions_Cart::cart_contains_subscription() || wcs_cart_contains_renewal();
     }
 
     /**
@@ -367,7 +365,7 @@ class Subscription
         if (!self::hasSubscriptionPlugin()) {
             return false;
         }
-        return WC_Subscriptions_Cart::all_cart_items_have_free_trial();
+        return \WC_Subscriptions_Cart::all_cart_items_have_free_trial();
     }
 
     /**
@@ -381,7 +379,7 @@ class Subscription
         if (wcs_cart_contains_renewal()) {
             return "subsequent";
         }
-        if (WC_Subscriptions_Cart::cart_contains_subscription()) {
+        if (\WC_Subscriptions_Cart::cart_contains_subscription()) {
             return "first";
         }
         return null;
