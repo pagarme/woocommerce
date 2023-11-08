@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author      Open Source Team
  * @copyright   2022 Pagar.me (https://pagar.me)
@@ -9,21 +10,23 @@
 
 /** @var \Woocommerce\Pagarme\Block\Order\PaymentDetails $this */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 use Woocommerce\Pagarme\Block\Order\Charge;
+use Woocommerce\Pagarme\Helper\PaymentHelper;
 
 if (!function_exists('add_action')) {
     exit(0);
 }
 ?>
-<?php if ($this->isPagarmePaymentMethod($this->getOrder())) : ?>
+<?php if (PaymentHelper::isPagarmePaymentMethod($this->getOrderId())) : ?>
     <section>
         <h2 id="pagarme-payment-detail-title"><?= __('Payment Data', 'woo-pagarme-payments'); ?></h2>
         <?php if ($this->getCharges()) : ?>
             <?php foreach ($this->getCharges() as $charge) : ?>
                 <?=
-                $this->createBlock(Charge::class,
+                $this->createBlock(
+                    Charge::class,
                     'pagarme.order.charge',
                     [
                         'charge' => $charge

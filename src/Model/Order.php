@@ -220,4 +220,13 @@ class Order extends Meta
         }
         return $needs_processing;
     }
+
+    public function getTotalAmountByCharges()
+    {
+        $valueTotal = 0;
+        foreach($this->get_charges() as $charge) {
+            $valueTotal += $charge->getAmount();
+        }
+        return $valueTotal/100;
+    }
 }
