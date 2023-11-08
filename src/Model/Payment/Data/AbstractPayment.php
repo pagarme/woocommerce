@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 class AbstractPayment extends DataObject
 {
     /** @var string */
-    protected $identifier = 'pix';
+    protected $identifier = '';
 
     /**
      * @return void

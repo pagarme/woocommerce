@@ -127,6 +127,9 @@ class Checkout
             );
 
             $order = new Order($wc_order->get_id());
+            $totalWithInstallments = $order->getTotalAmountByCharges();
+            $order->pagarme_card_tax = $order->calculateInstallmentFee($totalWithInstallments, $wc_order->get_total());
+            $order->wc_order->set_total($totalWithInstallments);
             $order->payment_method = $fields['payment_method'];
             WC()->cart->empty_cart();
             if ($response) {
