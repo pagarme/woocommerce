@@ -8,8 +8,8 @@ if (!function_exists('add_action')) {
 
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 use Pagarme\Core\Kernel\Services\OrderService;
-// WooCommerce
 use WC_Order;
+use Woocommerce\Pagarme\Helper\Utils;
 
 class Order extends Meta
 {
@@ -221,6 +221,9 @@ class Order extends Meta
         return $needs_processing;
     }
 
+    /**
+     * @return float
+     */
     public function getTotalAmountByCharges()
     {
         $valueTotal = 0;
@@ -228,5 +231,15 @@ class Order extends Meta
             $valueTotal += $charge->getAmount();
         }
         return $valueTotal/100;
+    }
+
+    /**
+     * @param mixed $totalWithInstallmentFee
+     * @param mixed $totalWithoutInstallmentsFee
+     * @return float
+     */
+    public function calculeInstallmentFee($totalWithInstallmentFee, $totalWithoutInstallmentsFee)
+    {
+        return Utils::str_to_float($totalWithInstallmentFee) - Utils::str_to_float($totalWithoutInstallmentsFee);
     }
 }

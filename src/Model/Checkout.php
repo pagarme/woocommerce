@@ -125,13 +125,13 @@ class Checkout
                 $fields['payment_method'],
                 $fields
             );
-            
+
             $order = new Order($wc_order->get_id());
-            $totalWithInstallments = $this->getTotalWithInstallments($response);
-            $order->pagarme_card_tax = $this->getPagarmeCardTax($totalWithInstallments, $wc_order->get_total());
+            $totalWithInstallments = $order->getTotalAmountByCharges();
+            $order->pagarme_card_tax = $order->calculeInstallmentFee($totalWithInstallments, $wc_order->get_total());
             $order->wc_order->set_total($totalWithInstallments);
             $order->payment_method = $fields['payment_method'];
-            // WC()->cart->empty_cart();
+            WC()->cart->empty_cart();
             if ($response) {
                 do_action("on_pagarme_response", $wc_order->get_id(), $response);
                 $order->transaction_id = $response->getPagarmeId()->getValue();
@@ -147,19 +147,7 @@ class Checkout
             return false;
         }
     }
-    private function getTotalWithInstallments($response)
-    {
-        $sumOfCharges = 0;
-        foreach ($response->getCharges() as $charge) {
-            $sumOfCharges += $charge->getAmount();
-        }
-        return $sumOfCharges/100;
-    }
 
-    private function getPagarmeCardTax($totalWithInstallments, $orderTotalWithoutInstallments)
-    {
-        return Utils::str_to_float($totalWithInstallments) - Utils::str_to_float($orderTotalWithoutInstallments);
-    }
     private function convertCheckoutObject(PaymentRequestInterface $paymentRequest)
     {
         $fields = [

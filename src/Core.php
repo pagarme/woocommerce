@@ -29,7 +29,7 @@ class Core
         self::admin_enqueue_scripts();
         self::front_enqueue_scripts();
         add_filter('script_loader_tag', [$this, 'addNoDeferToPagespeed'], 10, 2);
-        self::runActionsRunners();
+        self::addActionsRunners();
     }
 
     public static function load_textdomain()
@@ -303,7 +303,7 @@ class Core
         return str_replace( ' src', ' data-pagespeed-no-defer src', $tag );
     }
 
-    private function runActionsRunners()
+    private function addActionsRunners()
     {
         $actions = new ActionsRunner();
         $actions->run();

@@ -32,7 +32,10 @@ class OrderActions implements RunnerInterface
         $total = $order->get_total();
         $installmentsValue = $orderPagarme->get_meta('pagarme_card_tax');
         if (empty($orderPagarme->get_meta('pagarme_card_tax'))) {
-            $installmentsValue = $orderPagarme->getTotalAmountByCharges() - $order->get_total();
+            $installmentsValue = $orderPagarme->calculeInstallmentFee(
+                $orderPagarme->getTotalAmountByCharges(),
+                $order->get_total()
+            );
             $total = $orderPagarme->getTotalAmountByCharges();
         }
         if (PaymentHelper::isPagarmePaymentMethod($order->get_id()) && $installmentsValue > 0) {
