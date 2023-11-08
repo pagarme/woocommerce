@@ -238,7 +238,7 @@ class Order extends Meta
      * @param mixed $totalWithoutInstallmentsFee
      * @return float
      */
-    public function calculeInstallmentFee($totalWithInstallmentFee, $totalWithoutInstallmentsFee)
+    public function calculateInstallmentFee($totalWithInstallmentFee, $totalWithoutInstallmentsFee)
     {
         return Utils::str_to_float($totalWithInstallmentFee) - Utils::str_to_float($totalWithoutInstallmentsFee);
     }
