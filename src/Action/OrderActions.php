@@ -9,7 +9,7 @@ class OrderActions implements RunnerInterface
 
     public function run()
     {
-        add_filter('woocommerce_get_order_item_totals', array($this, 'filter_woocommerce_get_order_item_totals'), 10, 3);
+        add_filter('woocommerce_get_order_item_totals', array($this, 'showInstallmentFeesToCustomer'), 10, 3);
         add_action('woocommerce_admin_order_totals_after_tax', array($this, 'showInstallmentFeesAdmin'));
     }
     public function showInstallmentFeesAdmin($orderId)
@@ -25,7 +25,7 @@ class OrderActions implements RunnerInterface
         }
     }
 
-    public function filter_woocommerce_get_order_item_totals($total_rows, $order, $tax_display)
+    public function showInstallmentFeesToCustomer($total_rows, $order, $tax_display)
     {
         $orderPagarme = new Order($order->get_id());
         $total = $order->get_total();
