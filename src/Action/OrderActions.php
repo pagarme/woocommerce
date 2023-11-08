@@ -3,7 +3,6 @@
 namespace Woocommerce\Pagarme\Action;
 
 use Woocommerce\Pagarme\Model\Order;
-use Woocommerce\Pagarme\Helper\PaymentHelper;
 
 class OrderActions implements RunnerInterface
 {
@@ -16,7 +15,7 @@ class OrderActions implements RunnerInterface
     public function showInstallmentFeesAdmin($orderId)
     {
         $order = new Order($orderId);
-        if (PaymentHelper::isPagarmePaymentMethod($orderId) && !empty($order->get_meta('pagarme_card_tax'))) {
+        if ($order->isPagarmePaymentMethod() && !empty($order->get_meta('pagarme_card_tax'))) {
             $total = $order->get_meta('pagarme_card_tax');
             echo "  <tr>
                         <td class='label'>" . __('Installment Fee', 'woo-pagarme-payments') . ":</td>
@@ -38,7 +37,7 @@ class OrderActions implements RunnerInterface
             );
             $total = $orderPagarme->getTotalAmountByCharges();
         }
-        if (PaymentHelper::isPagarmePaymentMethod($order->get_id()) && $installmentsValue > 0) {
+        if ($orderPagarme->isPagarmePaymentMethod() && $installmentsValue > 0) {
             array_pop($total_rows);
             $total_rows['pagarme_installment_fee']['label'] = __('Installment Fee', 'woo-pagarme-payments');
             $total_rows['pagarme_installment_fee']['value'] = wc_price($installmentsValue);

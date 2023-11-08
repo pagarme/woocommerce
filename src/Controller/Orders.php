@@ -15,7 +15,6 @@ use Woocommerce\Pagarme\Concrete\WoocommercePlatformOrderDecorator;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup;
 use Pagarme\Core\Kernel\Services\OrderService;
 use Exception, WC_Order;
-use Woocommerce\Pagarme\Helper\PaymentHelper;
 
 class Orders
 {
@@ -89,7 +88,8 @@ class Orders
     public function add_meta_boxes()
     {
         global $theorder;
-        if (PaymentHelper::isPagarmePaymentMethod($theorder->get_id())){
+        $order = new Order($theorder->get_id());
+        if ($order->isPagarmePaymentMethod()){
             wp_register_script('pagarme-adminhmlt-order-view-cancel-capture', $this->jsUrl('sales/order/view/cancel-capture'), ['jquery'], false);
             wp_enqueue_script('pagarme-adminhmlt-order-view-cancel-capture');
             foreach ($this->blockOrder->getMetaBoxes() as $metaBox) {

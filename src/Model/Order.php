@@ -10,6 +10,7 @@ use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 use Pagarme\Core\Kernel\Services\OrderService;
 use WC_Order;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 
 class Order extends Meta
 {
@@ -241,5 +242,15 @@ class Order extends Meta
     public function calculateInstallmentFee($totalWithInstallmentFee, $totalWithoutInstallmentsFee)
     {
         return Utils::str_to_float($totalWithInstallmentFee) - Utils::str_to_float($totalWithoutInstallmentsFee);
+    }
+
+    public function isPagarmePaymentMethod()
+    {
+        if (property_exists($this, 'wc_order')) {
+            $paymentMethod = $this->wc_order->get_payment_method();
+            return $paymentMethod === AbstractGateway::PAGARME
+                || 0 === strpos($paymentMethod, AbstractGateway::WC_PAYMENT_PAGARME);
+        }
+        return false;
     }
 }
