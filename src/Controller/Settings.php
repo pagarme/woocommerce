@@ -35,6 +35,9 @@ class Settings
     /** @var string */
     const WC_PAYMENT_GATEWAY = 'WC_Payment_Gateway';
 
+    /** @var string */
+    const PAGARME_DOCS_ANTIFRAUD_URL = 'https://docs.pagar.me/reference/vis%C3%A3o-geral-sobre-antifraude-1';
+
     /** @var Gateway */
     public $model;
 
@@ -129,6 +132,21 @@ class Settings
                         ],
                         [
                             'fieldObject' => Select::class,
+                            'id' => 'allow_no_address',
+                            'title' => 'Allow order without address',
+                            'options' => $this->yesNoOptions->toLabelsArray(),
+                            'default' => strtolower(Yesno::NO),
+                            'description' => [
+                                'format' => 'For PSP customers with Pagar.me Antifraud active, it is mandatory to fill '
+                                    . 'in all address fields. %sMore details here%s.',
+                                'values' => [
+                                    '<a href="' . self::PAGARME_DOCS_ANTIFRAUD_URL . '" target="_blank" rel="noopener">',
+                                    '</a>'
+                                ]
+                            ],
+                        ],
+                        [
+                            'fieldObject' => Select::class,
                             'id' => 'enable_logs',
                             'title' => 'Logs',
                             'options' => $this->yesNoOptions->toLabelsArray(),
@@ -140,7 +158,7 @@ class Settings
             ]
         ];
 
-        if (empty($this->config->getIsPaymentEnabled()) && $this->config->getHubInstallId()) {
+        if (empty($this->config->getAccountId()) && $this->config->getHubInstallId()) {
             $this->sectionsFields['section'][0]['fields'][] =
                 [
                     'fieldObject' => Select::class,
