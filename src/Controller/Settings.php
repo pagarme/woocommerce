@@ -140,7 +140,9 @@ class Settings
                                 'format' => 'For PSP customers with Pagar.me Antifraud active, it is mandatory to fill '
                                     . 'in all address fields. %sMore details here%s.',
                                 'values' => [
-                                    '<a href="' . self::PAGARME_DOCS_ANTIFRAUD_URL . '" target="_blank" rel="noopener">',
+                                    '<a href="'
+                                        . self::PAGARME_DOCS_ANTIFRAUD_URL
+                                        . '" target="_blank" rel="noopener">',
                                     '</a>'
                                 ]
                             ],
