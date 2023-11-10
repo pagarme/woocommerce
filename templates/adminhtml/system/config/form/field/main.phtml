@@ -14,14 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div>
-    <div class="<?= esc_attr($this->getId()); ?>-field <?= $this->getVisible() ? '' : 'hidden' ; ?>">
+    <div class="<?= esc_attr($this->getId()); ?>-field<?= $this->getVisible() ? '' : ' hidden' ; ?>">
         <?php
             $this->includeTemplate($this->template, $this);
         ?>
     </div>
     <div class="<?= esc_attr($this->getId()); ?>-description">
         <?php if ($this->getDescription()) : ?>
-            <p class="description"><?= esc_html($this->getDescription()) ?></p>
+            <p class="description"><?= $this->getDescription() ?></p>
         <?php endif; ?>
     </div>
 </div>
