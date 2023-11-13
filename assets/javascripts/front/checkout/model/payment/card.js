@@ -97,7 +97,7 @@ let pagarmeCard = {
     },
     getCardDataContingency: async function (cardNumber) {
         let oldPrefix = '',
-            types= this.getBrands(),
+            types = this.getBrands(),
             bin = cardNumber.substring(0, 6),
             data;
         for (const currentType of types) {
@@ -131,7 +131,7 @@ let pagarmeCard = {
         return cardsMethods;
     },
     loadBrand: async function (event) {
-        let elem = event.currentTarget;
+        let elem = event.target;
         this.removeBrand(elem);
         if (!this.isVisible(elem)) {
             return;
@@ -206,6 +206,7 @@ let pagarmeCard = {
         if (typeof card == 'undefined') {
             throw new Error("Invalid data to change card brand");
         }
+
         let imageSrc = this.getImageSrc(card);
         let imgElem = jQuery(elem).parent().find('img');
         jQuery(elem).parents('.pagarme-card-number-row').find(this.brandTarget).attr('value', card[0].brand);
@@ -371,14 +372,14 @@ let pagarmeCard = {
         jQuery(document.body).on('updated_checkout', function () {
             pagarmeCard.renewEventListener();
             let creditCardField = jQuery(pagarmeCard.cardNumberTarget);
-            creditCardField.each(function() {
+            creditCardField.each(function () {
                 if (jQuery(this)?.val() && pagarmeCard.isVisible(jQuery(this)[0])) {
                     jQuery(this).change();
                 }
             });
         });
 
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function () {
             jQuery('form.checkout').on('checkout_place_order', function (event) {
                 return pagarmeCard.canExecute(event);
             });
