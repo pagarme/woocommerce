@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-11-10 11:34-0300\n"
+"PO-Revision-Date: 2023-11-13 14:43-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1258,3 +1258,6 @@ msgstr "As configurações da Dash não foram recuperadas. Por favor, tente nova
 #: templates/adminhtml/system/config/form/field/hub/integration.phtml:25
 msgid "Access Pagar.me Dash"
 msgstr "Acessar o Dash da Pagar.me"
+
+msgid "If your Pagar.me Antifraud is active, orders will fail."
+msgstr "Se o seu Antifraude Pagar.me estiver ativo, os pedidos irão falhar."
