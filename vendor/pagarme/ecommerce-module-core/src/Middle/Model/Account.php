@@ -309,7 +309,7 @@ class Account extends ModelWithErrors
                 continue;
             }
             foreach ($siteUrls as $siteUrl) {
-                if (strpos($siteUrl, $webhook->url) !== false) {
+                if (strpos($webhook->url, $siteUrl) !== false) {
                     return;
                 }
             }
