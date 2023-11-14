@@ -88,14 +88,19 @@ class Settings
     {
         wp_register_script('pagarme_settings', $this->jsUrl('pagarme_settings'), array('jquery'), false, true);
         wp_enqueue_script('pagarme_settings');
-        wp_register_style('woocommerce_admin_styles', WC()->plugin_url() . '/assets/css/admin.css', array());
+        wp_register_style('woocommerce_admin_styles', WC()->plugin_url() . '/assets/css/admin.css');
         wp_enqueue_style('woocommerce_admin_styles');
 
         $params = array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonces' => array(
                 'gateway_toggle' => wp_create_nonce('woocommerce-toggle-payment-gateway-enabled'),
-            )
+            ),
+            'allow_no_address_swal' => array(
+                'title' => __('Are you sure?', 'woo-pagarme-payments'),
+                'text' => __('If your Pagar.me Antifraud is active, orders will fail.', 'woo-pagarme-payments'),
+                'cancelButtonText' => __('Cancel', 'woo-pagarme-payments'),
+            ),
         );
         wp_localize_script('pagarme_settings', 'pagarme_settings', $params);
     }
