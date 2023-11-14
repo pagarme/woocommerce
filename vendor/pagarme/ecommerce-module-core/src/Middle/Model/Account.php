@@ -284,7 +284,7 @@ class Account extends ModelWithErrors
         $siteUrls = $storeSettings->getStoreUrls();
         foreach ($domains as $domain) {
             foreach ($siteUrls as $siteUrl) {
-                if (strpos($domain, $siteUrl) !== false) {
+                if (strpos($siteUrl, $domain) !== false) {
                     return;
                 }
             }
@@ -309,7 +309,7 @@ class Account extends ModelWithErrors
                 continue;
             }
             foreach ($siteUrls as $siteUrl) {
-                if (strpos($webhook->url, $siteUrl) !== false) {
+                if (strpos($siteUrl, $webhook->url) !== false) {
                     return;
                 }
             }
