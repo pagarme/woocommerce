@@ -4,7 +4,7 @@ Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, 
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 7.1
-Stable tag: 3.1.7
+Stable tag: 3.1.8
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -22,6 +22,12 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.1.8 (14/11/2023) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.8)
+
+* **Correções:**
+  * Mensagem de domínio incorreto
+
 = 3.1.7 (07/11/2023) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.7)
 
@@ -31,19 +37,6 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
   * Alto uso de memória no recebimento de webhook de Charge.
   * Falha na visualização do parcelamento para 2 cartões de crédito
   * Pedidos com reembolso na charge exibem erro no admin
-
-= 3.1.6 (04/10/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.6)
-
-* **Melhorias:**
-  * Validador de configurações da Dash da Pagar.me.
-  * Compatibilização com o HPOS.
-  * Receber apenas webhooks do Woocommerce.
-  * Compatibilização com mod_pagespeed.
-
-* **Correções:**
-  * Envio de informações do boleto na criação de pedido.
-  * Modal de dados obrigatórios para número de endereço.
 
 == Upgrade Notice ==
 Nosso plugin agora é compatível com Woocommerce Subscriptions
