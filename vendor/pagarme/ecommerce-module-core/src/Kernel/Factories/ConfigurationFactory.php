@@ -20,6 +20,7 @@ use Pagarme\Core\Kernel\ValueObjects\Key\SecretKey;
 use Pagarme\Core\Kernel\ValueObjects\Key\TestPublicKey;
 use Pagarme\Core\Kernel\ValueObjects\Key\TestSecretKey;
 use Exception;
+use Woocommerce\Pagarme\Model\Config;
 
 class ConfigurationFactory implements FactoryInterface
 {
@@ -220,6 +221,12 @@ class ConfigurationFactory implements FactoryInterface
         if (!empty($data->pixConfig)) {
             $config->setPixConfig(
                 (new PixConfigFactory())->createFromDbData($data->pixConfig)
+            );
+        }
+
+        if (!empty($data->allowNoAddress)) {
+            $config->setAllowNoAddress(
+                (new Config())->getAllowNoAddress()
             );
         }
 
