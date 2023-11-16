@@ -225,9 +225,7 @@ class ConfigurationFactory implements FactoryInterface
         }
 
         if (!empty($data->allowNoAddress)) {
-            $config->setAllowNoAddress(
-                (new Config())->getAllowNoAddress()
-            );
+            $config->setAllowNoAddress($data->allowNoAddress);
         }
 
         return $config;
