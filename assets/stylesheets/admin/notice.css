@@ -12,12 +12,12 @@
     margin-right: 1em;
 }
 
-.pagarme-notice .pagarme-notice-message-container a {
+.pagarme-notice .pagarme-notice-message-container a.button {
     margin-right: 1em;
     cursor: pointer;
 }
 
-.pagarme-notice .pagarme-notice-message-container a:last-child {
+.pagarme-notice .pagarme-notice-message-container a.button:last-child {
     margin-right: 0;
 }
 
