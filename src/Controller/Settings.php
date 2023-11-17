@@ -142,8 +142,8 @@ class Settings
                             'options' => $this->yesNoOptions->toLabelsArray(),
                             'default' => strtolower(Yesno::NO),
                             'description' => [
-                                'format' => 'For PSP customers with Pagar.me Antifraud active, it is mandatory to fill'
-                                    . ' in all address fields. %sRead documentation »%s',
+                                'format' => 'For PSP customers with Pagar.me Antifraud active, it is mandatory to fill '
+                                    . 'in all address fields. %sMore details here%s.',
                                 'values' => [
                                     '<a href="'
                                         . self::PAGARME_DOCS_ANTIFRAUD_URL

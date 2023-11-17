@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-11-17 16:02-0300\n"
+"PO-Revision-Date: 2023-11-13 14:43-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -428,11 +428,11 @@ msgstr "Permitir compras sem endereço"
 
 #: src/Controller/Settings.php:109
 msgid ""
-"For PSP customers with Pagar.me Antifraud active, it is mandatory to fill in all address fields. %sRead documentation "
-"»%s"
+"For PSP customers with Pagar.me Antifraud active, it is mandatory to fill in all address fields. %sMore details here"
+"%s."
 msgstr ""
-"Para clientes PSP com o Antifraude Pagar.me ativo, é obrigatório preencher todos os campos de endereço. %sLeia a "
-"documentação »%s"
+"Para clientes PSP com o Antifraude Pagar.me ativo, é obrigatório preencher todos os campos de endereço. %sMais "
+"detalhes aqui%s."
 
 #: src/Controller/Gateways/CreditCard.php:115 src/Controller/Gateways/CreditCard.php:157
 #: src/Controller/Gateways/Pix.php:59 src/Controller/Gateways/Voucher.php:72 src/Controller/Gateways/Voucher.php:102
@@ -843,11 +843,6 @@ msgstr "Os seguintes campos de checkout são obrigatórios, mas não foram encon
 #: woo-pagarme-payments.php:194
 msgid "Please, make sure to include them for Pagar.me module to work."
 msgstr "Por favor, certifique-se de incluí-los para que o módulo da Pagar.me funcione."
-
-msgid "You can install %s or any other plugin of your choice to add the missing fields. %sRead documentation »%s"
-msgstr ""
-"Você pode instalar o %s ou qualquer outro plugin de sua escolha para adicionar os campos ausentes. %sLeia a "
-"documentação »%s"
 
 #. Description of the plugin/theme
 msgid "Enable Pagar.me Gateway for WooCommerce"

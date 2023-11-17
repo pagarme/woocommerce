@@ -14,11 +14,6 @@
  * Text Domain: woo-pagarme-payments
  */
 
-use Woocommerce\Pagarme\Model\Config;
-
-const BRAZILIAN_MARKET_URL = 'https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/';
-const PAGARME_REQUIREMENTS_URL = 'https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce';
-
 if (!defined('ABSPATH') || !function_exists('add_action')) {
     exit(0);
 }
@@ -188,6 +183,21 @@ function wcmpAdminNoticeWoocommerce()
     );
 }
 
+function wcmpAdminNoticeExtraCheckouts()
+{
+    wcmpRenderAdminNoticeHtml(
+        __(
+            'WooCoomerce Extra Checkout Fields For Brazil plugin is required for Pagar.me module to work.',
+            'woo-pagarme-payments'
+        ),
+        wcmpGetPluginButton(
+            'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php',
+            'Brazilian Market on WooCommerce'
+        )
+    );
+}
+
+
 function wcmpAdminNoticePermalink()
 {
     wcmpRenderAdminNoticeHtml(
@@ -215,13 +225,11 @@ function wcmpAdminNoticeCheckoutFields()
     $requiredFields = [
         'billing_cpf',
         'billing_cnpj',
+        'billing_address_1',
+        'billing_number',
+        'billing_address_2',
+        'billing_neighborhood',
     ];
-    if (!(new Config())->getAllowNoAddress()) {
-        $requiredFields[] = 'billing_address_1';
-        $requiredFields[] = 'billing_number';
-        $requiredFields[] = 'billing_address_2';
-        $requiredFields[] = 'billing_neighborhood';
-    }
     $checkoutFields = WC()->countries->get_address_fields(WC()->countries->get_base_country());
 
     foreach ($requiredFields as $field) {
@@ -249,20 +257,6 @@ function wcmpAdminNoticeCheckoutFields()
 
     $message .= '</ul><p>';
     $message .= __('Please, make sure to include them for Pagar.me module to work.', 'woo-pagarme-payments');
-    $message .= '</p><p>';
-    $message .= sprintf(
-        __('You can install %s or any other plugin of your choice to add the missing fields. %sRead '
-            . 'documentation »%s', 'woo-pagarme-payments'),
-        sprintf(
-            '<a href="%s" target="_blank" rel="noopener">Brazilian Market on WooCommerce</a>',
-            BRAZILIAN_MARKET_URL
-        ),
-        sprintf(
-            '<a href="%s" target="_blank" rel="noopener">',
-            PAGARME_REQUIREMENTS_URL
-        ),
-        '</a>'
-    );
 
     wcmpRenderAdminNoticeHtml($message);
 }
@@ -291,6 +285,10 @@ function wcmpPluginsLoadedCheck()
 
     if (!$woocommerce) {
         wcmpLoadNotice('AdminNoticeWoocommerce');
+    }
+
+    if (!$checkoutFields) {
+        wcmpLoadNotice('AdminNoticeExtraCheckouts');
     }
 
     if ($woocommerce) {
