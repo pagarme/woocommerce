@@ -88,6 +88,9 @@ class Orders
     public function add_meta_boxes()
     {
         global $theorder;
+        if($theorder === null) {
+            return;
+        }
         $order = new Order($theorder->get_id());
         if ($order->isPagarmePaymentMethod()){
             wp_register_script('pagarme-adminhmlt-order-view-cancel-capture', $this->jsUrl('sales/order/view/cancel-capture'), ['jquery'], false);
