@@ -241,6 +241,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
     {
         $dataObj->enabled = (bool)$storeConfig->getEnabled();
         $dataObj->testMode = $storeConfig->getIsSandboxMode();
+        $dataObj->allowNoAddress = $storeConfig->getAllowNoAddress();
         $dataObj->sendMail = false;
         $dataObj->createOrder = false;
 
