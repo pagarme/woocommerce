@@ -221,6 +221,10 @@ function wcmpAdminNoticeCheckoutFields()
         $requiredFields[] = 'billing_number';
         $requiredFields[] = 'billing_address_2';
         $requiredFields[] = 'billing_neighborhood';
+        $requiredFields[] = 'billing_country';
+        $requiredFields[] = 'billing_city';
+        $requiredFields[] = 'billing_state';
+        $requiredFields[] = 'billing_postcode';
     }
     $checkoutFields = WC()->countries->get_address_fields(WC()->countries->get_base_country());
 
