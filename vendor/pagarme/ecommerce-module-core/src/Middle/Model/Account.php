@@ -284,7 +284,7 @@ class Account extends ModelWithErrors
         $siteUrls = $storeSettings->getStoreUrls();
         foreach ($domains as $domain) {
             foreach ($siteUrls as $siteUrl) {
-                if (strpos($domain, $siteUrl) !== false) {
+                if (strpos($siteUrl, $domain) !== false) {
                     return;
                 }
             }

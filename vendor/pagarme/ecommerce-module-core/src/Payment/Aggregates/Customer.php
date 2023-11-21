@@ -165,7 +165,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     /**
      * @param Address $address
      */
-    public function setAddress(Address $address)
+    public function setAddress(?Address $address)
     {
         $this->address = $address;
     }
