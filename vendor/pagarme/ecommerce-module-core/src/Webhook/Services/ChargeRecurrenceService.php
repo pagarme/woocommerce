@@ -98,7 +98,9 @@ final class ChargeRecurrenceService extends AbstractHandlerService
         if ($charge->getPaidAmount() == 0) {
             $charge->setPaidAmount($paidAmount);
         }
-
+        if ($charge->getSubscriptionId() === null) {
+            $charge->setSubscriptionId($this->order->getSubscriptionId()->getValue());
+        }
         $chargeRepository->save($charge);
 
         $this->order->setCurrentCharge($charge);
@@ -271,7 +273,7 @@ final class ChargeRecurrenceService extends AbstractHandlerService
      */
     protected function handleChargedback(Webhook $webhook)
     {
-        
+
         $order = $this->order;
         $invoiceService = new InvoiceService();
         $subscriptionRepository = new SubscriptionRepository();
@@ -283,7 +285,7 @@ final class ChargeRecurrenceService extends AbstractHandlerService
         $charge = $webhook->getEntity();
 
         $transaction = $charge->getLastTransaction();
-        
+
         $outdatedCharge = $this->chargeRepository->findByPagarmeId(
             $charge->getPagarmeId()
         );
@@ -291,26 +293,26 @@ final class ChargeRecurrenceService extends AbstractHandlerService
         if ($outdatedCharge !== null) {
             $charge = $outdatedCharge;
         }
-         /**
+        /**
          * @var Charge $outdatedCharge
          */
         if ($transaction !== null) {
             $outdatedCharge->addTransaction($transaction);
         }
 
-        
+
         $charge->cancel();
         $order->updateCharge($charge);
         $order->applyOrderStatusFromCharges();
-        
+
         $charge->failed();
         $invoiceService->setChargedbackStatus($charge);
-        
+
         $history = $i18n->getDashboard('Subscription canceled');
         $order->getPlatformOrder()->addHistoryComment($history);
 
         $subscriptionRepository->save($order);
-        
+
         return [
             "message" => 'Subscription cancel registered',
             "code" => 200
@@ -528,14 +530,14 @@ final class ChargeRecurrenceService extends AbstractHandlerService
                 $history .= ". " . $i18n->getDashboard(
                     "Extra amount paid: %.2f",
                     $moneyService->centsToFloat($extraValue)
-                    );
+                );
             }
 
             if ($extraValue < 0) {
                 $history .= ". " . $i18n->getDashboard(
                     "Remaining amount: %.2f",
                     $moneyService->centsToFloat(abs($extraValue))
-                    );
+                );
             }
 
             $refundedAmount = $charge->getRefundedAmount();
@@ -570,7 +572,7 @@ final class ChargeRecurrenceService extends AbstractHandlerService
         $history .= ' ' . $i18n->getDashboard(
             'Refunded amount: %.2f',
             $amountInCurrency
-            );
+        );
 
         $history .= " (" . $i18n->getDashboard('until now') . ")";
 

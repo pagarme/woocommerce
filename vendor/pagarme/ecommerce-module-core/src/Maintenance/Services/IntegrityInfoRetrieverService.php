@@ -44,7 +44,7 @@ class IntegrityInfoRetrieverService implements InfoRetrieverServiceInterface
         $classes = scandir($installDataSourcesDir);
         array_walk(
             $classes, function (&$class) {
-                $class = str_replace('InstallDataSource.php', '', $class);
+                $class = str_replace('InstallDataSource.php', '', $class ?? '');
             }
         );
         $classes = array_filter(
@@ -92,7 +92,7 @@ class IntegrityInfoRetrieverService implements InfoRetrieverServiceInterface
             $cleanFilename = str_replace(
                 $rootDir,
                 '',
-                $file
+                $file ?? ''
             );
             $fileHashs[$cleanFilename] = $this->generateFileHash($file);
         }
@@ -183,7 +183,7 @@ class IntegrityInfoRetrieverService implements InfoRetrieverServiceInterface
     {
         $dirCount = [];
         foreach ($files as $file) {
-            $explodedPath = explode(DIRECTORY_SEPARATOR, $file);
+            $explodedPath = explode(DIRECTORY_SEPARATOR, $file ?? '');
 
             array_pop($explodedPath);
 
@@ -227,7 +227,7 @@ class IntegrityInfoRetrieverService implements InfoRetrieverServiceInterface
             $cleanFilename = str_replace(
                 $rootDir,
                 '',
-                $file
+                $file ?? ''
             );
             $fileHashs[$cleanFilename] = $this->generateFileHash($file);
         }

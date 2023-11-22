@@ -3,42 +3,36 @@
 namespace Pagarme\Core\Recurrence\Services;
 
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
-use Pagarme\Core\Kernel\Aggregates\Order;
 use Pagarme\Core\Kernel\ValueObjects\PaymentMethod as PaymentMethod;
 use Pagarme\Core\Payment\ValueObjects\CardId;
 use Pagarme\Core\Payment\ValueObjects\CardToken;
 use Pagarme\Core\Payment\ValueObjects\Discounts;
 use Pagarme\Core\Recurrence\Aggregates\Increment;
 use Pagarme\Core\Recurrence\Aggregates\Plan;
-use Pagarme\Core\Recurrence\Aggregates\ProductSubscription;
 use Pagarme\Core\Recurrence\Factories\ChargeFactory;
-use Pagarme\Core\Kernel\Factories\OrderFactory;
 use Pagarme\Core\Kernel\Interfaces\PlatformOrderInterface;
 use Pagarme\Core\Kernel\Services\APIService;
 use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Kernel\Services\OrderLogService;
 use Pagarme\Core\Kernel\Services\OrderService;
-use Pagarme\Core\Kernel\ValueObjects\Id\ChargeId;
 use Pagarme\Core\Kernel\ValueObjects\Id\SubscriptionId;
 use Pagarme\Core\Kernel\ValueObjects\OrderState;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 use Pagarme\Core\Payment\Aggregates\Order as PaymentOrder;
 use Pagarme\Core\Payment\Services\ResponseHandlers\ErrorExceptionHandler;
-use Pagarme\Core\Payment\ValueObjects\CustomerType;
 use Pagarme\Core\Kernel\Aggregates\Charge;
 use Pagarme\Core\Recurrence\Aggregates\Invoice;
 use Pagarme\Core\Recurrence\Aggregates\SubProduct;
 use Pagarme\Core\Recurrence\Aggregates\Subscription;
 use Pagarme\Core\Recurrence\Factories\InvoiceFactory;
-use Pagarme\Core\Recurrence\Factories\SubProductFactory;
 use Pagarme\Core\Recurrence\Repositories\SubscriptionRepository;
 use Pagarme\Core\Recurrence\ValueObjects\PricingSchemeValueObject as PricingScheme;
 use Pagarme\Core\Recurrence\ValueObjects\SubscriptionStatus;
-use Pagarme\Core\Recurrence\Repositories\ChargeRepository;
 use Pagarme\Core\Recurrence\Factories\SubscriptionFactory;
 
 final class SubscriptionService
 {
+    const CAN_CREATE_PAYMENT_MESSAGE = "Can't create payment. Please review the information and try again.";
     private $logService;
     /**
      * @var LocalizationService
@@ -46,6 +40,8 @@ final class SubscriptionService
     private $i18n;
     private $subscriptionItems;
     private $apiService;
+
+    private $recurrenceService;
 
     public function __construct()
     {
@@ -81,10 +77,7 @@ final class SubscriptionService
             $forceCreateOrder = MPSetup::getModuleConfiguration()->isCreateOrderEnabled();
 
             if ($subscriptionResponse === null) {
-                $message = $i18n->getDashboard(
-                    "Can't create payment. " .
-                    "Please review the information and try again."
-                );
+                $message = $i18n->getDashboard(self::CAN_CREATE_PAYMENT_MESSAGE);
                 throw new \Exception($message, 400);
             }
 
@@ -106,10 +99,7 @@ final class SubscriptionService
                 }
 
                 if (!$forceCreateOrder) {
-                    $message = $i18n->getDashboard(
-                        "Can't create payment. " .
-                        "Please review the information and try again."
-                    );
+                    $message = $i18n->getDashboard(self::CAN_CREATE_PAYMENT_MESSAGE);
                     throw new \Exception($message, 400);
                 }
             }
@@ -128,16 +118,13 @@ final class SubscriptionService
                 $forceCreateOrder &&
                 !$this->checkResponseStatus($originalSubscriptionResponse)
             ) {
-                $message = $i18n->getDashboard(
-                    "Can't create payment. " .
-                    "Please review the information and try again."
-                );
+                $message = $i18n->getDashboard(self::CAN_CREATE_PAYMENT_MESSAGE);
                 throw new \Exception($message, 400);
             }
 
             return [$response];
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $exceptionHandler = new ErrorExceptionHandler();
             $paymentOrder = new PaymentOrder;
             $paymentOrder->setCode($platformOrder->getcode());
@@ -160,8 +147,58 @@ final class SubscriptionService
            return;
         }
 
-        $discountSubscription = Discounts::FLAT((($discountOrder * -1) * 100), 1);
+        $cycles = $this->getDiscountCycles($platformOrder, $subscription);
+        $discountSubscription = Discounts::FLAT((($discountOrder * -1) * 100), $cycles);
         $subscription->setDiscounts([$discountSubscription]);
+    }
+
+    private function getDiscountCycles($platformOrder, $subscription)
+    {
+        $orderService = new OrderService();
+        $order = $orderService->extractPaymentOrderFromPlatformOrder($platformOrder);
+        $subscriptionItems = $this->getSubscriptionItems($order);
+        $cycles = 1;
+
+        if (!empty($subscriptionItems)) {
+            $subscriptionItems = array_filter($subscriptionItems);
+        }
+
+        $changeCycle = true;
+        $planItems = [];
+        foreach ($subscriptionItems as $subscriptionItem) {
+            if ($subscriptionItem instanceof Plan) {
+                $planItems = $subscriptionItem->getItems();
+            }
+            if (empty($subscriptionItem->getApplyDiscountInAllProductCycles())) {
+                $changeCycle = false;
+                break;
+            }
+        }
+
+        $items = $subscription->getItems();
+
+        if (empty($items) && !empty($planItems) && $subscription->getPlanId()) {
+            $items = $planItems;
+        }
+
+        if ($changeCycle) {
+            $validSubscriptionItems = array_filter($items, [$this, 'isValidSubscriptionItem']);
+            $cycles = $this->getRecurrenceService()
+                ->getGreatestCyclesFromItems($validSubscriptionItems);
+        }
+
+        return $cycles;
+    }
+
+    /**
+     * @param mixed $item
+     * @return bool
+     */
+    private function isValidSubscriptionItem($item)
+    {
+        return method_exists($item, 'getSelectedRepetition')
+            && method_exists($item, 'getRecurrenceType')
+            && (!empty($item->getSelectedRepetition() || $item->getRecurrenceType() === Plan::RECURRENCE_TYPE));
     }
 
     private function extractSubscriptionDataFromOrder(PaymentOrder $order)
@@ -174,22 +211,20 @@ final class SubscriptionService
         $this->fillCreditCardData($subscription, $order);
 
         $plan = $this->extractPlanFromOrder($order);
-        if ($plan == null) {
-            $this->fillSubscriptionItems(
-                $subscription,
-                $order
-            );
-            $this->fillDescription($subscription);
-        }
+        $this->fillSubscriptionItems(
+            $subscription,
+            $order
+        );
+        $this->fillDescription($subscription);
 
         $this->fillPlanId($subscription, $plan);
         $this->fillInterval($subscription, $plan);
 
-        if ($order->getPaymentMethod() == PaymentMethod::boleto()) {
+        if ($order->getPaymentMethod() === PaymentMethod::boleto()) {
             $this->fillBoletoData($subscription);
         }
 
-        if ($order->getShipping() != null) {
+        if ($order->getShipping() !== null) {
             $this->fillShipping($subscription, $order);
         }
 
@@ -224,7 +259,7 @@ final class SubscriptionService
     {
         $items = $this->getSubscriptionItems($order);
 
-        if (empty($items[0]) || count($items) == 0) {
+        if (empty($items[0]) || empty($items)) {
             throw new \Exception('Recurrence items not found', 400);
         }
 
@@ -237,13 +272,12 @@ final class SubscriptionService
      */
     private function getSubscriptionItems(PaymentOrder $order)
     {
-        $recurrenceService = new RecurrenceService();
         $items = [];
 
         foreach ($order->getItems() as $product) {
             if ($product->getType() !== null) {
                 $items[] =
-                    $recurrenceService
+                    $this->getRecurrenceService()
                         ->getRecurrenceProductByProductId(
                             $product->getCode()
                         );
@@ -258,6 +292,9 @@ final class SubscriptionService
         $subscriptionItems = [];
 
         foreach ($order->getItems() as $item) {
+            if (method_exists($item, 'getPagarmeId') && $item->getPagarmeId()) {
+                continue;
+            }
             $subProduct = new SubProduct();
             $cycles = 1;
             $selectedOption = $item->getSelectedOption();
@@ -277,19 +314,6 @@ final class SubscriptionService
             $subProduct->setQuantity($item->getQuantity());
             $pricingScheme = PricingScheme::UNIT($item->getAmount());
             $subProduct->setPricingScheme($pricingScheme);
-
-            $increment = new Increment();
-
-            $shippingAmount = 0;
-            if($order->getShipping() != null) {
-                $shippingAmount = $order->getShipping()->getAmount();
-            }
-
-            $increment->setValue($shippingAmount);
-            $increment->setIncrementType('flat');
-            $increment->setCycles($cycles);
-
-            $subProduct->setIncrement($increment);
 
             $subscriptionItems[] = $subProduct;
         }
@@ -462,7 +486,7 @@ final class SubscriptionService
     private function getResponseHandler($response)
     {
         $responseClass = get_class($response);
-        $responseClass = explode('\\', $responseClass);
+        $responseClass = explode('\\', $responseClass ?? '');
 
         $responseClass =
             'Pagarme\\Core\\Recurrence\\Services\\ResponseHandlers\\' .
@@ -490,7 +514,8 @@ final class SubscriptionService
 
         $subscriptionResponse['plan_id'] = $subscription->getPlanIdValue();
 
-        $this->setProductIdOnSubscriptionItems($subscriptionResponse, $subscription); //@todo Remove when be implemented the "code" on mark1
+        //@todo Remove when be implemented the "code" on mark1
+        $this->setProductIdOnSubscriptionItems($subscriptionResponse, $subscription);
     }
 
     /**
@@ -656,5 +681,13 @@ final class SubscriptionService
     {
         $subscriptionRepository = new SubscriptionRepository();
         return $subscriptionRepository->findByPagarmeId($subscriptionId);
+    }
+
+    private function getRecurrenceService()
+    {
+        if (empty($this->recurrenceService)) {
+            $this->recurrenceService = new RecurrenceService();
+        }
+        return $this->recurrenceService;
     }
 }

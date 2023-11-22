@@ -8,6 +8,6 @@ final class HubInstallToken extends AbstractValidString
 {
     protected function validateValue($value)
     {
-        return preg_match('/\w{64}$/', $value) === 1;
+        return preg_match('/\w{64}$/', $value ?? '') === 1;
     }
 }

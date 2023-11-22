@@ -33,7 +33,7 @@ abstract class AbstractInstallDataSource implements InstallDataSourceInterface
                     $foundFile = preg_replace(
                         '/\\' .DIRECTORY_SEPARATOR. '{2,}/',
                         DIRECTORY_SEPARATOR,
-                        $foundFile
+                        $foundFile ?? ''
                     );
 
                     if (is_dir($foundFile)) {
@@ -56,7 +56,7 @@ abstract class AbstractInstallDataSource implements InstallDataSourceInterface
         if (strlen($file) < 3) {
             return true;
         }
-        $dir = str_replace($this->getModuleRoot(),'', $path);
+        $dir = str_replace($this->getModuleRoot(),'', $path ?? '');
         return
             $ignoreVendor
             && (

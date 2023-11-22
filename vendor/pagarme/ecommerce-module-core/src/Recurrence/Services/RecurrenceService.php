@@ -114,4 +114,21 @@ class RecurrenceService
 
         return $product;
     }
+
+    public function getGreatestCyclesFromItems($items)
+    {
+        $cycles = 1;
+        foreach ($items ?? [] as $item) {
+            if ($item->getCycles() === null) {
+                $cycles = $item->getCycles();
+                break;
+            }
+
+            if ($cycles < $item->getCycles()) {
+                $cycles = $item->getCycles();
+            }
+        }
+
+        return $cycles;
+    }
 }

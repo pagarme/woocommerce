@@ -126,7 +126,7 @@ final class PaymentFactory
 
         $payment->setAmount($cardData->amount);
         $payment->setInstallments($cardData->installments);
-        $payment->setRecurrenceCycle($cardData->recurrenceCycle);
+        $payment->setRecurrenceCycle($cardData->recurrenceCycle ?? null);
 
         //setting amount with interest
         if (strcmp($cardDataIndex, \Pagarme\Core\Kernel\ValueObjects\PaymentMethod::VOUCHER)) {
@@ -182,7 +182,7 @@ final class PaymentFactory
 
     private function getAmountWithInterestForCreditCard(
         AbstractCreditCardPayment $payment,
-        $config
+                                  $config
     ) {
         $installmentService = new InstallmentService();
 

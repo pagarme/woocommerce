@@ -28,7 +28,7 @@ class Card implements CardInterface
     {
         $this->cardId = $cardId;
     }
-    
+
     public function getCardId()
     {
         return $this->cardId;
@@ -36,7 +36,7 @@ class Card implements CardInterface
 
     public function isValid()
     {
-        if (empty($token)) {
+        if (empty($this->getToken())) {
             return new InvalidArgumentException("Token not valid");
         }
         return true;

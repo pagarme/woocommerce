@@ -2,7 +2,6 @@
 
 namespace Pagarme\Core\Recurrence\Aggregates;
 
-use Magento\Framework\Exception\LocalizedException;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Recurrence\Interfaces\RepetitionInterface;
@@ -10,6 +9,7 @@ use Pagarme\Core\Recurrence\Interfaces\RepetitionInterface;
 class Repetition extends AbstractEntity implements RepetitionInterface
 {
     const DATE_FORMAT = 'Y-m-d H:i:s';
+    const INTERVAL_DAY = 'day';
     const INTERVAL_WEEK = 'week';
     const INTERVAL_MONTH = 'month';
     const INTERVAL_YEAR = 'year';
@@ -95,7 +95,6 @@ class Repetition extends AbstractEntity implements RepetitionInterface
     public function getUpdatedAt()
     {
         return $this->updatedAt;
-        return $this;
     }
 
     /**
@@ -176,7 +175,7 @@ class Repetition extends AbstractEntity implements RepetitionInterface
      */
     public function getIntervalType()
     {
-        return $this->interval;
+        return $this->getInterval();
     }
 
     /**
@@ -197,6 +196,7 @@ class Repetition extends AbstractEntity implements RepetitionInterface
     public function getAvailablesInterval()
     {
         return [
+            self::INTERVAL_DAY,
             self::INTERVAL_WEEK,
             self::INTERVAL_MONTH,
             self::INTERVAL_YEAR
@@ -209,8 +209,11 @@ class Repetition extends AbstractEntity implements RepetitionInterface
      */
     public function checkRepetitionIsCompatible(Repetition $repetitionObject)
     {
-        if (($this->getInterval() == $repetitionObject->getInterval()) &&
-            ($this->getIntervalCount() == $repetitionObject->getIntervalCount())) {
+        if (
+            $this->getInterval() === $repetitionObject->getInterval()
+            && $this->getIntervalCount() === $repetitionObject->getIntervalCount()
+            && $this->getCycles() === $repetitionObject->getCycles()
+        ) {
             return true;
         }
 

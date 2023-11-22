@@ -20,7 +20,7 @@ class TransactionFactory implements FactoryInterface
 
         $transaction->setPagarmeId(new TransactionId($postData['id']));
 
-        $baseStatus = explode('_', $postData['status']);
+        $baseStatus = explode('_', $postData['status'] ?? '');
         $status = $baseStatus[0];
         for ($i = 1; $i < count($baseStatus); $i++) {
             $status .= ucfirst(($baseStatus[$i]));
@@ -34,7 +34,7 @@ class TransactionFactory implements FactoryInterface
         }
         $transaction->setStatus(TransactionStatus::$status());
 
-        $baseType = explode('_', $postData['transaction_type']);
+        $baseType = explode('_', $postData['transaction_type'] ?? '');
         $type = $baseType[0];
         for ($i = 1; $i < count($baseType); $i++) {
             $type .= ucfirst(($baseType[$i]));
@@ -142,7 +142,7 @@ class TransactionFactory implements FactoryInterface
         $transaction->setAcquirerTid($dbData['acquirer_tid']);
         $transaction->setAcquirerAuthCode($dbData['acquirer_auth_code']);
 
-        $baseStatus = explode('_', $dbData['status']);
+        $baseStatus = explode('_', $dbData['status'] ?? '');
         $status = $baseStatus[0];
         for ($i = 1; $i < count($baseStatus); $i++) {
             $status .= ucfirst(($baseStatus[$i]));
@@ -156,7 +156,7 @@ class TransactionFactory implements FactoryInterface
         }
         $transaction->setStatus(TransactionStatus::$status());
 
-        $baseType = explode('_', $dbData['type']);
+        $baseType = explode('_', $dbData['type'] ?? '');
         $type = $baseType[0];
         for ($i = 1; $i < count($baseType); $i++) {
             $type .= ucfirst(($baseType[$i]));

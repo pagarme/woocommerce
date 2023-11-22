@@ -38,6 +38,7 @@ class ProductSubscriptionFactory implements FactoryInterface
         $this->setRepetitions($postData);
         $this->setUpdatedAt($postData);
         $this->setCreatedAt($postData);
+        $this->setApplyDiscountInAllProductCycles($postData);
 
         return $this->productSubscription;
     }
@@ -60,7 +61,8 @@ class ProductSubscriptionFactory implements FactoryInterface
             ->setBoleto(boolval($dbData['boleto']))
             ->setAllowInstallments(boolval($dbData['allow_installments']))
             ->setSellAsNormalProduct(boolval($dbData['sell_as_normal_product']))
-            ->setBillingType($dbData['billing_type']);
+            ->setBillingType($dbData['billing_type'])
+            ->setApplyDiscountInAllProductCycles($dbData['apply_discount_in_all_product_cycles'] ?? false);
 
         $this->setCreatedAt($dbData);
         $this->setUpdatedAt($dbData);
@@ -94,7 +96,6 @@ class ProductSubscriptionFactory implements FactoryInterface
     {
         if (!empty($postData['id'])) {
             $this->productSubscription->setId($postData['id']);
-            return;
         }
     }
 
@@ -107,7 +108,6 @@ class ProductSubscriptionFactory implements FactoryInterface
     {
         if (isset($postData['credit_card']) && is_bool($postData['credit_card'])) {
             $this->productSubscription->setCreditCard($postData['credit_card']);
-            return;
         }
     }
 
@@ -115,7 +115,6 @@ class ProductSubscriptionFactory implements FactoryInterface
     {
         if (isset($postData['boleto']) && is_bool($postData['boleto'])) {
             $this->productSubscription->setBoleto($postData['boleto']);
-            return;
         }
     }
 
@@ -128,7 +127,6 @@ class ProductSubscriptionFactory implements FactoryInterface
             $this->productSubscription->setSellAsNormalProduct(
                 $postData['sell_as_normal_product']
             );
-            return;
         }
     }
 
@@ -141,7 +139,6 @@ class ProductSubscriptionFactory implements FactoryInterface
             $this->productSubscription->setAllowInstallments(
                 $postData['allow_installments']
             );
-            return;
         }
     }
 
@@ -149,7 +146,6 @@ class ProductSubscriptionFactory implements FactoryInterface
     {
         if (isset($postData['product_id'])) {
             $this->productSubscription->setProductId($postData['product_id']);
-            return;
         }
     }
 
@@ -159,7 +155,6 @@ class ProductSubscriptionFactory implements FactoryInterface
             $this->productSubscription->setUpdatedAt(
                 new \Datetime($postData['updated_at'])
             );
-            return;
         }
     }
 
@@ -169,7 +164,16 @@ class ProductSubscriptionFactory implements FactoryInterface
             $this->productSubscription->setCreatedAt(
                 new \Datetime($postData['created_at'])
             );
-            return;
+        }
+    }
+
+    private function setApplyDiscountInAllProductCycles($postData)
+    {
+        if (
+            isset($postData['apply_discount_in_all_product_cycles'])
+            && is_bool($postData['apply_discount_in_all_product_cycles'])
+        ) {
+            $this->productSubscription->setApplyDiscountInAllProductCycles($postData['apply_discount_in_all_product_cycles']);
         }
     }
 }

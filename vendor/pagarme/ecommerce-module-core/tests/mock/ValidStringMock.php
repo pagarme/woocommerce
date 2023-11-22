@@ -14,6 +14,6 @@ class ValidStringMock extends AbstractValidString
 
     protected function validateValue($value)
     {
-        return preg_match(self::VALIDATION_REGEX, $value) === 1;
+        return preg_match(self::VALIDATION_REGEX, $value ?? '') === 1;
     }
 }

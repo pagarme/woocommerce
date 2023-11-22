@@ -30,7 +30,7 @@ abstract class ModelWithErrors
      * @param string|null $error
      * @return void
      */
-    public function setError($error = null)
+    public function addError($error = null)
     {
         if (empty($error)) {
             return;

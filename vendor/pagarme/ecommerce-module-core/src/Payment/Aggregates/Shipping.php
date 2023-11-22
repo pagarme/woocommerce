@@ -80,7 +80,7 @@ final class Shipping extends AbstractEntity implements ConvertibleToSDKRequestsI
     /**
      * @param Address $address
      */
-    public function setAddress(?Address $address)
+    public function setAddress(Address $address)
     {
         $this->address = $address;
     }
@@ -119,9 +119,7 @@ final class Shipping extends AbstractEntity implements ConvertibleToSDKRequestsI
         $shippingRequest->recipientPhone = $this->getRecipientPhone()
             ->getFullNumber();
 
-        if ($this->getAddress() !== null) {
-            $shippingRequest->address = $this->getAddress()->convertToSDKRequest();
-        }
+        $shippingRequest->address = $this->getAddress()->convertToSDKRequest();
 
         return $shippingRequest;
     }

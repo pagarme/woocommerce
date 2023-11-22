@@ -9,24 +9,24 @@ abstract class TreatFactoryChargeDataBase
         $transactions = [];
         if ($dbData['tran_id'] !== null) {
             $tranId = explode(',', $dbData['tran_id']);
-            $tranPagarmeId = explode(',', $dbData['tran_pagarme_id']);
-            $tranChargeId = explode(',', $dbData['tran_charge_id']);
-            $tranAmount = explode(',', $dbData['tran_amount']);
-            $tranPaidAmount = explode(',', $dbData['tran_paid_amount']);
-            $tranType = explode(',', $dbData['tran_type']);
-            $tranStatus = explode(',', $dbData['tran_status']);
-            $tranCreatedAt = explode(',', $dbData['tran_created_at']);
+            $tranPagarmeId = explode(',', $dbData['tran_pagarme_id'] ?? '');
+            $tranChargeId = explode(',', $dbData['tran_charge_id'] ?? '');
+            $tranAmount = explode(',', $dbData['tran_amount'] ?? '');
+            $tranPaidAmount = explode(',', $dbData['tran_paid_amount'] ?? '');
+            $tranType = explode(',', $dbData['tran_type'] ?? '');
+            $tranStatus = explode(',', $dbData['tran_status'] ?? '');
+            $tranCreatedAt = explode(',', $dbData['tran_created_at'] ?? '');
 
-            $tranAcquirerNsu = explode(',', $dbData['tran_acquirer_nsu']);
-            $tranAcquirerTid = explode(',', $dbData['tran_acquirer_tid']);
+            $tranAcquirerNsu = explode(',', $dbData['tran_acquirer_nsu'] ?? '');
+            $tranAcquirerTid = explode(',', $dbData['tran_acquirer_tid'] ?? '');
             $tranAcquirerAuthCode = explode(
                 ',',
-                $dbData['tran_acquirer_auth_code']
-            );
-            $tranAcquirerName = explode(',', $dbData['tran_acquirer_name']);
-            $tranAcquirerMessage = explode(',', $dbData['tran_acquirer_message']);
-            $tranBoletoUrl = explode(',', $dbData['tran_boleto_url']);
-            $tranCardData = explode('---', $dbData['tran_card_data']);
+                $dbData['tran_acquirer_auth_code'] ?? ''
+             );
+            $tranAcquirerName = explode(',', $dbData['tran_acquirer_name'] ?? '');
+            $tranAcquirerMessage = explode(',', $dbData['tran_acquirer_message'] ?? '');
+            $tranBoletoUrl = explode(',', $dbData['tran_boleto_url'] ?? '');
+            $tranCardData = explode('---', $dbData['tran_card_data'] ?? '');
 
             foreach ($tranId as $index => $id) {
                 $transaction = [
