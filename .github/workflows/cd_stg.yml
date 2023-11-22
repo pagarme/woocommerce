@@ -1,0 +1,20 @@
+name: CD STG
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+    types: closed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-workflow-cd:
+    uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@develop
+    with:
+      tags: stg
+      wordpress_image_version: 5.2
+      woocommerce_version: 4.3.0
+      woocommerce_extra_checkout_fields_version: 3.4.0
+    secrets:
+      inherit

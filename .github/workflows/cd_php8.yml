@@ -1,0 +1,17 @@
+name: CD PHP8
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+    types: closed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-workflow-cd:
+    uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@develop
+    with:
+      tags: php8
+    secrets:
+      inherit

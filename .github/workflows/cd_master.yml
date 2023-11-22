@@ -1,0 +1,17 @@
+name: CD MASTER
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    types: closed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-workflow-cd:
+    uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@master
+    with:
+      tags: master
+    secrets:
+      inherit
