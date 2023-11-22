@@ -35,8 +35,6 @@ jobs:
         run: |
           chmod +x plugins/pagarme-payments-for-woocommerce/.github/data/install-zips.sh \
             && bash plugins/pagarme-payments-for-woocommerce/.github/data/install-zips.sh -w ${{ inputs.woocommerce_version }} -f ${{ inputs.woocommerce_extra_checkout_fields_version }} -m ${{ inputs.wp_mail_catcher_version }}
-      - name: List files
-        run: ls -lah
       - name: Log in to Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
