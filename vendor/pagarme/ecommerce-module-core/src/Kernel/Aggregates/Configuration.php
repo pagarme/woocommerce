@@ -101,6 +101,9 @@ final class Configuration extends AbstractEntity
     /** @var AddressAttributes */
     private $addressAttributes;
 
+    /** @var bool */
+    private $allowNoAddress;
+
     /** @var string */
     private $cardStatementDescriptor;
 
@@ -178,6 +181,7 @@ final class Configuration extends AbstractEntity
 
     public function __construct()
     {
+        $this->allowNoAddress = false;
         $this->saveCards = false;
         $this->saveVoucherCards = false;
         $this->multiBuyer = false;
@@ -642,6 +646,22 @@ final class Configuration extends AbstractEntity
     }
 
     /**
+     * @return bool
+     */
+    protected function getAllowNoAddress()
+    {
+        return $this->allowNoAddress;
+    }
+
+    /**
+     * @param bool $allowNoAddress
+     */
+    public function setAllowNoAddress($allowNoAddress)
+    {
+        $this->allowNoAddress = $allowNoAddress;
+    }
+
+    /**
      * @param AddressAttributes $addressAttributes
      */
     public function setAddressAttributes(AddressAttributes $addressAttributes)
@@ -804,6 +824,7 @@ final class Configuration extends AbstractEntity
             "merchantId" => $this->getMerchantId(),
             "accountId" => $this->getAccountId(),
             "addressAttributes" => $this->getAddressAttributes(),
+            "allowNoAddress" => $this->getAllowNoAddress(),
             "keys" => $this->keys,
             "cardOperation" => $this->cardOperation,
             "installmentsEnabled" => $this->isInstallmentsEnabled(),

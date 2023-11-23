@@ -80,18 +80,18 @@ final class Shipping extends AbstractEntity implements ConvertibleToSDKRequestsI
     /**
      * @param Address $address
      */
-    public function setAddress(Address $address)
+    public function setAddress(?Address $address)
     {
         $this->address = $address;
     }
 
     /**
-      * Specify data which should be serialized to JSON
-      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-      * @return mixed data which can be serialized by <b>json_encode</b>,
-      * which is a value of any type other than a resource.
-      * @since 5.4.0
-    */
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
@@ -119,7 +119,9 @@ final class Shipping extends AbstractEntity implements ConvertibleToSDKRequestsI
         $shippingRequest->recipientPhone = $this->getRecipientPhone()
             ->getFullNumber();
 
-        $shippingRequest->address = $this->getAddress()->convertToSDKRequest();
+        if ($this->getAddress() !== null) {
+            $shippingRequest->address = $this->getAddress()->convertToSDKRequest();
+        }
 
         return $shippingRequest;
     }

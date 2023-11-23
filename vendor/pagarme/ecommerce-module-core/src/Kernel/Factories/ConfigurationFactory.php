@@ -82,7 +82,7 @@ class ConfigurationFactory implements FactoryInterface
         $config->setBoletoCreditCardEnabled($data->boletoCreditCardEnabled);
         $config->setTwoCreditCardsEnabled($data->twoCreditCardsEnabled);
 
-        if (empty($data->createOrder)){
+        if (empty($data->createOrder)) {
             $data->createOrder = false;
         }
         $config->setCreateOrderEnabled($data->createOrder);
@@ -141,7 +141,7 @@ class ConfigurationFactory implements FactoryInterface
             $config->setHubEnvironment($data->hubEnvironment);
         }
 
-        if (!empty($data->keys) ) {
+        if (!empty($data->keys)) {
             if (!isset($data->publicKey)) {
                 $index = Configuration::KEY_PUBLIC;
                 $data->publicKey = $data->keys->$index;
@@ -188,7 +188,7 @@ class ConfigurationFactory implements FactoryInterface
             $config->setBoletoBankCode($data->boletoBankCode);
         }
         if (!empty($data->boletoDueDays)) {
-            $config->setBoletoDueDays((int) $data->boletoDueDays);
+            $config->setBoletoDueDays((int)$data->boletoDueDays);
         }
 
         if (!empty($data->saveCards)) {
@@ -215,7 +215,7 @@ class ConfigurationFactory implements FactoryInterface
         if (!empty($data->voucherConfig)) {
             $config->setVoucherConfig(
                 (new VoucherConfigFactory)
-                ->createFromDbData($data->voucherConfig)
+                    ->createFromDbData($data->voucherConfig)
             );
         }
 
@@ -232,6 +232,10 @@ class ConfigurationFactory implements FactoryInterface
             );
         }
 
+        if (!empty($data->allowNoAddress)) {
+            $config->setAllowNoAddress($data->allowNoAddress);
+        }
+
         if (!empty($data->marketplaceConfig)) {
             $config->setMarketplaceConfig(
                 (new MarketplaceConfigFactory())
@@ -242,7 +246,7 @@ class ConfigurationFactory implements FactoryInterface
         return $config;
     }
 
-    private function createCardConfigs($data,Configuration $config)
+    private function createCardConfigs($data, Configuration $config)
     {
         try {
             foreach ($data->cardConfigs as $cardConfig) {
@@ -259,16 +263,18 @@ class ConfigurationFactory implements FactoryInterface
                     )
                 );
             }
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+
+        }
     }
 
     private function createPublicKey($key)
     {
         try {
             return new TestPublicKey($key);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
 
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
 
         }
 
@@ -279,17 +285,17 @@ class ConfigurationFactory implements FactoryInterface
     {
         try {
             return new TestSecretKey($key);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
 
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
 
         }
 
         try {
             return new SecretKey($key);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
 
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
 
         }
 
@@ -298,7 +304,7 @@ class ConfigurationFactory implements FactoryInterface
 
     /**
      *
-     * @param  array $dbData
+     * @param array $dbData
      * @return AbstractEntity
      */
     public function createFromDbData($dbData)
