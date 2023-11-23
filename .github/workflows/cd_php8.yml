@@ -12,6 +12,6 @@ jobs:
   call-workflow-cd:
     uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@develop
     with:
-      tags: php8
+      tag: php8
     secrets:
       inherit

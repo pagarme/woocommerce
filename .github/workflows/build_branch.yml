@@ -27,7 +27,7 @@ jobs:
   call-workflow-cd:
     uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@master
     with:
-      tags: ${{ GITHUB_REF#refs/heads/ }}
+      tag: ${{ GITHUB_REF#refs/heads/ }}
       wordpress_image_version: ${{ inputs.wordpress_image_version }}
       woocommerce_version: ${{ inputs.woocommerce_version }}
       woocommerce_extra_checkout_fields_version: ${{ inputs.woocommerce_extra_checkout_fields_version }}
