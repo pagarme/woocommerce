@@ -1,0 +1,36 @@
+name: BUILD BRANCH
+
+on:
+  workflow_dispatch:
+    inputs:
+      wordpress_image_version:
+        required: false
+        type: string
+        default: latest
+      woocommerce_version:
+        required: false
+        type: string
+        default: latest-stable
+      woocommerce_extra_checkout_fields_version:
+        required: false
+        type: string
+        default: latest-stable
+      wp_mail_catcher_version:
+        required: false
+        type: string
+        default: latest-stable
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-workflow-cd:
+    uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@master
+    with:
+      tags: ${{ GITHUB_REF#refs/heads/ }}
+      wordpress_image_version: ${{ inputs.wordpress_image_version }}
+      woocommerce_version: ${{ inputs.woocommerce_version }}
+      woocommerce_extra_checkout_fields_version: ${{ inputs.woocommerce_extra_checkout_fields_version }}
+      wp_mail_catcher_version: ${{ inputs.wp_mail_catcher_version }}
+    secrets:
+      inherit
