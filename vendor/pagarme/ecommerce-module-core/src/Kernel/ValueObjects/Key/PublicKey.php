@@ -8,7 +8,7 @@ final class PublicKey extends AbstractPublicKey implements SensibleDataInterface
 {
     protected function validateValue($value)
     {
-        return preg_match('/^pk_\w{16}$/', $value) === 1;
+        return preg_match('/^pk_\w{16}$/', $value ?? '') === 1;
     }
 
     /**

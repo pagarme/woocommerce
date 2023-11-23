@@ -5,6 +5,7 @@ namespace Pagarme\Core\Kernel\Factories;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Aggregates\Configuration;
 use Pagarme\Core\Kernel\Factories\Configurations\DebitConfigFactory;
+use Pagarme\Core\Kernel\Factories\Configurations\MarketplaceConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\PixConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\RecurrenceConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\VoucherConfigFactory;
@@ -85,6 +86,14 @@ class ConfigurationFactory implements FactoryInterface
             $data->createOrder = false;
         }
         $config->setCreateOrderEnabled($data->createOrder);
+
+        if (!empty($data->merchantId)) {
+            $config->setMerchantId($data->merchantId);
+        }
+
+        if (!empty($data->accountId)) {
+            $config->setAccountId($data->accountId);
+        }
 
         if (!empty($data->sendMail)) {
             $config->setSendMailEnabled($data->sendMail);
@@ -225,6 +234,13 @@ class ConfigurationFactory implements FactoryInterface
 
         if (!empty($data->allowNoAddress)) {
             $config->setAllowNoAddress($data->allowNoAddress);
+        }
+
+        if (!empty($data->marketplaceConfig)) {
+            $config->setMarketplaceConfig(
+                (new MarketplaceConfigFactory())
+                    ->createFromDbData($data->marketplaceConfig)
+            );
         }
 
         return $config;

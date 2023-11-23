@@ -62,7 +62,7 @@ class RepetitionService
 
         $totalAmount = $numberFormatter->format($totalAmount);
 
-        return $intervalLabel . " - ({$totalAmount})";
+        return $intervalLabel . " - {$totalAmount}";
     }
 
     /**

@@ -20,6 +20,11 @@ class Webhook extends AbstractEntity
     protected $entity;
 
     /**
+     * @var string
+     */
+    protected $component;
+
+    /**
      *
      * @return WebhookType
      */

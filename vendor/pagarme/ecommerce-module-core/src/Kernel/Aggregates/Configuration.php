@@ -9,6 +9,7 @@ use Pagarme\Core\Kernel\Helper\StringFunctionsHelper;
 use Pagarme\Core\Kernel\ValueObjects\AbstractValidString;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\AddressAttributes;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\CardConfig;
+use Pagarme\Core\Kernel\ValueObjects\Configuration\MarketplaceConfig;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\PixConfig;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\RecurrenceConfig;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\VoucherConfig;
@@ -173,6 +174,11 @@ final class Configuration extends AbstractEntity
      */
     private $accountId;
 
+    /**
+     * @var MarketplaceConfig
+     */
+    private $marketplaceConfig;
+
     public function __construct()
     {
         $this->allowNoAddress = false;
@@ -238,6 +244,22 @@ final class Configuration extends AbstractEntity
     public function getPixConfig()
     {
         return $this->pixConfig;
+    }
+
+    /**
+     * @param MarketplaceConfig $marketplaceConfig
+     */
+    public function setMarketplaceConfig(MarketplaceConfig $marketplaceConfig)
+    {
+        $this->marketplaceConfig = $marketplaceConfig;
+    }
+
+    /**
+     * @return MarketplaceConfig
+     */
+    public function getMarketplaceConfig()
+    {
+        return $this->marketplaceConfig;
     }
 
     /**
@@ -591,7 +613,7 @@ final class Configuration extends AbstractEntity
         $numbers = '/([^0-9])/i';
         $replace = '';
 
-        $minAmount = preg_replace($numbers, $replace, $antifraudMinAmount);
+        $minAmount = preg_replace($numbers, $replace, $antifraudMinAmount ?? '');
 
         if ($minAmount < 0) {
             $minAmount = 0;
@@ -624,14 +646,6 @@ final class Configuration extends AbstractEntity
     }
 
     /**
-     * @param AddressAttributes $addressAttributes
-     */
-    public function setAddressAttributes(AddressAttributes $addressAttributes)
-    {
-        $this->addressAttributes = $addressAttributes;
-    }
-
-    /**
      * @return bool
      */
     protected function getAllowNoAddress()
@@ -645,6 +659,14 @@ final class Configuration extends AbstractEntity
     public function setAllowNoAddress($allowNoAddress)
     {
         $this->allowNoAddress = $allowNoAddress;
+    }
+
+    /**
+     * @param AddressAttributes $addressAttributes
+     */
+    public function setAddressAttributes(AddressAttributes $addressAttributes)
+    {
+        $this->addressAttributes = $addressAttributes;
     }
 
     /**
@@ -755,7 +777,7 @@ final class Configuration extends AbstractEntity
             throw new InvalidParamException("Boleto due days should be an integer!", $boletoDueDays);
         }
 
-        $this->boletoDueDays = (int)$boletoDueDays;
+        $this->boletoDueDays = (int) $boletoDueDays;
     }
 
     /**
@@ -822,7 +844,8 @@ final class Configuration extends AbstractEntity
             "createOrder" => $this->isCreateOrderEnabled(),
             "voucherConfig" => $this->getVoucherConfig(),
             "debitConfig" => $this->getDebitConfig(),
-            "pixConfig" => $this->getPixConfig()
+            "pixConfig" => $this->getPixConfig(),
+            "marketplaceConfig" => $this->getMarketplaceConfig()
         ];
     }
 
@@ -922,7 +945,7 @@ final class Configuration extends AbstractEntity
     {
         $methodSplited = explode(
             "_",
-            preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $method)
+            preg_replace('/(?<=\\w)(?=[A-Z])/',"_$1", $method ?? '')
         );
 
         $targetObject = $this;

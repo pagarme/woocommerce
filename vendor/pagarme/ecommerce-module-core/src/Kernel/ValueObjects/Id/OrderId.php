@@ -18,6 +18,6 @@ class OrderId extends AbstractValidString
 
     protected function validateValue($value)
     {
-        return preg_match('/^or_\w{16}$/', $value) === 1;
+        return preg_match('/^or_\w{16}$/', $value ?? '') === 1;
     }
 }

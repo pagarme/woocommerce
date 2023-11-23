@@ -8,10 +8,30 @@ use Pagarme\Core\Recurrence\Interfaces\RepetitionInterface;
 
 class CurrentProduct
 {
+    /**
+     * @var bool
+     */
     protected $isNormalProduct = false;
+
+    /**
+     * @var RepetitionInterface
+     */
     protected $repetitionSelected;
+
+    /**
+     * @var ProductSubscriptionInterface
+     */
     protected $productSubscriptionSelected;
+
+    /**
+     * @var ProductPlanInterface
+     */
     protected $productPlanSelected;
+
+    /**
+     * @var int
+     */
+    protected $quantity;
 
     /**
      * @return RepetitionInterface

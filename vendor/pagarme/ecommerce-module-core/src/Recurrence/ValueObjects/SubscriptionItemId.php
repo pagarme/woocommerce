@@ -8,6 +8,6 @@ class SubscriptionItemId extends AbstractValidString
 {
     protected function validateValue($value)
     {
-        return preg_match('/^si_\w{16}$/', $value) === 1;
+        return preg_match('/^si_\w{16}$/', $value ?? '') === 1;
     }
 }

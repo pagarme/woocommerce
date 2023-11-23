@@ -51,12 +51,12 @@ class LogInfoRetrieverService implements InfoRetrieverServiceInterface
             $uriZip =
                 ltrim(preg_replace(
                     '/' . $needle . '/',
-                    'logDownload=zip:' . $encoded, $requestURI
+                    'logDownload=zip:' . $encoded, $requestURI ?? ''
                 ), '/');
             $uriRaw =
                 ltrim(preg_replace(
                     '/' . $needle . '/',
-                    'logDownload=raw:' . $encoded, $requestURI
+                    'logDownload=raw:' . $encoded, $requestURI ?? ''
                 ), '/');
 
             $donwloadURIs[] = [
@@ -74,7 +74,7 @@ class LogInfoRetrieverService implements InfoRetrieverServiceInterface
 
     private function filterLogFilesByDate($dateQuery, $files)
     {
-        $dates = explode(':', $dateQuery);
+        $dates = explode(':', $dateQuery ?? '');
 
         if (empty($dates)) {
             return $files;
@@ -92,7 +92,7 @@ class LogInfoRetrieverService implements InfoRetrieverServiceInterface
         foreach ($files as $file) {
 
             $matchDate = [];
-            preg_match('/\d{4}-\d{2}-\d{2}/', $file, $matchDate);
+            preg_match('/\d{4}-\d{2}-\d{2}/', $file ?? '', $matchDate);
 
             if (!isset($matchDate[0])) {
                 $result[] = $file;
@@ -124,7 +124,7 @@ class LogInfoRetrieverService implements InfoRetrieverServiceInterface
                     }
 
                     $foundFile = $logDir . DIRECTORY_SEPARATOR . $foundFile;
-                    $foundFile = preg_replace('/\\' .DIRECTORY_SEPARATOR. '{2,}/', DIRECTORY_SEPARATOR, $foundFile);
+                    $foundFile = preg_replace('/\\' .DIRECTORY_SEPARATOR. '{2,}/', DIRECTORY_SEPARATOR, $foundFile ?? '');
 
                     if (is_dir($foundFile)) {
                         $files = array_merge(
