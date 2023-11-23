@@ -16,5 +16,6 @@ jobs:
       wordpress_image_version: 5.2
       woocommerce_version: 4.3.0
       woocommerce_extra_checkout_fields_version: 3.4.0
+      wp_mail_catcher_version: 2.0.0
     secrets:
       inherit
