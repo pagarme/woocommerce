@@ -11,7 +11,7 @@ Primeiramente, obrigado por dedicar seu tempo para contribuir!
 
 ### Pull Requests
 
-Template para os [pull requests](.github/pull_request_template/pull_request_template.md).
+Template para os [pull requests](https://github.com/pagarme/woocommerce/blob/master/.github/pull_request_template/pull_request_template.md).
 
 ### Mensagens de commit
 
