@@ -681,7 +681,7 @@ class Utils
             return array(
                 'type'  => 'company',
                 'value' => $order->billing_cnpj,
-            );
+                );
         }
 
         return array(
