@@ -34,7 +34,6 @@ class Checkout
         add_action('woocommerce_view_order', [$paymentDetails, 'render']);
         add_action('wp_ajax_xqRhBHJ5sW', array($this, 'build_installments'));
         add_action('wp_ajax_nopriv_xqRhBHJ5sW', array($this, 'build_installments'));
-        add_filter('wcbcf_billing_fields', array($this, 'set_required_fields'));
         $this->payment_methods = [
             'credit_card'     => __('Credit card', 'woo-pagarme-payments'),
             'billet'          => __('Boleto', 'woo-pagarme-payments'),
@@ -111,13 +110,6 @@ class Checkout
         ));
         echo wp_kses_no_null($html);
         exit();
-    }
-
-    public function set_required_fields($fields)
-    {
-        $fields['billing_neighborhood']['required'] = true;
-
-        return $fields;
     }
 
     public function parse_cards($data, $key = 'card')

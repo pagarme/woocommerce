@@ -288,7 +288,6 @@ function wcmpLoadInstances()
 function wcmpPluginsLoadedCheck()
 {
     $woocommerce = class_exists('WooCommerce');
-    $checkoutFields = class_exists('Extra_Checkout_Fields_For_Brazil');
     add_action('in_plugin_update_message-' . WCMP_PLUGIN_BASE, function ($pluginData) {
         versionUpdateWarning(WCMP_VERSION, $pluginData['new_version']);
     });
