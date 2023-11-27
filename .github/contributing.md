@@ -28,7 +28,7 @@ Template para os [pull requests](https://github.com/pagarme/woocommerce/blob/mas
 
 Abaixo seguem alguns exemplos de commits:
 
-* feat: adding exclude saved credit card to customer
+* feat: adding function to exclude saved credit card to customer
 * fix: pix qr code not showing in e-mail
 * docs: adding contribution section in readme
 * refactor: moving credit card javascript code to requirejs file
