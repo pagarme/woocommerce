@@ -16,7 +16,7 @@ Pagamentos tem que ser fáceis. São muitos passos por trás de uma simples tran
 
 ## Contribuição
 
-Se você está interessado em contribuir para o desenvolvimento deste projetos, ficamos felizes em receber sua ajuda! No [contributing.md](.github/contributing.md) está o guia de como contribuir com o projeto.
+Se você está interessado em contribuir para o desenvolvimento deste projeto, ficamos felizes em receber sua ajuda! No [contributing.md](.github/contributing.md) está o guia de como contribuir com o projeto.
 
 ## Compatibilidade
 
