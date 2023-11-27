@@ -15,10 +15,21 @@ Template para os [pull requests](.github/pull_request_template/pull_request_temp
 
 ### Mensagens de commit
 
-* As mensagems devem serem feitas em inglês
-* Utilizar o [conventional commits](https://www.conventionalcommits.org/pt-br/v1.0.0/), abaixo segue alguns exemplos:
-    * feat: nova funcionalidade
-    * fix: correção de um bug
-    * docs: atualização de uma documentação
-    * refactor: refatoração de um código
-    * perf: mudanças que melhoram a performance
+* As mensagens devem ser feitas em inglês
+* Utilizar o [conventional commits](https://www.conventionalcommits.org/pt-br/v1.0.0/), abaixo segue alguns exemplos de explicações:
+
+| Nomeclatura | Quando utilizar                          |
+|--------|------------------------------------------|
+| **feat:** | Para novas funcionalidades               |
+| **fix:** | Para correções de bugs                   |
+| **docs:** | Para atualização de uma documentação     |
+| **refactor:** | Para refatoração de um código            |
+| **perf:** | Para mudanças que melhoram a performance |
+
+Abaixo seguem alguns exemplos de commits:
+
+* feat: adding exclude saved credit card to customer
+* fix: pix qr code not showing in e-mail
+* docs: adding contribution section in readme
+* refactor: moving credit card javascript code to requirejs file
+* perf: removing unnecessary order update when access admin order page
