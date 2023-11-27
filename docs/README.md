@@ -1,3 +1,6 @@
+![Pagar.me e WooCommerce logo](images/pagarme+woocommerce-white.png#gh-dark-mode-only)
+![Pagar.me e WooCommerce logo](images/pagarme+woocommerce.png#gh-light-mode-only)
+
 # Pagar.me módulo para WooCommerce
 
 **Tags:** ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, pagarme, payments, creditcard
@@ -31,8 +34,8 @@ Se você está interessado em contribuir para o desenvolvimento deste projeto, f
 
 ## Requerimentos
 
-- [Conta na Pagar.me] (http://www.pagar.me/)
-- [WooCommerce] (https://wordpress.org/plugins/woocommerce/)
+- [Conta na Pagar.me](http://www.pagar.me/)
+- [WooCommerce](https://wordpress.org/plugins/woocommerce/)
 
 ## Contribuidores
 
