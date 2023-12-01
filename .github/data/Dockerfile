@@ -10,7 +10,7 @@ RUN apt-get update \
 
 RUN wget https://github.com/DataDog/dd-trace-php/releases/latest/download/datadog-setup.php -O datadog-setup.php
 
-RUN php datadog-setup.php --php-bin=all --enable-appsec --enable-profiling
+RUN php datadog-setup.php --php-bin=all --enable-appsec
 
 COPY . ./wp-content
 
