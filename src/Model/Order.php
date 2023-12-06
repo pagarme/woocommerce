@@ -59,7 +59,7 @@ class Order extends Meta
     public function __construct($ID = false)
     {
         parent::__construct($ID);
-        $this->wc_order = new WC_Order($this->ID);
+        $this->wc_order = $this->getWcOrder($ID);
         $this->settings = new Config();
     }
     /** phpcs:enable */
@@ -252,5 +252,14 @@ class Order extends Meta
                 || 0 === strpos($paymentMethod, AbstractGateway::WC_PAYMENT_PAGARME);
         }
         return false;
+    }
+
+    public function getWcOrder($id = false)
+    {
+        global $theorder;
+        if(is_null($theorder) || ((int)$id !== $theorder->get_id() && $id !== false)) {
+            return new WC_Order($id);
+        }
+        return $theorder;
     }
 }
