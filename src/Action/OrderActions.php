@@ -15,7 +15,7 @@ class OrderActions implements RunnerInterface
     public function showInstallmentFeesAdmin($orderId)
     {
         $order = new Order($orderId);
-        if ($order->isPagarmePaymentMethod() && !empty($order->get_meta('pagarme_card_tax'))) {
+        if ($order->isPagarmePaymentMethod() && $order->get_meta('pagarme_card_tax') > 0) {
             $total = $order->get_meta('pagarme_card_tax');
             echo "  <tr>
                         <td class='label'>" . __('Installment Fee', 'woo-pagarme-payments') . ":</td>

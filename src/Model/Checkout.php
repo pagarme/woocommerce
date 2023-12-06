@@ -129,7 +129,7 @@ class Checkout
             $order = new Order($wc_order->get_id());
             $totalWithInstallments = $order->getTotalAmountByCharges();
             $order->pagarme_card_tax = $order->calculateInstallmentFee($totalWithInstallments, $wc_order->get_total());
-            $order->wc_order->set_total($totalWithInstallments);
+            $order->wc_order->set_total($this->getTotalValue($wc_order, $totalWithInstallments));
             $order->payment_method = $fields['payment_method'];
             WC()->cart->empty_cart();
             if ($response) {
@@ -242,5 +242,13 @@ class Checkout
                 }
             }
         }
+    }
+
+    private function getTotalValue($wc_order, $totalWithInstallments)
+    {
+        if ($totalWithInstallments > 0) {
+            return $totalWithInstallments;
+        }
+        return $wc_order->get_total();
     }
 }
