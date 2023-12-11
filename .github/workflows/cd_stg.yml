@@ -17,9 +17,9 @@ jobs:
     uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@develop
     with:
       tag: stg
-      wordpress_image_version: { $wordpress_version_stg }
-      woocommerce_version: { $woocommerce_version_stg }
-      woocommerce_extra_checkout_fields_version: { $woocommerce_extra_checkout_fields_version_stg }
-      wp_mail_catcher_version: { $wp_mail_catcher_version_stg }
+      wordpress_image_version: ${{ $wordpress_version_stg }}
+      woocommerce_version: ${{ $woocommerce_version_stg }}
+      woocommerce_extra_checkout_fields_version: ${{ $woocommerce_extra_checkout_fields_version_stg }}
+      wp_mail_catcher_version: ${{ $wp_mail_catcher_version_stg }}
     secrets:
       inherit
