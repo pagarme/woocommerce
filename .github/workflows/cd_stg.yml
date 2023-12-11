@@ -20,6 +20,6 @@ jobs:
       wordpress_image_version: { $wordpress_version_stg }
       woocommerce_version: { $woocommerce_version_stg }
       woocommerce_extra_checkout_fields_version: { $woocommerce_extra_checkout_fields_version_stg }
-      wp_mail_catcher_version: { $ wp_mail_catcher_version_stg }
+      wp_mail_catcher_version: { $wp_mail_catcher_version_stg }
     secrets:
       inherit
