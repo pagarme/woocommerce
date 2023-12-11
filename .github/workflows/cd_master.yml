@@ -7,11 +7,19 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
+env:
+  wordpress_version_master: latest
+  woocommerce_version_master: latest
+  woocommerce_extra_checkout_fields_version_master: latest
+  wp_mail_catcher_version_master: latest
 jobs:
   call-workflow-cd:
     uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@master
     with:
       tag: master
+      wordpress_image_version: ${{ env.wordpress_version_master }}
+      woocommerce_version: ${{ env.woocommerce_version_master }}
+      woocommerce_extra_checkout_fields_version: ${{ env.woocommerce_extra_checkout_fields_version_master }}
+      wp_mail_catcher_version: ${{ env.wp_mail_catcher_version_master }}
     secrets:
       inherit
