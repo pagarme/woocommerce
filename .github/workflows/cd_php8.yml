@@ -17,9 +17,9 @@ jobs:
     uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@develop
     with:
       tag: php8
-      wordpress_image_version: ${{ $wordpress_version_php8 }}
-      woocommerce_version: ${{ $woocommerce_version_php8 }}
-      woocommerce_extra_checkout_fields_version: ${{ $woocommerce_extra_checkout_fields_version_php8 }}
-      wp_mail_catcher_version: ${{ $wp_mail_catcher_version_php8 }}
+      wordpress_image_version: ${{ env.wordpress_version_php8 }}
+      woocommerce_version: ${{ env.woocommerce_version_php8 }}
+      woocommerce_extra_checkout_fields_version: ${{ env.woocommerce_extra_checkout_fields_version_php8 }}
+      wp_mail_catcher_version: ${{ env.wp_mail_catcher_version_php8 }}
     secrets:
       inherit
