@@ -33,9 +33,9 @@ jobs:
     uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@master
     with:
       tag: master
-      wordpress_image_version: ${{ needs.generate_variables.outputs.wordpress_version_master }}
-      woocommerce_version: ${{ needs.generate_variables.outputs.woocommerce_version_master }}
-      woocommerce_extra_checkout_fields_version: ${{ needs.generate_variables.outputs.woocommerce_extra_checkout_fields_version_master }}
-      wp_mail_catcher_version: ${{ needs.generate_variables.outputs.wp_mail_catcher_version_master }}
+      wordpress_image_version: ${{ needs.generate-variables.outputs.wordpress_version_master }}
+      woocommerce_version: ${{ needs.generate-variables.outputs.woocommerce_version_master }}
+      woocommerce_extra_checkout_fields_version: ${{ needs.generate-variables.outputs.woocommerce_extra_checkout_fields_version_master }}
+      wp_mail_catcher_version: ${{ needs.generate-variables.outputs.wp_mail_catcher_version_master }}
     secrets:
       inherit
