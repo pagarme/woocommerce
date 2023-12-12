@@ -8,18 +8,34 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 env:
-  wordpress_version_master: latest
-  woocommerce_version_master: latest
-  woocommerce_extra_checkout_fields_version_master: latest
-  wp_mail_catcher_version_master: latest
+  wordpress_version_master: ${{ vars.wordpress_version_master }}
+  woocommerce_version_master: ${{ vars.woocommerce_version_master }}
+  woocommerce_extra_checkout_fields_version_master: ${{ vars.woocommerce_extra_checkout_fields_version_master }}
+  wp_mail_catcher_version_master: ${{ vars.wp_mail_catcher_version_master }}
 jobs:
+  generate-variables:
+    runs-on: ubuntu-latest
+    outputs:
+      wordpress_version_master: ${{ steps.main_step.outputs.wordpress_version_master }}
+      woocommerce_version_master: ${{ steps.main_step.outputs.woocommerce_version_master }}
+      woocommerce_extra_checkout_fields_version_master: ${{ steps.main_step.outputs.woocommerce_extra_checkout_fields_version_master }}
+      wp_mail_catcher_version_master: ${{ steps.main_step.outputs.wp_mail_catcher_version_master }}
+    steps:
+      - id: main_step
+        run: |
+          echo "wordpress_version_master=$wordpress_version_master" >> $GITHUB_OUTPUT
+          echo "woocommerce_version_master=$woocommerce_version_master" >> $GITHUB_OUTPUT
+          echo "woocommerce_extra_checkout_fields_version_master=$woocommerce_extra_checkout_fields_version_master" >> $GITHUB_OUTPUT
+          echo "wp_mail_catcher_version_master=$wp_mail_catcher_version_master" >> $GITHUB_OUTPUT
   call-workflow-cd:
+    needs:
+      - generate-variables
     uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@master
     with:
       tag: master
-      wordpress_image_version: ${{ env.wordpress_version_master }}
-      woocommerce_version: ${{ env.woocommerce_version_master }}
-      woocommerce_extra_checkout_fields_version: ${{ env.woocommerce_extra_checkout_fields_version_master }}
-      wp_mail_catcher_version: ${{ env.wp_mail_catcher_version_master }}
+      wordpress_image_version: ${{ needs.generate_variables.outputs.wordpress_version_master }}
+      woocommerce_version: ${{ needs.generate_variables.outputs.woocommerce_version_master }}
+      woocommerce_extra_checkout_fields_version: ${{ needs.generate_variables.outputs.woocommerce_extra_checkout_fields_version_master }}
+      wp_mail_catcher_version: ${{ needs.generate_variables.outputs.wp_mail_catcher_version_master }}
     secrets:
       inherit
