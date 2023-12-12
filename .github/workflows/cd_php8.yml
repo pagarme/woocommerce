@@ -8,18 +8,34 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 env:
-  wordpress_version_php8: latest
-  woocommerce_version_php8: latest
-  woocommerce_extra_checkout_fields_version_php8: latest
-  wp_mail_catcher_version_php8: latest
+  wordpress_version_php8: ${{ vars.wordpress_version_php8 }}
+  woocommerce_version_php8: ${{ vars.woocommerce_version_php8 }}
+  woocommerce_extra_checkout_fields_version_php8: ${{ vars.woocommerce_extra_checkout_fields_version_php8 }}
+  wp_mail_catcher_version_php8: ${{ vars.wp_mail_catcher_version_php8 }}
 jobs:
+  generate-variables:
+    runs-on: ubuntu-latest
+    outputs:
+      wordpress_version_php8: ${{ steps.main_step.outputs.wordpress_version_php8 }}
+      woocommerce_version_php8: ${{ steps.main_step.outputs.woocommerce_version_php8 }}
+      woocommerce_extra_checkout_fields_version_php8: ${{ steps.main_step.outputs.woocommerce_extra_checkout_fields_version_php8 }}
+      wp_mail_catcher_version_php8: ${{ steps.main_step.outputs.wp_mail_catcher_version_php8 }}
+    steps:
+      - id: main_step
+        run: |
+          echo "wordpress_version_php8=$wordpress_version_php8" >> $GITHUB_OUTPUT
+          echo "woocommerce_version_php8=$woocommerce_version_php8" >> $GITHUB_OUTPUT
+          echo "woocommerce_extra_checkout_fields_version_php8=$woocommerce_extra_checkout_fields_version_php8" >> $GITHUB_OUTPUT
+          echo "wp_mail_catcher_version_php8=$wp_mail_catcher_version_php8" >> $GITHUB_OUTPUT
   call-workflow-cd:
+    needs:
+      - generate-variables
     uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@develop
     with:
       tag: php8
-      wordpress_image_version: ${{ env.wordpress_version_php8 }}
-      woocommerce_version: ${{ env.woocommerce_version_php8 }}
-      woocommerce_extra_checkout_fields_version: ${{ env.woocommerce_extra_checkout_fields_version_php8 }}
-      wp_mail_catcher_version: ${{ env.wp_mail_catcher_version_php8 }}
+      wordpress_image_version: ${{ needs.generate-variables.outputs.wordpress_version_php8 }}
+      woocommerce_version: ${{ needs.generate-variables.outputs.woocommerce_version_php8 }}
+      woocommerce_extra_checkout_fields_version: ${{ needs.generate-variables.outputs.woocommerce_extra_checkout_fields_version_php8 }}
+      wp_mail_catcher_version: ${{ needs.generate-variables.outputs.wp_mail_catcher_version_php8 }}
     secrets:
       inherit
