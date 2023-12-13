@@ -1,0 +1,58 @@
+name: CD REUSABLE
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+      wordpress_image_version:
+        required: false
+        type: string
+        default: latest
+      woocommerce_version:
+        required: false
+        type: string
+        default: latest-stable
+      woocommerce_extra_checkout_fields_version:
+        required: false
+        type: string
+        default: latest-stable
+      wp_mail_catcher_version:
+        required: false
+        type: string
+        default: latest-stable
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          path: 'plugins/pagarme-payments-for-woocommerce'
+      - name: Download other plugins
+        run: |
+          chmod +x plugins/pagarme-payments-for-woocommerce/.github/data/install-zips.sh \
+            && bash plugins/pagarme-payments-for-woocommerce/.github/data/install-zips.sh -w ${{ inputs.woocommerce_version }} -f ${{ inputs.woocommerce_extra_checkout_fields_version }} -m ${{ inputs.wp_mail_catcher_version }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ secrets.DOCKER_ACCOUNT }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ secrets.DOCKER_ACCOUNT }}/woocommerce-pagarme
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          build-args: |
+            WORDPRESS_IMAGE_VERSION=${{ inputs.wordpress_image_version }}
+          context: .
+          file: plugins/pagarme-payments-for-woocommerce/.github/data/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_ACCOUNT }}/woocommerce-pagarme:${{ inputs.tag }}
+          labels: ${{ steps.meta.outputs.labels }}

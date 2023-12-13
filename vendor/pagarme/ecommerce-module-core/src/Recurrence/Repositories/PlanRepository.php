@@ -19,9 +19,9 @@ final class PlanRepository extends AbstractRepository
         );
 
         $query = "
-          INSERT INTO $table 
+          INSERT INTO $table
             (
-                interval_type, 
+                interval_type,
                 interval_count,
                 name,
                 description,
@@ -32,9 +32,10 @@ final class PlanRepository extends AbstractRepository
                 boleto,
                 billing_type,
                 status,
-                trial_period_days
+                trial_period_days,
+                apply_discount_in_all_product_cycles
             )
-          VALUES 
+          VALUES
             (
                 '{$object->getIntervalType()}',
                 '{$object->getIntervalCount()}',
@@ -47,8 +48,9 @@ final class PlanRepository extends AbstractRepository
                 '{$object->getBoleto()}',
                 '{$object->getBillingType()}',
                 '{$object->getStatus()}',
-                '{$object->getTrialPeriodDays()}'
-            )          
+                '{$object->getTrialPeriodDays()}',
+                '{$object->getApplyDiscountInAllProductCycles()}'
+            )
         ";
 
         $this->db->query($query);
@@ -76,7 +78,8 @@ final class PlanRepository extends AbstractRepository
                 `boleto` = '{$object->getBoleto()}',
                 `billing_type` = '{$object->getBillingType()}',
                 `status` = '{$object->getStatus()}',
-                `trial_period_days` = '{$object->getTrialPeriodDays()}'
+                `trial_period_days` = '{$object->getTrialPeriodDays()}',
+                `apply_discount_in_all_product_cycles` = '{$object->getApplyDiscountInAllProductCycles()}'
             WHERE id = {$object->getId()}
         ";
 

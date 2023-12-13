@@ -51,18 +51,18 @@ final class ModmanInstallDataSource
         $rawData = file_get_contents($this->modmanFilePath);
 
         $lines = [];
-        preg_match_all('/^(?!#).+/m', $rawData, $lines);
+        preg_match_all('/^(?!#).+/m', $rawData ?? '', $lines);
         $lines = array_pop($lines);
         array_walk(
             $lines, function (&$line) {
-                $data = explode(' ', $line);
+                $data = explode(' ', $line ?? '');
                 $line = end($data);
             }
         );
 
         $platformRootDir = '';
         foreach ($lines as $line) {
-            $platformRootDir = str_replace($line, '', $this->modmanFilePath);
+            $platformRootDir = str_replace($line, '', $this->modmanFilePath ?? '');
             if (strlen($platformRootDir) >= strlen($this->modmanFilePath)) {
                 $platformRootDir = '';
             }
@@ -90,18 +90,18 @@ final class ModmanInstallDataSource
         $rawData = file_get_contents($this->modmanFilePath);
 
         $lines = [];
-        preg_match_all('/^(?!#).+/m', $rawData, $lines);
+        preg_match_all('/^(?!#).+/m', $rawData ?? '', $lines);
         $lines = array_pop($lines);
         array_walk(
             $lines, function (&$line) {
-            $data = explode(' ', $line);
+            $data = explode(' ', $line ?? '');
             $line = end($data);
         }
         );
 
         $platformRootDir = '';
         foreach ($lines as $line) {
-            $platformRootDir = str_replace($line, '', $this->modmanFilePath);
+            $platformRootDir = str_replace($line, '', $this->modmanFilePath ?? '');
             if (strlen($platformRootDir) >= strlen($this->modmanFilePath)) {
                 $platformRootDir = '';
             }

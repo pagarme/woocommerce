@@ -48,7 +48,7 @@ class ConfigInfoRetrieverService implements InfoRetrieverServiceInterface
             $init = substr($value, 0, $start);
         }
         
-        $obfuscated = preg_replace('/./', $replacement, $value, $limit);
+        $obfuscated = preg_replace('/./', $replacement, $value ?? '', $limit);
 
         return $init . substr($obfuscated, $start);
     }

@@ -29,15 +29,16 @@ final class HubIntegrationService
     {
         $tokenRepo = new InstallTokenRepository();
 
-        $enabledTokens = $tokenRepo->listEntities(0, false);
+        $notExpiredTokens = $tokenRepo->listEntities(0, true);
 
-        //expire all tokens
-        foreach ($enabledTokens as $enabledToken) {
-            $enabledToken->setExpireAtTimestamp(
-                $enabledToken->getCreatedAtTimestamp() - 1000
-            );
-            $tokenRepo->save($enabledToken);
+        if (count($notExpiredTokens) === 1) {
+            $activeToken = current($notExpiredTokens);
+            if ($activeToken->getExpireAtTimestamp() > time()) {
+                return $activeToken->getToken();
+            }
         }
+
+        $tokenRepo->deleteAllInactive();
 
         $installFactory = new InstallTokenFactory();
         $installToken = $installFactory->createFromSeed($installSeed);
@@ -58,7 +59,7 @@ final class HubIntegrationService
         $rawToken = $installToken;
 
         $installToken = $tokenRepo->findByPagarmeId(new HubInstallToken($installToken));
-        
+
         if (is_null($installToken)) {
             $message = "Received an invalid installToken. NULL: $rawToken";
             $exception = new \Exception($message);

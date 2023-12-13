@@ -13,16 +13,29 @@ let pagarmePix = {
         if (!elem.length) {
             return;
         }
-        let input = jQuery('<input>').attr({
-            value: elem.attr('rawCode')
-        }).appendTo(elem.parent()).select();
-        document.execCommand('copy', false);
-        input.remove();
+        const rawCode = elem.attr('rawCode');
         const message = {
             type: 'success',
             html: 'Código copiado.',
             allowOutsideClick: false
         };
+
+        if (window.isSecureContext && navigator.clipboard) {
+            navigator.clipboard.writeText(rawCode);
+            new swal(message)
+            return;
+        }
+
+        const input = jQuery('<input>').attr({
+            value: rawCode
+        }).appendTo(elem.parent());
+
+        const [ inputDOMElement ] = input;
+        inputDOMElement.select();
+        inputDOMElement.setSelectionRange(0, input.val().length);
+
+        document.execCommand('copy', false);
+        input.remove();
         new swal(message);
     }
 };

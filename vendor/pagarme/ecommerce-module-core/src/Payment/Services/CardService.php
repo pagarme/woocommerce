@@ -83,10 +83,8 @@ class CardService
                 ) {
                     $savedCardRepository->save($savedCard);
                     $this->logService->info(
-                        $order->getCode(),
                         "Card '{$savedCard->getPagarmeId()->getValue()}' saved."
                     );
-
                 }
             }
         }

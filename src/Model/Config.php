@@ -262,6 +262,11 @@ class Config extends DataObject
         return $this->isEnabled('multicustomers');
     }
 
+    public function getAllowNoAddress()
+    {
+        return $this->isEnabled('allow_no_address');
+    }
+
     public function getCcAllowSave()
     {
         return $this->isEnabled('cc_allow_save');

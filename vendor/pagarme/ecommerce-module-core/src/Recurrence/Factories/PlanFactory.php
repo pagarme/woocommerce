@@ -2,15 +2,10 @@
 
 namespace Pagarme\Core\Recurrence\Factories;
 
-use Magento\Catalog\Block\Product\Price;
-use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use Pagarme\Core\Kernel\Interfaces\FactoryInterface;
 use Pagarme\Core\Recurrence\Aggregates\Plan;
-use Pagarme\Core\Recurrence\Aggregates\SubProduct;
 use Pagarme\Core\Recurrence\ValueObjects\DueValueObject;
-use Pagarme\Core\Recurrence\ValueObjects\IntervalValueObject;
 use Pagarme\Core\Recurrence\ValueObjects\PlanId;
-use Pagarme\Core\Recurrence\ValueObjects\PricingSchemeValueObject as PricingScheme;
 
 class PlanFactory implements FactoryInterface
 {
@@ -27,7 +22,6 @@ class PlanFactory implements FactoryInterface
     {
         if (!empty($postData['plan_id'])) {
             $this->plan->setPagarmeId(new PlanId($postData['plan_id']));
-            return;
         }
     }
 
@@ -35,7 +29,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['interval_type'])) {
             $this->intervalType = $postData['interval_type'];
-            return;
         }
     }
 
@@ -43,7 +36,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['interval_count'])) {
             $this->intervalCount = $postData['interval_count'];
-            return;
         }
     }
 
@@ -61,7 +53,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['name'])) {
             $this->plan->setName($postData['name']);
-            return;
         }
     }
 
@@ -69,7 +60,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['description'])) {
             $this->plan->setDescription($postData['description']);
-            return;
         }
     }
 
@@ -82,7 +72,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['credit_card']) && is_bool($postData['credit_card'])) {
             $this->plan->setCreditCard($postData['credit_card']);
-            return;
         }
     }
 
@@ -90,7 +79,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['boleto']) && is_bool($postData['boleto'])) {
             $this->plan->setBoleto($postData['boleto']);
-            return;
         }
     }
 
@@ -98,7 +86,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['installments']) && is_bool($postData['installments'])) {
             $this->plan->setAllowInstallments($postData['installments']);
-            return;
         }
     }
 
@@ -106,7 +93,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['product_id'])) {
             $this->plan->setProductId($postData['product_id']);
-            return;
         }
     }
 
@@ -114,7 +100,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['updated_at'])) {
             $this->plan->setUpdatedAt(new \Datetime($postData['updated_at']));
-            return;
         }
     }
 
@@ -122,7 +107,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['created_at'])) {
             $this->plan->setCreatedAt(new \Datetime($postData['created_at']));
-            return;
         }
     }
 
@@ -130,7 +114,6 @@ class PlanFactory implements FactoryInterface
     {
         if (isset($postData['status'])) {
             $this->plan->setStatus($postData['status']);
-            return;
         }
     }
 
@@ -142,7 +125,6 @@ class PlanFactory implements FactoryInterface
         if (isset($intervalType) && isset($intervalCount)) {
             $this->plan->setIntervalType($intervalType);
             $this->plan->setIntervalCount($intervalCount);
-            return;
         }
     }
 
@@ -157,7 +139,6 @@ class PlanFactory implements FactoryInterface
             }
 
             $this->plan->setItems($items);
-            return;
         }
     }
 
@@ -166,7 +147,16 @@ class PlanFactory implements FactoryInterface
         if (isset($postData['trial_period_days'])) {
             $this->plan->setTrialPeriodDays((int) $postData['trial_period_days']);
         }
-        return;
+    }
+
+    private function setApplyDiscountInAllProductCycles($postData)
+    {
+        if (
+            isset($postData['apply_discount_in_all_product_cycles'])
+            && is_bool($postData['apply_discount_in_all_product_cycles'])
+        ) {
+            $this->plan->setApplyDiscountInAllProductCycles($postData['apply_discount_in_all_product_cycles']);
+        }
     }
 
     /**
@@ -197,6 +187,7 @@ class PlanFactory implements FactoryInterface
         $this->setInterval();
         $this->setItems($postData);
         $this->setTrialDays($postData);
+        $this->setApplyDiscountInAllProductCycles($postData);
 
         return $this->plan;
     }
@@ -222,6 +213,7 @@ class PlanFactory implements FactoryInterface
         $this->setItems($dbData);
         $this->setTrialDays($dbData);
 
+        $this->plan->setApplyDiscountInAllProductCycles(boolval($dbData['apply_discount_in_all_product_cycles'] ?? false));
         $this->plan->setCreditCard(boolval($dbData['credit_card']));
         $this->plan->setAllowInstallments(boolval($dbData['installments']));
         $this->plan->setBoleto(boolval($dbData['boleto']));

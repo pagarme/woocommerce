@@ -8,8 +8,9 @@ if (!function_exists('add_action')) {
 
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 use Pagarme\Core\Kernel\Services\OrderService;
-// WooCommerce
 use WC_Order;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 
 class Order extends Meta
 {
@@ -58,7 +59,7 @@ class Order extends Meta
     public function __construct($ID = false)
     {
         parent::__construct($ID);
-        $this->wc_order = new WC_Order($this->ID);
+        $this->wc_order = $this->getWcOrder($ID);
         $this->settings = new Config();
     }
     /** phpcs:enable */
@@ -219,5 +220,46 @@ class Order extends Meta
             }
         }
         return $needs_processing;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalAmountByCharges()
+    {
+        $valueTotal = 0;
+        foreach($this->get_charges() as $charge) {
+            $valueTotal += $charge->getAmount();
+        }
+        return $valueTotal/100;
+    }
+
+    /**
+     * @param mixed $totalWithInstallmentFee
+     * @param mixed $totalWithoutInstallmentsFee
+     * @return float
+     */
+    public function calculateInstallmentFee($totalWithInstallmentFee, $totalWithoutInstallmentsFee)
+    {
+        return Utils::str_to_float($totalWithInstallmentFee) - Utils::str_to_float($totalWithoutInstallmentsFee);
+    }
+
+    public function isPagarmePaymentMethod()
+    {
+        if (property_exists($this, 'wc_order')) {
+            $paymentMethod = $this->wc_order->get_payment_method();
+            return $paymentMethod === AbstractGateway::PAGARME
+                || 0 === strpos($paymentMethod, AbstractGateway::WC_PAYMENT_PAGARME);
+        }
+        return false;
+    }
+
+    public function getWcOrder($id = false)
+    {
+        global $theorder;
+        if(is_null($theorder) || ((int)$id !== $theorder->get_id() && $id !== false)) {
+            return new WC_Order($id);
+        }
+        return $theorder;
     }
 }

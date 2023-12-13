@@ -23,7 +23,7 @@ final class Phone extends AbstractValueObject implements ConvertibleToSDKRequest
      */
     public function __construct($phone)
     {
-        $phone = preg_replace('/(?!\d)./', '', $phone);
+        $phone = preg_replace('/(?!\d)./', '', $phone ?? '');
         $phone = sprintf("%05s", $phone);
 
         $this->countryCode = new NumericString(55);

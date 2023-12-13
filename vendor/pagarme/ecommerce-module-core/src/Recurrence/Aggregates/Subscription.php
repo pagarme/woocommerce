@@ -516,7 +516,7 @@ class Subscription extends AbstractEntity
             $this->setStatus(SubscriptionStatus::$currentStatus());
         }
     }
-    
+
     /**
      * @param ChargeInterface[] $charges
      */
@@ -635,7 +635,7 @@ class Subscription extends AbstractEntity
         }
 
         $card = new CreateCardRequest();
-        if ($this->getCustomer()->getAddress() != null) {
+        if ($this->getCustomer()->getAddress() !== null) {
             $card->billingAddress = $this->getCustomer()->getAddress()->convertToSDKRequest();
         }
 

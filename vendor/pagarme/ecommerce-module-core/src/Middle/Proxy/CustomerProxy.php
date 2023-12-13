@@ -1,7 +1,7 @@
 <?php
 
 namespace Pagarme\Core\Middle\Proxy;
-use PagarmeCoreApiLib\Models\CreateCustomerRequest;
+
 use Pagarme\Core\Middle\Client;
 
 class CustomerProxy

@@ -5,6 +5,7 @@ namespace Pagarme\Core\Kernel\Interfaces;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Kernel\ValueObjects\OrderState;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
+use Pagarme\Core\Marketplace\Aggregates\Split;
 use Pagarme\Core\Payment\Aggregates\Customer;
 use Pagarme\Core\Payment\Aggregates\Item;
 use Pagarme\Core\Payment\Aggregates\Payments\AbstractPayment;
@@ -77,7 +78,7 @@ interface PlatformOrderInterface
     public function getData();
     /**
      *
-     * @return OrderId 
+     * @return OrderId
      */
     public function getPagarmeId();
 
@@ -98,6 +99,9 @@ interface PlatformOrderInterface
     public function getPaymentMethodCollection();
     /** @return null|Shipping */
     public function getShipping();
+
+    /** @return null|Split */
+    public function handleSplitOrder();
 
     /** @since  1.6.5 */
     public function getTotalCanceled();

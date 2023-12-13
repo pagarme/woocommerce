@@ -248,11 +248,11 @@ class Account extends ModelWithErrors
         $this->validateMultiPayments();
 
         if ($storeSettings) {
-            $this->setError($this->getCreditCardSettings()->validate($storeSettings));
-            $this->setError($this->getBilletSettings()->validate($storeSettings));
-            $this->setError($this->getPixSettings()->validate($storeSettings));
-            $this->setError($this->getVoucherSettings()->validate($storeSettings));
-            $this->setError($this->getDebitCardSettings()->validate($storeSettings));
+            $this->addError($this->getCreditCardSettings()->validate($storeSettings));
+            $this->addError($this->getBilletSettings()->validate($storeSettings));
+            $this->addError($this->getPixSettings()->validate($storeSettings));
+            $this->addError($this->getVoucherSettings()->validate($storeSettings));
+            $this->addError($this->getDebitCardSettings()->validate($storeSettings));
         }
 
         return $this;
@@ -261,7 +261,7 @@ class Account extends ModelWithErrors
     private function validateAccountEnabled()
     {
         if (!$this->isAccountEnabled()) {
-            $this->setError(self::ACCOUNT_DISABLED);
+            $this->addError(self::ACCOUNT_DISABLED);
         }
     }
 
@@ -273,7 +273,7 @@ class Account extends ModelWithErrors
     {
         $domains = $this->getDomains();
         if (empty($domains) && (empty($storeSettings) || !$storeSettings->isSandbox())) {
-            $this->setError(self::DOMAIN_EMPTY);
+            $this->addError(self::DOMAIN_EMPTY);
             return;
         }
 
@@ -290,7 +290,7 @@ class Account extends ModelWithErrors
             }
         }
 
-        $this->setError(self::DOMAIN_INCORRECT);
+        $this->addError(self::DOMAIN_INCORRECT);
     }
 
     /**
@@ -315,7 +315,7 @@ class Account extends ModelWithErrors
             }
         }
 
-        $this->setError(self::WEBHOOK_INCORRECT);
+        $this->addError(self::WEBHOOK_INCORRECT);
     }
 
     private function validateMultiBuyer()
@@ -346,7 +346,7 @@ class Account extends ModelWithErrors
     {
         $methodName = "is{$setting}Enabled";
         if (!$this->$methodName()) {
-            $this->setError($error);
+            $this->addError($error);
         }
     }
 

@@ -201,11 +201,6 @@ class SubscriptionTest extends TestCase
 
         $this->subscription->setShipping($shipping);
 
-        $card = new CreateCardRequest();
-        $card->billingAddress = $this->subscription->getCustomer()
-            ->getAddress()->convertToSDKRequest();
-        $this->subscription->card = $card;
-
         $sdkObject = $this->subscription->convertToSdkRequest();
 
         $this->assertInstanceOf(CreateSubscriptionRequest::class, $sdkObject);
@@ -224,11 +219,6 @@ class SubscriptionTest extends TestCase
         $shipping->setAddress(new Address());
 
         $this->subscription->setShipping($shipping);
-
-        $card = new CreateCardRequest();
-        $card->billingAddress = $this->subscription->getCustomer()
-            ->getAddress()->convertToSDKRequest();
-        $this->subscription->card = $card;
 
         $sdkObject = $this->subscription->convertToSdkRequest();
 

@@ -192,6 +192,25 @@ final class Order extends AbstractEntity
         $this->addCharge($updatedCharge);
     }
 
+    public function getSplitInfo()
+    {
+        $splitInfo = [];
+        foreach ($this->getCharges() as $charge) {
+            $transaction = $charge->getLastTransaction();
+            $postData = $transaction->getPostData();
+            $chargeId = $transaction->getChargeId()->getValue();
+            if (empty($postData->split)) {
+                continue;
+            }
+            foreach($postData->split as $split) {
+                $splitInfo[$chargeId][] = $split->recipient->name .
+                    ' (' . $split->recipient->id . ') - ' .
+                    $split->type . ': ' . $split->amount;
+            }
+        }
+        return $splitInfo;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      *

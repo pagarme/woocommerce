@@ -46,7 +46,7 @@ class Migrate
         $stmt = $this->db->prepare($insert);
 
         $config = json_encode([
-           "enabled" => true
+            "enabled" => true
         ]);
 
         $stmt->bindValue(':data', $config, SQLITE3_TEXT);

@@ -7,6 +7,7 @@ if (!function_exists('add_action')) {
 }
 
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Action\ActionsRunner;
 
 class Core
 {
@@ -28,6 +29,7 @@ class Core
         self::admin_enqueue_scripts();
         self::front_enqueue_scripts();
         add_filter('script_loader_tag', [$this, 'addNoDeferToPagespeed'], 10, 2);
+        self::addActionsRunners();
     }
 
     public static function load_textdomain()
@@ -299,6 +301,12 @@ class Core
             return $tag;
         }
         return str_replace( ' src', ' data-pagespeed-no-defer src', $tag );
+    }
+
+    private function addActionsRunners()
+    {
+        $actions = new ActionsRunner();
+        $actions->run();
     }
 
     public static function credit_card_errors_pt_br()

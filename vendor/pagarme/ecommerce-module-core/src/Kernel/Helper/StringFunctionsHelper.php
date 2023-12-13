@@ -132,7 +132,7 @@ class StringFunctionsHelper
         return preg_replace(
             "/[^a-zA-Z ]/",
             '',
-            $str
+            $str ?? ''
         );
     }
 
@@ -143,7 +143,7 @@ class StringFunctionsHelper
         return str_replace(
             "'",
             "`",
-            strip_tags($str)
+            strip_tags($str ?? '')
         );
     }
 
@@ -161,7 +161,7 @@ class StringFunctionsHelper
             preg_replace(
                 $pattern,
                 ' ',
-                $text
+                $text ?? ''
             )
         );
 

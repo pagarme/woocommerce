@@ -5,20 +5,17 @@ namespace Woocommerce\Pagarme\Concrete;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
 use Woocommerce\Pagarme\Model\Api;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Payment as WCModelPayment;
 use Woocommerce\Pagarme\Helper\Utils;
-use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as PagarmeSetup;
 use Pagarme\Core\Kernel\Abstractions\AbstractPlatformOrderDecorator;
 use Pagarme\Core\Kernel\Aggregates\Charge;
 use Pagarme\Core\Kernel\Interfaces\PlatformInvoiceInterface;
-use Pagarme\Core\Kernel\Interfaces\PlatformOrderInterface;
 use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\Services\OrderService;
-use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Kernel\ValueObjects\OrderState;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
-use Pagarme\Core\Kernel\ValueObjects\PaymentMethod;
 use Pagarme\Core\Payment\Aggregates\Address;
 use Pagarme\Core\Payment\Aggregates\Customer;
 use Pagarme\Core\Payment\Aggregates\Item;
@@ -31,15 +28,12 @@ use Pagarme\Core\Payment\Aggregates\Payments\PixPayment;
 use Pagarme\Core\Payment\Aggregates\Shipping;
 use Pagarme\Core\Payment\Factories\PaymentFactory;
 use Pagarme\Core\Payment\Repositories\CustomerRepository as CoreCustomerRepository;
-use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use Pagarme\Core\Payment\ValueObjects\CustomerPhones;
 use Pagarme\Core\Payment\ValueObjects\CustomerType;
 use Pagarme\Core\Payment\ValueObjects\Phone;
 use Pagarme\Core\Recurrence\Services\RecurrenceService;
 use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Kernel\Services\LogService;
-use Pagarme\Core\Kernel\Aggregates\Transaction;
-use Pagarme\Core\Kernel\ValueObjects\TransactionType;
 use WC_Order;
 
 class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
@@ -1078,6 +1072,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     protected function getAddress($platformAddress)
     {
+        $config = new Config();
+        if ($config->getAllowNoAddress()) {
+            return null;
+        }
+
         $address = new Address();
 
         $this->validateAddressFields($platformAddress);
@@ -1128,5 +1127,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getTotalCanceled()
     {
         return $this->getPlatformOrder()->get_total_refunded();
+    }
+
+    public function handleSplitOrder()
+    {
+        // woocommerce does not have split order;
     }
 }

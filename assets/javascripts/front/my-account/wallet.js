@@ -13,14 +13,14 @@ let pagarmeWallet = {
     _onClickRemoveCard: function (event) {
         event.preventDefault();
         swal({
-            title: dataSwal.confirm_title,
-            text: dataSwal.confirm_text,
+            title: walletConfig.dataSwal.confirm_title,
+            text: walletConfig.dataSwal.confirm_text,
             type: 'warning',
             showCancelButton: true,
-            confirmButtonColor: dataSwal.confirm_color,
-            cancelButtonColor: dataSwal.cancel_color,
-            confirmButtonText: dataSwal.confirm_button,
-            cancelButtonText: dataSwal.cancel_button,
+            confirmButtonColor: walletConfig.dataSwal.confirm_color,
+            cancelButtonColor: walletConfig.dataSwal.cancel_color,
+            confirmButtonText: walletConfig.dataSwal.confirm_button,
+            cancelButtonText: walletConfig.dataSwal.cancel_button,
             allowOutsideClick: false,
         }).then(this._request.bind(this, event.currentTarget.dataset.value), function () {
         });
@@ -29,7 +29,7 @@ let pagarmeWallet = {
         swal.showLoading();
         jQuery.ajax({
             method: 'post',
-            url: apiRoute,
+            url: walletConfig.apiRoute,
             data: {
                 card_id: cardId
             }

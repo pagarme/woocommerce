@@ -2,11 +2,11 @@
 
 namespace Pagarme\Core\Middle\Model\Customer;
 
-use Pagarme\Core\Middle\Interfaces\ConvertToLegacyInterface;
-use Pagarme\Core\Payment\ValueObjects\CustomerPhones;
 use Pagarme\Core\Payment\ValueObjects\Phone;
-use PagarmeCoreApiLib\Models\CreatePhonesRequest;
 use PagarmeCoreApiLib\Models\CreatePhoneRequest;
+use PagarmeCoreApiLib\Models\CreatePhonesRequest;
+use Pagarme\Core\Payment\ValueObjects\CustomerPhones;
+use Pagarme\Core\Middle\Interfaces\ConvertToLegacyInterface;
 
 class Phones implements ConvertToLegacyInterface
 {

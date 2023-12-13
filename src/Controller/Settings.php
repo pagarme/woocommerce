@@ -35,6 +35,9 @@ class Settings
     /** @var string */
     const WC_PAYMENT_GATEWAY = 'WC_Payment_Gateway';
 
+    /** @var string */
+    const PAGARME_DOCS_ANTIFRAUD_URL = 'https://docs.pagar.me/reference/vis%C3%A3o-geral-sobre-antifraude-1';
+
     /** @var Gateway */
     public $model;
 
@@ -85,14 +88,19 @@ class Settings
     {
         wp_register_script('pagarme_settings', $this->jsUrl('pagarme_settings'), array('jquery'), false, true);
         wp_enqueue_script('pagarme_settings');
-        wp_register_style('woocommerce_admin_styles', WC()->plugin_url() . '/assets/css/admin.css', array());
+        wp_register_style('woocommerce_admin_styles', WC()->plugin_url() . '/assets/css/admin.css');
         wp_enqueue_style('woocommerce_admin_styles');
 
         $params = array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonces' => array(
                 'gateway_toggle' => wp_create_nonce('woocommerce-toggle-payment-gateway-enabled'),
-            )
+            ),
+            'allow_no_address_swal' => array(
+                'title' => __('Are you sure?', 'woo-pagarme-payments'),
+                'text' => __('If your Pagar.me Antifraud is active, orders will fail.', 'woo-pagarme-payments'),
+                'cancelButtonText' => __('Cancel', 'woo-pagarme-payments'),
+            ),
         );
         wp_localize_script('pagarme_settings', 'pagarme_settings', $params);
     }
@@ -129,6 +137,23 @@ class Settings
                         ],
                         [
                             'fieldObject' => Select::class,
+                            'id' => 'allow_no_address',
+                            'title' => 'Allow order without address',
+                            'options' => $this->yesNoOptions->toLabelsArray(),
+                            'default' => strtolower(Yesno::NO),
+                            'description' => [
+                                'format' => 'For PSP customers with Pagar.me Antifraud active, it is mandatory to fill'
+                                    . ' in all address fields. %sRead documentation »%s',
+                                'values' => [
+                                    '<a href="'
+                                        . self::PAGARME_DOCS_ANTIFRAUD_URL
+                                        . '" target="_blank" rel="noopener">',
+                                    '</a>'
+                                ]
+                            ],
+                        ],
+                        [
+                            'fieldObject' => Select::class,
                             'id' => 'enable_logs',
                             'title' => 'Logs',
                             'options' => $this->yesNoOptions->toLabelsArray(),
@@ -140,7 +165,7 @@ class Settings
             ]
         ];
 
-        if (empty($this->config->getIsPaymentEnabled()) && $this->config->getHubInstallId()) {
+        if (empty($this->config->getAccountId()) && $this->config->getHubInstallId()) {
             $this->sectionsFields['section'][0]['fields'][] =
                 [
                     'fieldObject' => Select::class,

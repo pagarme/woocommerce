@@ -23,22 +23,22 @@ class BlurData
      */
     public function getBlurMethod(string $method)
     {
-        return 'blur' . str_replace(' ', '', ucwords(str_replace('_', ' ', $method)));
+        return 'blur' . str_replace(' ', '', ucwords(str_replace('_', ' ', $method ?? '')));
     }
 
     /**
      * @param string $value
-     * @param $delimiter
+     * @param int $delimiter
      * @return string
      */
-    private function blurStringSensitiveData(?string $value, $delimiter)
+    private function blurStringSensitiveData($value, $delimiter)
     {
-        $value = $value ?? "";
+        if (empty($value)) {
+            return '';
+        }
         $displayed = substr($value, 0, $delimiter);
-        $blur = str_repeat("*", strlen($value));
-        $blur = substr($blur, $delimiter);
-        $result = "$displayed $blur";
-        return $result;
+        $blur = str_repeat("*", strlen($value) - $delimiter);
+        return $displayed . $blur;
     }
 
     /**
@@ -95,7 +95,7 @@ class BlurData
      */
     public function blurDocument(string $document)
     {
-        return preg_replace('/\B[^@.]/', '*', $document);
+        return preg_replace('/\B[^@.]/', '*', $document ?? '');
     }
 
     /**
@@ -177,7 +177,7 @@ class BlurData
     public function blurHolderName(?string $holderName)
     {
         $holderName = $holderName ?? "";
-        return preg_replace('/^.{8}/', '$1**', $holderName);
+        return preg_replace('/^.{8}/', '$1**', $holderName ?? '');
     }
 
     /**

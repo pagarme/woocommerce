@@ -20,7 +20,7 @@ abstract class AbstractHandlerService
 
     public function getActionHandle($action)
     {
-        $baseActions = explode('_', $action);
+        $baseActions = explode('_', $action ?? '');
         $action = '';
         foreach ($baseActions as $baseAction) {
             $action .= ucfirst($baseAction);
@@ -81,7 +81,7 @@ abstract class AbstractHandlerService
     protected function getValidEntity()
     {
         $childClassName = substr(strrchr(static::class, "\\"), 1);
-        $childEntity = str_replace('HandlerService', '', $childClassName);
+        $childEntity = str_replace('HandlerService', '', $childClassName ?? '');
         return strtolower($childEntity);
     }
 

@@ -8,8 +8,6 @@ use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Recurrence\Interfaces\RecurrenceEntityInterface;
 use Pagarme\Core\Recurrence\ValueObjects\IntervalValueObject;
-use Pagarme\Core\Kernel\ValueObjects\NumericString;
-use Pagarme\Core\Recurrence\ValueObjects\PlanId;
 use Pagarme\Core\Recurrence\Interfaces\ProductPlanInterface;
 
 final class Plan extends AbstractEntity implements RecurrenceEntityInterface, ProductPlanInterface
@@ -34,6 +32,8 @@ final class Plan extends AbstractEntity implements RecurrenceEntityInterface, Pr
     private $subProduct;
     private $items;
     private $trialPeriodDays;
+
+    private $applyDiscountInAllProductCycles;
 
     /**
      * @return string
@@ -384,6 +384,22 @@ final class Plan extends AbstractEntity implements RecurrenceEntityInterface, Pr
     }
 
     /**
+     * @return bool
+     */
+    public function getApplyDiscountInAllProductCycles()
+    {
+        return boolval($this->applyDiscountInAllProductCycles);
+    }
+
+    /**
+     * @param bool $applyDiscountInAllProductCycles
+     */
+    public function setApplyDiscountInAllProductCycles($applyDiscountInAllProductCycles)
+    {
+        $this->applyDiscountInAllProductCycles = $applyDiscountInAllProductCycles;
+    }
+
+    /**
      * Specify data which should be serialized to JSON
      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
@@ -409,6 +425,7 @@ final class Plan extends AbstractEntity implements RecurrenceEntityInterface, Pr
         $obj->updatedAt = $this->getUpdatedAt();
         $obj->trialPeriodDays = $this->getTrialPeriodDays();
         $obj->items = $this->getItems();
+        $obj->applyDiscountInAllProductCycles = $this->getApplyDiscountInAllProductCycles();
 
         return $obj;
     }

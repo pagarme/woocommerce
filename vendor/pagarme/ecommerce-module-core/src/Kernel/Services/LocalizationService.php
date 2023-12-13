@@ -49,7 +49,7 @@ final class LocalizationService
 
     private function getI18NTableOrDefaultFor($locale)
     {
-        $langClass = str_replace('_', '', $locale);
+        $langClass = str_replace('_', '', $locale ?? '');
         $langClass = strtoupper($langClass);
         $langClass = "Pagarme\\Core\\Kernel\\I18N\\$langClass";
 

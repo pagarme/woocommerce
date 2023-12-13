@@ -16,6 +16,11 @@ use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup;
 
 class PlanService
 {
+    /**
+     * @var PagarmeCoreApiClient
+     */
+    private $pagarmeCoreApiClient;
+
     public function __construct()
     {
         AbstractModuleCoreSetup::bootstrap();
