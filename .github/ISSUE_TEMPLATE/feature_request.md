@@ -1,6 +1,6 @@
 ---
 name: Nova funcionalidade
-about: Reporte de novas funcionalidades
+about: Solicitação de novas funcionalidades
 title: ''
 labels: ''
 assignees: ''
