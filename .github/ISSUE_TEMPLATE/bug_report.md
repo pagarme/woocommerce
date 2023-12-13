@@ -1,3 +1,12 @@
+---
+name: Bug
+about: Reporte de bugs
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 # Bug
 
 ### Descrição
