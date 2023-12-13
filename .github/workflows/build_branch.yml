@@ -24,10 +24,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  generate-branch-name:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.main_step.outputs.branch }}
+    steps:
+      - id: main_step
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
   call-workflow-cd:
+    needs:
+      - generate-branch-name
     uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@master
     with:
-      tag: ${{ GITHUB_REF#refs/heads/ }}
+      tag: ${{ needs.generate-branch-name.outputs.branch }}
       wordpress_image_version: ${{ inputs.wordpress_image_version }}
       woocommerce_version: ${{ inputs.woocommerce_version }}
       woocommerce_extra_checkout_fields_version: ${{ inputs.woocommerce_extra_checkout_fields_version }}
