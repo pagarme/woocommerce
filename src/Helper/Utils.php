@@ -677,7 +677,7 @@ class Utils
             );
         }
 
-        if (!empty($order->billing_cpf)) {
+        if (!empty($order->billing_cnpj)) {
             return array(
                 'type'  => 'company',
                 'value' => $order->billing_cnpj,
