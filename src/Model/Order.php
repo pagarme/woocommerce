@@ -257,7 +257,7 @@ class Order extends Meta
     public function getWcOrder($id = false)
     {
         global $theorder;
-        if(is_null($theorder) || ((int)$id !== $theorder->get_id() && $id !== false)) {
+        if(empty($theorder) || ((int)$id !== $theorder->get_id() && $id !== false)) {
             return new WC_Order($id);
         }
         return $theorder;

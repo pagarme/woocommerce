@@ -88,7 +88,7 @@ class Orders
     public function add_meta_boxes()
     {
         global $theorder;
-        if($theorder === null) {
+        if(empty($theorder)) {
             return;
         }
         $order = new Order($theorder->get_id());
