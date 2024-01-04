@@ -16,7 +16,7 @@
         "psr/log": "1.1.4"
     },
     "require-dev": {
-        "mockery/mockery": "^1",
+        "mockery/mockery": "1.6.*",
         "phpunit/phpunit": "10.5.*",
         "brain/monkey": "2.*"
     }

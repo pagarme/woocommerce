@@ -43,7 +43,7 @@ jobs:
       -
         name: Install project dependences
         run:
-          php composer.phar install
+          php composer.phar install --no-dev
   phpunit:
     name: PHP Unit
     runs-on: ubuntu-latest
