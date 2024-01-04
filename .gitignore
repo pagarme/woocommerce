@@ -5,3 +5,17 @@
 node_modules/
 .idea/
 .vscode/
+.phpunit.result.cache
+.phpunit.cache/
+vendor/antecedent/
+vendor/bin/
+vendor/brain/
+vendor/composer/autoload_files.php
+vendor/hamcrest/
+vendor/mockery/
+vendor/myclabs/
+vendor/nikic/
+vendor/phar-io/
+vendor/phpunit/
+vendor/sebastian/
+vendor/theseer/

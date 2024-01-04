@@ -46,7 +46,8 @@ class HubAccounts
         ) {
             return false;
         }
-        $accountService = new AccountService();
+
+        $accountService = new AccountService(new CoreAuth(), new Config());
         try {
             $this->accountInfo = $accountService->getAccount($this->getAccountId());
         } catch (\Exception $e) {
