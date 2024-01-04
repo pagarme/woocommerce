@@ -6,12 +6,12 @@ use Mockery;
 use Pagarme\Core\Middle\Model\Account\PaymentEnum;
 use Pagarme\Core\Middle\Proxy\AccountProxy;
 use PagarmeCoreApiLib\Models\GetAccountResponse;
+use PHPUnit\Framework\TestCase;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\CoreAuth;
 use Woocommerce\Pagarme\Service\AccountService;
-use Woocommerce\Pagarme\Tests\BaseTest;
 
-class AccountServiceTest extends BaseTest
+class AccountServiceTest extends TestCase
 {
     public function tearDown(): void
     {
