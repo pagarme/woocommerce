@@ -25,6 +25,11 @@ class Checkout
     /** @var CardInstallments */
     protected $cardInstallments;
 
+    /**
+     * @var Orders
+     */
+    protected $ordersController;
+
     public function __construct(
         CardInstallments $cardInstallments = null
     ) {

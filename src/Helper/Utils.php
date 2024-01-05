@@ -738,7 +738,7 @@ class Utils
             $method = 'Não informado';
         }
 
-        $total    = self::format_order_price($wc_order->get_total_shipping());
+        $total    = self::format_order_price($wc_order->get_shipping_total());
         $shipping = $order->get_shipping_info();
 
         return array(

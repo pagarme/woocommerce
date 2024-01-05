@@ -49,6 +49,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private $paymentInformation;
 
+    private $orderService;
+
     public function __construct($formData = null, $paymentMethod = null)
     {
         $this->i18n = new LocalizationService();
@@ -178,15 +180,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getStatusLabel(OrderStatus $orderStatus)
     {
         return wc_get_order_status_name($orderStatus->getStatus());
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isSandboxMode(): bool
-    {
-        return $this->getHubEnvironment() === static::HUB_SANDBOX_ENVIRONMENT || strpos($this->getSecretKey(), 'sk_test') !== false || strpos($this->getPublicKey(), 'pk_test') !== false ? true : false;
     }
 
     /**
@@ -816,7 +809,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $newPaymentData->amount = $moneyService->floatToCents($amount / 100);
 
             $newPaymentData->saveOnSuccess =
-                isset($this->formData["save_credit_card${index}"]);
+                isset($this->formData["save_credit_card{$index}"]);
 
             $creditCardDataIndex = AbstractCreditCardPayment::getBaseCode();
             if (!isset($paymentData[$creditCardDataIndex])) {

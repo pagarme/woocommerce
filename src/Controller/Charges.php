@@ -16,6 +16,11 @@ use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
 
 class Charges
 {
+    /**
+     * @var Charge
+     */
+    protected $model;
+
     public function __construct()
     {
         $this->model = new Charge();
