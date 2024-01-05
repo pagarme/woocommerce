@@ -6,11 +6,12 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Pagarme\Core\Middle\Model\Account;
-use Pagarme\Core\Middle\Model\Account\PaymentMethodSettings;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
+use Pagarme\Core\Middle\Model\Account;
+use Woocommerce\Pagarme\Model\CoreAuth;
 use Woocommerce\Pagarme\Service\AccountService;
+use Pagarme\Core\Middle\Model\Account\PaymentMethodSettings;
 
 class HubAccounts
 {
