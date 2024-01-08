@@ -12,10 +12,11 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Block\Account;
 
+use Pagarme\Core\Payment\Repositories\CustomerRepository;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use Woocommerce\Pagarme\Block\Template;
 use Woocommerce\Pagarme\Model\Customer;
 use Woocommerce\Pagarme\Model\Account;
-use Woocommerce\Pagarme\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -47,7 +48,7 @@ class Wallet extends Template
 
     public function getCards()
     {
-        $customer = new Customer(get_current_user_id());
+        $customer = new Customer(get_current_user_id(), new SavedCardRepository(), new CustomerRepository());
         return $customer->get_cards();
     }
 

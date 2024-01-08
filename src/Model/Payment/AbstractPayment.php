@@ -13,6 +13,8 @@ namespace Woocommerce\Pagarme\Model\Payment;
 
 defined( 'ABSPATH' ) || exit;
 
+use Pagarme\Core\Payment\Repositories\CustomerRepository;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use WC_Order;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
@@ -124,7 +126,7 @@ abstract class AbstractPayment
         if(!$customerId) {
             $customerId = get_current_user_id();
         }
-        return new Customer($customerId);
+        return new Customer($customerId, new SavedCardRepository(), new CustomerRepository());
     }
 
     /**

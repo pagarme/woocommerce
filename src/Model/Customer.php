@@ -25,12 +25,17 @@ class Customer
     private $customerRepository;
     private $cardRepository;
 
+    /**
+     * @param mixed $ID
+     * @param CoreSavedCardRepository $cardRepository
+     * @param CoreCustomerRepository $customerRepository
+     */
     /** phpcs:disable */
-    public function __construct($ID)
+    public function __construct($ID, $cardRepository, $customerRepository)
     {
         $this->ID = (int) $ID;
-        $this->cardRepository = new CoreSavedCardRepository();
-        $this->customerRepository = new CoreCustomerRepository();
+        $this->cardRepository = $cardRepository;
+        $this->customerRepository = $customerRepository;
     }
 
     public function __get($prop_name)
@@ -44,13 +49,12 @@ class Customer
 
     public function __set($prop_name, $value)
     {
-        switch ($prop_name) {
-            case 'cards':
-                $value = $this->filter_cards($value);
-                break;
+        if ($prop_name === 'cards') {
+            $value = $this->filter_cards($value);
         }
 
         update_user_meta($this->ID, $this->get_meta_key($prop_name), $value);
+        return $this;
     }
 
     public function __isset($prop_name)
@@ -62,13 +66,12 @@ class Customer
     {
         $value = get_user_meta($this->ID, $this->get_meta_key($prop_name), true);
 
-        switch ($prop_name) {
-            case 'cards':
-                return $this->get_cards($value);
 
-            default:
-                return $value;
+        if ($prop_name === 'cards') {
+            return $this->get_cards($value); 
         }
+        
+        return $value;
     }
 
     public function get_cards($types = null, $includeEmptyType = true)

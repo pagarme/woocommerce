@@ -6,6 +6,8 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Pagarme\Core\Payment\Repositories\CustomerRepository;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 use Woocommerce\Pagarme\Model\CardInstallments;
 use Woocommerce\Pagarme\Model\Config;
@@ -127,7 +129,7 @@ class Checkout
 
     private function save_customer_card($raw_body, $index)
     {
-        $customer = new Customer(get_current_user_id());
+        $customer = new Customer(get_current_user_id(), new SavedCardRepository(), new CustomerRepository());
         $body     = json_decode($raw_body, true);
         $cards    = $customer->cards;
         $count    = 1;
