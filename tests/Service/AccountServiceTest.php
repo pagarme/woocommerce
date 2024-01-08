@@ -22,8 +22,9 @@ class AccountServiceTest extends TestCase
     {
         $accountId = 1;
         $utilsMock = Mockery::mock('alias:Woocommerce\Pagarme\Helper\Utils');
+        $siteUrl = 'https://woocommerce.test';
         $utilsMock->shouldReceive('get_site_url')
-            ->andReturn('https://woocommerce.test');
+            ->andReturn($siteUrl);
         $coreAuthMock = Mockery::mock(CoreAuth::class);
         $configMock = Mockery::mock(Config::class);
         $configMock->shouldReceive('getIsSandboxMode')
@@ -40,27 +41,22 @@ class AccountServiceTest extends TestCase
 
         $wcOrderMock = Mockery::mock('WC_Order');
 
-        $accountService = Mockery::mock(AccountService::class, [$coreAuthMock, $configMock, $wcOrderMock])
-            ->makePartial();
-        $accountService->shouldAllowMockingProtectedMethods();
+        $accountService = new AccountService($coreAuthMock, $configMock, $wcOrderMock);
 
         $getAccountResponseMock = Mockery::mock(GetAccountResponse::class);
-        $accountProxyMock = Mockery::mock(AccountProxy::class);
+        $accountProxyMock = Mockery::mock('overload:Pagarme\Core\Middle\Proxy\AccountProxy');
 
         $accountProxyMock->shouldReceive('getAccount')
             ->with($accountId)
             ->andReturn($getAccountResponseMock);
 
-        $accountService->shouldReceive('getAccountProxy')
-            ->andReturn($accountProxyMock);
-
         $accountMock = Mockery::mock('alias:Pagarme\Core\Middle\Model\Account');
         $accountMock->shouldReceive('createFromSdk')
             ->andReturnSelf();
         $accountMock->shouldReceive('validate')
-            ->withArgs(function ($storeConfig) use ($availablePayments) {
+            ->withArgs(function ($storeConfig) use ($availablePayments, $siteUrl) {
                 return $storeConfig->isSandbox()
-                    && current($storeConfig->getStoreUrls()) === 'https://woocommerce.test'
+                    && current($storeConfig->getStoreUrls()) === $siteUrl
                     && $storeConfig->getEnabledPaymentMethods() === $availablePayments;
             })
             ->andReturnSelf();

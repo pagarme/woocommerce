@@ -56,16 +56,7 @@ class AccountService
      */
     private function getAccountOnPagarme($accountId)
     {
-        $accountService = $this->getAccountProxy();
+        $accountService = new AccountProxy($this->coreAuth);
         return $accountService->getAccount($accountId);
     }
-
-    /**
-     * @return AccountProxy
-     */
-    protected function getAccountProxy()
-    {
-        return new AccountProxy($this->coreAuth);
-    }
-
 }
