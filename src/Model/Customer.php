@@ -68,7 +68,7 @@ class Customer
 
 
         if ($prop_name === 'cards') {
-            return $this->get_cards($value); 
+            return $this->get_cards($value);
         }
         
         return $value;

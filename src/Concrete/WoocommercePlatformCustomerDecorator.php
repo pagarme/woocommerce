@@ -29,7 +29,11 @@ class WoocommercePlatformCustomerDecorator implements PlatformCustomerInterface
      */
     public function getPagarmeId()
     {
-        $customer = new Customer($this->platformCustomer->get_id(), new SavedCardRepository(), new CustomerRepository());
+        $customer = new Customer(
+            $this->platformCustomer->get_id(),
+            new SavedCardRepository(),
+            new CustomerRepository()
+        );
 
         if ($customer !== null) {
             $this->pagarmeId = $customer->customer_id;
