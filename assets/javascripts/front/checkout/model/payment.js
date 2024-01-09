@@ -5,7 +5,10 @@ jQuery(function ($) {
         globalThis.wc_pagarme_checkout = wc_pagarme_checkout;
         $.jMaskGlobals.watchDataMask = true;
         wc_pagarme_checkout.validate = function () {
-            const checkedPayment = $('form .payment_methods input[name="payment_method"]:checked').val();
+            const checkedPayment = $('form .payment_methods input[name="payment_method"]:checked')?.val();
+            if (!checkedPayment) {
+                return true;
+            }
             const requiredFields = $('#shipping_number:visible, input[data-required=true]:visible,' +
                 'select[data-required=true]:visible,' +
                 `.wc_payment_method.payment_method_${checkedPayment} [data-pagarmecheckout-element="brand-input"]`);
