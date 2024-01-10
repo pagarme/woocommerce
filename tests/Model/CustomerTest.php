@@ -305,7 +305,7 @@ class CustomerTest extends TestCase
         $this->assertFalse($responsePagarmeCustomerId);
     }
 
-    public function testGetPagarmeCustomerIdShouldReturnPagarmCustomerIdValue()
+    public function testGetPagarmeCustomerIdShouldReturnPagarmeCustomerIdValue()
     {
         $id = 12;
         
