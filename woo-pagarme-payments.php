@@ -215,6 +215,8 @@ function wcmpAdminNoticeCheckoutFields()
     $requiredFields = [
         'billing_cpf',
         'billing_cnpj',
+        'billing_first_name',
+        'billing_last_name',
     ];
     if (!(new Config())->getAllowNoAddress()) {
         $requiredFields[] = 'billing_address_1';
