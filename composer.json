@@ -6,7 +6,11 @@
     "license": "GPL",
     "autoload": {
         "psr-4": {
-            "Woocommerce\\Pagarme\\": "src/",
+            "Woocommerce\\Pagarme\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Woocommerce\\Pagarme\\Tests\\": "tests/"
         }
     },
