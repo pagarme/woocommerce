@@ -17,6 +17,11 @@ abstract class Base
     protected $settings;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * Base URL
      */
     const URL = 'https://api.mundipagg.com/core/v1/';

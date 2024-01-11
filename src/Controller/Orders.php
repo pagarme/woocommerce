@@ -23,6 +23,9 @@ class Orders
     /** @var BlockOrder */
     private $blockOrder;
 
+    /** @var bool  */
+    private $debug;
+
     public function __construct(
         BlockOrder $blockOrder = null
     ) {
