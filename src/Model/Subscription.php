@@ -14,13 +14,15 @@ if (!defined('ABSPATH')) {
     exit(0);
 }
 
+use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
+use Pagarme\Core\Payment\Repositories\CustomerRepository;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use WC_Order;
 use Woocommerce\Pagarme\Controller\Orders;
 use Woocommerce\Pagarme\Service\LogService;
 use Woocommerce\Pagarme\Service\CardService;
 use Woocommerce\Pagarme\Service\CustomerService;
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
-use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 
 class Subscription
 {
@@ -226,7 +228,7 @@ class Subscription
 
     private function getPagarmeCustomer($subscription)
     {
-        $customer = new Customer($subscription->get_user_id());
+        $customer = new Customer($subscription->get_user_id(), new SavedCardRepository(), new CustomerRepository());
         if (!$customer->getPagarmeCustomerId()) {
             $customer = new CustomerService();
             return $customer->createCustomerByOrder($subscription);

@@ -3,6 +3,8 @@
 namespace Woocommerce\Pagarme\Concrete;
 
 use Pagarme\Core\Kernel\Interfaces\PlatformCustomerInterface;
+use Pagarme\Core\Payment\Repositories\CustomerRepository;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
 use Pagarme\Core\Payment\ValueObjects\CustomerType;
 use Woocommerce\Pagarme\Model\Customer;
@@ -27,7 +29,11 @@ class WoocommercePlatformCustomerDecorator implements PlatformCustomerInterface
      */
     public function getPagarmeId()
     {
-        $customer = new Customer($this->platformCustomer->get_id());
+        $customer = new Customer(
+            $this->platformCustomer->get_id(),
+            new SavedCardRepository(),
+            new CustomerRepository()
+        );
 
         if ($customer !== null) {
             $this->pagarmeId = $customer->customer_id;
