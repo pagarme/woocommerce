@@ -1,13 +1,13 @@
 <?php return array(
     'root' => array(
         'name' => 'pagarme/woocommerce-pagarme-payments',
-        'pretty_version' => '3.1.8',
-        'version' => '3.1.8.0',
+        'pretty_version' => '3.1.9',
+        'version' => '3.1.9.0',
         'reference' => NULL,
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => true,
+        'dev' => false,
     ),
     'versions' => array(
         'apimatic/jsonmapper' => array(
@@ -38,9 +38,9 @@
             'dev_requirement' => false,
         ),
         'monolog/monolog' => array(
-            'pretty_version' => '2.9.2',
-            'version' => '2.9.2.0',
-            'reference' => '437cb3628f4cf6042cc10ae97fc2b8472e48ca1f',
+            'pretty_version' => '1.27.1',
+            'version' => '1.27.1.0',
+            'reference' => '904713c5929655dc9b97288b69cfeedad610c9a1',
             'type' => 'library',
             'install_path' => __DIR__ . '/../monolog/monolog',
             'aliases' => array(),
@@ -65,8 +65,8 @@
             'dev_requirement' => false,
         ),
         'pagarme/woocommerce-pagarme-payments' => array(
-            'pretty_version' => '3.1.8',
-            'version' => '3.1.8.0',
+            'pretty_version' => '3.1.9',
+            'version' => '3.1.9.0',
             'reference' => NULL,
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
@@ -85,7 +85,7 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0.0 || 2.0.0 || 3.0.0',
+                0 => '1.0.0',
             ),
         ),
     ),
