@@ -12,7 +12,11 @@ use Woocommerce\Pagarme\Model\Customer;
 class WoocommercePlatformCustomerDecorator implements PlatformCustomerInterface
 {
     protected $platformCustomer;
-    protected CustomerId $pagarmeId;
+
+    /**
+     * @var CustomerId
+     */
+    protected $pagarmeId;
 
     public function __construct($platformCustomer = null)
     {

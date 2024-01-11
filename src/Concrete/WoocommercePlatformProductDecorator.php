@@ -7,7 +7,10 @@ use WC_Product;
 
 class WoocommercePlatformProductDecorator implements PlatformProductInterface
 {
-    private WC_Product $platformProduct;
+    /**
+     * @var WC_Product
+     */
+    private $platformProduct;
 
     public function __construct($platformProduct)
     {
