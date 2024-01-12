@@ -36,7 +36,18 @@ let pagarmeCard = {
         return jQuery('.wc_payment_method.payment_method_' + value);
     },
     isPagarmePayment: function () {
-        return jQuery('form .payment_methods input[name="payment_method"]:checked').val().indexOf('pagarme');
+        let paymentSelected = jQuery('form .payment_methods input[name="payment_method"]:checked');
+        if(paymentSelected.length <= 0) {
+            return false;
+        }
+        paymentSelected = paymentSelected.val();
+        if(!paymentSelected) {
+            return false;
+        }
+        if(paymentSelected.indexOf('pagarme') == '-1') {
+            return false;
+        }
+        return paymentSelected.indexOf('pagarme');
     },
     keyEventHandlerCard: function (event) {
         this.clearToken(event);
