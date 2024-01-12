@@ -13,6 +13,7 @@ final class LocalizationService
      *
      * @param mixed Variable num of params.
      */
+    // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
     public function getDashboard($string)
     {
         $numArgs = func_num_args();
