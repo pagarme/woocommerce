@@ -158,10 +158,12 @@ class Subscription
         } catch (\Throwable $th) {
             $logger = new LogService();
             $logger->log($th);
-            wc_add_notice(
-                __('There was a problem renewing the subscription.'),
-                'error'
-            );
+            if (function_exists('wc_add_notice')) {
+                wc_add_notice(
+                    __('There was a problem renewing the subscription.'),
+                    'error'
+                );
+            }
             return false;
         }
     }
@@ -184,10 +186,12 @@ class Subscription
         } catch (\Throwable $th) {
             $logger = new LogService();
             $logger->log($th);
-            wc_add_notice(
-                __('There was a problem with the payment exchange.'),
-                'error'
-            );
+            if (function_exists('wc_add_notice')) {
+                wc_add_notice(
+                    __('There was a problem with the payment exchange.'),
+                    'error'
+                );
+            }
             return [
                 'result' => 'error',
                 'redirect' => $this->payment->get_return_url($subscription)
@@ -215,10 +219,12 @@ class Subscription
         } catch (\Throwable $th) {
             $logger = new LogService();
             $logger->log($th);
-            wc_add_notice(
-                __('Error creating subscription free trial.'),
-                'error'
-            );
+            if (function_exists('wc_add_notice')) {
+                wc_add_notice(
+                    __('Error creating subscription free trial.'),
+                    'error'
+                );
+            }
             return [
                 'result' => 'error',
                 'redirect' => $this->payment->get_return_url($wcOrder)

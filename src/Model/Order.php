@@ -227,6 +227,9 @@ class Order extends Meta
      */
     public function getTotalAmountByCharges()
     {
+        if(!$this->get_charges()) {
+            return false;
+        }
         $valueTotal = 0;
         foreach($this->get_charges() as $charge) {
             $valueTotal += $charge->getAmount();
