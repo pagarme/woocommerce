@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-01-15 14:54-0300\n"
+"PO-Revision-Date: 2024-01-16 19:16-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1287,9 +1287,3 @@ msgstr "Habilita boleto para assinatura"
 
 msgid "Activates billet payment method for subscriptions."
 msgstr "Ativa o método de pagamento de boleto para assinaturas."
-
-msgid "Subscription payment methods"
-msgstr "Métodos de pagamento de assinatura"
-
-msgid "Select one or more payment methods"
-msgstr "Selecione um ou mais métodos"
