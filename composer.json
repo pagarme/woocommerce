@@ -6,14 +6,19 @@
     "license": "GPL",
     "autoload": {
         "psr-4": {
-            "Woocommerce\\Pagarme\\": "src/",
+            "Woocommerce\\Pagarme\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Woocommerce\\Pagarme\\Tests\\": "tests/"
         }
     },
     "require": {
         "mashape/unirest-php": "^3.0",
         "pagarme/ecommerce-module-core": "2.3.*",
-        "psr/log": "1.1.4"
+        "psr/log": "1.1.4",
+        "monolog/monolog": "<2"
     },
     "require-dev": {
         "mockery/mockery": "1.6.*",

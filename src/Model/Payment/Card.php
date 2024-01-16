@@ -11,11 +11,10 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
-use Pagarme\Core\Payment\Aggregates\SavedCard;
+use stdClass;
 use WC_Order;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Gateway;
-use Woocommerce\Pagarme\Resource\Customers;
+use Pagarme\Core\Payment\Aggregates\SavedCard;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -76,7 +75,7 @@ class Card extends AbstractPayment
     /**
      * @param WC_Order $wc_order
      * @param array $form_fields
-     * @param Customers|null $customer
+     * @param stdClass|null $customer
      * @return array|string[]
      * @throws \Exception
      */

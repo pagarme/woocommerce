@@ -11,10 +11,10 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
+use stdClass;
 use WC_Order;
 use Woocommerce\Pagarme\Model\Payment\Voucher\Brands;
 use Woocommerce\Pagarme\Model\Payment\Voucher\BrandsInterface;
-use Woocommerce\Pagarme\Resource\Customers;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -70,7 +70,7 @@ class Voucher extends Card implements PaymentInterface
     /**
      * @param WC_Order $wc_order
      * @param array $form_fields
-     * @param Customers|null $customer
+     * @param stdClass|null $customer
      * @return array|string[]
      * @throws \Exception
      */
