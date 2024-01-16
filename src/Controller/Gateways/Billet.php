@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Payment\Billet\BankInterface;
 use Woocommerce\Pagarme\Model\Payment\Billet\Banks;
+use Woocommerce\Pagarme\Model\Subscription;
 
 defined('ABSPATH') || exit;
 
@@ -43,6 +45,15 @@ class Billet extends AbstractGateway
     {
         return true;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isSubscriptionActive(): bool
+    {
+        return wc_string_to_bool($this->config->getData('billet_allowed_in_subscription') ?? true);
+    }
+
     /**
      * @return array
      */
@@ -51,6 +62,7 @@ class Billet extends AbstractGateway
         return [
             'billet_deadline_days' => $this->field_billet_deadline_days(),
             'billet_instructions' => $this->field_billet_instructions(),
+            'billet_allowed_in_subscription' => $this->field_billet_allowed_for_subscription(),
         ];
     }
 
@@ -137,6 +149,28 @@ class Billet extends AbstractGateway
                     self::PAYMENT_INSTRUCTIONS_MAX_LENGTH
                 ),
             ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function field_billet_allowed_for_subscription()
+    {
+        if (!Subscription::hasSubscriptionPlugin()){
+            return [];
+        }
+        return [
+            'title' => __('Allowed for subscription', 'woo-pagarme-payments'),
+            'type'     => 'select',
+            'options' => $this->yesnoOptions->toLabelsArray(true),
+            'label' => __('Enable billet for subscription', 'woo-pagarme-payments'),
+            'default'     => $this->config->getData('billet_allowed_for_subscription') ?? strtolower(Yesno::YES),
+            'description' => __('Activates billet payment method for subscriptions.', 'woo-pagarme-payments'),
+            'desc_tip' => true,
+            'custom_attributes' => array(
+                'data-field' => 'billet-allowed-for-subscription',
+            ),
         ];
     }
 

@@ -15,6 +15,7 @@ use WC_Admin_Settings;
 use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Subscription;
 
 defined('ABSPATH') || exit;
 
@@ -44,6 +45,15 @@ class CreditCard extends AbstractGateway
     {
         return true;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isSubscriptionActive(): bool
+    {
+        return wc_string_to_bool($this->config->getData('cc_allowed_in_subscription') ?? true);
+    }
+
     /**
      * @return array
      */
@@ -61,6 +71,7 @@ class CreditCard extends AbstractGateway
             'cc_installments_without_interest' => $this->field_cc_installment_fields('without_interest'),
             'cc_installments_by_flag' => $this->field_cc_installment_fields('flags'),
             'cc_allow_save' => $this->field_cc_allow_save(),
+            'cc_allowed_in_subscription' => $this->field_cc_allowed_for_subscription(),
         ];
     }
 
@@ -150,6 +161,28 @@ class CreditCard extends AbstractGateway
             'desc_tip' => true,
             'custom_attributes' => array(
                 'data-field' => 'cc-allow-save',
+            ),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function field_cc_allowed_for_subscription()
+    {
+        if (!Subscription::hasSubscriptionPlugin()){
+            return [];
+        }
+        return [
+            'title' => __('Allowed for subscription', 'woo-pagarme-payments'),
+            'type'     => 'select',
+            'options' => $this->yesnoOptions->toLabelsArray(true),
+            'label' => __('Enable credit card for subscription', 'woo-pagarme-payments'),
+            'default'     => $this->config->getData('cc_allowed_for_subscription') ?? strtolower(Yesno::YES),
+            'description' => __('Activates credit card payment method for subscriptions.', 'woo-pagarme-payments'),
+            'desc_tip' => true,
+            'custom_attributes' => array(
+                'data-field' => 'cc-allowed-for-subscription',
             ),
         ];
     }
@@ -569,7 +602,7 @@ class CreditCard extends AbstractGateway
                 'cabal' => 'Cabal'
             ));
         }
-        
+
         return $cardList;
     }
 }

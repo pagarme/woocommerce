@@ -11,8 +11,9 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
-use WC_Admin_Settings;
 use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
+use Woocommerce\Pagarme\Model\Subscription;
 
 defined('ABSPATH') || exit;
 
@@ -40,6 +41,15 @@ class Pix extends AbstractGateway
     {
         return true;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isSubscriptionActive(): bool
+    {
+        return wc_string_to_bool($this->config->getData('pix_allowed_in_subscription') ?? true);
+    }
+
     /**
      * @return array
      */
@@ -47,7 +57,8 @@ class Pix extends AbstractGateway
     {
         return [
             'pix_qrcode_expiration_time' => $this->field_pix_qrcode_expiration_time(),
-            'pix_additional_data' => $this->field_pix_additional_data()
+            'pix_additional_data' => $this->field_pix_additional_data(),
+            'pix_allowed_in_subscription' => $this->field_pix_allowed_for_subscription(),
         ];
     }
 
@@ -86,6 +97,28 @@ class Pix extends AbstractGateway
             'desc_tip' => true,
             'default' => $this->config->getData('pix_additional_data') ?? '',
             'type' => 'pix_additional_data',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function field_pix_allowed_for_subscription()
+    {
+        if (!Subscription::hasSubscriptionPlugin()){
+            return [];
+        }
+        return [
+            'title' => __('Allowed for subscription', 'woo-pagarme-payments'),
+            'type'     => 'select',
+            'options' => $this->yesnoOptions->toLabelsArray(true),
+            'label' => __('Enable Pix for subscription', 'woo-pagarme-payments'),
+            'default'     => $this->config->getData('pix_allowed_for_subscription') ?? strtolower(Yesno::YES),
+            'description' => __('Activates Pix payment method for subscriptions.', 'woo-pagarme-payments'),
+            'desc_tip' => true,
+            'custom_attributes' => array(
+                'data-field' => 'pix-allowed-for-subscription',
+            ),
         ];
     }
 

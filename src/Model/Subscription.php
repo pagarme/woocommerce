@@ -93,7 +93,7 @@ class Subscription
 
     private function setPaymentEnabled()
     {
-        if (!$this->payment->hasSubscriptionSupport() && $this->hasSubscriptionProductInCart()) {
+        if (!$this->payment->isSubscriptionActive() && $this->hasSubscriptionProductInCart()) {
             $this->payment->enabled = "no";
         }
     }
