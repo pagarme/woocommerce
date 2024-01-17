@@ -15,6 +15,7 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use WC_Subscriptions_Core_Plugin;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Environment;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Integration;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Select;
@@ -24,6 +25,7 @@ use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Subscription;
 
 /**
  * Abstract Settings
@@ -70,6 +72,12 @@ class Settings
         add_filter(Core::plugin_basename('plugin_action_links_'), array($this, 'plugin_link'));
         add_action('admin_menu', array($this, 'settings_menu'), 58);
         add_action('admin_init', array($this, 'plugin_settings'));
+
+        if (Subscription::hasSubscriptionPlugin()){
+            add_filter('woocommerce_payment_gateways_setting_columns', array($this, 'subscription_payments_toggles_column'));
+            add_action('woocommerce_payment_gateways_setting_column_subscription_payments_toggles', array($this, 'populate_subscription_payments_toggles_column'));
+            add_action('wp_ajax_pagarme_toggle_payment_subscription', array($this, 'pagarme_toggle_payment_subscription'));
+        }
 
         $this->gateway_load();
         $this->select = $select;
@@ -341,4 +349,139 @@ class Settings
         return sanitize_text_field($field);
     }
 
+    /**
+     * @param array $header
+     * @return array
+     */
+    public static function subscription_payments_toggles_column($header)
+    {
+        $columnPosition = array_search('renewals', array_keys($header)) + 1;
+        $newColumn = ['subscription_payments_toggles' => __('Active for subscription', 'woo-pagarme-payments')];
+
+        return array_slice($header, 0, $columnPosition, true)
+            + $newColumn
+            + array_slice($header, $columnPosition, count($header) - $columnPosition, true);
+    }
+
+    /**
+     * @param $gateway
+     */
+    public function populate_subscription_payments_toggles_column($gateway)
+    {
+        echo '<td class="subscription_payments_toggles">';
+
+        $paymentGatewaysHandler = WC_Subscriptions_Core_Plugin::instance()->get_gateways_handler_class();
+
+        if (
+            !str_starts_with($gateway->id, 'woo-pagarme-payments-')
+            || !$paymentGatewaysHandler::gateway_supports_subscriptions($gateway)
+        ) {
+            echo '-</td>';
+            return;
+        }
+
+        if ($paymentGatewaysHandler::gateway_supports_subscriptions($gateway)) {
+            echo '<a class="pagarme-toggle-payment-subscription" href="'
+                . esc_url(admin_url('admin.php?page=wc-settings&tab=checkout&section=' . strtolower($gateway->id))) . '">';
+            if ($this->isGatewaySubscriptionActive($gateway)) {
+                echo '<span class="woocommerce-input-toggle woocommerce-input-toggle--enabled" aria-label="'
+                    . esc_attr(
+                        sprintf(
+                            __('The "%s" payment method is currently enabled', 'woocommerce'),
+                            $gateway->title
+                        )
+                    ) . '">' . esc_attr__( 'Yes', 'woocommerce' ) . '</span>';
+            } else {
+                echo '<span class="woocommerce-input-toggle woocommerce-input-toggle--disabled" aria-label="'
+                    . esc_attr(
+                        sprintf(
+                            __('The "%s" payment method is currently disabled', 'woocommerce'),
+                            $gateway->title
+                        )
+                    ) . '">' . esc_attr__( 'No', 'woocommerce' ) . '</span>';
+            }
+            echo '</a>';
+        }
+
+        echo '</td>';
+    }
+
+
+    /**
+     * @param $gateway
+     * @return bool
+     */
+    private function isGatewaySubscriptionActive($gateway): bool
+    {
+        $prefix = $this->getPaymentMethodPrefix($gateway);
+        $option = $prefix . 'allowed_in_subscription';
+        return wc_string_to_bool($gateway->settings[$option] ?? true);
+    }
+
+    /**
+     * @param $gateway
+     * @return string
+     */
+    public function getPaymentMethodPrefix($gateway): string
+    {
+        $paymentMethod = substr($gateway->id, strrpos($gateway->id, '-') + 1);
+        return $paymentMethod === 'credit_card' ? 'cc_' : $paymentMethod . '_';
+    }
+
+    public function pagarme_toggle_payment_subscription() {
+        if (
+            current_user_can('manage_woocommerce')
+            && check_ajax_referer('woocommerce-toggle-payment-gateway-enabled', 'security')
+            && isset($_POST['gateway_id'])
+        ) {
+            // Set current tab.
+            $referer = wp_get_referer();
+            if ($referer) {
+                global $current_tab;
+                parse_str(wp_parse_url($referer, PHP_URL_QUERY), $queries);
+                $current_tab = $queries['tab'] ?? '';
+            }
+
+            // Load gateways.
+            $payment_gateways = WC()->payment_gateways->payment_gateways();
+
+            // Get posted gateway.
+            $gateway_id = wc_clean(wp_unslash($_POST['gateway_id']));
+
+            foreach ($payment_gateways as $gateway) {
+                if (!in_array(
+                    $gateway_id,
+                    array($gateway->id, sanitize_title(get_class($gateway))),
+                    true)
+                ) {
+                    continue;
+                }
+
+                $prefix = $this->getPaymentMethodPrefix($gateway);
+                $optionName = $prefix . 'allowed_in_subscription';
+                $enabled = $gateway->get_option($optionName, 'no');
+                $option  = array(
+                    'id' => $gateway->get_option_key(),
+                );
+
+                if (!wc_string_to_bool($enabled)) {
+                    if ($gateway->needs_setup()) {
+                        wp_send_json_error('needs_setup');
+                        wp_die();
+                    } else {
+                        do_action('woocommerce_update_option', $option);
+                        $gateway->update_option($optionName, 'yes');
+                    }
+                } else {
+                    do_action('woocommerce_update_option', $option);
+                    $gateway->update_option($optionName, 'no');
+                }
+                do_action('woocommerce_update_options');
+                wp_send_json_success(!wc_string_to_bool($enabled));
+                wp_die();
+            }
+        }
+        wp_send_json_error( 'invalid_gateway_id' );
+        wp_die();
+    }
 }

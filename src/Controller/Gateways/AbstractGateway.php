@@ -142,6 +142,13 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         return false;
     }
 
+    /**
+     * @return boolean
+     */
+    public function isSubscriptionActive(): bool
+    {
+        return false;
+    }
 
     public function payments_scripts()
     {

@@ -3,6 +3,10 @@
     background-color: #007cba;
 }
 
+.pagarme-toggle-payment-subscription:focus {
+    box-shadow: none;
+}
+
 .form-table td p.pagarme-hub-desintegration {
     margin: 0;
     font-style: italic;
