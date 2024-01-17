@@ -356,7 +356,7 @@ class Settings
     public static function subscription_payments_toggles_column($header)
     {
         $columnPosition = array_search('renewals', array_keys($header)) + 1;
-        $newColumn = ['subscription_payments_toggles' => __('Allowed for subscription', 'woo-pagarme-payments')];
+        $newColumn = ['subscription_payments_toggles' => __('Active for subscription', 'woo-pagarme-payments')];
 
         return array_slice($header, 0, $columnPosition, true)
             + $newColumn

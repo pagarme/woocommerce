@@ -161,7 +161,7 @@ class Billet extends AbstractGateway
             return [];
         }
         return [
-            'title' => __('Allowed for subscription', 'woo-pagarme-payments'),
+            'title' => __('Active for subscription', 'woo-pagarme-payments'),
             'type'     => 'select',
             'options' => $this->yesnoOptions->toLabelsArray(true),
             'label' => __('Enable billet for subscription', 'woo-pagarme-payments'),
