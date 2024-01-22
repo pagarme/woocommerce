@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model;
 
-use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 
@@ -27,8 +26,10 @@ if (!function_exists('add_action')) {
  */
 class CardInstallments
 {
-    /** @var  */
-    private $config;
+    /** @var Config */
+    public $config;
+
+    private $subscription;
 
     const INSTALLMENTS_FOR_ALL_FLAGS = 1;
     const INSTALLMENTS_BY_FLAG = 2;
@@ -43,6 +44,7 @@ class CardInstallments
             $config = new Config();
         }
         $this->config = $config;
+        $this->subscription = new Subscription();
     }
 
     /**
@@ -148,7 +150,7 @@ class CardInstallments
 
     /**
      * @param array $params
-     * @return string
+     * @return array
      */
     private function calcInstallments1(array $params)
     {
@@ -158,7 +160,7 @@ class CardInstallments
 
     /**
      * @param array $params
-     * @return string
+     * @return array
      */
     private function calcInstallments2(array $params)
     {
@@ -183,9 +185,11 @@ class CardInstallments
      * @param string|bool $flag
      * @return int
      */
-    private function getMaxCcInstallments($type, $flag)
+    public function getMaxCcInstallments($type, $flag)
     {
-        if (Subscription::hasSubscriptionProductInCart()) {
+        if (
+            (Subscription::hasSubscriptionProductInCart() && !$this->subscription->allowInstallments())
+            || $this->subscription->hasOneInstallmentPeriodInCart()) {
             return 1;
         }
         if ($type === self::INSTALLMENTS_BY_FLAG) {

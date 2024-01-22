@@ -1,5 +1,5 @@
 /* globals wc_pagarme_checkout */
-
+/*jshint esversion: 8 */
 let pagarmeCard = {
     limitTokenize: 10,
     tokenExpirationAttribute: 'data-pagarmecheckout-expiration',
@@ -7,6 +7,7 @@ let pagarmeCard = {
     brandTarget: 'input[data-pagarmecheckout-element="brand-input"]',
     valueTarget: 'input[data-pagarmecheckout-element="order-value"]',
     installmentsTarget: '[data-pagarme-component="installments"]',
+    installmentsInfoTarget: '[data-pagarme-component="installments-info"]',
     mundiCdn: 'https://cdn.mundipagg.com/assets/images/logos/brands/png/',
     tokenElement: '[data-pagarmecheckout-element="token"]',
     fieldsetCardElements: 'fieldset[data-pagarmecheckout="card"]',
@@ -262,12 +263,16 @@ let pagarmeCard = {
         }
         let cardForm = elem.closest("fieldset");
         let select = cardForm.find(this.installmentsTarget);
-        if (!total)
+        let info = cardForm.find(this.installmentsInfoTarget);
+        if (!total) {
             total = cartTotal;
+        }
         if ((!total) ||
             (select.data("type") === 2 && !brand) ||
-            (select.data("type") === 1 && elem.data('element') !== "order-value"))
+            (select.data("type") === 1 && elem.data('element') !== "order-value")
+        ) {
             return false;
+        }
         let storageName = btoa(brand + total);
         sessionStorage.removeItem(storageName);
         let storage = sessionStorage.getItem(storageName);
@@ -283,7 +288,7 @@ let pagarmeCard = {
                 }
             });
             ajax.done(function (response) {
-                pagarmeCard._done(select, storageName, cardForm, response);
+                pagarmeCard._done(select, info, storageName, cardForm, JSON.parse(response));
             });
             ajax.fail(function () {
                 pagarmeCard._fail(cardForm);
@@ -293,8 +298,12 @@ let pagarmeCard = {
         return true;
     },
 
-    _done: function (select, storageName, event, response) {
-        select.html(response);
+    _done: function (select, info, storageName, event, response) {
+        info.addClass('pagarme-hidden');
+        if(response.installmentsConfig > 1) {
+            info.removeClass('pagarme-hidden');
+        }
+        select.html(response.optionsHtml);
         sessionStorage.setItem(storageName, response);
         this.removeLoader(event);
     },

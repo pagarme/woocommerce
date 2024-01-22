@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-01-17 10:24-0300\n"
+"PO-Revision-Date: 2024-01-19 11:54-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1287,3 +1287,18 @@ msgstr "Habilita boleto para assinatura"
 
 msgid "Activates billet payment method for subscriptions."
 msgstr "Ativa o método de pagamento de boleto para assinaturas."
+
+msgid "Allow installments for subscription"
+msgstr "Permitir parcelamento para assinatura"
+
+msgid "Enable installments for subscription"
+msgstr "Habilita parcelamento para assinatura"
+
+msgid "Activates credit card installments for subscriptions."
+msgstr "Ativa parcelamento de cartão de crédito para assinaturas."
+
+msgid "Works only for monthly and yearly subscriptions."
+msgstr "Funciona apenas para assinaturas mensais e anuais."
+
+msgid "Your cart has one or more daily or weekly subscription products, which do not allow installments."
+msgstr "Seu carrinho possui um ou mais produtos de assinatura diário ou semanal, que não permitem parcelamentos."

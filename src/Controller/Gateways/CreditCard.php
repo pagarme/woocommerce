@@ -72,6 +72,7 @@ class CreditCard extends AbstractGateway
             'cc_installments_by_flag' => $this->field_cc_installment_fields('flags'),
             'cc_allow_save' => $this->field_cc_allow_save(),
             'cc_allowed_in_subscription' => $this->field_cc_allowed_for_subscription(),
+            'cc_subscription_installments' => $this->field_cc_subscription_installments(),
         ];
     }
 
@@ -183,6 +184,28 @@ class CreditCard extends AbstractGateway
             'desc_tip' => true,
             'custom_attributes' => array(
                 'data-field' => 'cc-allowed-for-subscription',
+            ),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function field_cc_subscription_installments()
+    {
+        if (!Subscription::hasSubscriptionPlugin()){
+            return [];
+        }
+        return [
+            'title' => __('Allow installments for subscription', 'woo-pagarme-payments'),
+            'type' => 'select',
+            'options' => $this->yesnoOptions->toLabelsArray(true),
+            'label' => __('Enable installments for subscription', 'woo-pagarme-payments'),
+            'default' => $this->config->getData('cc_subscription_installments') ?? strtolower(Yesno::NO),
+            'desc_tip' => __('Activates credit card installments for subscriptions.', 'woo-pagarme-payments'),
+            'description' => __('Works only for monthly and yearly subscriptions.', 'woo-pagarme-payments'),
+            'custom_attributes' => array(
+                'data-field' => 'cc-subscription-installments',
             ),
         ];
     }
