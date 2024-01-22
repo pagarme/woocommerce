@@ -121,7 +121,7 @@ class Customer implements ConvertToLegacyInterface
     {
         $legacy = new CustomerLegacy();
         $legacy->setCode($this->getCode());
-        $legacy->setPagarmeId(new CustomerId($this->getPagarmeId()));
+        $legacy->setPagarmeId($this->getPagarmeId());
         return $legacy;
     }
 

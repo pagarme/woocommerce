@@ -136,6 +136,9 @@ class Subscription
                 wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
             }
             $order = new Order($wc_order->get_id());
+            $this->createCustomerPagarmeIdOnPlatformIfNotExists($wc_order->get_customer_id(),
+                $order->get_meta('subscription_renewal'));
+
             $fields = $this->convertOrderObject($order);
             $response = $this->orders->create_order(
                 $wc_order,
@@ -230,6 +233,33 @@ class Subscription
                 'redirect' => $this->payment->get_return_url($wcOrder)
             ];
         }
+    }
+
+    private function createCustomerPagarmeIdOnPlatformIfNotExists($customerCode, $subscriptionId)
+    {
+        $customer = new Customer($customerCode, new SavedCardRepository(), new CustomerRepository());
+        if($customer->getPagarmeCustomerId() !== false) {
+            return;
+        }
+        $subscription = new \WC_Subscription($subscriptionId);
+        $customerId = $this->getPagarmeIdFromLastValidOrder($subscription);
+        $customer->savePagarmeCustomerId($customerCode, $customerId);
+    }
+
+    private function getPagarmeIdFromLastValidOrder($subscription)
+    {
+        foreach ($subscription->get_related_orders() as $orderId) {
+            $order = new Order($orderId);
+            if(!$order->get_meta('pagarme_response_data')){
+                continue;
+            }
+            $pagarmeResponse = json_decode($order->get_meta('pagarme_response_data'), true);
+            if(!array_key_exists('customer', $pagarmeResponse)) {
+                continue;
+            }
+            return $pagarmeResponse['customer']['pagarmeId'];
+        }
+        throw new \Exception("Unable to find a PagarId in previous request responses");
     }
 
     private function getPagarmeCustomer($subscription)

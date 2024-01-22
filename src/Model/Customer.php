@@ -1,6 +1,8 @@
 <?php
 
 namespace Woocommerce\Pagarme\Model;
+use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
+use Pagarme\Core\Middle\Model\Customer as CustomerMiddle;
 
 if (!defined('ABSPATH')) {
     exit(0);
@@ -9,6 +11,7 @@ if (!defined('ABSPATH')) {
 use Woocommerce\Pagarme\Helper\Utils;
 use Pagarme\Core\Payment\Repositories\SavedCardRepository as CoreSavedCardRepository;
 use Pagarme\Core\Payment\Repositories\CustomerRepository as CoreCustomerRepository;
+use Woocommerce\Pagarme\Service\CustomerService;
 
 class Customer
 {
@@ -121,5 +124,14 @@ class Customer
             return false;
         }
         return $customer->getPagarmeId()->getValue();
+    }
+    
+    public function savePagarmeCustomerId($code, $pagarmeId)
+    {
+        $customerService = new CustomerService();
+        $customer = new CustomerMiddle();
+        $customer->setCode($code);
+        $customer->setPagarmeId(new CustomerId($pagarmeId));
+        $customerService->saveOnPlatform($customer);
     }
 }
