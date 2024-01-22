@@ -1,7 +1,6 @@
 <?php
 
 namespace Woocommerce\Pagarme\Model;
-use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
 use Pagarme\Core\Middle\Model\Customer as CustomerMiddle;
 
 if (!defined('ABSPATH')) {
@@ -131,7 +130,7 @@ class Customer
         $customerService = new CustomerService();
         $customer = new CustomerMiddle();
         $customer->setCode($code);
-        $customer->setPagarmeId(new CustomerId($pagarmeId));
+        $customer->setPagarmeId($pagarmeId);
         $customerService->saveOnPlatform($customer);
     }
 }
