@@ -351,6 +351,9 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         }
 
         $shipping = $this->getShipping();
+        $shipping->getAddress()->setNumber(123);
+        $shipping->getAddress()->setNeighborhood('Bairro');
+        $shipping->getAddress()->setComplement('');
         if ($shipping !== null) {
             $orderRequest->shipping = $shipping->convertToSDKRequest();
         }

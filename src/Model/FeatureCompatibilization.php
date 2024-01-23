@@ -19,7 +19,7 @@ class FeatureCompatibilization
             'analytics'             => false,
             'new_navigation'        => false,
             'product_block_editor'  => true,
-            'cart_checkout_blocks'  => false,
+            'cart_checkout_blocks'  => true,
             'woocommerce_custom_orders_table_enabled'           => true,
             'woocommerce_custom_orders_table_data_sync_enabled' => true,
         ];

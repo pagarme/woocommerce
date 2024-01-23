@@ -15,6 +15,9 @@
  */
 
 use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Block\NewCheckout\Payments\CreditCard;
+use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
+
 
 const BRAZILIAN_MARKET_URL = 'https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/';
 const PAGARME_REQUIREMENTS_URL = 'https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce';
@@ -310,6 +313,18 @@ function wcmpPluginsLoadedCheck()
 
 add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
 add_action( 'before_woocommerce_init', 'checkCompatibilityWithFeatures', 0);
+
+add_action('woocommerce_blocks_loaded', 'pagarme_woocommerce_blocks_support');
+function pagarme_woocommerce_blocks_support() {
+    if ( class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
+      add_action(
+        'woocommerce_blocks_payment_method_type_registration',
+        function( PaymentMethodRegistry $payment_method_registry ) {
+          $payment_method_registry->register( new CreditCard( ));
+        }
+      );
+    }
+  }
 
 function checkCompatibilityWithFeatures()
 {
