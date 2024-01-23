@@ -18,6 +18,7 @@ use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 use Pagarme\Core\Payment\Repositories\CustomerRepository;
 use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use WC_Order;
+use WC_Subscriptions_Product;
 use Woocommerce\Pagarme\Controller\Orders;
 use Woocommerce\Pagarme\Service\LogService;
 use Woocommerce\Pagarme\Service\CardService;
@@ -29,14 +30,14 @@ class Subscription
     /** @var Config */
     private $config;
 
-    /** @var string */
-    const API_REQUEST = 'e3hpgavff3cw';
-
     /** @var Orders */
     private $orders;
 
     /** @var AbstractGateway */
     private $payment;
+
+    /** @var array */
+    const ONE_INSTALLMENT_PERIODS = ['day', 'week'];
 
     public function __construct(
         AbstractGateway $payment = null
@@ -54,7 +55,7 @@ class Subscription
 
     private function addSupportToSubscription(): void
     {
-        if (!$this->payment->hasSubscriptionSupport() || !$this->hasSubscriptionPlugin()) {
+        if (!$this->payment || !$this->payment->hasSubscriptionSupport() || !$this->hasSubscriptionPlugin()) {
             return;
         }
 
@@ -93,6 +94,9 @@ class Subscription
 
     private function setPaymentEnabled()
     {
+        if (!$this->payment) {
+            return;
+        }
         if (!$this->payment->isSubscriptionActive() && $this->hasSubscriptionProductInCart()) {
             $this->payment->enabled = "no";
         }
@@ -446,5 +450,34 @@ class Subscription
             $update = false;
         }
         return $update;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function allowInstallments(): bool {
+        return wc_string_to_bool($this->config->getData('cc_subscription_installments'));
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasOneInstallmentPeriodInCart(): bool {
+        if (!$this->hasSubscriptionPlugin()) {
+            return false;
+        }
+
+        $cartProducts = WC()->cart->cart_contents;
+        $productsPeriods = [];
+        foreach ($cartProducts as $product) {
+            $productsPeriods[] = WC_Subscriptions_Product::get_period($product['product_id']);
+        }
+
+        $noInstallmentsPeriods = array_intersect(self::ONE_INSTALLMENT_PERIODS, $productsPeriods);
+        if (!empty($noInstallmentsPeriods)) {
+            return true;
+        }
+
+        return false;
     }
 }
