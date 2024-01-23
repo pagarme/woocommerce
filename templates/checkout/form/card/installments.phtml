@@ -20,16 +20,27 @@ if (!function_exists('add_action')) {
     <?php esc_html_e('Installments quantity', 'woo-pagarme-payments'); ?><span class="required">*</span>
 </label>
 
-<?php if ($this->showOneInstallmentInfo()) : ?>
-    <span data-pagarme-component="installments-info" class="pagarme-installments-info<?= $this->isCcInstallmentTypeByFlag() ? ' pagarme-hidden' : '' ?>">&mdash; <?= __('Your cart has one or more daily or weekly subscription products, which do not allow installments.', 'woo-pagarme-payments')?></span>
+<?php if ($this->showOneInstallmentInfo()) :
+    $installmentsInfo = __('Your cart has one or more daily or weekly subscription products, which do not allow '
+    . 'installments.', 'woo-pagarme-payments');
+?>
+    <span
+        data-pagarme-component="installments-info"
+        class="pagarme-installments-info<?= $this->isCcInstallmentTypeByFlag() ? ' pagarme-hidden' : '' ?>">
+            &mdash; <?= $installmentsInfo ?>
+    </span>
 <?php endif; ?>
 
-<select id="<?= $this->getElementId('installment') ?>" <?= $this->getInstallmentsComponent() ?> data-total="<?= esc_html($this->getCartTotals()); ?>" data-type="<?= $this->getInstallmentsType(); ?>" data-action="select2" data-required="true" data-element="installments" name="<?= $this->getElementId('installment') ?>">
-    <?php if ($this->isInterestForAllFlags()) : ?>
-        <?php foreach  ($this->render() as $options) : ?>
-            <option value="<?= $options['value'] ?>"><?= $options['content'] ?></option>
-        <?php endforeach; ?>
-    <?php else : ?>
-        <option value="">...</option>
-    <?php endif; ?>
+<select
+    id="<?= $this->getElementId('installment') ?>" <?= $this->getInstallmentsComponent() ?>
+    data-total="<?= esc_html($this->getCartTotals()); ?>" data-type="<?= $this->getInstallmentsType(); ?>"
+    data-action="select2" data-required="true" data-element="installments"
+    name="<?= $this->getElementId('installment') ?>">
+        <?php if ($this->isInterestForAllFlags()) : ?>
+            <?php foreach  ($this->render() as $options) : ?>
+                <option value="<?= $options['value'] ?>"><?= $options['content'] ?></option>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <option value="">...</option>
+        <?php endif; ?>
 </select>

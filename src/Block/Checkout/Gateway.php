@@ -84,12 +84,12 @@ class Gateway extends Template
 
     /**
      * @param string $id
-     * @return string
+     * @return string | null
      */
     public function getElementId(string $id)
     {
         if (!$this->getPaymentInstance()){
-            return;
+            return null;
         }
         return WCMP_PREFIX . '[' . $this->getPaymentInstance()->getMethodCode() . ']' . $id;
     }

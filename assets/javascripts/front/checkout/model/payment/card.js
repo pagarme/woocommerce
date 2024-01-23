@@ -256,14 +256,14 @@ let pagarmeCard = {
         if (!elem) {
             return false;
         }
-        let brand = elem.closest('fieldset').find(this.brandTarget).val();
+        const brand = elem.closest('fieldset').find(this.brandTarget).val();
         let total = elem.closest('fieldset').find(this.valueTarget).val();
         if (total) {
             total = pagarmeCard.formatValue(total);
         }
-        let cardForm = elem.closest("fieldset");
-        let select = cardForm.find(this.installmentsTarget);
-        let info = cardForm.find(this.installmentsInfoTarget);
+        const cardForm = elem.closest("fieldset");
+        const select = cardForm.find(this.installmentsTarget);
+        const info = cardForm.find(this.installmentsInfoTarget);
         if (!total) {
             total = cartTotal;
         }
@@ -273,9 +273,9 @@ let pagarmeCard = {
         ) {
             return false;
         }
-        let storageName = btoa(brand + total);
+        const storageName = btoa(brand + total);
         sessionStorage.removeItem(storageName);
-        let storage = sessionStorage.getItem(storageName);
+        const storage = sessionStorage.getItem(storageName);
         if (storage) {
             select.html(storage);
         } else {
