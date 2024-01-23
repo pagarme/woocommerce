@@ -115,29 +115,6 @@ class Installments extends Gateway
     /**
      * @return bool
      */
-    public function hasSubscriptionProductInCart()
-    {
-        return Subscription::hasSubscriptionProductInCart();
-    }
-
-    /**
-     * @return bool
-     */
-    public function subscriptionAllowInstallments() {
-        return $this->subscription->allowInstallments();
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasOneInstallmentPeriodInCart()
-    {
-        return $this->subscription->hasOneInstallmentPeriodInCart();
-    }
-
-    /**
-     * @return bool
-     */
     public function isCcInstallmentTypeByFlag() {
         $type = intval($this->cardInstallments->config->getCcInstallmentType()) ?? 1;
         return $type === CardInstallments::INSTALLMENTS_BY_FLAG;
@@ -160,12 +137,12 @@ class Installments extends Gateway
      */
     public function showOneInstallmentInfo()
     {
-        if (!$this->hasSubscriptionProductInCart()) {
+        if (!Subscription::hasSubscriptionProductInCart()) {
             return false;
         }
         if (
-            $this->subscriptionAllowInstallments()
-            && $this->hasOneInstallmentPeriodInCart()
+            $this->subscription->allowInstallments()
+            && $this->subscription->hasOneInstallmentPeriodInCart()
             && ($this->getConfiguredMaxCcInstallments() > 1 || $this->isCcInstallmentTypeByFlag())
         ) {
             return true;
