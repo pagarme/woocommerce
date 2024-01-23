@@ -299,9 +299,11 @@ let pagarmeCard = {
     },
 
     _done: function (select, info, storageName, event, response) {
-        info.addClass('pagarme-hidden');
-        if(response.installmentsConfig > 1) {
-            info.removeClass('pagarme-hidden');
+        if (info.length) {
+            info.addClass('pagarme-hidden');
+            if(response.installmentsConfig > 1) {
+                info.removeClass('pagarme-hidden');
+            }
         }
         select.html(response.optionsHtml);
         sessionStorage.setItem(storageName, response);

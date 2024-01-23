@@ -433,15 +433,17 @@ class Subscription
      * @return boolean
      */
     public function hasOneInstallmentPeriodInCart(): bool {
+        if (!$this->hasSubscriptionPlugin()) {
+            return false;
+        }
+
         $cartProducts = WC()->cart->cart_contents;
         $productsPeriods = [];
-
         foreach ($cartProducts as $product) {
             $productsPeriods[] = WC_Subscriptions_Product::get_period($product['product_id']);
         }
 
         $noInstallmentsPeriods = array_intersect(self::ONE_INSTALLMENT_PERIODS, $productsPeriods);
-
         if (!empty($noInstallmentsPeriods)) {
             return true;
         }
