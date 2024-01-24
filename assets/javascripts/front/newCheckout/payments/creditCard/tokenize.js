@@ -15,7 +15,7 @@ export async function tokenize(cardNumber, cardHolderName, cardExpirationDate, c
     }
     
     try {
-        const response = await fetch('https://api.pagar.me/core/v5/tokens?appId=pk_test_gxqzG5qSy4h7kQBb', {
+        const response = await fetch('https://api.pagar.me/core/v5/tokens?appId=', {
             method: "POST",
             body: JSON.stringify(data),
         });
