@@ -35,6 +35,7 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
   * Erro ao finalizar compra de custo 0
   * Campos primeiro nome e sobrenome não obrigatórios
   * Falha ao gerar o pedido recorrente por falta de CustomerId
+  * Redução duplicada de estoque - @tiagopapile
 
 = 3.1.9 (13/12/2023) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.9)
