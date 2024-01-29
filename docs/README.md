@@ -39,5 +39,5 @@ Se você está interessado em contribuir para o desenvolvimento deste projeto, f
 
 ## Contribuidores
 
-| ![eduardobattisti avatar](https://avatars.githubusercontent.com/u/56602897?s=60&v=4)<br/> [eduardobattisti](https://github.com/eduardobattisti) |
+| ![eduardobattisti avatar](https://avatars.githubusercontent.com/u/56602897?s=60&v=4)<br/> [eduardobattisti](https://github.com/eduardobattisti) | ![tiagopapile avatar](https://avatars.githubusercontent.com/u/82596706?s=60&v=4)<br/> [tiagopapile](https://github.com/tiagopapile) 
 |----------------------------------------------------------------------------------------------------------------------------------|
