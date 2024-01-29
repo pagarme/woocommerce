@@ -5,6 +5,7 @@ namespace Woocommerce\Pagarme\Service;
 use Pagarme\Core\Middle\Model\Account;
 use Pagarme\Core\Middle\Model\Account\StoreSettings;
 use Pagarme\Core\Middle\Proxy\AccountProxy;
+use WC_Order;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\CoreAuth;
@@ -18,10 +19,16 @@ class AccountService
      */
     private $config;
 
-    public function __construct()
+    /**
+     * @var WC_Order|null
+     */
+    private $order;
+
+    public function __construct(CoreAuth $coreAuth, Config $config, WC_Order $order = null)
     {
-        $this->coreAuth = new CoreAuth();
-        $this->config = new Config();
+        $this->coreAuth = $coreAuth;
+        $this->config = $config;
+        $this->order = $order;
     }
 
     /**
@@ -43,10 +50,13 @@ class AccountService
         return $account->validate($storeSettings);
     }
 
+    /**
+     * @param $accountId
+     * @return mixed
+     */
     private function getAccountOnPagarme($accountId)
     {
         $accountService = new AccountProxy($this->coreAuth);
         return $accountService->getAccount($accountId);
     }
-
 }

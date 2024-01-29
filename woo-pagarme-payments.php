@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Pagar.me module for Woocommerce
- * Version:     3.1.9
+ * Version:     3.2.0
  * Author:      Pagar.me
  * Author URI:  https://pagar.me
  * License:     GPL2
@@ -215,6 +215,8 @@ function wcmpAdminNoticeCheckoutFields()
     $requiredFields = [
         'billing_cpf',
         'billing_cnpj',
+        'billing_first_name',
+        'billing_last_name',
     ];
     if (!(new Config())->getAllowNoAddress()) {
         $requiredFields[] = 'billing_address_1';

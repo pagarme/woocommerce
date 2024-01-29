@@ -6,6 +6,9 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Pagarme\Core\Payment\Repositories\CustomerRepository;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository;
+use Woocommerce\Pagarme\Block\Checkout\Form\Installments;
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 use Woocommerce\Pagarme\Model\CardInstallments;
 use Woocommerce\Pagarme\Model\Config;
@@ -25,8 +28,17 @@ class Checkout
     /** @var CardInstallments */
     protected $cardInstallments;
 
+    /** @var Installments */
+    protected $installments;
+
+    /**
+     * @var Orders
+     */
+    protected $ordersController;
+
     public function __construct(
-        CardInstallments $cardInstallments = null
+        CardInstallments $cardInstallments = null,
+        Installments $installments = null
     ) {
         $this->ordersController = new Orders();
         add_action('woocommerce_api_' . Model\Checkout::API_REQUEST, array($this, 'process_checkout_transparent'));
@@ -44,7 +56,11 @@ class Checkout
         ];
         $this->cardInstallments = $cardInstallments;
         if (!$this->cardInstallments) {
-            $this->cardInstallments = new CardInstallments;
+            $this->cardInstallments = new CardInstallments();
+        }
+        $this->installments = $installments;
+        if (!$this->installments) {
+            $this->installments = new Installments();
         }
     }
 
@@ -102,13 +118,18 @@ class Checkout
             exit(0);
         }
 
-        $html = $this->cardInstallments->renderOptions(
+        $installmentsConfig = $this->installments->getConfiguredMaxCcInstallments();
+
+        $optionsHtml = $this->cardInstallments->renderOptions(
             $this->cardInstallments->getInstallmentsByType(
                 Utils::get('total', false),
                 Utils::get('flag', false, 'esc_html')
 
         ));
-        echo wp_kses_no_null($html);
+        echo json_encode([
+            'installmentsConfig' => $installmentsConfig,
+            'optionsHtml' => wp_kses_no_null($optionsHtml)
+        ]);
         exit();
     }
 
@@ -127,7 +148,7 @@ class Checkout
 
     private function save_customer_card($raw_body, $index)
     {
-        $customer = new Customer(get_current_user_id());
+        $customer = new Customer(get_current_user_id(), new SavedCardRepository(), new CustomerRepository());
         $body     = json_decode($raw_body, true);
         $cards    = $customer->cards;
         $count    = 1;

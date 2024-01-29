@@ -28,16 +28,20 @@ class OrderActions implements RunnerInterface
     public function showInstallmentFeesToCustomer($total_rows, $order, $tax_display)
     {
         $orderPagarme = new Order($order->get_id());
+        if (!$orderPagarme->isPagarmePaymentMethod()) {
+            return $total_rows;
+        }
+        
         $total = $order->get_total();
         $installmentsValue = $orderPagarme->get_meta('pagarme_card_tax');
-        if (empty($orderPagarme->get_meta('pagarme_card_tax'))) {
+        if (empty($installmentsValue)) {
             $installmentsValue = $orderPagarme->calculateInstallmentFee(
                 $orderPagarme->getTotalAmountByCharges(),
                 $order->get_total()
             );
             $total = $orderPagarme->getTotalAmountByCharges();
         }
-        if ($orderPagarme->isPagarmePaymentMethod() && $installmentsValue > 0) {
+        if ($installmentsValue > 0) {
             array_pop($total_rows);
             $total_rows['pagarme_installment_fee']['label'] = __('Installment Fee', 'woo-pagarme-payments');
             $total_rows['pagarme_installment_fee']['value'] = wc_price($installmentsValue);

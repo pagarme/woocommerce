@@ -1,3 +1,7 @@
+.pagarme-hidden {
+    display: none!important;
+}
+
 #wcmp-checkout-errors {
     display: none;
 }
@@ -67,6 +71,13 @@
     pointer-events: none;
 }
 
+#payment .payment_methods li[class*="pagarme"] .payment_box .pagarme-installments-info {
+    display: block;
+    margin: 0 .75em .25em;
+    font-size: .9em;
+    font-style: italic;
+}
+
 .woocommerce-order .woocommerce-message .pagarme-response p:last-child {
     margin-bottom: 0;
 }
@@ -132,7 +143,7 @@
 
 /* sm  */
 /* @media (min-width: 576px) {
-    
+
 } */
 
 /* md  */
@@ -151,10 +162,10 @@
 
 /* xl  */
 /* @media (min-width: 1200px) {
-    
+
 } */
 
 /* xxl  */
 /* @media (min-width: 1400px) {
-    
+
 } */

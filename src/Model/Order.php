@@ -70,7 +70,7 @@ class Order extends Meta
 
         if (!in_array($current_status, ['on-hold', 'completed', 'canceled', 'cancelled', 'processing'])) {
             $this->wc_order->update_status('on-hold', __('Pagar.me: Awaiting payment confirmation.', 'woo-pagarme-payments'));
-            wc_reduce_stock_levels($this->wc_order->get_id());
+            wc_maybe_reduce_stock_levels($this->wc_order->get_id());
         }
 
         $statusArray = [
@@ -227,6 +227,9 @@ class Order extends Meta
      */
     public function getTotalAmountByCharges()
     {
+        if(!$this->get_charges()) {
+            return false;
+        }
         $valueTotal = 0;
         foreach($this->get_charges() as $charge) {
             $valueTotal += $charge->getAmount();
@@ -257,7 +260,7 @@ class Order extends Meta
     public function getWcOrder($id = false)
     {
         global $theorder;
-        if(is_null($theorder) || ((int)$id !== $theorder->get_id() && $id !== false)) {
+        if(empty($theorder) || ((int)$id !== $theorder->get_id() && $id !== false)) {
             return new WC_Order($id);
         }
         return $theorder;

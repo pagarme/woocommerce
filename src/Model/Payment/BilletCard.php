@@ -11,11 +11,9 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
-use Pagarme\Core\Payment\Aggregates\SavedCard;
-use ReflectionClass;
+use stdClass;
 use WC_Order;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Resource\Customers;
+use Pagarme\Core\Payment\Aggregates\SavedCard;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -103,7 +101,7 @@ class BilletCard extends Card implements PaymentInterface
     /**
      * @param WC_Order $wc_order
      * @param array $form_fields
-     * @param Customers|null $customer
+     * @param stdClass|null $customer
      * @return null[]|string[]
      * @throws \Exception
      */

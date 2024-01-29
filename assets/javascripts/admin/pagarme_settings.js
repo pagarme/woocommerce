@@ -3,14 +3,19 @@
 (   function ($) {
         $('.wc_gateways').on(
             'click',
-            '.wc-payment-gateway-method-toggle-enabled',
+            '.wc-payment-gateway-method-toggle-enabled, .pagarme-toggle-payment-subscription',
             function () {
                 const $link = $(this),
-                      $row = $link.closest('tr'),
-                      $toggle = $link.find('.woocommerce-input-toggle');
+                    $row = $link.closest('tr'),
+                    $toggle = $link.find('.woocommerce-input-toggle');
+
+                let action = 'woocommerce_toggle_gateway_enabled';
+                if ($link.attr('class') === 'pagarme-toggle-payment-subscription') {
+                    action = 'pagarme_toggle_payment_subscription';
+                }
 
                 const data = {
-                    action: 'woocommerce_toggle_gateway_enabled',
+                    action: action,
                     security: pagarme_settings.nonces.gateway_toggle,
                     gateway_id: $row.data('gateway_id'),
                 };

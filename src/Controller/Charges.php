@@ -11,11 +11,15 @@ use Woocommerce\Pagarme\Core;
 use Pagarme\Core\Kernel\Services\ChargeService;
 use Pagarme\Core\Kernel\Services\MoneyService;
 use Woocommerce\Pagarme\Model\Charge;
-use Woocommerce\Pagarme\Resource\Charges as Charges_Resource;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
 
 class Charges
 {
+    /**
+     * @var Charge
+     */
+    protected $model;
+
     public function __construct()
     {
         $this->model = new Charge();

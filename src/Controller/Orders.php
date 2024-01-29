@@ -23,6 +23,9 @@ class Orders
     /** @var BlockOrder */
     private $blockOrder;
 
+    /** @var bool  */
+    private $debug;
+
     public function __construct(
         BlockOrder $blockOrder = null
     ) {
@@ -88,7 +91,7 @@ class Orders
     public function add_meta_boxes()
     {
         global $theorder;
-        if($theorder === null) {
+        if(empty($theorder)) {
             return;
         }
         $order = new Order($theorder->get_id());
