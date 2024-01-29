@@ -70,7 +70,7 @@ class Order extends Meta
 
         if (!in_array($current_status, ['on-hold', 'completed', 'canceled', 'cancelled', 'processing'])) {
             $this->wc_order->update_status('on-hold', __('Pagar.me: Awaiting payment confirmation.', 'woo-pagarme-payments'));
-            wc_reduce_stock_levels($this->wc_order->get_id());
+            wc_maybe_reduce_stock_levels($this->wc_order->get_id());
         }
 
         $statusArray = [
