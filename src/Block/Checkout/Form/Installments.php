@@ -122,7 +122,8 @@ class Installments extends Gateway
     /**
      * @return bool
      */
-    public function isCcInstallmentTypeByFlag() {
+    public function isCcInstallmentTypeByFlag()
+    {
         $type = intval($this->cardInstallments->config->getCcInstallmentType()) ?? 1;
         return $type === CardInstallments::INSTALLMENTS_BY_FLAG;
     }
@@ -130,7 +131,8 @@ class Installments extends Gateway
     /**
      * @return int
      */
-    public function getConfiguredMaxCcInstallments(): int {
+    public function getConfiguredMaxCcInstallments()
+    {
         if ($this->isCcInstallmentTypeByFlag()) {
             $flag = Utils::get('flag', false, 'esc_html');
             $configByFlags = $this->cardInstallments->config->getCcInstallmentsByFlag();
