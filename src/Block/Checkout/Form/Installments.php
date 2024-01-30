@@ -15,7 +15,9 @@ use Woocommerce\Pagarme\Block\Checkout\Gateway;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\CardInstallments;
 use Woocommerce\Pagarme\Model\Subscription;
-use Woocommerce\Pagarme\View\Checkouts;
+use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Gateway as GatewayModel;
+use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
 defined('ABSPATH') || exit;
 
@@ -33,15 +35,20 @@ class Installments extends Gateway
     /** @var int  */
     protected $sequence = 1;
 
-    /** @var int  */
+    /** @var CardInstallments */
     protected $cardInstallments;
 
     /** @var Subscription  */
     protected $subscription;
 
-    public function __construct()
+    public function __construct(
+        Json         $jsonSerialize = null,
+        array        $data = [],
+        GatewayModel $gateway = null,
+        Config       $config = null
+    )
     {
-        parent::__construct();
+        parent::__construct($jsonSerialize, $data, $gateway, $config);
         $this->cardInstallments = new CardInstallments();
         $this->subscription = new Subscription();
     }
@@ -115,7 +122,8 @@ class Installments extends Gateway
     /**
      * @return bool
      */
-    public function isCcInstallmentTypeByFlag() {
+    public function isCcInstallmentTypeByFlag()
+    {
         $type = intval($this->cardInstallments->config->getCcInstallmentType()) ?? 1;
         return $type === CardInstallments::INSTALLMENTS_BY_FLAG;
     }
@@ -123,7 +131,8 @@ class Installments extends Gateway
     /**
      * @return int
      */
-    public function getConfiguredMaxCcInstallments(): int {
+    public function getConfiguredMaxCcInstallments()
+    {
         if ($this->isCcInstallmentTypeByFlag()) {
             $flag = Utils::get('flag', false, 'esc_html');
             $configByFlags = $this->cardInstallments->config->getCcInstallmentsByFlag();
