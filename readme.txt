@@ -4,7 +4,7 @@ Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, 
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 7.1
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -22,6 +22,12 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.2.1 (30/01/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.1)
+
+* **Correções:**
+  * Parcelamento de cartão de crédito
+
 = 3.2.0 (29/01/2024) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.0)
 
@@ -36,18 +42,6 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
   * Campos primeiro nome e sobrenome não obrigatórios
   * Falha ao gerar o pedido recorrente por falta de CustomerId
   * Redução duplicada de estoque - @tiagopapile
-
-= 3.1.9 (13/12/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.9)
-
-* **Novas implementações:**
-  * Permitir compras sem endereço (Apenas com antifraude desabilitado)
-  * Exibição dos valores das taxas de parcelas de cartão nos pedidos
-
-* **Correções:**
-  * Código Pix não é copiado
-  * Colar cartão de crédito em IOS não finaliza o pedido
-  * Notice do php no bloco de wallets
 
 == Upgrade Notice ==
 Nosso plugin agora é compatível com Woocommerce Subscriptions
