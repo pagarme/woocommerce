@@ -18,7 +18,10 @@ class WoocommerceSupportedBlocks
         
         ClassFinder::disablePSR4Vendors();
         
-        $blockClasses = ClassFinder::getClassesInNamespace('Woocommerce\Pagarme\Block\NewCheckout', ClassFinder::RECURSIVE_MODE);
+        $blockClasses = ClassFinder::getClassesInNamespace(
+            'Woocommerce\Pagarme\Block\NewCheckout',
+            ClassFinder::RECURSIVE_MODE
+        );
         
         $abstracBlockKey = array_search(AbstractPaymentMethodBlock::class, $blockClasses);
         if ($abstracBlockKey !== false) {
@@ -29,7 +32,8 @@ class WoocommerceSupportedBlocks
 
         add_action(
             'woocommerce_blocks_payment_method_type_registration',
-            function(\Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $paymentMethodRegistry) use($blockClasses) {
+            function(\Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $paymentMethodRegistry)
+                use($blockClasses) {
                 foreach ($blockClasses as $blockClass) {
                     $paymentMethodRegistry->register(new $blockClass());
                 }
