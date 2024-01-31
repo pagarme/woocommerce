@@ -15,6 +15,9 @@
  */
 
 use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\FeatureCompatibilization;
+use Woocommerce\Pagarme\Model\WoocommerceSupportedBlocks;
+
 
 const BRAZILIAN_MARKET_URL = 'https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/';
 const PAGARME_REQUIREMENTS_URL = 'https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce';
@@ -310,12 +313,20 @@ function wcmpPluginsLoadedCheck()
 
 add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
 add_action( 'before_woocommerce_init', 'checkCompatibilityWithFeatures', 0);
+add_action('woocommerce_blocks_loaded', 'addWoocommerceSupportedBlocks');
 
 function checkCompatibilityWithFeatures()
 {
-    $compatibilization = new \Woocommerce\Pagarme\Model\FeatureCompatibilization();
+    $compatibilization = new FeatureCompatibilization();
     $compatibilization->callCompatibilization();
 }
+
+function addWoocommerceSupportedBlocks()
+{
+    $compatibilization = new WoocommerceSupportedBlocks();
+    $compatibilization->addSupportedBlocks();
+}
+
 function versionUpdateWarning($currentVersion, $newVersion)
 {
     $currentVersionMajorPart = explode('.', $currentVersion)[0];

@@ -2,6 +2,7 @@
 *.log
 *.orig
 .sass-cache
+packe-lock.json
 node_modules/
 .idea/
 .vscode/

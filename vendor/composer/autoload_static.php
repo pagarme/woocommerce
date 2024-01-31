@@ -27,6 +27,11 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         array (
             'Monolog\\' => 8,
         ),
+        'H' => 
+        array (
+            'HaydenPierce\\ClassFinder\\UnitTest\\' => 34,
+            'HaydenPierce\\ClassFinder\\' => 25,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -61,6 +66,14 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'HaydenPierce\\ClassFinder\\UnitTest\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/haydenpierce/class-finder/test/unit',
+        ),
+        'HaydenPierce\\ClassFinder\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/haydenpierce/class-finder/src',
         ),
     );
 

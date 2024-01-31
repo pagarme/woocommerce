@@ -11,18 +11,19 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
-use Woocommerce\Pagarme\Core;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
  *  Class Pix
  * @package Woocommerce\Pagarme\Model\Payment
  */
-class Pix extends AbstractPayment implements PaymentInterface
+class Pix extends AbstractPaymentWithCheckoutInstructions implements PaymentInterface
 {
     /** @var string */
     const PAYMENT_CODE = 'pix';
+
+    /** @var string */
+    const IMAGE_FILE_NAME = 'pix.svg';
 
     /** @var int */
     protected $suffix = 7;
@@ -46,16 +47,13 @@ class Pix extends AbstractPayment implements PaymentInterface
     /**
      * @return string
      */
-    public function getImage()
+    public static function getDefaultCheckoutInstructions()
     {
-        return esc_url(Core::plugins_url('assets/images/pix.svg'));
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMessage()
-    {
-        return __('O QR Code para seu pagamento através de PIX será gerado após a confirmação da compra. Aponte seu celular para a tela para capturar o código ou copie e cole o código em seu aplicativo de pagamentos.', 'woo-pagarme-payments');
+        return __(
+            'The QR Code for your payment through PIX will be generated after confirming the purchase. '
+            . 'Point your phone at the screen to capture the code or copy and paste the code into your '
+            . 'payments app.',
+            'woo-pagarme-payments'
+        );
     }
 }

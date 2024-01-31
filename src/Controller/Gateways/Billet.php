@@ -13,6 +13,7 @@ namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
+use Woocommerce\Pagarme\Model\Payment\Billet as BilletModel;
 use Woocommerce\Pagarme\Model\Payment\Billet\BankInterface;
 use Woocommerce\Pagarme\Model\Payment\Billet\Banks;
 use Woocommerce\Pagarme\Model\Subscription;
@@ -36,7 +37,7 @@ class Billet extends AbstractGateway
     const PAYMENT_INSTRUCTIONS_MAX_LENGTH = 255;
 
     /** @var string */
-    protected $method = \Woocommerce\Pagarme\Model\Payment\Billet::PAYMENT_CODE;
+    protected $method = BilletModel::PAYMENT_CODE;
 
     /**
      * @return boolean
@@ -60,6 +61,7 @@ class Billet extends AbstractGateway
     public function append_form_fields()
     {
         return [
+            BilletModel::getCheckoutInstructionsKey() => $this->field_billet_checkout_instructions(),
             'billet_deadline_days' => $this->field_billet_deadline_days(),
             'billet_instructions' => $this->field_billet_instructions(),
             'billet_allowed_in_subscription' => $this->field_billet_allowed_for_subscription(),
@@ -171,6 +173,22 @@ class Billet extends AbstractGateway
             'custom_attributes' => array(
                 'data-field' => 'billet-allowed-for-subscription',
             ),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function field_billet_checkout_instructions()
+    {
+        return [
+            'title' => BilletModel::getCheckoutInstructionsTitle(),
+            'type' => 'textarea',
+            'class' => 'pagarme-option-text-area',
+            'description' => BilletModel::getCheckoutInstructionsDescription(),
+            'desc_tip' => true,
+            'default' => $this->config->getData(BilletModel::getCheckoutInstructionsKey()) ??
+                BilletModel::getDefaultCheckoutInstructions(),
         ];
     }
 
