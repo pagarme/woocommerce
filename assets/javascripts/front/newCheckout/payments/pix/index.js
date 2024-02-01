@@ -42,7 +42,7 @@ const PagarmePixCardLabel = ( { components } ) => {
 }
 
 
-const pagarmeCreditCardPaymentMethod = {
+const pagarmePixPaymentMethod = {
 	name: backendConfig.name,
 	label: <PagarmePixCardLabel />,
 	content: <PagarmePixComponent />,
@@ -51,4 +51,4 @@ const pagarmeCreditCardPaymentMethod = {
 	ariaLabel: backendConfig.ariaLabel
 };
 
-registerPaymentMethod(pagarmeCreditCardPaymentMethod);
+registerPaymentMethod(pagarmePixPaymentMethod);
