@@ -17,10 +17,10 @@ class Utils
      * Sanitize value from custom method
      *
      * @since 1.0
-     * @param String $name
-     * @param Mixed $default
-     * @param String|Array $sanitize
-     * @return Mixed
+     * @param string $name
+     * @param mixed $default
+     * @param string|array $sanitize
+     * @return mixed
      */
     public static function request($type, $name, $default, $sanitize = 'rm_tags')
     {
@@ -37,10 +37,10 @@ class Utils
      * Sanitize value from methods post
      *
      * @since 1.0
-     * @param String $name
-     * @param Mixed $default
-     * @param String|Array $sanitize
-     * @return Mixed
+     * @param string $name
+     * @param mixed $default
+     * @param string|array $sanitize
+     * @return mixed
      */
     public static function post($name, $default = '', $sanitize = 'rm_tags')
     {
@@ -51,10 +51,10 @@ class Utils
      * Sanitize value from methods get
      *
      * @since 1.0
-     * @param String $name
-     * @param Mixed $default
-     * @param String|Array $sanitize
-     * @return Mixed
+     * @param string $name
+     * @param mixed $default
+     * @param string|array $sanitize
+     * @return mixed
      */
     public static function get($name, $default = '', $sanitize = 'rm_tags')
     {
@@ -65,10 +65,10 @@ class Utils
      * Sanitize value from cookie
      *
      * @since 1.0
-     * @param String $name
-     * @param Mixed $default
-     * @param String|Array $sanitize
-     * @return Mixed
+     * @param string $name
+     * @param mixed $default
+     * @param string|array $sanitize
+     * @return mixed
      */
     public static function cookie($name, $default = '', $sanitize = 'rm_tags')
     {
@@ -79,8 +79,8 @@ class Utils
      * Get filtered super global server by key
      *
      * @since 1.0
-     * @param String $key
-     * @return String
+     * @param string $key
+     * @return string
      */
     public static function server($key)
     {
@@ -93,9 +93,9 @@ class Utils
      * Verify request by nonce
      *
      * @since 1.0
-     * @param String $name
-     * @param String $action
-     * @return Boolean
+     * @param string $name
+     * @param string $action
+     * @return boolean
      */
     public static function verify_nonce_post($name, $action)
     {
@@ -106,9 +106,9 @@ class Utils
      * Sanitize requests
      *
      * @since 1.0
-     * @param String $value
-     * @param String|Array $sanitize
-     * @return String
+     * @param string $value
+     * @param string|array $sanitize
+     * @return string
      */
     public static function sanitize($value, $sanitize)
     {
@@ -127,9 +127,9 @@ class Utils
      * Properly strip all HTML tags including script and style
      *
      * @since 1.0
-     * @param Mixed String|Array $value
-     * @param Boolean $remove_breaks
-     * @return Mixed String|Array
+     * @param mixed String|Array $value
+     * @param boolean $remove_breaks
+     * @return mixed String|Array
      */
     public static function rm_tags($value, $remove_breaks = false)
     {
@@ -148,9 +148,9 @@ class Utils
      * Find the position of the first occurrence of a substring in a string
      *
      * @since 1.0
-     * @param String $value
-     * @param String $search
-     * @return Boolean
+     * @param string $value
+     * @param string $search
+     * @return boolean
      */
     public static function indexof($value, $search)
     {
@@ -161,8 +161,7 @@ class Utils
      * Verify request ajax
      *
      * @since 1.0
-     * @param null
-     * @return Boolean
+     * @return boolean
      */
     public static function is_request_ajax()
     {
@@ -171,11 +170,21 @@ class Utils
     }
 
     /**
+     * Verify if request is from checkout blocks
+     *
+     * @since 1.0
+     * @return boolean
+     */
+    public static function isNewCheckoutRequest()
+    {
+        return strpos(strtolower(self::server('REQUEST_URI')), 'checkout') !== false;
+    }
+
+    /**
      * Get charset option
      *
      * @since 1.0
-     * @param Null
-     * @return String
+     * @return string
      */
     public static function get_charset()
     {
@@ -186,8 +195,8 @@ class Utils
      * Descode html entityes
      *
      * @since 1.0
-     * @param String $string
-     * @return String
+     * @param string $string
+     * @return string
      */
     public static function html_decode($string)
     {
@@ -198,9 +207,9 @@ class Utils
      * Get value by array index
      *
      * @since 1.0
-     * @param Array $args
-     * @param String|int $index
-     * @return String
+     * @param array $args
+     * @param string|int $index
+     * @return string
      */
     public static function get_value_by($args, $index, $default = '')
     {
@@ -215,8 +224,8 @@ class Utils
      * Admin sanitize url
      *
      * @since 1.0
-     * @param String $path
-     * @return String
+     * @param string $path
+     * @return string
      */
     public static function get_admin_url($path = '')
     {
@@ -227,8 +236,8 @@ class Utils
      * Site URL
      *
      * @since 1.0
-     * @param String $path
-     * @return String
+     * @param string $path
+     * @return string
      */
     public static function get_site_url($path = '')
     {
@@ -239,8 +248,8 @@ class Utils
      * Permalink url sanitized
      *
      * @since 1.0
-     * @param Integer $post_id
-     * @return String
+     * @param int $post_id
+     * @return string
      */
     public static function get_permalink($post_id = 0)
     {
@@ -251,9 +260,9 @@ class Utils
      * Add prefix in string
      *
      * @since 1.0
-     * @param String $after
-     * @param String $before
-     * @return String
+     * @param string $after
+     * @param string $before
+     * @return string
      */
     public static function add_prefix($after, $before = '')
     {
@@ -264,8 +273,8 @@ class Utils
      * Component attribute with prefix
      *
      * @since 1.0
-     * @param String $name
-     * @return String
+     * @param string $name
+     * @return string
      */
     public static function get_component($name)
     {
@@ -276,8 +285,7 @@ class Utils
      * Check is plugin settings page
      *
      * @since 1.0
-     * @param null
-     * @return Boolean
+     * @return boolean
      */
     public static function is_settings_page()
     {
@@ -288,8 +296,8 @@ class Utils
      * Format and validate phone number with DDD
      *
      * @since 1.0
-     * @param String $phone
-     * @return String
+     * @param string $phone
+     * @return string
      */
     public static function format_phone_number($phone)
     {
@@ -306,8 +314,8 @@ class Utils
      * Format order price with amount
      *
      * @since 1.0
-     * @param Mixed String|Float|Int $price
-     * @return Integer
+     * @param mixed string|float|int $price
+     * @return int
      */
     public static function format_order_price($price)
     {
@@ -322,7 +330,7 @@ class Utils
      * Format order price with a currency symbol
      *
      * @since 1.0
-     * @param Mixed String|Float|Int $price
+     * @param mixed string|float|int $price
      * @return string
      */
     public static function format_order_price_with_currency_symbol($price)
@@ -338,8 +346,8 @@ class Utils
      * Format desnormalized order price with amount
      *
      * @since 1.0
-     * @param Mixed String|Float|Int $price
-     * @return Integer
+     * @param mixed string|float|int $price
+     * @return integer
      */
     public static function format_desnormalized_order_price($price)
     {
@@ -368,8 +376,8 @@ class Utils
      * Format order price to current currency
      *
      * @since 1.0
-     * @param Int $price
-     * @return String
+     * @param int $price
+     * @return string
      */
     public static function format_order_price_to_view($price)
     {
@@ -387,9 +395,9 @@ class Utils
      * Generate log file
      *
      * @since 1.0
-     * @param Mixed $data
-     * @param String $log_name
-     * @return Void
+     * @param mixed $data
+     * @param string $log_name
+     * @return void
      */
     public static function log($data, $log_name = 'debug')
     {
@@ -474,8 +482,7 @@ class Utils
      * Get the settings option key
      *
      * @since 1.0
-     * @param Null
-     * @return String
+     * @return string
      */
     public static function get_option_key()
     {
@@ -488,8 +495,8 @@ class Utils
      * Format document number
      *
      * @since 1.0
-     * @param String $document
-     * @return String
+     * @param string $document
+     * @return string
      */
     public static function format_document($document)
     {
@@ -500,8 +507,8 @@ class Utils
      * Get the order id by meta value
      *
      * @since 1.0
-     * @param String $meta_value
-     * @return Integer
+     * @param string $meta_value
+     * @return integer
      */
     public static function get_order_by_meta_value($meta_value)
     {
@@ -525,9 +532,9 @@ class Utils
     /**
      * Get date formatted for SQL
      *
-     * @param String $date
-     * @param String $format
-     * @return String
+     * @param string $date
+     * @param string $format
+     * @return string
      */
     public static function convert_date_for_sql($date, $format = 'Y-m-d')
     {
@@ -537,11 +544,11 @@ class Utils
     /**
      * Conversion of date
      *
-     * @param String $date
-     * @param String $format
-     * @param String $search
-     * @param String $replace
-     * @return String
+     * @param string $date
+     * @param string $format
+     * @param string $search
+     * @param string $replace
+     * @return string
      */
     public static function convert_date($date, $format = 'Y-m-d', $search = '/', $replace = '-')
     {
