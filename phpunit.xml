@@ -14,7 +14,6 @@
     </include>
     <exclude>
       <directory suffix=".php">./src/Block/NewCheckout/</directory>
-      <file>./src/Model/WoocommerceSupportedBlocks.php</file>
     </exclude>
   </source>
 </phpunit>

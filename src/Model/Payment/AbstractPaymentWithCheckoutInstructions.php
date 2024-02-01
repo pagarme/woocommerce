@@ -43,7 +43,7 @@ abstract class AbstractPaymentWithCheckoutInstructions extends AbstractPayment
             $message = $settings[$checkoutInstructionsKey];
         
         }
-        return  $message;
+        return $message;
     }
 
     public static function getCheckoutInstructionsKey()

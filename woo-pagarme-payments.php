@@ -16,7 +16,6 @@
 
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\FeatureCompatibilization;
-use Woocommerce\Pagarme\Model\WoocommerceSupportedBlocks;
 
 
 const BRAZILIAN_MARKET_URL = 'https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/';
@@ -323,7 +322,7 @@ function checkCompatibilityWithFeatures()
 
 function addWoocommerceSupportedBlocks()
 {
-    $compatibilization = new WoocommerceSupportedBlocks();
+    $compatibilization = new FeatureCompatibilization();
     $compatibilization->addSupportedBlocks();
 }
 
