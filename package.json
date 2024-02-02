@@ -21,6 +21,6 @@
   },
   "scripts": {
     "makepot": "yarn wpi18n makepot --exclude=node_modules,vendor",
-    "build": "wp-scripts build assets/javascripts/front/newCheckout/payments/pix/"
+    "build": "wp-scripts build"
   }
 }

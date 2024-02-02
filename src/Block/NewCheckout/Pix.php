@@ -3,9 +3,8 @@
 namespace Woocommerce\Pagarme\Block\NewCheckout;
 
 use Woocommerce\Pagarme\Model\Payment\Pix as PixModel;
-use Woocommerce\Pagarme\Block\NewCheckout\AbstractPaymentMethodBlock;
 
-class Pix extends AbstractPaymentMethodBlock
+class Pix extends AbstractPaymentWithCheckoutInstructionsBlock
 {
     /** @var string */
     protected $name = 'woo-pagarme-payments-pix';
@@ -23,16 +22,5 @@ class Pix extends AbstractPaymentMethodBlock
     {
         $paymentModel = new PixModel();
         parent::__construct($paymentModel);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getAdditionalPaymentMethodData()
-    {
-        return [
-            'instructions' => $this->paymentModel->getMessage(),
-            'logo' => $this->paymentModel->getImage()
-        ];
     }
 }

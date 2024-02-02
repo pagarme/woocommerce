@@ -10,4 +10,8 @@ module.exports = {
     ),
     new DependencyExtractionWebpackPlugin(),
   ],
+  entry: {
+		pix: './assets/javascripts/front/newCheckout/payments/pix/index.js',
+		billet: './assets/javascripts/front/newCheckout/payments/billet/index.js',
+	},
 };
