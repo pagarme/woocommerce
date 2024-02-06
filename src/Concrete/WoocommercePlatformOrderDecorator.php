@@ -1106,7 +1106,13 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             
             if ($requiredField === 'number') {
                 $fieldIsNotSet = !array_key_exists($requiredField, $platformAddress)
-                || (empty($platformAddress[$requiredField]) && !is_numeric($platformAddress[$requiredField]));
+                    || (
+                        empty($platformAddress[$requiredField])
+                        && (
+                            $platformAddress[$requiredField] === null
+                            || !is_numeric(trim($platformAddress[$requiredField]))
+                        )
+                    );
             }
 
             if ($fieldIsNotSet) {

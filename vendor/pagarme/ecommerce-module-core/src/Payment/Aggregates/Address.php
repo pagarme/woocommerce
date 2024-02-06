@@ -78,7 +78,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
 
         $this->number = substr($numberWithoutLineBreaks, 0, 15);
 
-        if (empty($this->number) && !is_numeric($this->number)) {
+        if (empty($this->number) && ($this->number === null || !is_numeric(trim($this->number)))) {
 
             $inputName = $this->i18n->getDashboard('number');
             $message = $this->i18n->getDashboard(
