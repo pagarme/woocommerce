@@ -1331,6 +1331,6 @@ msgstr ""
 "O Boleto bancário será exibido após a confirmação da compra e poderá ser pago em qualquer agência bancária, pelo seu "
 "smartphone ou computador através de serviços digitais de bancos."
 
-#: src/Block/NewCheckout/AbstractPaymentMethodBlock.php:35
+#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
 msgid "Billet payment method"
 msgstr "Meio de pagamento Boleto"

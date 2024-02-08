@@ -2,7 +2,7 @@
 
 namespace Woocommerce\Pagarme\Block\ReactCheckout;
 
-use Woocommerce\Pagarme\Block\NewCheckout\AbstractPaymentMethodBlock;
+use Woocommerce\Pagarme\Block\ReactCheckout\AbstractPaymentMethodBlock;
 use Woocommerce\Pagarme\Model\Payment\AbstractPaymentWithCheckoutInstructions;
 
 class AbstractPaymentWithCheckoutInstructionsBlock extends AbstractPaymentMethodBlock
