@@ -1303,7 +1303,7 @@ msgstr "Funciona apenas para assinaturas mensais e anuais."
 msgid "Your cart has one or more daily or weekly subscription products, which do not allow installments."
 msgstr "Seu carrinho possui um ou mais produtos de assinatura diário ou semanal, que não permitem parcelamentos."
 
-#: src/Block/NewCheckout/AbstractPaymentMethodBlock.php:35
+#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
 msgid "Pix payment method"
 msgstr "Meio de pagamento Pix"
 
@@ -1317,7 +1317,7 @@ msgstr "Texto de instruções que aparece no checkout."
 
 #: src/Model/Pix.php:55
 msgid ""
-"The QR Code for your payment through PIX will be generated after confirming the purchase. Point your phone at the "
+"The QR Code for your payment with PIX will be generated after confirming the purchase. Point your phone at the "
 "screen to capture the code or copy and paste the code into your payments app."
 msgstr ""
 "O QR Code para seu pagamento através de PIX será gerado após a confirmação da compra. Aponte seu celular para a tela "
@@ -1325,7 +1325,7 @@ msgstr ""
 
 #: src/Mode;/Billet.php:55
 msgid ""
-"The billet will be displayed after purchase confirmation and can be paid at any bank branch, via your smartphone or "
+"The billet will be displayed after purchase confirmation and can be paid at any bank agency, via your smartphone or "
 "computer through digital banking services."
 msgstr ""
 "O Boleto bancário será exibido após a confirmação da compra e poderá ser pago em qualquer agência bancária, pelo seu "

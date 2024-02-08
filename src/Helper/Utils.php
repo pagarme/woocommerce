@@ -175,7 +175,7 @@ class Utils
      * @since 1.0
      * @return boolean
      */
-    public static function isNewCheckoutRequest()
+    public static function isReactCheckoutRequest()
     {
         return strpos(strtolower(self::server('REQUEST_URI')), 'checkout') !== false;
     }

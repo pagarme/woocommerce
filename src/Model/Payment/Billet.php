@@ -52,7 +52,7 @@ class Billet extends AbstractPaymentWithCheckoutInstructions implements PaymentI
     public static function getDefaultCheckoutInstructions()
     {
         return __(
-            'The billet will be displayed after purchase confirmation and can be paid at any bank branch'
+            'The billet will be displayed after purchase confirmation and can be paid at any bank agency'
             . ', via your smartphone or computer through digital banking services.',
             'woo-pagarme-payments'
         );

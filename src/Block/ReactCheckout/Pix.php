@@ -1,9 +1,9 @@
 <?php
 
-namespace Woocommerce\Pagarme\Block\NewCheckout;
+namespace Woocommerce\Pagarme\Block\ReactCheckout;
 
 use Woocommerce\Pagarme\Model\Payment\Pix as PixModel;
-use Woocommerce\Pagarme\Block\NewCheckout\AbstractPaymentMethodBlock;
+use Woocommerce\Pagarme\Block\ReactCheckout\AbstractPaymentMethodBlock;
 
 class Pix extends AbstractPaymentMethodBlock
 {
