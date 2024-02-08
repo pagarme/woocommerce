@@ -13,7 +13,7 @@
       <directory suffix=".php">./src/</directory>
     </include>
     <exclude>
-      <directory suffix=".php">./src/Block/NewCheckout/</directory>
+      <directory suffix=".php">./src/Block/ReactCheckout/</directory>
     </exclude>
   </source>
 </phpunit>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Woocommerce\Pagarme\Block\NewCheckout;
+namespace Woocommerce\Pagarme\Block\ReactCheckout;
 
 use Woocommerce\Pagarme\Model\Payment\Billet as BilletModel;
 

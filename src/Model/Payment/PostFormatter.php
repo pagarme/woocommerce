@@ -93,7 +93,7 @@ class PostFormatter
         $_POST[PaymentRequest::PAGARME_PAYMENT_REQUEST_KEY] = new PaymentRequest();
     }
 
-    public function formatNewCheckout()
+    public function formatReactCheckout()
     {
         if (!empty($_POST['pagarme']) && is_string($_POST['pagarme'])) {
             $_POST['pagarme'] = json_decode($_POST['pagarme'], true);

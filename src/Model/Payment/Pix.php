@@ -50,7 +50,7 @@ class Pix extends AbstractPaymentWithCheckoutInstructions implements PaymentInte
     public static function getDefaultCheckoutInstructions()
     {
         return __(
-            'The QR Code for your payment through PIX will be generated after confirming the purchase. '
+            'The QR Code for your payment with PIX will be generated after confirming the purchase. '
             . 'Point your phone at the screen to capture the code or copy and paste the code into your '
             . 'payments app.',
             'woo-pagarme-payments'

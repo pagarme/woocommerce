@@ -3,7 +3,7 @@
 namespace Woocommerce\Pagarme\Model;
 
 use HaydenPierce\ClassFinder\ClassFinder;
-use Woocommerce\Pagarme\Block\NewCheckout\AbstractPaymentMethodBlock;
+use Woocommerce\Pagarme\Block\ReactCheckout\AbstractPaymentMethodBlock;
 
 class FeatureCompatibilization
 {
@@ -59,7 +59,7 @@ class FeatureCompatibilization
         ClassFinder::disablePSR4Vendors();
         
         $blockClasses = ClassFinder::getClassesInNamespace(
-            'Woocommerce\Pagarme\Block\NewCheckout',
+            'Woocommerce\Pagarme\Block\ReactCheckout',
             ClassFinder::RECURSIVE_MODE
         );
         
