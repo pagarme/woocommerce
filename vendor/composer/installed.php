@@ -28,6 +28,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'haydenpierce/class-finder' => array(
+            'pretty_version' => '0.5.3',
+            'version' => '0.5.3.0',
+            'reference' => '40703445c18784edcc6411703e7c3869af11ec8c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../haydenpierce/class-finder',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'mashape/unirest-php' => array(
             'pretty_version' => 'v3.0.4',
             'version' => '3.0.4.0',

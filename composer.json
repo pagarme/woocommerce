@@ -18,7 +18,8 @@
         "mashape/unirest-php": "^3.0",
         "pagarme/ecommerce-module-core": "2.3.*",
         "psr/log": "1.1.4",
-        "monolog/monolog": "<2"
+        "monolog/monolog": "<2",
+        "haydenpierce/class-finder": "^0.5.3"
     },
     "require-dev": {
         "mockery/mockery": "1.6.*",
