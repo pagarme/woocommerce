@@ -12,7 +12,7 @@ import pagarmeCardsStore from '../store/cards';
 
 import Card from './card';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { tokenize } from './tokenize';
+import { tokenize } from './token';
 
 
 const backendConfig = wc.wcSettings.getSetting('woo-pagarme-payments-credit_card_data');

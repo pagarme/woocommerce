@@ -12,12 +12,13 @@ const tranlasteErrorMessage = (errorIndex, message, errorMessages) => {
 };
 
 const buildErrorMessage = (response, errorMessages) => {
-    let errorMessage = '<ul>';
+    let errorMessage = '';
     for (const errorIndex  in response.errors) {
-        const message = tranlasteErrorMessage(errorIndex, response.errors[errorIndex], errorMessages);
-        errorMessage += `<li>${message}</li>`;
+        for (const error of response.errors[errorIndex] || []) {
+            const message = tranlasteErrorMessage(errorIndex, error, errorMessages);
+            errorMessage += `${message}<br/>`;
+        }
     }
-    errorMessage += '</ul>';
 
     return errorMessage;
 }
