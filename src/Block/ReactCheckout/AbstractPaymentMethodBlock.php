@@ -70,7 +70,7 @@ abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
      */
     protected function getScriptDependencies()
     {
-        return [];
+        return ['wp-components', "react"];
     }
 
     /**

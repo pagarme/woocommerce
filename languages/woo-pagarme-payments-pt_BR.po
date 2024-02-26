@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-02-01 14:29-0300\n"
+"PO-Revision-Date: 2024-02-15 18:10-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -485,7 +485,7 @@ msgstr "%dx de %s (%s)"
 
 #: src/Model/Gateway.php:142
 msgid "This card brand not is allowed on checkout."
-msgstr "Essa bandeira não é permitda no checkout."
+msgstr "Essa bandeira não é permitida no checkout."
 
 #: src/Model/Order.php:66
 msgid "Paid"
@@ -1317,8 +1317,8 @@ msgstr "Texto de instruções que aparece no checkout."
 
 #: src/Model/Pix.php:55
 msgid ""
-"The QR Code for your payment with PIX will be generated after confirming the purchase. Point your phone at the "
-"screen to capture the code or copy and paste the code into your payments app."
+"The QR Code for your payment with PIX will be generated after confirming the purchase. Point your phone at the screen "
+"to capture the code or copy and paste the code into your payments app."
 msgstr ""
 "O QR Code para seu pagamento através de PIX será gerado após a confirmação da compra. Aponte seu celular para a tela "
 "para capturar o código ou copie e cole o código em seu aplicativo de pagamentos."
@@ -1334,3 +1334,11 @@ msgstr ""
 #: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
 msgid "Billet payment method"
 msgstr "Meio de pagamento Boleto"
+
+#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
+msgid "Credit Card payment method"
+msgstr "Meio de pagamento Cartão de Crédito"
+
+#: assets/javascripts/front/reactCheckout/payments/creditCard/installmentsFormatter.js:13
+msgid "of"
+msgstr "de"

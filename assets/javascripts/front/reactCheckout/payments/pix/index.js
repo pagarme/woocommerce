@@ -1,4 +1,5 @@
 import PaymentWithInstructions from '../components/payment-with-instructions';
+import PropTypes from 'prop-types';
 
 const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
 
@@ -10,16 +11,20 @@ const PagarmePixComponent = (props) => {
     );
 };
 
-const PagarmePixCardLabel = ( { components } ) => {
+const PagarmePixLabel = ( { components } ) => {
 	const { PaymentMethodLabel } = components;
 
     return <PaymentMethodLabel text={ backendConfig.label } />;
-}
+};
+
+PagarmePixLabel.propTypes = {
+	components: PropTypes.object
+};
 
 
 const pagarmePixPaymentMethod = {
 	name: backendConfig.name,
-	label: <PagarmePixCardLabel />,
+	label: <PagarmePixLabel />,
 	content: <PagarmePixComponent />,
 	edit: <PagarmePixComponent />,
 	canMakePayment: () => true,

@@ -120,15 +120,16 @@ class Checkout
 
         $installmentsConfig = $this->installments->getConfiguredMaxCcInstallments();
 
-        $optionsHtml = $this->cardInstallments->renderOptions(
-            $this->cardInstallments->getInstallmentsByType(
-                Utils::get('total', false),
-                Utils::get('flag', false, 'esc_html')
+        $installments = $this->cardInstallments->getInstallmentsByType(
+            Utils::get('total', false),
+            Utils::get('flag', false, 'esc_html')
 
-        ));
+        );
+        $optionsHtml = $this->cardInstallments->renderOptions($installments);
         echo json_encode([
             'installmentsConfig' => $installmentsConfig,
-            'optionsHtml' => wp_kses_no_null($optionsHtml)
+            'optionsHtml' => wp_kses_no_null($optionsHtml),
+            'installments' => $installments
         ]);
         exit();
     }

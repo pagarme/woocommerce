@@ -13,5 +13,6 @@ module.exports = {
   entry: {
 		pix: './assets/javascripts/front/reactCheckout/payments/pix/index.js',
 		billet: './assets/javascripts/front/reactCheckout/payments/billet/index.js',
+    credit_card: './assets/javascripts/front/reactCheckout/payments/creditCard/index.js',
 	},
 };

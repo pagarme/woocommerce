@@ -1,4 +1,5 @@
 import { useEffect } from '@wordpress/element';
+import PropTypes from 'prop-types';
 
 const PaymentWithInstructions = ({ emitResponse, eventRegistration, backendConfig }) => {
 	
@@ -30,5 +31,12 @@ const PaymentWithInstructions = ({ emitResponse, eventRegistration, backendConfi
 		</>
 	);
 };
+
+PaymentWithInstructions.propTypes = {
+	emitResponse: PropTypes.object.isRequired,
+	eventRegistration: PropTypes.object.isRequired,
+	backendConfig: PropTypes.object.isRequired,
+};
+
 
 export default PaymentWithInstructions;

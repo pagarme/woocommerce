@@ -150,6 +150,11 @@
     min-width: 2rem;
 }
 
+.pagarme-installments-combobox .wc-block-components-combobox .wc-block-components-combobox-control .components-flex {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 /* sm  */
 /* @media (min-width: 576px) {
 
