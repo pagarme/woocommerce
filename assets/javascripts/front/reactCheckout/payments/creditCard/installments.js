@@ -26,6 +26,8 @@ const Installments = ({
         cardIndex
     );
 
+    console.log('selectedInstallment', selectedInstallment)
+
     return (
         <div className='wc-block-components-form pagarme-installments-combobox'>
             <div
@@ -50,7 +52,10 @@ Installments.propTypes = {
     label: PropTypes.string.isRequired,
     installments: PropTypes.array.isRequired,
     installmentsType: PropTypes.number.isRequired,
-    selectedInstallment: PropTypes.number.isRequired,
+    selectedInstallment: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]).isRequired,
     setSelectedInstallment: PropTypes.func.isRequired,
     brand: PropTypes.string.isRequired,
     cartTotal: PropTypes.number.isRequired,

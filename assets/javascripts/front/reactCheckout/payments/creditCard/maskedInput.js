@@ -39,7 +39,7 @@ MaskedInput.propTypes = {
     setInputValue: PropTypes.func.isRequired,
     cardIndex: PropTypes.number.isRequired,
     mask: PropTypes.string.isRequired,
-    maskChar: PropTypes.string.isRequired,
+    maskChar: PropTypes.string,
 };
 
 export default MaskedInput;

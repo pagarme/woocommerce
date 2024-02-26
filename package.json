@@ -24,6 +24,7 @@
   },
   "scripts": {
     "makepot": "yarn wpi18n makepot --exclude=node_modules,vendor",
-    "build": "wp-scripts build"
+    "build": "wp-scripts build",
+    "start": "wp-scripts start"
   }
 }

@@ -18,7 +18,7 @@ const PagarmeBilletLabel = ( { components } ) => {
 }
 
 PagarmeBilletLabel.propTypes = {
-	components: PropTypes.object.isRequired
+	components: PropTypes.object
 };
 
 

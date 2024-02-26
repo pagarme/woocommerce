@@ -92,7 +92,7 @@ const PagarmeCreditCardLabel = ( { components } ) => {
 }
 
 PagarmeCreditCardLabel.propTypes = {
-	components: PropTypes.object.isRequired
+	components: PropTypes.object
 };
 
 

@@ -1,6 +1,9 @@
 import { useEffect, useState } from '@wordpress/element';
 import formatInstallmentsOptions from './installmentsFormatter';
 import usePrevious from '../components/usePrevious';
+import { installmentsTypesEnum } from './installmentsTypeEnum';
+
+
 
 
 const useInstallments = (installments, installmentsType, brand, cartTotal, setSelectedInstallment, setIsLoading, cardIndex) => {
@@ -10,8 +13,8 @@ const useInstallments = (installments, installmentsType, brand, cartTotal, setSe
 
     useEffect(() => {
         (async () => {
-            const canNotUpdateInstallments = (installmentsType === 2 && !brand)
-                || (installmentsType === 1
+            const canNotUpdateInstallments = (installmentsType === installmentsTypesEnum.BY_CARD_BRAND && !brand)
+                || (installmentsType === installmentsTypesEnum.FOR_ALL_CARD_BRANDS
                     && (!previousCartTotal || previousCartTotal === cartTotal));
             if (canNotUpdateInstallments) {
                 return;
@@ -54,6 +57,18 @@ const useInstallments = (installments, installmentsType, brand, cartTotal, setSe
         })();
 
     }, [brand, cartTotal, installmentsType, setInstallmentsOptions, formatInstallmentsOptions, setSelectedInstallment, cardIndex])
+
+    useEffect(() => {
+        if (installmentsType === installmentsTypesEnum.BY_CARD_BRAND) {
+            setInstallmentsOptions([
+                {
+                    label: '...',
+                    value: ''
+                }
+            ]);
+        }
+        
+    }, [installmentsType, setInstallmentsOptions]);
     
     const filterHandler = (inputValue) => {
         installmentsOptions.filter( ( option ) =>

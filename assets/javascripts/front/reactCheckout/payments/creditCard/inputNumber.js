@@ -35,7 +35,7 @@ InputNumber.propTypes = {
     setInputValue: PropTypes.func.isRequired,
     brand: PropTypes.string.isRequired,
     setBrand: PropTypes.func.isRequired,
-    brands: PropTypes.array.isRequired,
+    brands: PropTypes.object.isRequired,
     setIsLoading: PropTypes.func.isRequired,
     cardIndex: PropTypes.number.isRequired,
 };
