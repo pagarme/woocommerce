@@ -3,6 +3,7 @@
 namespace Woocommerce\Pagarme\Block\ReactCheckout;
 
 use Woocommerce\Pagarme\Block\Checkout\Form\Installments as InstallmentsBlock;
+use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Payment\CreditCard as CreditCardModel;
 
@@ -48,7 +49,8 @@ class CreditCard extends AbstractPaymentMethodBlock
             'appId' => $this->config->getPublicKey(),
             'installments' => $this->getInstallments(),
             'fieldsLabels' => $this->getFieldsLabels(),
-            'brands' => $this->paymentModel->getConfigDataProvider()['brands']
+            'brands' => $this->paymentModel->getConfigDataProvider()['brands'],
+            'errorMessages' => Core::credit_card_errors_pt_br()
         ];
     }
 

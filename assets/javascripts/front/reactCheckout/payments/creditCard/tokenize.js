@@ -1,7 +1,29 @@
 import { formatCardNumber, getMonthAndYearFromExpirationDate } from "./utils"
 
 
-export async function tokenize(cardNumber, cardHolderName, cardExpirationDate, cardCvv, appId) {
+const tranlasteErrorMessage = (errorIndex, message, errorMessages) => {
+    const error = errorIndex.replace('request.', '');
+    const output = `${error}: ${message}`;
+    if (errorMessages.hasOwnProperty(output)) {
+        return errorMessages[output];
+    }
+
+    return output;
+};
+
+const buildErrorMessage = (response, errorMessages) => {
+    let errorMessage = '<ul>';
+    for (const errorIndex  in response.errors) {
+        const message = tranlasteErrorMessage(errorIndex, response.errors[errorIndex], errorMessages);
+        errorMessage += `<li>${message}</li>`;
+    }
+    errorMessage += '</ul>';
+
+    return errorMessage;
+}
+
+
+export async function tokenize(cardNumber, cardHolderName, cardExpirationDate, cardCvv, appId, errorMessages) {
     const [month, year] = getMonthAndYearFromExpirationDate(cardExpirationDate);
     const data = {
         card: {
@@ -21,15 +43,22 @@ export async function tokenize(cardNumber, cardHolderName, cardExpirationDate, c
         });
 
         if (!response.ok) {
-            return {errorMessage: 'teste'};
+            const responseBody = await response.text();
+            if (responseBody.length === 0) {
+                return { errorMessage: errorMessages.serviceUnavailable };
+            }
+
+            const jsonReponse = JSON.parse(responseBody);
+
+            const errorMessage = buildErrorMessage(jsonReponse, errorMessages);
+
+            return { errorMessage };
         }
 
         const jsonReponse = await response.json();
 
-        console.log('response:', jsonReponse);
-
         return { token: jsonReponse.id };
     } catch (e) {
-        return false;
+        return { errorMessage: errorMessages.serviceUnavailable };
     }
 }

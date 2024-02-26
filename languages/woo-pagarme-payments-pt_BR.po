@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-02-15 18:10-0300\n"
+"PO-Revision-Date: 2024-02-26 13:50-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1342,3 +1342,7 @@ msgstr "Meio de pagamento Cartão de Crédito"
 #: assets/javascripts/front/reactCheckout/payments/creditCard/installmentsFormatter.js:13
 msgid "of"
 msgstr "de"
+
+#: assets/javascripts/front/reactCheckout/payments/creditCard/installmentsFormatter.js:13
+msgid "Unable to generate a transaction. Unavailable service."
+msgstr "Não foi possível gerar uma transação. Serviço indisponível."

@@ -342,6 +342,8 @@ class Core
                 __('Timeout na tokenização.', 'woo-pagarme-payments'),
             'card: Can\'t check card form: Invalid element received'        =>
                 __('Can\'t check card form: Invalid element received.', 'woo-pagarme-payments'),
+            'serviceUnavailable' =>
+            __('Unable to generate a transaction. Unavailable service.', 'woo-pagarme-payments')
         );
     }
 }

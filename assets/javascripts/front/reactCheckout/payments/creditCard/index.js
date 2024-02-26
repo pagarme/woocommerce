@@ -43,14 +43,12 @@ const PagarmeCreditCardComponent = (props) => {
 			
 			const { holderName, number, expirationDate, cvv, brand, installment } = cards[cardIndex];
 
-			const result = await tokenize(number, holderName, expirationDate, cvv, backendConfig.appId);
+			const result = await tokenize(number, holderName, expirationDate, cvv, backendConfig.appId, backendConfig.errorMessages);
 
 			if (result.errorMessage) {
 				return {
 					type: emitResponse.responseTypes.ERROR,
-					meta: {
-						errorMessage
-					}
+					message: result.errorMessage
 				};
 			}
 
