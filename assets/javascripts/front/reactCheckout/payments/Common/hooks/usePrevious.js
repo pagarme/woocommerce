@@ -1,5 +1,4 @@
-import { useEffect, useRef } from '@wordpress/element';
-
+import { useEffect, useRef } from "@wordpress/element";
 
 const usePrevious = (value) => {
     const ref = useRef();
@@ -7,6 +6,6 @@ const usePrevious = (value) => {
         ref.current = value;
     });
     return ref.current;
-}
+};
 
 export default usePrevious;

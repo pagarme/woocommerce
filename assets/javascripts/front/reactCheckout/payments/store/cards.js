@@ -1,97 +1,106 @@
-import { createReduxStore, register } from '@wordpress/data';
+import { createReduxStore, register } from "@wordpress/data";
 
 const DEFAULT_CARD = {
-    holderName: '',
-    number: '',
-    expirationDate: '',
+    holderName: "",
+    number: "",
+    expirationDate: "",
     installment: 1,
-    brand: '',
-    cvv: '',
+    brand: "",
+    cvv: "",
     saveCard: false,
-}
+    walletId: "",
+};
 
 const DEFAULT_STATE = {
     cards: {
         1: {
-            ...DEFAULT_CARD
+            ...DEFAULT_CARD,
         },
         2: {
-            ...DEFAULT_CARD
-        }
-    }
+            ...DEFAULT_CARD,
+        },
+    },
 };
 
 const actions = {
     setHolderName(cardIndex, holderName) {
         return {
-            type: 'SET_PROPERTY_VALUE',
+            type: "SET_PROPERTY_VALUE",
             cardIndex,
             value: holderName,
-            propertyName: 'holderName'
+            propertyName: "holderName",
         };
     },
     setNumber(cardIndex, number) {
         return {
-            type: 'SET_PROPERTY_VALUE',
+            type: "SET_PROPERTY_VALUE",
             cardIndex,
             value: number,
-            propertyName: 'number'
+            propertyName: "number",
         };
     },
     setExpirationDate(cardIndex, expirationDate) {
         return {
-            type: 'SET_PROPERTY_VALUE',
+            type: "SET_PROPERTY_VALUE",
             cardIndex,
             value: expirationDate,
-            propertyName: 'expirationDate'
+            propertyName: "expirationDate",
         };
     },
     setInstallment(cardIndex, installment) {
         return {
-            type: 'SET_PROPERTY_VALUE',
+            type: "SET_PROPERTY_VALUE",
             cardIndex,
             value: installment,
-            propertyName: 'installment'
+            propertyName: "installment",
         };
     },
     setBrand(cardIndex, brand) {
         return {
-            type: 'SET_PROPERTY_VALUE',
+            type: "SET_PROPERTY_VALUE",
             cardIndex,
             value: brand,
-            propertyName: 'brand'
+            propertyName: "brand",
         };
     },
     setCvv(cardIndex, cvv) {
         return {
-            type: 'SET_PROPERTY_VALUE',
+            type: "SET_PROPERTY_VALUE",
             cardIndex,
             value: cvv,
-            propertyName: 'cvv'
+            propertyName: "cvv",
         };
     },
     setSaveCard(cardIndex, saveCard) {
         return {
-            type: 'SET_PROPERTY_VALUE',
+            type: "SET_PROPERTY_VALUE",
             cardIndex,
             value: saveCard,
-            propertyName: 'saveCard'
+            propertyName: "saveCard",
+        };
+    },
+    setWalletId(cardIndex, walletId) {
+        return {
+            type: "SET_PROPERTY_VALUE",
+            cardIndex,
+            value: walletId,
+            propertyName: "walletId",
         };
     },
     reset() {
         return {
-            type: 'RESET',
-        }
-    }
+            type: "RESET",
+        };
+    },
 };
 
-const pagarmeCardsStore = createReduxStore( 'pagarme-cards', {
-    reducer( state = DEFAULT_STATE, action ) {
-        switch ( action.type ) {
-            case 'SET_PROPERTY_VALUE':
+const pagarmeCardsStore = createReduxStore("pagarme-cards", {
+    reducer(state = DEFAULT_STATE, action) {
+        switch (action.type) {
+            case "SET_PROPERTY_VALUE":
                 if (action.propertyName?.length === 0) {
                     return state;
-                } 
+                }
 
                 return {
                     ...state,
@@ -99,12 +108,11 @@ const pagarmeCardsStore = createReduxStore( 'pagarme-cards', {
                         ...state.cards,
                         [action.cardIndex]: {
                             ...state.cards[action.cardIndex],
-                            [ action.propertyName ]: action.value,
+                            [action.propertyName]: action.value,
                         },
-                    }
-                    
+                    },
                 };
-            case 'RESET':
+            case "RESET":
                 return DEFAULT_STATE;
         }
 
@@ -135,12 +143,14 @@ const pagarmeCardsStore = createReduxStore( 'pagarme-cards', {
         getSaveCard(state, cardIndex) {
             return state.cards[cardIndex].saveCard;
         },
+        getWalletId(state, cardIndex) {
+            return state.cards[cardIndex].walletId;
+        },
         getCards(state) {
             return state.cards;
-        }
+        },
     },
-
-} );
+});
 
 register(pagarmeCardsStore);
 

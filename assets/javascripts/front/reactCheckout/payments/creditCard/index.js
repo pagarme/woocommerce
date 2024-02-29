@@ -1,108 +1,45 @@
 const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
 
-const { CheckboxControl } = window.wc.blocksComponents;
-import { useEffect, useState } from '@wordpress/element';
-import Installments from './installments';
-import InputHolderName from './inputHolderName';
-import InputNumber from './inputNumber';
-import MaskedInput from './maskedInput';
-import PropTypes from 'prop-types';
-// import store from './usePaymentWithCard';
-import pagarmeCardsStore from '../store/cards';
+import PropTypes from "prop-types";
+import Card from "../Card";
+import useCreditCard from "./useCreditCard";
 
-import Card from './card';
-import { useDispatch, useSelect } from '@wordpress/data';
-import { tokenize } from './token';
-
-
-const backendConfig = wc.wcSettings.getSetting('woo-pagarme-payments-credit_card_data');
-
-const cardIndex = 1;
+const backendConfig = wc.wcSettings.getSetting(
+    "woo-pagarme-payments-credit_card_data",
+);
 
 const PagarmeCreditCardComponent = (props) => {
-	
-	const { reset } = useDispatch(pagarmeCardsStore);
+    const { emitResponse, eventRegistration } = props;
 
-	const { emitResponse, eventRegistration } = props;
+    useCreditCard(backendConfig, emitResponse, eventRegistration);
 
-	const { onPaymentSetup } = eventRegistration;
-
-	const cards = useSelect(
-		(select) => {
-			return select(pagarmeCardsStore).getCards();
-		}
-	);
-
-	useEffect(() => {
-		reset();
-	}, []);
-
-	useEffect(() => {
-		const unsubscribe = onPaymentSetup(async () => {
-
-			
-			const { holderName, number, expirationDate, cvv, brand, installment } = cards[cardIndex];
-
-			const result = await tokenize(number, holderName, expirationDate, cvv, backendConfig.appId, backendConfig.errorMessages);
-
-			if (result.errorMessage) {
-				return {
-					type: emitResponse.responseTypes.ERROR,
-					message: result.errorMessage
-				};
-			}
-
-			return  {
-				type: emitResponse.responseTypes.SUCCESS,
-				meta: {
-					paymentMethodData: {
-						pagarme: JSON.stringify({
-							credit_card: {
-								cards: {
-									[cardIndex]: {
-										token: result.token,
-										brand: brand,
-										installment: installment
-									}
-								}
-							}
-						}),
-						payment_method: 'credit_card'
-					}
-				}
-			};
-		});
-
-		return unsubscribe;
-	}, [onPaymentSetup, cards, cardIndex, backendConfig])
-
-	return (
-		<Card
-			{...props}
-			backendConfig={backendConfig}
-			cardIndex={cardIndex}
-		/>
-	);
+    return (
+        <Card {...props} backendConfig={backendConfig} cardIndex={1} />
+    );
 };
 
-const PagarmeCreditCardLabel = ( { components } ) => {
-	const { PaymentMethodLabel } = components;
+const PagarmeCreditCardLabel = ({ components }) => {
+    const { PaymentMethodLabel } = components;
 
-    return <PaymentMethodLabel text={ backendConfig.label } />;
-}
+    return <PaymentMethodLabel text={backendConfig.label} />;
+};
+
+PagarmeCreditCardComponent.propTypes = {
+    emitResponse: PropTypes.object,
+    eventRegistration: PropTypes.object,
+};
 
 PagarmeCreditCardLabel.propTypes = {
-	components: PropTypes.object
+    components: PropTypes.object,
 };
 
-
 const pagarmeCreditCardPaymentMethod = {
-	name: backendConfig.name,
-	label: <PagarmeCreditCardLabel />,
-	content: <PagarmeCreditCardComponent />,
-	edit: <PagarmeCreditCardComponent />,
-	canMakePayment: () => true,
-	ariaLabel: backendConfig.ariaLabel
+    name: backendConfig.name,
+    label: <PagarmeCreditCardLabel />,
+    content: <PagarmeCreditCardComponent />,
+    edit: <PagarmeCreditCardComponent />,
+    canMakePayment: () => true,
+    ariaLabel: backendConfig.ariaLabel,
 };
 
 registerPaymentMethod(pagarmeCreditCardPaymentMethod);

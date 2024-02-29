@@ -1,19 +1,21 @@
-import { useState } from '@wordpress/element';
-import InputMask from 'react-input-mask';
-import PropTypes from 'prop-types';
+import InputMask from "react-input-mask";
+import PropTypes from "prop-types";
+import useMaskedInput from "./useMaskedInput";
 
-const MaskedInput = ({id, label, inputValue, setInputValue, cardIndex, mask, maskChar = null}) => {
-    const [isActive, setIsActive] = useState(false);
-
-    let cssClasses = 'wc-block-components-text-input';
-
-    if (isActive || inputValue.length) {
-        cssClasses += ' is-active';
-    }
-
-    const inputChangeHandler = event => {
-        setInputValue(cardIndex, event.target.value)
-    }
+const MaskedInput = ({
+    id,
+    label,
+    inputValue,
+    setInputValue,
+    cardIndex,
+    mask,
+    maskChar = null,
+}) => {
+    const { setIsActive, cssClasses, inputChangeHandler } = useMaskedInput(
+        inputValue,
+        setInputValue,
+        cardIndex,
+    );
 
     return (
         <div className={cssClasses}>
@@ -25,8 +27,10 @@ const MaskedInput = ({id, label, inputValue, setInputValue, cardIndex, mask, mas
                 maskChar={maskChar}
                 onChange={inputChangeHandler}
                 value={inputValue}
-                onFocus={ () => setIsActive( true ) }
-                onBlur={ () => {setIsActive( false )} }
+                onFocus={() => setIsActive(true)}
+                onBlur={() => {
+                    setIsActive(false);
+                }}
             />
         </div>
     );

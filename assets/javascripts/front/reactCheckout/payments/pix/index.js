@@ -1,34 +1,31 @@
-import PaymentWithInstructions from '../components/payment-with-instructions';
-import PropTypes from 'prop-types';
+import PaymentWithInstructions from "../PaymentWithInstructions";
+import PropTypes from "prop-types";
 
 const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
 
-const backendConfig = wc.wcSettings.getSetting('woo-pagarme-payments-pix_data');
+const backendConfig = wc.wcSettings.getSetting("woo-pagarme-payments-pix_data");
 
 const PagarmePixComponent = (props) => {
-	return (
-        <PaymentWithInstructions {...props} backendConfig={backendConfig} />
-    );
+    return <PaymentWithInstructions {...props} backendConfig={backendConfig} />;
 };
 
-const PagarmePixLabel = ( { components } ) => {
-	const { PaymentMethodLabel } = components;
+const PagarmePixLabel = ({ components }) => {
+    const { PaymentMethodLabel } = components;
 
-    return <PaymentMethodLabel text={ backendConfig.label } />;
+    return <PaymentMethodLabel text={backendConfig.label} />;
 };
 
 PagarmePixLabel.propTypes = {
-	components: PropTypes.object
+    components: PropTypes.object,
 };
 
-
 const pagarmePixPaymentMethod = {
-	name: backendConfig.name,
-	label: <PagarmePixLabel />,
-	content: <PagarmePixComponent />,
-	edit: <PagarmePixComponent />,
-	canMakePayment: () => true,
-	ariaLabel: backendConfig.ariaLabel
+    name: backendConfig.name,
+    label: <PagarmePixLabel />,
+    content: <PagarmePixComponent />,
+    edit: <PagarmePixComponent />,
+    canMakePayment: () => true,
+    ariaLabel: backendConfig.ariaLabel,
 };
 
 registerPaymentMethod(pagarmePixPaymentMethod);

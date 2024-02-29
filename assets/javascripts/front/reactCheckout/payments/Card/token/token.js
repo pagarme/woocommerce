@@ -1,8 +1,8 @@
-import { formatCardNumber, getMonthAndYearFromExpirationDate } from "./utils"
-
+import { formatCardNumber } from "../inputs/utils/cardNumberFormatter";
+import { getMonthAndYearFromExpirationDate } from "../inputs/utils/expirationDate";
 
 const tranlasteErrorMessage = (errorIndex, message, errorMessages) => {
-    const error = errorIndex.replace('request.', '');
+    const error = errorIndex.replace("request.", "");
     const output = `${error}: ${message}`;
     if (errorMessages.hasOwnProperty(output)) {
         return errorMessages[output];
@@ -12,19 +12,29 @@ const tranlasteErrorMessage = (errorIndex, message, errorMessages) => {
 };
 
 const buildErrorMessage = (response, errorMessages) => {
-    let errorMessage = '';
-    for (const errorIndex  in response.errors) {
+    let errorMessage = "";
+    for (const errorIndex in response.errors) {
         for (const error of response.errors[errorIndex] || []) {
-            const message = tranlasteErrorMessage(errorIndex, error, errorMessages);
+            const message = tranlasteErrorMessage(
+                errorIndex,
+                error,
+                errorMessages,
+            );
             errorMessage += `${message}<br/>`;
         }
     }
 
     return errorMessage;
-}
+};
 
-
-export async function tokenize(cardNumber, cardHolderName, cardExpirationDate, cardCvv, appId, errorMessages) {
+export async function tokenize(
+    cardNumber,
+    cardHolderName,
+    cardExpirationDate,
+    cardCvv,
+    appId,
+    errorMessages,
+) {
     const [month, year] = getMonthAndYearFromExpirationDate(cardExpirationDate);
     const data = {
         card: {
@@ -32,9 +42,9 @@ export async function tokenize(cardNumber, cardHolderName, cardExpirationDate, c
             number: formatCardNumber(cardNumber),
             exp_month: month,
             exp_year: year,
-            cvv: cardCvv
-        }
-    }
+            cvv: cardCvv,
+        },
+    };
 
     try {
         const tokenUrl = `https://api.pagar.me/core/v5/tokens?appId=${appId}`;
