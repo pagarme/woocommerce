@@ -410,7 +410,7 @@ class CreditCard extends AbstractGateway
             'title' => __('Enable', 'woo-pagarme-payments'),
             'type' => 'select',
             'options' => $this->yesnoOptions->toLabelsArray(true),
-            'label' => __('3DS Enable', 'woo-pagarme-payments'),
+            'label' => __('Enable 3DS', 'woo-pagarme-payments'),
             'default' => $this->config->getData('cc_tds_enabled') ?? strtolower(Yesno::NO),
             'custom_attributes' => [
                 'data-field' => 'cc-tds-enabled',
