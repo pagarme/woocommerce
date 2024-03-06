@@ -132,9 +132,6 @@ class LogService
     {
         $base = 'Pagarme_PaymentModule_' . date('Y-m-d');
         $fileName = $this->path . DIRECTORY_SEPARATOR . $base;
-        if ($this->addHost) {
-            $fileName .= '_' . gethostname();
-        }
         $fileName .= '.log';
         $this->fileName = $fileName;
     }
