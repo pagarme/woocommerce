@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-01-19 11:54-0300\n"
+"PO-Revision-Date: 2024-03-05 17:37-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1302,3 +1302,12 @@ msgstr "Funciona apenas para assinaturas mensais e anuais."
 
 msgid "Your cart has one or more daily or weekly subscription products, which do not allow installments."
 msgstr "Seu carrinho possui um ou mais produtos de assinatura diário ou semanal, que não permitem parcelamentos."
+
+msgid "3DS settings"
+msgstr "Configurações de 3DS"
+
+msgid "Enable 3DS"
+msgstr "Habilitar 3DS"
+
+msgid "Minimum value for 3DS authentication"
+msgstr "Valor mínimo para autenticação 3DS"

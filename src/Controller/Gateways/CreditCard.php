@@ -90,6 +90,9 @@ class CreditCard extends AbstractGateway
             'section_antifraud' => $this->section_antifraud(),
             'antifraud_enabled' => $this->antifraud_enabled(),
             'antifraud_min_value' => $this->antifraud_min_value(),
+            'section_tds' => $this->section_tds(),
+            'tds_enabled' => $this->field_cc_tds_enabled(),
+            'tds_min_amount' => $this->field_cc_tds_min_amount(),
         ];
     }
 
@@ -383,6 +386,56 @@ class CreditCard extends AbstractGateway
             ),
         ];
     }
+
+    /**
+     * @return array
+     */
+    public function section_tds()
+    {
+        return [
+            'title' => __('3DS settings', 'woo-pagarme-payments'),
+            'type'  => 'title',
+            'custom_attributes' => array(
+                'data-field' => 'tds-section',
+            )
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function field_cc_tds_enabled()
+    {
+        return [
+            'title' => __('Enable', 'woo-pagarme-payments'),
+            'type' => 'select',
+            'options' => $this->yesnoOptions->toLabelsArray(true),
+            'label' => __('Enable 3DS', 'woo-pagarme-payments'),
+            'default' => $this->config->getData('cc_tds_enabled') ?? strtolower(Yesno::NO),
+            'custom_attributes' => [
+                'data-field' => 'cc-tds-enabled',
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function field_cc_tds_min_amount()
+    {
+        return [
+            'title' => __('Minimum value for 3DS authentication', 'woo-pagarme-payments'),
+            'type' => 'text',
+            'default' => $this->config->getData('cc_tds_min_amount') ?? '',
+            'placeholder' => '0.00',
+            'custom_attributes' => array(
+                'data-field' => 'cc-tds-min-amount',
+                'data-mask' => '##0.00',
+                'data-mask-reverse' => 'true',
+            ),
+        ];
+    }
+
 
     public function generate_installments_by_flag_html($key, $data)
     {

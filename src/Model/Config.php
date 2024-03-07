@@ -333,6 +333,16 @@ class Config extends DataObject
         return $this->isEnabled('enable_voucher');
     }
 
+    public function isTdsEnabled()
+    {
+        return $this->isEnabled('tds_enabled');
+    }
+
+    public function getTdsMinAmount()
+    {
+        return $this->getData('tds_min_amount');
+    }
+
     public function isAnyBilletMethodEnabled()
     {
         return $this->isBilletEnabled()
