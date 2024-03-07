@@ -54,17 +54,16 @@ final class SubscriptionService
     {
         try {
             $orderService = new OrderService();
-            $orderInfo = $orderService->getOrderInfo($platformOrder);
 
-            $this->logService->orderInfo(
-                $platformOrder->getCode(),
-                'Creating order.',
-                $orderInfo
-            );
             $this->setPlatformOrderPending($platformOrder);
 
             //build PaymentOrder based on platformOrder
             $order = $orderService->extractPaymentOrderFromPlatformOrder($platformOrder);
+            $this->logService->orderInfo(
+                $platformOrder->getCode(),
+                'Creating order.',
+                $order
+            );
             $subscription = $this->extractSubscriptionDataFromOrder($order);
 
             $this->setDiscountCycleSubscription($subscription, $platformOrder);

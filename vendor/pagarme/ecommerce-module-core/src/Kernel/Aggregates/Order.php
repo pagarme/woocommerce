@@ -104,6 +104,24 @@ final class Order extends AbstractEntity
         return $this->charges;
     }
 
+
+    /**
+     *
+     * @return Transaction|null
+     */
+    public function getPixOrBilletTransaction()
+    {
+        foreach ($this->getCharges() as $charge) {
+            foreach ($charge->getTransactions() as $transaction) {
+                $type = $transaction->getTransactionType()->getType();
+                if ($type === 'pix' || $type === 'boleto') {
+                    return $transaction;
+                }
+            }
+        }
+        return null;
+    }
+
     public function applyOrderStatusFromCharges()
     {
         if (empty($this->getCharges())) {

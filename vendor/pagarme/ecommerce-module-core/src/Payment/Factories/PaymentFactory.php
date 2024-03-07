@@ -7,8 +7,8 @@ use Pagarme\Core\Kernel\Aggregates\Configuration;
 use Pagarme\Core\Kernel\Services\InstallmentService;
 use Pagarme\Core\Kernel\ValueObjects\CardBrand;
 use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
-use Pagarme\Core\Payment\Aggregates\Customer;
 use Pagarme\Core\Payment\Aggregates\Payments\AbstractCreditCardPayment;
+use Pagarme\Core\Payment\Aggregates\Payments\Authentication\Authentication;
 use Pagarme\Core\Payment\Aggregates\Payments\BoletoPayment;
 use Pagarme\Core\Payment\Aggregates\Payments\NewCreditCardPayment;
 use Pagarme\Core\Payment\Aggregates\Payments\NewDebitCardPayment;
@@ -19,7 +19,6 @@ use Pagarme\Core\Payment\Aggregates\Payments\SavedVoucherCardPayment;
 use Pagarme\Core\Payment\ValueObjects\BoletoBank;
 use Pagarme\Core\Payment\ValueObjects\CardId;
 use Pagarme\Core\Payment\ValueObjects\CardToken;
-use Pagarme\Core\Payment\ValueObjects\CustomerType;
 use Pagarme\Core\Payment\ValueObjects\PaymentMethod;
 use Pagarme\Core\Payment\Aggregates\Payments\SavedDebitCardPayment;
 
@@ -127,6 +126,9 @@ final class PaymentFactory
         $payment->setAmount($cardData->amount);
         $payment->setInstallments($cardData->installments);
         $payment->setRecurrenceCycle($cardData->recurrenceCycle ?? null);
+        if (!empty($cardData->authentication)) {
+            $payment->setAuthentication(Authentication::createFromStdClass($cardData->authentication));
+        }
 
         //setting amount with interest
         if (strcmp($cardDataIndex, \Pagarme\Core\Kernel\ValueObjects\PaymentMethod::VOUCHER)) {

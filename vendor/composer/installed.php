@@ -7,7 +7,7 @@
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => false,
+        'dev' => true,
     ),
     'versions' => array(
         'apimatic/jsonmapper' => array(
@@ -47,18 +47,18 @@
             'dev_requirement' => false,
         ),
         'pagarme/ecommerce-module-core' => array(
-            'pretty_version' => '2.3.1',
-            'version' => '2.3.1.0',
-            'reference' => '9c9e927cea9b1bf90a499d2146f042f1f7f1c921',
+            'pretty_version' => '2.4.1',
+            'version' => '2.4.1.0',
+            'reference' => '3e75e5365882c6806f2ac76e6901ee17815d101e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../pagarme/ecommerce-module-core',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'pagarme/pagarmecoreapi' => array(
-            'pretty_version' => 'v5.6.3',
-            'version' => '5.6.3.0',
-            'reference' => '49e0d222c50c69ac3e0debea9b69202e6555d3ef',
+            'pretty_version' => 'v5.6.4',
+            'version' => '5.6.4.0',
+            'reference' => 'acab7709b2579221417946b261f6c24710604eb8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../pagarme/pagarmecoreapi',
             'aliases' => array(),
