@@ -2,6 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates\Payments;
 
+use Pagarme\Core\Payment\Aggregates\Payments\Authentication\Authentication;
 use PagarmeCoreApiLib\Models\CreateCardRequest;
 use PagarmeCoreApiLib\Models\CreateCreditCardPaymentRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
@@ -12,6 +13,7 @@ use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\ValueObjects\CardBrand;
 use Pagarme\Core\Payment\ValueObjects\AbstractCardIdentifier;
 use Pagarme\Core\Payment\ValueObjects\PaymentMethod;
+use PagarmeCoreApiLib\Models\CreatePaymentAuthenticationRequest;
 
 abstract class AbstractCreditCardPayment extends AbstractPayment
 {
@@ -27,6 +29,8 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
     protected $capture;
     /** @var AbstractCardIdentifier */
     protected $identifier;
+    /** @var Authentication|null */
+    protected $authentication;
 
 
     public function __construct()
@@ -193,6 +197,31 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $this->brand = $brand;
     }
 
+    /**
+     * @return Authentication|null
+     */
+    public function getAuthentication()
+    {
+        return $this->authentication;
+    }
+
+    /**
+     * @param Authentication $authentication
+     * @return void
+     */
+    public function setAuthentication($authentication)
+    {
+        $this->authentication = $authentication;
+    }
+
+    /**
+     * @return CreatePaymentAuthenticationRequest
+     */
+    public function getAuthenticationSDK()
+    {
+        return $this->authentication->convertToSDKRequest();
+    }
+
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
@@ -203,6 +232,9 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $obj->statementDescriptor = $this->statementDescriptor;
         $obj->capture = $this->capture;
         $obj->identifier = $this->identifier;
+        if (!empty($this->authentication)) {
+            $obj->authentication = $this->authentication;
+        }
 
         return $obj;
     }
@@ -231,6 +263,9 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $cardRequest->installments = $this->getInstallments();
         $cardRequest->recurrenceCycle = $this->getRecurrenceCycle();
         $cardRequest->statementDescriptor = $this->getStatementDescriptor();
+        if (!empty($this->getAuthentication())) {
+            $cardRequest->authentication = $this->getAuthenticationSDK();
+        }
 
         return $cardRequest;
     }
