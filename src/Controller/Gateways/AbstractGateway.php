@@ -283,10 +283,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     private function append_gateway_form_fields()
     {
-        //if ($this->isGatewayType()) {
+        if ($this->isGatewayType()) {
             return $this->gateway_form_fields();
-        //}
-        //return [];
+        }
+        return [];
     }
 
     /**
