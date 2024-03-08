@@ -68,6 +68,7 @@ class Core
             'Charges',
             'Accounts',
             'HubAccounts',
+            'TdsToken',
         );
 
         self::load_controllers($controllers);
