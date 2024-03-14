@@ -165,18 +165,18 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     /**
      * @param Address $address
      */
-    public function setAddress(Address $address)
+    public function setAddress(?Address $address)
     {
         $this->address = $address;
     }
 
     /**
-      * Specify data which should be serialized to JSON
-      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-      * @return mixed data which can be serialized by <b>json_encode</b>,
-      * which is a value of any type other than a resource.
-      * @since 5.4.0
-    */
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
@@ -209,7 +209,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     public function getAddressToSDK()
     {
         if ($this->getAddress() !== null) {
-         return $this->getAddress()->convertToSDKRequest();
+            return $this->getAddress()->convertToSDKRequest();
         }
         return null;
     }
@@ -217,7 +217,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     public function getPhonesToSDK()
     {
         if ($this->getPhones() !== null) {
-         return $this->getPhones()->convertToSDKRequest();
+            return $this->getPhones()->convertToSDKRequest();
         }
         return null;
     }

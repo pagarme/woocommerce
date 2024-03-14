@@ -94,6 +94,13 @@ class ENUS extends AbstractI18NTable
             "The sum of payments is greater than the order amount! Review the information and try again." => null,
             "The card brand '%s' or the amount %.2f doesn't allow %d installment(s)! Please review the information and try again." => null,
             "Passed value:" => null,
+            "ChargeId: %s - Split rules:" => null,
+            "name" => null,
+            "documentType" => null,
+            "type" => null,
+            "holderName" => null,
+            "holderType" => null,
+            "holderDocument" => null,
         ];
     }
 }

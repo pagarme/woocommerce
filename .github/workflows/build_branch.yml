@@ -1,0 +1,46 @@
+name: BUILD BRANCH
+
+on:
+  workflow_dispatch:
+    inputs:
+      wordpress_image_version:
+        required: false
+        type: string
+        default: latest
+      woocommerce_version:
+        required: false
+        type: string
+        default: latest-stable
+      woocommerce_extra_checkout_fields_version:
+        required: false
+        type: string
+        default: latest-stable
+      wp_mail_catcher_version:
+        required: false
+        type: string
+        default: latest-stable
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-branch-name:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.main_step.outputs.branch }}
+    steps:
+      - id: main_step
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+  call-workflow-cd:
+    needs:
+      - generate-branch-name
+    uses: pagarme/woocommerce/.github/workflows/cd_reusable.yml@master
+    with:
+      tag: ${{ needs.generate-branch-name.outputs.branch }}
+      wordpress_image_version: ${{ inputs.wordpress_image_version }}
+      woocommerce_version: ${{ inputs.woocommerce_version }}
+      woocommerce_extra_checkout_fields_version: ${{ inputs.woocommerce_extra_checkout_fields_version }}
+      wp_mail_catcher_version: ${{ inputs.wp_mail_catcher_version }}
+    secrets:
+      inherit

@@ -8,25 +8,21 @@ if (!function_exists('add_action')) {
 
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
+use Pagarme\Core\Middle\Model\Account;
+use Woocommerce\Pagarme\Model\CoreAuth;
 use Woocommerce\Pagarme\Service\AccountService;
+use Pagarme\Core\Middle\Model\Account\PaymentMethodSettings;
 
 class HubAccounts
 {
-    const ACCOUNT_DISABLED = 'accountDisabled';
-    const DOMAIN_EMPTY = 'domainEmpty';
-    const DOMAIN_INCORRECT = 'domainIncorrect';
-    const WEBHOOK_INCORRECT = 'webhookIncorrect';
-    const MULTIPAYMENTS_DISABLED = 'multiPaymentsDisabled';
-    const MULTIBUYERS_DISABLED = 'multiBuyersDisabled';
-    const PIX_DISABLED = 'pixDisabled';
-    const CREDIT_CARD_DISABLED = 'creditCardDisabled';
-    const BILLET_DISABLED = 'billetDisabled';
-    const VOUCHER_DISABLED = 'voucherDisabled';
     const PAYMENT_DISABLED_MESSAGE = '%1$s payment method is enabled on your store, but disabled on Pagar.me Dash. '
         . 'Please, access the Dash configurations and enable it to be able to process %1$s payment on your store.';
 
     private $config;
 
+    /**
+     * @var Account
+     */
     private $accountInfo;
 
     private $notices;
@@ -51,7 +47,8 @@ class HubAccounts
         ) {
             return false;
         }
-        $accountService = new AccountService();
+
+        $accountService = new AccountService(new CoreAuth(), new Config());
         try {
             $this->accountInfo = $accountService->getAccount($this->getAccountId());
         } catch (\Exception $e) {
@@ -78,17 +75,7 @@ class HubAccounts
         if (empty($this->accountInfo)) {
             return;
         }
-        $this->hubAccountErrors = [];
         $this->setPaymentsType();
-        $this->isAccountEnabled();
-        $this->isDomainCorrect();
-        $this->isWebHookCorrect();
-        $this->isMultiBuyersEnabled();
-        $this->isMultiPaymentsEnabled();
-        $this->isPixEnabled();
-        $this->isCreditCardEnabled();
-        $this->isBilletEnabled();
-        $this->isVoucherEnabled();
         $this->setHubAccountErrors();
     }
 
@@ -118,129 +105,28 @@ class HubAccounts
 
     public function setPaymentsType()
     {
-        $paymentTypes = [
-            'credit_card' => 'creditCardSettings',
-            'pix' => 'pixSettings',
-            'voucher' => 'voucherSettings',
-            'billet' => 'boletoSettings'
-        ];
-
         if (!$this->accountInfo) {
             return null;
         }
-        foreach ($paymentTypes as $key => $paymentType) {
-            $paymentSettings = $this->accountInfo->$paymentType ?? null;
-            $paymentGateway[$key] = ($paymentSettings['gateway'] ?? '') === 'mundipagg';
-            $paymentEnabled[$key] = $paymentSettings['enabled'] ?? false;
-        }
-        $this->config->setData('is_payment_gateway', $paymentGateway);
-        $this->config->setData('is_payment_enabled', $paymentEnabled);
+
+        $paymentGatewayTypes = [
+            'credit_card' => $this->accountInfo->getCreditCardSettings()->isGateway(),
+            'pix' => $this->accountInfo->getPixSettings()->isGateway(),
+            'voucher' => $this->accountInfo->getVoucherSettings()->isGateway(),
+            'billet' => $this->accountInfo->getBilletSettings()->isGateway()
+        ];
+
+        $paymentPSPTypes = [
+            'credit_card' => $this->accountInfo->getCreditCardSettings()->isPSP(),
+            'pix' => $this->accountInfo->getPixSettings()->isPSP(),
+            'voucher' => $this->accountInfo->getVoucherSettings()->isPSP(),
+            'billet' => $this->accountInfo->getBilletSettings()->isPSP()
+        ];
+
+        $this->config->setData('is_payment_gateway', $paymentGatewayTypes);
+        $this->config->setData('is_payment_psp', $paymentPSPTypes);
         $this->config->save();
 
-    }
-
-    private function isMultiPaymentsEnabled()
-    {
-        $orderSettings = $this->accountInfo->orderSettings;
-        if (!$orderSettings['multi_payments_enabled']) {
-            $this->hubAccountErrors[] = self::MULTIPAYMENTS_DISABLED;
-            return false;
-        }
-        return true;
-    }
-
-    private function isMultiBuyersEnabled()
-    {
-        $orderSettings = $this->accountInfo->orderSettings;
-        if (!$orderSettings['multi_buyers_enabled']) {
-            $this->hubAccountErrors[] = self::MULTIBUYERS_DISABLED;
-        }
-        return true;
-    }
-
-    private function isAccountEnabled()
-    {
-        if ($this->accountInfo->status !== 'active') {
-            $this->hubAccountErrors[] = self::ACCOUNT_DISABLED;
-            return false;
-        }
-        return true;
-    }
-
-    private function isDomainCorrect()
-    {
-        if ($this->config->getIsSandboxMode()) {
-            return true;
-        }
-        $domains = $this->accountInfo->domains;
-        if (empty($domains)) {
-            $this->hubAccountErrors[] = self::DOMAIN_EMPTY;
-            return false;
-        }
-
-        $siteUrl = Utils::get_site_url();
-        foreach ($domains as $domain){
-            if (strpos($siteUrl, $domain) !== false) {
-                return true;
-            }
-        }
-
-        $this->hubAccountErrors[] = self::DOMAIN_INCORRECT;
-        return false;
-    }
-
-    private function isWebHookCorrect()
-    {
-        foreach ( $this->accountInfo->webhookSettings as $webhook){
-            if (strpos($webhook->url, Utils::get_site_url()) !== false) {
-                return true;
-            }
-        }
-        $this->hubAccountErrors[] = self::WEBHOOK_INCORRECT;
-        return false;
-    }
-
-    private function isPixEnabled()
-    {
-        $storePixEnabled = $this->config->getData('enable_pix') === 'yes';
-        $dashPixDisabled = !$this->accountInfo->pixSettings['enabled'];
-        if ($dashPixDisabled && $storePixEnabled) {
-            $this->hubAccountErrors[] = self::PIX_DISABLED;
-        }
-        return true;
-    }
-
-    private function isCreditCardEnabled()
-    {
-        $storeCreditCardEnabled = $this->config->getData('enable_credit_card') === 'yes'
-            || $this->config->getData('multimethods_billet_card') === 'yes'
-            || $this->config->getData('multimethods_2_cards') === 'yes';
-        $dashCreditCardDisabled = !$this->accountInfo->creditCardSettings['enabled'];
-        if ($dashCreditCardDisabled && $storeCreditCardEnabled) {
-            $this->hubAccountErrors[] = self::CREDIT_CARD_DISABLED;
-        }
-        return true;
-    }
-
-    private function isBilletEnabled()
-    {
-        $storeBilletEnabled = $this->config->getData('enable_billet') === 'yes'
-            || $this->config->getData('multimethods_billet_card') === 'yes';
-        $dashBilletDisabled = !$this->accountInfo->boletoSettings['enabled'];
-        if ($dashBilletDisabled && $storeBilletEnabled) {
-            $this->hubAccountErrors[] = self::BILLET_DISABLED;
-        }
-        return true;
-    }
-
-    private function isVoucherEnabled()
-    {
-        $storeVoucherEnabled = $this->config->getData('enable_voucher') === 'yes';
-        $dashVoucherDisabled = !$this->accountInfo->voucherSettings['enabled'];
-        if ($dashVoucherDisabled && $storeVoucherEnabled) {
-            $this->hubAccountErrors[] = self::VOUCHER_DISABLED;
-        }
-        return true;
     }
 
     /**
@@ -283,19 +169,19 @@ class HubAccounts
         }
 
         $noticesList = [
-            self::ACCOUNT_DISABLED => 'Your account is disabled on Pagar.me Dash. '
+            Account::ACCOUNT_DISABLED => 'Your account is disabled on Pagar.me Dash. '
                 . 'Please, contact our support team to enable it.',
-            self::DOMAIN_EMPTY => [
+            Account::DOMAIN_EMPTY => [
                 'message' => 'No domain registered on Pagar.me Dash. Please enter your website\'s domain on the Dash '
                     . 'to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('account-config')
             ],
-            self::DOMAIN_INCORRECT => [
+            Account::DOMAIN_INCORRECT => [
                 'message' => 'The registered domain is different from the URL of your website. Please correct the '
                     . 'domain configured on the Dash to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('account-config')
             ],
-            self::WEBHOOK_INCORRECT => [
+            Account::WEBHOOK_INCORRECT => [
                 'message' => 'The URL for receiving webhook registered in Pagar.me Dash is different from the URL of '
                     . 'your website. Please, click the button below to access the Hub and click the Delete > Confirm '
                     . 'button. Then return to your store and integrate again.',
@@ -304,29 +190,29 @@ class HubAccounts
                     $this->config->getHubUrl()
                 )]
             ],
-            self::MULTIPAYMENTS_DISABLED => [
+            Account::MULTIPAYMENTS_DISABLED => [
                 'message' => 'Multipayment option is disabled on Pagar.me Dash. Please, access the Dash configurations '
                     . 'and enable it to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('order-config')
             ],
-            self::MULTIBUYERS_DISABLED => [
+            Account::MULTIBUYERS_DISABLED => [
                 'message' => 'Multibuyers option is disabled on Pagar.me Dash. Please, access the Dash configurations '
                     . 'and enable it to be able to process payment in your store.',
                 'buttons' => $this->getHubNoticeButtons('order-config')
             ],
-            self::PIX_DISABLED => [
+            PaymentMethodSettings::PIX_DISABLED => [
                 'message' => sprintf(self::PAYMENT_DISABLED_MESSAGE, 'Pix'),
                 'buttons' => $this->getHubNoticeButtons('payment-methods')
             ],
-            self::CREDIT_CARD_DISABLED => [
+            PaymentMethodSettings::CREDITCARD_DISABLED => [
                 'message' => sprintf(self::PAYMENT_DISABLED_MESSAGE, 'Credit Card'),
                 'buttons' => $this->getHubNoticeButtons('payment-methods')
             ],
-            self::BILLET_DISABLED => [
+            PaymentMethodSettings::BILLET_DISABLED => [
                 'message' => sprintf(self::PAYMENT_DISABLED_MESSAGE, 'Billet'),
                 'buttons' => $this->getHubNoticeButtons('payment-methods')
             ],
-            self::VOUCHER_DISABLED => [
+            PaymentMethodSettings::VOUCHER_DISABLED => [
                 'message' => sprintf(self::PAYMENT_DISABLED_MESSAGE, 'Voucher'),
                 'buttons' => $this->getHubNoticeButtons('payment-methods')
             ]
@@ -342,7 +228,7 @@ class HubAccounts
     {
         $this->config->setData(
             'hub_account_errors',
-            $this->hubAccountErrors
+            $this->accountInfo->getErrors()
         );
         $this->config->save();
     }

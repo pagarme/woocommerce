@@ -13,6 +13,7 @@ final class LocalizationService
      *
      * @param mixed Variable num of params.
      */
+    // phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
     public function getDashboard($string)
     {
         $numArgs = func_num_args();
@@ -49,7 +50,7 @@ final class LocalizationService
 
     private function getI18NTableOrDefaultFor($locale)
     {
-        $langClass = str_replace('_', '', $locale);
+        $langClass = str_replace('_', '', $locale ?? '');
         $langClass = strtoupper($langClass);
         $langClass = "Pagarme\\Core\\Kernel\\I18N\\$langClass";
 

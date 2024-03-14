@@ -13,7 +13,7 @@ class LogDownloadInfoRetrieverService implements InfoRetrieverServiceInterface
         $logInfo = $logInfoRetrievierService->retrieveInfo('');
         $validLogFiles = $logInfo->files;
 
-        $params = explode(':', $value);
+        $params = explode(':', $value ?? '');
 
         try {
             $extension = $params[0];
@@ -32,7 +32,7 @@ class LogDownloadInfoRetrieverService implements InfoRetrieverServiceInterface
 
     private function handleDownload($extension, $file)
     {
-        $downloadFileName = str_replace(DIRECTORY_SEPARATOR, "_", $file);
+        $downloadFileName = str_replace(DIRECTORY_SEPARATOR, "_", $file ?? '');
 
         if ($extension != "zip") {
             return $this->downloadLog($downloadFileName, $file);

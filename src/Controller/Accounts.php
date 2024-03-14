@@ -6,11 +6,11 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Woocommerce\Pagarme\Block\Account\Wallet;
+use Pagarme\Core\Payment\Repositories\CustomerRepository as CoreCustomerRepository;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository as CoreSavedCardRepository;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Account;
 use Woocommerce\Pagarme\Model\Customer;
-use Pagarme\Core\Payment\Repositories\SavedCardRepository as CoreSavedCardRepository;
 use Woocommerce\Pagarme\Block\Template;
 
 class Accounts
@@ -100,7 +100,7 @@ class Accounts
             wp_send_json_error(__('User not loggedin.', 'woo-pagarme-payments'));
         }
 
-        $customer    = new Customer(get_current_user_id());
+        $customer    = new Customer(get_current_user_id(), new CoreSavedCardRepository(), new CoreCustomerRepository());
         $saved_cards = $customer->cards;
         $card_id     = Utils::post('card_id');
         $card_found = false;

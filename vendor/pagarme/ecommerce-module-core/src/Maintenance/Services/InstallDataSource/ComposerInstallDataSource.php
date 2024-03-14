@@ -18,7 +18,7 @@ final class ComposerInstallDataSource
 
         $this->integrityFilePath = $concreteDir . DIRECTORY_SEPARATOR . 'integrityData';
 
-        $composerJsonFilePath = explode(DIRECTORY_SEPARATOR, $concreteDir);
+        $composerJsonFilePath = explode(DIRECTORY_SEPARATOR, $concreteDir ?? '');
         array_pop($composerJsonFilePath);
 
         $this->composerJsonFilePath = implode(DIRECTORY_SEPARATOR, $composerJsonFilePath);
@@ -72,7 +72,7 @@ final class ComposerInstallDataSource
 
     protected function getModuleRoot()
     {
-        $moduleRoot = explode(DIRECTORY_SEPARATOR, $this->composerJsonFilePath);
+        $moduleRoot = explode(DIRECTORY_SEPARATOR, $this->composerJsonFilePath ?? '');
         array_pop($moduleRoot);
         $moduleRoot = implode(DIRECTORY_SEPARATOR, $moduleRoot);
 

@@ -14,11 +14,12 @@ namespace Woocommerce\Pagarme\Block\Checkout\Form;
 use Woocommerce\Pagarme\Block\Checkout\Gateway;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\CardInstallments;
-use Woocommerce\Pagarme\View\Checkouts;
+use Woocommerce\Pagarme\Model\Subscription;
+use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Gateway as GatewayModel;
+use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
-global $woocommerce;
-
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class Installments
@@ -33,6 +34,24 @@ class Installments extends Gateway
 
     /** @var int  */
     protected $sequence = 1;
+
+    /** @var CardInstallments */
+    protected $cardInstallments;
+
+    /** @var Subscription  */
+    protected $subscription;
+
+    public function __construct(
+        Json         $jsonSerialize = null,
+        array        $data = [],
+        GatewayModel $gateway = null,
+        Config       $config = null
+    )
+    {
+        parent::__construct($jsonSerialize, $data, $gateway, $config);
+        $this->cardInstallments = new CardInstallments();
+        $this->subscription = new Subscription();
+    }
 
     /**
      * @param int $sequence
@@ -89,8 +108,7 @@ class Installments extends Gateway
 
     public function render_installments($total)
     {
-        $cardInstallments = new CardInstallments();
-        return $cardInstallments->getInstallmentsByType($total);
+        return $this->cardInstallments->getInstallmentsByType($total);
     }
 
     /**
@@ -99,5 +117,45 @@ class Installments extends Gateway
     public function render()
     {
         return $this->render_installments($this->getCartTotals());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCcInstallmentTypeByFlag()
+    {
+        $type = intval($this->cardInstallments->config->getCcInstallmentType()) ?? 1;
+        return $type === CardInstallments::INSTALLMENTS_BY_FLAG;
+    }
+
+    /**
+     * @return int
+     */
+    public function getConfiguredMaxCcInstallments()
+    {
+        if ($this->isCcInstallmentTypeByFlag()) {
+            $flag = Utils::get('flag', false, 'esc_html');
+            $configByFlags = $this->cardInstallments->config->getCcInstallmentsByFlag();
+            return intval($configByFlags['max_installment'][$flag]);
+        }
+        return intval($this->cardInstallments->config->getCcInstallmentsMaximum());
+    }
+
+    /**
+     * @return bool
+     */
+    public function showOneInstallmentInfo()
+    {
+        if (!Subscription::hasSubscriptionProductInCart()) {
+            return false;
+        }
+        if (
+            $this->subscription->allowInstallments()
+            && $this->subscription->hasOneInstallmentPeriodInCart()
+            && ($this->getConfiguredMaxCcInstallments() > 1 || $this->isCcInstallmentTypeByFlag())
+        ) {
+            return true;
+        }
+        return false;
     }
 }

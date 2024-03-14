@@ -23,6 +23,9 @@ class Orders
     /** @var BlockOrder */
     private $blockOrder;
 
+    /** @var bool  */
+    private $debug;
+
     public function __construct(
         BlockOrder $blockOrder = null
     ) {
@@ -87,17 +90,24 @@ class Orders
 
     public function add_meta_boxes()
     {
-        wp_register_script('pagarme-adminhmlt-order-view-cancel-capture', $this->jsUrl('sales/order/view/cancel-capture'), ['jquery'], false);
-        wp_enqueue_script('pagarme-adminhmlt-order-view-cancel-capture');
-        foreach ($this->blockOrder->getMetaBoxes() as $metaBox) {
-            add_meta_box(
-                $metaBox->getCode(),
-                $metaBox->getTitle(),
-                [$metaBox, 'toHtml'],
-                ['shop_order', 'woocommerce_page_wc-orders'],
-                'advanced',
-                'high'
-            );
+        global $theorder;
+        if(empty($theorder)) {
+            return;
+        }
+        $order = new Order($theorder->get_id());
+        if ($order->isPagarmePaymentMethod()){
+            wp_register_script('pagarme-adminhmlt-order-view-cancel-capture', $this->jsUrl('sales/order/view/cancel-capture'), ['jquery'], false);
+            wp_enqueue_script('pagarme-adminhmlt-order-view-cancel-capture');
+            foreach ($this->blockOrder->getMetaBoxes() as $metaBox) {
+                add_meta_box(
+                    $metaBox->getCode(),
+                    $metaBox->getTitle(),
+                    [$metaBox, 'toHtml'],
+                    ['shop_order', 'woocommerce_page_wc-orders'],
+                    'advanced',
+                    'high'
+                );
+            }
         }
     }
 

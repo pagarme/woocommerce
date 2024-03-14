@@ -5,20 +5,17 @@ namespace Woocommerce\Pagarme\Concrete;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
 use Woocommerce\Pagarme\Model\Api;
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Payment as WCModelPayment;
 use Woocommerce\Pagarme\Helper\Utils;
-use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as PagarmeSetup;
 use Pagarme\Core\Kernel\Abstractions\AbstractPlatformOrderDecorator;
 use Pagarme\Core\Kernel\Aggregates\Charge;
 use Pagarme\Core\Kernel\Interfaces\PlatformInvoiceInterface;
-use Pagarme\Core\Kernel\Interfaces\PlatformOrderInterface;
 use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\Services\OrderService;
-use Pagarme\Core\Kernel\ValueObjects\Id\CustomerId;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Kernel\ValueObjects\OrderState;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
-use Pagarme\Core\Kernel\ValueObjects\PaymentMethod;
 use Pagarme\Core\Payment\Aggregates\Address;
 use Pagarme\Core\Payment\Aggregates\Customer;
 use Pagarme\Core\Payment\Aggregates\Item;
@@ -31,15 +28,12 @@ use Pagarme\Core\Payment\Aggregates\Payments\PixPayment;
 use Pagarme\Core\Payment\Aggregates\Shipping;
 use Pagarme\Core\Payment\Factories\PaymentFactory;
 use Pagarme\Core\Payment\Repositories\CustomerRepository as CoreCustomerRepository;
-use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use Pagarme\Core\Payment\ValueObjects\CustomerPhones;
 use Pagarme\Core\Payment\ValueObjects\CustomerType;
 use Pagarme\Core\Payment\ValueObjects\Phone;
 use Pagarme\Core\Recurrence\Services\RecurrenceService;
 use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Kernel\Services\LogService;
-use Pagarme\Core\Kernel\Aggregates\Transaction;
-use Pagarme\Core\Kernel\ValueObjects\TransactionType;
 use WC_Order;
 
 class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
@@ -54,6 +48,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private $paymentMethod;
 
     private $paymentInformation;
+
+    private $orderService;
 
     public function __construct($formData = null, $paymentMethod = null)
     {
@@ -184,15 +180,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getStatusLabel(OrderStatus $orderStatus)
     {
         return wc_get_order_status_name($orderStatus->getStatus());
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isSandboxMode(): bool
-    {
-        return $this->getHubEnvironment() === static::HUB_SANDBOX_ENVIRONMENT || strpos($this->getSecretKey(), 'sk_test') !== false || strpos($this->getPublicKey(), 'pk_test') !== false ? true : false;
     }
 
     /**
@@ -409,8 +396,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getCustomer()
     {
         $customerId = get_current_user_id();
-        if ($customerId === 0) {
-            $customerId = $this->getPlatformOrder()->get_user()->ID ?? null;
+        if (!empty($this->getPlatformOrder()->get_user_id())) {
+            $customerId = $this->getPlatformOrder()->get_user_id() ?? null;
         }
         if (!empty($customerId)) {
             return $this->getRegisteredCustomer($customerId);
@@ -431,7 +418,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $address = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
         $phones = Utils::build_customer_phones_from_order($order);
-
+        if(empty($document['value'])) {
+            $customerPlatform = new \WC_Customer($woocommerceCustomerId);
+            $document['value'] = $customerPlatform->get_meta("billing_cpf") ??
+                                    $customerPlatform->get_meta("billing_cnpj");
+        }
         $homeNumber = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
@@ -818,7 +809,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $newPaymentData->amount = $moneyService->floatToCents($amount / 100);
 
             $newPaymentData->saveOnSuccess =
-                isset($this->formData["save_credit_card${index}"]);
+                isset($this->formData["save_credit_card{$index}"]);
 
             $creditCardDataIndex = AbstractCreditCardPayment::getBaseCode();
             if (!isset($paymentData[$creditCardDataIndex])) {
@@ -1074,6 +1065,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     protected function getAddress($platformAddress)
     {
+        $config = new Config();
+        if ($config->getAllowNoAddress()) {
+            return null;
+        }
+
         $address = new Address();
 
         $this->validateAddressFields($platformAddress);
@@ -1124,5 +1120,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getTotalCanceled()
     {
         return $this->getPlatformOrder()->get_total_refunded();
+    }
+
+    public function handleSplitOrder()
+    {
+        // woocommerce does not have split order;
     }
 }

@@ -11,11 +11,8 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model\Payment;
 
-use ReflectionClass;
 use WC_Order;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Resource\Customers;
 
 defined( 'ABSPATH' ) || exit;
 

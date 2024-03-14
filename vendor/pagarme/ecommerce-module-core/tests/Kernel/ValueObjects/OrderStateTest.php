@@ -56,7 +56,7 @@ class OrderStateTest extends TestCase
 
         foreach ($constants as $const => $state) {
             $const = strtolower($const);
-            $const = explode('_', $const);
+            $const = explode('_', $const ?? '');
             foreach ($const as &$c) {
                 $c = ucfirst($c);
             }

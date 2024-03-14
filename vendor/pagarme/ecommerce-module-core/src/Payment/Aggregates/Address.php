@@ -69,7 +69,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         $numberWithoutComma = str_replace(
             self::ADDRESS_LINE_SEPARATOR,
             '',
-            $number
+            $number ?? ''
         );
 
         $numberWithoutLineBreaks = StringFunctionsHelper::removeLineBreaks(
@@ -110,7 +110,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         $streetWithoutComma = str_replace(
             self::ADDRESS_LINE_SEPARATOR,
             '',
-            $street
+            $street ?? ''
         );
 
         $streetWithoutLineBreaks = StringFunctionsHelper::removeLineBreaks(
@@ -150,7 +150,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         $neighborhoodWithoutComma = str_replace(
             self::ADDRESS_LINE_SEPARATOR,
             '',
-            $neighborhood
+            $neighborhood ?? ''
         );
 
         $neighborhoodWithoutLineBreaks = StringFunctionsHelper::removeLineBreaks(
@@ -382,11 +382,11 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
 
     private function formatZipCode($zipCode)
     {
-        $zipCode = str_replace('-', '', $zipCode);
+        $zipCode = str_replace('-', '', $zipCode ?? '');
         $this->country = $this->country ?? "BR";
         $brazilianZipCodeLength = 8;
         if (strtoupper($this->country) === 'BR') {
-            $zipCode = sprintf("%0${brazilianZipCodeLength}s", $zipCode);
+            $zipCode = sprintf("%0{$brazilianZipCodeLength}s", $zipCode);
             $zipCode = substr($zipCode, 0, $brazilianZipCodeLength);
             return $zipCode;
         }

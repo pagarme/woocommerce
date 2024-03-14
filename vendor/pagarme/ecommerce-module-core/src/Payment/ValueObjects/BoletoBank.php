@@ -138,11 +138,11 @@ class BoletoBank extends AbstractValueObject
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-       $obj = new \stdClass();
+        $obj = new \stdClass();
 
-       $obj->code = $this->getCode();
-       $obj->name = $this->getName();
+        $obj->code = $this->getCode();
+        $obj->name = $this->getName();
 
-       return $obj;
+        return $obj;
     }
 }

@@ -75,9 +75,16 @@ class LogService
      */
     public function info($message, $sourceObject = null)
     {
-        $logObject = $this->prepareObject($sourceObject);
-        $logObject = $this->blurSensitiveData($logObject);
-        $this->monolog->info($message, $logObject);
+        try {
+
+            $logObject = $this->prepareObject($sourceObject);
+            $logObject = $this->blurSensitiveData($logObject);
+            $this->monolog->info($message, $logObject);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
     }
 
     /**
@@ -86,9 +93,15 @@ class LogService
      */
     public function exception(\Exception $exception)
     {
-        $logObject = $this->prepareObject($exception);
-        $code = ' | Exception code: ' . $exception->getCode();
-        $this->monolog->error($exception->getMessage() . $code, $logObject);
+        try {
+
+            $logObject = $this->prepareObject($exception);
+            $code = ' | Exception code: ' . $exception->getCode();
+            $this->monolog->error($exception->getMessage() . $code, $logObject);
+            
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     /**

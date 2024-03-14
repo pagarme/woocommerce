@@ -12,10 +12,11 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Block\Account;
 
+use Pagarme\Core\Payment\Repositories\CustomerRepository;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use Woocommerce\Pagarme\Block\Template;
 use Woocommerce\Pagarme\Model\Customer;
 use Woocommerce\Pagarme\Model\Account;
-use Woocommerce\Pagarme\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -47,22 +48,25 @@ class Wallet extends Template
 
     public function getCards()
     {
-        $customer = new Customer(get_current_user_id());
-        return $customer->cards;
+        $customer = new Customer(get_current_user_id(), new SavedCardRepository(), new CustomerRepository());
+        return $customer->get_cards();
     }
 
     private function addDataToJs()
     {
         wp_localize_script(
             WCMP_JS_HANDLER_BASE_NAME . 'wallet',
-            'apiRoute',
-            $this->getApiRoute()
+            'walletConfig',
+            $this->getWalletConfig()
         );
-        wp_localize_script(
-            WCMP_JS_HANDLER_BASE_NAME . 'wallet',
-            'dataSwal',
-            $this->getSwalData()
-        );
+    }
+
+    private function getWalletConfig()
+    {
+        return [
+            'apiRoute' => $this->getApiRoute(),
+            'dataSwal' => $this->getSwalData()
+        ];
     }
 
     private function getApiRoute()
@@ -72,7 +76,7 @@ class Wallet extends Template
 
     private function getSwalData()
     {
-        $swalData = [
+        return [
             'title'          => __('Waiting...', 'woo-pagarme-payments'),
             'text'           => __('We are processing your request.', 'woo-pagarme-payments'),
             'confirm_title'  => __('Are you sure?', 'woo-pagarme-payments'),
@@ -82,6 +86,5 @@ class Wallet extends Template
             'confirm_color'  => '#3085d6',
             'cancel_color'   => '#d33',
         ];
-        return $swalData;
     }
 }

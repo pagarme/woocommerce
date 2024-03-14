@@ -15,7 +15,7 @@ $concretePlatformCoreSetupClass = $coreClass;
 
 $moduleCoreSetupReflection = new ReflectionClass($concretePlatformCoreSetupClass);
 $concreteCoreSetupFilename = $moduleCoreSetupReflection->getFileName();
-$concreteDir = explode(DIRECTORY_SEPARATOR, $concreteCoreSetupFilename);
+$concreteDir = explode(DIRECTORY_SEPARATOR, $concreteCoreSetupFilename ?? '');
 array_pop($concreteDir);
 $concreteDir = implode(DIRECTORY_SEPARATOR, $concreteDir);
 

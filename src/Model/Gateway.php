@@ -43,6 +43,11 @@ class Gateway
     /** @var Config|null */
     public $config;
 
+    /**
+     * @var string
+     */
+    public $payment;
+
     public function __construct(
         Config $config = null
     ) {

@@ -10,7 +10,7 @@ trait ValidStringTestTrait
     {
         $class = self::class;
         $class = substr($class, 0, strlen($class) -4);
-        $class = str_replace('\\Test\\', '\\', $class);
+        $class = str_replace('\\Test\\', '\\', $class ?? '');
 
         $validStringObject = new $class(self::VALID1);
         $this->assertEquals(self::VALID1, $validStringObject->getValue());

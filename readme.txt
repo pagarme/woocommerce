@@ -4,7 +4,7 @@ Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, 
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 7.1
-Stable tag: 3.1.6
+Stable tag: 3.2.1
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -22,28 +22,26 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
-= 3.1.6 (04/10/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.6)
-
-* **Melhorias:**
-  * Validador de configurações da Dash da Pagar.me.
-  * Compatibilização com o HPOS.
-  * Receber apenas webhooks do Woocommerce.
-  * Compatibilização com mod_pagespeed.
+= 3.2.1 (30/01/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.1)
 
 * **Correções:**
-  * Envio de informações do boleto na criação de pedido.
-  * Modal de dados obrigatórios para número de endereço.
+  * Parcelamento de cartão de crédito
 
-= 3.1.5 (04/09/2023) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.1.5)
+= 3.2.0 (29/01/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.0)
+
+* **Novas implementações:**
+  * Autonomia na escolha dos métodos de pagamento para Subscriptions 
+  * Parcelamento em até 12x no cartão de crédito para Subscriptions
 
 * **Correções:**
-  * Incompatibilidade de seletores css de alguns temas para arquivos js.
-  * Quando atualiza algum dado de checkout o cartão perde a bandeira já consultada.
-  * Incompatibilidade com métodos de pagamento que utilizam o evento checkout_place_order.
-  * Recorrência não finaliza compra com Boleto ou PIX.
-  * Incompatibilidade com caracteres especiais nas instruções de pagamento do boleto.
+  * Erro ao acessar a página de edição de produtos
+  * Compatibilização com PHP 8.2/8.3
+  * Erro ao finalizar compra de custo 0
+  * Campos primeiro nome e sobrenome não obrigatórios
+  * Falha ao gerar o pedido recorrente por falta de CustomerId
+  * Redução duplicada de estoque - @tiagopapile
 
 == Upgrade Notice ==
 Nosso plugin agora é compatível com Woocommerce Subscriptions

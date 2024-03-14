@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2023-09-18 18:31-0300\n"
+"PO-Revision-Date: 2024-01-19 11:54-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;"
 "_nx:4c,1,2;_nx_noop:4c,1,2\n"
@@ -422,6 +422,17 @@ msgstr "Logs"
 #: src/Controller/Gateways.php:667
 msgid "Log Pagar.me events, you can check this log in WooCommerce>Status>Logs."
 msgstr "Registra eventos da Pagar.me, você pode conferir esse arquivo de log em WooCommerce>Status>Logs."
+
+msgid "Allow order without address"
+msgstr "Permitir compras sem endereço"
+
+#: src/Controller/Settings.php:109
+msgid ""
+"For PSP customers with Pagar.me Antifraud active, it is mandatory to fill in all address fields. %sRead documentation "
+"»%s"
+msgstr ""
+"Para clientes PSP com o Antifraude Pagar.me ativo, é obrigatório preencher todos os campos de endereço. %sLeia a "
+"documentação »%s"
 
 #: src/Controller/Gateways/CreditCard.php:115 src/Controller/Gateways/CreditCard.php:157
 #: src/Controller/Gateways/Pix.php:59 src/Controller/Gateways/Voucher.php:72 src/Controller/Gateways/Voucher.php:102
@@ -833,6 +844,11 @@ msgstr "Os seguintes campos de checkout são obrigatórios, mas não foram encon
 msgid "Please, make sure to include them for Pagar.me module to work."
 msgstr "Por favor, certifique-se de incluí-los para que o módulo da Pagar.me funcione."
 
+msgid "You can install %s or any other plugin of your choice to add the missing fields. %sRead documentation »%s"
+msgstr ""
+"Você pode instalar o %s ou qualquer outro plugin de sua escolha para adicionar os campos ausentes. %sLeia a "
+"documentação »%s"
+
 #. Description of the plugin/theme
 msgid "Enable Pagar.me Gateway for WooCommerce"
 msgstr "Habilita o gateway de pagamento Pagar.me para o WooCommerce"
@@ -1142,6 +1158,9 @@ msgstr "Houve um problema com a troca de pagamento."
 msgid "Error creating subscription free trial."
 msgstr "Erro ao criar a avaliação gratuita da assinatura."
 
+msgid "Installment Fee"
+msgstr "Taxa de parcelamento"
+
 #: src/Controller/HubAccounts.php:160
 msgid "Access Dash Configurations"
 msgstr "Acessar Configurações da Dash"
@@ -1244,3 +1263,42 @@ msgstr "As configurações da Dash não foram recuperadas. Por favor, tente nova
 #: templates/adminhtml/system/config/form/field/hub/integration.phtml:25
 msgid "Access Pagar.me Dash"
 msgstr "Acessar o Dash da Pagar.me"
+
+msgid "If your Pagar.me Antifraud is active, orders will fail."
+msgstr "Se o seu Antifraude Pagar.me estiver ativo, os pedidos irão falhar."
+
+msgid "Active for subscription"
+msgstr "Ativo para assinatura"
+
+msgid "Enable credit card for subscription"
+msgstr "Habilita cartão de crédito para assinatura"
+
+msgid "Activates credit card payment method for subscriptions."
+msgstr "Ativa o método de pagamento de cartão de crédito para assinaturas."
+
+msgid "Enable Pix for subscription"
+msgstr "Habilita Pix para assinatura"
+
+msgid "Activates Pix payment method for subscriptions."
+msgstr "Ativa o método de pagamento de Pix para assinaturas."
+
+msgid "Enable billet for subscription"
+msgstr "Habilita boleto para assinatura"
+
+msgid "Activates billet payment method for subscriptions."
+msgstr "Ativa o método de pagamento de boleto para assinaturas."
+
+msgid "Allow installments for subscription"
+msgstr "Permitir parcelamento para assinatura"
+
+msgid "Enable installments for subscription"
+msgstr "Habilita parcelamento para assinatura"
+
+msgid "Activates credit card installments for subscriptions."
+msgstr "Ativa parcelamento de cartão de crédito para assinaturas."
+
+msgid "Works only for monthly and yearly subscriptions."
+msgstr "Funciona apenas para assinaturas mensais e anuais."
+
+msgid "Your cart has one or more daily or weekly subscription products, which do not allow installments."
+msgstr "Seu carrinho possui um ou mais produtos de assinatura diário ou semanal, que não permitem parcelamentos."

@@ -23,14 +23,16 @@ class ProductSubscriptionRepository extends AbstractRepository
                 `allow_installments`,
                 `boleto`,
                 `sell_as_normal_product`,
-                `billing_type`
+                `billing_type`,
+                `apply_discount_in_all_product_cycles`
             ) VALUES (
                 '{$object->getProductId()}',
                 '{$object->getCreditCard()}',
                 '{$object->getAllowInstallments()}',
                 '{$object->getBoleto()}',
                 '{$object->getSellAsNormalProduct()}',
-                '{$object->getBillingType()}'
+                '{$object->getBillingType()}',
+                '{$object->getApplyDiscountInAllProductCycles()}'
             )
         ";
 
@@ -48,13 +50,14 @@ class ProductSubscriptionRepository extends AbstractRepository
         );
 
         $query = "
-            UPDATE $table SET 
+            UPDATE $table SET
                 `product_id` = '{$object->getProductId()}',
                 `credit_card` = '{$object->getCreditCard()}',
                 `allow_installments` = '{$object->getAllowInstallments()}',
                 `boleto` = '{$object->getBoleto()}',
                 `sell_as_normal_product` = '{$object->getSellAsNormalProduct()}',
-                `billing_type` = '{$object->getBillingType()}'
+                `billing_type` = '{$object->getBillingType()}',
+                `apply_discount_in_all_product_cycles` = '{$object->getApplyDiscountInAllProductCycles()}'
             WHERE id = {$object->getId()}
         ";
 
@@ -126,7 +129,7 @@ class ProductSubscriptionRepository extends AbstractRepository
 
     public function findByPagarmeId(AbstractValidString $pagarmeId)
     {
-        return; // TODO: Implement findByPagarmeId() method.
+        // TODO: Implement findByPagarmeId() method.
     }
 
     public function listEntities($limit, $listDisabled)

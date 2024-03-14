@@ -1,5 +1,5 @@
 /* globals wc_pagarme_checkout */
-
+/*jshint esversion: 8 */
 let pagarmeCard = {
     limitTokenize: 10,
     tokenExpirationAttribute: 'data-pagarmecheckout-expiration',
@@ -7,6 +7,7 @@ let pagarmeCard = {
     brandTarget: 'input[data-pagarmecheckout-element="brand-input"]',
     valueTarget: 'input[data-pagarmecheckout-element="order-value"]',
     installmentsTarget: '[data-pagarme-component="installments"]',
+    installmentsInfoTarget: '[data-pagarme-component="installments-info"]',
     mundiCdn: 'https://cdn.mundipagg.com/assets/images/logos/brands/png/',
     tokenElement: '[data-pagarmecheckout-element="token"]',
     fieldsetCardElements: 'fieldset[data-pagarmecheckout="card"]',
@@ -36,7 +37,18 @@ let pagarmeCard = {
         return jQuery('.wc_payment_method.payment_method_' + value);
     },
     isPagarmePayment: function () {
-        return jQuery('form .payment_methods input[name="payment_method"]:checked').val().indexOf('pagarme');
+        let paymentSelected = jQuery('form .payment_methods input[name="payment_method"]:checked');
+        if(paymentSelected.length <= 0) {
+            return false;
+        }
+        paymentSelected = paymentSelected.val();
+        if(!paymentSelected) {
+            return false;
+        }
+        if(paymentSelected.indexOf('pagarme') == '-1') {
+            return false;
+        }
+        return paymentSelected.indexOf('pagarme');
     },
     keyEventHandlerCard: function (event) {
         this.clearToken(event);
@@ -97,7 +109,7 @@ let pagarmeCard = {
     },
     getCardDataContingency: async function (cardNumber) {
         let oldPrefix = '',
-            types= this.getBrands(),
+            types = this.getBrands(),
             bin = cardNumber.substring(0, 6),
             data;
         for (const currentType of types) {
@@ -131,7 +143,7 @@ let pagarmeCard = {
         return cardsMethods;
     },
     loadBrand: async function (event) {
-        let elem = event.currentTarget;
+        let elem = event.target;
         this.removeBrand(elem);
         if (!this.isVisible(elem)) {
             return;
@@ -142,8 +154,8 @@ let pagarmeCard = {
         }
         try {
             let card = await this.getCardData(cardNumber);
-            this.changeBrand(event, card);
-            this.updateInstallmentsElement(event);
+            this.changeBrand(elem, card);
+            this.updateInstallmentsElement(elem);
         } catch (exception) {
             this.showError(exception.message);
         }
@@ -202,11 +214,11 @@ let pagarmeCard = {
             });
         });
     },
-    changeBrand: function (event, card) {
-        if (typeof event == 'undefined' || typeof card == 'undefined') {
+    changeBrand: function (elem, card) {
+        if (typeof card == 'undefined') {
             throw new Error("Invalid data to change card brand");
         }
-        let elem = event.currentTarget;
+
         let imageSrc = this.getImageSrc(card);
         let imgElem = jQuery(elem).parent().find('img');
         jQuery(elem).parents('.pagarme-card-number-row').find(this.brandTarget).attr('value', card[0].brand);
@@ -239,27 +251,31 @@ let pagarmeCard = {
         }
         return value.toFixed(2).replace('.', ',');
     },
-    updateInstallmentsElement: function (event) {
-        let elem= this.formatEventToJQuery(event);
+    updateInstallmentsElement: function (eventElement) {
+        const elem = this.formatEventToJQuery(eventElement);
         if (!elem) {
             return false;
         }
-        let brand = elem.closest('fieldset').find(this.brandTarget).val();
+        const brand = elem.closest('fieldset').find(this.brandTarget).val();
         let total = elem.closest('fieldset').find(this.valueTarget).val();
         if (total) {
             total = pagarmeCard.formatValue(total);
         }
-        let cardForm = elem.closest("fieldset");
-        let select = cardForm.find(this.installmentsTarget);
-        if (!total)
+        const cardForm = elem.closest("fieldset");
+        const select = cardForm.find(this.installmentsTarget);
+        const info = cardForm.find(this.installmentsInfoTarget);
+        if (!total) {
             total = cartTotal;
+        }
         if ((!total) ||
             (select.data("type") === 2 && !brand) ||
-            (select.data("type") === 1 && elem.data('element') !== "order-value"))
+            (select.data("type") === 1 && elem.data('element') !== "order-value")
+        ) {
             return false;
-        let storageName = btoa(brand + total);
+        }
+        const storageName = btoa(brand + total);
         sessionStorage.removeItem(storageName);
-        let storage = sessionStorage.getItem(storageName);
+        const storage = sessionStorage.getItem(storageName);
         if (storage) {
             select.html(storage);
         } else {
@@ -272,7 +288,7 @@ let pagarmeCard = {
                 }
             });
             ajax.done(function (response) {
-                pagarmeCard._done(select, storageName, cardForm, response);
+                pagarmeCard._done(select, info, storageName, cardForm, JSON.parse(response));
             });
             ajax.fail(function () {
                 pagarmeCard._fail(cardForm);
@@ -282,8 +298,14 @@ let pagarmeCard = {
         return true;
     },
 
-    _done: function (select, storageName, event, response) {
-        select.html(response);
+    _done: function (select, info, storageName, event, response) {
+        if (info.length) {
+            info.addClass('pagarme-hidden');
+            if(response.installmentsConfig > 1) {
+                info.removeClass('pagarme-hidden');
+            }
+        }
+        select.html(response.optionsHtml);
         sessionStorage.setItem(storageName, response);
         this.removeLoader(event);
     },
@@ -372,14 +394,14 @@ let pagarmeCard = {
         jQuery(document.body).on('updated_checkout', function () {
             pagarmeCard.renewEventListener();
             let creditCardField = jQuery(pagarmeCard.cardNumberTarget);
-            creditCardField.each(function() {
+            creditCardField.each(function () {
                 if (jQuery(this)?.val() && pagarmeCard.isVisible(jQuery(this)[0])) {
                     jQuery(this).change();
                 }
             });
         });
 
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function () {
             jQuery('form.checkout').on('checkout_place_order', function (event) {
                 return pagarmeCard.canExecute(event);
             });
@@ -409,7 +431,7 @@ let pagarmeCard = {
             pagarmeCheckoutWallet.addEventListener();
         }
         if (typeof pagarmeOrderValue == 'object') {
-            pagarmeOrderValue.addEventListener();
+            pagarmeOrderValue.start();
         }
     },
     start: function () {

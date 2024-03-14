@@ -22,7 +22,11 @@ if (!function_exists('add_action')) {
     </tr>
     <tr>
         <th class="td" scope="row"><?= __('Copyable Code', 'woo-pagarme-payments'); ?>:</th>
-        <td class="td"><?= $this->getRawQrCode() ?></td>
+        <td class="td">
+            <a href="" style="text-decoration: none; color: #636363; cursor: default">
+                <?= $this->getRawQrCode() ?>
+            </a>
+        </td>
     </tr>
     <tr>
         <th class="td" scope="row"><?= __('Instructions', 'woo-pagarme-payments'); ?>:</th>

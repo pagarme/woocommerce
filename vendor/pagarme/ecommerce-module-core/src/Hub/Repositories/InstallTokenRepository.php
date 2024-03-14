@@ -43,17 +43,15 @@ final class InstallTokenRepository extends AbstractRepository
         $created_at_timestamp = $stdObject->createdAtTimestamp;
         $expire_at_timestamp = $stdObject->expireAtTimestamp;
 
-        $query = "
-             UPDATE `$table`" .
+        $query = "UPDATE `$table`" .
             " SET " .
             "
                 token = '$token' ,
                 used = $used ,
-                created_at_timestamp = $created_at_timestamp , 
+                created_at_timestamp = $created_at_timestamp ,
                 expire_at_timestamp = $expire_at_timestamp
             " .
-            " WHERE id = {$stdObject->id}"
-        ;
+            " WHERE id = {$stdObject->id}";
 
         $this->db->query($query);
     }
@@ -61,6 +59,18 @@ final class InstallTokenRepository extends AbstractRepository
     public function delete(AbstractEntity $object)
     {
         // TODO: Implement delete() method.
+    }
+
+    public function deleteAllInactive()
+    {
+        $table =
+            $this->db->getTable(AbstractDatabaseDecorator::TABLE_HUB_INSTALL_TOKEN);
+
+        $currentTime = time();
+        $query = "DELETE FROM `$table`"
+            . " WHERE used <> 1";
+
+        $this->db->query($query);
     }
 
     public function find($objectId)
@@ -74,7 +84,7 @@ final class InstallTokenRepository extends AbstractRepository
             $this->db->getTable(AbstractDatabaseDecorator::TABLE_HUB_INSTALL_TOKEN);
 
         $token = $pagarmeId->getValue();
-        
+
         $query = "SELECT * FROM `$table` as t ";
         $query .= "WHERE t.token = '$token';";
 
@@ -93,10 +103,11 @@ final class InstallTokenRepository extends AbstractRepository
         $table =
             $this->db->getTable(AbstractDatabaseDecorator::TABLE_HUB_INSTALL_TOKEN);
 
-        $query = "SELECT * FROM `$table` as t";
+        $query = "SELECT * FROM `$table` as t"
+            . " WHERE used = 0";
 
         if (!$listDisabled) {
-            $query .= " WHERE t.expire_at_timestamp > " . time();
+            $query .= " AND t.expire_at_timestamp > " . time();
         }
 
         if ($limit !== 0) {

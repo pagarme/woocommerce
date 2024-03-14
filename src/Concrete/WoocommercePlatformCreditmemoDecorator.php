@@ -18,7 +18,7 @@ class WoocommercePlatformCreditmemoDecorator extends AbstractCreditmemoDecorator
     }
 
 
-    public function prepareFor()
+    public function prepareFor(PlatformOrderInterface $order)
     {
         // Not necessary to be implemented on Woocommerce, there is no Creditmemo concept
     }

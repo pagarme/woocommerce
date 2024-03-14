@@ -14,29 +14,30 @@ if (!defined('ABSPATH')) {
     exit(0);
 }
 
+use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
+use Pagarme\Core\Payment\Repositories\CustomerRepository;
+use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use WC_Order;
-use WC_Subscription;
-use WC_Subscriptions_Cart;
+use WC_Subscriptions_Product;
 use Woocommerce\Pagarme\Controller\Orders;
 use Woocommerce\Pagarme\Service\LogService;
 use Woocommerce\Pagarme\Service\CardService;
 use Woocommerce\Pagarme\Service\CustomerService;
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
-use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 
 class Subscription
 {
     /** @var Config */
     private $config;
 
-    /** @var string */
-    const API_REQUEST = 'e3hpgavff3cw';
-
     /** @var Orders */
     private $orders;
 
     /** @var AbstractGateway */
     private $payment;
+
+    /** @var array */
+    const ONE_INSTALLMENT_PERIODS = ['day', 'week'];
 
     public function __construct(
         AbstractGateway $payment = null
@@ -54,7 +55,7 @@ class Subscription
 
     private function addSupportToSubscription(): void
     {
-        if (!$this->payment->hasSubscriptionSupport() || !$this->hasSubscriptionPlugin()) {
+        if (!$this->payment || !$this->payment->hasSubscriptionSupport() || !$this->hasSubscriptionPlugin()) {
             return;
         }
 
@@ -93,7 +94,10 @@ class Subscription
 
     private function setPaymentEnabled()
     {
-        if (!$this->payment->hasSubscriptionSupport() && $this->hasSubscriptionProductInCart()) {
+        if (!$this->payment) {
+            return;
+        }
+        if (!$this->payment->isSubscriptionActive() && $this->hasSubscriptionProductInCart()) {
             $this->payment->enabled = "no";
         }
     }
@@ -129,20 +133,23 @@ class Subscription
      * @return bool|void
      * @throws \Exception
      */
-    public function processSubscription($amountToCharge, WC_Order $order)
+    public function processSubscription($amountToCharge, WC_Order $wc_order)
     {
         try {
-            if (!$order) {
+            if (!$wc_order) {
                 wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
             }
+            $order = new Order($wc_order->get_id());
+            $this->createCustomerPagarmeIdOnPlatformIfNotExists($wc_order->get_customer_id(),
+                $order->get_meta('subscription_renewal'));
+
             $fields = $this->convertOrderObject($order);
             $response = $this->orders->create_order(
-                $order,
+                $wc_order,
                 $fields['payment_method'],
                 $fields
             );
 
-            $order = new Order($order->get_id());
             $order->payment_method = $fields['payment_method'];
             if ($response) {
                 $order->transaction_id = $response->getPagarmeId()->getValue();
@@ -158,10 +165,12 @@ class Subscription
         } catch (\Throwable $th) {
             $logger = new LogService();
             $logger->log($th);
-            wc_add_notice(
-                __('There was a problem renewing the subscription.'),
-                'error'
-            );
+            if (function_exists('wc_add_notice')) {
+                wc_add_notice(
+                    __('There was a problem renewing the subscription.'),
+                    'error'
+                );
+            }
             return false;
         }
     }
@@ -169,7 +178,7 @@ class Subscription
     public function processChangePaymentSubscription($subscription)
     {
         try {
-            $subscription = new WC_Subscription($subscription);
+            $subscription = new \WC_Subscription($subscription);
             $newPaymentMethod = wc_clean($_POST['payment_method']);
             if ('woo-pagarme-payments-credit_card' == $newPaymentMethod) {
                 $pagarmeCustomer = $this->getPagarmeCustomer($subscription);
@@ -184,10 +193,12 @@ class Subscription
         } catch (\Throwable $th) {
             $logger = new LogService();
             $logger->log($th);
-            wc_add_notice(
-                __('There was a problem with the payment exchange.'),
-                'error'
-            );
+            if (function_exists('wc_add_notice')) {
+                wc_add_notice(
+                    __('There was a problem with the payment exchange.'),
+                    'error'
+                );
+            }
             return [
                 'result' => 'error',
                 'redirect' => $this->payment->get_return_url($subscription)
@@ -215,10 +226,12 @@ class Subscription
         } catch (\Throwable $th) {
             $logger = new LogService();
             $logger->log($th);
-            wc_add_notice(
-                __('Error creating subscription free trial.'),
-                'error'
-            );
+            if (function_exists('wc_add_notice')) {
+                wc_add_notice(
+                    __('Error creating subscription free trial.'),
+                    'error'
+                );
+            }
             return [
                 'result' => 'error',
                 'redirect' => $this->payment->get_return_url($wcOrder)
@@ -226,9 +239,36 @@ class Subscription
         }
     }
 
+    private function createCustomerPagarmeIdOnPlatformIfNotExists($customerCode, $subscriptionId)
+    {
+        $customer = new Customer($customerCode, new SavedCardRepository(), new CustomerRepository());
+        if($customer->getPagarmeCustomerId() !== false) {
+            return;
+        }
+        $subscription = new \WC_Subscription($subscriptionId);
+        $customerId = $this->getPagarmeIdFromLastValidOrder($subscription);
+        $customer->savePagarmeCustomerId($customerCode, $customerId);
+    }
+
+    private function getPagarmeIdFromLastValidOrder($subscription)
+    {
+        foreach ($subscription->get_related_orders() as $orderId) {
+            $order = new Order($orderId);
+            if(!$order->get_meta('pagarme_response_data')){
+                continue;
+            }
+            $pagarmeResponse = json_decode($order->get_meta('pagarme_response_data'), true);
+            if(!array_key_exists('customer', $pagarmeResponse)) {
+                continue;
+            }
+            return $pagarmeResponse['customer']['pagarmeId'];
+        }
+        throw new \Exception("Unable to find a PagarId in previous request responses");
+    }
+
     private function getPagarmeCustomer($subscription)
     {
-        $customer = new Customer($subscription->get_user_id());
+        $customer = new Customer($subscription->get_user_id(), new SavedCardRepository(), new CustomerRepository());
         if (!$customer->getPagarmeCustomerId()) {
             $customer = new CustomerService();
             return $customer->createCustomerByOrder($subscription);
@@ -257,10 +297,10 @@ class Subscription
     /**
      * Save card information on table post_meta
      * @param array $card
-     * @param WC_Subscription $subscription
+     * @param \WC_Subscription $subscription
      * @return void
      */
-    private function saveCardInSubscription(array $card, WC_Subscription $subscription)
+    private function saveCardInSubscription(array $card, \WC_Subscription $subscription)
     {
         $subscription->add_meta_data('_pagarme_payment_subscription', json_encode($card), true);
         $subscription->save();
@@ -270,14 +310,14 @@ class Subscription
      * @param WC_Order $order
      * @return array
      */
-    private function convertOrderObject(WC_Order $order)
+    private function convertOrderObject(Order $order)
     {
         $fields = [
-            'payment_method' => $this->formatPaymentMethod($order->get_payment_method())
+            'payment_method' => $this->formatPaymentMethod($order->wc_order->get_payment_method())
         ];
         $card = $this->getCardSubscriptionData($order);
         if ($card !== null) {
-            $fields['card_order_value'] = $order->get_total();
+            $fields['card_order_value'] = $order->wc_order->get_total();
             $fields['brand'] = $card['brand'];
             $fields['installments'] = 1;
             $fields['card_id'] = $card['cardId'];
@@ -299,7 +339,7 @@ class Subscription
 
     private function getCardSubscriptionData($order)
     {
-        $cardData = $order->get_meta("_pagarme_payment_subscription", true);
+        $cardData = $order->get_meta("pagarme_payment_subscription");
         if (!$cardData) {
             return false;
         }
@@ -356,7 +396,7 @@ class Subscription
         if (!self::hasSubscriptionPlugin()) {
             return false;
         }
-        return WC_Subscriptions_Cart::cart_contains_subscription() || wcs_cart_contains_renewal();
+        return \WC_Subscriptions_Cart::cart_contains_subscription() || wcs_cart_contains_renewal();
     }
 
     /**
@@ -367,7 +407,7 @@ class Subscription
         if (!self::hasSubscriptionPlugin()) {
             return false;
         }
-        return WC_Subscriptions_Cart::all_cart_items_have_free_trial();
+        return \WC_Subscriptions_Cart::all_cart_items_have_free_trial();
     }
 
     /**
@@ -381,7 +421,7 @@ class Subscription
         if (wcs_cart_contains_renewal()) {
             return "subsequent";
         }
-        if (WC_Subscriptions_Cart::cart_contains_subscription()) {
+        if (\WC_Subscriptions_Cart::cart_contains_subscription()) {
             return "first";
         }
         return null;
@@ -410,5 +450,34 @@ class Subscription
             $update = false;
         }
         return $update;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function allowInstallments(): bool {
+        return wc_string_to_bool($this->config->getData('cc_subscription_installments'));
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasOneInstallmentPeriodInCart(): bool {
+        if (!$this->hasSubscriptionPlugin()) {
+            return false;
+        }
+
+        $cartProducts = WC()->cart->cart_contents;
+        $productsPeriods = [];
+        foreach ($cartProducts as $product) {
+            $productsPeriods[] = WC_Subscriptions_Product::get_period($product['product_id']);
+        }
+
+        $noInstallmentsPeriods = array_intersect(self::ONE_INSTALLMENT_PERIODS, $productsPeriods);
+        if (!empty($noInstallmentsPeriods)) {
+            return true;
+        }
+
+        return false;
     }
 }

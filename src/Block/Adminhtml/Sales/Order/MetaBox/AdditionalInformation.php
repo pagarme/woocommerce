@@ -15,6 +15,7 @@ use Pagarme\Core\Kernel\Aggregates\Charge;
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\AbstractMetaBox;
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBoxInterface;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Charge as ChargeModel;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
@@ -51,22 +52,27 @@ class AdditionalInformation extends AbstractMetaBox implements MetaBoxInterface
     protected $scripts = ['checkout/model/payment/pix'];
 
     /**
+     * @var ChargeModel
+     */
+    protected $charge;
+
+    /**
      * @param Json|null $jsonSerialize
      * @param array $data
      * @param Order|null $order
-     * @param \Woocommerce\Pagarme\Model\Charge|null $charge
+     * @param ChargeModel|null $charge
      */
     public function __construct(
         Json $jsonSerialize = null,
         array $data = [],
         Order $order = null,
-        \Woocommerce\Pagarme\Model\Charge $charge = null
+        ChargeModel $charge = null
     ) {
         parent::__construct($jsonSerialize, $data);
         try {
             $this->order = $order ?? new Order($this->getOrderId());
         } catch (\Exception $e) {}
-        $this->charge = $charge ?? new \Woocommerce\Pagarme\Model\Charge;
+        $this->charge = $charge ?? new ChargeModel;
     }
 
     /**

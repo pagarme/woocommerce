@@ -171,69 +171,53 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "2.9.1",
-            "version_normalized": "2.9.1.0",
+            "version": "1.27.1",
+            "version_normalized": "1.27.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "f259e2b15fb95494c83f52d3caad003bbf5ffaa1"
+                "reference": "904713c5929655dc9b97288b69cfeedad610c9a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/f259e2b15fb95494c83f52d3caad003bbf5ffaa1",
-                "reference": "f259e2b15fb95494c83f52d3caad003bbf5ffaa1",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/904713c5929655dc9b97288b69cfeedad610c9a1",
+                "reference": "904713c5929655dc9b97288b69cfeedad610c9a1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2",
-                "psr/log": "^1.0.1 || ^2.0 || ^3.0"
+                "php": ">=5.3.0",
+                "psr/log": "~1.0"
             },
             "provide": {
-                "psr/log-implementation": "1.0.0 || 2.0.0 || 3.0.0"
+                "psr/log-implementation": "1.0.0"
             },
             "require-dev": {
                 "aws/aws-sdk-php": "^2.4.9 || ^3.0",
                 "doctrine/couchdb": "~1.0@dev",
-                "elasticsearch/elasticsearch": "^7 || ^8",
-                "ext-json": "*",
-                "graylog2/gelf-php": "^1.4.2 || ^2@dev",
-                "guzzlehttp/guzzle": "^7.4",
-                "guzzlehttp/psr7": "^2.2",
-                "mongodb/mongodb": "^1.8",
-                "php-amqplib/php-amqplib": "~2.4 || ^3",
-                "phpspec/prophecy": "^1.15",
-                "phpstan/phpstan": "^0.12.91",
-                "phpunit/phpunit": "^8.5.14",
-                "predis/predis": "^1.1 || ^2.0",
-                "rollbar/rollbar": "^1.3 || ^2 || ^3",
-                "ruflin/elastica": "^7",
-                "swiftmailer/swiftmailer": "^5.3|^6.0",
-                "symfony/mailer": "^5.4 || ^6",
-                "symfony/mime": "^5.4 || ^6"
+                "graylog2/gelf-php": "~1.0",
+                "php-amqplib/php-amqplib": "~2.4",
+                "php-console/php-console": "^3.1.3",
+                "phpstan/phpstan": "^0.12.59",
+                "phpunit/phpunit": "~4.5",
+                "ruflin/elastica": ">=0.90 <3.0",
+                "sentry/sentry": "^0.13",
+                "swiftmailer/swiftmailer": "^5.3|^6.0"
             },
             "suggest": {
                 "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
                 "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
-                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
                 "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
-                "ext-curl": "Required to send log messages using the IFTTTHandler, the LogglyHandler, the SendGridHandler, the SlackWebhookHandler or the TelegramBotHandler",
-                "ext-mbstring": "Allow to work properly with unicode symbols",
-                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
-                "ext-openssl": "Required to send log messages using SSL",
-                "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
+                "ext-mongo": "Allow sending log messages to a MongoDB server",
                 "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
-                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
+                "mongodb/mongodb": "Allow sending log messages to a MongoDB server via PHP Driver",
                 "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+                "php-console/php-console": "Allow sending log messages to Google Chrome",
                 "rollbar/rollbar": "Allow sending log messages to Rollbar",
-                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
+                "sentry/sentry": "Allow sending log messages to a Sentry server"
             },
-            "time": "2023-02-06T13:44:46+00:00",
+            "time": "2022-06-09T08:53:42+00:00",
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "2.x-dev"
-                }
-            },
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
@@ -248,11 +232,11 @@
                 {
                     "name": "Jordi Boggiano",
                     "email": "j.boggiano@seld.be",
-                    "homepage": "https://seld.be"
+                    "homepage": "http://seld.be"
                 }
             ],
             "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
-            "homepage": "https://github.com/Seldaek/monolog",
+            "homepage": "http://github.com/Seldaek/monolog",
             "keywords": [
                 "log",
                 "logging",
@@ -260,7 +244,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/2.9.1"
+                "source": "https://github.com/Seldaek/monolog/tree/1.27.1"
             },
             "funding": [
                 {
@@ -276,23 +260,23 @@
         },
         {
             "name": "pagarme/ecommerce-module-core",
-            "version": "2.1.0",
-            "version_normalized": "2.1.0.0",
+            "version": "2.3.1",
+            "version_normalized": "2.3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pagarme/ecommerce-module-core.git",
-                "reference": "f4bd3a74cdc1b6bf5db38edb4b7442878b221bc1"
+                "reference": "9c9e927cea9b1bf90a499d2146f042f1f7f1c921"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/f4bd3a74cdc1b6bf5db38edb4b7442878b221bc1",
-                "reference": "f4bd3a74cdc1b6bf5db38edb4b7442878b221bc1",
+                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/9c9e927cea9b1bf90a499d2146f042f1f7f1c921",
+                "reference": "9c9e927cea9b1bf90a499d2146f042f1f7f1c921",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "monolog/monolog": "<3",
-                "pagarme/pagarmecoreapi": "5.6.1",
+                "pagarme/pagarmecoreapi": "v5.6.3",
                 "php": ">=7.1"
             },
             "require-dev": {
@@ -301,7 +285,7 @@
                 "nesbot/carbon": "1.39.0",
                 "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9"
             },
-            "time": "2023-03-22T17:36:14+00:00",
+            "time": "2023-11-14T15:38:42+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -322,23 +306,23 @@
             ],
             "description": "Core component for Pagar.me e-commerce platform modules.",
             "support": {
-                "source": "https://github.com/pagarme/ecommerce-module-core/tree/2.1.0"
+                "source": "https://github.com/pagarme/ecommerce-module-core/tree/2.3.1"
             },
             "install-path": "../pagarme/ecommerce-module-core"
         },
         {
             "name": "pagarme/pagarmecoreapi",
-            "version": "5.6.2",
-            "version_normalized": "5.6.2.0",
+            "version": "v5.6.3",
+            "version_normalized": "5.6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pagarme/pagarme-core-api-php.git",
-                "reference": "1e6caa95deb7b17223c0458e8f4c901e851e8590"
+                "reference": "49e0d222c50c69ac3e0debea9b69202e6555d3ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/pagarme-core-api-php/zipball/1e6caa95deb7b17223c0458e8f4c901e851e8590",
-                "reference": "1e6caa95deb7b17223c0458e8f4c901e851e8590",
+                "url": "https://api.github.com/repos/pagarme/pagarme-core-api-php/zipball/49e0d222c50c69ac3e0debea9b69202e6555d3ef",
+                "reference": "49e0d222c50c69ac3e0debea9b69202e6555d3ef",
                 "shasum": ""
             },
             "require": {
@@ -347,12 +331,12 @@
                 "ext-curl": "*",
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "php": ">=5.4.0"
+                "php": ">=7.1"
             },
             "require-dev": {
                 "squizlabs/php_codesniffer": "^2.7"
             },
-            "time": "2023-06-19T19:03:26+00:00",
+            "time": "2023-09-28T18:22:12+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -381,7 +365,7 @@
             ],
             "support": {
                 "issues": "https://github.com/pagarme/pagarme-core-api-php/issues",
-                "source": "https://github.com/pagarme/pagarme-core-api-php/tree/5.6.2"
+                "source": "https://github.com/pagarme/pagarme-core-api-php/tree/v5.6.3"
             },
             "install-path": "../pagarme/pagarmecoreapi"
         },
@@ -439,6 +423,6 @@
             "install-path": "../psr/log"
         }
     ],
-    "dev": true,
+    "dev": false,
     "dev-package-names": []
 }

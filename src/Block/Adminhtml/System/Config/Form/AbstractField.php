@@ -310,6 +310,13 @@ abstract class AbstractField
      */
     public function setDescription($description)
     {
+        if (is_array($description)){
+            $this->description = vsprintf(
+                __($description['format'], 'woo-pagarme-payments'),
+                $description['values']
+            );
+            return $this;
+        }
         $this->description = __($description, 'woo-pagarme-payments');
         return $this;
     }

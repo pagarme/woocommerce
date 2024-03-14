@@ -1,15 +1,21 @@
 /* globals jquery, ajaxurl, pagarme_settings */
+/* jshint esversion: 6 */
 (   function ($) {
         $('.wc_gateways').on(
             'click',
-            '.wc-payment-gateway-method-toggle-enabled',
+            '.wc-payment-gateway-method-toggle-enabled, .pagarme-toggle-payment-subscription',
             function () {
-                var $link = $(this),
+                const $link = $(this),
                     $row = $link.closest('tr'),
                     $toggle = $link.find('.woocommerce-input-toggle');
 
-                var data = {
-                    action: 'woocommerce_toggle_gateway_enabled',
+                let action = 'woocommerce_toggle_gateway_enabled';
+                if ($link.attr('class') === 'pagarme-toggle-payment-subscription') {
+                    action = 'pagarme_toggle_payment_subscription';
+                }
+
+                const data = {
+                    action: action,
                     security: pagarme_settings.nonces.gateway_toggle,
                     gateway_id: $row.data('gateway_id'),
                 };
@@ -48,6 +54,31 @@
                     },
                 });
                 return false;
+            }
+        );
+
+        const allow_no_address_swal = pagarme_settings.allow_no_address_swal;
+        $('#allow_no_address').on(
+            'change',
+            function () {
+                const element = $(this);
+                const value = element.val();
+                if (value === 'yes') {
+                    swal({
+                        type: 'warning',
+                        title: allow_no_address_swal.title,
+                        text: allow_no_address_swal.text,
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        cancelButtonText: allow_no_address_swal.cancelButtonText,
+                        allowOutsideClick: false,
+                    }).then(
+                        function (confirm) {},
+                        function (cancel) {
+                            element.val('no');
+                        }
+                    );
+                }
             }
         );
     }(jQuery)

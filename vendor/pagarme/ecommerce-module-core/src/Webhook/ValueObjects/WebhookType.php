@@ -26,7 +26,7 @@ final class WebhookType extends AbstractValueObject
 
     static public function fromPostType($postType)
     {
-        $data = explode('.', $postType);
+        $data = explode('.', $postType ?? '');
         return new self($data[0], $data[1]);
     }
 
