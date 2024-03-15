@@ -1,7 +1,7 @@
 /* globals pagarmeCard */
 
 let pagarmeOrderValue = {
-    valueTarget: 'input[data-pagarmecheckout-element="order-value"]',
+    valueTarget: 'input[data-pagarme-element="order-value"]',
     firstCardFildset: 'fieldset[data-pagarmecheckout-card-num="1"]',
     fillAnotherInput: async function (event) {
         let input = pagarmeCard.formatEventToJQuery(event);

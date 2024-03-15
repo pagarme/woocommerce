@@ -46,7 +46,7 @@ wp_localize_script(
                 </label>
                 <input type="text" id="<?= $this->getElementId('order-value') ?>"
                        name="<?= $this->getElementId('order-value') ?>" data-element="order-value"
-                       data-pagarmecheckout-element="order-value" data-mask="#0,00" data-mask-reverse="true"
+                       data-pagarme-element="order-value" data-mask="#0,00" data-mask-reverse="true"
                        data-value="1" data-required="true"
                        data-pagarmecheckout-order-value-method="<?= $this->getPaymentInstance()->getMethodCode() ?>"
                        class="input-text">
@@ -63,7 +63,7 @@ wp_localize_script(
         <div class="wc-credit-card-info" data-element="fields-cc-data">
             <div <?= $this->getCompoenent() ?>
                 data-pagarmecheckout-app-id="<?= esc_attr($this->getConfig()->getPublicKey()); ?>">
-                <div data-pagarmecheckout-element="fields-cc-data">
+                <div data-pagarme-element="fields-cc-data">
                     <p class="form-row form-row-wide">
                         <label for="<?= $this->getElementId('card-holder-name'); ?>">
                             <?php esc_html_e('Card Holder Name', 'woo-pagarme-payments'); ?>
@@ -71,22 +71,22 @@ wp_localize_script(
                         </label>
                         <input type="text" id="<?= $this->getElementId('card-holder-name'); ?>"
                                onkeydown="return /[a-z, ]/i.test(event.key)" data-element="card-holder-name"
-                               data-required="true" class="input-text" data-pagarmecheckout-element="holder_name">
+                               data-required="true" class="input-text" data-pagarme-element="holder_name">
                     </p>
                     <p class="form-row form-row-wide pagarme-card-number-row">
                         <label for="<?= $this->getElementId('card-number'); ?>">
                             <?php esc_html_e('Card number', 'woo-pagarme-payments'); ?>
                             <span class="required">*</span>
                         </label>
-                        <span class="pagarme-brand-image" data-pagarmecheckout-element="brand">
+                        <span class="pagarme-brand-image" data-pagarme-element="brand">
                             <input type="text" id="<?= $this->getElementId('card-number'); ?>"
                                    data-element="pagarme-card-number"
                                    class="input-text wc-credit-card-form-card-number pagarme-card-form-card-number"
-                                   data-mask="0000 0000 0000 0000" placeholder="•••• •••• •••• ••••"
-                                   data-required="true" data-pagarmecheckout-element="number">
+                                   data-mask="0000000000000000" placeholder="•••• •••• •••• ••••"
+                                   data-required="true" data-pagarme-element="number">
                         </span>
                         <input type="hidden" name="<?= $this->getElementId('brand'); ?>"
-                               data-pagarmecheckout-element="brand-input"/>
+                               data-pagarme-element="brand-input"/>
                     </p>
                     <p class="form-row form-row-first">
                         <label for="<?= $this->getElementId('card-expiry'); ?>">
@@ -98,7 +98,7 @@ wp_localize_script(
                                class="input-text wc-credit-card-form-card-expiry pagarme-card-form-card-expiry"
                                data-mask="00 / 00" data-required="true"
                                placeholder="<?php esc_html_e('MM / YY', 'woo-pagarme-payments'); ?>"
-                               data-pagarmecheckout-element="exp_date">
+                               data-pagarme-element="exp_date">
                     </p>
                     <p class="form-row form-row-last">
                         <label for="<?= $this->getElementId('card-cvv'); ?>">
@@ -108,7 +108,7 @@ wp_localize_script(
                         <input type="text" id="<?= $this->getElementId('card-cvv'); ?>"
                                data-element="card-cvv" data-mask="0000"
                                class="input-text wc-credit-card-form-card-cvv pagarme-card-form-card-cvv" maxlength="4"
-                               placeholder="CVV" data-required="true" data-pagarmecheckout-element="cvv">
+                               placeholder="CVV" data-required="true" data-pagarme-element="cvv">
                     </p>
                 </div>
             </div>
@@ -133,7 +133,7 @@ wp_localize_script(
                            data-element="document-holder" data-mask="000.000.000-00"
                            class="input-text wc-credit-card-form-card-cvv pagarme-card-form-holder-number"
                            maxlength="14"
-                           placeholder="CPF" data-required="true" data-pagarmecheckout-element="holder_document">
+                           placeholder="CPF" data-required="true" data-pagarme-element="holder_document">
                 </p>
             <?php endif; ?>
             <?= $this->createBlock(

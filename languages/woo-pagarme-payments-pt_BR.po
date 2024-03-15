@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-03-05 17:37-0300\n"
+"PO-Revision-Date: 2024-03-14 15:45-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1311,3 +1311,18 @@ msgstr "Habilitar 3DS"
 
 msgid "Minimum value for 3DS authentication"
 msgstr "Valor mínimo para autenticação 3DS"
+
+msgid "Failed to generate Token for 3ds, try again."
+msgstr "Falha ao gerar Token para 3ds, tente novamente."
+
+msgid "There was a problem finding the email."
+msgstr "Ocorreu um problema ao encontrar o e-mail."
+
+msgid "There was a problem finding the addresses."
+msgstr "Ocorreu um problema ao encontrar os endereços."
+
+msgid "There was a problem when assembling the card's expiration data."
+msgstr "Ocorreu um problema ao montar o dado de expiração do cartão."
+
+msgid "There was a problem when assembling the purchase data."
+msgstr "Ocorreu um problema ao montar o dado de compra."
