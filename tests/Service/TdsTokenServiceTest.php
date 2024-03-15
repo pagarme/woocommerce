@@ -15,55 +15,55 @@ use Woocommerce\Pagarme\Service\TdsTokenService;
 class TdsTokenServiceTest extends TestCase
 {
    public function tearDown(): void
-    {
-        Mockery::close();
-    }
+   {
+      Mockery::close();
+   }
 
    public function testShoudGetTdsTokenWithLiveEndpoint()
    {
-         Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
-         $configMock = Mockery::mock(Config::class);
-         $configMock->shouldReceive('getIsSandboxMode')
-            ->andReturnFalse();
+      Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
+      $configMock = Mockery::mock(Config::class);
+      $configMock->shouldReceive('getIsSandboxMode')
+         ->andReturnFalse();
 
-         $tdsTokenService = new TdsTokenService($configMock);
+      $tdsTokenService = new TdsTokenService($configMock);
 
-         $token = 'tokentds';
-         $getTdsTokenResponseMock = Mockery::mock(GetTdsTokenResponse::class);
-         $getTdsTokenResponseMock->tdsToken = $token;
+      $token = 'tokentds';
+      $getTdsTokenResponseMock = Mockery::mock(GetTdsTokenResponse::class);
+      $getTdsTokenResponseMock->tdsToken = $token;
 
-         $tdsTokenProxyMock = Mockery::mock('overload:Pagarme\Core\Middle\Proxy\TdsTokenProxy');
+      $tdsTokenProxyMock = Mockery::mock('overload:Pagarme\Core\Middle\Proxy\TdsTokenProxy');
 
-         
-         $accountId = 'acc_test';
-         $tdsTokenProxyMock->shouldReceive('getTdsToken')
-            ->with('live', $accountId)
-            ->andReturn($getTdsTokenResponseMock);
-         
-         $this->assertSame($token, $tdsTokenService->getTdsToken($accountId));
-   } 
+
+      $accountId = 'acc_test';
+      $tdsTokenProxyMock->shouldReceive('getTdsToken')
+         ->with('live', $accountId)
+         ->andReturn($getTdsTokenResponseMock);
+
+      $this->assertSame($token, $tdsTokenService->getTdsToken($accountId));
+   }
 
    public function testShoudGetTdsTokenWithTestEnviroment()
    {
       Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
-         $configMock = Mockery::mock(Config::class);
-         $configMock->shouldReceive('getIsSandboxMode')
-            ->andReturnTrue();
+      $configMock = Mockery::mock(Config::class);
+      $configMock->shouldReceive('getIsSandboxMode')
+         ->andReturnTrue();
 
-         $tdsTokenService = new TdsTokenService($configMock);
+      $tdsTokenService = new TdsTokenService($configMock);
 
-         $token = 'tokentds';
-         $getTdsTokenResponseMock = Mockery::mock(GetTdsTokenResponse::class);
-         $getTdsTokenResponseMock->tdsToken = $token;
+      $token = 'tokentds';
+      $getTdsTokenResponseMock = Mockery::mock(GetTdsTokenResponse::class);
+      $getTdsTokenResponseMock->tdsToken = $token;
 
-         $tdsTokenProxyMock = Mockery::mock('overload:Pagarme\Core\Middle\Proxy\TdsTokenProxy');
+      $tdsTokenProxyMock = Mockery::mock('overload:Pagarme\Core\Middle\Proxy\TdsTokenProxy');
 
-         
-         $accountId = 'acc_test';
-         $tdsTokenProxyMock->shouldReceive('getTdsToken')
-            ->with('test', $accountId)
-            ->andReturn($getTdsTokenResponseMock);
-         
-         $this->assertSame($token, $tdsTokenService->getTdsToken($accountId));
+
+      $accountId = 'acc_test';
+      $tdsTokenProxyMock->shouldReceive('getTdsToken')
+         ->with('test', $accountId)
+         ->andReturn($getTdsTokenResponseMock);
+
+      $this->assertSame($token, $tdsTokenService->getTdsToken($accountId));
    }
 }
