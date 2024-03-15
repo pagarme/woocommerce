@@ -60,7 +60,13 @@ const pagarmeTds = {
     },
 
     canTdsRun: () => {
+        const fieldset = pagarmeCard
+            .getCheckoutPaymentElement()
+            .find(pagarmeCard.fieldsetCardElements);
+
+        const paymentMethod = fieldset.attr(pagarmeTds.paymentMethodTarget);
         return (
+            paymentMethod === "credit_card" &&
             wc_pagarme_checkout.config.payment.credit_card.tdsEnabled ===
                 true &&
             cartTotal * 100 >
@@ -257,15 +263,15 @@ const pagarmeTds = {
 
     createTdsField: (authentication) => {
         pagarmeTds.removeTdsFields();
-        const field = pagarmeCard
+        const fieldset = pagarmeCard
             .getCheckoutPaymentElement()
             .find(pagarmeCard.fieldsetCardElements);
         let inputName =
             pagarmeTds.vendor +
             "[" +
-            field.attr(pagarmeTds.paymentMethodTarget) +
+            fieldset.attr(pagarmeTds.paymentMethodTarget) +
             "][cards][" +
-            field.attr(pagarmeTds.sequenceTarget) +
+            fieldset.attr(pagarmeTds.sequenceTarget) +
             "][" +
             pagarmeTds.authentication +
             "]";
@@ -276,7 +282,7 @@ const pagarmeTds = {
             .attr("id", inputName)
             .attr("value", authentication)
             .attr(pagarmeTds.elementTarget, pagarmeTds.authentication);
-        field.append(input);
+        fieldset.append(input);
     },
 
     removeTdsFields: () => {
