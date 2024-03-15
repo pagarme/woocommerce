@@ -243,13 +243,6 @@ final class OrderService
     public function createOrderAtPagarme(PlatformOrderInterface $platformOrder)
     {
         try {
-            $orderInfo = $this->getOrderInfo($platformOrder);
-
-            $this->logService->orderInfo(
-                $platformOrder->getCode(),
-                'Creating order.',
-                $orderInfo
-            );
 
             //set pending
             $platformOrder->setState(OrderState::stateNew());
@@ -257,6 +250,11 @@ final class OrderService
 
             //build PaymentOrder based on platformOrder
             $paymentOrder =  $this->extractPaymentOrderFromPlatformOrder($platformOrder);
+            $this->logService->orderInfo(
+                $platformOrder->getCode(),
+                'Creating order.',
+                $paymentOrder
+            );
 
             $i18n = new LocalizationService();
 
@@ -270,13 +268,13 @@ final class OrderService
                 $this->logService->orderInfo(
                     $platformOrder->getCode(),
                     "Can't create order. - Force Create Order: {$forceCreateOrder} | Order or charge status failed",
-                    $orderInfo
+                    $paymentOrder
                 );
 
                 $charges = $this->createChargesFromResponse($response);
                 $errorMessages = $this->cancelChargesAtPagarme($charges);
 
-                $this->addChargeMessagesToLog($platformOrder, $orderInfo, $errorMessages);
+                $this->addChargeMessagesToLog($platformOrder, $paymentOrder, $errorMessages);
 
                 $this->persistListChargeFailed($response);
 
@@ -312,7 +310,7 @@ final class OrderService
                 $this->logService->orderInfo(
                     $platformOrder->getCode(),
                     "Can't create order. - Force Create Order: {$forceCreateOrder} | Order or charge status failed",
-                    $orderInfo
+                    $paymentOrder
                 );
                 $message = $i18n->getDashboard(
                     "Can't create payment. " .
@@ -326,7 +324,7 @@ final class OrderService
             $this->logService->orderInfo(
                 $platformOrder->getCode(),
                 $e->getMessage(),
-                $orderInfo
+                $paymentOrder
             );
             $exceptionHandler = new ErrorExceptionHandler();
             $paymentOrder = new PaymentOrder();
@@ -378,8 +376,6 @@ final class OrderService
             $order->addPayment($payment);
         }
 
-        $orderInfo = $this->getOrderInfo($platformOrder);
-
         /*
         This block was commented out because this validation is still problematic in the woocommerce module.
         TODO: we will need to make the module work with this code block.
@@ -414,17 +410,6 @@ final class OrderService
         }
 
         return $order;
-    }
-
-    /**
-     * @param PlatformOrderInterface $platformOrder
-     * @return \stdClass
-     */
-    public function getOrderInfo(PlatformOrderInterface $platformOrder)
-    {
-        $orderInfo = new \stdClass();
-        $orderInfo->grandTotal = $platformOrder->getGrandTotal();
-        return $orderInfo;
     }
 
     private function responseHasNoChargesOrFailed($response)

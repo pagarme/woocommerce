@@ -98,7 +98,7 @@ class LogService
             $logObject = $this->prepareObject($exception);
             $code = ' | Exception code: ' . $exception->getCode();
             $this->monolog->error($exception->getMessage() . $code, $logObject);
-            
+
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -132,9 +132,6 @@ class LogService
     {
         $base = 'Pagarme_PaymentModule_' . date('Y-m-d');
         $fileName = $this->path . DIRECTORY_SEPARATOR . $base;
-        if ($this->addHost) {
-            $fileName .= '_' . gethostname();
-        }
         $fileName .= '.log';
         $this->fileName = $fileName;
     }
@@ -187,7 +184,9 @@ class LogService
                 }
             }
             return $logObject;
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            $this->exception($e);
+        }
     }
 
     /**

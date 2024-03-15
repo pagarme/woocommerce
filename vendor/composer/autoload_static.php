@@ -13,6 +13,7 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         ),
         'W' => 
         array (
+            'Woocommerce\\Pagarme\\Tests\\' => 26,
             'Woocommerce\\Pagarme\\' => 20,
         ),
         'P' => 
@@ -33,6 +34,10 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         'apimatic\\jsonmapper\\' => 
         array (
             0 => __DIR__ . '/..' . '/apimatic/jsonmapper/src',
+        ),
+        'Woocommerce\\Pagarme\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/tests',
         ),
         'Woocommerce\\Pagarme\\' => 
         array (
