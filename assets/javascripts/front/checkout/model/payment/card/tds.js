@@ -42,7 +42,6 @@ const pagarmeTds = {
                     pagarmeTds.FAIL_ASSEMBLE_PURCHASE
                 ]
             );
-            return;
         }
     },
 
@@ -266,15 +265,11 @@ const pagarmeTds = {
         const fieldset = pagarmeCard
             .getCheckoutPaymentElement()
             .find(pagarmeCard.fieldsetCardElements);
-        let inputName =
-            pagarmeTds.vendor +
-            "[" +
-            fieldset.attr(pagarmeTds.paymentMethodTarget) +
-            "][cards][" +
-            fieldset.attr(pagarmeTds.sequenceTarget) +
-            "][" +
-            pagarmeTds.authentication +
-            "]";
+        const inputName = `${pagarmeTds.vendor}[${fieldset.attr(
+            pagarmeTds.paymentMethodTarget
+        )}][cards][${fieldset.attr(pagarmeTds.sequenceTarget)}][${
+            pagarmeTds.authentication
+        }]`;
         const input = jQuery(document.createElement("input"));
         input
             .attr("type", "hidden")
@@ -287,12 +282,8 @@ const pagarmeTds = {
 
     removeTdsFields: () => {
         const field = pagarmeCard.getCheckoutPaymentElement();
-        let inputs = field.find(
-            "[" +
-                pagarmeTds.elementTarget +
-                "=" +
-                pagarmeTds.authentication +
-                "]"
+        const inputs = field.find(
+            `[${pagarmeTds.elementTarget}=${pagarmeTds.authentication}]`
         );
         if (inputs.length) {
             jQuery.each(inputs, function () {
@@ -306,11 +297,7 @@ const pagarmeTds = {
             pagarmeCard
                 .getCheckoutPaymentElement()
                 .find(
-                    "[" +
-                        pagarmeTds.elementTarget +
-                        "=" +
-                        pagarmeTds.authentication +
-                        "]"
+                    `[${pagarmeTds.elementTarget}=${pagarmeTds.authentication}]`
                 ).length > 0
         );
     },
@@ -327,7 +314,7 @@ const pagarmeTds = {
             pagarmeTds.addTdsAttributeData();
             const token = pagarmeTds.getToken();
             if (token.length === 0) {
-                return;
+                return false;
             }
 
             pagarmeTds.callTds(token);
