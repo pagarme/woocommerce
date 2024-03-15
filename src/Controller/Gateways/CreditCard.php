@@ -78,6 +78,11 @@ class CreditCard extends AbstractGateway
             $fields['cc_allowed_in_subscription'] = $this->field_cc_allowed_for_subscription();
             $fields['cc_subscription_installments'] = $this->field_cc_subscription_installments();
         }
+
+        $fields['section_tds'] = $this->section_tds();
+        $fields['tds_enabled'] = $this->field_cc_tds_enabled();
+        $fields['tds_min_amount'] = $this->field_cc_tds_min_amount();
+
         return $fields;
     }
 
@@ -90,9 +95,6 @@ class CreditCard extends AbstractGateway
             'section_antifraud' => $this->section_antifraud(),
             'antifraud_enabled' => $this->antifraud_enabled(),
             'antifraud_min_value' => $this->antifraud_min_value(),
-            'section_tds' => $this->section_tds(),
-            'tds_enabled' => $this->field_cc_tds_enabled(),
-            'tds_min_amount' => $this->field_cc_tds_min_amount(),
         ];
     }
 
