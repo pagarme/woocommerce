@@ -257,7 +257,10 @@ class Core
     public static function get_webhook_url($custom_url = false)
     {
         $url = !$custom_url ? Utils::get_site_url() : $custom_url;
-
+        if ( !$custom_url ) {
+            $parsedUrl = wp_parse_url($url);
+            $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
+        }
         return sprintf('%s/wc-api/%s/', $url, self::get_webhook_name());
     }
 
