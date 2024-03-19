@@ -187,7 +187,7 @@ const pagarmeTds = {
             phones: customerPhones,
             card_expiry_date: cardExpiryDate,
             purchase: {
-                amount: cartTotal * 100,
+                amount: parseInt(cartTotal * 100),
                 date: new Date().toISOString(),
                 instal_data: 2,
             },
