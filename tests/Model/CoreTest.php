@@ -4,6 +4,7 @@ namespace Woocommerce\Pagarme\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
 use Woocommerce\Pagarme\Core;
+use Brain;
 use Mockery;
 
 class CoreTest extends TestCase
@@ -11,12 +12,14 @@ class CoreTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Brain\Monkey\setUp();
     }
 
     public function tearDown(): void
     {
         parent::tearDown();
         Mockery::close();
+        Brain\Monkey\tearDown();
     }
     public function testGetWebhookWithoutCustomUrlAndWithPath()
     {
