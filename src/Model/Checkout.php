@@ -129,7 +129,7 @@ class Checkout
             $order = new Order($wc_order->get_id());
             $totalWithInstallments = $order->getTotalAmountByCharges();
             $order->pagarme_card_tax = $order->calculateInstallmentFee($totalWithInstallments, $wc_order->get_total());
-            $order->wc_order->set_total($this->getTotalValue($wc_order, $totalWithInstallments));
+            $order->getWcOrder()->set_total($this->getTotalValue($wc_order, $totalWithInstallments));
             $order->payment_method = $fields['payment_method'];
             WC()->cart->empty_cart();
             if ($response) {
@@ -167,6 +167,15 @@ class Checkout
                     }
                     if ($value = $card->getWalletId()) {
                         $fields['card_id'] = $value;
+                    }
+
+                    $authentication = $card->getAuthentication();
+
+                    if (!empty($authentication)) {
+                        $fields['authentication'] = json_decode(
+                            stripslashes($authentication),
+                            true
+                        );
                     }
                 } else {
                     if ($orderValue = $card->getOrderValue()) {
