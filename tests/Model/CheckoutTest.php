@@ -44,7 +44,7 @@ class CheckoutTest extends TestCase
         Brain\Monkey\tearDown();
     }
 
-    public function testProcessWithWithTdsAuthenticatedCreditCardPaymentMethodShouldSetAuthenticationNode()
+    public function testProcessWithTdsAuthenticatedCreditCardPaymentMethodShouldSetAuthenticationNode()
     {
         $gatewayMock = Mockery::mock(Gateway::class);
         $configMock = Mockery::mock(Config::class);
