@@ -77,7 +77,7 @@ abstract class AbstractCard extends AbstractTransaction
                         'woo-pagarme-payments'
                     );
                 }
-            }          
+            }       
         } catch (\Exception $e) {}
         return $value;
     }
