@@ -138,6 +138,7 @@ class Checkout
                 $order->pagarme_id = $response->getPagarmeId()->getValue();
                 $order->pagarme_status = $response->getStatus()->getStatus();
                 $this->addInstallmentsOnMetaData($order, $fields);
+                $this->addAuthenticationOnMetaData($order, $fields);
                 $order->response_data = json_encode($response);
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
@@ -207,6 +208,14 @@ class Checkout
         if (array_key_exists("installments2", $fields)) {
             $order->pagarme_installments_card2 = $fields["installments2"];
         }
+    }
+
+    private function addAuthenticationOnMetaData(&$order, $fields)
+    {
+        if (!array_key_exists('authentication', $fields)) {
+            return;
+        }
+        $order->pagarme_tds_authentication = json_encode($fields["authentication"]);
     }
 
     private function extractMulticustomers(array &$fields, PaymentRequestInterface $paymentRequest)
