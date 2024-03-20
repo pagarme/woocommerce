@@ -11,7 +11,7 @@ jQuery(function ($) {
             }
             const requiredFields = $('#shipping_number:visible, input[data-required=true]:visible,' +
                 'select[data-required=true]:visible,' +
-                `.wc_payment_method.payment_method_${checkedPayment} [data-pagarmecheckout-element="brand-input"]`);
+                `.wc_payment_method.payment_method_${checkedPayment} [data-pagarme-element="brand-input"]`);
             let isValid = true;
             requiredFields.each(function (index, item) {
                 const field = $(item);

@@ -7,7 +7,7 @@ let pagarmeTokenize = {
     vendor: 'pagarme',
     paymentMethodTarget: 'data-pagarmecheckout-method',
     sequenceTarget: 'data-pagarmecheckout-card-num',
-    tokenElementTarget: 'data-pagarmecheckout-element',
+    tokenElementTarget: 'data-pagarme-element',
     getEndpoint: function () {
         let url = new URL(this.apiUrl);
         url.searchParams.append('appId', this.appId);
@@ -55,7 +55,7 @@ let pagarmeTokenize = {
     createCardObject: function (field) {
         let obj = {};
         jQuery.each(jQuery(field).find('input'), function () {
-            let prop = this.getAttribute('data-pagarmecheckout-element'),
+            let prop = this.getAttribute('data-pagarme-element'),
                 ignore = ['brand-input', 'exp_date', 'card-order-value', null],
                 value;
             value = this.value;
