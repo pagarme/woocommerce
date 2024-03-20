@@ -68,9 +68,8 @@ const pagarmeTds = {
             paymentMethod === "credit_card" &&
             wc_pagarme_checkout.config.payment.credit_card.tdsEnabled ===
                 true &&
-            cartTotal * 100 >=
-                wc_pagarme_checkout.config.payment.credit_card.tdsMinAmount *
-                    100 &&
+            cartTotal >=
+                wc_pagarme_checkout.config.payment.credit_card.tdsMinAmount &&
             pagarmeCard.brandIsVisaOrMaster() &&
             !pagarmeTds.hasAuthenticationField()
         );
