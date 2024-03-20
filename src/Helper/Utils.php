@@ -166,7 +166,7 @@ class Utils
     public static function is_request_ajax()
     {
          return ( strtolower(self::server('HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest'
-                || (0 === strpos(self::server('QUERY_string'), 'wc-ajax')));
+                || (0 === strpos(self::server('QUERY_STRING'), 'wc-ajax')));
     }
 
     /**
