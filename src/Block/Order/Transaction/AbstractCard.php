@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author      Open Source Team
  * @copyright   2022 Pagar.me (https://pagar.me)
@@ -7,7 +8,7 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Block\Order\Transaction;
 
@@ -15,7 +16,7 @@ use Pagarme\Core\Payment\Aggregates\Payments\Authentication\AuthenticationStatus
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Order;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class AbstractCard
@@ -77,8 +78,9 @@ abstract class AbstractCard extends AbstractTransaction
                         'woo-pagarme-payments'
                     );
                 }
-            }       
-        } catch (\Exception $e) {}
+            }
+        } catch (\Exception $e) {
+        }
         return $value;
     }
 
