@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-01-19 11:54-0300\n"
+"PO-Revision-Date: 2024-03-20 14:27-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1302,3 +1302,48 @@ msgstr "Funciona apenas para assinaturas mensais e anuais."
 
 msgid "Your cart has one or more daily or weekly subscription products, which do not allow installments."
 msgstr "Seu carrinho possui um ou mais produtos de assinatura diário ou semanal, que não permitem parcelamentos."
+
+msgid "3DS settings"
+msgstr "Configurações de 3DS"
+
+msgid "Enable 3DS"
+msgstr "Habilitar 3DS"
+
+msgid "Minimum value for 3DS authentication"
+msgstr "Valor mínimo para autenticação 3DS"
+
+msgid "Failed to generate Token for 3ds, try again."
+msgstr "Falha ao gerar Token para 3ds, tente novamente."
+
+msgid "There was a problem finding the email."
+msgstr "Ocorreu um problema ao encontrar o e-mail."
+
+msgid "There was a problem finding the addresses."
+msgstr "Ocorreu um problema ao encontrar os endereços."
+
+msgid "There was a problem when assembling the card's expiration data."
+msgstr "Ocorreu um problema ao montar o dado de expiração do cartão."
+
+msgid "There was a problem when assembling the purchase data."
+msgstr "Ocorreu um problema ao montar o dado de compra."
+
+msgid "3DS Status"
+msgstr "Status 3DS"
+
+msgid "Y - Transaction approved and authenticated by the Issuer"
+msgstr "Y - Transação aprovada e autenticada pelo Emissor"
+
+msgid "A - Transaction approved and authenticated by Brand"
+msgstr "A - Transação aprovada e autenticada pela Bandeira"
+
+msgid "I - Only data sent to the Brand and Issuer"
+msgstr "I - Apenas dados enviados a Bandeira e Emissor"
+
+msgid "U - Authentication unavailable"
+msgstr "U - Autenticação indisponível"
+
+msgid "N - Transaction rejected by the Issuer"
+msgstr "N - Transação rejeitada pelo Emissor"
+
+msgid "R - Transaction rejected by Issuer (post-challenge)"
+msgstr "R - Transação rejeitada pelo Emissor (pós-desafio)"

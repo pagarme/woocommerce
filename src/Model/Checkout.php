@@ -129,7 +129,7 @@ class Checkout
             $order = new Order($wc_order->get_id());
             $totalWithInstallments = $order->getTotalAmountByCharges();
             $order->pagarme_card_tax = $order->calculateInstallmentFee($totalWithInstallments, $wc_order->get_total());
-            $order->wc_order->set_total($this->getTotalValue($wc_order, $totalWithInstallments));
+            $order->getWcOrder()->set_total($this->getTotalValue($wc_order, $totalWithInstallments));
             $order->payment_method = $fields['payment_method'];
             WC()->cart->empty_cart();
             if ($response) {
@@ -138,6 +138,7 @@ class Checkout
                 $order->pagarme_id = $response->getPagarmeId()->getValue();
                 $order->pagarme_status = $response->getStatus()->getStatus();
                 $this->addInstallmentsOnMetaData($order, $fields);
+                $this->addAuthenticationOnMetaData($order, $fields);
                 $order->response_data = json_encode($response);
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
@@ -167,6 +168,15 @@ class Checkout
                     }
                     if ($value = $card->getWalletId()) {
                         $fields['card_id'] = $value;
+                    }
+
+                    $authentication = $card->getAuthentication();
+
+                    if (!empty($authentication)) {
+                        $fields['authentication'] = json_decode(
+                            stripslashes($authentication),
+                            true
+                        );
                     }
                 } else {
                     if ($orderValue = $card->getOrderValue()) {
@@ -198,6 +208,14 @@ class Checkout
         if (array_key_exists("installments2", $fields)) {
             $order->pagarme_installments_card2 = $fields["installments2"];
         }
+    }
+
+    private function addAuthenticationOnMetaData(&$order, $fields)
+    {
+        if (!array_key_exists('authentication', $fields)) {
+            return;
+        }
+        $order->pagarme_tds_authentication = json_encode($fields["authentication"]);
     }
 
     private function extractMulticustomers(array &$fields, PaymentRequestInterface $paymentRequest)

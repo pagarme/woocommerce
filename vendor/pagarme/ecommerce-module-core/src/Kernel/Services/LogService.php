@@ -98,7 +98,7 @@ class LogService
             $logObject = $this->prepareObject($exception);
             $code = ' | Exception code: ' . $exception->getCode();
             $this->monolog->error($exception->getMessage() . $code, $logObject);
-            
+
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -184,7 +184,9 @@ class LogService
                 }
             }
             return $logObject;
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            $this->exception($e);
+        }
     }
 
     /**

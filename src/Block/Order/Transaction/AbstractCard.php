@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author      Open Source Team
  * @copyright   2022 Pagar.me (https://pagar.me)
@@ -7,13 +8,15 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Block\Order\Transaction;
 
+use Pagarme\Core\Payment\Aggregates\Payments\Authentication\AuthenticationStatusEnum;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Order;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class AbstractCard
@@ -60,7 +63,24 @@ abstract class AbstractCard extends AbstractTransaction
                     }
                 }
             }
-        } catch (\Exception $e) {}
+
+            $orderId = $this->getData('orderId');
+            if ($orderId) {
+                $order = new Order($orderId);
+                $authorization = $order->get_meta('pagarme_tds_authentication');
+
+                if (!empty($authorization)) {
+                    $authorization = json_decode($authorization, true);
+                    $value[$this->getLabel('3DS Status')] = __(
+                        AuthenticationStatusEnum::statusMessage(
+                            $authorization['trans_status']
+                        ),
+                        'woo-pagarme-payments'
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+        }
         return $value;
     }
 
@@ -76,7 +96,7 @@ abstract class AbstractCard extends AbstractTransaction
     /**
      * @param $key
      * @param $value
-     * @return String
+     * @return string
      */
     public function convertData($key, $value)
     {

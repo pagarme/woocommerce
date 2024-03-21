@@ -68,6 +68,7 @@ class Core
             'Charges',
             'Accounts',
             'HubAccounts',
+            'TdsToken',
         );
 
         self::load_controllers($controllers);
@@ -346,6 +347,16 @@ class Core
                 __('Timeout na tokenização.', 'woo-pagarme-payments'),
             'card: Can\'t check card form: Invalid element received'        =>
                 __('Can\'t check card form: Invalid element received.', 'woo-pagarme-payments'),
+            'fail_get_token'        =>
+                __('Failed to generate Token for 3ds, try again.', 'woo-pagarme-payments'),
+            'fail_get_email'        =>
+                __('There was a problem finding the email.', 'woo-pagarme-payments'),
+            'fail_get_billing_address'        =>
+                __('There was a problem finding the addresses.', 'woo-pagarme-payments'),
+            'fail_assemble_card_expiry_date'        =>
+                __('There was a problem when assembling the card\'s expiration data.', 'woo-pagarme-payments'),
+            'fail_assemble_purchase'        =>
+                __('There was a problem when assembling the purchase data.', 'woo-pagarme-payments'),
         );
     }
 }
