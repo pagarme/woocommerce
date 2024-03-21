@@ -2,39 +2,39 @@
 
 namespace Woocommerce\Pagarme\Concrete;
 
+use stdClass;
+use WC_Order;
 use Woocommerce\Pagarme\Model\Order;
-use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
-use Woocommerce\Pagarme\Model\Api;
-use Woocommerce\Pagarme\Model\Config;
-use Woocommerce\Pagarme\Model\Payment as WCModelPayment;
 use Woocommerce\Pagarme\Helper\Utils;
-use Pagarme\Core\Kernel\Abstractions\AbstractPlatformOrderDecorator;
+use Woocommerce\Pagarme\Model\Config;
+use Pagarme\Core\Payment\Aggregates\Item;
 use Pagarme\Core\Kernel\Aggregates\Charge;
-use Pagarme\Core\Kernel\Interfaces\PlatformInvoiceInterface;
+use Pagarme\Core\Kernel\Services\LogService;
+use Pagarme\Core\Payment\Aggregates\Address;
+use Pagarme\Core\Payment\ValueObjects\Phone;
+use Pagarme\Core\Payment\Aggregates\Customer;
+use Pagarme\Core\Payment\Aggregates\Shipping;
 use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\Services\OrderService;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Kernel\ValueObjects\OrderState;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
-use Pagarme\Core\Payment\Aggregates\Address;
-use Pagarme\Core\Payment\Aggregates\Customer;
-use Pagarme\Core\Payment\Aggregates\Item;
-use Pagarme\Core\Payment\Aggregates\Payments\AbstractCreditCardPayment;
-use Pagarme\Core\Payment\Aggregates\Payments\AbstractPayment;
-use Pagarme\Core\Payment\Aggregates\Payments\BoletoPayment;
-use Pagarme\Core\Payment\Aggregates\Payments\NewDebitCardPayment;
-use Pagarme\Core\Payment\Aggregates\Payments\NewVoucherPayment;
-use Pagarme\Core\Payment\Aggregates\Payments\PixPayment;
-use Pagarme\Core\Payment\Aggregates\Shipping;
 use Pagarme\Core\Payment\Factories\PaymentFactory;
-use Pagarme\Core\Payment\Repositories\CustomerRepository as CoreCustomerRepository;
-use Pagarme\Core\Payment\ValueObjects\CustomerPhones;
 use Pagarme\Core\Payment\ValueObjects\CustomerType;
-use Pagarme\Core\Payment\ValueObjects\Phone;
-use Pagarme\Core\Recurrence\Services\RecurrenceService;
 use Pagarme\Core\Kernel\Services\LocalizationService;
-use Pagarme\Core\Kernel\Services\LogService;
-use WC_Order;
+use Pagarme\Core\Payment\ValueObjects\CustomerPhones;
+use Pagarme\Core\Recurrence\Services\RecurrenceService;
+use Pagarme\Core\Payment\Aggregates\Payments\PixPayment;
+use Woocommerce\Pagarme\Model\Payment as WCModelPayment;
+use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
+use Pagarme\Core\Payment\Aggregates\Payments\BoletoPayment;
+use Pagarme\Core\Kernel\Interfaces\PlatformInvoiceInterface;
+use Pagarme\Core\Payment\Aggregates\Payments\AbstractPayment;
+use Pagarme\Core\Payment\Aggregates\Payments\NewVoucherPayment;
+use Pagarme\Core\Payment\Aggregates\Payments\NewDebitCardPayment;
+use Pagarme\Core\Kernel\Abstractions\AbstractPlatformOrderDecorator;
+use Pagarme\Core\Payment\Aggregates\Payments\AbstractCreditCardPayment;
+use Pagarme\Core\Payment\Repositories\CustomerRepository as CoreCustomerRepository;
 
 class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 {
@@ -50,6 +50,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private $paymentInformation;
 
     private $orderService;
+
+    /** @var Customer */
+    private $customer;
 
     public function __construct($formData = null, $paymentMethod = null)
     {
@@ -395,15 +398,32 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     /** @return Customer */
     public function getCustomer()
     {
+        if (!empty($this->customer)) {
+            return $this->customer;
+        }
+        
         $customerId = get_current_user_id();
         if (!empty($this->getPlatformOrder()->get_user_id())) {
             $customerId = $this->getPlatformOrder()->get_user_id() ?? null;
         }
         if (!empty($customerId)) {
-            return $this->getRegisteredCustomer($customerId);
+            $customer = $this->getRegisteredCustomer($customerId);
+            $this->setCustomer($customer);
+            return $customer;
         }
 
-        return $this->getGuestCustomer();
+        $customer = $this->getGuestCustomer();
+        $this->setCustomer($customer);
+        return $customer;
+    }
+
+    /**
+     * @param Customer $customer
+     * @return void
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
     }
 
     /**
@@ -580,7 +600,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $payment = new WCModelPayment($this->formData['payment_method']);
             $pagarmeCustomer = $this->getCustomer();
 
-            $customer = new \stdClass();
+            $customer = new stdClass();
             $customer->id = $pagarmeCustomer->getPagarmeId() ?
                 $pagarmeCustomer->getPagarmeId()->getValue() : null;
 
@@ -701,6 +721,21 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (!isset($paymentData[$creditCardDataIndex])) {
             $paymentData[$creditCardDataIndex] = [];
         }
+
+        if (!empty($this->formData['authentication'])) {
+            $authenticationFormData = $this->formData['authentication'];
+            $authentication = new stdClass();
+            $authentication->type = 'threed_secure';
+            $authentication->status = $authenticationFormData['trans_status'];
+
+            $threeDSecure = new stdClass();
+            $threeDSecure->mpi = 'pagarme';
+            $threeDSecure->transactionId = $authenticationFormData['tds_server_trans_id'];
+
+            $authentication->threeDSecure = $threeDSecure;
+            $newPaymentData->authentication = $authentication;
+        }
+
         $paymentData[$creditCardDataIndex][] = $newPaymentData;
     }
 
