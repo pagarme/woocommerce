@@ -16,7 +16,7 @@
     },
     "require": {
         "mashape/unirest-php": "^3.0",
-        "pagarme/ecommerce-module-core": "2.4.*",
+        "pagarme/ecommerce-module-core": "~2.4.1",
         "psr/log": "1.1.4",
         "monolog/monolog": "<2"
     },
