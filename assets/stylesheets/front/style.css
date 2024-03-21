@@ -155,7 +155,7 @@
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-.modal-content {
+.challengeIframeElement .modal-content {
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
