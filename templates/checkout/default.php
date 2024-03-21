@@ -17,12 +17,6 @@ if (!function_exists('add_action')) {
 
 global $woocommerce;
 
-wp_localize_script(
-    'pagarme-checkout-card',
-    'wc_pagarme_checkout',
-    ['config' => $this->getConfigDataProvider()]
-);
-
 $wc_api = $this->getHomeUrl();
 ?>
 <div id="wcmp-checkout-errors">

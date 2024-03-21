@@ -1,5 +1,4 @@
 /* globals pagarmeCard */
-
 let pagarmeTokenize = {
     appId: jQuery('[data-pagarmecheckout-app-id]').data('pagarmecheckoutAppId'),
     apiUrl: 'https://api.mundipagg.com/core/v1/tokens',
@@ -18,9 +17,6 @@ let pagarmeTokenize = {
     },
 
     execute: async function () {
-        if (wc_pagarme_checkout.validate() === false) {
-            return;
-        }
         let el = pagarmeCard.getCheckoutPaymentElement();
         if (pagarmeCard.isPagarmePayment() && pagarmeCard.haveCardForm(el) !== false) {
             pagarmeTokenize.getCardsForm(el).each(await pagarmeTokenize.tokenize);
@@ -178,3 +174,4 @@ let pagarmeTokenize = {
         });
     }
 };
+
