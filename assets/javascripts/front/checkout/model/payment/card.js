@@ -224,6 +224,18 @@ let pagarmeCard = {
 
         let imageSrc = this.getImageSrc(card);
         let imgElem = jQuery(elem).parent().find('img');
+
+        const doesNotHaveBrand = !card[0].brand
+            || card[0]?.brand?.length === 0
+        if (doesNotHaveBrand) {
+            pagarmeCard.showErrorInPaymentMethod(
+                PagarmeGlobalVars.checkoutErrors.pt_BR[
+                    'invalidBrand'
+                ]
+            );
+            return;
+        }
+
         jQuery(elem).parents('.pagarme-card-number-row').find(this.brandTarget).attr('value', card[0].brand);
         if (imgElem.length) {
             imgElem.attr('src', imageSrc);
@@ -235,6 +247,24 @@ let pagarmeCard = {
                 )
             );
         }
+    },
+    showErrorInPaymentMethod: function (error) {
+        const element = jQuery('input[name$="payment_method"]:checked')
+            .closest("li")
+            .find("#wcmp-checkout-errors");
+
+        swal.close();
+
+        wc_pagarme_checkout.errorList = `<li>${error}<\li>`;
+
+        element.find(".woocommerce-error").html(wc_pagarme_checkout.errorList);
+        element.slideDown();
+
+        const rect = element.get(0).getBoundingClientRect();
+
+        jQuery("#wcmp-submit").removeAttr("disabled", "disabled");
+
+        window.scrollTo(0, rect.top + window.scrollY - 40);
     },
     getImageSrc: function (card) {
         if (card[0].image) {
@@ -373,10 +403,13 @@ let pagarmeCard = {
         }
     },
     canExecute: function (event) {
-        if (!wc_pagarme_checkout.validate() || wc_pagarme_checkout.errorTokenize === true) {
+        const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
+        const cardBrand = checkoutPaymentElement.parents('.pagarme-card-number-row')
+            .find(this.brandTarget);
+        if (cardBrand?.val()?.length === 0 || wc_pagarme_checkout.errorTokenize === true) {
             return false;
         }
-        let checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
+
         if (pagarmeCard.isPagarmePayment() &&
             !pagarmeCard.isTokenized() &&
             pagarmeCard.haveCardForm(checkoutPaymentElement)
@@ -454,6 +487,7 @@ let pagarmeCard = {
         }
     },
     start: function () {
+        jQuery.jMaskGlobals.watchDataMask = true;
         this.getCardsMethods();
         this.addEventListener();
         this.onChangeBillingCpf();

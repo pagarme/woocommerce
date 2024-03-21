@@ -13,7 +13,7 @@ const pagarmeTds = {
     FAIL_ASSEMBLE_PURCHASE: "fail_assemble_purchase",
     addErrors: (errors) => {
         if (errors.error?.email) {
-            pagarmeTds.showError(
+            pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[
                     pagarmeTds.FAIL_GET_EMAIL
                 ]
@@ -21,7 +21,7 @@ const pagarmeTds = {
             return;
         }
         if (errors.error?.bill_addr) {
-            pagarmeTds.showError(
+            pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[
                     pagarmeTds.FAIL_GET_BILLING_ADDRESS
                 ]
@@ -29,7 +29,7 @@ const pagarmeTds = {
             return;
         }
         if (errors.error?.card_expiry_date) {
-            pagarmeTds.showError(
+            pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[
                     pagarmeTds.FAIL_ASSEMBLE_CARD_EXPIRY_DATE
                 ]
@@ -37,7 +37,7 @@ const pagarmeTds = {
             return;
         }
         if (errors.error?.purchase) {
-            pagarmeTds.showError(
+            pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[
                     pagarmeTds.FAIL_ASSEMBLE_PURCHASE
                 ]
@@ -49,7 +49,7 @@ const pagarmeTds = {
         const data = pagarmeTdsToken.getToken();
         if (data.error) {
             pagarmeTds.removeTdsAttributeData();
-            pagarmeTds.showError(
+            pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[data.error]
             );
             return "";
@@ -215,25 +215,6 @@ const pagarmeTds = {
         );
     },
 
-    showError: function (error) {
-        const element = jQuery('input[name$="payment_method"]:checked')
-            .closest("li")
-            .find("#wcmp-checkout-errors");
-
-        swal.close();
-
-        wc_pagarme_checkout.errorList = `<li>${error}<\li>`;
-
-        element.find(".woocommerce-error").html(wc_pagarme_checkout.errorList);
-        element.slideDown();
-
-        const rect = element.get(0).getBoundingClientRect();
-
-        jQuery("#wcmp-submit").removeAttr("disabled", "disabled");
-
-        window.scrollTo(0, rect.top + window.scrollY - 40);
-    },
-
     callbackTds: (data) => {
         pagarmeCard.removeLoader();
         if (data?.error !== undefined) {
@@ -245,7 +226,7 @@ const pagarmeTds = {
         }
 
         if (pagarmeTds.checkoutEvent === null) {
-            pagarmeTds.showError(
+            pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[
                     pagarmeTdsToken.FAIL_GET_TOKEN
                 ]
