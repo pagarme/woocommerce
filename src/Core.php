@@ -17,10 +17,6 @@ class Core
 
     const PREFIX = WCMP_PREFIX;
 
-    const LOCALIZE_SCRIPT_ID = 'PagarmeGlobalVars';
-
-    const INVALID_CARD_ERROR_MESSAGE = 'This card number is invalid.';
-
     private function __construct()
     {
         add_action('init', array(__CLASS__, 'load_textdomain'));
@@ -82,21 +78,6 @@ class Core
         }
     }
 
-    public static function get_localize_script_args($args = array())
-    {
-        $defaults = array(
-            'ajaxUrl'        => Utils::get_admin_url('admin-ajax.php'),
-            'WPLANG'         => get_locale(),
-            'spinnerUrl'     => self::plugins_url('assets/images/icons/spinner.png'),
-            'prefix'         => self::PREFIX,
-            'checkoutErrors' => array(
-                'pt_BR' => self::credit_card_errors_pt_br(),
-            ),
-        );
-
-        return array_merge($defaults, $args);
-    }
-
     public static function admin_enqueue_scripts()
     {
         add_action('admin_enqueue_scripts', array(__CLASS__, 'scripts_admin'));
@@ -144,20 +125,6 @@ class Core
                 array_merge(['jquery'], $deps),
                 '1.6.1',
                 false
-            );
-        }
-        if ($type == 'front') {
-            wp_enqueue_script(
-                'pagarme-checkout-card',
-                self::plugins_url("assets/javascripts/front/checkout/model/payment.js"),
-                array_merge(array('jquery'), $deps),
-                self::filemtime("assets/javascripts/front/checkout/model/payment.js"),
-                true
-            );
-            wp_localize_script(
-                'pagarme-checkout-card',
-                'PagarmeGlobalVars',
-                self::get_localize_script_args()
             );
         }
 
@@ -312,51 +279,5 @@ class Core
     {
         $actions = new ActionsRunner();
         $actions->run();
-    }
-
-    public static function credit_card_errors_pt_br()
-    {
-        return array(
-            'exp_month: A value is required.'                             =>
-                __('Expiration Date: The month is required.', 'woo-pagarme-payments'),
-            'exp_month: The field exp_month must be between 1 and 12.'    =>
-                __('Expiration Date: The month must be between 1 and 12.', 'woo-pagarme-payments'),
-            "exp_year: The value 'undefined' is not valid for exp_year."  =>
-                __('Expiration Date: Invalid year.', 'woo-pagarme-payments'),
-            'request: The card expiration date is invalid.'               =>
-                __('Expiration Date: Invalid expiration date.', 'woo-pagarme-payments'),
-            'request: Card expired.'                                      =>
-                __('Expiration Date: Expired card.', 'woo-pagarme-payments'),
-            'holder_name: The holder_name field is required.'             =>
-                __('The card holder name is required.', 'woo-pagarme-payments'),
-            'number: The number field is required.'                       =>
-                __('The card number is required.', 'woo-pagarme-payments'),
-            'number: The number field is not a valid credit card number.' =>
-                __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
-            'card: The number field is not a valid card number'           =>
-                __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
-            'card.number: The field number must be a string with a minimum length of 13 and a maximum length of 19.'
-            => __('The card number must be between 13 and 19 characters.', 'woo-pagarme-payments'),
-            'card: Card expired.'                                         =>
-                __('The expiration date is expired.', 'woo-pagarme-payments'),
-            'card.cvv: The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
-            => __('The card code must be between 3 and 4 characters.', 'woo-pagarme-payments'),
-            'card: Invalid data to change card brand'                     =>
-                __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
-            'card: Tokenize timeout'                                      =>
-                __('Timeout na tokenização.', 'woo-pagarme-payments'),
-            'card: Can\'t check card form: Invalid element received'        =>
-                __('Can\'t check card form: Invalid element received.', 'woo-pagarme-payments'),
-            'fail_get_token'        =>
-                __('Failed to generate Token for 3ds, try again.', 'woo-pagarme-payments'),
-            'fail_get_email'        =>
-                __('There was a problem finding the email.', 'woo-pagarme-payments'),
-            'fail_get_billing_address'        =>
-                __('There was a problem finding the addresses.', 'woo-pagarme-payments'),
-            'fail_assemble_card_expiry_date'        =>
-                __('There was a problem when assembling the card\'s expiration data.', 'woo-pagarme-payments'),
-            'fail_assemble_purchase'        =>
-                __('There was a problem when assembling the purchase data.', 'woo-pagarme-payments'),
-        );
     }
 }
