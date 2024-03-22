@@ -192,13 +192,13 @@ class Card extends Gateway
             'card: Invalid data to change card brand'                     =>
                 __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
             'card: Tokenize timeout'                                      =>
-                __('Timeout na tokenização.', 'woo-pagarme-payments'),
+                __('Tokenization timeout.', 'woo-pagarme-payments'),
             'fail_get_token'        =>
                 __('Failed to generate Token for 3ds, try again.', 'woo-pagarme-payments'),
             'fail_get_email'        =>
                 __('There was a problem finding the email.', 'woo-pagarme-payments'),
             'fail_get_billing_address'        =>
-                __('There was a problem finding the addresses.', 'woo-pagarme-payments'),
+                __('There was a problem finding the address.', 'woo-pagarme-payments'),
             'fail_assemble_card_expiry_date'        =>
                 __('There was a problem when assembling the card\'s expiration data.', 'woo-pagarme-payments'),
             'fail_assemble_purchase'        =>
