@@ -131,6 +131,7 @@ class Checkout
             $order->pagarme_card_tax = $order->calculateInstallmentFee($totalWithInstallments, $wc_order->get_total());
             $order->getWcOrder()->set_total($this->getTotalValue($wc_order, $totalWithInstallments));
             $order->payment_method = $fields['payment_method'];
+            $this->addAuthenticationOnMetaData($order, $fields);
             WC()->cart->empty_cart();
             if ($response) {
                 do_action("on_pagarme_response", $wc_order->get_id(), $response);
@@ -138,7 +139,6 @@ class Checkout
                 $order->pagarme_id = $response->getPagarmeId()->getValue();
                 $order->pagarme_status = $response->getStatus()->getStatus();
                 $this->addInstallmentsOnMetaData($order, $fields);
-                $this->addAuthenticationOnMetaData($order, $fields);
                 $order->response_data = json_encode($response);
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
