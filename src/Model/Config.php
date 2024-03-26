@@ -11,13 +11,14 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model;
 
-use Pagarme\Core\Hub\Services\HubIntegrationService;
-use Pagarme\Core\Middle\Model\Account\PaymentEnum;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Config\PagarmeCoreConfigManagement;
-use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
+use Pagarme\Core\Kernel\Services\MoneyService;
 use Woocommerce\Pagarme\Model\Data\DataObject;
+use Pagarme\Core\Middle\Model\Account\PaymentEnum;
+use Pagarme\Core\Hub\Services\HubIntegrationService;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
+use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
+use Woocommerce\Pagarme\Model\Config\PagarmeCoreConfigManagement;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 
 defined( 'ABSPATH' ) || exit;
@@ -340,7 +341,10 @@ class Config extends DataObject
 
     public function getTdsMinAmount()
     {
-        return $this->getData('tds_min_amount');
+        $tdsMinAmount = $this->getData('tds_min_amount');
+        $moneyService = new MoneyService();
+        $tdsMinAmount = $moneyService->removeSeparators($tdsMinAmount);
+        return $moneyService->centsToFloat($tdsMinAmount);
     }
 
     public function isAnyBilletMethodEnabled()

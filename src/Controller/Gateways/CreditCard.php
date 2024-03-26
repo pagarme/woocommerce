@@ -429,10 +429,10 @@ class CreditCard extends AbstractGateway
             'title' => __('Minimum value for 3DS authentication', 'woo-pagarme-payments'),
             'type' => 'text',
             'default' => $this->config->getData('cc_tds_min_amount') ?? '',
-            'placeholder' => '0.00',
+            'placeholder' => '0,00',
             'custom_attributes' => array(
                 'data-field' => 'cc-tds-min-amount',
-                'data-mask' => '##0.00',
+                'data-mask' => '#.##0,00',
                 'data-mask-reverse' => 'true',
             ),
         ];
