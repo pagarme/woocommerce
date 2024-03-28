@@ -70,6 +70,7 @@ class CreditCard extends Card implements PaymentInterface
             $jsConfigProvider['brands'][$brand->getBrandCode()] = $brand->getConfigDataProvider();
         }
         $jsConfigProvider['tdsEnabled'] = Subscription::hasSubscriptionProductInCart()
+            || Subscription::isChangePaymentSubscription()
             ? false
             : $this->getConfig()->isTdsEnabled();
         if ($jsConfigProvider['tdsEnabled']) {
