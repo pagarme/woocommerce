@@ -342,6 +342,9 @@ class Config extends DataObject
     public function getTdsMinAmount()
     {
         $tdsMinAmount = $this->getData('tds_min_amount');
+        if (empty($tdsMinAmount)) {
+            return 0;
+        }
         $moneyService = new MoneyService();
         $tdsMinAmount = $moneyService->removeSeparators($tdsMinAmount);
         return $moneyService->centsToFloat($tdsMinAmount);
