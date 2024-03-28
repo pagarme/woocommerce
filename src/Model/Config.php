@@ -345,6 +345,13 @@ class Config extends DataObject
         if (empty($tdsMinAmount)) {
             return 0;
         }
+        if (is_string($tdsMinAmount) && ctype_digit($tdsMinAmount)) {
+            return intval($tdsMinAmount);
+        }
+        if(is_int($tdsMinAmount)) {
+            return $tdsMinAmount;
+        }
+        
         $moneyService = new MoneyService();
         $tdsMinAmount = $moneyService->removeSeparators($tdsMinAmount);
         return $moneyService->centsToFloat($tdsMinAmount);

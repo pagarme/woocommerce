@@ -293,7 +293,7 @@ const pagarmeTds = {
             pagarmeTds.checkoutEvent = event;
             pagarmeTds.addTdsAttributeData();
             const token = pagarmeTds.getToken();
-            if (token.length === 0) {
+            if (!token || token.length === 0) {
                 return false;
             }
 
