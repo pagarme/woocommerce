@@ -69,7 +69,9 @@ $success = 'Integration keys successfully removed. Reload the page.';
                                 }),
                                 success: function (response) {
                                     swal.fire({
-                                        title: '<?= esc_attr( __( 'Disintegration Complete', 'woo-pagarme-payments' ) ); ?>',
+                                        title: '<?= esc_attr(
+                                                __( 'Disintegration Complete', 'woo-pagarme-payments' )
+                                            ); ?>',
                                         text: '<?= esc_attr( __( $success, 'woo-pagarme-payments' ) ); ?>',
                                         icon: 'success'
                                     });
@@ -77,8 +79,12 @@ $success = 'Integration keys successfully removed. Reload the page.';
                                 },
                                 fail: function (response) {
                                     swal.fire({
-                                        title: '<?= esc_attr( __( 'Disintegration Error', 'woo-pagarme-payments' ) ); ?>',
-                                        text: '<?= esc_attr( __( 'Integration keys not removed.', 'woo-pagarme-payments' ) ); ?>',
+                                        title: '<?= esc_attr(
+                                                __( 'Disintegration Error', 'woo-pagarme-payments' )
+                                            ); ?>',
+                                        text: '<?= esc_attr(
+                                                __( 'Integration keys not removed.', 'woo-pagarme-payments' )
+                                            ); ?>',
                                         icon: 'error'
                                     });
                                 }
