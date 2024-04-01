@@ -1,4 +1,5 @@
-const removeCard = '[data-action="remove-card"]'
+/* jshint esversion: 6 */
+const removeCard = '[data-action="remove-card"]';
 
 let pagarmeWallet = {
     start: function () {
@@ -12,19 +13,23 @@ let pagarmeWallet = {
     },
     _onClickRemoveCard: function (event) {
         event.preventDefault();
-        swal({
+        swal.fire({
             title: walletConfig.dataSwal.confirm_title,
             text: walletConfig.dataSwal.confirm_text,
-            type: 'warning',
+            icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: walletConfig.dataSwal.confirm_color,
             cancelButtonColor: walletConfig.dataSwal.cancel_color,
             confirmButtonText: walletConfig.dataSwal.confirm_button,
             cancelButtonText: walletConfig.dataSwal.cancel_button,
             allowOutsideClick: false,
-        }).then(this._request.bind(this, event.currentTarget.dataset.value), function () {
-        });
-        },
+        })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    pagarmeWallet._request(event.currentTarget.dataset.value);
+                }
+            });
+    },
     _request: function (cardId) {
         swal.showLoading();
         jQuery.ajax({
@@ -33,8 +38,7 @@ let pagarmeWallet = {
             data: {
                 card_id: cardId
             }
-        })
-        .done(this._done)
+        }).done(this._done);
     },
     _done: function (response) {
         if (response.success) {
@@ -43,24 +47,21 @@ let pagarmeWallet = {
             pagarmeWallet.failMessage(response.data);
         }
     },
-    _fail: function (jqXHR, textStatus, errorThrown) {
-    },
     failMessage: function (message) {
-        swal({
-            type: 'error',
+        swal.fire({
+            icon: 'error',
             html: message
-        }).then(function () {
         });
     },
     successMessage: function (message) {
-        swal({
-            type: 'success',
+        swal.fire({
+            icon: 'success',
             html: message,
             allowOutsideClick: false
         }).then(function () {
             location.reload(true);
         });
     },
-}
+};
 
 pagarmeWallet.start();

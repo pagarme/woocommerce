@@ -1,10 +1,10 @@
-const { __ } = wp.i18n;
+/* jshint esversion: 6 */
 jQuery(function ($) {
     $('.pagarme-get-hub-account-info').on('click', function (e) {
         try {
-            swal({
-                title: ' ',
-                text: __('Processing', 'woo-pagarme-payments'),
+            swal.fire({
+                title: 'Processando',
+                icon: 'warning',
                 allowOutsideClick: false
             });
             swal.showLoading();
@@ -16,30 +16,29 @@ jQuery(function ($) {
                     command: 'get'
                 }),
                 success: function (response) {
-                    swal(
-                        __('Success!', 'woo-pagarme-payments'),
-                        __('Dash configuration was retrieved successfully. The page is reloading. Please, wait a moment.',
-                            'woo-pagarme-payments'
-                        ),
-                        'success'
-                    )
+                    swal.fire({
+                        title: 'Sucesso!',
+                        text: 'As configurações da Dash foram recuperadas com sucesso. A página está recarregando.' +
+                            ' Por favor, aguarde um momento.',
+                        icon: 'success'
+                    });
                     document.location.reload(true);
                 },
                 fail: function (response) {
-                    swal(
-                        __('Fail!', 'woo-pagarme-payments'),
-                        __('Dash configuration was not retrieved. Please, try again.', 'woo-pagarme-payments'),
-                        'error'
-                    )
+                    swal.fire({
+                        title: 'Falha!',
+                        text: 'As configurações da Dash não foram recuperadas. Por favor, tente novamente.',
+                        icon: 'error'
+                    });
                 }
 
             });
-        } catch (e) {
-            swal(
-                __('Fail!', 'woo-pagarme-payments'),
-                __('Dash configuration was not retrieved. Please, try again.', 'woo-pagarme-payments'),
-                'error'
-            )
+        } catch (error) {
+            swal.fire({
+                title: 'Falha!',
+                text: 'As configurações da Dash não foram recuperadas. Por favor, tente novamente.',
+                icon: 'error'
+            });
         }
     });
 });

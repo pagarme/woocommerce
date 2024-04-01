@@ -1,5 +1,5 @@
 /* globals wc_pagarme_checkout */
-/*jshint esversion: 8 */
+/* jshint esversion: 11 */
 let pagarmeCard = {
     limitTokenize: 10,
     tokenExpirationAttribute: 'data-pagarmecheckout-expiration',
@@ -225,8 +225,7 @@ let pagarmeCard = {
         let imageSrc = this.getImageSrc(card);
         let imgElem = jQuery(elem).parent().find('img');
 
-        const doesNotHaveBrand = !card[0].brand
-            || card[0]?.brand?.length === 0
+        const doesNotHaveBrand = !card[0].brand || card[0]?.brand?.length === 0;
         if (doesNotHaveBrand) {
             pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[
@@ -364,11 +363,11 @@ let pagarmeCard = {
     showError: function (text) {
         const errorMessageText = this.translateErrors('card', text);
         const message = {
-            type: 'error',
+            icon: 'error',
             html: errorMessageText,
             allowOutsideClick: false
         };
-        swal(message);
+        swal.fire(message);
     },
     translateErrors: function (error, message) {
         error = error.replace('request.', '');
@@ -434,8 +433,7 @@ let pagarmeCard = {
         const checkoutPaymentElement = this.getCheckoutPaymentElement();
         const brand = jQuery(checkoutPaymentElement).find(this.brandTarget)
             .val();
-        return brand === "visa"
-            || brand === "mastercard";
+        return brand === "visa" || brand === "mastercard";
     },
     onChangeBillingCpf: function () {
         let cpf = jQuery(this.billingCpfId).val();

@@ -1,4 +1,5 @@
 /* globals pagarmeCard */
+/* jshint esversion: 8 */
 let pagarmeTokenize = {
     appId: jQuery('[data-pagarmecheckout-app-id]').data('pagarmecheckoutAppId'),
     apiUrl: 'https://api.mundipagg.com/core/v1/tokens',
@@ -104,11 +105,11 @@ let pagarmeTokenize = {
     showError: function (text) {
         swal.close();
         const message = {
-            type: 'error',
+            icon: 'error',
             html: text,
             allowOutsideClick: false
         };
-        swal(message);
+        swal.fire(message);
     },
 
     listError: function (errors) {
@@ -139,11 +140,7 @@ let pagarmeTokenize = {
     },
 
     createTokenInput: async function (response, field) {
-        try {
-            await pagarmeTokenize.clearInputTokens(field);
-        } catch (e) {
-            this.showError(e.message);
-        }
+        await pagarmeTokenize.clearInputTokens(field);
         const objJSON = JSON.parse(response);
         let input = jQuery(document.createElement('input'));
         if (!(field instanceof jQuery)) {

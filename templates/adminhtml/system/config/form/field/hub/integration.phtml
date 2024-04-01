@@ -42,7 +42,7 @@ $success = 'Integration keys successfully removed. Reload the page.';
             const content = {
                 title: '<?= esc_attr(__('Disintegrate?', 'woo-pagarme-payments')); ?>',
                 text: '<?= esc_attr(__($confirm, 'woo-pagarme-payments')); ?>',
-                type: 'info',
+                icon: 'info',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
@@ -51,9 +51,9 @@ $success = 'Integration keys successfully removed. Reload the page.';
             };
             $('#pagarme-hub-desintegration-link').on('click', function (e) {
                 try {
-                    swal(content).then((result) => {
-                        if (result) {
-                            swal({
+                    swal.fire(content).then((result) => {
+                        if (result.isConfirmed) {
+                            swal.fire({
                                 title: ' ',
                                 text: '<?= esc_attr(__('Processing', 'woo-pagarme-payments')); ?>',
                                 allowOutsideClick: false
@@ -68,29 +68,35 @@ $success = 'Integration keys successfully removed. Reload the page.';
                                     force: true
                                 }),
                                 success: function (response) {
-                                    swal(
-                                        '<?= esc_attr(__('Disintegration Complete', 'woo-pagarme-payments')); ?>',
-                                        '<?= esc_attr(__($success, 'woo-pagarme-payments')); ?>',
-                                        'success'
-                                    )
+                                    swal.fire({
+                                        title: '<?= esc_attr(
+                                                __( 'Disintegration Complete', 'woo-pagarme-payments' )
+                                            ); ?>',
+                                        text: '<?= esc_attr( __( $success, 'woo-pagarme-payments' ) ); ?>',
+                                        icon: 'success'
+                                    });
                                     document.location.reload(true);
                                 },
                                 fail: function (response) {
-                                    swal(
-                                        '<?= esc_attr(__('Disintegration Error', 'woo-pagarme-payments')); ?>',
-                                        '<?= esc_attr(__('Integration keys not removed.', 'woo-pagarme-payments')); ?>',
-                                        'error'
-                                    )
+                                    swal.fire({
+                                        title: '<?= esc_attr(
+                                                __( 'Disintegration Error', 'woo-pagarme-payments' )
+                                            ); ?>',
+                                        text: '<?= esc_attr(
+                                                __( 'Integration keys not removed.', 'woo-pagarme-payments' )
+                                            ); ?>',
+                                        icon: 'error'
+                                    });
                                 }
                             });
                         }
                     });
                 } catch (e) {
-                    swal(
-                        '<?= esc_attr(__('Disintegration Error', 'woo-pagarme-payments')); ?>',
-                        '<?= esc_attr(__('Integration keys not removed.', 'woo-pagarme-payments')); ?>',
-                        'error'
-                    )
+                    swal({
+                        title: '<?= esc_attr( __( 'Disintegration Error', 'woo-pagarme-payments' ) ); ?>',
+                        text: '<?= esc_attr( __( 'Integration keys not removed.', 'woo-pagarme-payments' ) ); ?>',
+                        icon: 'error'
+                    });
                 }
             });
         });
