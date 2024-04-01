@@ -103,7 +103,7 @@ let pagarmeCancelCapture = {
 
     requestInProgress: function () {
         swal.fire({
-            title: 'Processing',
+            title: 'Processando',
             icon: 'warning',
             allowOutsideClick: false
         });
