@@ -2,13 +2,13 @@ import { formatCardNumber } from "../inputs/utils/cardNumberFormatter";
 import { getMonthAndYearFromExpirationDate } from "../inputs/utils/expirationDate";
 
 const tranlasteErrorMessage = (errorIndex, message, errorMessages) => {
-    const error = errorIndex.replace("request.", "");
+    const error = errorIndex.replace("request.", "").replace("card.", "");
     const output = `${error}: ${message}`;
     if (errorMessages.hasOwnProperty(output)) {
         return errorMessages[output];
     }
 
-    return output;
+    return "";
 };
 
 const buildErrorMessage = (response, errorMessages) => {
@@ -20,6 +20,9 @@ const buildErrorMessage = (response, errorMessages) => {
                 error,
                 errorMessages,
             );
+            if (message.length === 0) {
+                continue;
+            }
             errorMessage += `${message}<br/>`;
         }
     }

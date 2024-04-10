@@ -1,14 +1,25 @@
+/* jshint esversion: 9 */
 import Installments from "./inputs/components/Installments";
 import InputHolderName from "./inputs/components/InputHolderName";
 import InputNumber from "./inputs/components/InputNumber";
-import MaskedInput from "./inputs/components/MaskedInput";
+import InputExpiry from "./inputs/components/InputExpiry";
+import InputCvv from "./inputs/components/InputCvv";
 import PropTypes from "prop-types";
 import Wallet from "./inputs/components/Wallet";
 import useCard from "./useCard";
-const { CheckboxControl } = window.wc.blocksComponents;
+import useCardValidation from "./useCardValidation";
+import {useEffect} from "@wordpress/element";
 
-const Card = ({ billing, components, backendConfig, cardIndex }) => {
-    const { LoadingMask } = components;
+const {CheckboxControl} = window.wc.blocksComponents;
+
+const Card = ({
+    billing,
+    components,
+    backendConfig,
+    cardIndex,
+    eventRegistration,
+}) => {
+    const {LoadingMask} = components;
 
     const {
         holderNameLabel,
@@ -30,6 +41,7 @@ const Card = ({ billing, components, backendConfig, cardIndex }) => {
         setBrand,
         setCvv,
         setWalletId,
+        setErrors,
         saveCardChangeHandler,
         formatFieldId,
         holderName,
@@ -40,7 +52,26 @@ const Card = ({ billing, components, backendConfig, cardIndex }) => {
         cvv,
         saveCard,
         walletId,
+        errors,
     } = useCard(cardIndex);
+
+    const {validateAllFields} = useCardValidation(cardIndex, errors, setErrors, backendConfig.fieldErrors);
+
+    const {onCheckoutValidation} = eventRegistration;
+    useEffect( () => {
+        return onCheckoutValidation(() => {
+            validateAllFields(holderName, number, expirationDate, cvv);
+            return true;
+        });
+    }, [
+        onCheckoutValidation,
+        validateAllFields,
+        holderName,
+        number,
+        expirationDate,
+        cvv,
+        backendConfig,
+    ] );
 
     return (
         <LoadingMask isLoading={isLoading}>
@@ -63,6 +94,9 @@ const Card = ({ billing, components, backendConfig, cardIndex }) => {
                             inputValue={holderName}
                             setInputValue={setHolderName}
                             cardIndex={cardIndex}
+                            errors={errors}
+                            setErrors={setErrors}
+                            fieldErrors={backendConfig.fieldErrors}
                         />
                         <InputNumber
                             id={formatFieldId("number")}
@@ -74,44 +108,51 @@ const Card = ({ billing, components, backendConfig, cardIndex }) => {
                             brands={backendConfig.brands}
                             setIsLoading={setIsLoading}
                             cardIndex={cardIndex}
+                            errors={errors}
+                            setErrors={setErrors}
+                            fieldErrors={backendConfig.fieldErrors}
                         />
-                        <MaskedInput
+                        <InputExpiry
                             id={formatFieldId("expiry")}
                             label={expiryLabel}
-                            mask="99/99"
                             inputValue={expirationDate}
                             setInputValue={setExpirationDate}
                             cardIndex={cardIndex}
+                            errors={errors}
+                            setErrors={setErrors}
+                            fieldErrors={backendConfig.fieldErrors}
                         />
-                        <MaskedInput
+                        <InputCvv
                             id={formatFieldId("cvv")}
                             label={cvvLabel}
-                            mask="9999"
                             inputValue={cvv}
                             setInputValue={setCvv}
                             cardIndex={cardIndex}
+                            errors={errors}
+                            setErrors={setErrors}
+                            fieldErrors={backendConfig.fieldErrors}
                         />
-                        {backendConfig.walletEnabled && (
-                            <CheckboxControl
-                                label={saveCardLabel}
-                                checked={saveCard}
-                                onChange={saveCardChangeHandler}
-                            />
-                        )}
                     </>
                 )}
+                <Installments
+                    label={installmentsLabel}
+                    installments={backendConfig.installments}
+                    installmentsType={backendConfig.installmentsType}
+                    selectedInstallment={selectedInstallment}
+                    setSelectedInstallment={setInstallment}
+                    brand={brand}
+                    cartTotal={billing.cartTotal.value}
+                    setIsLoading={setIsLoading}
+                    cardIndex={cardIndex}
+                />
+                {walletId.length === 0 && backendConfig.walletEnabled && (
+                    <CheckboxControl
+                        label={saveCardLabel}
+                        checked={saveCard}
+                        onChange={saveCardChangeHandler}
+                    />
+                )}
             </div>
-            <Installments
-                label={installmentsLabel}
-                installments={backendConfig.installments}
-                installmentsType={backendConfig.installmentsType}
-                selectedInstallment={selectedInstallment}
-                setSelectedInstallment={setInstallment}
-                brand={brand}
-                cartTotal={billing.cartTotal.value}
-                setIsLoading={setIsLoading}
-                cardIndex={cardIndex}
-            />
         </LoadingMask>
     );
 };
@@ -121,6 +162,7 @@ Card.propType = {
     components: PropTypes.object.isRequired,
     backendConfig: PropTypes.object.isRequired,
     cardIndex: PropTypes.number.isRequired,
+    eventRegistration: PropTypes.object.isRequired,
 };
 
 export default Card;

@@ -1,3 +1,4 @@
+/* jshint esversion: 9 */
 import pagarmeCardsStore from "../store/cards";
 import TokenizeException from "../Card/token/tokenizeException";
 import tokenizeMultiCards from "../Card/token/tokenizeMultiCards";
@@ -20,6 +21,18 @@ const useCreditCard = (backendConfig, emitResponse, eventRegistration) => {
     useEffect(() => {
         const unsubscribe = onPaymentSetup(async () => {
             try {
+                let hasErrors = false;
+                if (typeof cards === 'object') {
+                    hasErrors = Object.values(cards).some((card) => {
+                        return Object.keys(card.errors).length > 0;
+                    });
+                }
+                if (hasErrors) {
+                    return {
+                        type: emitResponse.responseTypes.ERROR,
+                        message: backendConfig.errorMessages.creditCardFormHasErrors,
+                    };
+                }
                 const formatedCards = await tokenizeMultiCards(
                     cards,
                     1,

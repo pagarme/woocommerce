@@ -1,5 +1,7 @@
+/* jshint esversion: 9 */
 import { useState } from "@wordpress/element";
 import { formatCardNumber } from "../../utils/cardNumberFormatter";
+import useCardValidation from "../../../useCardValidation";
 
 const binUrl = "https://api.pagar.me/bin/v1/";
 const mundipaggCdn =
@@ -12,8 +14,24 @@ const useInputNumber = (
     setBrand,
     setIsLoading,
     cardIndex,
+    errors,
+    setErrors,
+    fieldErrors,
 ) => {
+    const {validateInputNumber} = useCardValidation(cardIndex, errors, setErrors, fieldErrors);
+
     const [brandImageSrc, setBrandImageSrc] = useState("");
+
+    let cssClasses = "wc-block-components-text-input pagarme-credit-card-number-container";
+
+    const [isActive, setIsActive] = useState(false);
+    if (isActive || inputValue.length) {
+        cssClasses += " is-active";
+    }
+
+    if (errors.hasOwnProperty('inputNumber')) {
+        cssClasses += " has-error";
+    }
 
     const inputChangeHandler = (event) => {
         setInputValue(cardIndex, event.target.value);
@@ -83,14 +101,21 @@ const useInputNumber = (
         } catch (e) {
             resetBrand();
             setIsLoading(false);
-            return;
         }
     };
 
+    const inputBlurHandler = (event) => {
+        validateInputNumber(event.target.value);
+        changeBrand();
+        setIsActive(false);
+    };
+
     return {
+        setIsActive,
+        cssClasses,
         brandImageSrc,
         inputChangeHandler,
-        changeBrand,
+        inputBlurHandler,
     };
 };
 

@@ -1,3 +1,4 @@
+/* jshint esversion: 8 */
 import PropTypes from "prop-types";
 import useInputHolderName from "./useInputHolderName";
 
@@ -7,11 +8,17 @@ const InputHolderName = ({
     inputValue,
     setInputValue,
     cardIndex,
+    errors,
+    setErrors,
+    fieldErrors,
 }) => {
-    const { setIsActive, cssClasses, inputChangeHandler } = useInputHolderName(
+    const { setIsActive, cssClasses, inputChangeHandler, inputBlurHandler } = useInputHolderName(
         inputValue,
         setInputValue,
         cardIndex,
+        errors,
+        setErrors,
+        fieldErrors,
     );
 
     return (
@@ -23,10 +30,13 @@ const InputHolderName = ({
                 value={inputValue}
                 onChange={inputChangeHandler}
                 onFocus={() => setIsActive(true)}
-                onBlur={() => {
-                    setIsActive(false);
-                }}
+                onBlur={inputBlurHandler}
             />
+            {errors.inputHolderName && (
+                <div className="wc-block-components-validation-error" role="alert">
+                    <p>{errors.inputHolderName}</p>
+                </div>
+            )}
         </div>
     );
 };
@@ -37,6 +47,8 @@ InputHolderName.propTypes = {
     inputValue: PropTypes.string.isRequired,
     setInputValue: PropTypes.func.isRequired,
     cardIndex: PropTypes.number.isRequired,
+    errors: PropTypes.object.isRequired,
+    setErrors: PropTypes.func.isRequired,
 };
 
 export default InputHolderName;

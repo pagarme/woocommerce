@@ -9,6 +9,7 @@ const DEFAULT_CARD = {
     cvv: "",
     saveCard: false,
     walletId: "",
+    errors: {},
 };
 
 const DEFAULT_STATE = {
@@ -87,11 +88,19 @@ const actions = {
             propertyName: "walletId",
         };
     },
+    setErrors(cardIndex, errors){
+        return {
+            type: "SET_PROPERTY_VALUE",
+            cardIndex,
+            value: errors,
+            propertyName: "errors",
+        };
+    },
     reset() {
         return {
             type: "RESET",
         };
-    },
+    }
 };
 
 const pagarmeCardsStore = createReduxStore("pagarme-cards", {
@@ -148,6 +157,9 @@ const pagarmeCardsStore = createReduxStore("pagarme-cards", {
         },
         getCards(state) {
             return state.cards;
+        },
+        getErrors(state, cardIndex) {
+            return state.cards[cardIndex].errors;
         },
     },
 });

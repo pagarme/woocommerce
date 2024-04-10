@@ -1,3 +1,4 @@
+/* jshint esversion: 8 */
 import PropTypes from "prop-types";
 import InputMask from "react-input-mask";
 import useInputNumber from "./useInputNumber";
@@ -12,31 +13,42 @@ const InputNumber = ({
     brands,
     setIsLoading,
     cardIndex,
+    errors,
+    setErrors,
+    fieldErrors,
 }) => {
-    const { brandImageSrc, inputChangeHandler, changeBrand } = useInputNumber(
+    const { setIsActive, cssClasses, brandImageSrc, inputChangeHandler, inputBlurHandler} = useInputNumber(
         inputValue,
         brands,
         setInputValue,
         setBrand,
         setIsLoading,
         cardIndex,
+        errors,
+        setErrors,
+        fieldErrors,
     );
 
     return (
-        <div className={"wc-block-components-text-input is-active"}>
+        <div className={cssClasses}>
             <label htmlFor={id}>{label}</label>
             <InputMask
                 className={"pagarme-card-form-card-number"}
                 type="text"
                 id={id}
                 mask="9999 9999 9999 9999"
-                maskChar="*"
+                maskChar="•"
+                onFocus={() => setIsActive(true)}
                 onChange={inputChangeHandler}
                 value={inputValue}
-                alwaysShowMask={true}
-                onBlur={changeBrand}
+                onBlur={inputBlurHandler}
             />
-            {brandImageSrc && <img src={brandImageSrc} alt={brand} />}
+            {brandImageSrc && <img src={brandImageSrc} alt={brand}/>}
+            {errors.inputNumber && (
+                <div className="wc-block-components-validation-error" role="alert">
+                    <p>{errors.inputNumber}</p>
+                </div>
+            )}
         </div>
     );
 };
@@ -51,6 +63,9 @@ InputNumber.propTypes = {
     brands: PropTypes.object.isRequired,
     setIsLoading: PropTypes.func.isRequired,
     cardIndex: PropTypes.number.isRequired,
+    errors: PropTypes.object.isRequired,
+    setErrors: PropTypes.func.isRequired,
+    // onCheckoutValidation: PropTypes.bool.isRequired,
 };
 
 export default InputNumber;

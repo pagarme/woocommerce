@@ -38,7 +38,8 @@ abstract class AbstractCard extends AbstractPaymentMethodBlock
             'fieldsLabels' => $this->getFieldsLabels(),
             'brands' => $this->paymentModel->getConfigDataProvider()['brands'],
             'errorMessages' => Core::credit_card_errors_pt_br(),
-            'cards' => $this->paymentModel->getCards()
+            'cards' => $this->paymentModel->getCards(),
+            'fieldErrors' => $this->getFieldErrors()
         ];
 
         if ($additionalData['walletEnabled']) {
@@ -66,18 +67,34 @@ abstract class AbstractCard extends AbstractPaymentMethodBlock
     {
         return [
             'holderNameLabel' => __('Card Holder Name', 'woo-pagarme-payments'),
-            'numberLabel' => __('Card Number', 'woo-pagarme-payments'),
-            'expiryLabel' => __('Expiration Date', 'woo-pagarme-payments'),
-            'cvvLabel' => __('Card code', 'woo-pagarme-payments'),
+            'numberLabel' => __('Card number', 'woo-pagarme-payments'),
+            'expiryLabel' => __('Expiration Date (MM/AA)', 'woo-pagarme-payments'),
+            'cvvLabel' => __('Card code (CVV)', 'woo-pagarme-payments'),
             'installmentsLabel' => __('Installments quantity', 'woo-pagarme-payments'),
             'saveCardLabel' => __('Save this card for future purchases', 'woo-pagarme-payments'),
             'walletLabel' => __('Saved cards', 'woo-pagarme-payments'),
         ];
     }
 
+    protected function getFieldErrors()
+    {
+        return [
+            'holderName' => __('Please enter a valid name.', 'woo-pagarme-payments'),
+            'cardNumber' => __('Please enter a valid credit card number.', 'woo-pagarme-payments'),
+            'emptyExpiry' => __('Please enter a expiry date.', 'woo-pagarme-payments'),
+            'invalidExpiryMonth' => __('The expiry month must be between 1 and 12.', 'woo-pagarme-payments'),
+            'emptyCvv' => __('Please enter a valid CVV number.', 'woo-pagarme-payments'),
+            'invalidCvv' => __('The CVV number must be between 3 and 4 characters.', 'woo-pagarme-payments'),
+        ];
+    }
+
     protected function assembleCardsInfoToCheckoutBlock()
     {
         $cards = $this->paymentModel->getCards();
+
+        if (!$cards) {
+            return [];
+        }
 
         $cardsInfo = [
             0 => [

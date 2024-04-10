@@ -1,3 +1,4 @@
+/* jshint esversion: 8 */
 import PropTypes from "prop-types";
 import useInstallments from "./useInstallments";
 
@@ -26,7 +27,7 @@ const Installments = ({
         );
 
     return (
-        <div className="wc-block-components-form pagarme-installments-combobox">
+        <div className="wc-block-components-select-input pagarme-installments-combobox">
             <div className={"wc-block-components-combobox is-active"}>
                 <ComboboxControl
                     className={"wc-block-components-combobox-control"}

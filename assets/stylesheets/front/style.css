@@ -1,5 +1,5 @@
 .pagarme-hidden {
-    display: none!important;
+    display: none !important;
 }
 
 #wcmp-checkout-errors {
@@ -130,11 +130,11 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    border: 1px solid rgba(255,255,255,.15);
+    border: 1px solid rgba(255, 255, 255, .15);
     border-radius: 4px;
     padding: calc(var(--gutter-x) * .5);
-    background-color: rgba(0,0,0,.15);
-    box-shadow: 0 0 3rem inset rgba(0,0,0,.15);
+    background-color: rgba(0, 0, 0, .15);
+    box-shadow: 0 0 3rem inset rgba(0, 0, 0, .15);
 }
 
 .woocommerce-order .woocommerce-message .pagarme-response .pagarme-qr-code-instruction > p > span {
@@ -151,8 +151,23 @@
 }
 
 .pagarme-installments-combobox .wc-block-components-combobox .wc-block-components-combobox-control .components-flex {
+    height: initial;
     padding-left: 0;
     padding-right: 0;
+}
+
+.pagarme-credit-card-number-container input {
+    padding-right: 4.2em !important;
+}
+
+.pagarme-credit-card-number-container img {
+    position: absolute;
+    top: 50%;
+    right: .5em;
+    margin-top: -1em;
+    background-color: #fff;
+    pointer-events: none;
+    touch-action: none;
 }
 
 /* sm  */

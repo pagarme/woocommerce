@@ -1,3 +1,4 @@
+/* jshint esversion: 8 */
 import InputMask from "react-input-mask";
 import PropTypes from "prop-types";
 import useMaskedInput from "./useMaskedInput";
@@ -8,13 +9,19 @@ const MaskedInput = ({
     inputValue,
     setInputValue,
     cardIndex,
+    validate,
+    validateIndex,
     mask,
     maskChar = null,
+    errors,
 }) => {
-    const { setIsActive, cssClasses, inputChangeHandler } = useMaskedInput(
+    const { setIsActive, cssClasses, inputChangeHandler, inputBlurHandler } = useMaskedInput(
         inputValue,
         setInputValue,
         cardIndex,
+        validate,
+        validateIndex,
+        errors,
     );
 
     return (
@@ -28,9 +35,7 @@ const MaskedInput = ({
                 onChange={inputChangeHandler}
                 value={inputValue}
                 onFocus={() => setIsActive(true)}
-                onBlur={() => {
-                    setIsActive(false);
-                }}
+                onBlur={inputBlurHandler}
             />
         </div>
     );

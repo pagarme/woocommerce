@@ -336,6 +336,8 @@ class Core
                 __('The expiration date is expired.', 'woo-pagarme-payments'),
             'card.cvv: The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
             => __('The card code must be between 3 and 4 characters.', 'woo-pagarme-payments'),
+            'cvv: The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
+            => __('The card code must be between 3 and 4 characters.', 'woo-pagarme-payments'),
             'card: Invalid data to change card brand'                     =>
                 __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
             'card: Tokenize timeout'                                      =>
@@ -343,7 +345,9 @@ class Core
             'card: Can\'t check card form: Invalid element received'        =>
                 __('Can\'t check card form: Invalid element received.', 'woo-pagarme-payments'),
             'serviceUnavailable' =>
-            __('Unable to generate a transaction. Unavailable service.', 'woo-pagarme-payments')
+                __('Unable to generate a transaction. Unavailable service.', 'woo-pagarme-payments'),
+            'creditCardFormHasErrors' =>
+                __('Please, check the errors below.', 'woo-pagarme-payments')
         );
     }
 }

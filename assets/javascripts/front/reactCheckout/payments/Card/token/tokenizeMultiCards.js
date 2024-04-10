@@ -1,3 +1,4 @@
+/* jshint esversion: 9 */
 import { tokenize } from "./token";
 import TokenizeException from "./tokenizeException";
 
@@ -35,7 +36,7 @@ const tokenizeMultiCards = async (cards, cardsNumber, backendConfig) => {
         );
 
         if (result.errorMessage) {
-            throw TokenizeException(result.errorMessage);
+            throw new TokenizeException(result.errorMessage);
         }
 
         dataCards[cardIndex] = {

@@ -1,3 +1,4 @@
+/* jshint esversion: 8 */
 import { useDispatch, useSelect } from "@wordpress/data";
 import { useState } from "@wordpress/element";
 import pagarmeCardsStore from "../store/cards";
@@ -14,6 +15,7 @@ const useCard = (cardIndex) => {
         setCvv,
         setSaveCard,
         setWalletId,
+        setErrors,
     } = useDispatch(pagarmeCardsStore);
 
     const holderName = useSelect(
@@ -72,6 +74,13 @@ const useCard = (cardIndex) => {
         [cardIndex],
     );
 
+    const errors = useSelect(
+        (select) => {
+            return select(pagarmeCardsStore).getErrors(cardIndex);
+        },
+        [cardIndex],
+    );
+
     const saveCardChangeHandler = (value) => {
         setSaveCard(cardIndex, value);
     };
@@ -88,6 +97,7 @@ const useCard = (cardIndex) => {
         setBrand,
         setCvv,
         setWalletId,
+        setErrors,
         saveCardChangeHandler,
         formatFieldId,
         holderName,
@@ -98,6 +108,7 @@ const useCard = (cardIndex) => {
         cvv,
         saveCard,
         walletId,
+        errors,
     };
 };
 
