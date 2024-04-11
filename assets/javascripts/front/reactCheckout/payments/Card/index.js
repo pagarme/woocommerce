@@ -65,13 +65,14 @@ const Card = ({
         });
     }, [
         onCheckoutValidation,
-        validateAllFields,
         holderName,
         number,
         expirationDate,
         cvv,
         backendConfig,
     ] );
+
+    console.log(0);
 
     return (
         <LoadingMask isLoading={isLoading}>

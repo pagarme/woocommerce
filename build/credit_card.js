@@ -94,7 +94,8 @@ const Card = ({
       validateAllFields(holderName, number, expirationDate, cvv);
       return true;
     });
-  }, [onCheckoutValidation, validateAllFields, holderName, number, expirationDate, cvv, backendConfig]);
+  }, [onCheckoutValidation, holderName, number, expirationDate, cvv, backendConfig]);
+  console.log(0);
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(LoadingMask, {
     isLoading: isLoading
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
