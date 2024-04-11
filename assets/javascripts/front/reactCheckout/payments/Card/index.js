@@ -72,12 +72,10 @@ const Card = ({
         backendConfig,
     ] );
 
-    console.log(0);
-
     return (
         <LoadingMask isLoading={isLoading}>
             <div className="wc-block-components-form">
-                {backendConfig.walletEnabled && (
+                {backendConfig?.walletEnabled && backendConfig?.cards?.length > 0 && (
                     <Wallet
                         label={walletLabel}
                         selectedCard={walletId}
@@ -97,7 +95,7 @@ const Card = ({
                             cardIndex={cardIndex}
                             errors={errors}
                             setErrors={setErrors}
-                            fieldErrors={backendConfig.fieldErrors}
+                            fieldErrors={backendConfig?.fieldErrors}
                         />
                         <InputNumber
                             id={formatFieldId("number")}
@@ -106,12 +104,12 @@ const Card = ({
                             setInputValue={setNumber}
                             brand={brand}
                             setBrand={setBrand}
-                            brands={backendConfig.brands}
+                            brands={backendConfig?.brands}
                             setIsLoading={setIsLoading}
                             cardIndex={cardIndex}
                             errors={errors}
                             setErrors={setErrors}
-                            fieldErrors={backendConfig.fieldErrors}
+                            fieldErrors={backendConfig?.fieldErrors}
                         />
                         <InputExpiry
                             id={formatFieldId("expiry")}
@@ -121,7 +119,7 @@ const Card = ({
                             cardIndex={cardIndex}
                             errors={errors}
                             setErrors={setErrors}
-                            fieldErrors={backendConfig.fieldErrors}
+                            fieldErrors={backendConfig?.fieldErrors}
                         />
                         <InputCvv
                             id={formatFieldId("cvv")}
@@ -131,14 +129,14 @@ const Card = ({
                             cardIndex={cardIndex}
                             errors={errors}
                             setErrors={setErrors}
-                            fieldErrors={backendConfig.fieldErrors}
+                            fieldErrors={backendConfig?.fieldErrors}
                         />
                     </>
                 )}
                 <Installments
                     label={installmentsLabel}
-                    installments={backendConfig.installments}
-                    installmentsType={backendConfig.installmentsType}
+                    installments={backendConfig?.installments}
+                    installmentsType={backendConfig?.installmentsType}
                     selectedInstallment={selectedInstallment}
                     setSelectedInstallment={setInstallment}
                     brand={brand}
@@ -146,7 +144,7 @@ const Card = ({
                     setIsLoading={setIsLoading}
                     cardIndex={cardIndex}
                 />
-                {walletId.length === 0 && backendConfig.walletEnabled && (
+                {walletId.length === 0 && backendConfig?.walletEnabled && (
                     <CheckboxControl
                         label={saveCardLabel}
                         checked={saveCard}
