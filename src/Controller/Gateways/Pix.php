@@ -56,12 +56,15 @@ class Pix extends AbstractGateway
      */
     public function append_form_fields()
     {
-        return [
+        $fields = [
             PixModel::getCheckoutInstructionsKey() => $this->field_pix_checkout_instructions(),
             'pix_qrcode_expiration_time' => $this->field_pix_qrcode_expiration_time(),
             'pix_additional_data' => $this->field_pix_additional_data(),
-            'pix_allowed_in_subscription' => $this->field_pix_allowed_for_subscription(),
         ];
+        if (Subscription::hasSubscriptionPlugin()) {
+            $fields['pix_allowed_in_subscription'] = $this->field_pix_allowed_for_subscription();
+        }
+        return $fields;
     }
 
     public function field_pix_qrcode_expiration_time()

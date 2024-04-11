@@ -95,7 +95,7 @@ class Utils
      * @since 1.0
      * @param string $name
      * @param string $action
-     * @return boolean
+     * @return bool
      */
     public static function verify_nonce_post($name, $action)
     {
@@ -127,9 +127,9 @@ class Utils
      * Properly strip all HTML tags including script and style
      *
      * @since 1.0
-     * @param mixed String|Array $value
-     * @param boolean $remove_breaks
-     * @return mixed String|Array
+     * @param mixed string|array $value
+     * @param bool $remove_breaks
+     * @return mixed string|array
      */
     public static function rm_tags($value, $remove_breaks = false)
     {
@@ -150,7 +150,7 @@ class Utils
      * @since 1.0
      * @param string $value
      * @param string $search
-     * @return boolean
+     * @return bool
      */
     public static function indexof($value, $search)
     {
@@ -161,7 +161,7 @@ class Utils
      * Verify request ajax
      *
      * @since 1.0
-     * @return boolean
+     * @return bool
      */
     public static function is_request_ajax()
     {
@@ -286,7 +286,7 @@ class Utils
      * Check is plugin settings page
      *
      * @since 1.0
-     * @return boolean
+     * @return bool
      */
     public static function is_settings_page()
     {
@@ -348,7 +348,7 @@ class Utils
      *
      * @since 1.0
      * @param mixed string|float|int $price
-     * @return integer
+     * @return int
      */
     public static function format_desnormalized_order_price($price)
     {
@@ -398,7 +398,6 @@ class Utils
      * @since 1.0
      * @param mixed $data
      * @param string $log_name
-     * @return void
      */
     public static function log($data, $log_name = 'debug')
     {
@@ -509,7 +508,7 @@ class Utils
      *
      * @since 1.0
      * @param string $meta_value
-     * @return integer
+     * @return int
      */
     public static function get_order_by_meta_value($meta_value)
     {

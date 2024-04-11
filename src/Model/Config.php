@@ -11,13 +11,14 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Model;
 
-use Pagarme\Core\Hub\Services\HubIntegrationService;
-use Pagarme\Core\Middle\Model\Account\PaymentEnum;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Config\PagarmeCoreConfigManagement;
-use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
+use Pagarme\Core\Kernel\Services\MoneyService;
 use Woocommerce\Pagarme\Model\Data\DataObject;
+use Pagarme\Core\Middle\Model\Account\PaymentEnum;
+use Pagarme\Core\Hub\Services\HubIntegrationService;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
+use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
+use Woocommerce\Pagarme\Model\Config\PagarmeCoreConfigManagement;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 
 defined( 'ABSPATH' ) || exit;
@@ -331,6 +332,29 @@ class Config extends DataObject
     public function isVoucherEnabled()
     {
         return $this->isEnabled('enable_voucher');
+    }
+
+    public function isTdsEnabled()
+    {
+        return $this->isEnabled('tds_enabled');
+    }
+
+    public function getTdsMinAmount()
+    {
+        $tdsMinAmount = $this->getData('tds_min_amount');
+        if (empty($tdsMinAmount)) {
+            return 0;
+        }
+        if (is_string($tdsMinAmount) && ctype_digit($tdsMinAmount)) {
+            return intval($tdsMinAmount);
+        }
+        if(is_int($tdsMinAmount)) {
+            return $tdsMinAmount;
+        }
+        
+        $moneyService = new MoneyService();
+        $tdsMinAmount = $moneyService->removeSeparators($tdsMinAmount);
+        return $moneyService->centsToFloat($tdsMinAmount);
     }
 
     public function isAnyBilletMethodEnabled()

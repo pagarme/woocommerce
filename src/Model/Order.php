@@ -59,7 +59,7 @@ class Order extends Meta
     public function __construct($ID = false)
     {
         parent::__construct($ID);
-        $this->wc_order = $this->getWcOrder($ID);
+        $this->wc_order = $this->getWcOrderById($ID);
         $this->settings = new Config();
     }
     /** phpcs:enable */
@@ -257,7 +257,12 @@ class Order extends Meta
         return false;
     }
 
-    public function getWcOrder($id = false)
+    public function getWcOrder()
+    {
+        return $this->wc_order;
+    }
+
+    private function getWcOrderById($id = false)
     {
         global $theorder;
         if(empty($theorder) || ((int)$id !== $theorder->get_id() && $id !== false)) {

@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 $ = jQuery;
 const actionsTarget = '[data-ref]:enabled';
 const modalTarget = '.modal';
@@ -101,9 +102,9 @@ let pagarmeCancelCapture = {
     },
 
     requestInProgress: function () {
-        swal({
-            title: ' ',
-            text: 'Processando...',
+        swal.fire({
+            title: 'Processando',
+            icon: 'warning',
             allowOutsideClick: false
         });
         swal.showLoading();
@@ -113,14 +114,14 @@ let pagarmeCancelCapture = {
         this.lock = false;
         $( modalTarget ).iziModal('close');
         swal.close();
-        swal({
-            type: 'success',
+        swal.fire({
+            icon: 'success',
             title: ' ',
             html: response.data.message,
             showConfirmButton: false,
-            timer: 2000
+            timer: 2000,
+            timerProgressBar: true
         }).then(
-            function () { },
             function (dismiss) {
                 window.location.reload();
             }
@@ -135,12 +136,13 @@ let pagarmeCancelCapture = {
         this.lock = false;
         swal.close();
         let data = JSON.parse(xhr.responseText);
-        swal({
-            type: 'error',
+        swal.fire({
+            icon: 'error',
             title: ' ',
             html: data.message,
             showConfirmButton: false,
-            timer: 2000
+            timer: 2000,
+            timerProgressBar: true
         });
     },
 

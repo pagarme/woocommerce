@@ -78,15 +78,15 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
 
         $this->number = substr($numberWithoutLineBreaks, 0, 15);
 
-        if (empty($this->number)) {
-            $this->number = '123';
-        //     $inputName = $this->i18n->getDashboard('number');
-        //     $message = $this->i18n->getDashboard(
-        //         "The %s should not be empty!",
-        //         $inputName
-        //     );
+        if (empty($this->number) && ($this->number === null || !is_numeric(trim($this->number)))) {
 
-        //     throw new \Exception($message, 400);
+            $inputName = $this->i18n->getDashboard('number');
+            $message = $this->i18n->getDashboard(
+                "The %s should not be empty!",
+                $inputName
+            );
+
+            throw new \Exception($message, 400);
         }
 
         return $this;
@@ -161,14 +161,13 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
 
         if (empty($this->neighborhood)) {
 
-            $this->neighborhood = 'Bairro';
-            // $inputName = $this->i18n->getDashboard('neighborhood');
-            // $message = $this->i18n->getDashboard(
-            //     "The %s should not be empty!",
-            //     $inputName
-            // );
+            $inputName = $this->i18n->getDashboard('neighborhood');
+            $message = $this->i18n->getDashboard(
+                "The %s should not be empty!",
+                $inputName
+            );
 
-            // throw new \Exception($message, 400);
+            throw new \Exception($message, 400);
         }
 
         return $this;

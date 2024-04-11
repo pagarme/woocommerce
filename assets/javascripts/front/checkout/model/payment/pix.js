@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 let pagarmePix = {
     qrRawCodeTarget: '#pagarme-qr-code-button',
     start: function () {
@@ -15,14 +16,13 @@ let pagarmePix = {
         }
         const rawCode = elem.attr('rawCode');
         const message = {
-            type: 'success',
-            html: 'Código copiado.',
-            allowOutsideClick: false
+            icon: 'success',
+            text: 'Código copiado.'
         };
 
         if (window.isSecureContext && navigator.clipboard) {
             navigator.clipboard.writeText(rawCode);
-            new swal(message)
+            swal.fire(message);
             return;
         }
 
@@ -36,7 +36,7 @@ let pagarmePix = {
 
         document.execCommand('copy', false);
         input.remove();
-        new swal(message);
+        swal.fire(message);
     }
 };
 pagarmePix.start();

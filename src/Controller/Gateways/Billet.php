@@ -60,12 +60,15 @@ class Billet extends AbstractGateway
      */
     public function append_form_fields()
     {
-        return [
+        $fields = [
             BilletModel::getCheckoutInstructionsKey() => $this->field_billet_checkout_instructions(),
             'billet_deadline_days' => $this->field_billet_deadline_days(),
             'billet_instructions' => $this->field_billet_instructions(),
-            'billet_allowed_in_subscription' => $this->field_billet_allowed_for_subscription(),
         ];
+        if (Subscription::hasSubscriptionPlugin()) {
+            $fields['billet_allowed_in_subscription'] = $this->field_billet_allowed_for_subscription();
+        }
+        return $fields;
     }
 
     /**
