@@ -401,7 +401,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (!empty($this->customer)) {
             return $this->customer;
         }
-        
+
         $customerId = get_current_user_id();
         if (!empty($this->getPlatformOrder()->get_user_id())) {
             $customerId = $this->getPlatformOrder()->get_user_id() ?? null;
@@ -1107,7 +1107,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $address = new Address();
 
-        //$this->validateAddressFields($platformAddress);
+        $this->validateAddressFields($platformAddress);
 
         $address->setStreet($platformAddress["street"]);
         $address->setNumber($platformAddress["number"]);
@@ -1138,7 +1138,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         foreach ($requiredFields as $requiredField) {
             $fieldIsNotSet = !array_key_exists($requiredField, $platformAddress)
                 || empty($platformAddress[$requiredField]);
-            
+
             if ($requiredField === 'number') {
                 $fieldIsNotSet = !array_key_exists($requiredField, $platformAddress)
                     || (

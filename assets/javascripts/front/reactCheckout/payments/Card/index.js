@@ -60,6 +60,9 @@ const Card = ({
     const {onCheckoutValidation} = eventRegistration;
     useEffect( () => {
         return onCheckoutValidation(() => {
+            if (walletId.length > 0) {
+                return true;
+            }
             validateAllFields(holderName, number, expirationDate, cvv);
             return true;
         });
@@ -70,6 +73,7 @@ const Card = ({
         expirationDate,
         cvv,
         backendConfig,
+        walletId,
     ] );
 
     return (
