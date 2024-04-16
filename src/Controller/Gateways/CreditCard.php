@@ -79,10 +79,6 @@ class CreditCard extends AbstractGateway
             $fields['cc_subscription_installments'] = $this->field_cc_subscription_installments();
         }
 
-        $fields['section_tds'] = $this->section_tds();
-        $fields['tds_enabled'] = $this->field_cc_tds_enabled();
-        $fields['tds_min_amount'] = $this->field_cc_tds_min_amount();
-
         return $fields;
     }
 

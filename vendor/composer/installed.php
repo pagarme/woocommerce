@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'pagarme/woocommerce-pagarme-payments',
-        'pretty_version' => '3.2.1',
-        'version' => '3.2.1.0',
+        'pretty_version' => '3.2.2',
+        'version' => '3.2.2.0',
         'reference' => NULL,
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
@@ -65,8 +65,8 @@
             'dev_requirement' => false,
         ),
         'pagarme/woocommerce-pagarme-payments' => array(
-            'pretty_version' => '3.2.1',
-            'version' => '3.2.1.0',
+            'pretty_version' => '3.2.2',
+            'version' => '3.2.2.0',
             'reference' => NULL,
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
