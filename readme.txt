@@ -4,7 +4,7 @@ Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, 
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 7.1
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -22,26 +22,22 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.2.2 (16/04/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.2)
+
+* **Correções:**
+  * Atualização do SweetAlert para 11.10.1
+  * Compra com número 0 no endereço
+  * Remoção de campo vazio no admin para Pix e Boleto
+  * Webhook URL com o path da loja
+  * Remoção da modal de preencha dados obrigatórios
+
+
 = 3.2.1 (30/01/2024) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.1)
 
 * **Correções:**
   * Parcelamento de cartão de crédito
-
-= 3.2.0 (29/01/2024) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.0)
-
-* **Novas implementações:**
-  * Autonomia na escolha dos métodos de pagamento para Subscriptions 
-  * Parcelamento em até 12x no cartão de crédito para Subscriptions
-
-* **Correções:**
-  * Erro ao acessar a página de edição de produtos
-  * Compatibilização com PHP 8.2/8.3
-  * Erro ao finalizar compra de custo 0
-  * Campos primeiro nome e sobrenome não obrigatórios
-  * Falha ao gerar o pedido recorrente por falta de CustomerId
-  * Redução duplicada de estoque - @tiagopapile
 
 == Upgrade Notice ==
 Nosso plugin agora é compatível com Woocommerce Subscriptions
