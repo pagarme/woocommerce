@@ -1173,8 +1173,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         global $wp_filter;
         if (
-            !isset($wp_filter['pagarme_split_order']) &&
-            count($wp_filter['pagarme_split_order']->callbacks()) <= 0
+            !isset($wp_filter['pagarme_split_order'])
         ) {
             return null;
         }

@@ -261,8 +261,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
     {
         global $wp_filter;
         if (
-            !isset($wp_filter['pagarme_marketplace_config']) &&
-            count($wp_filter['pagarme_marketplace_config']->callbacks()) <= 0
+            !isset($wp_filter['pagarme_marketplace_config'])
         ) {
             return $configData;
         }
