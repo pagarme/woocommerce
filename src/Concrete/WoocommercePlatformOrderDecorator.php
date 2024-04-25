@@ -14,6 +14,7 @@ use Pagarme\Core\Payment\Aggregates\Address;
 use Pagarme\Core\Payment\ValueObjects\Phone;
 use Pagarme\Core\Payment\Aggregates\Customer;
 use Pagarme\Core\Payment\Aggregates\Shipping;
+use Pagarme\Core\Marketplace\Aggregates\Split;
 use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\Services\OrderService;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
@@ -401,7 +402,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (!empty($this->customer)) {
             return $this->customer;
         }
-        
+
         $customerId = get_current_user_id();
         if (!empty($this->getPlatformOrder()->get_user_id())) {
             $customerId = $this->getPlatformOrder()->get_user_id() ?? null;
@@ -438,10 +439,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $address = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
         $phones = Utils::build_customer_phones_from_order($order);
-        if(empty($document['value'])) {
+        if (empty($document['value'])) {
             $customerPlatform = new \WC_Customer($woocommerceCustomerId);
             $document['value'] = $customerPlatform->get_meta("billing_cpf") ??
-                                    $customerPlatform->get_meta("billing_cnpj");
+                $customerPlatform->get_meta("billing_cnpj");
         }
         $homeNumber = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
@@ -1138,7 +1139,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         foreach ($requiredFields as $requiredField) {
             $fieldIsNotSet = !array_key_exists($requiredField, $platformAddress)
                 || empty($platformAddress[$requiredField]);
-            
+
             if ($requiredField === 'number') {
                 $fieldIsNotSet = !array_key_exists($requiredField, $platformAddress)
                     || (
@@ -1152,8 +1153,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
             if ($fieldIsNotSet) {
                 $message = "Missing $requiredField in customer address";
-                $ExceptionMessage = $this->i18n->getDashboard($message);
-                $exception = new \Exception($ExceptionMessage);
+                $exceptionMessage = $this->i18n->getDashboard($message);
+                $exception = new \Exception($exceptionMessage);
 
                 $log = new LogService('Order', true);
                 $log->exception($exception);
@@ -1170,6 +1171,30 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function handleSplitOrder()
     {
-        // woocommerce does not have split order;
+        global $wp_filter;
+        if (
+            !isset($wp_filter['pagarme_split_order']) &&
+            count($wp_filter['pagarme_split_order']->callbacks()) <= 0
+        ) {
+            return null;
+        }
+        // if()
+        $splitDataFromOrder = [
+            'sellers' => [
+                // [
+                //     'marketplaceCommission' => null,
+                //     'commission' => null,
+                //     'pagarmeId' => null
+                // ],
+            ],
+            'marketplace' => [
+                'totalCommission' => null
+            ]
+        ];
+        $splitDataFromOrder = apply_filters('pagarme_split_order', $splitDataFromOrder);
+        $splitData = new Split();
+        $splitData->setSellersData($splitDataFromOrder['sellers']);
+        $splitData->setMarketplaceData($splitDataFromOrder['marketplace']);
+        return $splitData;
     }
 }

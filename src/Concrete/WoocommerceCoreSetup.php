@@ -106,7 +106,8 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithPixConfig($configData, $storeConfig);
         $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         $configData = self::fillWithHubConfig($configData, $storeConfig);
-
+        $configData = self::fillWithMarketplaceConfig($configData);
+        
         // These method calls are commented for now because they are not implemented yet:
         // $configData = self::fillWithAddressConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
@@ -119,6 +120,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
         self::$moduleConfig = $config;
     }
+
 
     private static function checkWebSiteExists()
     {
@@ -253,6 +255,29 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         }
 
         return $dataObj;
+    }
+
+    public function fillWithMarketplaceConfig($configData)
+    {
+        global $wp_filter;
+        if (
+            !isset($wp_filter['pagarme_marketplace_config']) &&
+            count($wp_filter['pagarme_marketplace_config']->callbacks()) <= 0
+        ) {
+            return $configData;
+        }
+        $configSplit = new \stdClass();
+        $configSplit->enabled = true;
+        $configSplit->responsibilityForProcessingFees = "marketplace_sellers";
+        $configSplit->responsibilityForChargebacks = "marketplace_sellers";
+        $configSplit->responsibilityForReceivingSplitRemainder = "marketplace_sellers";
+        $configSplit->responsibilityForReceivingExtrasAndDiscounts = "marketplace_sellers";
+        $configSplit->mainRecipientId = null;
+
+        $configSplit = apply_filters( "pagarme_marketplace_config", $configSplit);
+        $configData->marketplaceConfig = $configSplit;
+
+        return $configData;
     }
 
     private static function fillWithAddressConfig($dataObj, $storeConfig)
