@@ -1178,8 +1178,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
 
         $splitDataFromOrder = [
-            'sellers' => [
-            ],
+            'sellers' => [],
             'marketplace' => [
                 'totalCommission' => null
             ]
