@@ -1178,14 +1178,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         ) {
             return null;
         }
-        // if()
+
         $splitDataFromOrder = [
             'sellers' => [
-                // [
-                //     'marketplaceCommission' => null,
-                //     'commission' => null,
-                //     'pagarmeId' => null
-                // ],
             ],
             'marketplace' => [
                 'totalCommission' => null

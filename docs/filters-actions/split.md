@@ -43,11 +43,15 @@ function alimentarSplit($splitArray)
 	/**
 	 * Vocês pode adicionar mais de um recebedor, mas a soma de todos os marketplaceCommission 
 	 * deve ser igual ao $valorTotalDeComissaoMarketplace;
+	 * O nó de sellers deve receber um ou mais arrays com a seguinte estrutura de campos:
+	 *  - marketplaceCommission; 
+	 *  - commission; 
+	 *  - pagarmeId.
 	 */
 	$splitArray['sellers'][] = [
-		'marketplaceCommission' => 400, // Comissão do Marketplace
-		'commission' => 800, // Comissão do recebedor
-		'pagarmeId' => 're_xxxxxxxxx0x00000xxxx000xx' // Id do recebedor
+		'marketplaceCommission' => 400, 				// Comissão do Marketplace
+		'commission' => 800, 							// Comissão do recebedor
+		'pagarmeId' => 're_xxxxxxxxx0x00000xxxx000xx' 	// Id do recebedor
 	];
 	return $splitArray;
 }
