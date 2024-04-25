@@ -2,6 +2,7 @@
 
 namespace Woocommerce\Pagarme\Concrete;
 
+use PhpParser\Node\Expr\Throw_;
 use stdClass;
 use WC_Order;
 use Woocommerce\Pagarme\Model\Order;
@@ -1172,9 +1173,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function handleSplitOrder()
     {
         global $wp_filter;
-        if (
-            !isset($wp_filter['pagarme_split_order'])
-        ) {
+        if ( !isset($wp_filter['pagarme_split_order'])) {
             return null;
         }
 
@@ -1186,9 +1185,22 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             ]
         ];
         $splitDataFromOrder = apply_filters('pagarme_split_order', $splitDataFromOrder);
+        $this->validateSellerArray($splitDataFromOrder);
         $splitData = new Split();
         $splitData->setSellersData($splitDataFromOrder['sellers']);
         $splitData->setMarketplaceData($splitDataFromOrder['marketplace']);
         return $splitData;
+    }
+
+    private function validateSellerArray($splitDataFromOrder)
+    {
+        foreach ($splitDataFromOrder['sellers'] as $data) {
+            $requiredFields = ['marketplaceCommission', 'commission', 'pagarmeId'];
+            foreach ($requiredFields as $field) {
+                if (!array_key_exists($field, $data)) {
+                    throw new \InvalidArgumentException("The field '$field' is required for each seller.");
+                }
+            }
+        }
     }
 }
