@@ -257,7 +257,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return $dataObj;
     }
 
-    public function fillWithMarketplaceConfig($configData)
+    private static function fillWithMarketplaceConfig($configData)
     {
         global $wp_filter;
         if (

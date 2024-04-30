@@ -71,7 +71,7 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
 
     public function testHandleSplitOrderWithCallFilter()
     {
-        require_once("../../../wp-includes/plugin.php");
+        require_once("vendor/wordpress/wordpress/src/wp-includes/plugin.php");
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
         add_filter('pagarme_split_order', function($data){
             return [
@@ -94,7 +94,7 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
     public function testHandleSplitOrderWithWrongCallFilter()
     {
         $this->expectException(\InvalidArgumentException::class);
-        require_once("../../../wp-includes/plugin.php");
+        require_once("vendor/wordpress/wordpress/src/wp-includes/plugin.php");
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
         add_filter('pagarme_split_order', function($data){
             return [
