@@ -2,7 +2,6 @@
 
 namespace Woocommerce\Pagarme\Concrete;
 
-use PhpParser\Node\Expr\Throw_;
 use stdClass;
 use WC_Order;
 use Woocommerce\Pagarme\Model\Order;
