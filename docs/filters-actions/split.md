@@ -12,13 +12,14 @@ function realizarConfiguracaoMarketplace($marketplaceConfig)
 	 *	Você também pode configurar outros parâmetros como:
 	 *	- responsibilityForProcessingFees
 	 *	- responsibilityForChargebacks
-	 *	- responsibilityForReceivingSplitRemainder
-	 *	- responsibilityForReceivingExtrasAndDiscounts
 	 *	
-	 *	Eles recebem um dos seguintes parâmetros: 
+	 *	Por padrão é estabelecido marketplace_sellers, mas eles podem receber um dos seguintes valores: 
 	 *	- marketplace_sellers
 	 *	- marketplace
 	 *	- sellers
+	 *
+	 * 	Para mais detalhes, você pode consultar a documentação oficial da Pagar.me: 
+	 *  https://docs.pagar.me/reference/split-1
 	 */
 	$marketplaceConfig->mainRecipientId = "re_xxxxxxxxx0x00000xxxx000xx"; // Obrigatório | Valor do recipientId do Marketplace
 	return $marketplaceConfig;
