@@ -29,6 +29,7 @@
     "require-dev": {
         "mockery/mockery": "1.6.*",
         "phpunit/phpunit": "10.5.*",
+        "brain/monkey": "2.*",
         "wordpress/wordpress": "dev-master"
     }
 }
