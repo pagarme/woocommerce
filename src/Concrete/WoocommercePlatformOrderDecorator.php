@@ -65,6 +65,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function formatPaymentMethod($paymentMethod)
     {
+        if(empty($paymentMethod)){
+            return "";
+        }
         $paymentMethodParts = explode('_', $paymentMethod);
         $formatedPaymentMethod = '';
 

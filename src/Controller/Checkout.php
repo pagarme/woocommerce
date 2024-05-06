@@ -96,15 +96,15 @@ class Checkout
         $order->update_meta('_payment_method', AbstractGateway::PAGARME . ' ' . $this->payment_methods[$fields['payment_method']]);
         WC()->cart->empty_cart();
         if ($response) {
-            $order->transaction_id     = $response->getPagarmeId()->getValue();
-            $order->pagarme_id     = $response->getPagarmeId()->getValue();
-            $order->pagarme_status = $response->getStatus()->getStatus();
-            $order->response_data    = json_encode($response);
+            $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
+            $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
+            $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
+            $order->update_meta('response_data', json_encode($response));
             $order->update_by_pagarme_status($response->getStatus()->getStatus());
             return true;
         }
 
-        $order->pagarme_status = 'failed';
+        $order->update_meta('pagarme_status', 'failed');
         $order->update_by_pagarme_status('failed');
         return false;
     }
