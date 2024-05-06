@@ -57,7 +57,6 @@ class WoocommerceCoreSetupTest extends TestCase
         )->andReturn(true);
         $configMock->shouldReceive('getSecretKey')->andReturn('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
         $configMock->shouldReceive('getPublicKey')->andReturn('pk_test_xxxxxxxxxxxxxxxx');
-        $configMock->shouldReceive('getPublicKey')->andReturn('test');
         $configMock->shouldReceive('getIsCardStatementDescriptor', 'getVoucherSoftDescriptor')->andReturn('test');
         $configMock->shouldReceive('getAntifraudMinValue')->andReturn(0);
         $configMock->shouldReceive('getCcAllowSave')->andReturn(false);
