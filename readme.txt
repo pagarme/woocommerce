@@ -1,6 +1,6 @@
-=== Pagar.me módulo para WooCommerce ===
+=== Pagar.me para WooCommerce ===
 Contributors: Pagar.me
-Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, creditcard
+Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.3
 Requires PHP: 7.1
