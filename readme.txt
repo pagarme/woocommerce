@@ -1,5 +1,5 @@
 === Pagar.me para WooCommerce ===
-Contributors: Pagar.me
+Contributors: pagarme
 Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.3
@@ -8,7 +8,10 @@ Stable tag: 3.2.2
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
-Desenvolvemos um módulo que integra o Woocomerce a Pagar.me de forma prática e segura, assim não é preciso que seu time de tecnologia desenvolva nenhuma linha de código. Basta instalar e configurar o módulo para usar!
+Aceite diversos métodos de pagamento de forma simples e segura utilizando o Pagar.me!
+
+== Description ==
+Desenvolvemos um plugin que integra o Woocomerce a Pagar.me de forma prática e segura, assim não é preciso que seu time de tecnologia desenvolva nenhuma linha de código. Basta instalar e configurar o módulo para usar!
 
 == Installation ==
 Nosso processo de instalação é simples e bem detalhado:

@@ -6,7 +6,7 @@
  * Author URI:  https://pagar.me
  * License:     GPL2
  * Description: Enable Pagar.me Gateway for WooCommerce
- * Requires at least: 5
+ * Requires at least: 5.0
  * Tested up to: 6.3.1
  * WC requires at least: 3.9.0
  * WC tested up to: 8.8
