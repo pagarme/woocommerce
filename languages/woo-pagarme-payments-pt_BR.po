@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-03-22 09:36-0300\n"
+"PO-Revision-Date: 2024-05-07 10:10-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -472,8 +472,8 @@ msgid "Settings"
 msgstr "Configurações"
 
 #. Plugin Name of the plugin/theme
-msgid "Pagar.me module for Woocommerce"
-msgstr "Pagar.me módulo para Woocommerce"
+msgid "Pagar.me for Woocommerce"
+msgstr "Pagar.me para Woocommerce"
 
 #: src/Model/Gateway.php:85
 msgid "1x"
@@ -1353,3 +1353,18 @@ msgstr "Dados Inválidos"
 
 msgid "Tokenization timeout."
 msgstr "Timeout na tokenização."
+
+msgid "The number field is not a valid number."
+msgstr "O número do cartão não é válido."
+
+msgid "The number field is required."
+msgstr "O campo Número do Cartão é obrigatório."
+
+msgid "The cvv field is not a valid number."
+msgstr "O número do CVV não é válido."
+
+msgid "The holder_name field is required."
+msgstr "O campo Nome impresso no cartão é obrigatório."
+
+msgid "The field exp_month must be between 1 and 12."
+msgstr "O mês de expiração do cartão deve estar entre 01 e 12."
