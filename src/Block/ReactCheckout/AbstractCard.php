@@ -75,7 +75,9 @@ abstract class AbstractCard extends AbstractPaymentMethodBlock {
             'holderName'         => __( 'Please enter a valid name.', 'woo-pagarme-payments' ),
             'cardNumber'         => __( 'Please enter a valid credit card number.', 'woo-pagarme-payments' ),
             'emptyExpiry'        => __( 'Please enter a expiry date.', 'woo-pagarme-payments' ),
-            'invalidExpiryMonth' => __( 'The expiry month must be between 1 and 12.', 'woo-pagarme-payments' ),
+            'invalidExpiryMonth' => __( 'The expiry month must be between 01 and 12.', 'woo-pagarme-payments' ),
+            'invalidExpiryYear'  => __( 'The expiry year must have two digits.', 'woo-pagarme-payments' ),
+            'expiredCard'        => __( 'The expiration date is expired.', 'woo-pagarme-payments' ),
             'emptyCvv'           => __( 'Please enter a valid CVV number.', 'woo-pagarme-payments' ),
             'invalidCvv'         => __( 'The CVV number must be between 3 and 4 characters.', 'woo-pagarme-payments' ),
         ];

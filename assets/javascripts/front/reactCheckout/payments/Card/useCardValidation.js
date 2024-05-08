@@ -1,5 +1,5 @@
 /* jshint esversion: 9 */
-import { __ } from '@wordpress/i18n';
+import {getMonthAndYearFromExpirationDate} from "./inputs/utils/expirationDate";
 
 const useCardValidation = (cardIndex, errors, setErrors, fieldErrors) => {
 
@@ -45,11 +45,20 @@ const useCardValidation = (cardIndex, errors, setErrors, fieldErrors) => {
             errors.inputExpiry = fieldErrors.emptyExpiry;
             return errors;
         }
-        const splitDate = value.split('/');
-        const expiryMonth = splitDate[0].replace(/(\D)/g, '');
+        const [expiryMonth, expiryYear] = getMonthAndYearFromExpirationDate(value);
+        const cardDate = new Date(`20${expiryYear}`, expiryMonth -1);
+        let dateNow = new Date();
+        dateNow = new Date(dateNow.getFullYear(), dateNow.getMonth());
         const validMonth = expiryMonth >= 1 && expiryMonth <= 12;
         if (!validMonth) {
             errors.inputExpiry = fieldErrors.invalidExpiryMonth;
+        }
+        const validYear = !(expiryYear.includes('_'));
+        if (!validYear) {
+            errors.inputExpiry = fieldErrors.invalidExpiryYear;
+        }
+        if (cardDate < dateNow) {
+            errors.inputExpiry = fieldErrors.expiredCard;
         }
         return errors;
     };

@@ -65,7 +65,7 @@ InputNumber.propTypes = {
     cardIndex: PropTypes.number.isRequired,
     errors: PropTypes.object.isRequired,
     setErrors: PropTypes.func.isRequired,
-    // onCheckoutValidation: PropTypes.bool.isRequired,
+    fieldErrors: PropTypes.object.isRequired,
 };
 
 export default InputNumber;

@@ -7,8 +7,6 @@ import InputCvv from "./inputs/components/InputCvv";
 import PropTypes from "prop-types";
 import Wallet from "./inputs/components/Wallet";
 import useCard from "./useCard";
-import useCardValidation from "./useCardValidation";
-import {useEffect} from "@wordpress/element";
 
 const {CheckboxControl} = window.wc.blocksComponents;
 
@@ -53,28 +51,7 @@ const Card = ({
         saveCard,
         walletId,
         errors,
-    } = useCard(cardIndex);
-
-    const {validateAllFields} = useCardValidation(cardIndex, errors, setErrors, backendConfig.fieldErrors);
-
-    const {onCheckoutValidation} = eventRegistration;
-    useEffect( () => {
-        return onCheckoutValidation(() => {
-            if (walletId.length > 0) {
-                return true;
-            }
-            validateAllFields(holderName, number, expirationDate, cvv);
-            return true;
-        });
-    }, [
-        onCheckoutValidation,
-        holderName,
-        number,
-        expirationDate,
-        cvv,
-        backendConfig,
-        walletId,
-    ] );
+    } = useCard(cardIndex, eventRegistration, backendConfig);
 
     return (
         <LoadingMask isLoading={isLoading}>

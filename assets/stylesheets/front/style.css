@@ -38,14 +38,21 @@
     z-index: unset;
 }
 
-#payment ul.payment_methods li[class*="pagarme"] p img.logo,
-.wc-block-checkout__payment-method .wc-block-components-radio-control .wc-block-components-radio-control-accordion-content p img.logo,
-.wc-block-checkout__payment-method .wc-block-components-radio-control .wc-block-components-radio-control-accordion-content p.pagarme-payment-method-instructions {
+#payment ul.payment_methods li[class*="pagarme"] p img.logo {
     margin: 0;
 }
 
+.wc-block-checkout__payment-method .wc-block-components-radio-control .wc-block-components-radio-control-accordion-content p.pagarme-payment-method-instructions {
+    margin-bottom: .75em;
+}
+
+.wc-block-checkout__payment-method .wc-block-components-radio-control .wc-block-components-radio-control-accordion-content p.pagarme-payment-method-logo {
+    display: flex;
+    justify-content: right;
+    margin-bottom: .5em;
+}
+
 .wc-block-checkout__payment-method .wc-block-components-radio-control .wc-block-components-radio-control-accordion-content p img.logo {
-    float: right;
     border: 0;
     padding: 0;
 }

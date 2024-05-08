@@ -1,9 +1,10 @@
 /* jshint esversion: 8 */
 import { useDispatch, useSelect } from "@wordpress/data";
-import { useState } from "@wordpress/element";
+import {useEffect, useState} from "@wordpress/element";
 import pagarmeCardsStore from "../store/cards";
+import useCardValidation from "./useCardValidation";
 
-const useCard = (cardIndex) => {
+const useCard = (cardIndex, eventRegistration, backendConfig) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const {
@@ -86,6 +87,26 @@ const useCard = (cardIndex) => {
     };
 
     const formatFieldId = (id) => `pagarme_credit_card_${cardIndex}_${id}`;
+
+    const {validateAllFields} = useCardValidation(cardIndex, errors, setErrors, backendConfig.fieldErrors);
+    const {onCheckoutValidation} = eventRegistration;
+    useEffect( () => {
+        return onCheckoutValidation(() => {
+            if (walletId.length > 0) {
+                return true;
+            }
+            validateAllFields(holderName, number, expirationDate, cvv);
+            return true;
+        });
+    }, [
+        onCheckoutValidation,
+        holderName,
+        number,
+        expirationDate,
+        cvv,
+        backendConfig,
+        walletId,
+    ]);
 
     return {
         isLoading,

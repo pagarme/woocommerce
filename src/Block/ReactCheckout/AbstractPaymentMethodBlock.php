@@ -34,7 +34,6 @@ abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
     {
         $scriptName = sprintf( 'pagarme_payments_%s_blocks_integration', static::PAYMENT_METHOD_KEY );
         wp_register_script( $scriptName, $this->jsUrl(), $this->getScriptDependencies(), false, true );
-        wp_set_script_translations($scriptName, 'woo-pagarme-payments');
 
         return [
             $scriptName
@@ -71,7 +70,7 @@ abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
      */
     protected function getScriptDependencies()
     {
-        return [ 'wp-components', 'react', 'wp-i18n' ];
+        return [ 'wp-components', 'react' ];
     }
 
     /**

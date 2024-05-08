@@ -13,7 +13,7 @@ const PaymentWithInstructions = ({
             <p className="pagarme-payment-method-instructions">
                 {backendConfig.instructions}
             </p>
-            <p>
+            <p className="pagarme-payment-method-logo">
                 <img
                     className="logo"
                     src={backendConfig.logo}

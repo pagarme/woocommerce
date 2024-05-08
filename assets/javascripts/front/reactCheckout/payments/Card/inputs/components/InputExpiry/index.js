@@ -46,6 +46,7 @@ InputExpiry.propTypes = {
     setInputValue: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
     setErrors: PropTypes.func.isRequired,
+    fieldErrors: PropTypes.object.isRequired,
 };
 
 export default InputExpiry;

@@ -49,6 +49,7 @@ InputHolderName.propTypes = {
     cardIndex: PropTypes.number.isRequired,
     errors: PropTypes.object.isRequired,
     setErrors: PropTypes.func.isRequired,
+    fieldErrors: PropTypes.object.isRequired,
 };
 
 export default InputHolderName;

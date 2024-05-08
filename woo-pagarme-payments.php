@@ -128,30 +128,6 @@ function wcmpAddNoticeButton($buttons)
     return $html;
 }
 
-// add_action(
-// 	'woocommerce_loaded',
-// 	function() {
-// 		woocommerce_blocks_register_checkout_field(
-// 			array(
-// 				'id'            => 'namespace/gov-id',
-// 				'label'         => 'Government ID',
-// 				'optionalLabel' => 'Government ID (optional)',
-// 				'location'      => 'address',
-// 				'required'      => true,
-// 				'attributes'    => array(
-// 					'autocomplete'     => 'government-id',
-// 					'aria-describedby' => 'some-element',
-// 					'aria-label'       => 'custom aria label',
-// 					'pattern'          => '[A-Z0-9]{5}', // A 5-character string of capital letters and numbers.
-// 					'title'            => 'Title to show on hover',
-// 					'data-custom'      => 'custom data',
-// 				),
-// 			),
-// 		);
-// 	}
-// );
-
-
 function wcmpAdminNoticePhpVersion()
 {
     wcmpRenderAdminNoticeHtml(
