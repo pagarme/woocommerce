@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
 class Card extends Gateway
 {
     const INVALID_CARD_ERROR_MESSAGE = 'This card number is invalid.';
-    
+
     /**
      * @var string
      */
@@ -55,7 +55,7 @@ class Card extends Gateway
             self::getLocalizeScriptArgs()
         );
     }
-    
+
     /**
      * @param int $sequence
      * @return $this
@@ -194,7 +194,7 @@ class Card extends Gateway
             'card: Tokenize timeout'                                      =>
                 __('Tokenization timeout.', 'woo-pagarme-payments'),
             'fail_get_token'        =>
-                __('Failed to generate Token for 3ds, try again.', 'woo-pagarme-payments'),
+                __('Failed to generate Token for 3DS, try again.', 'woo-pagarme-payments'),
             'fail_get_email'        =>
                 __('There was a problem finding the email.', 'woo-pagarme-payments'),
             'fail_get_billing_address'        =>
