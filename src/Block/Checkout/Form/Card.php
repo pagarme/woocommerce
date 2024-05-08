@@ -167,6 +167,8 @@ class Card extends Gateway
         return array(
             'exp_month: A value is required.'                             =>
                 __('Expiration Date: The month is required.', 'woo-pagarme-payments'),
+            'card.exp_month: The field exp_month must be between 1 and 12.'                             =>
+                __('The field exp_month must be between 1 and 12.', 'woo-pagarme-payments'),
             'exp_month: The field exp_month must be between 1 and 12.'    =>
                 __('Expiration Date: The month must be between 1 and 12.', 'woo-pagarme-payments'),
             "exp_year: The value 'undefined' is not valid for exp_year."  =>
@@ -177,18 +179,26 @@ class Card extends Gateway
                 __('Expiration Date: Expired card.', 'woo-pagarme-payments'),
             'holder_name: The holder_name field is required.'             =>
                 __('The card holder name is required.', 'woo-pagarme-payments'),
+            'card.holder_name: The holder_name field is required.'             =>
+                __('The holder_name field is required.', 'woo-pagarme-payments'),
             'number: The number field is required.'                       =>
                 __('The card number is required.', 'woo-pagarme-payments'),
             'number: The number field is not a valid credit card number.' =>
                 __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
             'card: The number field is not a valid card number'           =>
                 __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
+            'card.number: The number field is required.'        =>
+            __('The number field is required.', 'woo-pagarme-payments'),
+            'card.number: The number field is not a valid number.'        =>
+            __('The number field is not a valid number.', 'woo-pagarme-payments'),
             'card.number: The field number must be a string with a minimum length of 13 and a maximum length of 19.'
             => __('The card number must be between 13 and 19 characters.', 'woo-pagarme-payments'),
             'card: Card expired.'                                         =>
                 __('The expiration date is expired.', 'woo-pagarme-payments'),
             'card.cvv: The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
             => __('The card code must be between 3 and 4 characters.', 'woo-pagarme-payments'),
+            'card.cvv: The cvv field is not a valid number.'              => 
+            __('The cvv field is not a valid number.', 'woo-pagarme-payments'),
             'card: Invalid data to change card brand'                     =>
                 __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
             'card: Tokenize timeout'                                      =>
