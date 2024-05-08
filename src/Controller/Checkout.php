@@ -41,7 +41,6 @@ class Checkout
         Installments $installments = null
     ) {
         $this->ordersController = new Orders();
-        add_action('woocommerce_api_' . Model\Checkout::API_REQUEST, array($this, 'process_checkout_transparent'));
         $paymentDetails = new \Woocommerce\Pagarme\Block\Order\PaymentDetails();
         add_action('woocommerce_view_order', [$paymentDetails, 'render']);
         add_action('wp_ajax_xqRhBHJ5sW', array($this, 'build_installments'));
@@ -62,51 +61,6 @@ class Checkout
         if (!$this->installments) {
             $this->installments = new Installments();
         }
-    }
-
-    public function process_checkout_transparent(WC_Order $wc_order = null): bool
-    {
-        if (!Utils::is_request_ajax() || Utils::server('REQUEST_METHOD') !== 'POST') {
-            exit(0);
-        }
-
-        if (!$wc_order) {
-            wp_send_json_error(__('Invalid order', 'woo-pagarme-payments'));
-        }
-
-        $fields = $this->prepare_fields();
-
-        if (empty($fields)) {
-            wp_send_json_error(__('Empty fields', 'woo-pagarme-payments'));
-        }
-
-        $this->validate_amount_billet_and_card($fields, $wc_order);
-        $this->validate_amount_2_cards($fields, $wc_order);
-        $this->validate_brands($fields);
-
-        $response = $this->ordersController->create_order(
-            $wc_order,
-            $fields['payment_method'],
-            $fields
-        );
-
-        $order  = new Order($wc_order->get_id());
-        $order->payment_method   = $fields['payment_method'];
-        $order->update_meta('_payment_method_title', $this->payment_methods[$fields['payment_method']]);
-        $order->update_meta('_payment_method', AbstractGateway::PAGARME . ' ' . $this->payment_methods[$fields['payment_method']]);
-        WC()->cart->empty_cart();
-        if ($response) {
-            $order->transaction_id     = $response->getPagarmeId()->getValue();
-            $order->pagarme_id     = $response->getPagarmeId()->getValue();
-            $order->pagarme_status = $response->getStatus()->getStatus();
-            $order->response_data    = json_encode($response);
-            $order->update_by_pagarme_status($response->getStatus()->getStatus());
-            return true;
-        }
-
-        $order->pagarme_status = 'failed';
-        $order->update_by_pagarme_status('failed');
-        return false;
     }
 
     /**
