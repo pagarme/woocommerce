@@ -128,7 +128,6 @@ function wcmpAddNoticeButton($buttons)
     return $html;
 }
 
-
 function wcmpAdminNoticePhpVersion()
 {
     wcmpRenderAdminNoticeHtml(

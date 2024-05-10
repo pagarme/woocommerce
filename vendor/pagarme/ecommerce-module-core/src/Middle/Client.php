@@ -10,13 +10,16 @@ use PagarmeCoreApiLib\Configuration;
  */
 abstract class Client
 {
+    const BASE_URI = 'https://hubapi.pagar.me/';
+    const DEFAULT_RESOURCE = 'core/v1';
+
     public $client;
 
     abstract public function getHubToken();
-    public function __construct()
+    public function __construct($resource = self::DEFAULT_RESOURCE)
     {
         Configuration::$basicAuthPassword = '';
-        Configuration::$BASEURI = 'https://hubapi.pagar.me/core/v1';
+        Configuration::$BASEURI = self::BASE_URI . $resource;
         $this->client = $this->services();
     }
     private function auth()

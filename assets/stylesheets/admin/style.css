@@ -50,16 +50,8 @@
     color: #e02b27;
 }
 
-.woocommerce_page_woo-pagarme-payments .swal2-modal {
-    line-height: normal;
-}
-
 .woocommerce_page_woo-pagarme-payments .swal2-modal .swal2-title {
     margin-bottom: 0.6em;
-}
-
-.woocommerce_page_woo-pagarme-payments .swal2-modal .swal2-content {
-    line-height: 1.3em;
 }
 
 #woo-pagarme-additional-information table.woocommerce-table {

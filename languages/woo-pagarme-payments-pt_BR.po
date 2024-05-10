@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-02-01 14:29-0300\n"
+"PO-Revision-Date: 2024-05-08 10:25-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -485,7 +485,7 @@ msgstr "%dx de %s (%s)"
 
 #: src/Model/Gateway.php:142
 msgid "This card brand not is allowed on checkout."
-msgstr "Essa bandeira não é permitda no checkout."
+msgstr "Essa bandeira não é permitida no checkout."
 
 #: src/Model/Order.php:66
 msgid "Paid"
@@ -602,7 +602,7 @@ msgstr "Status"
 msgid "Card Holder Name"
 msgstr "Nome impresso no cartão"
 
-#: src/View/Checkouts.php:245 templates/checkout/common-card-item.php:35
+#: src/View/Checkouts.php:245 templates/checkout/common-card-item.php:35 src/Block/ReactCheckout/AbstractCard.php:69
 msgid "Card number"
 msgstr "Número do cartão"
 
@@ -643,9 +643,17 @@ msgstr "Validade"
 msgid "MM / YY"
 msgstr "MM / AA"
 
+#: src/Block/ReactCheckout/AbstractCard.php:70
+msgid "Expiration Date (MM/AA)"
+msgstr "Validade (MM/AA)"
+
 #: templates/checkout/common-card-item.php:68
 msgid "Card code"
 msgstr "Código do cartão"
+
+#: src/Block/ReactCheckout/AbstractCard.php:71
+msgid "Card code (CVV)"
+msgstr "Código do cartão (CVV)"
 
 msgid "Card Holder Document Number"
 msgstr "Documento do titular do cartão"
@@ -1317,8 +1325,8 @@ msgstr "Texto de instruções que aparece no checkout."
 
 #: src/Model/Pix.php:55
 msgid ""
-"The QR Code for your payment with PIX will be generated after confirming the purchase. Point your phone at the "
-"screen to capture the code or copy and paste the code into your payments app."
+"The QR Code for your payment with PIX will be generated after confirming the purchase. Point your phone at the screen "
+"to capture the code or copy and paste the code into your payments app."
 msgstr ""
 "O QR Code para seu pagamento através de PIX será gerado após a confirmação da compra. Aponte seu celular para a tela "
 "para capturar o código ou copie e cole o código em seu aplicativo de pagamentos."
@@ -1334,3 +1342,91 @@ msgstr ""
 #: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
 msgid "Billet payment method"
 msgstr "Meio de pagamento Boleto"
+
+#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
+msgid "Credit Card payment method"
+msgstr "Meio de pagamento Cartão de Crédito"
+
+#: assets/javascripts/front/reactCheckout/payments/creditCard/installmentsFormatter.js:13
+msgid "of"
+msgstr "de"
+
+#: assets/javascripts/front/reactCheckout/payments/creditCard/installmentsFormatter.js:13
+msgid "Unable to generate a transaction. Unavailable service."
+msgstr "Não foi possível gerar uma transação. Serviço indisponível."
+
+#: src/Core.php:348
+msgid "Please, check the errors below."
+msgstr "Por favor, verifique os erros abaixo."
+
+msgid "Please enter a valid name."
+msgstr "Por favor, digite um nome válido."
+
+msgid "Please enter a valid credit card number."
+msgstr "Por favor, digite um número de cartão válido."
+
+msgid "Please enter a expiry date."
+msgstr "Por favor, digite a data de validade."
+
+msgid "The expiry month must be between 01 and 12."
+msgstr "O mês da data de validade deve ser entre 01 e 12."
+
+msgid "The expiry year must have two digits."
+msgstr "O ano da data de validade deve conter dois dígitos"
+
+msgid "Please enter a valid CVV number."
+msgstr "Por favor, digite o número CVV."
+
+msgid "The CVV number must be between 3 and 4 characters."
+msgstr "O número CVV deve ter entre 3 e 4 caracteres."
+
+msgid "3DS settings"
+msgstr "Configurações de 3DS"
+
+msgid "Enable 3DS"
+msgstr "Habilitar 3DS"
+
+msgid "Minimum value for 3DS authentication"
+msgstr "Valor mínimo para autenticação 3DS"
+
+msgid "Failed to generate Token for 3ds, try again."
+msgstr "Falha ao gerar Token para 3ds, tente novamente."
+
+msgid "There was a problem finding the email."
+msgstr "Ocorreu um problema ao encontrar o e-mail."
+
+msgid "There was a problem finding the address."
+msgstr "Ocorreu um problema ao encontrar o endereço."
+
+msgid "There was a problem when assembling the card's expiration data."
+msgstr "Ocorreu um problema ao montar o dado de expiração do cartão."
+
+msgid "There was a problem when assembling the purchase data."
+msgstr "Ocorreu um problema ao montar o dado de compra."
+
+msgid "3DS Status"
+msgstr "Status 3DS"
+
+msgid "Y - Transaction approved and authenticated by the Issuer"
+msgstr "Y - Transação aprovada e autenticada pelo Emissor"
+
+msgid "A - Transaction approved and authenticated by Brand"
+msgstr "A - Transação aprovada e autenticada pela Bandeira"
+
+msgid "I - Only data sent to the Brand and Issuer"
+msgstr "I - Apenas dados enviados a Bandeira e Emissor"
+
+msgid "U - Authentication unavailable"
+msgstr "U - Autenticação indisponível"
+
+msgid "N - Transaction rejected by the Issuer"
+msgstr "N - Transação rejeitada pelo Emissor"
+
+msgid "R - Transaction rejected by Issuer (post-challenge)"
+msgstr "R - Transação rejeitada pelo Emissor (pós-desafio)"
+
+msgid "Invalid Data"
+msgstr "Dados Inválidos"
+
+msgid "Tokenization timeout."
+msgstr "Timeout na tokenização."

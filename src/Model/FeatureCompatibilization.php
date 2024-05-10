@@ -63,11 +63,7 @@ class FeatureCompatibilization
             ClassFinder::RECURSIVE_MODE
         );
         
-        $abstracBlockKey = array_search(AbstractPaymentMethodBlock::class, $blockClasses);
-        if ($abstracBlockKey !== false) {
-          unset($blockClasses[$abstracBlockKey]);
-        }
-        
+        $blockClasses = array_filter($blockClasses, [$this, 'filterAbstractClasses']);
         $blockClasses = preg_filter('/^/', '\\', $blockClasses);
 
         add_action(
@@ -79,5 +75,10 @@ class FeatureCompatibilization
                 }
             }
         );
+    }
+
+    public function filterAbstractClasses($className)
+    {
+        return strpos($className, 'Abstract') === false;
     }
 }

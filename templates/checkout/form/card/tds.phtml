@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @author      Open Source Team
+ * @copyright   2024 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\Form\Tds $this */
+
+if (!$this->canInitTds()) {
+    return;
+}
+
+?>
+
+<div id="challengeIframeElement" class="challengeIframeElement">
+    <div class="modal-content">
+        <iframe name="challengeIframe" id="challengeIframe" title="pagarameTdsIframe"></iframe>
+    </div>
+</div>
+<script src="<?= $this->getSdkUrl(); ?>"></script>

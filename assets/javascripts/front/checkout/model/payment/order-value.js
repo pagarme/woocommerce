@@ -1,16 +1,16 @@
 /* globals pagarmeCard */
-
+/* jshint esversion: 8 */
 let pagarmeOrderValue = {
-    valueTarget: 'input[data-pagarmecheckout-element="order-value"]',
-    firstCardFildset: 'fieldset[data-pagarmecheckout-card-num="1"]',
+    valueTarget: 'input[data-pagarme-element="order-value"]',
+    firstCardFieldset: 'fieldset[data-pagarmecheckout-card-num="1"]',
     fillAnotherInput: async function (event) {
         let input = pagarmeCard.formatEventToJQuery(event);
         let nextInput = input.closest('fieldset').siblings('fieldset').find(this.valueTarget);
 
         let total = this.formatValue(this.getCartTotals());
         let value = this.formatValue(input.val() || total / 2);
-        if (value > total) {
-            this.showError('O valor não pode ser maior que total do pedido!');
+        if (value >= total) {
+            this.showError('O valor deve ser menor que o total do pedido!');
             input.val('');
             input.change();
             return;
@@ -36,11 +36,11 @@ let pagarmeOrderValue = {
     },
     showError: function (text) {
         const message = {
-            type: 'error',
-            html: text,
+            icon: 'error',
+            text: text,
             allowOutsideClick: false
         };
-        swal(message);
+        swal.fire(message);
     },
     addEventListener: function () {
         jQuery(this.valueTarget).on('change', function (event){
@@ -49,7 +49,7 @@ let pagarmeOrderValue = {
     },
     start: function () {
         this.addEventListener();
-        jQuery(this.firstCardFildset).find(this.valueTarget).each(function () {
+        jQuery(this.firstCardFieldset).find(this.valueTarget).each(function () {
             pagarmeOrderValue.fillAnotherInput(this);
         });
     },

@@ -64,20 +64,19 @@
                 const element = $(this);
                 const value = element.val();
                 if (value === 'yes') {
-                    swal({
+                    swal.fire({
                         type: 'warning',
                         title: allow_no_address_swal.title,
                         text: allow_no_address_swal.text,
                         showConfirmButton: true,
-                        showCancelButton: true,
-                        cancelButtonText: allow_no_address_swal.cancelButtonText,
+                        showDenyButton: true,
+                        denyButtonText: allow_no_address_swal.cancelButtonText,
                         allowOutsideClick: false,
-                    }).then(
-                        function (confirm) {},
-                        function (cancel) {
+                    }).then((result) => {
+                        if (!result.isConfirmed) {
                             element.val('no');
                         }
-                    );
+                    });
                 }
             }
         );

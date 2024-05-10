@@ -3,7 +3,7 @@
 let pagarmeCheckoutWallet = {
     cardSaveTarget: 'select[data-element="choose-credit-card"]',
     cardFields: [
-        '[data-pagarmecheckout-element="fields-cc-data"]',
+        '[data-pagarme-element="fields-cc-data"]',
         '[data-element="save-cc-check"]',
         '[data-element="enable-multicustomers-check"]'
     ],

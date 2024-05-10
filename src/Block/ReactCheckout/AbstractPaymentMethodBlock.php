@@ -2,9 +2,9 @@
 
 namespace Woocommerce\Pagarme\Block\ReactCheckout;
 
+use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Payment\AbstractPayment;
-use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
 abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
 {
@@ -17,7 +17,7 @@ abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
     /** @var AbstractPayment */
     protected $paymentModel;
 
-    public function __construct(AbstractPayment $paymentModel)
+    public function __construct( AbstractPayment $paymentModel )
     {
         $this->paymentModel = $paymentModel;
     }
@@ -32,8 +32,8 @@ abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
      */
     public function get_payment_method_script_handles()
     {
-        $scriptName =  sprintf('pagarme_payments_%s_blocks_integration', static::PAYMENT_METHOD_KEY);
-        wp_register_script($scriptName, $this->jsUrl(), $this->getScriptDependencies(), false, true);
+        $scriptName = sprintf( 'pagarme_payments_%s_blocks_integration', static::PAYMENT_METHOD_KEY );
+        wp_register_script( $scriptName, $this->jsUrl(), $this->getScriptDependencies(), false, true );
 
         return [
             $scriptName
@@ -45,16 +45,16 @@ abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
      */
     public function get_payment_method_data()
     {
-        $paymentData =  [
-            'name' => $this->name,
-            'key' => static::PAYMENT_METHOD_KEY,
-            'label' => $this->settings[ 'title'],
-            'ariaLabel' => __(static::ARIA_LABEL, 'woo-pagarme-payments')
+        $paymentData = [
+            'name'      => $this->name,
+            'key'       => static::PAYMENT_METHOD_KEY,
+            'label'     => $this->settings['title'],
+            'ariaLabel' => __( static::ARIA_LABEL, 'woo-pagarme-payments' )
         ];
 
-        $additionaPaymentData = $this->getAdditionalPaymentMethodData();
+        $additionalPaymentData = $this->getAdditionalPaymentMethodData();
 
-        return array_merge($paymentData, $additionaPaymentData);
+        return array_merge( $paymentData, $additionalPaymentData );
     }
 
     /**
@@ -62,7 +62,7 @@ abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
      */
     protected function jsUrl()
     {
-        return Core::plugins_url('build/' . static::PAYMENT_METHOD_KEY . '.js');
+        return Core::plugins_url( 'build/' . static::PAYMENT_METHOD_KEY . '.js' );
     }
 
     /**
@@ -70,7 +70,7 @@ abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
      */
     protected function getScriptDependencies()
     {
-        return [];
+        return [ 'wp-components', 'react' ];
     }
 
     /**

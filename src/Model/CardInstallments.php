@@ -78,9 +78,14 @@ class CardInstallments
      */
     public function getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest)
     {
+        $firstOptionLabel = __('1x', 'woo-pagarme-payments');
+        $firstOptionContent = __('1x', 'woo-pagarme-payments') . ' (' . wc_price($total) . ')';
         $options[] = [
             'value' => 1,
-            'content' => __('1x', 'woo-pagarme-payments') . ' (' . wc_price($total) . ')'
+            'content' => $firstOptionContent,
+            'installmentPrice' => $this->formatPrice($total),
+            'optionLabel' => $firstOptionLabel,
+            'finalPrice' => $this->formatPrice($total),
         ];
         $interestBase = $interest;
         for ($times = 2; $times <= $maxInstallments; $times++) {
@@ -107,11 +112,17 @@ class CardInstallments
                 wc_price($value)
             );
 
-            $text .= $this->verifyInterest($times, $noInterest, $interest);
+            $extraText = $this->verifyInterest($times, $noInterest, $interest);
+
+            $text .= $extraText;
 
             $options[] = [
                 'value' => $times,
-                'content' => $text
+                'content' => $text,
+                'installmentPrice' => $this->formatPrice($price),
+                'optionLabel' => __('of', 'woo-pagarme-payments'),
+                'finalPrice' => $this->formatPrice($value),
+                'extraText' => $extraText
             ];
         }
         return $options;
@@ -197,5 +208,10 @@ class CardInstallments
             return intval($configByFlags['max_installment'][$flag]);
         }
         return $this->config->getCcInstallmentsMaximum();
+    }
+
+    private function formatPrice($price)
+    {
+        return $price * 100;
     }
 }

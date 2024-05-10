@@ -2,6 +2,8 @@
 
 namespace Pagarme\Core\Payment\Aggregates;
 
+use Pagarme\Core\Payment\Aggregates\Payments\AbstractCreditCardPayment;
+use Pagarme\Core\Payment\Aggregates\Payments\Authentication\AuthenticationStatusEnum;
 use PagarmeCoreApiLib\Models\CreateOrderRequest;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Services\LocalizationService;
@@ -119,6 +121,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
     public function addPayment(AbstractPayment $payment)
     {
         $this->validatePaymentInvariants($payment);
+        $this->addAdditionalSettingsForPaymentInvariants($payment);
         $this->blockOverPaymentAttempt($payment);
 
         $payment->setOrder($this);
@@ -233,6 +236,37 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
                 400
             );
         }
+    }
+
+    /**
+     * @param AbstractPayment $payment
+     * @return void
+     */
+    private function addAdditionalSettingsForPaymentInvariants(AbstractPayment $payment)
+    {
+        $parentClass = get_parent_class($payment);
+
+        if ($parentClass === AbstractCreditCardPayment::class) {
+            $this->addThreeDSAntiFraudInfo($payment);
+        }
+    }
+
+    /**
+     * @param AbstractCreditCardPayment $payment
+     * @return void
+     */
+    private function addThreeDSAntiFraudInfo(AbstractCreditCardPayment $payment)
+    {
+        $authentication = $payment->getAuthentication();
+        if (empty($authentication)) {
+            return;
+        }
+
+        $antiFraudEnabled = true;
+        if (in_array($authentication->getStatus(), AuthenticationStatusEnum::doesNotNeedToUseAntifraudStatuses())) {
+            $antiFraudEnabled = false;
+        }
+        $this->setAntifraudEnabled($antiFraudEnabled);
     }
 
     /**
@@ -372,7 +406,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         }
 
         $orderSplitData = $this->getSplitData();
-        
+
         $wrongValuesPerRecipient = $this->getRecipientWrongValuesMap($orderRequest, $orderSplitData);
 
         if (!$wrongValuesPerRecipient){
@@ -380,7 +414,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         }
 
         $orderRequest = $this->fixRoundedValues($wrongValuesPerRecipient, $orderRequest);
-        
+
         return $orderRequest;
 
     }
@@ -395,7 +429,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
             $sellerId = $sellerData['pagarmeId'];
             $sellerCommission = $sellerData['commission'];
 
-            $map[$sellerId] = $sellerCommission; 
+            $map[$sellerId] = $sellerCommission;
         }
 
 
