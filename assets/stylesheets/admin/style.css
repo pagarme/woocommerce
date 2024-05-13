@@ -144,3 +144,8 @@
 .woocommerce table.form-table textarea.wide-input.pagarme-option-text-area {
     width: 400px;
 }
+
+.pagarme-refund-message span {
+    color: #d63638;
+    font-weight: bold;
+}
