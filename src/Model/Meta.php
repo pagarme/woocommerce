@@ -61,6 +61,7 @@ abstract class Meta
 
     public function update_meta($key, $value)
     {
+        $key = $this->get_meta_key($key);
         if (FeatureCompatibilization::isHposActivated()) {
             $this->wc_order->update_meta_data($key, Utils::rm_tags($value));
             return;

@@ -225,7 +225,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     {
         $order = $this->wooOrderRepository->getById($order_id);
         $pagarmeOrder = new Order($order_id);
-        if ($this->method === $pagarmeOrder->payment_method) {
+        if ($this->method === $pagarmeOrder->get_meta('payment_method')) {
             $this->template->createBlock(
                 '\Woocommerce\Pagarme\Block\Checkout\ThankYou',
                 'pagarme.checkout.thank-you',
@@ -399,7 +399,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function pagarme_email_payment_info($order, $sent_to_admin)
     {
         if ($sent_to_admin
-            || $this->id !== $order->payment_method
+            || $this->id !== $order->get_meta('payment_method')
             || !in_array($order->get_status(), $this->sendEmailStatus)) {
             return;
         }

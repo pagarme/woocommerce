@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-05-08 10:25-0300\n"
+"PO-Revision-Date: 2024-05-13 09:25-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.3\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;"
 "_nx:4c,1,2;_nx_noop:4c,1,2\n"
@@ -472,8 +472,8 @@ msgid "Settings"
 msgstr "Configurações"
 
 #. Plugin Name of the plugin/theme
-msgid "Pagar.me module for Woocommerce"
-msgstr "Pagar.me módulo para Woocommerce"
+msgid "Pagar.me for Woocommerce"
+msgstr "Pagar.me para Woocommerce"
 
 #: src/Model/Gateway.php:85
 msgid "1x"
@@ -1372,7 +1372,7 @@ msgid "The expiry month must be between 01 and 12."
 msgstr "O mês da data de validade deve ser entre 01 e 12."
 
 msgid "The expiry year must have two digits."
-msgstr "O ano da data de validade deve conter dois dígitos"
+msgstr "O ano da data de validade deve conter dois dígitos."
 
 msgid "Please enter a valid CVV number."
 msgstr "Por favor, digite o número CVV."
@@ -1389,8 +1389,8 @@ msgstr "Habilitar 3DS"
 msgid "Minimum value for 3DS authentication"
 msgstr "Valor mínimo para autenticação 3DS"
 
-msgid "Failed to generate Token for 3ds, try again."
-msgstr "Falha ao gerar Token para 3ds, tente novamente."
+msgid "Failed to generate Token for 3DS, try again."
+msgstr "Falha ao gerar Token para 3DS, tente novamente."
 
 msgid "There was a problem finding the email."
 msgstr "Ocorreu um problema ao encontrar o e-mail."
@@ -1430,3 +1430,18 @@ msgstr "Dados Inválidos"
 
 msgid "Tokenization timeout."
 msgstr "Timeout na tokenização."
+
+msgid "The number field is not a valid number."
+msgstr "O número do cartão não é válido."
+
+msgid "The number field is required."
+msgstr "O campo Número do Cartão é obrigatório."
+
+msgid "The cvv field is not a valid number."
+msgstr "O número do CVV não é válido."
+
+msgid "The holder_name field is required."
+msgstr "O campo Nome impresso no cartão é obrigatório."
+
+msgid "The field exp_month must be between 1 and 12."
+msgstr "O mês de expiração do cartão deve estar entre 01 e 12."

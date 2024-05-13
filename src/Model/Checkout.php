@@ -131,22 +131,25 @@ class Checkout
 
             $order = new Order($wc_order->get_id());
             $totalWithInstallments = $order->getTotalAmountByCharges();
-            $order->pagarme_card_tax = $order->calculateInstallmentFee($totalWithInstallments, $wc_order->get_total());
+            $order->update_meta(
+                'pagarme_card_tax',
+                $order->calculateInstallmentFee($totalWithInstallments, $wc_order->get_total())
+            );
             $order->getWcOrder()->set_total($this->getTotalValue($wc_order, $totalWithInstallments));
-            $order->payment_method = $fields['payment_method'];
+            $order->update_meta('payment_method', $fields['payment_method']);
             $this->addAuthenticationOnMetaData($order, $fields);
             WC()->cart->empty_cart();
             if ($response) {
                 do_action("on_pagarme_response", $wc_order->get_id(), $response);
-                $order->transaction_id = $response->getPagarmeId()->getValue();
-                $order->pagarme_id = $response->getPagarmeId()->getValue();
-                $order->pagarme_status = $response->getStatus()->getStatus();
+                $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
+                $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
+                $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
                 $this->addInstallmentsOnMetaData($order, $fields);
-                $order->response_data = json_encode($response);
+                $order->update_meta('response_data', json_encode($response));
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
             }
-            $order->pagarme_status = 'failed';
+            $order->update_meta('pagarme_status', 'failed');
             $order->update_by_pagarme_status('failed');
             return false;
         }
@@ -204,12 +207,12 @@ class Checkout
 
     private function addInstallmentsOnMetaData(&$order, $fields)
     {
-        if (!array_key_exists("installments" , $fields)) {
+        if (!array_key_exists("installments", $fields)) {
             return false;
         }
-        $order->pagarme_installments_card1 = $fields["installments"];
+        $order->update_meta('pagarme_installments_card1', $fields["installments"]);
         if (array_key_exists("installments2", $fields)) {
-            $order->pagarme_installments_card2 = $fields["installments2"];
+            $order->update_meta('pagarme_installments_card2', $fields["installments2"]);
         }
     }
 

@@ -485,7 +485,9 @@ let pagarmeCard = {
         }
     },
     start: function () {
-        jQuery.jMaskGlobals.watchDataMask = true;
+        jQuery(document).ready(function () {
+            jQuery.jMaskGlobals.watchDataMask = true;
+        });
         this.getCardsMethods();
         this.addEventListener();
         this.onChangeBillingCpf();
