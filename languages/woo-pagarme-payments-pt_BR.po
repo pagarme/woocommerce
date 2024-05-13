@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-05-13 09:25-0300\n"
+"PO-Revision-Date: 2024-05-08 14:18-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.3\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;"
 "_nx:4c,1,2;_nx_noop:4c,1,2\n"
@@ -485,7 +485,7 @@ msgstr "%dx de %s (%s)"
 
 #: src/Model/Gateway.php:142
 msgid "This card brand not is allowed on checkout."
-msgstr "Essa bandeira não é permitida no checkout."
+msgstr "Essa bandeira não é permitda no checkout."
 
 #: src/Model/Order.php:66
 msgid "Paid"
@@ -602,7 +602,7 @@ msgstr "Status"
 msgid "Card Holder Name"
 msgstr "Nome impresso no cartão"
 
-#: src/View/Checkouts.php:245 templates/checkout/common-card-item.php:35 src/Block/ReactCheckout/AbstractCard.php:69
+#: src/View/Checkouts.php:245 templates/checkout/common-card-item.php:35
 msgid "Card number"
 msgstr "Número do cartão"
 
@@ -643,17 +643,9 @@ msgstr "Validade"
 msgid "MM / YY"
 msgstr "MM / AA"
 
-#: src/Block/ReactCheckout/AbstractCard.php:70
-msgid "Expiration Date (MM/AA)"
-msgstr "Validade (MM/AA)"
-
 #: templates/checkout/common-card-item.php:68
 msgid "Card code"
 msgstr "Código do cartão"
-
-#: src/Block/ReactCheckout/AbstractCard.php:71
-msgid "Card code (CVV)"
-msgstr "Código do cartão (CVV)"
 
 msgid "Card Holder Document Number"
 msgstr "Documento do titular do cartão"
@@ -1310,75 +1302,6 @@ msgstr "Funciona apenas para assinaturas mensais e anuais."
 
 msgid "Your cart has one or more daily or weekly subscription products, which do not allow installments."
 msgstr "Seu carrinho possui um ou mais produtos de assinatura diário ou semanal, que não permitem parcelamentos."
-
-#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
-msgid "Pix payment method"
-msgstr "Meio de pagamento Pix"
-
-#: src/Controller/Gateways/Pix.php:130
-msgid "Checkout instructions"
-msgstr "Instruções do checkout"
-
-#: src/Controller/Gateways/Pix.php:132
-msgid "Instructions text that appears in checkout."
-msgstr "Texto de instruções que aparece no checkout."
-
-#: src/Model/Pix.php:55
-msgid ""
-"The QR Code for your payment with PIX will be generated after confirming the purchase. Point your phone at the screen "
-"to capture the code or copy and paste the code into your payments app."
-msgstr ""
-"O QR Code para seu pagamento através de PIX será gerado após a confirmação da compra. Aponte seu celular para a tela "
-"para capturar o código ou copie e cole o código em seu aplicativo de pagamentos."
-
-#: src/Mode;/Billet.php:55
-msgid ""
-"The billet will be displayed after purchase confirmation and can be paid at any bank agency, via your smartphone or "
-"computer through digital banking services."
-msgstr ""
-"O Boleto bancário será exibido após a confirmação da compra e poderá ser pago em qualquer agência bancária, pelo seu "
-"smartphone ou computador através de serviços digitais de bancos."
-
-#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
-msgid "Billet payment method"
-msgstr "Meio de pagamento Boleto"
-
-#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
-msgid "Credit Card payment method"
-msgstr "Meio de pagamento Cartão de Crédito"
-
-#: assets/javascripts/front/reactCheckout/payments/creditCard/installmentsFormatter.js:13
-msgid "of"
-msgstr "de"
-
-#: assets/javascripts/front/reactCheckout/payments/creditCard/installmentsFormatter.js:13
-msgid "Unable to generate a transaction. Unavailable service."
-msgstr "Não foi possível gerar uma transação. Serviço indisponível."
-
-#: src/Core.php:348
-msgid "Please, check the errors below."
-msgstr "Por favor, verifique os erros abaixo."
-
-msgid "Please enter a valid name."
-msgstr "Por favor, digite um nome válido."
-
-msgid "Please enter a valid credit card number."
-msgstr "Por favor, digite um número de cartão válido."
-
-msgid "Please enter a expiry date."
-msgstr "Por favor, digite a data de validade."
-
-msgid "The expiry month must be between 01 and 12."
-msgstr "O mês da data de validade deve ser entre 01 e 12."
-
-msgid "The expiry year must have two digits."
-msgstr "O ano da data de validade deve conter dois dígitos."
-
-msgid "Please enter a valid CVV number."
-msgstr "Por favor, digite o número CVV."
-
-msgid "The CVV number must be between 3 and 4 characters."
-msgstr "O número CVV deve ter entre 3 e 4 caracteres."
 
 msgid "3DS settings"
 msgstr "Configurações de 3DS"

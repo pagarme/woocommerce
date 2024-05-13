@@ -108,10 +108,7 @@ class Checkout
      */
     public function process(WC_Order $wc_order = null, string $type = CheckoutTypes::TRANSPARENT_VALUE)
     {
-        if (
-            (!Utils::is_request_ajax() && !Utils::isReactCheckoutRequest())
-            || Utils::server('REQUEST_METHOD') !== 'POST'
-        ) {
+        if (!Utils::is_request_ajax() || Utils::server('REQUEST_METHOD') !== 'POST') {
             exit(0);
         }
         if (!$wc_order) {

@@ -469,7 +469,7 @@ class Subscription
 
         $cartProducts = WC()->cart->cart_contents;
         $productsPeriods = [];
-        foreach ($cartProducts ?? [] as $product) {
+        foreach ($cartProducts as $product) {
             $productsPeriods[] = WC_Subscriptions_Product::get_period($product['product_id']);
         }
 
