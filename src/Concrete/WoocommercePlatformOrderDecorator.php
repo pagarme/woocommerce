@@ -13,6 +13,7 @@ use Pagarme\Core\Kernel\Services\OrderService;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Kernel\ValueObjects\OrderState;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
+use Pagarme\Core\Marketplace\Aggregates\Split;
 use Pagarme\Core\Payment\Aggregates\Address;
 use Pagarme\Core\Payment\Aggregates\Customer;
 use Pagarme\Core\Payment\Aggregates\Item;
@@ -1187,7 +1188,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
                 $message          = "Missing $requiredField in customer address";
                 $ExceptionMessage = $this->i18n->getDashboard($message);
                 $exception        = new Exception($ExceptionMessage);
-
                 $log = new LogService('Order', true);
                 $log->exception($exception);
 
@@ -1203,6 +1203,34 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function handleSplitOrder()
     {
-        // woocommerce does not have split order;
+        global $wp_filter;
+        if ( !isset($wp_filter['pagarme_split_order'])) {
+            return null;
+        }
+
+        $splitDataFromOrder = [
+            'sellers' => [],
+            'marketplace' => [
+                'totalCommission' => null
+            ]
+        ];
+        $splitDataFromOrder = apply_filters('pagarme_split_order', $splitDataFromOrder);
+        $this->validateSellerArray($splitDataFromOrder);
+        $splitData = new Split();
+        $splitData->setSellersData($splitDataFromOrder['sellers']);
+        $splitData->setMarketplaceData($splitDataFromOrder['marketplace']);
+        return $splitData;
+    }
+
+    private function validateSellerArray($splitDataFromOrder)
+    {
+        foreach ($splitDataFromOrder['sellers'] as $data) {
+            $requiredFields = ['marketplaceCommission', 'commission', 'pagarmeId'];
+            foreach ($requiredFields as $field) {
+                if (!array_key_exists($field, $data)) {
+                    throw new \InvalidArgumentException("The field '$field' is required for each seller.");
+                }
+            }
+        }
     }
 }
