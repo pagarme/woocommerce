@@ -75,13 +75,23 @@
     background-color: #f8f8f8;
 }
 
+#woo-pagarme-capture .wrapper {
+    overflow-y: auto;
+}
+
 #woo-pagarme-capture .wrapper table {
     width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#woo-pagarme-capture .wrapper table thead th,
+#woo-pagarme-capture .wrapper table tbody tr td {
+    text-align: left;
+    padding: 1em;
 }
 
 #woo-pagarme-capture .wrapper table thead th {
-    text-align: left;
-    padding: 1em;
     font-weight: 600;
     background: #f8f8f8;
 }
@@ -90,22 +100,10 @@
     cursor: pointer;
 }
 
-#woo-pagarme-capture .wrapper table thead th:last-child {
-    padding-right: 2em;
-}
-
-#woo-pagarme-capture .wrapper table thead th:first-child {
-    padding-left: 2em;
-}
-
 #woo-pagarme-capture .wrapper table thead th .wc-arrow {
     float: right;
     position: relative;
     margin-right: -1em;
-}
-
-#woo-pagarme-capture .wrapper table tbody tr td {
-    padding-top: .6em;
 }
 
 #woo-pagarme-capture .wrapper table tbody th textarea,
@@ -120,16 +118,6 @@
     font-size: 14px;
     padding: 4px;
     color: #555;
-}
-
-#woo-pagarme-capture .wrapper table tbody th:last-child,
-#woo-pagarme-capture .wrapper table td:last-child {
-    padding-right: 2em;
-}
-
-#woo-pagarme-capture .wrapper table tbody th:first-child,
-#woo-pagarme-capture .wrapper table td:first-child {
-    padding-left: 2em;
 }
 
 #mainform .invalid-field{

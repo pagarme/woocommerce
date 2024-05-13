@@ -1,15 +1,20 @@
 /* jshint esversion: 6 */
 $ = jQuery;
-const actionsTarget = '[data-ref]:enabled';
+const captureTarget = '[data-type="capture"]:enabled';
 const modalTarget = '.modal';
 const amountTarget = '[data-element=amount]';
 
-let pagarmeCancelCapture = {
-    started: false,
-    lock:false,
+const cancelTarget = '[data-type="cancel"]:enabled';
+const scrollTarget = '#woocommerce-order-items';
+const scrollTime = 600;
+const buttonTarget = '#woocommerce-order-items .button.refund-items';
 
-    isStarted: function (){
-        if (!this.started){
+const pagarmeCapture = {
+    started: false,
+    lock: false,
+
+    isStarted: function () {
+        if (!this.started) {
             this.started = true;
             return false;
         }
@@ -29,19 +34,19 @@ let pagarmeCancelCapture = {
         $(modalTarget).iziModal({
             padding: 20,
             onOpening: function (modal) {
-                let amount = modal.$element.find( amountTarget );
+                let amount = modal.$element.find(amountTarget);
                 const options = {
-                    reverse:true,
-                    onKeyPress: function(amountValue, event, field){
-                        if (!event.originalEvent){
+                    reverse: true,
+                    onKeyPress: function (amountValue, event, field) {
+                        if (!event.originalEvent) {
                             return;
                         }
-                        amountValue = amountValue.replace(/^0+/, '')
-                        if (amountValue[0] === ','){
+                        amountValue = amountValue.replace(/^0+/, '');
+                        if (amountValue[0] === ',') {
                             amountValue = '0' + amountValue;
                         }
-                        if (amountValue && amountValue.length <= 2){
-                            amountValue = ('000'+amountValue).slice(-3);
+                        if (amountValue && amountValue.length <= 2) {
+                            amountValue = ('000' + amountValue).slice(-3);
                             field.val(amountValue);
                             field.trigger('input');
                             return;
@@ -49,33 +54,27 @@ let pagarmeCancelCapture = {
                         field.val(amountValue);
                     }
                 };
-                amount.mask( "#.##0,00", options );
-                modal.$element.on( 'click', '[data-action=capture]', self.onClickCapture.bind(self) );
-                modal.$element.on( 'click', '[data-action=cancel]', self.onClickCancel.bind(self) );
+                amount.mask("#.##0,00", options);
+                modal.$element.on('click', '[data-action=capture]', self.onClickCapture.bind(self));
             }
         });
     },
 
     onClickCapture: function (e) {
         e.preventDefault();
-        this.handleEvents( e, 'capture' );
-    },
-
-    onClickCancel: function (e) {
-        e.preventDefault();
-        this.handleEvents( e, 'cancel' );
+        this.handleEvents(e, 'capture');
     },
 
     handleEvents: function (DOMEvent, type) {
-        let target   = $( DOMEvent.currentTarget );
-        let wrapper  = target.closest( '[data-charge]' );
-        let chargeId = wrapper.data( 'charge' );
-        let amount   = wrapper.find( '[data-element=amount]' ).val();
-        this.request( type, chargeId, amount);
+        let target = $(DOMEvent.currentTarget);
+        let wrapper = target.closest('[data-charge]');
+        let chargeId = wrapper.data('charge');
+        let amount = wrapper.find('[data-element=amount]').val();
+        this.request(type, chargeId, amount);
     },
 
     request: function (mode, chargeId, amount) {
-        if ( this.lock ) {
+        if (this.lock) {
             return;
         }
         this.lock = true;
@@ -90,8 +89,8 @@ let pagarmeCancelCapture = {
                 'amount': amount
             }
         });
-        ajax.done( this._onDone.bind(this) );
-        ajax.fail( this._onFail.bind(this) );
+        ajax.done(this._onDone.bind(this));
+        ajax.fail(this._onFail.bind(this));
     },
 
     openModal: function (e) {
@@ -110,9 +109,9 @@ let pagarmeCancelCapture = {
         swal.showLoading();
     },
 
-    _onDone: function(response) {
+    _onDone: function (response) {
         this.lock = false;
-        $( modalTarget ).iziModal('close');
+        $(modalTarget).iziModal('close');
         swal.close();
         swal.fire({
             icon: 'success',
@@ -128,11 +127,11 @@ let pagarmeCancelCapture = {
         );
     },
 
-    getAjaxUrl: function() {
+    getAjaxUrl: function () {
         return window.pagarme_settings.ajax_url;
     },
 
-    _onFail: function(xhr) {
+    _onFail: function (xhr) {
         this.lock = false;
         swal.close();
         let data = JSON.parse(xhr.responseText);
@@ -147,8 +146,48 @@ let pagarmeCancelCapture = {
     },
 
     addEventListener: function () {
-        $(actionsTarget).on('click', function (e) {
-            pagarmeCancelCapture.openModal(e);
+        $(captureTarget).on('click', function (e) {
+            pagarmeCapture.openModal(e);
         });
     },
-}
+};
+
+const pagarmeCancel = {
+    started: false,
+    lock: false,
+
+    isStarted: function () {
+        if (!this.started) {
+            this.started = true;
+            return false;
+        }
+        return true;
+    },
+
+    start: function () {
+        if (this.isStarted()) {
+            return;
+        }
+        this.addEventListener();
+    },
+
+    clickRefundButton: function () {
+        setTimeout(function () {
+            $(buttonTarget).trigger('click');
+        }, scrollTime + 100);
+    },
+
+    scrollToRefundBox: function () {
+        $('html, body').animate({
+            scrollTop: $(scrollTarget).offset().top - 111
+        }, scrollTime);
+        pagarmeCancel.clickRefundButton();
+    },
+
+    addEventListener: function () {
+        $(cancelTarget).on('click', function (e) {
+            e.preventDefault();
+            pagarmeCancel.scrollToRefundBox();
+        });
+    },
+};
