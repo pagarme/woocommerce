@@ -8,7 +8,7 @@ const usePaymentWithInstructions = (
     const { onPaymentSetup } = eventRegistration;
 
     useEffect(() => {
-        const unsubscribe = onPaymentSetup(() => {
+        return onPaymentSetup(() => {
             const paymentMethodData = {
                 payment_method: backendConfig.key,
             };
@@ -20,8 +20,6 @@ const usePaymentWithInstructions = (
                 },
             };
         });
-
-        return unsubscribe;
     }, [onPaymentSetup, backendConfig]);
 };
 

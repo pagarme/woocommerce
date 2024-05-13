@@ -62,16 +62,16 @@ export async function tokenize(
                 return { errorMessage: errorMessages.serviceUnavailable };
             }
 
-            const jsonReponse = JSON.parse(responseBody);
+            const jsonErrorResponse = JSON.parse(responseBody);
 
-            const errorMessage = buildErrorMessage(jsonReponse, errorMessages);
+            const errorMessage = buildErrorMessage(jsonErrorResponse, errorMessages);
 
             return { errorMessage };
         }
 
-        const jsonReponse = await response.json();
+        const jsonResponse = await response.json();
 
-        return { token: jsonReponse.id };
+        return { token: jsonResponse.id };
     } catch (e) {
         return { errorMessage: errorMessages.serviceUnavailable };
     }

@@ -19,7 +19,7 @@ const useCreditCard = (backendConfig, emitResponse, eventRegistration) => {
     }, []);
 
     useEffect(() => {
-        const unsubscribe = onPaymentSetup(async () => {
+        return onPaymentSetup(async () => {
             try {
                 let hasErrors = false;
                 if (typeof cards === 'object') {
@@ -67,8 +67,6 @@ const useCreditCard = (backendConfig, emitResponse, eventRegistration) => {
                 };
             }
         });
-
-        return unsubscribe;
     }, [onPaymentSetup, cards, backendConfig]);
 };
 

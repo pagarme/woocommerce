@@ -92,10 +92,9 @@ const useCard = (cardIndex, eventRegistration, backendConfig) => {
     const {onCheckoutValidation} = eventRegistration;
     useEffect( () => {
         return onCheckoutValidation(() => {
-            if (walletId.length > 0) {
-                return true;
+            if (walletId.length === 0) {
+                validateAllFields(holderName, number, expirationDate, cvv);
             }
-            validateAllFields(holderName, number, expirationDate, cvv);
             return true;
         });
     }, [
