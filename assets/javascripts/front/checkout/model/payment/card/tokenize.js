@@ -2,7 +2,7 @@
 /* jshint esversion: 8 */
 let pagarmeTokenize = {
     appId: jQuery('[data-pagarmecheckout-app-id]').data('pagarmecheckoutAppId'),
-    apiUrl: 'https://api.mundipagg.com/core/v1/tokens',
+    apiUrl: 'https://api.pagar.me/core/v5/tokens',
     token: 'token',
     vendor: 'pagarme',
     paymentMethodTarget: 'data-pagarmecheckout-method',
