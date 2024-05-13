@@ -152,14 +152,14 @@ class Subscription
 
             $order->payment_method = $fields['payment_method'];
             if ($response) {
-                $order->transaction_id = $response->getPagarmeId()->getValue();
-                $order->pagarme_id = $response->getPagarmeId()->getValue();
-                $order->pagarme_status = $response->getStatus()->getStatus();
-                $order->response_data = json_encode($response);
+                $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
+                $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
+                $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
+                $order->update_meta('response_data', json_encode($response));
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
             }
-            $order->pagarme_status = 'failed';
+            $order->update_meta('pagarme_status', 'failed');
             $order->update_by_pagarme_status('failed');
             return false;
         } catch (\Throwable $th) {
@@ -469,7 +469,7 @@ class Subscription
 
         $cartProducts = WC()->cart->cart_contents;
         $productsPeriods = [];
-        foreach ($cartProducts as $product) {
+        foreach ($cartProducts ?? [] as $product) {
             $productsPeriods[] = WC_Subscriptions_Product::get_period($product['product_id']);
         }
 

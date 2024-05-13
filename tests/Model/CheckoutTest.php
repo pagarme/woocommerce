@@ -122,7 +122,8 @@ class CheckoutTest extends TestCase
             ->andReturnSelf();
         $orderModelMock->shouldReceive('getWcOrder')
             ->andReturn($wcOrderMock);
-
+        $orderModelMock->shouldReceive('update_meta')
+            ->andReturn([]);
         $wcCheckoutMock = Mockery::mock(WC_Checkout::class);
         $wcCheckoutMock->shouldReceive('empty_cart')
             ->andReturnSelf();
