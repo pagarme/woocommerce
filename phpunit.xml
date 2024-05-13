@@ -12,8 +12,5 @@
     <include>
       <directory suffix=".php">./src/</directory>
     </include>
-    <exclude>
-      <directory suffix=".php">./src/Block/ReactCheckout/</directory>
-    </exclude>
   </source>
 </phpunit>

@@ -15,6 +15,4 @@ return array(
     'Pagarme\\Core\\' => array($vendorDir . '/pagarme/ecommerce-module-core/src'),
     'PagarmeCoreApiLib\\' => array($vendorDir . '/pagarme/pagarmecoreapi/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
-    'HaydenPierce\\ClassFinder\\UnitTest\\' => array($vendorDir . '/haydenpierce/class-finder/test/unit'),
-    'HaydenPierce\\ClassFinder\\' => array($vendorDir . '/haydenpierce/class-finder/src'),
 );

@@ -100,9 +100,7 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
      */
     public function setPaymentMethod(string $value)
     {
-        $paymentMethod = str_replace('woo-pagarme-payments-', '', $value);
-        $paymentMethod = str_replace('-new-payment-method', '', $paymentMethod);
-        return $this->setData(self::PAYMENT_METHOD, $paymentMethod);
+        return $this->setData(self::PAYMENT_METHOD, str_replace('woo-pagarme-payments-', '', $value));
     }
 
     /**

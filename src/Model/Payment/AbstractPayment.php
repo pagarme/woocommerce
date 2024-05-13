@@ -46,9 +46,6 @@ abstract class AbstractPayment
     /** @var null */
     protected $charOrderValue = null;
 
-    /** @var array */
-    private $settings = [];
-
     /**
      * @return int
      * @throws \Exception
@@ -178,16 +175,6 @@ abstract class AbstractPayment
         }
         $request[] = $content;
         return $request;
-    }
-
-    public function getSettings()
-    {
-        if (empty($this->settings)) {
-            $optionName = sprintf('woocommerce_woo-pagarme-payments-%s_settings', $this->code);
-            $this->settings = get_option($optionName, []);
-        }
-
-        return $this->settings;
     }
 
     protected function getAmount(WC_Order $wc_order, $form_fields)
