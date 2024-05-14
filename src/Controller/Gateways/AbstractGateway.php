@@ -488,8 +488,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             return $enabled;
         }
 
-        $order_id = $wp->query_vars['order-pay'];
-        $order = wc_get_order( $order_id );
+        $orderId = $wp->query_vars['order-pay'];
+        $order = wc_get_order($orderId);
         if (empty($order->get_customer_id())) {
             $enabled = 'no';
         }
