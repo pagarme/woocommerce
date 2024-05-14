@@ -62,6 +62,7 @@ class CreditCard extends Card implements PaymentInterface
      */
     public function getConfigDataProvider()
     {
+        global $wp;
         $jsConfigProvider = parent::getConfigDataProvider();
         $brands = new Brands;
         foreach ($brands->getBrands() as $class) {
@@ -71,6 +72,7 @@ class CreditCard extends Card implements PaymentInterface
         }
         $jsConfigProvider['tdsEnabled'] = Subscription::hasSubscriptionProductInCart()
             || Subscription::isChangePaymentSubscription()
+            || isset($wp->query_vars['order-pay'])
             ? false
             : $this->getConfig()->isTdsEnabled();
         if ($jsConfigProvider['tdsEnabled']) {

@@ -18,7 +18,7 @@ use Woocommerce\Pagarme\Model\Payment\Data\Card;
 use Pagarme\Core\Kernel\Aggregates\Order;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
-use WC_Checkout;
+use WC_Cart;
 
 /**
  * @runTestsInSeparateProcesses
@@ -124,7 +124,7 @@ class CheckoutTest extends TestCase
             ->andReturn($wcOrderMock);
         $orderModelMock->shouldReceive('update_meta')
             ->andReturn([]);
-        $wcCheckoutMock = Mockery::mock(WC_Checkout::class);
+        $wcCheckoutMock = Mockery::mock(WC_Cart::class);
         $wcCheckoutMock->shouldReceive('empty_cart')
             ->andReturnSelf();
         $woocommerce = new stdClass();

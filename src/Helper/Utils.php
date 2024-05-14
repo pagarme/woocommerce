@@ -130,6 +130,17 @@ class Utils
     }
 
     /**
+     * Verify if request is from checkout
+     *
+     * @since 1.0
+     * @return boolean
+     */
+    public static function isCheckoutRequest()
+    {
+        return strpos(strtolower(self::server('REQUEST_URI')), 'checkout') !== false;
+    }
+
+    /**
      * Get value by array index
      *
      * @since 1.0
