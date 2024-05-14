@@ -174,6 +174,7 @@ const pagarmeCancel = {
     clickRefundButton: function () {
         setTimeout(function () {
             $(buttonTarget).trigger('click');
+            $('#order_line_items .item:first-child .refund_order_item_qty').focus();
         }, scrollTime + 100);
     },
 
