@@ -59,8 +59,7 @@ class Subscription
             return;
         }
 
-        $this->payment->supports = array(
-            'products',
+        array_push($this->payment->supports,
             'subscriptions',
             'subscription_cancellation',
             'subscription_suspension',
@@ -70,7 +69,7 @@ class Subscription
             'subscription_payment_method_change',
             'subscription_payment_method_change_customer',
             'subscription_payment_method_change_admin',
-            'multiple_subscriptions',
+            'multiple_subscriptions'
         );
         add_action(
             'woocommerce_scheduled_subscription_payment_' . $this->payment->id,

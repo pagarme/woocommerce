@@ -108,15 +108,10 @@ class Charge
         $transaction = array_shift($transactions);
         $method = $transaction->getTransactionType()->getType();
 
-        if ($method == 'boleto' && in_array($status, ['pending'])) {
-            return true;
-        }
-
-        if ($method == 'credit_card' && in_array($status, ['pending', 'paid'])) {
-            return true;
-        }
-
-        if ($method == 'pix' && in_array($status, ['pending', 'paid'])) {
+        if (
+            in_array($method, ['credit_card', 'pix'])
+            && in_array($status, ['pending', 'paid'])
+        ) {
             return true;
         }
 
