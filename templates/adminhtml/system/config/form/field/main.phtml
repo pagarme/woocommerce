@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div>
-    <div class="<?= esc_attr($this->getId()); ?>-field<?= $this->getVisible() ? '' : ' hidden' ; ?>">
+    <div class="<?= esc_attr($this->getId()); ?>-field">
         <?php
             $this->includeTemplate($this->template, $this);
         ?>
