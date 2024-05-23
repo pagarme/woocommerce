@@ -109,7 +109,7 @@ class Charge
         $method = $transaction->getTransactionType()->getType();
 
         if (
-            in_array($method, ['credit_card', 'pix'])
+            in_array($method, ['credit_card', 'pix', 'voucher'])
             && in_array($status, ['pending', 'paid'])
         ) {
             return true;
