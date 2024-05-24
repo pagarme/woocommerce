@@ -162,7 +162,7 @@ class Subscription
             $order->update_by_pagarme_status('failed');
             return false;
         } catch (\Throwable $th) {
-            $logger = new LogService();
+            $logger = new LogService('Subscription');
             $logger->log($th);
             if (function_exists('wc_add_notice')) {
                 wc_add_notice(
@@ -190,7 +190,7 @@ class Subscription
                 'redirect' => $this->payment->get_return_url($subscription)
             ];
         } catch (\Throwable $th) {
-            $logger = new LogService();
+            $logger = new LogService('Subscription');
             $logger->log($th);
             if (function_exists('wc_add_notice')) {
                 wc_add_notice(
@@ -223,7 +223,7 @@ class Subscription
                 'redirect' => $redirect
             ];
         } catch (\Throwable $th) {
-            $logger = new LogService();
+            $logger = new LogService('Subscription');
             $logger->log($th);
             if (function_exists('wc_add_notice')) {
                 wc_add_notice(

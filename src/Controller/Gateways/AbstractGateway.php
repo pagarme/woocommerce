@@ -29,6 +29,7 @@ use Woocommerce\Pagarme\Model\WooOrderRepository;
 use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
 use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
 use Woocommerce\Pagarme\Service\ChargeService;
+use Woocommerce\Pagarme\Service\LogService;
 use WP_Error;
 
 defined('ABSPATH') || exit;
@@ -282,9 +283,25 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         try {
             $chargeId = $charges[0]->getTransactions()[0]->getChargeId();
             $chargeService = new ChargeService();
-            $chargeService->refundCharge($chargeId, $amount);
-            return true;
+            $response = $chargeService->refundCharge($chargeId, $amount);
+            if ($response) {
+                $order->update_meta('pagarme_status', $response->status);
+                $order->update_meta('response_data', json_encode($response));
+                $order->update_by_pagarme_status('refunded');
+                $logger = new LogService('Order.Refund');
+                $logger->info(
+                    sprintf(
+                        'Order #%s : Order refund response',
+                        $order_id
+                    ),
+                    $response
+                );
+                return true;
+            }
+            return false;
         } catch (Exception $e) {
+            $logger = new LogService('Order.Refund');
+            $logger->log($e);
             return new WP_Error(
                 'pagarme_error',
                 sprintf(
