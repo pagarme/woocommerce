@@ -287,7 +287,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             if ($response) {
                 $order->update_meta('pagarme_status', $response->status);
                 $order->update_meta('response_data', json_encode($response));
-                $order->update_by_pagarme_status('refunded');
                 $logger = new LogService('Order.Refund');
                 $logger->info(
                     sprintf(

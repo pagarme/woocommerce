@@ -107,17 +107,14 @@ class Order extends Meta
      *
      * @return void
      */
-    public function payment_canceled($newStatus = 'cancelled')
+    public function payment_canceled()
     {
         $current_status = $this->wc_order->get_status();
 
-        if (!in_array($current_status, ['cancelled', 'canceled', 'refunded'])) {
+        if (!in_array($current_status, ['cancelled', 'canceled'])) {
             $this->wc_order->update_status(
-                $newStatus,
-                sprintf(
-                    __('Pagar.me: Payment %s.', 'woo-pagarme-payments'),
-                    __($newStatus, 'woo-pagarme-payments')
-                )
+                'cancelled',
+                __('Pagar.me: Payment canceled.', 'woo-pagarme-payments')
             );
         }
 
@@ -138,9 +135,6 @@ class Order extends Meta
             case 'paid':
             case OrderStatus::PROCESSING:
                 $this->payment_paid();
-                break;
-            case 'refunded':
-                $this->payment_canceled('refunded');
                 break;
             case 'failed':
             case 'canceled':

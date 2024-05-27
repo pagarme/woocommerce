@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-05-24 10:55-0300\n"
+"PO-Revision-Date: 2024-05-24 16:24-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -530,17 +530,9 @@ msgstr "Processo de Antifraude em análise manual."
 msgid "Anti-fraud process pending."
 msgstr "Processo de antifraude pendente."
 
-#: src/Model/Order.php:100
-msgid "Pagar.me: Payment %s."
-msgstr "Pagar.me: Pagamento %s."
-
-#: src/Model/Order.php:100
-msgid "cancelled"
-msgstr "cancelado"
-
-#: src/Model/Order.php:100
-msgid "refunded"
-msgstr "reembolsado"
+#: src/Model/Order.php:117
+msgid "Pagar.me: Payment canceled."
+msgstr "Pagar.me: Pagamento cancelado."
 
 #: src/Model/Order.php:86
 msgid "Webhook received: "
