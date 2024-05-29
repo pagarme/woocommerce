@@ -105,6 +105,7 @@ class Charges
             'charge_updated',
             'charge_paid',
             'charge_refunded',
+            'charge_partial_canceled',
             'charge_pending',
             'charge_payment_failed',
             'charge_chargedback',

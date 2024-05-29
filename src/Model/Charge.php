@@ -9,6 +9,7 @@ if (!function_exists('add_action')) {
 use Pagarme\Core\Webhook\Factories\WebhookFactory;
 use Pagarme\Core\Webhook\Services\ChargeHandlerService;
 use WC_Order;
+use Woocommerce\Pagarme\Service\HandleWebhookService;
 
 class Charge
 {
@@ -47,7 +48,21 @@ class Charge
         if (!$webhook_data) {
             return;
         }
+        $webhooksInPlatforms = [
+            'charge.refunded',
+            'charge.partial_canceled'
+        ];
+        if (in_array($webhook_data->type, $webhooksInPlatforms)) {
+            $this->updateCharge($webhook_data);
+            return;
+        }
         $this->update_core_charge($webhook_data);
+    }
+
+    private function updateCharge($webhookData)
+    {
+        $handleWebhook = new HandleWebhookService();
+        $handleWebhook->handle($webhookData);
     }
 
     private function update_core_charge($webhook_data)

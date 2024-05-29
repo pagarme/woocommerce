@@ -236,13 +236,13 @@ class Utils
      * @param mixed string|float|int $price
      * @return string
      */
-    public static function format_order_price_with_currency_symbol($price)
+    public static function format_order_price_with_currency_symbol($price, $currency = 'BRL')
     {
         if (empty($price)) {
             return;
         }
 
-        return 'R$' . (string)number_format($price, 2, ',', '.');
+        return get_woocommerce_currency_symbol($currency) . (string)number_format($price, 2, ',', '.');
     }
 
     /**
@@ -405,7 +405,7 @@ class Utils
 
     public static function build_customer_address_from_order(Order $order)
     {
-        
+
         return array(
             'street'       => substr($order->getWcOrder()->get_billing_address_1(), 0, 64),
             'number'       => substr($order->get_meta('billing_number'), 0, 15),
@@ -505,5 +505,10 @@ class Utils
                 'country'      => 'BR',
             ),
         );
+    }
+
+    public static function snakeToCamelCase($value)
+    {
+        return ucfirst(str_replace('_', '', ucwords($value, '_')));
     }
 }

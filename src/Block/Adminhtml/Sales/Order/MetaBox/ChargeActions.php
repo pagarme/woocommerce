@@ -117,9 +117,8 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
             'Charge ID',
             'Type',
             "Total Amount",
-            'Partially Captured',
-            'Partially Canceled',
-            'Partially Reversed',
+            'Captured',
+            'Refunded',
             'Status',
             'Action'
         ];
@@ -153,7 +152,6 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
         return [
             '',
             'paid',
-            'canceled',
             'refunded'
         ];
     }
