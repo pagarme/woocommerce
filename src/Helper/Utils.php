@@ -6,27 +6,27 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Config;
-use Woocommerce\Pagarme\Model\Order;
 use WC_Order;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Order;
 
 class Utils
 {
     /**
      * Sanitize value from custom method
      *
-     * @since 1.0
      * @param string $name
      * @param mixed $default
      * @param string|array $sanitize
+     *
      * @return mixed
+     * @since 1.0
      */
     public static function request($type, $name, $default, $sanitize = 'rm_tags')
     {
         $request = filter_input_array($type, FILTER_SANITIZE_SPECIAL_CHARS);
 
-        if (!isset($request[$name]) || empty($request[$name])) {
+        if (empty($request[$name])) {
             return $default;
         }
 
@@ -36,11 +36,12 @@ class Utils
     /**
      * Sanitize value from methods post
      *
-     * @since 1.0
      * @param string $name
      * @param mixed $default
      * @param string|array $sanitize
+     *
      * @return mixed
+     * @since 1.0
      */
     public static function post($name, $default = '', $sanitize = 'rm_tags')
     {
@@ -50,11 +51,12 @@ class Utils
     /**
      * Sanitize value from methods get
      *
-     * @since 1.0
      * @param string $name
      * @param mixed $default
      * @param string|array $sanitize
+     *
      * @return mixed
+     * @since 1.0
      */
     public static function get($name, $default = '', $sanitize = 'rm_tags')
     {
@@ -64,9 +66,10 @@ class Utils
     /**
      * Get filtered super global server by key
      *
-     * @since 1.0
      * @param string $key
+     *
      * @return string
+     * @since 1.0
      */
     public static function server($key)
     {
@@ -78,10 +81,11 @@ class Utils
     /**
      * Sanitize requests
      *
-     * @since 1.0
      * @param string $value
      * @param string|array $sanitize
+     *
      * @return string
+     * @since 1.0
      */
     public static function sanitize($value, $sanitize)
     {
@@ -99,10 +103,11 @@ class Utils
     /**
      * Properly strip all HTML tags including script and style
      *
-     * @since 1.0
-     * @param mixed string|array $value
+     * @param string|array $value
      * @param bool $remove_breaks
-     * @return mixed string|array
+     *
+     * @return string|array
+     * @since 1.0
      */
     public static function rm_tags($value, $remove_breaks = false)
     {
@@ -119,23 +124,23 @@ class Utils
 
     /**
      * Verify request ajax
-     *
-     * @since 1.0
      * @return bool
+     * @since 1.0
      */
     public static function is_request_ajax()
     {
-         return ( strtolower(self::server('HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest'
+        return (strtolower(self::server('HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest'
                 || (0 === strpos(self::server('QUERY_STRING'), 'wc-ajax')));
     }
 
     /**
      * Get value by array index
      *
-     * @since 1.0
      * @param array $args
      * @param string|int $index
+     *
      * @return string
+     * @since 1.0
      */
     public static function get_value_by($args, $index, $default = '')
     {
@@ -149,9 +154,10 @@ class Utils
     /**
      * Admin sanitize url
      *
-     * @since 1.0
      * @param string $path
+     *
      * @return string
+     * @since 1.0
      */
     public static function get_admin_url($path = '')
     {
@@ -161,9 +167,10 @@ class Utils
     /**
      * Site URL
      *
-     * @since 1.0
      * @param string $path
+     *
      * @return string
+     * @since 1.0
      */
     public static function get_site_url($path = '')
     {
@@ -173,10 +180,11 @@ class Utils
     /**
      * Add prefix in string
      *
-     * @since 1.0
      * @param string $after
      * @param string $before
+     *
      * @return string
+     * @since 1.0
      */
     public static function add_prefix($after, $before = '')
     {
@@ -186,9 +194,10 @@ class Utils
     /**
      * Component attribute with prefix
      *
-     * @since 1.0
      * @param string $name
+     *
      * @return string
+     * @since 1.0
      */
     public static function get_component($name)
     {
@@ -198,16 +207,17 @@ class Utils
     /**
      * Format and validate phone number with DDD
      *
-     * @since 1.0
      * @param string $phone
-     * @return string
+     *
+     * @return array
+     * @since 1.0
      */
     public static function format_phone_number($phone)
     {
         $phone = preg_replace(array('/[^\d]+/', '/^(?![1-9])0/'), '', $phone);
 
         if (strlen($phone) < 10) {
-            return '';
+            return [];
         }
 
         return array(substr($phone, 0, 2), substr($phone, 2));
@@ -216,9 +226,10 @@ class Utils
     /**
      * Format order price with amount
      *
+     * @param string|float|int $price
+     *
+     * @return int|void
      * @since 1.0
-     * @param mixed string|float|int $price
-     * @return int
      */
     public static function format_order_price($price)
     {
@@ -226,31 +237,33 @@ class Utils
             return;
         }
 
-        return @(int)number_format($price, 2, '', '');
+        return @(int) number_format($price, 2, '', '');
     }
 
     /**
      * Format order price with a currency symbol
      *
-     * @since 1.0
-     * @param mixed string|float|int $price
+     * @param string|float|int $price
+     *
      * @return string
+     * @since 1.0
      */
     public static function format_order_price_with_currency_symbol($price, $currency = 'BRL')
     {
         if (empty($price)) {
-            return;
+            return '';
         }
 
-        return get_woocommerce_currency_symbol($currency) . (string)number_format($price, 2, ',', '.');
+        return get_woocommerce_currency_symbol($currency) . (string) number_format($price, 2, ',', '.');
     }
 
     /**
      * Format desnormalized order price with amount
      *
+     * @param string|float|int $price
+     *
+     * @return int|void
      * @since 1.0
-     * @param mixed string|float|int $price
-     * @return int
      */
     public static function format_desnormalized_order_price($price)
     {
@@ -263,6 +276,11 @@ class Utils
         return self::format_order_price($price);
     }
 
+    /**
+     * @param $price
+     *
+     * @return array|string|string[]|void
+     */
     public static function normalize_price($price)
     {
         if (empty($price)) {
@@ -278,9 +296,10 @@ class Utils
     /**
      * Format order price to current currency
      *
-     * @since 1.0
      * @param int $price
-     * @return string
+     *
+     * @return string|void
+     * @since 1.0
      */
     public static function format_order_price_to_view($price)
     {
@@ -289,17 +308,17 @@ class Utils
         }
 
         $value = $price / 100;
-        $value = wc_price($value);
 
-        return $value;
+        return wc_price($value);
     }
 
     /**
      * Format document number
      *
-     * @since 1.0
      * @param string $document
+     *
      * @return string
+     * @since 1.0
      */
     public static function format_document($document)
     {
@@ -309,9 +328,10 @@ class Utils
     /**
      * Get the order id by meta value
      *
-     * @since 1.0
      * @param string $meta_value
+     *
      * @return int
+     * @since 1.0
      */
     public static function get_order_by_meta_value($meta_value)
     {
@@ -339,6 +359,7 @@ class Utils
      * @param string $format
      * @param string $search
      * @param string $replace
+     *
      * @return string
      */
     public static function convert_date($date, $format = 'Y-m-d', $search = '/', $replace = '-')
@@ -350,11 +371,22 @@ class Utils
         return date_i18n($format, strtotime($date));
     }
 
+    /**
+     * @param $string
+     *
+     * @return float
+     */
     public static function str_to_float($string)
     {
         return floatval(str_replace(',', '.', $string));
     }
 
+    /**
+     * @param $percentage
+     * @param $total
+     *
+     * @return float|int
+     */
     public static function calc_percentage($percentage, $total)
     {
         if (!$percentage) {
@@ -366,6 +398,9 @@ class Utils
         return ($percentage / 100) * $total;
     }
 
+    /**
+     * @return false|mixed
+     */
     public static function get_json_post_data()
     {
         $post_data = file_get_contents('php://input');
@@ -373,6 +408,13 @@ class Utils
         return empty($post_data) ? false : json_decode($post_data);
     }
 
+    /**
+     * @param $code
+     * @param $message
+     * @param $echo
+     *
+     * @return false|string|void
+     */
     public static function error_server_json($code, $message = 'Generic Message Error', $echo = true)
     {
         $response = json_encode(
@@ -390,7 +432,11 @@ class Utils
         echo esc_attr($response);
     }
 
-
+    /**
+     * @param $country
+     *
+     * @return int
+     */
     public static function get_phone_country_code($country)
     {
         $list = array(
@@ -400,12 +446,16 @@ class Utils
             'ES' => 34,
         );
 
-        return isset($list[$country]) ? $list[$country] : 55;
+        return $list[$country] ?? 55;
     }
 
+    /**
+     * @param Order $order
+     *
+     * @return array
+     */
     public static function build_customer_address_from_order(Order $order)
     {
-
         return array(
             'street'       => substr($order->getWcOrder()->get_billing_address_1(), 0, 64),
             'number'       => substr($order->get_meta('billing_number'), 0, 15),
@@ -418,6 +468,11 @@ class Utils
         );
     }
 
+    /**
+     * @param Order $order
+     *
+     * @return array|string[]
+     */
     public static function build_document_from_order(Order $order)
     {
         if (!empty($order->get_meta('billing_cpf'))) {
@@ -431,7 +486,7 @@ class Utils
             return array(
                 'type'  => 'company',
                 'value' => $order->get_meta('billing_cnpj'),
-                );
+            );
         }
 
         return array(
@@ -440,19 +495,24 @@ class Utils
         );
     }
 
+    /**
+     * @param Order $order
+     *
+     * @return array
+     */
     public static function build_customer_phones_from_order(Order $order)
     {
 
-        $phones    = array();
-        $phone     = $order->get_meta('billing_phone');
+        $phones = array();
+        $phone = $order->get_meta('billing_phone');
         $cellphone = $order->get_meta('billing_cellphone');
 
         if ($phone) {
-            $phoneParts               = self::format_phone_number($phone);
+            $phoneParts = self::format_phone_number($phone);
             $phones['home_phone'] = array(
                 'country_code' => self::get_phone_country_code($order->getWcOrder()->get_billing_country()),
-                'area_code'    => isset($phoneParts[0]) ? $phoneParts[0] : '',
-                'number'       => isset($phoneParts[1]) ? $phoneParts[1] : '',
+                'area_code'    => $phoneParts[0] ?? '',
+                'number'       => $phoneParts[1] ?? '',
             );
 
             $phones["home_phone"]['complete_phone'] =
@@ -461,11 +521,11 @@ class Utils
         }
 
         if ($cellphone) {
-            $phoneParts                 = self::format_phone_number($cellphone);
+            $phoneParts = self::format_phone_number($cellphone);
             $phones['mobile_phone'] = array(
                 'country_code' => self::get_phone_country_code($order->getWcOrder()->get_billing_country()),
-                'area_code'    => isset($phoneParts[0]) ? $phoneParts[0] : '',
-                'number'       => isset($phoneParts[1]) ? $phoneParts[1] : '',
+                'area_code'    => $phoneParts[0] ?? '',
+                'number'       => $phoneParts[1] ?? '',
             );
 
             $phones["mobile_phone"]['complete_phone'] =
@@ -478,17 +538,22 @@ class Utils
         return $phones;
     }
 
+    /**
+     * @param WC_Order $wc_order
+     *
+     * @return array
+     */
     public static function build_customer_shipping_from_wc_order(WC_Order $wc_order)
     {
 
         $method = $wc_order->get_shipping_method();
-        $order  = new Order($wc_order->get_id());
+        $order = new Order($wc_order->get_id());
 
         if (!$method) {
             $method = 'Não informado';
         }
 
-        $total    = self::format_order_price($wc_order->get_shipping_total());
+        $total = self::format_order_price($wc_order->get_shipping_total());
         $shipping = $order->get_shipping_info();
 
         return array(
@@ -507,6 +572,11 @@ class Utils
         );
     }
 
+    /**
+     * @param $value
+     *
+     * @return string
+     */
     public static function snakeToCamelCase($value)
     {
         return ucfirst(str_replace('_', '', ucwords($value, '_')));

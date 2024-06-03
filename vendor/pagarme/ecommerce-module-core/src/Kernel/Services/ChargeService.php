@@ -15,6 +15,7 @@ use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Payment\Services\ResponseHandlers\OrderHandler;
 use Pagarme\Core\Webhook\Services\ChargeOrderService;
 use Unirest\Exception;
+use Woocommerce\Pagarme\Helper\Utils;
 
 class ChargeService
 {
@@ -162,7 +163,6 @@ class ChargeService
 
     public function cancel(Charge $charge, $amount = 0)
     {
-
         $order = (new OrderRepository)->findByPagarmeId(
             new OrderId($charge->getOrderId()->getValue())
         );
@@ -171,10 +171,7 @@ class ChargeService
 
         $orderRepository = new OrderRepository();
         $orderService = new OrderService();
-        $moneyService = new MoneyService();
         $i18n = new LocalizationService();
-
-        $platformOrder = $order->getPlatformOrder();
 
         $apiService = new APIService();
         $this->logService->info(
@@ -238,52 +235,51 @@ class ChargeService
     public function prepareHistoryComment(ChargeInterface $charge)
     {
         $i18n = new LocalizationService();
-        $moneyService = new MoneyService();
 
         if (
             $charge->getStatus()->equals(ChargeStatus::paid())
             || $charge->getStatus()->equals(ChargeStatus::overpaid())
             || $charge->getStatus()->equals(ChargeStatus::underpaid())
         ) {
-            $amountInCurrency = $moneyService->centsToFloat($charge->getPaidAmount());
+            $amountInCurrency = Utils::format_order_price_to_view($charge->getPaidAmount());
 
             $history = $i18n->getDashboard(
-                'Payment received: %.2f',
+                'Payment received: %s',
                 $amountInCurrency
             );
 
             $extraValue = $charge->getPaidAmount() - $charge->getAmount();
             if ($extraValue > 0) {
                 $history .= ". " . $i18n->getDashboard(
-                    "Extra amount paid: %.2f",
-                    $moneyService->centsToFloat($extraValue)
+                    "Extra amount paid: %s",
+                    Utils::format_order_price_to_view($extraValue)
                 );
             }
 
             if ($extraValue < 0) {
                 $history .= ". " . $i18n->getDashboard(
-                    "Remaining amount: %.2f",
-                    $moneyService->centsToFloat(abs($extraValue))
+                    "Remaining amount: %s",
+                    Utils::format_order_price_to_view(abs($extraValue))
                 );
             }
 
             $refundedAmount = $charge->getRefundedAmount();
             if ($refundedAmount > 0) {
                 $history = $i18n->getDashboard(
-                    'Refunded amount: %.2f',
-                    $moneyService->centsToFloat($refundedAmount)
+                    'Refunded amount: %s',
+                    Utils::format_order_price_to_view($refundedAmount)
                 );
                 $history .= " (" . $i18n->getDashboard('until now') . ")";
             }
 
             $canceledAmount = $charge->getCanceledAmount();
             if ($canceledAmount > 0) {
-                $amountCanceledInCurrency = $moneyService->centsToFloat($canceledAmount);
+                $amountCanceledInCurrency = Utils::format_order_price_to_view($canceledAmount);
 
                 $history .= " ({$i18n->getDashboard('Partial Payment')}";
                 $history .= ". " .
                     $i18n->getDashboard(
-                        'Canceled amount: %.2f',
+                        'Canceled amount: %s',
                         $amountCanceledInCurrency
                     ) . ')';
             }
@@ -291,13 +287,13 @@ class ChargeService
             return $history;
         }
 
-        $amountInCurrency = $moneyService->centsToFloat($charge->getRefundedAmount());
+        $amountInCurrency = Utils::format_order_price_to_view($charge->getRefundedAmount());
         $history = $i18n->getDashboard(
             'Charge canceled.'
         );
 
         $history .= ' ' . $i18n->getDashboard(
-            'Refunded amount: %.2f',
+            'Refunded amount: %s',
             $amountInCurrency
         );
 

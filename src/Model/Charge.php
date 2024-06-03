@@ -6,10 +6,14 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Exception;
+use Pagarme\Core\Kernel\Services\ChargeService;
 use Pagarme\Core\Webhook\Factories\WebhookFactory;
 use Pagarme\Core\Webhook\Services\ChargeHandlerService;
 use WC_Order;
-use Woocommerce\Pagarme\Service\HandleWebhookService;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Service\LogService;
+use WP_Error;
 
 class Charge
 {
@@ -53,16 +57,9 @@ class Charge
             'charge.partial_canceled'
         ];
         if (in_array($webhook_data->type, $webhooksInPlatforms)) {
-            $this->updateCharge($webhook_data);
             return;
         }
         $this->update_core_charge($webhook_data);
-    }
-
-    private function updateCharge($webhookData)
-    {
-        $handleWebhook = new HandleWebhookService();
-        $handleWebhook->handle($webhookData);
     }
 
     private function update_core_charge($webhook_data)
@@ -78,6 +75,51 @@ class Charge
         $coreChargeHandler = new ChargeHandlerService();
         $coreWebhook = $coreWebhookFactory->createFromPostData($webhook);
         $coreChargeHandler->handle($coreWebhook);
+    }
+
+    /**
+     * @param $chargeId
+     * @param $amount
+     *
+     * @return bool|WP_Error
+     */
+    public function processChargeRefund($chargeId, $amount)
+    {
+        // Convert amount to cents
+        $amount = Utils::format_order_price($amount);
+
+        try {
+            $chargeService = new ChargeService();
+            $result = $chargeService->cancelById($chargeId, $amount);
+
+            if($result->isSuccess()) {
+                return true;
+            }
+
+            $logger = new LogService('Order.Refund');
+            $logger->log($result);
+
+            return new WP_Error(
+                'pagarme_error',
+                sprintf(
+                    /* translators: %s - Pagar.me error message */
+                    __( 'There was a problem attempting to refund: %s', 'woo-pagarme-payments' ),
+                    $result->getMessage()
+                )
+            );
+        } catch (Exception $e) {
+            $logger = new LogService('Order.Refund');
+            $logger->log($e);
+
+            return new WP_Error(
+                'pagarme_error',
+                sprintf(
+                    /* translators: %s - Pagar.me error message */
+                    __( 'There was a problem attempting to refund: %s', 'woo-pagarme-payments' ),
+                    $e->getMessage()
+                )
+            );
+        }
     }
 
     public function get_i18n_status($status)

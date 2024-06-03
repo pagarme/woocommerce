@@ -17,7 +17,7 @@ use WC_Payment_Gateway;
 use Woocommerce\Pagarme\Block\Template;
 use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Charge;
 use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\Config;
@@ -28,8 +28,6 @@ use Woocommerce\Pagarme\Model\Payment\PostFormatter;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
 use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
 use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
-use Woocommerce\Pagarme\Service\ChargeService;
-use Woocommerce\Pagarme\Service\LogService;
 use WP_Error;
 
 defined('ABSPATH') || exit;
@@ -76,6 +74,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var Checkout */
     private $checkout;
 
+    /** @var Charge */
+    private $charge;
+
     /** @var GatewayBlock */
     private $gatewayBlock;
 
@@ -118,6 +119,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->postFormatter = $postFormatter ?? new PostFormatter;
         $this->model = $gateway ?? new Gateway;
         $this->checkout = $checkout ?? new Checkout;
+        $this->charge = $charge ?? new Charge;
         $this->wooOrderRepository = $wooOrderRepository ?? new WooOrderRepository;
         $this->template = $template ?? new Template;
         $this->id = 'woo-pagarme-payments-' . $this->method;
@@ -254,82 +256,21 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /**
      * @param int $order_id
      * @param null $amount
-     * @param $reason
+     * @param string $reason
      *
      * @return bool|WP_Error
      */
     public function process_refund($order_id, $amount = null, $reason = '')
     {
         $order = new Order($order_id);
-        if (!$order) {
-            return false;
-        }
-
         $charges = $order->get_charges();
         if (empty($charges)) {
             return false;
         }
 
-        // Convert amount to cents
-        $amount = Utils::format_order_price($amount);
+        $chargeId = $charges[0]->getTransactions()[0]->getChargeId();
 
-        if (!$this->chargesCanRefund($charges, $amount)) {
-            return new WP_Error(
-                'pagarme_error',
-                __('The refund amount is grater than the amount current available on Pagar.me charge.', 'woo-pagarme-payments')
-            );
-        }
-
-        try {
-            $chargeId = $charges[0]->getTransactions()[0]->getChargeId();
-            $chargeService = new ChargeService();
-            $response = $chargeService->refundCharge($chargeId, $amount);
-            if ($response) {
-                $order->update_meta('pagarme_status', $response->status);
-                $order->update_meta('response_data', json_encode($response));
-                $logger = new LogService('Order.Refund');
-                $logger->info(
-                    sprintf(
-                        'Order #%s : Order refund response',
-                        $order_id
-                    ),
-                    $response
-                );
-                return true;
-            }
-            return false;
-        } catch (Exception $e) {
-            $logger = new LogService('Order.Refund');
-            $logger->log($e);
-            return new WP_Error(
-                'pagarme_error',
-                sprintf(
-                    /* translators: %1$s is a Pagar.me error message */
-                    __( 'There was a problem attempting to refund: %1$s', 'woo-pagarme-payments' ),
-                    $e->getMessage()
-                )
-            );
-        }
-    }
-
-    /**
-     * @param $charges
-     * @param $refundAmount
-     *
-     * @return bool
-     */
-    public function chargesCanRefund($charges, $refundAmount)
-    {
-        $currentChargesAmount = 0;
-        foreach ($charges as $charge) {
-            $currentChargesAmount += $currentChargesAmount + $charge->getPaidAmount() - $charge->getRefundedAmount() - $charge->getCanceledAmount();
-        }
-
-        if ($currentChargesAmount < $refundAmount) {
-            return false;
-        }
-
-        return true;
+        return $this->charge->processChargeRefund($chargeId, $amount);
     }
 
     /**
