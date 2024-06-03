@@ -74,9 +74,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var Checkout */
     private $checkout;
 
-    /** @var Charge */
-    private $charge;
-
     /** @var GatewayBlock */
     private $gatewayBlock;
 
@@ -119,7 +116,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->postFormatter = $postFormatter ?? new PostFormatter;
         $this->model = $gateway ?? new Gateway;
         $this->checkout = $checkout ?? new Checkout;
-        $this->charge = $charge ?? new Charge;
         $this->wooOrderRepository = $wooOrderRepository ?? new WooOrderRepository;
         $this->template = $template ?? new Template;
         $this->id = 'woo-pagarme-payments-' . $this->method;
@@ -248,6 +244,9 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         }
     }
 
+    /**
+     * @return false
+     */
     public function addRefundSupport()
     {
         return false;
@@ -268,9 +267,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             return false;
         }
 
+        $charge = new Charge();
         $chargeId = $charges[0]->getTransactions()[0]->getChargeId();
 
-        return $this->charge->processChargeRefund($chargeId, $amount);
+        return $charge->processChargeRefund($chargeId, $amount);
     }
 
     /**
