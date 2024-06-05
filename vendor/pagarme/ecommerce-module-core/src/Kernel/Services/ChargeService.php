@@ -15,7 +15,6 @@ use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Payment\Services\ResponseHandlers\OrderHandler;
 use Pagarme\Core\Webhook\Services\ChargeOrderService;
 use Unirest\Exception;
-use Woocommerce\Pagarme\Helper\Utils;
 
 class ChargeService
 {
@@ -235,13 +234,14 @@ class ChargeService
     public function prepareHistoryComment(ChargeInterface $charge)
     {
         $i18n = new LocalizationService();
+        $moneyService = new MoneyService();
 
         if (
             $charge->getStatus()->equals(ChargeStatus::paid())
             || $charge->getStatus()->equals(ChargeStatus::overpaid())
             || $charge->getStatus()->equals(ChargeStatus::underpaid())
         ) {
-            $amountInCurrency = Utils::format_order_price_to_view($charge->getPaidAmount());
+            $amountInCurrency = $moneyService->centsToPriceWithCurrencySymbol($charge->getPaidAmount());
 
             $history = $i18n->getDashboard(
                 'Payment received: %s',
@@ -252,14 +252,14 @@ class ChargeService
             if ($extraValue > 0) {
                 $history .= ". " . $i18n->getDashboard(
                     "Extra amount paid: %s",
-                    Utils::format_order_price_to_view($extraValue)
+                    $moneyService->centsToPriceWithCurrencySymbol($extraValue)
                 );
             }
 
             if ($extraValue < 0) {
                 $history .= ". " . $i18n->getDashboard(
                     "Remaining amount: %s",
-                    Utils::format_order_price_to_view(abs($extraValue))
+                    $moneyService->centsToPriceWithCurrencySymbol(abs($extraValue))
                 );
             }
 
@@ -267,14 +267,14 @@ class ChargeService
             if ($refundedAmount > 0) {
                 $history = $i18n->getDashboard(
                     'Refunded amount: %s',
-                    Utils::format_order_price_to_view($refundedAmount)
+                    $moneyService->centsToPriceWithCurrencySymbol($refundedAmount)
                 );
                 $history .= " (" . $i18n->getDashboard('until now') . ")";
             }
 
             $canceledAmount = $charge->getCanceledAmount();
             if ($canceledAmount > 0) {
-                $amountCanceledInCurrency = Utils::format_order_price_to_view($canceledAmount);
+                $amountCanceledInCurrency = $moneyService->centsToPriceWithCurrencySymbol($canceledAmount);
 
                 $history .= " ({$i18n->getDashboard('Partial Payment')}";
                 $history .= ". " .
@@ -287,7 +287,7 @@ class ChargeService
             return $history;
         }
 
-        $amountInCurrency = Utils::format_order_price_to_view($charge->getRefundedAmount());
+        $amountInCurrency = $moneyService->centsToPriceWithCurrencySymbol($charge->getRefundedAmount());
         $history = $i18n->getDashboard(
             'Charge canceled.'
         );

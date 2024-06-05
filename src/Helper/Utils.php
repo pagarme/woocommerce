@@ -577,7 +577,7 @@ class Utils
      *
      * @return string
      */
-    public static function snakeToCamelCase($value)
+    public static function snakeToPascalCase($value)
     {
         return ucfirst(str_replace('_', '', ucwords($value, '_')));
     }

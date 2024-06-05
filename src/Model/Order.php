@@ -103,8 +103,6 @@ class Order extends Meta
     }
 
     /**
-     * @param $newStatus
-     *
      * @return void
      */
     public function payment_canceled()

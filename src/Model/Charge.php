@@ -52,13 +52,6 @@ class Charge
         if (!$webhook_data) {
             return;
         }
-        $webhooksInPlatforms = [
-            'charge.refunded',
-            'charge.partial_canceled'
-        ];
-        if (in_array($webhook_data->type, $webhooksInPlatforms)) {
-            return;
-        }
         $this->update_core_charge($webhook_data);
     }
 
