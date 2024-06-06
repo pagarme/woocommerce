@@ -165,56 +165,62 @@ class Card extends Gateway
     public static function getCardErrorsMessagesTranslated()
     {
         return array(
-            'exp_month: A value is required.'                             =>
+            'exp_month: A value is required.' =>
                 __('Expiration Date: The month is required.', 'woo-pagarme-payments'),
-            'card.exp_month: The field exp_month must be between 1 and 12.'                             =>
+            'card.exp_month: The field exp_month must be between 1 and 12.' =>
                 __('The field exp_month must be between 1 and 12.', 'woo-pagarme-payments'),
             'exp_month: The field exp_month must be between 1 and 12.'    =>
                 __('Expiration Date: The month must be between 1 and 12.', 'woo-pagarme-payments'),
-            "exp_year: The value 'undefined' is not valid for exp_year."  =>
+            "exp_year: The value 'undefined' is not valid for exp_year." =>
                 __('Expiration Date: Invalid year.', 'woo-pagarme-payments'),
-            'request: The card expiration date is invalid.'               =>
+            'request: The card expiration date is invalid.' =>
                 __('Expiration Date: Invalid expiration date.', 'woo-pagarme-payments'),
-            'request: Card expired.'                                      =>
+            'request: Card expired.' =>
                 __('Expiration Date: Expired card.', 'woo-pagarme-payments'),
-            'holder_name: The holder_name field is required.'             =>
+            'holder_name: The holder_name field is required.' =>
                 __('The card holder name is required.', 'woo-pagarme-payments'),
-            'card.holder_name: The holder_name field is required.'             =>
+            'card.holder_name: The holder_name field is required.' =>
                 __('The holder_name field is required.', 'woo-pagarme-payments'),
-            'number: The number field is required.'                       =>
+            'number: The number field is required.' =>
                 __('The card number is required.', 'woo-pagarme-payments'),
             'number: The number field is not a valid credit card number.' =>
                 __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
-            'card: The number field is not a valid card number'           =>
+            'card: The number field is not a valid card number' =>
                 __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
-            'card.number: The number field is required.'        =>
+            'card.number: The number field is required.' =>
             __('The number field is required.', 'woo-pagarme-payments'),
-            'card.number: The number field is not a valid number.'        =>
+            'card.number: The number field is not a valid number.' =>
             __('The number field is not a valid number.', 'woo-pagarme-payments'),
             'card.number: The field number must be a string with a minimum length of 13 and a maximum length of 19.'
             => __('The card number must be between 13 and 19 characters.', 'woo-pagarme-payments'),
-            'card: Card expired.'                                         =>
+            'card: Card expired.' =>
                 __('The expiration date is expired.', 'woo-pagarme-payments'),
             'card.cvv: The field cvv must be a string with a minimum length of 3 and a maximum length of 4.'
             => __('The card code must be between 3 and 4 characters.', 'woo-pagarme-payments'),
-            'card.cvv: The cvv field is not a valid number.'              => 
+            'card.cvv: The cvv field is not a valid number.' =>
             __('The cvv field is not a valid number.', 'woo-pagarme-payments'),
-            'card: Invalid data to change card brand'                     =>
+            'card: Invalid data to change card brand' =>
                 __(self::INVALID_CARD_ERROR_MESSAGE, 'woo-pagarme-payments'),
-            'card: Tokenize timeout'                                      =>
+            'card: Tokenize timeout' =>
                 __('Tokenization timeout.', 'woo-pagarme-payments'),
-            'fail_get_token'        =>
+            'fail_get_token' =>
                 __('Failed to generate Token for 3DS, try again.', 'woo-pagarme-payments'),
-            'fail_get_email'        =>
+            'fail_get_email' =>
                 __('There was a problem finding the email.', 'woo-pagarme-payments'),
-            'fail_get_billing_address'        =>
+            'fail_get_billing_address' =>
                 __('There was a problem finding the address.', 'woo-pagarme-payments'),
-            'fail_assemble_card_expiry_date'        =>
+            'fail_assemble_card_expiry_date' =>
                 __('There was a problem when assembling the card\'s expiration data.', 'woo-pagarme-payments'),
-            'fail_assemble_purchase'        =>
+            'fail_assemble_purchase' =>
                 __('There was a problem when assembling the purchase data.', 'woo-pagarme-payments'),
-            'invalidBrand'        =>
+            'invalidBrand' =>
                 __('Invalid Data', 'woo-pagarme-payments'),
+            'card: Can\'t check card form: Invalid element received' =>
+                __('Can\'t check card form: Invalid element received.', 'woo-pagarme-payments'),
+            'serviceUnavailable' =>
+                __('Unable to generate a transaction. Unavailable service.', 'woo-pagarme-payments'),
+            'creditCardFormHasErrors' =>
+                __('Please, check the errors below.', 'woo-pagarme-payments')
         );
     }
 }
