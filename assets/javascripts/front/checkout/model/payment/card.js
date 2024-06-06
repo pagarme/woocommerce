@@ -293,9 +293,10 @@ let pagarmeCard = {
         if (total) {
             total = pagarmeCard.formatValue(total);
         }
-        const cardForm = elem.closest("fieldset");
-        const select = cardForm.find(this.installmentsTarget);
-        const info = cardForm.find(this.installmentsInfoTarget);
+        const cardForm = elem.closest("form");
+        const cardFieldset = elem.closest("fieldset");
+        const select = cardFieldset.find(this.installmentsTarget);
+        const info = cardFieldset.find(this.installmentsInfoTarget);
         if (!total) {
             total = cartTotal;
         }
@@ -320,17 +321,17 @@ let pagarmeCard = {
                 }
             });
             ajax.done(function (response) {
-                pagarmeCard._done(select, info, storageName, JSON.parse(response));
+                pagarmeCard._done(select, info, storageName, cardForm, JSON.parse(response));
             });
             ajax.fail(function () {
-                pagarmeCard._fail();
+                pagarmeCard._fail(cardForm);
             });
-            pagarmeCard.showLoader();
+            pagarmeCard.showLoader(cardForm);
         }
         return true;
     },
 
-    _done: function (select, info, storageName, response) {
+    _done: function (select, info, storageName, event, response) {
         if (info.length) {
             info.addClass('pagarme-hidden');
             if(response.installmentsConfig > 1) {
@@ -339,17 +340,37 @@ let pagarmeCard = {
         }
         select.html(response.optionsHtml);
         sessionStorage.setItem(storageName, response);
-        this.removeLoader();
+        this.removeLoader(event);
     },
-    _fail: function () {
-        this.removeLoader();
+    _fail: function (event) {
+        this.removeLoader(event);
     },
-    removeLoader: function () {
+    removeLoader: function (event) {
+        const formattedEvent = this.formatEventToJQuery(event);
+
+        if (typeof formattedEvent.unblock === 'function') {
+            formattedEvent.unblock();
+           return; 
+        }
+
         if (typeof jQuery.unblockUI === 'function') {
             jQuery.unblockUI();
         }
     },
-    showLoader: function () {
+    showLoader: function (event) {
+        const formattedEvent = this.formatEventToJQuery(event);
+
+        if (typeof formattedEvent.block === 'function') {
+            formattedEvent.block({
+                message: null,
+                overlayCSS: {
+                    background: '#fff',
+                    opacity: 0.6
+                }
+            });
+           return; 
+        }
+
         if (typeof jQuery.blockUI === 'function') {
             jQuery.blockUI({
                 message: null,
@@ -382,11 +403,11 @@ let pagarmeCard = {
         try {
             for (let i = 1; !pagarmeCard.isTokenized() && i <= this.limitTokenize; i++) {
                 if (i === this.limit) {
-                    this.removeLoader();
+                    this.removeLoader(event);
                     throw new Error("Tokenize timeout");
                 }
                 if (wc_pagarme_checkout.errorTokenize === true) {
-                    this.removeLoader();
+                    this.removeLoader(event);
                     return;
                 }
                 await pagarmeCard.wait();

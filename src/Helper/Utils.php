@@ -131,12 +131,12 @@ class Utils
     }
 
     /**
-     * Verify if request is from checkout blocks
+     * Verify if request is from checkout
      *
      * @since 1.0
      * @return boolean
      */
-    public static function isReactCheckoutRequest()
+    public static function isCheckoutRequest()
     {
         return strpos(strtolower(self::server('REQUEST_URI')), 'checkout') !== false;
     }
@@ -417,7 +417,7 @@ class Utils
 
     public static function build_customer_address_from_order(Order $order)
     {
-        
+
         return array(
             'street'       => substr($order->getWcOrder()->get_billing_address_1(), 0, 64),
             'number'       => substr($order->get_meta('billing_number'), 0, 15),

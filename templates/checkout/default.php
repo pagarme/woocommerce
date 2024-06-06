@@ -26,5 +26,5 @@ $wc_api = $this->getHomeUrl();
 <?= $this->createBlock($this->getPaymentClass(), 'pagarme.checkout.payment', ['payment_instance' => $this->getPaymentInstance()])->toHtml() ?>
 <script type="application/javascript">
     var ajaxUrl = "<?= admin_url('admin-ajax.php'); ?>";
-    var cartTotal = <?= WC()->cart->total ?>;
+    var cartTotal = <?= $this->getCartTotals() ?>;
 </script>

@@ -267,7 +267,7 @@ final class OrderHandler extends AbstractResponseHandler
             $historyComment
         );
 
-        $order->setStatus(OrderStatus::canceled());
+        $order->setStatus(OrderStatus::failed());
         $order->getPlatformOrder()->setState(OrderState::canceled());
         $order->getPlatformOrder()->save();
 
@@ -291,7 +291,7 @@ final class OrderHandler extends AbstractResponseHandler
         $sender = $platformOrder->sendEmail($messageComplementEmail);
 
         $order->getPlatformOrder()->addHistoryComment(
-            $i18n->getDashboard('Order canceled.'),
+            $i18n->getDashboard('Order payment failed.'),
             $sender
         );
 
