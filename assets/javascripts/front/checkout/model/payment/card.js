@@ -205,7 +205,7 @@ let pagarmeCard = {
             jQuery.ajax({
                 type: "GET",
                 dataType: "json",
-                url: 'https://api.mundipagg.com/bin/v1/' + bin,
+                url: 'https://api.pagar.me/bin/v1/' + bin,
                 async: false,
                 cache: false,
                 success: function (data) {

@@ -174,6 +174,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if ($this->subscription->isChangePaymentSubscription()) {
             return $this->subscription->processChangePaymentSubscription($wooOrder);
         }
+
+        $this->postFormatter->formatReactCheckout();
         $this->postFormatter->assemblePaymentRequest();
         if ($this->subscription->hasSubscriptionFreeTrial()) {
             return $this->subscription->processFreeTrialSubscription($wooOrder);

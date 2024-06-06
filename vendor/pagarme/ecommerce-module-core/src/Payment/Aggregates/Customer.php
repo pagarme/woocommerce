@@ -2,12 +2,14 @@
 
 namespace Pagarme\Core\Payment\Aggregates;
 
-use PagarmeCoreApiLib\Models\CreateCustomerRequest;
+use Exception;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Payment\Interfaces\ConvertibleToSDKRequestsInterface;
 use Pagarme\Core\Payment\ValueObjects\CustomerPhones;
 use Pagarme\Core\Payment\ValueObjects\CustomerType;
+use PagarmeCoreApiLib\Models\CreateCustomerRequest;
+use stdClass;
 
 final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsInterface
 {
@@ -77,8 +79,9 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
 
     /**
      * @param string $email
+     *
      * @return Customer
-     * @throws \Exception
+     * @throws Exception
      */
     public function setEmail($email)
     {
@@ -117,8 +120,9 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
 
     /**
      * @param string $document
+     *
      * @return Customer
-     * @throws \Exception
+     * @throws Exception
      */
     public function setDocument($document)
     {
@@ -127,12 +131,12 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
         if (empty($this->document) && empty($this->getPagarmeId())) {
 
             $inputName = $this->i18n->getDashboard('document');
-            $message = $this->i18n->getDashboard(
+            $message   = $this->i18n->getDashboard(
                 "The %s should not be empty!",
                 $inputName
             );
 
-            throw new \Exception($message, 400);
+            throw new Exception($message, 400);
         }
 
         return $this;
@@ -171,28 +175,28 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     }
 
     /**
-      * Specify data which should be serialized to JSON
-      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-      * @return mixed data which can be serialized by <b>json_encode</b>,
-      * which is a value of any type other than a resource.
-      * @since 5.4.0
-    */
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-        $obj = new \stdClass();
+        $obj = new stdClass();
 
         $code = $this->code;
         if ($code !== null) {
             $obj->code = $code;
         }
 
-        $obj->name = $this->name;
-        $obj->email = $this->email;
-        $obj->phones = $this->phones;
-        $obj->document = $this->document;
-        $obj->type = $this->type;
-        $obj->address = $this->address;
+        $obj->name      = $this->name;
+        $obj->email     = $this->email;
+        $obj->phones    = $this->phones;
+        $obj->document  = $this->document;
+        $obj->type      = $this->type;
+        $obj->address   = $this->address;
         $obj->pagarmeId = $this->getPagarmeId();
 
         return $obj;
@@ -203,22 +207,25 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
         if ($this->getType() !== null) {
             return $this->getType()->getType();
         }
+
         return null;
     }
 
     public function getAddressToSDK()
     {
         if ($this->getAddress() !== null) {
-         return $this->getAddress()->convertToSDKRequest();
+            return $this->getAddress()->convertToSDKRequest();
         }
+
         return null;
     }
 
     public function getPhonesToSDK()
     {
         if ($this->getPhones() !== null) {
-         return $this->getPhones()->convertToSDKRequest();
+            return $this->getPhones()->convertToSDKRequest();
         }
+
         return null;
     }
 
@@ -226,13 +233,13 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
     {
         $customerRequest = new CreateCustomerRequest();
 
-        $customerRequest->code = $this->getCode();
-        $customerRequest->name = $this->getName();
-        $customerRequest->email = $this->getEmail();
+        $customerRequest->code     = $this->getCode();
+        $customerRequest->name     = $this->getName();
+        $customerRequest->email    = $this->getEmail();
         $customerRequest->document = $this->getDocument();
-        $customerRequest->type = $this->getTypeValue();
-        $customerRequest->address = $this->getAddressToSDK();
-        $customerRequest->phones = $this->getPhonesToSDK();
+        $customerRequest->type     = $this->getTypeValue();
+        $customerRequest->address  = $this->getAddressToSDK();
+        $customerRequest->phones   = $this->getPhonesToSDK();
 
         return $customerRequest;
     }
@@ -245,7 +252,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
                 "email"
             );
 
-            throw new \Exception($message, 400);
+            throw new Exception($message, 400);
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -254,7 +261,7 @@ final class Customer extends AbstractEntity implements ConvertibleToSDKRequestsI
                 "email"
             );
 
-            throw new \Exception($message, 400);
+            throw new Exception($message, 400);
         }
     }
 
