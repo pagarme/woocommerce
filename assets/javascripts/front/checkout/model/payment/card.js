@@ -477,7 +477,6 @@ let pagarmeCard = {
                 return pagarmeCard.canExecute(event);
             });
             jQuery('form#order_review').on('submit', function (event) {
-                console.log('first event', event);
                 return pagarmeCard.canExecute(event);
             });
         });
