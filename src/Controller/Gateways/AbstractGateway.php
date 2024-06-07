@@ -125,7 +125,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->has_fields = false;
         $this->init_form_fields();
         $this->init_settings();
-        $this->enabled = $this->get_option('enabled', 'no');
+        $this->enabled = $this->isEnabled();
         $this->title = $this->getTitle();
         $this->has_fields = true;
         if (is_admin()) {
@@ -181,6 +181,8 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if ($this->subscription->isChangePaymentSubscription()) {
             return $this->subscription->processChangePaymentSubscription($wooOrder);
         }
+
+        $this->postFormatter->formatReactCheckout();
         $this->postFormatter->assemblePaymentRequest();
         if ($this->subscription->hasSubscriptionFreeTrial()) {
             return $this->subscription->processFreeTrialSubscription($wooOrder);
@@ -513,5 +515,23 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     {
         WC_Admin_Settings::add_error($errorMessage);
         throw new InvalidOptionException(InvalidOptionException::CODE, $errorMessage);
+    }
+
+    protected function isEnabled()
+    {
+        global $wp;
+        $enabled = $this->get_option('enabled', 'no');
+
+        if (!isset($wp->query_vars['order-pay'])) {
+            return $enabled;
+        }
+
+        $orderId = $wp->query_vars['order-pay'];
+        $order = wc_get_order($orderId);
+        if (empty($order->get_customer_id())) {
+            $enabled = 'no';
+        }
+
+        return $enabled;
     }
 }

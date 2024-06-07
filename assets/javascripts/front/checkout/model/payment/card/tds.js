@@ -216,7 +216,7 @@ const pagarmeTds = {
     },
 
     callbackTds: (data) => {
-        pagarmeCard.removeLoader();
+        pagarmeCard.removeLoader(pagarmeTds.checkoutEvent);
         if (data?.error !== undefined) {
             pagarmeTds.addErrors(data);
             return;
@@ -289,7 +289,7 @@ const pagarmeTds = {
     start: (event) => {
         const canTdsRun = pagarmeTds.canTdsRun();
         if (canTdsRun) {
-            pagarmeCard.showLoader();
+            pagarmeCard.showLoader(event);
             pagarmeTds.checkoutEvent = event;
             pagarmeTds.addTdsAttributeData();
             const token = pagarmeTds.getToken();

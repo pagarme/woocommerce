@@ -152,10 +152,16 @@ final class Order extends AbstractEntity
         }
 
         if (
-            in_array(ChargeStatus::failed()->getStatus(), $listChargeStatus) &&
             in_array(ChargeStatus::canceled()->getStatus(), $listChargeStatus)
         ) {
             $this->setStatus(OrderStatus::canceled());
+        }
+
+        if (
+            in_array(ChargeStatus::failed()->getStatus(), $listChargeStatus)
+        )
+        {
+            $this->setStatus(OrderStatus::failed());
         }
 
         if (

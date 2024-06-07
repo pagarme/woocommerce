@@ -124,6 +124,22 @@ class Order extends Meta
         $this->log($statusArray);
     }
 
+    public function paymentFailed()
+    {
+        $current_status = $this->wc_order->get_status();
+
+        if ($current_status !== 'failed') {
+            $this->wc_order->update_status('failed', __('Pagar.me: Payment failed.', 'woo-pagarme-payments'));
+        }
+
+        $statusArray = [
+            'previous_status' => $current_status,
+            'new_status' => $this->wc_order->get_status()
+        ];
+
+        $this->log($statusArray);
+    }
+
     public function update_by_pagarme_status($pagarme_status)
     {
         switch ($pagarme_status) {
@@ -135,6 +151,8 @@ class Order extends Meta
                 $this->payment_paid();
                 break;
             case 'failed':
+                $this->paymentFailed();
+                break;
             case 'canceled':
                 $this->payment_canceled();
                 break;
