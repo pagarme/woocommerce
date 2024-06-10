@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-06-06 16:01-0300\n"
+"PO-Revision-Date: 2024-05-29 16:16-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -530,7 +530,7 @@ msgstr "Processo de Antifraude em análise manual."
 msgid "Anti-fraud process pending."
 msgstr "Processo de antifraude pendente."
 
-#: src/Model/Order.php:100
+#: src/Model/Order.php:117
 msgid "Pagar.me: Payment canceled."
 msgstr "Pagar.me: Pagamento cancelado."
 
@@ -1124,14 +1124,11 @@ msgstr "Titular"
 msgid "No records found."
 msgstr "Nenhum registro foi encontrado."
 
-msgid "Partially Reversed"
-msgstr "Parcialmente Revertido"
+msgid "Refunded"
+msgstr "Reembolsado"
 
-msgid "Partially Canceled"
-msgstr "Parcialmente Cancelado"
-
-msgid "Partially Captured"
-msgstr "Capturado Parcialmente"
+msgid "Captured"
+msgstr "Capturado"
 
 msgid "Total Amount"
 msgstr "Total"
@@ -1448,3 +1445,22 @@ msgstr "O mês de expiração do cartão deve estar entre 01 e 12."
 
 msgid "Pagar.me: Payment failed."
 msgstr "Pagar.me: Pagamento falhou."
+
+msgid ""
+"<span>Attention!</span> It is now possible to use Woocommerce's automatic refund flow. <b>Soon, this button will be "
+"dedicated to manual capture only</b>."
+msgstr ""
+"<span>Atenção!</span> Já é possível utilizar o fluxo de reembolso automático do Woocommerce. <b>Em breve, este botão "
+"será dedicado somente a captura manual</b>."
+
+msgid "There was a problem attempting to refund: %1$s"
+msgstr "Ocorreu um problema ao tentar reembolsar: %1$s"
+
+msgid "The refund amount is grater than the amount current available on Pagar.me charge."
+msgstr "O valor do reembolso é maior que o valor atualmente disponível na cobrança da Pagar.me."
+
+msgid "Charge %s was fully refunded."
+msgstr "A cobrança %s foi totalmente reembolsada."
+
+msgid "Charge %1$s was partially refunded. Amount: %2$s"
+msgstr "A cobrança %1$s foi parcialmente reembolsada. Valor: %2$s"

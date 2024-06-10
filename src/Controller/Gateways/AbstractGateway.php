@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use Exception;
 use WC_Admin_Settings;
 use WC_Payment_Gateway;
 use Woocommerce\Pagarme\Block\Template;
-
 use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Charge;
 use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\Config;
@@ -27,6 +28,7 @@ use Woocommerce\Pagarme\Model\Payment\PostFormatter;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
 use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
 use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
+use WP_Error;
 
 defined('ABSPATH') || exit;
 
@@ -90,10 +92,14 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     private $subscription;
 
     /**
+     * @param Yesno|null $yesnoOptions
+     * @param Checkout|null $checkout
      * @param Gateway|null $gateway
      * @param WooOrderRepository|null $wooOrderRepository
      * @param PostFormatter|null $postFormatter
      * @param Config|null $config
+     * @param GatewayBlock|null $gatewayBlock
+     * @param Template|null $template
      */
     public function __construct(
         Yesno $yesnoOptions = null,
@@ -132,6 +138,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
         add_action('woocommerce_email_after_order_table', [$this, 'pagarme_email_payment_info'], 15, 2 );
         $this->subscription = new Subscription($this);
+        $this->addRefundSupport();
     }
 
     /**
@@ -166,7 +173,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /**
      * @param $orderId
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function process_payment($orderId): array
     {
@@ -189,7 +196,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /**
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function payment_fields()
     {
@@ -219,7 +226,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /**
      * @param $order_id
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function thank_you_page($order_id)
     {
@@ -237,6 +244,35 @@ abstract class AbstractGateway extends WC_Payment_Gateway
                 ]
             )->toHtml();
         }
+    }
+
+    /**
+     * @return false
+     */
+    public function addRefundSupport()
+    {
+        return false;
+    }
+
+    /**
+     * @param int $order_id
+     * @param null $amount
+     * @param string $reason
+     *
+     * @return bool|WP_Error
+     */
+    public function process_refund($order_id, $amount = null, $reason = '')
+    {
+        $order = new Order($order_id);
+        $charges = $order->get_charges();
+        if (empty($charges)) {
+            return false;
+        }
+
+        $charge = new Charge();
+        $chargeId = $charges[0]->getTransactions()[0]->getChargeId();
+
+        return $charge->processChargeRefund($chargeId, $amount);
     }
 
     /**

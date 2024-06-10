@@ -37,6 +37,15 @@ class Voucher extends AbstractGateway
     const VOUCHER_CARD_BRANDS_FIELD_NAME = 'Voucher Card Brands';
 
     const DEFAULT_BRANDS = ['alelo', 'sodexo', 'vr'];
+
+    /**
+     * @return void
+     */
+    public function addRefundSupport()
+    {
+        $this->supports[] = 'refunds';
+    }
+
     /**
      * @return array
      */

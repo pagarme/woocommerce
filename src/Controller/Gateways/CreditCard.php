@@ -39,6 +39,14 @@ class CreditCard extends AbstractGateway
     const DEFAULT_BRANDS = ['visa', 'mastercard', 'elo', 'hipercard'];
 
     /**
+     * @return void
+     */
+    public function addRefundSupport()
+    {
+        $this->supports[] = 'refunds';
+    }
+
+    /**
      * @return boolean
      */
     public function hasSubscriptionSupport(): bool

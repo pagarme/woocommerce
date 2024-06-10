@@ -102,12 +102,18 @@ class Order extends Meta
         $this->log($statusArray);
     }
 
+    /**
+     * @return void
+     */
     public function payment_canceled()
     {
         $current_status = $this->wc_order->get_status();
 
         if (!in_array($current_status, ['cancelled', 'canceled'])) {
-            $this->wc_order->update_status('cancelled', __('Pagar.me: Payment canceled.', 'woo-pagarme-payments'));
+            $this->wc_order->update_status(
+                'cancelled',
+                __('Pagar.me: Payment canceled.', 'woo-pagarme-payments')
+            );
         }
 
         $statusArray = [

@@ -15,9 +15,14 @@ class LogService
      */
     protected $coreLog;
 
-    public function __construct() {
+    public function __construct($channelName) {
         // $this->logger = new WC_Logger(); //Log by platform
-        $this->coreLog = new CoreLogService("Subscription", true);
+        $this->coreLog = new CoreLogService($channelName, true);
+    }
+
+    public function info($message, $sourceObject = null)
+    {
+        $this->coreLog->info($message, $sourceObject);
     }
 
     public function log($error)

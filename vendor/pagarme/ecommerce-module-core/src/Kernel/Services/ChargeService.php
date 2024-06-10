@@ -162,7 +162,6 @@ class ChargeService
 
     public function cancel(Charge $charge, $amount = 0)
     {
-
         $order = (new OrderRepository)->findByPagarmeId(
             new OrderId($charge->getOrderId()->getValue())
         );
@@ -171,10 +170,7 @@ class ChargeService
 
         $orderRepository = new OrderRepository();
         $orderService = new OrderService();
-        $moneyService = new MoneyService();
         $i18n = new LocalizationService();
-
-        $platformOrder = $order->getPlatformOrder();
 
         $apiService = new APIService();
         $this->logService->info(
@@ -245,45 +241,45 @@ class ChargeService
             || $charge->getStatus()->equals(ChargeStatus::overpaid())
             || $charge->getStatus()->equals(ChargeStatus::underpaid())
         ) {
-            $amountInCurrency = $moneyService->centsToFloat($charge->getPaidAmount());
+            $amountInCurrency = $moneyService->centsToPriceWithCurrencySymbol($charge->getPaidAmount());
 
             $history = $i18n->getDashboard(
-                'Payment received: %.2f',
+                'Payment received: %s',
                 $amountInCurrency
             );
 
             $extraValue = $charge->getPaidAmount() - $charge->getAmount();
             if ($extraValue > 0) {
                 $history .= ". " . $i18n->getDashboard(
-                    "Extra amount paid: %.2f",
-                    $moneyService->centsToFloat($extraValue)
+                    "Extra amount paid: %s",
+                    $moneyService->centsToPriceWithCurrencySymbol($extraValue)
                 );
             }
 
             if ($extraValue < 0) {
                 $history .= ". " . $i18n->getDashboard(
-                    "Remaining amount: %.2f",
-                    $moneyService->centsToFloat(abs($extraValue))
+                    "Remaining amount: %s",
+                    $moneyService->centsToPriceWithCurrencySymbol(abs($extraValue))
                 );
             }
 
             $refundedAmount = $charge->getRefundedAmount();
             if ($refundedAmount > 0) {
                 $history = $i18n->getDashboard(
-                    'Refunded amount: %.2f',
-                    $moneyService->centsToFloat($refundedAmount)
+                    'Refunded amount: %s',
+                    $moneyService->centsToPriceWithCurrencySymbol($refundedAmount)
                 );
                 $history .= " (" . $i18n->getDashboard('until now') . ")";
             }
 
             $canceledAmount = $charge->getCanceledAmount();
             if ($canceledAmount > 0) {
-                $amountCanceledInCurrency = $moneyService->centsToFloat($canceledAmount);
+                $amountCanceledInCurrency = $moneyService->centsToPriceWithCurrencySymbol($canceledAmount);
 
                 $history .= " ({$i18n->getDashboard('Partial Payment')}";
                 $history .= ". " .
                     $i18n->getDashboard(
-                        'Canceled amount: %.2f',
+                        'Canceled amount: %s',
                         $amountCanceledInCurrency
                     ) . ')';
             }
@@ -291,13 +287,13 @@ class ChargeService
             return $history;
         }
 
-        $amountInCurrency = $moneyService->centsToFloat($charge->getRefundedAmount());
+        $amountInCurrency = $moneyService->centsToPriceWithCurrencySymbol($charge->getRefundedAmount());
         $history = $i18n->getDashboard(
             'Charge canceled.'
         );
 
         $history .= ' ' . $i18n->getDashboard(
-            'Refunded amount: %.2f',
+            'Refunded amount: %s',
             $amountInCurrency
         );
 
