@@ -128,6 +128,7 @@ class Utils
          return ( strtolower(self::server('HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest'
                 || (0 === strpos(self::server('QUERY_STRING'), 'wc-ajax'))
                 || strtolower(self::server('HTTP_X_REQUEST_TYPE')) === 'ajax');
+                // || ;
     }
 
     /**
@@ -138,9 +139,11 @@ class Utils
      */
     public static function isCheckoutRequest()
     {
-        return strpos(strtolower(self::server('REQUEST_URI')), 'checkout') !== false;
+        if(function_exists('is_checkout')) {
+            return is_checkout();
+        }
+        return false;
     }
-
     /**
      * Get value by array index
      *

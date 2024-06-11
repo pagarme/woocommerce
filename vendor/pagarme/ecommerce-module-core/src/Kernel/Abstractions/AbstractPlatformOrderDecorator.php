@@ -15,12 +15,22 @@ abstract class AbstractPlatformOrderDecorator implements PlatformOrderInterface
     protected $platformOrder;
     private $logService;
     private $paymentMethod;
+    private $attempts = 1;
 
     public function __construct()
     {
         $this->logService = new OrderLogService();
     }
+    
+    public function getAttempts()
+    {
+        return $this->attempts;
+    }
 
+    public function setAttempts($attempts)
+    {
+        $this->attempts = $attempts;
+    }
     public function addHistoryComment($message, $notifyCustomer = false)
     {
         $message = 'PGM - ' . $message;

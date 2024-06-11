@@ -49,10 +49,11 @@ class Order extends Meta
     // == END WC ORDER ==
 
     public $with_prefix = array(
-        'payment_method'   => 1,
-        'response_data'    => 1,
-        'pagarme_status' => 1,
-        'pagarme_id'     => 1,
+        'payment_method'    => 1,
+        'response_data'     => 1,
+        'pagarme_status'    => 1,
+        'pagarme_id'        => 1,
+        'attempts'          => 1
     );
 
     /** phpcs:disable */
