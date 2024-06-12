@@ -123,6 +123,8 @@ class Checkout
         if ($type === CheckoutTypes::TRANSPARENT_VALUE) {
             $fields = $this->convertCheckoutObject($_POST[PaymentRequestInterface::PAGARME_PAYMENT_REQUEST_KEY]);
             $fields['recurrence_cycle'] = Subscription::getRecurrenceCycle();
+            $attempts = intval($wc_order->get_meta('_pagarme_attempts') ?? 0) + 1;
+            $wc_order->update_meta_data("_pagarme_attempts", $attempts);
             $response = $this->orders->create_order(
                 $wc_order,
                 $fields['payment_method'],
@@ -137,6 +139,7 @@ class Checkout
             );
             $order->getWcOrder()->set_total($this->getTotalValue($wc_order, $totalWithInstallments));
             $order->update_meta('payment_method', $fields['payment_method']);
+            $order->update_meta("attempts", $attempts);
             $this->addAuthenticationOnMetaData($order, $fields);
             WC()->cart->empty_cart();
             if ($response) {
@@ -151,6 +154,7 @@ class Checkout
             }
             $order->update_meta('pagarme_status', 'failed');
             $order->update_by_pagarme_status('failed');
+            $order->getWcOrder()->save();
             return false;
         }
     }

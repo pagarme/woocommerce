@@ -141,9 +141,11 @@ class Utils
      */
     public static function isCheckoutRequest()
     {
-        return strpos(strtolower(self::server('REQUEST_URI')), 'checkout') !== false;
+        if(function_exists('is_checkout')) {
+            return is_checkout();
+        }
+        return false;
     }
-
     /**
      * Get value by array index
      *

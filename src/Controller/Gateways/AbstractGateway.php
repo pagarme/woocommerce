@@ -435,7 +435,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function pagarme_email_payment_info($order, $sent_to_admin)
     {
         if ($sent_to_admin
-            || $this->id !== $order->get_meta('payment_method')
+            || $this->id !== $order->get_payment_method()
             || !in_array($order->get_status(), $this->sendEmailStatus)) {
             return;
         }

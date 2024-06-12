@@ -103,6 +103,10 @@ class CheckoutTest extends TestCase
             ->andReturn(1);
         $wcOrderMock->shouldReceive('set_total')
             ->andReturnSelf();
+        $wcOrderMock->shouldReceive('get_meta')
+            ->andReturn("");
+        $wcOrderMock->shouldReceive('update_meta_data')
+            ->andReturnSelf();
 
         $ordersMock->shouldReceive('create_order')
             ->withArgs(function ($wcOrder, $paymentMethod, $fields) use ($wcOrderMock) {
@@ -144,7 +148,7 @@ class CheckoutTest extends TestCase
             ->once();
 
         $checkout = new Checkout($gatewayMock, $configMock, $ordersMock, $wooOrderRepositoryMock);
-
+        
         $this->assertTrue($checkout->process($wcOrderMock));
     }
 }
