@@ -48,7 +48,7 @@ final class Installment extends AbstractValueObject
     private function setTimes($times)
     {
         $newTimes = intval($times);
-        if ($newTimes < 1 || $newTimes > 24) {
+        if ($newTimes < 0 || $newTimes > 24) {
             throw new InvalidParamException(
                 "A installment times should be set between 1 and 24!",
                 $times

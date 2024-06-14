@@ -323,7 +323,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
                 true,
                 CardBrand::$brandMethod(),
                 (!empty($max) ? $max : 1),
-                (!empty($maxWithout) ? $maxWithout : 1),
+                (!empty($maxWithout) ? $maxWithout : 0),
                 $initial,
                 $incremental,
                 (!empty($minValue) ? $minValue : 0) * 100
