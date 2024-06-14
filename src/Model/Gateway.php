@@ -6,18 +6,13 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
-// Exeption
 use Exception;
-
 use Pagarme\Core\Hub\Services\HubIntegrationService;
 use ReflectionClass;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Payment\PaymentInterface;
-
-// WooCommerce
-use WC_Order;
 
 class Gateway
 {
@@ -27,10 +22,7 @@ class Gateway
      * A single settings for all flags.
      *
      */
-    const CC_TYPE_SINGLE  = 1;
-
-    /** @var string */
-    const HUB_SANDBOX_ENVIRONMENT  = 'Sandbox';
+    const CC_TYPE_SINGLE = 1;
 
     /**
      * Credit Card Installment Type - By Flag
@@ -39,6 +31,17 @@ class Gateway
      *
      */
     const CC_TYPE_BY_FLAG = 2;
+
+    /**
+     * Credit Card Installment Type - Default 1.0
+     *
+     * Legacy settings from the previews Pagar.me plugin.
+     *
+     */
+    const CC_TYPE_LEGACY = 3;
+
+    /** @var string */
+    const HUB_SANDBOX_ENVIRONMENT = 'Sandbox';
 
     /** @var Config|null */
     public $config;
@@ -158,11 +161,11 @@ class Gateway
     }
 
     /**
-    * @param int $times
-    * @param mixed $noInterest
-    * @param mixed $interest
-    * @return string
-    */
+     * @param int $times
+     * @param mixed $no_interest
+     * @param mixed $interest
+     * @return string
+     */
     public function verifyInterest(int $times, $no_interest, $interest): string
     {
         if ($times > $no_interest && $interest) {

@@ -70,24 +70,26 @@ class CreditCard extends AbstractGateway
         $fields = [
             'cc_operation_type' => $this->field_cc_operation_type(),
             'cc_soft_descriptor' => $this->field_cc_soft_descriptor(),
+            'cc_allow_save' => $this->field_cc_allow_save(),
             'cc_flags' => $this->field_cc_flags(),
+
+            'cc_installments_section' => $this->section_installments(),
             'cc_installment_type' => $this->field_cc_installment_type(),
             'cc_installments_maximum' => $this->field_cc_installment_fields('maximum'),
             'cc_installments_min_amount' => $this->field_cc_installment_fields('installment_min_amount'),
             'cc_installments_interest' => $this->field_cc_installment_fields('interest'),
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
             'cc_installments_without_interest' => $this->field_cc_installment_fields('without_interest'),
-            'cc_installments_by_flag' => $this->field_cc_installment_fields('flags'),
-            'cc_allow_save' => $this->field_cc_allow_save(),
-
-
+            'cc_installments_by_flag' => $this->field_cc_installment_fields('flags')
         ];
+
         if (Subscription::hasSubscriptionPlugin()) {
+            $fields['cc_subscription_section'] = $this->section('Subscription settings');
             $fields['cc_allowed_in_subscription'] = $this->field_cc_allowed_for_subscription();
             $fields['cc_subscription_installments'] = $this->field_cc_subscription_installments();
         }
 
-        $fields['section_tds'] = $this->section_tds();
+        $fields['section_tds'] = $this->section('3DS settings');
         $fields['tds_enabled'] = $this->field_cc_tds_enabled();
         $fields['tds_min_amount'] = $this->field_cc_tds_min_amount();
 
@@ -148,7 +150,7 @@ class CreditCard extends AbstractGateway
         return [
             'title' => __(self::SOFT_DESCRIPTOR_FIELD_NAME, 'woo-pagarme-payments'),
             'type' => 'text',
-            'desc_tip' => __('Description that appears on the credit card bill.', 'woo-pagarme-payments'),
+            'desc_tip' => __("Name that will appear on the buyer's card bill.", 'woo-pagarme-payments'),
             'description' => sprintf(
                 __("Max length of <span id='woo-pagarme-payments_max_length_span'>%s</span> characters.",
                 'woo-pagarme-payments'), $maxLength),
@@ -171,12 +173,16 @@ class CreditCard extends AbstractGateway
     public function field_cc_allow_save()
     {
         return [
-            'title' => __('Card wallet', 'woo-pagarme-payments'),
+            'title' => __('Allow payments with saved cards', 'woo-pagarme-payments'),
             'type'     => 'select',
             'options' => $this->yesnoOptions->toLabelsArray(true),
             'label' => __('Enable card wallet', 'woo-pagarme-payments'),
             'default'     => $this->config->getData('cc_allow_save') ?? strtolower(Yesno::NO),
-            'description' => __('Allows for cards to be saved for future purchases.', 'woo-pagarme-payments'),
+            'description' => __(
+                'Allows users to pay for a new order with cards saved from previous orders. Card details are saved '
+                . 'on Pagar.me and not in your store.',
+                'woo-pagarme-payments'
+            ),
             'desc_tip' => true,
             'custom_attributes' => array(
                 'data-field' => 'cc-allow-save',
@@ -247,10 +253,32 @@ class CreditCard extends AbstractGateway
     /**
      * @return array
      */
+    public function section_installments()
+    {
+        return [
+            'title' => __('Installment settings', 'woo-pagarme-payments'),
+            'type'  => 'title',
+            'description' => sprintf(
+                __(
+                    'Do you have any questions about these settings? For more information and examples, visit our '
+                    . '%sdocumentation »%s',
+                    'woo-pagarme-payments'
+                ),
+                '<a
+                    href="https://docs.pagar.me/docs/configurando-os-meios-de-pagamento-woocommerce#cart%C3%A3o-de-cr%C3%A9dito"
+                    target="_blank" rel="noopener noreferrer">',
+                '</a>'
+            )
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function field_cc_installment_type()
     {
         return [
-            'title' => __('Installment configuration', 'woo-pagarme-payments'),
+            'title' => __('Installment type', 'woo-pagarme-payments'),
             'type' => 'select',
             'class' => 'wc-enhanced-select',
             'label' => __('Choose the installment configuration', 'woo-pagarme-payments'),
@@ -258,6 +286,7 @@ class CreditCard extends AbstractGateway
             'options' => array(
                 Gateway::CC_TYPE_SINGLE => __('For all card brands', 'woo-pagarme-payments'),
                 Gateway::CC_TYPE_BY_FLAG => __('By card brand', 'woo-pagarme-payments'),
+                Gateway::CC_TYPE_LEGACY => __('Use default 1.0', 'woo-pagarme-payments'),
             ),
             'custom_attributes' => array(
                 'data-element' => 'installments-type-select',
@@ -302,7 +331,7 @@ class CreditCard extends AbstractGateway
             'type' => 'text',
             'default' => $this->config->getData('cc_installments_interest') ?? '',
             'description' => __(
-                'Interest rate applied starting with the first installment with interest.',
+                'Fee that will be charged from the first installment with interest.',
                 'woo-pagarme-payments'),
             'desc_tip' => true,
             'placeholder' => '0.00',
@@ -317,7 +346,11 @@ class CreditCard extends AbstractGateway
             'title' => __('Incremental interest rate (%)', 'woo-pagarme-payments'),
             'type' => 'text',
             'default' => $this->config->getData('cc_installments_interest_increase') ?? '',
-            'description' => __('Interest rate added for each installment with interest.', 'woo-pagarme-payments'),
+            'description' => __(
+                'Fee that will be charged increasingly from the second installment with interest added to the initial '
+                . 'interest rate.',
+                'woo-pagarme-payments'
+            ),
             'desc_tip' => true,
             'placeholder' => '0.00',
             'custom_attributes' => array(
@@ -400,14 +433,11 @@ class CreditCard extends AbstractGateway
     /**
      * @return array
      */
-    public function section_tds()
+    public function section($title)
     {
         return [
-            'title' => __('3DS settings', 'woo-pagarme-payments'),
-            'type'  => 'title',
-            'custom_attributes' => array(
-                'data-field' => 'tds-section',
-            )
+            'title' => __($title, 'woo-pagarme-payments'),
+            'type'  => 'title'
         ];
     }
 
