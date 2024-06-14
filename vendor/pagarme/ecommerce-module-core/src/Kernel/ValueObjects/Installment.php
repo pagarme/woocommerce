@@ -85,14 +85,7 @@ final class Installment extends AbstractValueObject
      */
     private function setInterest($interest)
     {
-        $newInterest = floatval($interest);
-        if ($newInterest < 0) {
-            throw new InvalidParamException(
-                "A installment interest should be greater or equal to 0!",
-                $interest
-            );
-        }
-        $this->interest = $newInterest;
+        $this->interest = floatval($interest);
         return $this;
     }
 
