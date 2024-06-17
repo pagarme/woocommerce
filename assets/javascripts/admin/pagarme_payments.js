@@ -1,7 +1,9 @@
+/* jshint esversion: 6 */
 (function ($) {
         const installmentsTypeSelect = $('[data-element="installments-type-select"]');
         const installmentsMax = $('[data-field="installments-maximum"]');
         const installmentsInterest = $('[data-field="installments-interest"]');
+        const installmentsInterestLegacy = $('[data-field="installments-interest-legacy"]');
         const installmentsMinAmount = $('[data-field="installments-min-amount"]');
         const installmentsByFlag = $('[data-field="installments-by-flag"]');
         const installmentsWithoutInterest = $('[data-field="installments-without-interest"]');
@@ -16,28 +18,52 @@
         function handleInstallmentFieldsVisibility(value) {
             const installmentsMaxContainer = installmentsMax.closest('tr'),
                 installmentsInterestContainer = installmentsInterest.closest('tr'),
+                installmentsInterestLegacyContainer = installmentsInterestLegacy.closest('tr'),
                 installmentsMinAmountContainer = installmentsMinAmount.closest("tr"),
                 installmentsByFlagContainer = installmentsByFlag.closest('tr'),
                 installmentsWithoutInterestContainer = installmentsWithoutInterest.closest('tr'),
                 installmentsInterestIncreaseContainer = installmentsInterestIncrease.closest('tr');
 
-            if (parseInt(value) === 1) {
-                installmentsMaxContainer.show();
-                installmentsMinAmountContainer.show();
-                installmentsInterestContainer.show();
-                installmentsInterestIncreaseContainer.show();
-                installmentsWithoutInterestContainer.show();
-                installmentsByFlagContainer.hide();
-            } else {
-                if (flagsSelect.val()) {
-                    installmentsByFlagContainer.show();
-                    setInstallmentsByFlags(null, true);
-                }
-                installmentsMaxContainer.hide();
-                installmentsMinAmountContainer.hide();
-                installmentsInterestContainer.hide();
-                installmentsInterestIncreaseContainer.hide();
-                installmentsWithoutInterestContainer.hide();
+            switch (parseInt(value)) {
+                case 1:
+                    installmentsMaxContainer.show();
+                    installmentsMinAmountContainer.show();
+                    installmentsInterestContainer.show();
+                    installmentsInterestIncreaseContainer.show();
+                    installmentsInterestLegacyContainer.hide();
+                    installmentsWithoutInterestContainer.show();
+                    installmentsByFlagContainer.hide();
+                    break;
+                case 2:
+                    if (flagsSelect.val()) {
+                        installmentsByFlagContainer.show();
+                        setInstallmentsByFlags(null, true);
+                    }
+                    installmentsMaxContainer.hide();
+                    installmentsMinAmountContainer.hide();
+                    installmentsInterestContainer.hide();
+                    installmentsInterestIncreaseContainer.hide();
+                    installmentsInterestLegacyContainer.hide();
+                    installmentsWithoutInterestContainer.hide();
+                    break;
+                case 3:
+                    installmentsMaxContainer.show();
+                    installmentsMinAmountContainer.show();
+                    installmentsInterestContainer.hide();
+                    installmentsInterestIncreaseContainer.hide();
+                    installmentsInterestLegacyContainer.show();
+                    installmentsWithoutInterestContainer.show();
+                    installmentsByFlagContainer.hide();
+                    break;
+                default:
+                    installmentsMaxContainer.hide();
+                    installmentsMinAmountContainer.hide();
+                    installmentsInterestContainer.hide();
+                    installmentsInterestIncreaseContainer.hide();
+                    installmentsInterestLegacyContainer.hide();
+                    installmentsWithoutInterestContainer.hide();
+                    installmentsByFlagContainer.hide();
+                    break;
             }
         }
 

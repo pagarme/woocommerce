@@ -33,6 +33,7 @@ class CardInstallments
 
     const INSTALLMENTS_FOR_ALL_FLAGS = 1;
     const INSTALLMENTS_BY_FLAG = 2;
+    const INSTALLMENTS_LEGACY = 3;
 
     /**
      * @param Config|null $config
@@ -59,24 +60,30 @@ class CardInstallments
         $maxInstallments = $this->getMaxCcInstallments($type, $flag);
         $minAmount = Utils::str_to_float($this->config->getCcInstallmentsMinAmount());
         $noInterest = intval($this->config->getCcInstallmentsWithoutInterest());
-        $interest = Utils::str_to_float($this->config->getCcInstallmentsInterest());
-        $interestIncrease = Utils::str_to_float($this->config->getCcInstallmentsInterestIncrease());
+        $interest = $type == 3
+            ? Utils::str_to_float($this->config->getCcInstallmentsInterestLegacy())
+            : Utils::str_to_float($this->config->getCcInstallmentsInterest());
+        $interestIncrease = $type == 3
+            ? Utils::str_to_float($this->config->getCcInstallmentsInterestLegacy())
+            : Utils::str_to_float($this->config->getCcInstallmentsInterestIncrease());
         $method = 'calcInstallments' . $type;
         return $this->{$method}(
-            compact('maxInstallments', 'minAmount', 'noInterest', 'interest', 'interestIncrease', 'total', 'flag')
+            compact('type', 'maxInstallments', 'minAmount', 'noInterest', 'interest', 'interestIncrease', 'total', 'flag')
         );
     }
 
     /**
      * @param $total
+     * @param $type
      * @param $maxInstallments
      * @param $minAmount
      * @param $interest
      * @param $interestIncrease
      * @param $noInterest
+     *
      * @return array
      */
-    public function getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest)
+    public function getOptions($total, $type, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest)
     {
         $firstOptionLabel = __('1x', 'woo-pagarme-payments');
         $firstOptionContent = __('1x', 'woo-pagarme-payments') . ' (' . wc_price($total) . ')';
@@ -92,8 +99,11 @@ class CardInstallments
             $interest = $interestBase;
             $amount = $total;
             if ($interest || $interestIncrease) {
-                if ($interestIncrease && $times > $noInterest + 1) {
-                    $interest += ($interestIncrease * ($times - ($noInterest + 1)));
+                if ($interestIncrease && $times > $noInterest + ($type == self::INSTALLMENTS_LEGACY ? 0 : 1)) {
+                    $interest += (
+                        $interestIncrease
+                        * ($times - (($type == self::INSTALLMENTS_LEGACY) ? 1 : ($noInterest + 1)))
+                    );
                 }
                 $amount += Utils::calc_percentage($interest, $total);
             }
@@ -166,7 +176,15 @@ class CardInstallments
     private function calcInstallments1(array $params)
     {
         extract($params, EXTR_SKIP);
-        return $this->getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest);
+        return $this->getOptions(
+            $total,
+            $type,
+            $maxInstallments,
+            $minAmount,
+            $interest,
+            $interestIncrease,
+            $noInterest
+        );
     }
 
     /**
@@ -188,7 +206,24 @@ class CardInstallments
         $noInterest = intval($configByFlags['no_interest'][$flag]);
         $interest = Utils::str_to_float($configByFlags['interest'][$flag]);
         $interestIncrease = Utils::str_to_float($configByFlags['interest_increase'][$flag]);
-        return $this->getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest);
+        return $this->getOptions(
+            $total,
+            $type,
+            $maxInstallments,
+            $minAmount,
+            $interest,
+            $interestIncrease,
+            $noInterest
+        );
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     */
+    private function calcInstallments3(array $params)
+    {
+        return $this->calcInstallments1($params);
     }
 
     /**

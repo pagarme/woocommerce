@@ -79,6 +79,7 @@ class CreditCard extends AbstractGateway
             'cc_installments_min_amount' => $this->field_cc_installment_fields('installment_min_amount'),
             'cc_installments_interest' => $this->field_cc_installment_fields('interest'),
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
+            'cc_installments_interest_legacy' => $this->field_cc_installment_fields('interest_legacy'),
             'cc_installments_without_interest' => $this->field_cc_installment_fields('without_interest'),
             'cc_installments_by_flag' => $this->field_cc_installment_fields('flags')
         ];
@@ -355,6 +356,22 @@ class CreditCard extends AbstractGateway
             'placeholder' => '0.00',
             'custom_attributes' => array(
                 'data-field' => 'installments-interest-increase',
+                'data-mask' => '##0.00',
+                'data-mask-reverse' => 'true',
+            ),
+        ];
+
+        $installments['interest_legacy'] = [
+            'title' => __('Interest rate (%)', 'woo-pagarme-payments'),
+            'type' => 'text',
+            'default' => $this->config->getData('cc_installments_interest_legacy') ?? '',
+            'description' => __(
+                'Fee that will be charged increasingly to all installments.',
+                'woo-pagarme-payments'),
+            'desc_tip' => true,
+            'placeholder' => '0.00',
+            'custom_attributes' => array(
+                'data-field' => 'installments-interest-legacy',
                 'data-mask' => '##0.00',
                 'data-mask-reverse' => 'true',
             ),
