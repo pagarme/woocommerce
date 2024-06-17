@@ -36,6 +36,12 @@ class Billet extends AbstractGateway
 
     const PAYMENT_INSTRUCTIONS_MAX_LENGTH = 255;
 
+    const LEGACY_CONFIG_NAME = "woocommerce_pagarme-banking-ticket_settings";
+
+    const LEGACY_SETTINGS_NAME = [ 
+        "billet_instructions" => "description",
+    ];
+
     /** @var string */
     protected $method = BilletModel::PAYMENT_CODE;
 
@@ -53,6 +59,17 @@ class Billet extends AbstractGateway
     public function isSubscriptionActive(): bool
     {
         return wc_string_to_bool($this->config->getData('billet_allowed_in_subscription') ?? true);
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function getOldTitleName() {
+        $oldData = get_option(self::LEGACY_CONFIG_NAME);
+        if (empty($oldData['title'])){
+            return null;
+        }
+        return $oldData['title'];
     }
 
     /**
@@ -138,7 +155,7 @@ class Billet extends AbstractGateway
             'title' => __(self::PAYMENT_INSTRUCTIONS_FIELD_NAME, 'woo-pagarme-payments'),
             'type' => 'textarea',
             'class' => 'pagarme-option-text-area',
-            'default' => $this->config->getData('billet_instructions') ?? '',
+            'default' => $this->getOldConfiguration('billet_instructions') ?? '',
             'description' => __('Instructions printed on the billet.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'custom_attributes' => [
