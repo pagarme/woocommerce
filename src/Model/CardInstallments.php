@@ -56,20 +56,54 @@ class CardInstallments
     public function getInstallmentsByType($total, $flag = false)
     {
         $total = Utils::str_to_float($total);
-        $type = $this->config->getCcInstallmentType() ?? 1;
+        $type = $this->config->getCcInstallmentType() ?? self::INSTALLMENTS_FOR_ALL_FLAGS;
         $maxInstallments = $this->getMaxCcInstallments($type, $flag);
         $minAmount = Utils::str_to_float($this->config->getCcInstallmentsMinAmount());
         $noInterest = intval($this->config->getCcInstallmentsWithoutInterest());
-        $interest = $type == 3
-            ? Utils::str_to_float($this->config->getCcInstallmentsInterestLegacy())
-            : Utils::str_to_float($this->config->getCcInstallmentsInterest());
-        $interestIncrease = $type == 3
-            ? Utils::str_to_float($this->config->getCcInstallmentsInterestLegacy())
-            : Utils::str_to_float($this->config->getCcInstallmentsInterestIncrease());
+        $interest = $this->getCcInstallmentsInterest($type);
+        $interestIncrease = $this->getCcInstallmentsInterestIncrease($type);
         $method = 'calcInstallments' . $type;
         return $this->{$method}(
             compact('type', 'maxInstallments', 'minAmount', 'noInterest', 'interest', 'interestIncrease', 'total', 'flag')
         );
+    }
+
+    /**
+     * @param $installmentType
+     *
+     * @return bool
+     */
+    private function isInstallmentTypeLegacy($installmentType)
+    {
+        return $installmentType == self::INSTALLMENTS_LEGACY;
+    }
+
+    /**
+     * @param $installmentType
+     *
+     * @return float
+     */
+    private function getCcInstallmentsInterest($installmentType)
+    {
+        if ($this->isInstallmentTypeLegacy($installmentType)) {
+            return Utils::str_to_float($this->config->getCcInstallmentsInterestLegacy());
+        }
+
+        return Utils::str_to_float($this->config->getCcInstallmentsInterest());
+    }
+
+    /**
+     * @param $installmentType
+     *
+     * @return float
+     */
+    private function getCcInstallmentsInterestIncrease($installmentType)
+    {
+        if ($this->isInstallmentTypeLegacy($installmentType)) {
+            return Utils::str_to_float($this->config->getCcInstallmentsInterestLegacy());
+        }
+
+        return Utils::str_to_float($this->config->getCcInstallmentsInterestIncrease());
     }
 
     /**
@@ -99,10 +133,10 @@ class CardInstallments
             $interest = $interestBase;
             $amount = $total;
             if ($interest || $interestIncrease) {
-                if ($interestIncrease && $times > $noInterest + ($type == self::INSTALLMENTS_LEGACY ? 0 : 1)) {
+                if ($interestIncrease && $times > $noInterest + ($this->isInstallmentTypeLegacy($type) ? 0 : 1)) {
                     $interest += (
                         $interestIncrease
-                        * ($times - (($type == self::INSTALLMENTS_LEGACY) ? 1 : ($noInterest + 1)))
+                        * ($times - (($this->isInstallmentTypeLegacy($type)) ? 1 : ($noInterest + 1)))
                     );
                 }
                 $amount += Utils::calc_percentage($interest, $total);
