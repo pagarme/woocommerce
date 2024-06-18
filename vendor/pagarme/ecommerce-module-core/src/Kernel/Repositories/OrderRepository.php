@@ -119,7 +119,7 @@ final class OrderRepository extends AbstractRepository
         $orderTable = $this->db->getTable(AbstractDatabaseDecorator::TABLE_ORDER);
 
         $query = "SELECT * FROM `$orderTable` ";
-        $query .= "WHERE code = '{$platformID}';";
+        $query .= "WHERE code = '{$platformID}' ORDER BY id DESC;";
 
         $result = $this->db->fetch($query);
 
