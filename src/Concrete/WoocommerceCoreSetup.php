@@ -108,7 +108,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         $configData = self::fillWithHubConfig($configData, $storeConfig);
         $configData = self::fillWithMarketplaceConfig($configData);
-        // $configData->
+
         // These method calls are commented for now because they are not implemented yet:
         // $configData = self::fillWithAddressConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
@@ -135,7 +135,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         }
         return "2.0";
     }
-    
+
     private static function checkWebSiteExists()
     {
         return true;
