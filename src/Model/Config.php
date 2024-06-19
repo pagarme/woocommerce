@@ -299,6 +299,11 @@ class Config extends DataObject
         return $this->getData('cc_installment_type') === '1';
     }
 
+    public function getInstallmentType()
+    {
+        return $this->getData('cc_installment_type');
+    }
+
     public function getAntifraudEnabled()
     {
         return $this->isEnabled('antifraud_enabled');

@@ -171,7 +171,9 @@ class APIService
         $metadata->moduleVersion = $versionService->getModuleVersion();
         $metadata->coreVersion = $versionService->getCoreVersion();
         $metadata->platformVersion = $versionService->getPlatformVersion();
-
+        if(!empty(MPSetup::getInstallmentType())){
+            $metadata->interestType = MPSetup::getInstallmentType();
+        }
         return $metadata;
     }
 

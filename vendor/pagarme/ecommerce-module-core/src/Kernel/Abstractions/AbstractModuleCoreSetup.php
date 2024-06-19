@@ -212,6 +212,14 @@ abstract class AbstractModuleCoreSetup
         return self::$platformVersion;
     }
 
+   public static function getInstallmentType() 
+   {
+        if(method_exists(self::$instance, 'getInstallmentType')) {
+            return self::$instance->getInstallmentType();
+        }
+        return null;
+   }
+
     public static function getLogPath()
     {
         return self::$logPath;
