@@ -257,7 +257,7 @@ final class OrderService
             );
 
             $i18n = new LocalizationService();
-
+            $paymentOrder->setAttempts($platformOrder->getAttempts());
             //Send through the APIService to pagarme
             $apiService = new APIService();
             $response = $apiService->createOrder($paymentOrder);

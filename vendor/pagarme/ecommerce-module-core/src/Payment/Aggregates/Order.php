@@ -33,7 +33,9 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
     private $payments;
     /** @var boolean */
     private $closed;
-
+    /** @var int */
+    private $attempts = 1;
+    /** @var array */
     private $splitData;
 
     /** @var boolean */
@@ -44,6 +46,17 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         $this->payments = [];
         $this->items = [];
         $this->closed = true;
+    }
+
+
+    public function getAttempts()
+    {
+        return $this->attempts;
+    }
+
+    public function setAttempts($attempts)
+    {
+        $this->attempts = $attempts;
     }
 
     /**
@@ -138,7 +151,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
      */
     public function generateIdempotencyKey()
     {
-        return sha1($this->getCustomer()->getDocument() . $this->getCode());
+        return sha1($this->getCustomer()->getDocument() . $this->getCode() . '-attempt-' . $this->getAttempts());
     }
 
     /**
@@ -154,8 +167,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         }
 
         $sum = 0;
-        foreach ($this->payments as $payment)
-        {
+        foreach ($this->payments as $payment) {
             $sum += $payment->getAmount();
         }
 
@@ -207,7 +219,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
     private function discoverPaymentMethod(AbstractPayment $payment)
     {
         $paymentClass = get_class($payment);
-        $paymentClass = explode ('\\', $paymentClass ?? '');
+        $paymentClass = explode('\\', $paymentClass ?? '');
         $paymentClass = end($paymentClass);
         return $paymentClass;
     }
@@ -217,7 +229,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         if ($this->customer === null) {
             throw new \Exception(
                 'To use a saved credit card payment in an order ' .
-                'you must add a customer to it.',
+                    'you must add a customer to it.',
                 400
             );
         }
@@ -335,7 +347,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
      * @return mixed data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4.0
-    */
+     */
     #[\ReturnTypeWillChange]
 
     public function jsonSerialize()
@@ -375,7 +387,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
             $orderRequest->payments[] = $payment->convertToSDKRequest();
         }
 
-        if (!empty($this->getSplitData())){
+        if (!empty($this->getSplitData())) {
             $orderRequest = $this->fixRoundedValuesInCharges($orderRequest);
         }
 
@@ -392,16 +404,17 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         return $orderRequest;
     }
 
-    private function fixRoundedValuesInCharges(&$orderRequest){
+    private function fixRoundedValuesInCharges(&$orderRequest)
+    {
 
-        if(count($orderRequest->payments) < 2){
+        if (count($orderRequest->payments) < 2) {
             return $orderRequest;
         }
 
         $firstChargeAmount = $orderRequest->payments[0]->amount;
         $firstChargePercentageOfTotal = $firstChargeAmount / $this->getAmount();
 
-        if ($firstChargePercentageOfTotal !== 0.5){
+        if ($firstChargePercentageOfTotal !== 0.5) {
             return $orderRequest;
         }
 
@@ -409,17 +422,17 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
 
         $wrongValuesPerRecipient = $this->getRecipientWrongValuesMap($orderRequest, $orderSplitData);
 
-        if (!$wrongValuesPerRecipient){
+        if (!$wrongValuesPerRecipient) {
             return $orderRequest;
         }
 
         $orderRequest = $this->fixRoundedValues($wrongValuesPerRecipient, $orderRequest);
 
         return $orderRequest;
-
     }
 
-    private function getRecipientWrongValuesMap($orderRequest, $splitData){
+    private function getRecipientWrongValuesMap($orderRequest, $splitData)
+    {
         $map = [];
 
         $marketplaceId = $splitData->getMainRecipientOptionConfig();
@@ -445,7 +458,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         }
 
         foreach ($map as $recipientId => $wrongValue) {
-            if ($wrongValue !== 0){
+            if ($wrongValue !== 0) {
                 return $map;
             }
         }
@@ -453,7 +466,8 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
         return false;
     }
 
-    private function fixRoundedValues($wrongValuesMap, &$orderRequest){
+    private function fixRoundedValues($wrongValuesMap, &$orderRequest)
+    {
 
         foreach ($wrongValuesMap as $recipientId => $wrongValue) {
             $payments = $orderRequest->payments;
@@ -466,12 +480,12 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
                 foreach ($paymentRequest->split as $key => &$splitRequest) {
                     $splitedAmount += $splitRequest->amount;
 
-                    if($splitRequest->recipientId === $recipientId){
+                    if ($splitRequest->recipientId === $recipientId) {
                         $recipientSplitData = $splitRequest;
                     }
                 }
 
-                if ($splitedAmount === $paymentRequestAmount){
+                if ($splitedAmount === $paymentRequestAmount) {
                     continue;
                 }
 
@@ -481,7 +495,7 @@ final class Order extends AbstractEntity implements ConvertibleToSDKRequestsInte
 
                 $mustRemoveFromOtherCharges = $wrongValue + $amountRemovableFromCharge;
 
-                if (!$mustRemoveFromOtherCharges){
+                if (!$mustRemoveFromOtherCharges) {
                     break;
                 }
             }

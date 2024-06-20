@@ -73,7 +73,7 @@ class Webhooks
             }
             return false;
         }
-        
+
         return true;
     }
     private function getMetadata($metadata)

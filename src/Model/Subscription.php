@@ -59,8 +59,7 @@ class Subscription
             return;
         }
 
-        $this->payment->supports = array(
-            'products',
+        array_push($this->payment->supports,
             'subscriptions',
             'subscription_cancellation',
             'subscription_suspension',
@@ -70,7 +69,7 @@ class Subscription
             'subscription_payment_method_change',
             'subscription_payment_method_change_customer',
             'subscription_payment_method_change_admin',
-            'multiple_subscriptions',
+            'multiple_subscriptions'
         );
         add_action(
             'woocommerce_scheduled_subscription_payment_' . $this->payment->id,
@@ -152,18 +151,18 @@ class Subscription
 
             $order->payment_method = $fields['payment_method'];
             if ($response) {
-                $order->transaction_id = $response->getPagarmeId()->getValue();
-                $order->pagarme_id = $response->getPagarmeId()->getValue();
-                $order->pagarme_status = $response->getStatus()->getStatus();
-                $order->response_data = json_encode($response);
+                $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
+                $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
+                $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
+                $order->update_meta('response_data', json_encode($response));
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
             }
-            $order->pagarme_status = 'failed';
+            $order->update_meta('pagarme_status', 'failed');
             $order->update_by_pagarme_status('failed');
             return false;
         } catch (\Throwable $th) {
-            $logger = new LogService();
+            $logger = new LogService('Subscription');
             $logger->log($th);
             if (function_exists('wc_add_notice')) {
                 wc_add_notice(
@@ -191,7 +190,7 @@ class Subscription
                 'redirect' => $this->payment->get_return_url($subscription)
             ];
         } catch (\Throwable $th) {
-            $logger = new LogService();
+            $logger = new LogService('Subscription');
             $logger->log($th);
             if (function_exists('wc_add_notice')) {
                 wc_add_notice(
@@ -224,7 +223,7 @@ class Subscription
                 'redirect' => $redirect
             ];
         } catch (\Throwable $th) {
-            $logger = new LogService();
+            $logger = new LogService('Subscription');
             $logger->log($th);
             if (function_exists('wc_add_notice')) {
                 wc_add_notice(
@@ -407,7 +406,7 @@ class Subscription
         if (!self::hasSubscriptionPlugin()) {
             return false;
         }
-        return \WC_Subscriptions_Cart::all_cart_items_have_free_trial();
+        return self::hasSubscriptionProductInCart() && \WC_Subscriptions_Cart::all_cart_items_have_free_trial();
     }
 
     /**
@@ -469,7 +468,7 @@ class Subscription
 
         $cartProducts = WC()->cart->cart_contents;
         $productsPeriods = [];
-        foreach ($cartProducts as $product) {
+        foreach ($cartProducts ?? [] as $product) {
             $productsPeriods[] = WC_Subscriptions_Product::get_period($product['product_id']);
         }
 

@@ -21,6 +21,11 @@ Pagamentos tem que ser fáceis. São muitos passos por trás de uma simples tran
 
 Se você está interessado em contribuir para o desenvolvimento deste projeto, ficamos felizes em receber sua ajuda! No [contributing.md](https://github.com/pagarme/woocommerce/blob/master/.github/contributing.md) está o guia de como contribuir com o projeto.
 
+## Documentação de Filtros e Actions
+
+Descubra como personalizar o comportamento do nosso plugin! Acesse nossas documentações abaixo e comece a realizar as modificações que deseja:
+- [Split](https://github.com/pagarme/woocommerce/blob/master/docs/filters-actions/split.md)
+
 ## Compatibilidade
 
 - Requer Wordpress 4.1 ou posterior para funcionar.

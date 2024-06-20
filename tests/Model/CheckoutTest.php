@@ -18,7 +18,7 @@ use Woocommerce\Pagarme\Model\Payment\Data\Card;
 use Pagarme\Core\Kernel\Aggregates\Order;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
-use WC_Checkout;
+use WC_Cart;
 
 /**
  * @runTestsInSeparateProcesses
@@ -103,6 +103,10 @@ class CheckoutTest extends TestCase
             ->andReturn(1);
         $wcOrderMock->shouldReceive('set_total')
             ->andReturnSelf();
+        $wcOrderMock->shouldReceive('get_meta')
+            ->andReturn("");
+        $wcOrderMock->shouldReceive('update_meta_data')
+            ->andReturnSelf();
 
         $ordersMock->shouldReceive('create_order')
             ->withArgs(function ($wcOrder, $paymentMethod, $fields) use ($wcOrderMock) {
@@ -122,8 +126,9 @@ class CheckoutTest extends TestCase
             ->andReturnSelf();
         $orderModelMock->shouldReceive('getWcOrder')
             ->andReturn($wcOrderMock);
-
-        $wcCheckoutMock = Mockery::mock(WC_Checkout::class);
+        $orderModelMock->shouldReceive('update_meta')
+            ->andReturn([]);
+        $wcCheckoutMock = Mockery::mock(WC_Cart::class);
         $wcCheckoutMock->shouldReceive('empty_cart')
             ->andReturnSelf();
         $woocommerce = new stdClass();
@@ -143,7 +148,7 @@ class CheckoutTest extends TestCase
             ->once();
 
         $checkout = new Checkout($gatewayMock, $configMock, $ordersMock, $wooOrderRepositoryMock);
-
+        
         $this->assertTrue($checkout->process($wcOrderMock));
     }
 }

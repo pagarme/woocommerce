@@ -39,6 +39,14 @@ class CreditCard extends AbstractGateway
     const DEFAULT_BRANDS = ['visa', 'mastercard', 'elo', 'hipercard'];
 
     /**
+     * @return void
+     */
+    public function addRefundSupport()
+    {
+        $this->supports[] = 'refunds';
+    }
+
+    /**
      * @return boolean
      */
     public function hasSubscriptionSupport(): bool
@@ -78,6 +86,10 @@ class CreditCard extends AbstractGateway
             $fields['cc_allowed_in_subscription'] = $this->field_cc_allowed_for_subscription();
             $fields['cc_subscription_installments'] = $this->field_cc_subscription_installments();
         }
+
+        $fields['section_tds'] = $this->section_tds();
+        $fields['tds_enabled'] = $this->field_cc_tds_enabled();
+        $fields['tds_min_amount'] = $this->field_cc_tds_min_amount();
 
         return $fields;
     }

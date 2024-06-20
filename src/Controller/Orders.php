@@ -59,7 +59,7 @@ class Orders
             $paymentMethodDecorator->setPaymentMethod($orderDecorator);
 
             $orderDecorator->setPaymentMethod($paymentMethodDecorator->getPaymentMethod());
-
+            $orderDecorator->setAttempts($wc_order->get_meta('_pagarme_attempts'));
             $orderService = new OrderService();
             $response = $orderService->createOrderAtPagarme($orderDecorator);
 

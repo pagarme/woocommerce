@@ -7,9 +7,10 @@ use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 final class MoneyService
 {
     /**
+     * @param int $amount
      *
-     * @param  int $amount
      * @return float
+     * @throws InvalidParamException
      */
     public function centsToFloat($amount)
     {
@@ -29,6 +30,24 @@ final class MoneyService
     {
         $amount = (float) $amount;
         return (int) round($amount * 100, 2);
+    }
+
+    /**
+     * @param int $amount
+     * @param string $currency
+     *
+     * @return string
+     * @throws InvalidParamException
+     */
+    public function centsToPriceWithCurrencySymbol($amount, $currency = 'BRL')
+    {
+        $symbolsArray = [
+            'BRL' => 'R$'
+        ];
+
+        $amount = $this->centsToFloat($amount);
+        $amount = number_format($amount, 2, ',', '.');
+        return $symbolsArray[$currency] . ' ' . $amount;
     }
 
     public function removeSeparators($amount)

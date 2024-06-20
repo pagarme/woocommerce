@@ -6,9 +6,14 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Exception;
+use Pagarme\Core\Kernel\Services\ChargeService;
 use Pagarme\Core\Webhook\Factories\WebhookFactory;
 use Pagarme\Core\Webhook\Services\ChargeHandlerService;
 use WC_Order;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Service\LogService;
+use WP_Error;
 
 class Charge
 {
@@ -65,6 +70,51 @@ class Charge
         $coreChargeHandler->handle($coreWebhook);
     }
 
+    /**
+     * @param $chargeId
+     * @param $amount
+     *
+     * @return bool|WP_Error
+     */
+    public function processChargeRefund($chargeId, $amount)
+    {
+        // Convert amount to cents
+        $amount = Utils::format_order_price($amount);
+
+        try {
+            $chargeService = new ChargeService();
+            $result = $chargeService->cancelById($chargeId, $amount);
+
+            if($result->isSuccess()) {
+                return true;
+            }
+
+            $logger = new LogService('Order.Refund');
+            $logger->log($result);
+
+            return new WP_Error(
+                'pagarme_error',
+                sprintf(
+                    /* translators: %s - Pagar.me error message */
+                    __( 'There was a problem attempting to refund: %s', 'woo-pagarme-payments' ),
+                    $result->getMessage()
+                )
+            );
+        } catch (Exception $e) {
+            $logger = new LogService('Order.Refund');
+            $logger->log($e);
+
+            return new WP_Error(
+                'pagarme_error',
+                sprintf(
+                    /* translators: %s - Pagar.me error message */
+                    __( 'There was a problem attempting to refund: %s', 'woo-pagarme-payments' ),
+                    $e->getMessage()
+                )
+            );
+        }
+    }
+
     public function get_i18n_status($status)
     {
         if (get_locale() != 'pt_BR') {
@@ -108,15 +158,10 @@ class Charge
         $transaction = array_shift($transactions);
         $method = $transaction->getTransactionType()->getType();
 
-        if ($method == 'boleto' && in_array($status, ['pending'])) {
-            return true;
-        }
-
-        if ($method == 'credit_card' && in_array($status, ['pending', 'paid'])) {
-            return true;
-        }
-
-        if ($method == 'pix' && in_array($status, ['pending', 'paid'])) {
+        if (
+            in_array($method, ['credit_card', 'pix', 'voucher'])
+            && in_array($status, ['pending', 'paid'])
+        ) {
             return true;
         }
 

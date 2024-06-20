@@ -49,10 +49,11 @@ class Order extends Meta
     // == END WC ORDER ==
 
     public $with_prefix = array(
-        'payment_method'   => 1,
-        'response_data'    => 1,
-        'pagarme_status' => 1,
-        'pagarme_id'     => 1,
+        'payment_method'    => 1,
+        'response_data'     => 1,
+        'pagarme_status'    => 1,
+        'pagarme_id'        => 1,
+        'attempts'          => 1
     );
 
     /** phpcs:disable */
@@ -102,12 +103,34 @@ class Order extends Meta
         $this->log($statusArray);
     }
 
+    /**
+     * @return void
+     */
     public function payment_canceled()
     {
         $current_status = $this->wc_order->get_status();
 
         if (!in_array($current_status, ['cancelled', 'canceled'])) {
-            $this->wc_order->update_status('cancelled', __('Pagar.me: Payment canceled.', 'woo-pagarme-payments'));
+            $this->wc_order->update_status(
+                'cancelled',
+                __('Pagar.me: Payment canceled.', 'woo-pagarme-payments')
+            );
+        }
+
+        $statusArray = [
+            'previous_status' => $current_status,
+            'new_status' => $this->wc_order->get_status()
+        ];
+
+        $this->log($statusArray);
+    }
+
+    public function paymentFailed()
+    {
+        $current_status = $this->wc_order->get_status();
+
+        if ($current_status !== 'failed') {
+            $this->wc_order->update_status('failed', __('Pagar.me: Payment failed.', 'woo-pagarme-payments'));
         }
 
         $statusArray = [
@@ -129,6 +152,8 @@ class Order extends Meta
                 $this->payment_paid();
                 break;
             case 'failed':
+                $this->paymentFailed();
+                break;
             case 'canceled':
                 $this->payment_canceled();
                 break;

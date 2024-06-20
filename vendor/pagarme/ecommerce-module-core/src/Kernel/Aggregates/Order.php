@@ -152,10 +152,16 @@ final class Order extends AbstractEntity
         }
 
         if (
-            in_array(ChargeStatus::failed()->getStatus(), $listChargeStatus) &&
             in_array(ChargeStatus::canceled()->getStatus(), $listChargeStatus)
         ) {
             $this->setStatus(OrderStatus::canceled());
+        }
+
+        if (
+            in_array(ChargeStatus::failed()->getStatus(), $listChargeStatus)
+        )
+        {
+            $this->setStatus(OrderStatus::failed());
         }
 
         if (
@@ -191,6 +197,12 @@ final class Order extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @param ChargeInterface $updatedCharge
+     * @param $overwriteId
+     *
+     * @return void
+     */
     public function updateCharge(ChargeInterface $updatedCharge, $overwriteId = false)
     {
         $charges = $this->getCharges();
@@ -199,6 +211,9 @@ final class Order extends AbstractEntity
             if ($charge->getPagarmeId()->equals($updatedCharge->getPagarmeId())) {
                 $chargeId = $charge->getId();
                 $charge = $updatedCharge;
+                if ($charge->getRefundedAmount() > 0 && $charge->getRefundedAmount() == $charge->getPaidAmount()) {
+                    $charge->setStatus(ChargeStatus::canceled());
+                }
                 if ($overwriteId) {
                     $charge->setId($chargeId);
                 }
