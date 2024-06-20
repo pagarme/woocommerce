@@ -11,62 +11,6 @@
         const flagsSelect = $('[data-element="flags-select"]');
         const installmentsMaxByFlags = $('[data-field="installments-maximum-by-flag"]');
 
-        $.jMaskGlobals.watchDataMask = true;
-        handleInstallmentFieldsVisibility(installmentsTypeSelect.val());
-        addEventListener();
-
-        function handleInstallmentFieldsVisibility(value) {
-            const installmentsMaxContainer = installmentsMax.closest('tr'),
-                installmentsInterestContainer = installmentsInterest.closest('tr'),
-                installmentsInterestLegacyContainer = installmentsInterestLegacy.closest('tr'),
-                installmentsMinAmountContainer = installmentsMinAmount.closest("tr"),
-                installmentsByFlagContainer = installmentsByFlag.closest('tr'),
-                installmentsWithoutInterestContainer = installmentsWithoutInterest.closest('tr'),
-                installmentsInterestIncreaseContainer = installmentsInterestIncrease.closest('tr');
-
-            switch (parseInt(value)) {
-                case 1:
-                    installmentsMaxContainer.show();
-                    installmentsMinAmountContainer.show();
-                    installmentsInterestContainer.show();
-                    installmentsInterestIncreaseContainer.show();
-                    installmentsInterestLegacyContainer.hide();
-                    installmentsWithoutInterestContainer.show();
-                    installmentsByFlagContainer.hide();
-                    break;
-                case 2:
-                    if (flagsSelect.val()) {
-                        installmentsByFlagContainer.show();
-                        setInstallmentsByFlags(null, true);
-                    }
-                    installmentsMaxContainer.hide();
-                    installmentsMinAmountContainer.hide();
-                    installmentsInterestContainer.hide();
-                    installmentsInterestIncreaseContainer.hide();
-                    installmentsInterestLegacyContainer.hide();
-                    installmentsWithoutInterestContainer.hide();
-                    break;
-                case 3:
-                    installmentsMaxContainer.show();
-                    installmentsMinAmountContainer.show();
-                    installmentsInterestContainer.hide();
-                    installmentsInterestIncreaseContainer.hide();
-                    installmentsInterestLegacyContainer.show();
-                    installmentsWithoutInterestContainer.show();
-                    installmentsByFlagContainer.hide();
-                    break;
-                default:
-                    installmentsMaxContainer.hide();
-                    installmentsMinAmountContainer.hide();
-                    installmentsInterestContainer.hide();
-                    installmentsInterestIncreaseContainer.hide();
-                    installmentsInterestLegacyContainer.hide();
-                    installmentsWithoutInterestContainer.hide();
-                    installmentsByFlagContainer.hide();
-                    break;
-            }
-        }
-
         function toggleItemWhenItemFlagIsInFlags(flags, item) {
             if (!flags.includes(item.data('flag'))) {
                 item.hide();
@@ -124,6 +68,58 @@
             }
         }
 
+        function handleInstallmentFieldsVisibility(value) {
+            const installmentsMaxContainer = installmentsMax.closest('tr'),
+                installmentsInterestContainer = installmentsInterest.closest('tr'),
+                installmentsInterestLegacyContainer = installmentsInterestLegacy.closest('tr'),
+                installmentsMinAmountContainer = installmentsMinAmount.closest("tr"),
+                installmentsByFlagContainer = installmentsByFlag.closest('tr'),
+                installmentsWithoutInterestContainer = installmentsWithoutInterest.closest('tr'),
+                installmentsInterestIncreaseContainer = installmentsInterestIncrease.closest('tr');
+
+            switch (parseInt(value)) {
+                case 1:
+                    installmentsMaxContainer.show();
+                    installmentsMinAmountContainer.show();
+                    installmentsInterestContainer.show();
+                    installmentsInterestIncreaseContainer.show();
+                    installmentsInterestLegacyContainer.hide();
+                    installmentsWithoutInterestContainer.show();
+                    installmentsByFlagContainer.hide();
+                    break;
+                case 2:
+                    if (flagsSelect.val()) {
+                        installmentsByFlagContainer.show();
+                        setInstallmentsByFlags(null, true);
+                    }
+                    installmentsMaxContainer.hide();
+                    installmentsMinAmountContainer.hide();
+                    installmentsInterestContainer.hide();
+                    installmentsInterestIncreaseContainer.hide();
+                    installmentsInterestLegacyContainer.hide();
+                    installmentsWithoutInterestContainer.hide();
+                    break;
+                case 3:
+                    installmentsMaxContainer.show();
+                    installmentsMinAmountContainer.show();
+                    installmentsInterestContainer.hide();
+                    installmentsInterestIncreaseContainer.hide();
+                    installmentsInterestLegacyContainer.show();
+                    installmentsWithoutInterestContainer.show();
+                    installmentsByFlagContainer.hide();
+                    break;
+                default:
+                    installmentsMaxContainer.hide();
+                    installmentsMinAmountContainer.hide();
+                    installmentsInterestContainer.hide();
+                    installmentsInterestIncreaseContainer.hide();
+                    installmentsInterestLegacyContainer.hide();
+                    installmentsWithoutInterestContainer.hide();
+                    installmentsByFlagContainer.hide();
+                    break;
+            }
+        }
+
         const setLowestValueToElement = (element, value) => {
             const elementValueGreaterThanNewValue = parseInt(value) < parseInt(element.val());
             if (elementValueGreaterThanNewValue) {
@@ -156,6 +152,18 @@
             installmentsWithoutInterestByFlag.attr('max', parseInt(value));
         };
 
+        const fillLegacyInstallmentInterests = () => {
+            if(parseInt(installmentsTypeSelect.find(":selected").val()) !== 3) {
+                return;
+            }
+
+            const legacyInterest = parseInt(installmentsInterestLegacy.val());
+            const noInterest = parseInt(installmentsWithoutInterest.val());
+
+            installmentsInterest.val(legacyInterest * (noInterest + 1));
+            installmentsInterestIncrease.val(legacyInterest);
+        };
+
         installmentsMax.each(() => {
             handleInstallmentWithoutInterestMaxValue($(installmentsMax).val());
         });
@@ -172,7 +180,7 @@
                 handleInstallmentWithoutInterestMaxValue(event.currentTarget.value);
             });
             installmentsMaxByFlags.on('change', function (event) {
-                handleInstallmentsWithoutInterestFlagMaxValue($(this), event.currentTarget.value)
+                handleInstallmentsWithoutInterestFlagMaxValue($(this), event.currentTarget.value);
             });
             flagsSelect.on('select2:unselecting', function (event) {
                 setInstallmentsByFlags(event, false);
@@ -180,7 +188,17 @@
             flagsSelect.on('select2:selecting', function (event) {
                 setInstallmentsByFlags(event, false);
             });
+            installmentsInterestLegacy.on('change', function() {
+                fillLegacyInstallmentInterests();
+            });
+            installmentsWithoutInterest.on('change', function() {
+                fillLegacyInstallmentInterests();
+            });
         }
+
+        $.jMaskGlobals.watchDataMask = true;
+        handleInstallmentFieldsVisibility(installmentsTypeSelect.val());
+        addEventListener();
 
     }(jQuery)
 );
