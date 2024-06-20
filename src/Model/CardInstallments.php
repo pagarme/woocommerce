@@ -107,6 +107,27 @@ class CardInstallments
     }
 
     /**
+     * @param $interestIncrease
+     * @param $noInterest
+     * @param $type
+     * @param int $times
+     * @param $interest
+     *
+     * @return float|int
+     */
+    public function getOptionInterest($interestIncrease, $noInterest, $type, int $times, $interest)
+    {
+        if ($interestIncrease && $times > $noInterest + ($this->isInstallmentTypeLegacy($type) ? 0 : 1)) {
+            $interest += (
+                $interestIncrease
+                * ($times - (($this->isInstallmentTypeLegacy($type)) ? 1 : ($noInterest + 1)))
+            );
+        }
+
+        return $interest;
+    }
+
+    /**
      * @param $total
      * @param $type
      * @param $maxInstallments
@@ -133,12 +154,7 @@ class CardInstallments
             $interest = $interestBase;
             $amount = $total;
             if ($interest || $interestIncrease) {
-                if ($interestIncrease && $times > $noInterest + ($this->isInstallmentTypeLegacy($type) ? 0 : 1)) {
-                    $interest += (
-                        $interestIncrease
-                        * ($times - (($this->isInstallmentTypeLegacy($type)) ? 1 : ($noInterest + 1)))
-                    );
-                }
+                $interest = $this->getOptionInterest($interestIncrease, $noInterest, $type, $times, $interest);
                 $amount += Utils::calc_percentage($interest, $total);
             }
             $value = $amount;
