@@ -70,8 +70,8 @@ wp_localize_script(
                             <span class="required">*</span>
                         </label>
                         <input type="text" id="<?= $this->getElementId('card-holder-name'); ?>"
-                               onkeydown="return /[a-z, ]/i.test(event.key)" data-element="card-holder-name"
-                               data-required="true" class="input-text" data-pagarme-element="holder_name">
+                               data-element="card-holder-name" data-required="true" class="input-text"
+                               data-pagarme-element="holder_name">
                     </p>
                     <p class="form-row form-row-wide pagarme-card-number-row">
                         <label for="<?= $this->getElementId('card-number'); ?>">
