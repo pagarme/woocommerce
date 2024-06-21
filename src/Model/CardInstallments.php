@@ -51,6 +51,11 @@ class CardInstallments
     /**
      * @param $total
      * @param $flag
+     *
+     * @uses calcInstallments1
+     * @uses calcInstallments2
+     * @uses calcInstallments3
+     *
      * @return mixed
      */
     public function getInstallmentsByType($total, $flag = false)
@@ -221,6 +226,7 @@ class CardInstallments
 
     /**
      * @param array $params
+     *
      * @return array
      */
     private function calcInstallments1(array $params)
@@ -239,6 +245,7 @@ class CardInstallments
 
     /**
      * @param array $params
+     *
      * @return array
      */
     private function calcInstallments2(array $params)
@@ -269,6 +276,7 @@ class CardInstallments
 
     /**
      * @param array $params
+     *
      * @return array
      */
     private function calcInstallments3(array $params)
@@ -279,6 +287,7 @@ class CardInstallments
     /**
      * @param int $type
      * @param string|bool $flag
+     *
      * @return int
      */
     public function getMaxCcInstallments($type, $flag)
