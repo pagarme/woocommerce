@@ -93,6 +93,7 @@ class CreditCard extends AbstractGateway
             'cc_installments_min_amount' => $this->field_cc_installment_fields('installment_min_amount'),
             'cc_installments_interest' => $this->field_cc_installment_fields('interest'),
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
+            'cc_installments_interest_legacy' => $this->field_cc_installment_fields('interest_legacy'),
             'cc_installments_without_interest' => $this->field_cc_installment_fields('without_interest'),
             'cc_installments_by_flag' => $this->field_cc_installment_fields('flags')
         ];

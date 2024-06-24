@@ -211,7 +211,7 @@ final class Order extends AbstractEntity
             if ($charge->getPagarmeId()->equals($updatedCharge->getPagarmeId())) {
                 $chargeId = $charge->getId();
                 $charge = $updatedCharge;
-                if ($charge->getRefundedAmount() == $charge->getPaidAmount()) {
+                if ($charge->getRefundedAmount() > 0 && $charge->getRefundedAmount() == $charge->getPaidAmount()) {
                     $charge->setStatus(ChargeStatus::canceled());
                 }
                 if ($overwriteId) {
