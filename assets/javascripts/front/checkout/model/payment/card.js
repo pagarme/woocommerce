@@ -63,7 +63,7 @@ let pagarmeCard = {
             selectionStart--;
         }
 
-        this.setSelectionRange(selectionStart, selectionStart);
+        element.setSelectionRange(selectionStart, selectionStart);
     },
     keyEventHandlerCard: function (event) {
         this.clearToken(event);
