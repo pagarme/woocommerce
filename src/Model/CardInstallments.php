@@ -33,6 +33,7 @@ class CardInstallments
 
     const INSTALLMENTS_FOR_ALL_FLAGS = 1;
     const INSTALLMENTS_BY_FLAG = 2;
+    const INSTALLMENTS_LEGACY = 3;
 
     /**
      * @param Config|null $config
@@ -50,12 +51,17 @@ class CardInstallments
     /**
      * @param $total
      * @param $flag
+     *
+     * @uses calcInstallments1
+     * @uses calcInstallments2
+     * @uses calcInstallments3
+     *
      * @return mixed
      */
     public function getInstallmentsByType($total, $flag = false)
     {
         $total = Utils::str_to_float($total);
-        $type = $this->config->getCcInstallmentType() ?? 1;
+        $type = $this->config->getCcInstallmentType() ?? self::INSTALLMENTS_FOR_ALL_FLAGS;
         $maxInstallments = $this->getMaxCcInstallments($type, $flag);
         $minAmount = Utils::str_to_float($this->config->getCcInstallmentsMinAmount());
         $noInterest = intval($this->config->getCcInstallmentsWithoutInterest());
@@ -74,6 +80,7 @@ class CardInstallments
      * @param $interest
      * @param $interestIncrease
      * @param $noInterest
+     *
      * @return array
      */
     public function getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest)
@@ -161,16 +168,25 @@ class CardInstallments
 
     /**
      * @param array $params
+     *
      * @return array
      */
     private function calcInstallments1(array $params)
     {
         extract($params, EXTR_SKIP);
-        return $this->getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest);
+        return $this->getOptions(
+            $total,
+            $maxInstallments,
+            $minAmount,
+            $interest,
+            $interestIncrease,
+            $noInterest
+        );
     }
 
     /**
      * @param array $params
+     *
      * @return array
      */
     private function calcInstallments2(array $params)
@@ -188,12 +204,30 @@ class CardInstallments
         $noInterest = intval($configByFlags['no_interest'][$flag]);
         $interest = Utils::str_to_float($configByFlags['interest'][$flag]);
         $interestIncrease = Utils::str_to_float($configByFlags['interest_increase'][$flag]);
-        return $this->getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest);
+        return $this->getOptions(
+            $total,
+            $maxInstallments,
+            $minAmount,
+            $interest,
+            $interestIncrease,
+            $noInterest
+        );
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    private function calcInstallments3(array $params)
+    {
+        return $this->calcInstallments1($params);
     }
 
     /**
      * @param int $type
      * @param string|bool $flag
+     *
      * @return int
      */
     public function getMaxCcInstallments($type, $flag)

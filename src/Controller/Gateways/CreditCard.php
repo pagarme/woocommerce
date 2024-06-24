@@ -79,6 +79,7 @@ class CreditCard extends AbstractGateway
             'cc_installments_min_amount' => $this->field_cc_installment_fields('installment_min_amount'),
             'cc_installments_interest' => $this->field_cc_installment_fields('interest'),
             'cc_installments_interest_increase' => $this->field_cc_installment_fields('interest_increase'),
+            'cc_installments_interest_legacy' => $this->field_cc_installment_fields('interest_legacy'),
             'cc_installments_without_interest' => $this->field_cc_installment_fields('without_interest'),
             'cc_installments_by_flag' => $this->field_cc_installment_fields('flags')
         ];
@@ -312,53 +313,34 @@ class CreditCard extends AbstractGateway
             ),
         ];
 
-        $installments['installment_min_amount'] = [
-            'title' => __('Minimum installment amount', 'woo-pagarme-payments'),
-            'type' => 'text',
-            'default' => $this->config->getData('cc_installments_min_amount') ?? '',
-            'description' => __('Defines the minimum value that an installment can assume', 'woo-pagarme-payments'),
-            'desc_tip' => true,
-            'placeholder' => '0.00',
-            'custom_attributes' => array(
-                'data-field' => 'installments-min-amount',
-                'data-mask' => '##0.00',
-                'data-mask-reverse' => 'true',
-            ),
-        ];
+        $installments['installment_min_amount'] = $this->renderInstallmentTextField(
+            'Minimum installment amount',
+            'cc_installments_min_amount',
+            'Defines the minimum value that an installment can assume',
+            'installments-min-amount'
+        );
 
-        $installments['interest'] = [
-            'title' => __('Initial interest rate (%)', 'woo-pagarme-payments'),
-            'type' => 'text',
-            'default' => $this->config->getData('cc_installments_interest') ?? '',
-            'description' => __(
-                'Fee that will be charged from the first installment with interest.',
-                'woo-pagarme-payments'),
-            'desc_tip' => true,
-            'placeholder' => '0.00',
-            'custom_attributes' => array(
-                'data-field' => 'installments-interest',
-                'data-mask' => '##0.00',
-                'data-mask-reverse' => 'true',
-            ),
-        ];
+        $installments['interest'] = $this->renderInstallmentTextField(
+            'Initial interest rate (%)',
+            'cc_installments_interest',
+            'Fee that will be charged from the first installment with interest.',
+            'installments-interest'
+        );
 
-        $installments['interest_increase'] = [
-            'title' => __('Incremental interest rate (%)', 'woo-pagarme-payments'),
-            'type' => 'text',
-            'default' => $this->config->getData('cc_installments_interest_increase') ?? '',
-            'description' => __(
-                'Fee that will be charged increasingly from the second installment with interest added to the initial '
+        $installments['interest_increase'] = $this->renderInstallmentTextField(
+            'Incremental interest rate (%)',
+            'cc_installments_interest_increase',
+            'Fee that will be charged increasingly from the second installment with interest added to the initial '
                 . 'interest rate.',
-                'woo-pagarme-payments'
-            ),
-            'desc_tip' => true,
-            'placeholder' => '0.00',
-            'custom_attributes' => array(
-                'data-field' => 'installments-interest-increase',
-                'data-mask' => '##0.00',
-                'data-mask-reverse' => 'true',
-            ),
-        ];
+            'installments-interest-increase'
+        );
+
+        $installments['interest_legacy'] = $this->renderInstallmentTextField(
+            'Interest rate (%)',
+            'cc_installments_interest_legacy',
+            'Fee that will be charged increasingly to all installments.',
+            'installments-interest-legacy'
+        );
 
         $installments['without_interest'] = [
             'title' => __('Number of installments without interest', 'woo-pagarme-payments'),
@@ -377,6 +359,31 @@ class CreditCard extends AbstractGateway
         ];
 
         return $installments[$field];
+    }
+
+    /**
+     * @param string $title
+     * @param string $defaultDataKey
+     * @param string $description
+     * @param string $dataFieldAttribute
+     *
+     * @return array
+     */
+    private function renderInstallmentTextField($title, $defaultDataKey, $description, $dataFieldAttribute)
+    {
+        return [
+            'title' => __($title, 'woo-pagarme-payments'),
+            'type' => 'text',
+            'default' => $this->config->getData($defaultDataKey) ?? '',
+            'description' => __($description, 'woo-pagarme-payments'),
+            'desc_tip' => true,
+            'placeholder' => '0.00',
+            'custom_attributes' => array(
+                'data-field' => $dataFieldAttribute,
+                'data-mask' => '##0.00',
+                'data-mask-reverse' => 'true',
+            ),
+        ];
     }
 
     /**
