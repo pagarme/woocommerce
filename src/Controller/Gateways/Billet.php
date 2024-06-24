@@ -38,7 +38,7 @@ class Billet extends AbstractGateway
 
     const LEGACY_CONFIG_NAME = "woocommerce_pagarme-banking-ticket_settings";
 
-    const LEGACY_SETTINGS_NAME = [ 
+    const LEGACY_SETTINGS_NAME = [
         "billet_instructions" => "description",
     ];
 

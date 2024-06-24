@@ -41,7 +41,7 @@ class CreditCard extends AbstractGateway
     const LEGACY_CONFIG_NAME = "woocommerce_pagarme-credit-card_settings";
 
     /** @var array  */
-    const LEGACY_SETTINGS_NAME = [ 
+    const LEGACY_SETTINGS_NAME = [
         "cc_installments_maximum" => "max_installment",
         "cc_installments_min_amount" => "smallest_installment",
         "cc_installments_interest" => "interest_rate",

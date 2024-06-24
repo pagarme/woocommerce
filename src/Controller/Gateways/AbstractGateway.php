@@ -412,7 +412,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     protected function getOldData($legacyFieldName, $fieldName, $oldData)
     {
         if (
-            !empty($oldData[$legacyFieldName]) 
+            !empty($oldData[$legacyFieldName])
             && in_array($fieldName, $this::LEGACY_SETTINGS_NEEDS_CONVERSION)
         ) {
             $functionHandler = "convert".Utils::snakeToPascalCase($fieldName);
