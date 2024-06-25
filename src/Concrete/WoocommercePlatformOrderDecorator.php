@@ -811,17 +811,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $newPaymentData->identifier      = $identifier;
         $newPaymentData->installments    = intval($this->formData["installments"]);
         $newPaymentData->recurrenceCycle = $this->formData["recurrence_cycle"] ?? null;
-        $newPaymentData->saveOnSuccess   =
-            isset($this->formData["save_credit_card"]);
-
-        $amount = isset($this->formData["card_order_value"]) ?
-            $this->formData["card_order_value"] :
-            $this->getGrandTotal() - $this->getBaseTaxAmount();
-
+        $newPaymentData->saveOnSuccess   = isset($this->formData["save_credit_card"]);
+        $amount = $this->formData["card_order_value"] ?? $this->getGrandTotal();
         $amount = number_format($amount, 2, '.', '');
         $amount = str_replace('.', '', $amount);
         $amount = str_replace(',', '', $amount);
-
         $newPaymentData->amount = $amount;
 
         if (isset($this->formData["enable_multicustomers_card"]) && $this->formData["enable_multicustomers_card"]) {
@@ -1075,9 +1069,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $newPaymentData->identifier   = $identifier;
         $newPaymentData->brand        = strtolower($this->formData["brand"]);
         $newPaymentData->installments = (int) 1;
-        $amount                       = isset($this->formData["card_order_value"]) ?
-            $this->formData["card_order_value"] :
-            $this->getGrandTotal() - $this->getBaseTaxAmount();
+        $amount                       = $this->formData["card_order_value"] ?? $this->getGrandTotal();
         $amount                       = number_format($amount, 2, '.', '');
         $amount                       = str_replace('.', '', $amount);
         $amount                       = str_replace(',', '', $amount);
