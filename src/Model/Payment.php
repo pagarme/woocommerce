@@ -43,7 +43,7 @@ class Payment
             $gateway = new Gateway;
         }
         $this->gateway = $gateway;
-        $this->paymentInstance = $this->gateway->getPaymentInstace($paymentMethod);
+        $this->paymentInstance = $this->gateway->getPaymentInstance($paymentMethod);
     }
 
     /**

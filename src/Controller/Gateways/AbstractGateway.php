@@ -11,24 +11,25 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use WP_Error;
 use Exception;
 use WC_Admin_Settings;
 use WC_Payment_Gateway;
-use Woocommerce\Pagarme\Block\Template;
-use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Model\Charge;
-use Woocommerce\Pagarme\Model\Checkout;
-use Woocommerce\Pagarme\Model\Subscription;
-use Woocommerce\Pagarme\Model\Config;
-use Woocommerce\Pagarme\Model\Config\Source\Yesno;
-use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Order;
-use Woocommerce\Pagarme\Model\Payment\PostFormatter;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Charge;
+use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Checkout;
+use Woocommerce\Pagarme\Block\Template;
+use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
-use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
+use Woocommerce\Pagarme\Model\Payment\PostFormatter;
 use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
-use WP_Error;
+use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
+use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 
 defined('ABSPATH') || exit;
 
@@ -52,6 +53,14 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /** @var string  */
     const PAYMENT_OPTIONS_SETTINGS_NAME = 'woocommerce_%s_settings';
+
+    /** @var array  */
+    const LEGACY_SETTINGS_NAME = [];
+
+    /** @var array  */
+    const LEGACY_SETTINGS_NEEDS_CONVERSION = [];
+
+    const LEGACY_CONFIG_NAME = "";
 
     /** @var Gateway|null */
     public $model;
@@ -201,7 +210,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function payment_fields()
     {
         $this->model->payment = $this->method;
-        echo $this->gatewayBlock->setPaymentInstance($this->model->getPaymentInstace($this->method))->toHtml();
+        echo $this->gatewayBlock->setPaymentInstance($this->model->getPaymentInstance($this->method))->toHtml();
     }
 
     /**
@@ -375,8 +384,50 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             'type'        => 'text',
             'description' => __('Name shown to the customer in the checkout page.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
-            'default'     => __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
+            'default'     => $this->getOldTitleName() ?? __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
         ];
+    }
+
+    protected function getOldTitleName() {
+        return null;
+    }
+    /**
+     * @param string $fieldName
+     * @return string
+     */
+    protected function getOldConfiguration($fieldName)
+    {
+        $oldData = get_option($this::LEGACY_CONFIG_NAME);
+        $legacyFieldName = $this->getLegacyFieldsName($fieldName);
+        if ($legacyFieldName !== false && array_key_exists($legacyFieldName, $oldData)) {
+            return $this->getOldData($legacyFieldName, $fieldName, $oldData);
+        }
+        return $this->config->getData($fieldName);
+    }
+
+    /**
+     * @uses CreditCard::convertCcInstallmentsMinAmount
+     * @uses CreditCard::convertCcInstallmentsInterestIncrease
+     */
+    protected function getOldData($legacyFieldName, $fieldName, $oldData)
+    {
+        if (
+            !empty($oldData[$legacyFieldName])
+            && in_array($fieldName, $this::LEGACY_SETTINGS_NEEDS_CONVERSION)
+        ) {
+            $functionHandler = "convert".Utils::snakeToPascalCase($fieldName);
+            return $this->$functionHandler($oldData);
+        }
+        return $oldData[$legacyFieldName];
+    }
+
+    
+    protected function getLegacyFieldsName($fieldName)
+    {
+        if (array_key_exists($fieldName, $this::LEGACY_SETTINGS_NAME)) {
+            return $this::LEGACY_SETTINGS_NAME[$fieldName];
+        }
+        return false;
     }
 
     /**

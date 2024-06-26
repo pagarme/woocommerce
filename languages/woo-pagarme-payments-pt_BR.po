@@ -286,7 +286,7 @@ msgstr "Configurações de Cartão de crédito"
 
 #: src/Controller/Gateways.php:390
 msgid "Soft descriptor"
-msgstr "Soft descriptor"
+msgstr "Identificação na fatura do cartão"
 
 #: src/Controller/Gateways.php:392
 msgid "Maximum of 13 characters"
@@ -929,20 +929,30 @@ msgstr "Configurações que só funcionam para clientes Gateway que têm contrat
 msgid "Enable card wallet"
 msgstr "Habilitar card wallet"
 
-msgid "Description that appears on the credit card bill."
-msgstr "Descrição que aparece na fatura do cartão de crédito."
+msgid "Name that will appear on the buyer's card bill."
+msgstr "Nome que aparecerá na fatura do cartão do comprador."
 
-msgid "Description that appears on the voucher bill."
-msgstr "Descrição que aparece na fatura do cartão de voucher."
+msgid "Name that will appear on the buyer's voucher bill."
+msgstr "Nome que aparecerá na fatura do voucher do comprador."
 
-msgid "Installment configuration"
-msgstr "Configuração de parcelamento"
+msgid "Subscription settings"
+msgstr "Configurações de assinatura"
+
+msgid "Installment settings"
+msgstr "Configurações de parcelamento"
+
+msgid "Do you have any questions about these settings? For more information and examples, visit our %sdocumentation »%s"
+msgstr ""
+"Está com alguma dúvida sobre essas configurações? Para mais informações e exemplos, acesse nossa %sdocumentação »%s"
 
 msgid "For all card brands"
 msgstr "Para todas as bandeiras de cartão"
 
 msgid "By card brand"
-msgstr "Por cada bandeira de cartão"
+msgstr "Por bandeira de cartão"
+
+msgid "Use default 1.0"
+msgstr "Usar padrão 1.0"
 
 msgid "Max number of installments"
 msgstr "Número máximo de parcelas"
@@ -953,14 +963,25 @@ msgstr "Taxa de juros inicial (%)"
 msgid "Incremental interest rate (%)"
 msgstr "Taxa de juros incremental (%)"
 
-msgid "Allows for cards to be saved for future purchases."
-msgstr "Permite que os cartões sejam salvos para compras futuras."
+msgid "Interest rate (%)"
+msgstr "Taxa de juros (%)"
 
-msgid "Interest rate applied starting with the first installment with interest."
-msgstr "Taxa de juros aplicada a partir da primeira parcela com juros."
+msgid ""
+"Allows users to pay for a new order with cards saved from previous orders. Card details are saved on Pagar.me and not "
+"in your store."
+msgstr ""
+"Permite que os usuários paguem um novo pedido com dados de cartões salvos de pedidos anteriores. Os detalhes do "
+"cartão são salvos no Pagar.me e não na sua loja."
 
-msgid "Interest rate added for each installment with interest."
-msgstr "Taxa de juros adicionada para cada parcela com juros."
+msgid "Fee that will be charged from the first installment with interest."
+msgstr "Taxa que será cobrada a partir da primeira parcela com juros."
+
+msgid ""
+"Fee that will be charged increasingly from the second installment with interest added to the initial interest rate."
+msgstr "Taxa que será cobrada de forma crescente a partir da segunda parcela com juros somada a taxa de juros inicial."
+
+msgid "Fee that will be charged increasingly to all installments."
+msgstr "Taxa de juros padrão a ser aplicada de forma crescente a todas as parcelas."
 
 msgid "Number of installments without interest"
 msgstr "Quantidade de parcelas sem juros"
@@ -1082,11 +1103,8 @@ msgstr "Não"
 msgid "Pagar.me integration"
 msgstr "Integração Pagar.me"
 
-msgid "Card Wallet"
-msgstr "Carteira"
-
-msgid "Card wallet"
-msgstr "Carteira"
+msgid "Allow payments with saved cards"
+msgstr "Permitir pagamentos com cartões salvos"
 
 msgid "Cancel"
 msgstr "Cancelar"
