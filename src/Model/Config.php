@@ -303,6 +303,11 @@ class Config extends DataObject
             ||  $type === CardInstallments::INSTALLMENTS_LEGACY;
     }
 
+    public function getInstallmentType()
+    {
+        return $this->getData('cc_installment_type');
+    }
+
     public function getAntifraudEnabled()
     {
         return $this->isEnabled('antifraud_enabled');

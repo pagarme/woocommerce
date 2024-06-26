@@ -9,6 +9,7 @@ use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\ValueObjects\CardBrand;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\CardConfig;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\CardInstallments;
 use Woocommerce\Pagarme\Model\Config;
 
 final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
@@ -107,7 +108,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         $configData = self::fillWithHubConfig($configData, $storeConfig);
         $configData = self::fillWithMarketplaceConfig($configData);
-        
+
         // These method calls are commented for now because they are not implemented yet:
         // $configData = self::fillWithAddressConfig($configData, $storeConfig);
         // $configData = self::fillWithDebitConfig($configData, $storeConfig);
@@ -121,6 +122,19 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         self::$moduleConfig = $config;
     }
 
+    /**
+     * @override
+     * @return string
+     */
+    public static function getInstallmentType()
+    {
+        $storeConfig = new Config;
+        $installmentType = $storeConfig->getInstallmentType();
+        if ( $installmentType === CardInstallments::INSTALLMENTS_LEGACY ) {
+            return "1.0";
+        }
+        return "2.0";
+    }
 
     private static function checkWebSiteExists()
     {
