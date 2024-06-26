@@ -201,7 +201,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function payment_fields()
     {
         $this->model->payment = $this->method;
-        echo $this->gatewayBlock->setPaymentInstance($this->model->getPaymentInstace($this->method))->toHtml();
+        echo $this->gatewayBlock->setPaymentInstance($this->model->getPaymentInstance($this->method))->toHtml();
     }
 
     /**

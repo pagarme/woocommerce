@@ -48,9 +48,9 @@ final class Installment extends AbstractValueObject
     private function setTimes($times)
     {
         $newTimes = intval($times);
-        if ($newTimes < 1 || $newTimes > 24) {
+        if ($newTimes < 0 || $newTimes > 24) {
             throw new InvalidParamException(
-                "A installment times should be set between 1 and 24!",
+                "A installment times should be set between 0 and 24!",
                 $times
             );
         }
@@ -85,14 +85,7 @@ final class Installment extends AbstractValueObject
      */
     private function setInterest($interest)
     {
-        $newInterest = floatval($interest);
-        if ($newInterest < 0) {
-            throw new InvalidParamException(
-                "A installment interest should be greater or equal to 0!",
-                $interest
-            );
-        }
-        $this->interest = $newInterest;
+        $this->interest = floatval($interest);
         return $this;
     }
 

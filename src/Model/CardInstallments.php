@@ -85,17 +85,8 @@ class CardInstallments
      */
     public function getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest)
     {
-        $firstOptionLabel = __('1x', 'woo-pagarme-payments');
-        $firstOptionContent = __('1x', 'woo-pagarme-payments') . ' (' . wc_price($total) . ')';
-        $options[] = [
-            'value' => 1,
-            'content' => $firstOptionContent,
-            'installmentPrice' => $this->formatPrice($total),
-            'optionLabel' => $firstOptionLabel,
-            'finalPrice' => $this->formatPrice($total),
-        ];
         $interestBase = $interest;
-        for ($times = 2; $times <= $maxInstallments; $times++) {
+        for ($times = 1; $times <= $maxInstallments; $times++) {
             $interest = $interestBase;
             $amount = $total;
             if ($interest || $interestIncrease) {
@@ -112,13 +103,8 @@ class CardInstallments
             if ($price < $minAmount) {
                 break;
             }
-            $text  = sprintf(
-                __('%dx of %s (%s)', 'woo-pagarme-payments'),
-                $times,
-                wc_price($price),
-                wc_price($value)
-            );
 
+            $text = $this->getInstallmentText($times, $price, $value);
             $extraText = $this->verifyInterest($times, $noInterest, $interest);
 
             $text .= $extraText;
@@ -133,6 +119,19 @@ class CardInstallments
             ];
         }
         return $options;
+    }
+
+    private function getInstallmentText($times, $priceInstallment, $priceWithInterest)
+    {
+        if($times === 1) {
+            return __('1x', 'woo-pagarme-payments') . ' (' . wc_price($priceWithInterest) . ')';
+        }
+        return sprintf(
+            __('%dx of %s (%s)', 'woo-pagarme-payments'),
+            $times,
+            wc_price($priceInstallment),
+            wc_price($priceWithInterest)
+        );
     }
 
     /**
