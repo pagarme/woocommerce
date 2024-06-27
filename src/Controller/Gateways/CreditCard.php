@@ -16,6 +16,7 @@ use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Subscription;
+use Woocommerce\Pagarme\Model\CardInstallments;
 
 defined('ABSPATH') || exit;
 
@@ -316,9 +317,9 @@ class CreditCard extends AbstractGateway
             return $this->config->getData('cc_installment_type');
         }
         if (get_option($this::LEGACY_CONFIG_NAME) !== false) {
-            return 3;
+            return CardInstallments::INSTALLMENTS_LEGACY;
         }
-        return 1;
+        return CardInstallments::INSTALLMENTS_FOR_ALL_FLAGS;
     }
 
     /**
