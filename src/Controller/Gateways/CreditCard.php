@@ -297,7 +297,7 @@ class CreditCard extends AbstractGateway
             'type' => 'select',
             'class' => 'wc-enhanced-select',
             'label' => __('Choose the installment configuration', 'woo-pagarme-payments'),
-            'default' => $this->config->getData('cc_installment_type') ?? 3,
+            'default' => $this->getDefaultInstallmentType(),
             'options' => array(
                 Gateway::CC_TYPE_SINGLE => __('For all card brands', 'woo-pagarme-payments'),
                 Gateway::CC_TYPE_BY_FLAG => __('By card brand', 'woo-pagarme-payments'),
@@ -308,6 +308,17 @@ class CreditCard extends AbstractGateway
                 'data-action' => 'installments-type',
             ),
         ];
+    }
+
+    private function getDefaultInstallmentType()
+    {
+        if ($this->config->getData('cc_installment_type')) {
+            return $this->config->getData('cc_installment_type');
+        }
+        if (get_option($this::LEGACY_CONFIG_NAME) !== false) {
+            return 3;
+        }
+        return 1;
     }
 
     /**
