@@ -16,6 +16,7 @@ use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Subscription;
+use Woocommerce\Pagarme\Model\CardInstallments;
 
 defined('ABSPATH') || exit;
 
@@ -50,7 +51,7 @@ class CreditCard extends AbstractGateway
         "cc_installments_without_interest" => "free_installments"
     ];
 
-    const LEGACY_SETTINGS_NEEDS_CONVERSION = ["cc_installments_min_amount", "cc_installments_interest"];
+    const LEGACY_SETTINGS_NEEDS_CONVERSION = ["cc_installments_interest"];
 
     /**
      * @return void
@@ -297,7 +298,7 @@ class CreditCard extends AbstractGateway
             'type' => 'select',
             'class' => 'wc-enhanced-select',
             'label' => __('Choose the installment configuration', 'woo-pagarme-payments'),
-            'default' => $this->config->getData('cc_installment_type') ?? 3,
+            'default' => $this->getDefaultInstallmentType(),
             'options' => array(
                 Gateway::CC_TYPE_SINGLE => __('For all card brands', 'woo-pagarme-payments'),
                 Gateway::CC_TYPE_BY_FLAG => __('By card brand', 'woo-pagarme-payments'),
@@ -308,6 +309,17 @@ class CreditCard extends AbstractGateway
                 'data-action' => 'installments-type',
             ),
         ];
+    }
+
+    private function getDefaultInstallmentType()
+    {
+        if ($this->config->getData('cc_installment_type')) {
+            return $this->config->getData('cc_installment_type');
+        }
+        if (get_option($this::LEGACY_CONFIG_NAME) !== false) {
+            return CardInstallments::INSTALLMENTS_LEGACY;
+        }
+        return CardInstallments::INSTALLMENTS_FOR_ALL_FLAGS;
     }
 
     /**
@@ -565,7 +577,7 @@ class CreditCard extends AbstractGateway
                             <th class="align"><?php _e('Initial interest rate (%)', 'woo-pagarme-payments'); ?></th>
                             <th class="align"><?php _e('Incremental interest rate (%)', 'woo-pagarme-payments'); ?></th>
                             <th class="align">
-                                <?php _e('Number of installments<br />without interest', 'woo-pagarme-payments'); ?>
+                                <?php _e('Number of installments<br/>without interest', 'woo-pagarme-payments'); ?>
                             </th>
                         </tr>
                         </thead>
@@ -579,7 +591,7 @@ class CreditCard extends AbstractGateway
                                 ? $value['max_installment'][$flagKey]
                                 : $maxInstallment;
                             $installmentMinAmount = $value['installment_min_amount'][$flagKey] ?? '';
-                            $noInterest = $value['no_interest'][$flagKey] ?? 1;
+                            $noInterest = $value['no_interest'][$flagKey] ?? 0;
 
                             $escapedHtmlAttrFieldKey = esc_attr($fieldKey);
                             $escapedHtmlAttrFlagKey = esc_attr($flagKey);
@@ -666,7 +678,7 @@ class CreditCard extends AbstractGateway
                                 <td>
                                     <input class="align"
                                            type="number"
-                                           min="1"
+                                           min="0"
                                            max="<?php echo $maxInstallment; ?>"
                                            name="<?php echo $noInterestFieldName; ?>"
                                            id="<?php echo $noInterestFieldId; ?>"
@@ -755,14 +767,9 @@ class CreditCard extends AbstractGateway
 
         return $cardList;
     }
-
-    protected function convertCcInstallmentsMinAmount($value)
-    {
-        return intval($value['smallest_installment']) * 100;
-    }
     
     protected function convertCcInstallmentsInterest($value)
     {
-        return $value['interest_rate'] * $value['free_installments'];
+        return $value['interest_rate'] * ($value['free_installments'] + 1);
     }
 }
