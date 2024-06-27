@@ -64,7 +64,11 @@ class Billet extends AbstractGateway
     /**
      * @return null|string
      */
-    protected function getOldTitleName() {
+    protected function getOldTitleName() 
+    {
+        if(!empty($this->config->getData("billet_title"))) {
+            return $this->config->getData("billet_title");
+        }
         $oldData = get_option(self::LEGACY_CONFIG_NAME);
         if (empty($oldData['title'])){
             return null;

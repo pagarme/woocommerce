@@ -397,12 +397,15 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     protected function getOldConfiguration($fieldName)
     {
+        if($this->config->getData($fieldName)) {
+            return $this->config->getData($fieldName);
+        }
         $oldData = get_option($this::LEGACY_CONFIG_NAME);
         $legacyFieldName = $this->getLegacyFieldsName($fieldName);
         if ($oldData !== false && $legacyFieldName !== false && array_key_exists($legacyFieldName, $oldData)) {
             return $this->getOldData($legacyFieldName, $fieldName, $oldData);
         }
-        return $this->config->getData($fieldName);
+        return null;
     }
 
     /**

@@ -404,6 +404,9 @@ class CreditCard extends AbstractGateway
      * @return null|string
      */
     protected function getOldTitleName() {
+        if($this->config->getData("credit_card_title")) {
+            return $this->config->getData("credit_card_title");
+        }
         $oldData = get_option($this::LEGACY_CONFIG_NAME);
         if (empty($oldData['title'])){
             return null;
