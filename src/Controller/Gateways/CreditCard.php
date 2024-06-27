@@ -50,7 +50,7 @@ class CreditCard extends AbstractGateway
         "cc_installments_without_interest" => "free_installments"
     ];
 
-    const LEGACY_SETTINGS_NEEDS_CONVERSION = ["cc_installments_min_amount", "cc_installments_interest"];
+    const LEGACY_SETTINGS_NEEDS_CONVERSION = ["cc_installments_interest"];
 
     /**
      * @return void
@@ -565,7 +565,7 @@ class CreditCard extends AbstractGateway
                             <th class="align"><?php _e('Initial interest rate (%)', 'woo-pagarme-payments'); ?></th>
                             <th class="align"><?php _e('Incremental interest rate (%)', 'woo-pagarme-payments'); ?></th>
                             <th class="align">
-                                <?php _e('Number of installments<br />without interest', 'woo-pagarme-payments'); ?>
+                                <?php _e('Number of installments<br/>without interest', 'woo-pagarme-payments'); ?>
                             </th>
                         </tr>
                         </thead>
@@ -579,7 +579,7 @@ class CreditCard extends AbstractGateway
                                 ? $value['max_installment'][$flagKey]
                                 : $maxInstallment;
                             $installmentMinAmount = $value['installment_min_amount'][$flagKey] ?? '';
-                            $noInterest = $value['no_interest'][$flagKey] ?? 1;
+                            $noInterest = $value['no_interest'][$flagKey] ?? 0;
 
                             $escapedHtmlAttrFieldKey = esc_attr($fieldKey);
                             $escapedHtmlAttrFlagKey = esc_attr($flagKey);
@@ -666,7 +666,7 @@ class CreditCard extends AbstractGateway
                                 <td>
                                     <input class="align"
                                            type="number"
-                                           min="1"
+                                           min="0"
                                            max="<?php echo $maxInstallment; ?>"
                                            name="<?php echo $noInterestFieldName; ?>"
                                            id="<?php echo $noInterestFieldId; ?>"
@@ -755,14 +755,9 @@ class CreditCard extends AbstractGateway
 
         return $cardList;
     }
-
-    protected function convertCcInstallmentsMinAmount($value)
-    {
-        return intval($value['smallest_installment']) * 100;
-    }
     
     protected function convertCcInstallmentsInterest($value)
     {
-        return $value['interest_rate'] * $value['free_installments'];
+        return $value['interest_rate'] * ($value['free_installments'] + 1);
     }
 }

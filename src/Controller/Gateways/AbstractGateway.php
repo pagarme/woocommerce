@@ -409,7 +409,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     }
 
     /**
-     * @uses CreditCard::convertCcInstallmentsMinAmount
      * @uses CreditCard::convertCcInstallmentsInterest
      */
     protected function getOldData($legacyFieldName, $fieldName, $oldData)
