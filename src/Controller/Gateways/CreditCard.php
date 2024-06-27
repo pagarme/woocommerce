@@ -50,7 +50,7 @@ class CreditCard extends AbstractGateway
         "cc_installments_without_interest" => "free_installments"
     ];
 
-    const LEGACY_SETTINGS_NEEDS_CONVERSION = ["cc_installments_min_amount", "cc_installments_interest_increase"];
+    const LEGACY_SETTINGS_NEEDS_CONVERSION = ["cc_installments_min_amount", "cc_installments_interest"];
 
     /**
      * @return void
@@ -297,7 +297,7 @@ class CreditCard extends AbstractGateway
             'type' => 'select',
             'class' => 'wc-enhanced-select',
             'label' => __('Choose the installment configuration', 'woo-pagarme-payments'),
-            'default' => $this->config->getData('cc_installment_type') ?? 1,
+            'default' => $this->config->getData('cc_installment_type') ?? 3,
             'options' => array(
                 Gateway::CC_TYPE_SINGLE => __('For all card brands', 'woo-pagarme-payments'),
                 Gateway::CC_TYPE_BY_FLAG => __('By card brand', 'woo-pagarme-payments'),
@@ -404,6 +404,9 @@ class CreditCard extends AbstractGateway
      * @return null|string
      */
     protected function getOldTitleName() {
+        if($this->config->getData("credit_card_title")) {
+            return $this->config->getData("credit_card_title");
+        }
         $oldData = get_option($this::LEGACY_CONFIG_NAME);
         if (empty($oldData['title'])){
             return null;
@@ -758,7 +761,7 @@ class CreditCard extends AbstractGateway
         return intval($value['smallest_installment']) * 100;
     }
     
-    protected function convertCcInstallmentsInterestIncrease($value)
+    protected function convertCcInstallmentsInterest($value)
     {
         return $value['interest_rate'] * $value['free_installments'];
     }

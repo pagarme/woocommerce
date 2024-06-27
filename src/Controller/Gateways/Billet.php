@@ -39,7 +39,7 @@ class Billet extends AbstractGateway
     const LEGACY_CONFIG_NAME = "woocommerce_pagarme-banking-ticket_settings";
 
     const LEGACY_SETTINGS_NAME = [
-        "billet_instructions" => "description",
+        "billet_checkout_instructions" => "description",
     ];
 
     /** @var string */
@@ -64,7 +64,11 @@ class Billet extends AbstractGateway
     /**
      * @return null|string
      */
-    protected function getOldTitleName() {
+    protected function getOldTitleName() 
+    {
+        if(!empty($this->config->getData("billet_title"))) {
+            return $this->config->getData("billet_title");
+        }
         $oldData = get_option(self::LEGACY_CONFIG_NAME);
         if (empty($oldData['title'])){
             return null;
@@ -155,7 +159,7 @@ class Billet extends AbstractGateway
             'title' => __(self::PAYMENT_INSTRUCTIONS_FIELD_NAME, 'woo-pagarme-payments'),
             'type' => 'textarea',
             'class' => 'pagarme-option-text-area',
-            'default' => $this->getOldConfiguration('billet_instructions') ?? '',
+            'default' => $this->config->getData('billet_instructions') ?? '',
             'description' => __('Instructions printed on the billet.', 'woo-pagarme-payments'),
             'desc_tip'    => true,
             'custom_attributes' => [
@@ -207,7 +211,7 @@ class Billet extends AbstractGateway
             'class' => 'pagarme-option-text-area',
             'description' => BilletModel::getCheckoutInstructionsDescription(),
             'desc_tip' => true,
-            'default' => $this->config->getData(BilletModel::getCheckoutInstructionsKey()) ??
+            'default' => $this->getOldConfiguration(BilletModel::getCheckoutInstructionsKey()) ??
                 BilletModel::getDefaultCheckoutInstructions(),
         ];
     }
