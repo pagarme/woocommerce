@@ -130,7 +130,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
     {
         $storeConfig = new Config;
         $installmentType = $storeConfig->getInstallmentType();
-        if ( $installmentType === CardInstallments::INSTALLMENTS_LEGACY ) {
+        if ( $installmentType == CardInstallments::INSTALLMENTS_LEGACY ) {
             return "1.0";
         }
         return "2.0";
