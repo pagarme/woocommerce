@@ -1,15 +1,18 @@
 /* jshint esversion: 6 */
 (function ($) {
-        const installmentsTypeSelect = $('[data-element="installments-type-select"]');
-        const installmentsMax = $('[data-field="installments-maximum"]');
-        const installmentsInterest = $('[data-field="installments-interest"]');
-        const installmentsInterestLegacy = $('[data-field="installments-interest-legacy"]');
-        const installmentsMinAmount = $('[data-field="installments-min-amount"]');
-        const installmentsByFlag = $('[data-field="installments-by-flag"]');
-        const installmentsWithoutInterest = $('[data-field="installments-without-interest"]');
-        const installmentsInterestIncrease = $('[data-field="installments-interest-increase"]');
-        const flagsSelect = $('[data-element="flags-select"]');
-        const installmentsMaxByFlags = $('[data-field="installments-maximum-by-flag"]');
+        const
+            installmentsTypeSelect = $('[data-element="installments-type-select"]'),
+            installmentsMax = $('[data-field="installments-maximum"]'),
+            installmentsInterest = $('[data-field="installments-interest"]'),
+            installmentsInterestLegacy = $('[data-field="installments-interest-legacy"]'),
+            installmentsMinAmount = $('[data-field="installments-min-amount"]'),
+            installmentsByFlag = $('[data-field="installments-by-flag"]'),
+            installmentsWithoutInterest = $('[data-field="installments-without-interest"]'),
+            installmentsInterestIncrease = $('[data-field="installments-interest-increase"]'),
+            flagsSelect = $('[data-element="flags-select"]'),
+            installmentsMaxByFlags = $('[data-field="installments-maximum-by-flag"]'),
+
+            INSTALLMENTS_LEGACY = '3';
 
         function toggleItemWhenItemFlagIsInFlags(flags, item) {
             if (!flags.includes(item.data('flag'))) {
@@ -153,11 +156,19 @@
         };
 
         const fillLegacyInstallmentInterests = () => {
-            if(parseInt(installmentsTypeSelect.find(":selected").val()) !== 3) {
+            if (installmentsTypeSelect.find(":selected").val() !== INSTALLMENTS_LEGACY) {
                 return;
             }
 
-            const legacyInterest = parseInt(installmentsInterestLegacy.val());
+            let legacyInterest = installmentsInterestLegacy.val();
+
+            if (legacyInterest === '') {
+                installmentsInterest.val('');
+                installmentsInterestIncrease.val('');
+                return;
+            }
+
+            legacyInterest = parseInt(legacyInterest);
             const noInterest = parseInt(installmentsWithoutInterest.val());
 
             installmentsInterest.val(legacyInterest * (noInterest + 1));
@@ -187,6 +198,9 @@
             });
             flagsSelect.on('select2:selecting', function (event) {
                 setInstallmentsByFlags(event, false);
+            });
+            installmentsTypeSelect.on('change', function() {
+                fillLegacyInstallmentInterests();
             });
             installmentsInterestLegacy.on('change', function() {
                 fillLegacyInstallmentInterests();
