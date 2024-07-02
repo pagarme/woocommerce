@@ -25,6 +25,16 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.3.1 (02/07/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.1)
+
+* **Melhorias:**
+  *  Adição nova lógica de juros 1.0
+
+* **Correções:**
+  *  Campo "Nome impresso no cartão" aceitando carácter especial
+  *  Cobrar imposto quando preço do produto não incluir a taxa
+
 = 3.3.0 (20/06/2024) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.0)
 
@@ -42,17 +52,6 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
   *  Traduções do cartão de crédito;
   *  Remoção de readonly em configurações no painel administrativo;
   *  Não acessar mais variáveis diretamente.
-
-= 3.2.2 (16/04/2024) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.2)
-
-* **Correções:**
-  * Atualização do SweetAlert para 11.10.1
-  * Compra com número 0 no endereço
-  * Remoção de campo vazio no admin para Pix e Boleto
-  * Webhook URL com o path da loja
-  * Remoção da modal de preencha dados obrigatórios
-
 
 == Upgrade Notice ==
 Nosso plugin agora é compatível com Woocommerce Subscriptions

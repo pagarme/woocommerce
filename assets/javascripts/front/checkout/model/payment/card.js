@@ -53,6 +53,18 @@ let pagarmeCard = {
         }
         return paymentSelected.indexOf('pagarme');
     },
+    preventSpecialCharacter: function (element) {
+        let selectionStart = element.selectionStart;
+        const regex = /[^a-z ]/gi;
+        const val = jQuery(element).val();
+
+        if(regex.test(val)) {
+            jQuery(element).val(val.replace(regex, ''));
+            selectionStart--;
+        }
+
+        element.setSelectionRange(selectionStart, selectionStart);
+    },
     keyEventHandlerCard: function (event) {
         this.clearToken(event);
         this.loadBrand(event);
@@ -350,7 +362,7 @@ let pagarmeCard = {
 
         if (typeof formattedEvent.unblock === 'function') {
             formattedEvent.unblock();
-           return; 
+           return;
         }
 
         if (typeof jQuery.unblockUI === 'function') {
@@ -368,7 +380,7 @@ let pagarmeCard = {
                     opacity: 0.6
                 }
             });
-           return; 
+           return;
         }
 
         if (typeof jQuery.blockUI === 'function') {
@@ -484,9 +496,15 @@ let pagarmeCard = {
         jQuery(this.billingCpfId).on('change', function () {
             pagarmeCard.onChangeBillingCpf();
         });
+
+        jQuery(this.cardHolderNameTarget).on('input', function () {
+            pagarmeCard.preventSpecialCharacter(this);
+        });
+
         jQuery(this.cardNumberTarget).on('change', function (event) {
             pagarmeCard.keyEventHandlerCard(event);
         });
+
         jQuery(`${this.fieldsetCardElements} input`).on('change', function () {
             pagarmeCard.clearErrorMessages();
         });
@@ -504,6 +522,10 @@ let pagarmeCard = {
         if (typeof pagarmeOrderValue == 'object') {
             pagarmeOrderValue.start();
         }
+
+        jQuery(this.cardHolderNameTarget).on('input', function () {
+            pagarmeCard.preventSpecialCharacter(this);
+        });
     },
     start: function () {
         jQuery(document).ready(function () {

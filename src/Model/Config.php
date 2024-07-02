@@ -296,7 +296,16 @@ class Config extends DataObject
 
     public function getIsInstallmentsDefaultConfig()
     {
-        return $this->getData('cc_installment_type') === '1';
+        $type = intval($this->getData('cc_installment_type'));
+
+        return
+            $type === CardInstallments::INSTALLMENTS_FOR_ALL_FLAGS
+            ||  $type === CardInstallments::INSTALLMENTS_LEGACY;
+    }
+
+    public function getInstallmentType()
+    {
+        return $this->getData('cc_installment_type');
     }
 
     public function getAntifraudEnabled()
@@ -351,7 +360,7 @@ class Config extends DataObject
         if(is_int($tdsMinAmount)) {
             return $tdsMinAmount;
         }
-        
+
         $moneyService = new MoneyService();
         $tdsMinAmount = $moneyService->removeSeparators($tdsMinAmount);
         return $moneyService->centsToFloat($tdsMinAmount);

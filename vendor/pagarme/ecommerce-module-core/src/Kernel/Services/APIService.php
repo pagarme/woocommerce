@@ -11,7 +11,6 @@ use PagarmeCoreApiLib\Controllers\OrdersController;
 use PagarmeCoreApiLib\Exceptions\ErrorException;
 use PagarmeCoreApiLib\Models\CreateCancelChargeRequest;
 use PagarmeCoreApiLib\Models\CreateCaptureChargeRequest;
-use PagarmeCoreApiLib\Models\CreateOrderRequest;
 use PagarmeCoreApiLib\PagarmeCoreApiClient;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
@@ -28,6 +27,7 @@ use Pagarme\Core\Kernel\ValueObjects\Id\SubscriptionId;
 use Pagarme\Core\Recurrence\Aggregates\Invoice;
 use Pagarme\Core\Recurrence\Aggregates\Subscription;
 use Pagarme\Core\Recurrence\Factories\SubscriptionFactory;
+use Pagarme\Core\Kernel\ValueObjects\TransactionType;
 
 class APIService
 {
@@ -128,7 +128,7 @@ class APIService
         $endpoint = $this->getAPIBaseEndpoint();
 
         $orderRequest = $order->convertToSDKRequest();
-        $orderRequest->metadata = $this->getRequestMetaData();
+        $orderRequest->metadata = $this->getRequestMetaData($orderRequest);
         $publicKey = MPSetup::getModuleConfiguration()->getPublicKey()->getValue();
 
         $configInfo = $this->configInfoService->retrieveInfo("");
@@ -163,7 +163,7 @@ class APIService
         }
     }
 
-    private function getRequestMetaData()
+    private function getRequestMetaData($orderRequest)
     {
         $versionService = new VersionService();
         $metadata = new \stdClass();
@@ -171,8 +171,20 @@ class APIService
         $metadata->moduleVersion = $versionService->getModuleVersion();
         $metadata->coreVersion = $versionService->getCoreVersion();
         $metadata->platformVersion = $versionService->getPlatformVersion();
-
+        if($this->hasCreditCardInPayments($orderRequest->payments) && !empty(MPSetup::getInstallmentType())){
+            $metadata->interestType = MPSetup::getInstallmentType();
+        }
         return $metadata;
+    }
+
+    private function hasCreditCardInPayments($payments)
+    {
+        foreach ($payments as $payment) {
+            if($payment->paymentMethod === TransactionType::CREDIT_CARD) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

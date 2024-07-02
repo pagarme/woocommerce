@@ -108,7 +108,7 @@ class PostFormatter
     private function dataToFilterFromPost($paymentMethod)
     {
         if ($paymentMethod) {
-            return $this->gateway->getPaymentInstace($paymentMethod)->getRequirementsData();
+            return $this->gateway->getPaymentInstance($paymentMethod)->getRequirementsData();
         }
         return $_POST;
     }
@@ -144,7 +144,7 @@ class PostFormatter
                 $arrayFieldKey
             );
             if ($paymentMethod) {
-                $formattedPost = $this->gateway->getPaymentInstace($paymentMethod)->renameFieldsPost($field, $formattedPost, $arrayFieldKey);
+                $formattedPost = $this->gateway->getPaymentInstance($paymentMethod)->renameFieldsPost($field, $formattedPost, $arrayFieldKey);
             }
         }
         return $formattedPost;
