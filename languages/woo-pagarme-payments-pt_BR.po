@@ -472,8 +472,8 @@ msgid "Settings"
 msgstr "Configurações"
 
 #. Plugin Name of the plugin/theme
-msgid "Pagar.me for Woocommerce"
-msgstr "Pagar.me para Woocommerce"
+msgid "Pagar.me for WooCommerce"
+msgstr "Pagar.me para WooCommerce"
 
 #: src/Model/Gateway.php:85
 msgid "1x"
