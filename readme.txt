@@ -2,9 +2,9 @@
 Contributors: pagarme
 Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
-Tested up to: 6.3
+Tested up to: 6.5.5
 Requires PHP: 7.1
-Stable tag: 3.2.2
+Stable tag: 3.3.2
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -25,6 +25,12 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.3.2 (03/07/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.2)
+
+* **Correções:**
+  *  Exibe uma parcela (à vista) quando o valor do carrinho é menhor que a configuraação de valor mínimo de parcelas
+
 = 3.3.1 (02/07/2024) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.1)
 
@@ -34,24 +40,6 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
 * **Correções:**
   *  Campo "Nome impresso no cartão" aceitando carácter especial
   *  Cobrar imposto quando preço do produto não incluir a taxa
-
-= 3.3.0 (20/06/2024) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.0)
-
-* **Novas funcionalidades:**
-  *  [3DS 2.0](https://pagar.me/blog/3ds-2-0/);
-  *  [Pedido Manual](https://woocommerce.com/document/como-gerenciar-pedidos/#section-16);
-  *  Compatibilização com o [Checkout Blocks](https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce#campos-do-checkout). 
-
-* **Melhorias:**
-  *  [Estorno automático](https://woocommerce.com/document/woocommerce-refunds/#automatic-refunds) (fluxo padrão do Woocommerce);
-  *  Status de pedidos não autorizados que antes iriam para cancelado, agora vão para Malsucedido conforme o [fluxo padrão do Woocommerce](https://woocommerce.com/document/como-gerenciar-pedidos/#section-2).
-  *  Adição de um [filter para extensão](https://github.com/pagarme/woocommerce/blob/master/docs/filters-actions/split.md) de Split.
-
-* **Correções:**
-  *  Traduções do cartão de crédito;
-  *  Remoção de readonly em configurações no painel administrativo;
-  *  Não acessar mais variáveis diretamente.
 
 == Upgrade Notice ==
 Nosso plugin agora é compatível com Woocommerce Subscriptions

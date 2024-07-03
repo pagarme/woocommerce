@@ -100,7 +100,7 @@ class CardInstallments
                 $value = $total;
             }
             $price = ceil($value / $times * 100) / 100;
-            if ($price < $minAmount) {
+            if ($price < $minAmount && $times > 1) {
                 break;
             }
 
