@@ -30,7 +30,7 @@ function realizarConfiguracaoMarketplace($marketplaceConfig)
 Adicione o filtro `pagarme_split_order` para editar as regras de Split :
 
 ```php
-add_filter("pagarme_split_order", 'alimentarSplit', 10, 1);
+add_filter("pagarme_split_order", 'alimentarSplit', 10, 2);
 
 function alimentarSplit(\WC_Order $order, $paymentMethod)
 {
@@ -65,7 +65,7 @@ function alimentarSplit(\WC_Order $order, $paymentMethod)
 		'commission' => 800, 							// Comissão do recebedor
 		'pagarmeId' => 're_xxxxxxxxx0x00000xxxx000xx' 	// Id do recebedor
 	];
-	
+
 	return $splitArray;
 }
 ```
