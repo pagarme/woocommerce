@@ -1200,13 +1200,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             return null;
         }
 
-        $splitDataFromOrder = [
-            'sellers' => [],
-            'marketplace' => [
-                'totalCommission' => null
-            ]
-        ];
-        $splitDataFromOrder = apply_filters('pagarme_split_order', $splitDataFromOrder);
+        $order = $this->getPlatformOrder();
+        $paymentMethod = $this->getPaymentMethodPlatform();
+
+        $splitDataFromOrder = apply_filters('pagarme_split_order', $order, $paymentMethod);
         $this->validateSellerArray($splitDataFromOrder);
         $splitData = new Split();
         $splitData->setSellersData($splitDataFromOrder['sellers']);
