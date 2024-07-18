@@ -86,7 +86,7 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
                     'totalCommission' => 400
                 ]
             ];
-        });
+        }, 10, 2);
         $splitReturn = $platformOrderDecorator->handleSplitOrder();
         $this->assertInstanceOf(Split::class, $splitReturn);
     }
@@ -108,7 +108,7 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
                     'totalCommission' => 400
                 ]
             ];
-        });
+        }, 10, 2);
         $platformOrderDecorator->handleSplitOrder();
     }
     

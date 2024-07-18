@@ -200,7 +200,7 @@ let pagarmeCard = {
             title: value.brandName,
             type: value.brandName,
             gaps: value.gaps,
-            lengths: value.lenghts,
+            lengths: value.lengths,
             image: value.brandImage,
             mask: value.mask,
             size: value.size,
