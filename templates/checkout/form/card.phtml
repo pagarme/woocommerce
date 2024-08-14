@@ -85,8 +85,8 @@ wp_localize_script(
                                    data-mask="0000 0000 0000 0000" placeholder="•••• •••• •••• ••••"
                                    data-required="true" data-pagarme-element="number">
                         </span>
-                        <input type="hidden" name="<?= $this->getElementId('brand'); ?>"
-                               data-pagarme-element="brand-input"/>
+                        <input type="hidden" name="<?= $this->getElementId('brand'); ?>" 
+                               id="<?= $this->getElementId('brand'); ?>" data-pagarme-element="brand-input"/>
                     </p>
                     <p class="form-row form-row-first">
                         <label for="<?= $this->getElementId('card-expiry'); ?>">
