@@ -12,6 +12,8 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBox;
 
 use Pagarme\Core\Kernel\Aggregates\Charge;
+use Pagarme\Core\Kernel\Services\ChargeService;
+use Unirest\Exception;
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\AbstractMetaBox;
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBoxInterface;
 use Woocommerce\Pagarme\Helper\Utils;
@@ -33,7 +35,7 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
     protected $sortOrder = 1;
 
     /** @var int */
-    protected $title = 'Pagar.me - Capture/Cancellation';
+    protected $title = 'Pagar.me - Charges';
 
     /**
      * @var Order
@@ -90,13 +92,16 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
     }
 
     /**
-     * @return false|Charge
+     * @return Charge[]|null
+     * @throws Exception
      */
-    public function getCharges()
+    public function getCharges($orderCode)
     {
-        if ($this->getOrder()) {
-            return $this->getOrder()->get_charges();
+        $chargeService = new ChargeService();
+        if ($orderCode) {
+            return $chargeService->findChargesByCode($orderCode);
         }
+
         return null;
     }
 
@@ -114,6 +119,7 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
     public function getHeaderGrid()
     {
         return [
+            'Created At',
             'Charge ID',
             'Type',
             "Total Amount",

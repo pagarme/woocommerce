@@ -319,6 +319,22 @@ class ChargeService
     }
 
     /**
+     * @param $code
+     * @return array|null
+     * @throws Exception
+     */
+    public function findChargesByCode($code)
+    {
+        $chargeRepository = new ChargeRepository();
+
+        try {
+            return $chargeRepository->findChargesByCode($code);
+        } catch (Exception $exception) {
+            throw new Exception($exception, $exception->getCode());
+        }
+    }
+
+    /**
      * @param Charge $charge
      * @throws Exception
      */
