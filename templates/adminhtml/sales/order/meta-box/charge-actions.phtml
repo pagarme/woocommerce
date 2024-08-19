@@ -27,10 +27,6 @@ $charges = $this->getCharges($this->getOrder()->ID);
     $minutesOffset = intval(3600 * $gmtOffset);
     ?>
     <div class="wrapper">
-        <p class="pagarme-refund-message">
-            <?= __("<span>Attention!</span> It is now possible to use Woocommerce's automatic refund flow. <b>Soon, "
-                   . "this button will be dedicated to manual capture only</b>.", 'woo-pagarme-payments') ?>
-        </p>
         <table>
             <thead>
             <tr>
