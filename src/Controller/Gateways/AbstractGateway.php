@@ -212,6 +212,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             'woo-pagarme-payments'
         ) : __('Error processing payment. Please try again later.', 'woo-pagarme-payments');
 
+        if (Utils::isCheckoutBlock()) {
+            wp_die($errorMessage, 'error');
+        }
+
         wc_add_notice($errorMessage, 'error');
 
         return null;
