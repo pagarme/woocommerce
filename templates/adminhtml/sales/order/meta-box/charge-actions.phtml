@@ -21,8 +21,6 @@ if (!function_exists('add_action')) {
 $charges = $this->getCharges($this->getOrder()->ID);
 ?>
 <?php if ($charges) :
-    $config = new Config();
-    $canLinkCharge = $config->isAccAndMerchSaved();
     $gmtOffset = floatval(get_option('gmt_offset'));
     $minutesOffset = intval(3600 * $gmtOffset);
     ?>
@@ -40,10 +38,11 @@ $charges = $this->getCharges($this->getOrder()->ID);
                 $offsetTimestamp = $chargeTimestamp + $minutesOffset;
 
                 $chargeID = $charge->getPagarmeId()->getValue();
-                if ($canLinkCharge) {
+                $chargeUrl = $this->getChargeUrl($chargeID);
+                if ($chargeUrl) {
                     $chargeID = sprintf(
                         '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-                        $config->getDashUrl() . 'charges/' . $chargeID,
+                        $chargeUrl,
                         $chargeID
                     );
                 }
