@@ -207,7 +207,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         }
 
         $errorMessage = $this->method == CreditCard::PAYMENT_CODE ? __(
-            '<p>You have filled in one or more details incorrectly.</p>Try to fill in the details exactly as they '
+            '<p>You may have filled in one or more details incorrectly.</p>Try to fill in the details exactly as they '
             . 'appear on your card or bank app to complete the payment.',
             'woo-pagarme-payments'
         ) : __('Error processing payment. Please try again later.', 'woo-pagarme-payments');
