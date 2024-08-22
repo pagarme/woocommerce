@@ -11,9 +11,9 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBox;
 
+use Exception;
 use Pagarme\Core\Kernel\Aggregates\Charge;
 use Pagarme\Core\Kernel\Services\ChargeService;
-use Unirest\Exception;
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\AbstractMetaBox;
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBoxInterface;
 use Woocommerce\Pagarme\Helper\Utils;
