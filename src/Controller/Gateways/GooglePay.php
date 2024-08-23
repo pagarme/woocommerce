@@ -12,9 +12,6 @@ declare(strict_types=1);
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Woocommerce\Pagarme\Model\Payment\GooglePay as ModelGooglePay;
-use Woocommerce\Pagarme\Model\Subscription;
-use Woocommerce\Pagarme\Model\Config\Source\Yesno;
-use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 
 defined('ABSPATH') || exit;
 

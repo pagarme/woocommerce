@@ -2,24 +2,26 @@ import PropTypes from "prop-types";
 import GooglePayButton from "@google-pay/button-react";
 import useGooglepay from "./useGooglepay";
 import { useDispatch, useSelect } from "@wordpress/data";
-import pagarmeTokenssStore from "../store/googlepay"
-// import setData from "./setData";
+import pagarmeTokenStore from "../store/googlepay"
 
 const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
 
 const backendConfig = wc.wcSettings.getSetting(
     "woo-pagarme-payments-googlepay_data",
 );
-// debugger;
-const {
-    setToken, reset
-} = useDispatch(pagarmeTokenssStore);
 
 let googleResponse = [];
 const PagarmeGooglePayComponent = (props) => {
     // console.log(props)
     const { emitResponse, eventRegistration } = props;
+
     useGooglepay(emitResponse, eventRegistration, backendConfig);
+
+    const {
+        setToken
+    } = useDispatch(pagarmeTokenStore);
+
+
     return (
         <GooglePayButton
            
@@ -59,7 +61,6 @@ const PagarmeGooglePayComponent = (props) => {
             }}
             onLoadPaymentData={(paymentRequest) => {
                 let googleToken = paymentRequest.paymentMethodData.tokenizationData.token;
-                console.log(googleToken);
                 setToken(googleToken);
             }}
         />

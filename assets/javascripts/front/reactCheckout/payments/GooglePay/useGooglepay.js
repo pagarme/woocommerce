@@ -1,5 +1,5 @@
 /* jshint esversion: 9 */
-import pagarmeTokenssStore from "../store/googlepay";
+import pagarmeTokenStore from "../store/googlepay";
 import { useEffect } from "@wordpress/element";
 import { useDispatch, useSelect } from "@wordpress/data";
 
@@ -8,18 +8,14 @@ const useGooglepay = (
     eventRegistration,
     backendConfig
 ) => {
-    const { reset } = useDispatch(pagarmeTokenssStore);
+    const { reset } = useDispatch(pagarmeTokenStore);
 
     const { onPaymentSetup } = eventRegistration;
     
     const cards = useSelect((select) => {
-        return select(pagarmeTokenssStore).getToken();
+        return select(pagarmeTokenStore).getToken();
     });
 
-    useEffect(() => {
-        reset();
-    }, []);
-    
     useEffect(() => {
         return onPaymentSetup(() => {
             const paymentMethodData = {
@@ -31,17 +27,13 @@ const useGooglepay = (
                 meta: {
                     paymentMethodData: {
                         pagarme: JSON.stringify({
-                            [backendConfig.key]: {
-                                googleData: {
-                                    cards,
-                                },
-                            },
+                            [backendConfig.key]: {[backendConfig.key]: {['payload']: cards}}
                         }),
                         payment_method: backendConfig.key,
                     },
                 },
             };
         });
-    }, [onPaymentSetup, backendConfig]);
+    }, [onPaymentSetup, cards, backendConfig]);
 };
 export default useGooglepay;

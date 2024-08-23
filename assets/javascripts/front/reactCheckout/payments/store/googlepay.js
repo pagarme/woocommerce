@@ -1,4 +1,4 @@
-// pagarmeTokenssStore.js
+// pagarmeTokenStore.js
 
 import { createReduxStore, register } from "@wordpress/data";
 
@@ -34,15 +34,14 @@ const actions = {
     }
 };
 
-const pagarmeTokenssStore = createReduxStore("pagarme-googlepay", {
+const pagarmeTokenStore = createReduxStore("pagarme-googlepay", {
     reducer(state = DEFAULT_STATE, action) {
-        console.log(state);
         switch (action.type) {
             case "SET_PROPERTY_VALUE":
-                if (!action.propertyName) {
+                // console.log(action);
+                if (!action.propertyName) {           
                     return state;
                 }
-
                 return {
                     ...state,
                     [action.propertyName]: action.value,
@@ -58,14 +57,14 @@ const pagarmeTokenssStore = createReduxStore("pagarme-googlepay", {
 
     selectors: {
         getToken(state) {
-            return state.cards;
+            return state.token;
         },
         getErrors(state) {
-            return state.cards.errors;
+            return state.errors;
         },
     },
 });
 
-register(pagarmeTokenssStore);
+register(pagarmeTokenStore);
 
-export default pagarmeTokenssStore;
+export default pagarmeTokenStore;
