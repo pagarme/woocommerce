@@ -401,7 +401,7 @@ final class Charge extends AbstractEntity implements ChargeInterface
     /**
      * @return array
      */
-    public function getAcquirerTidCapturedAndAutorize()
+    public function getAcquirerTidCapturedAndAuthorize()
     {
         $transactions = $this->getTransactions();
 

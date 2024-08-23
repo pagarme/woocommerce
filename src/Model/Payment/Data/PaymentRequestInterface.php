@@ -43,6 +43,9 @@ interface PaymentRequestInterface
     /** @var string */
     const PIX = 'pix';
 
+    /** @var string */
+    const GOOGLEPAY = 'googlepay';
+
     /**
      * @param string $value
      * @return PaymentRequest

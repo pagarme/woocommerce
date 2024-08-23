@@ -108,6 +108,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         $configData = self::fillWithHubConfig($configData, $storeConfig);
         $configData = self::fillWithMarketplaceConfig($configData);
+        $configData = self::fillWithGooglePayConfig($configData, $storeConfig);
 
         // These method calls are commented for now because they are not implemented yet:
         // $configData = self::fillWithAddressConfig($configData, $storeConfig);
@@ -208,6 +209,23 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
         return $dataObj;
     }
+
+    private static function fillWithGooglePayConfig($dataObj, $storeConfig)
+    {
+        $googlePayConfig = new \stdClass();
+        $googlePayConfig->enabled = filter_var(
+            $storeConfig->getEnableGooglepay(),
+            FILTER_VALIDATE_BOOLEAN
+        );
+        $googlePayConfig->merchantId = $storeConfig->getGooglepayGoogleMerchantId();
+        $googlePayConfig->merchantName = $storeConfig->getGooglepayGoogleMerchantName();
+        $googlePayConfig->accountId = $storeConfig->getAccountId();
+
+        $dataObj->googlePayConfig = $googlePayConfig;
+
+        return $dataObj;
+    }
+
 
     private static function fillWithBoletoConfig($dataObj, $storeConfig)
     {

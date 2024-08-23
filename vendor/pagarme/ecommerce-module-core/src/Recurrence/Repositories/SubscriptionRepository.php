@@ -53,7 +53,7 @@ class SubscriptionRepository extends AbstractRepository
             $this->db->getTable(
                 AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION
             );
-
+        $code = filter_var($code, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "
             SELECT *
               FROM {$subscriptionTable} as recurrence_subscription                  
@@ -170,7 +170,7 @@ class SubscriptionRepository extends AbstractRepository
             $this->db->getTable(
                 AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION
             );
-
+        $objectId = filter_var($objectId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table WHERE id = '" . $objectId . "'";
         $result = $this->db->fetch($query);
 
@@ -236,7 +236,7 @@ class SubscriptionRepository extends AbstractRepository
         $customerTable = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_CUSTOMER)
         ;
-
+        $customerId = filter_var($customerId, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "
             SELECT recurrence_subscription.*
               FROM {$recurrenceTable} as recurrence_subscription

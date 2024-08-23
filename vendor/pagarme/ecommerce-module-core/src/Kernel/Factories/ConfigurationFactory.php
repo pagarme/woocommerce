@@ -7,6 +7,7 @@ use Pagarme\Core\Kernel\Aggregates\Configuration;
 use Pagarme\Core\Kernel\Factories\Configurations\DebitConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\MarketplaceConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\PixConfigFactory;
+use Pagarme\Core\Kernel\Factories\Configurations\GooglePayConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\RecurrenceConfigFactory;
 use Pagarme\Core\Kernel\Factories\Configurations\VoucherConfigFactory;
 use Pagarme\Core\Kernel\Interfaces\FactoryInterface;
@@ -229,6 +230,11 @@ class ConfigurationFactory implements FactoryInterface
         if (!empty($data->pixConfig)) {
             $config->setPixConfig(
                 (new PixConfigFactory())->createFromDbData($data->pixConfig)
+            );
+        }
+        if (!empty($data->googlePayConfig)) {
+            $config->setGooglePayConfig(
+                (new GooglePayConfigFactory())->createFromDbData($data->googlePayConfig)
             );
         }
 

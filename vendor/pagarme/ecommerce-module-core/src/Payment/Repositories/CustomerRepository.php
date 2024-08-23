@@ -15,6 +15,7 @@ final class CustomerRepository extends AbstractRepository
     public function findByCode($customerCode)
     {
         $table = $this->db->getTable(AbstractDatabaseDecorator::TABLE_CUSTOMER);
+        $customerCode = filter_var($customerCode, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "SELECT * FROM $table WHERE code = '$customerCode'";
 
         $result = $this->db->fetch($query);
@@ -59,6 +60,7 @@ final class CustomerRepository extends AbstractRepository
     public function deleteByCode($customerCode)
     {
         $table = $this->db->getTable(AbstractDatabaseDecorator::TABLE_CUSTOMER);
+        $customerCode = filter_var($customerCode, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "DELETE FROM $table WHERE code = '$customerCode'";
 
         return $this->db->query($query);

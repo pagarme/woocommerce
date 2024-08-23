@@ -234,7 +234,7 @@ final class ChargeRepository extends AbstractRepository
         $orderTable = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_ORDER
         );
-
+        $code = filter_var($code, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "SELECT charge.* 
                     FROM `{$chargeTable}` as charge  
                LEFT JOIN `{$orderTable}` as o on charge.order_id = o.pagarme_id 

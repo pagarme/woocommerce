@@ -13,6 +13,7 @@ use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Kernel\Services\LocalizationService;
 use Pagarme\Core\Kernel\Services\LogService;
+use Pagarme\Core\Kernel\ValueObjects\AbstractValidString;
 use Pagarme\Core\Kernel\ValueObjects\Id\RecipientId;
 use Pagarme\Core\Marketplace\Aggregates\Recipient;
 use Pagarme\Core\Marketplace\Factories\RecipientFactory;
@@ -258,6 +259,17 @@ class RecipientService
             $logService->exception($e);
             throw new \Exception(__("Can't get recipient. Please review the information and try again."));
         }
+    }
+
+    /** 
+     * @param string|AbstractValidString $pagarmeId 
+     * */
+    public function findSavedByPagarmeId($pagarmeId)
+    {
+        if (is_string($pagarmeId)) {
+            $pagarmeId = new RecipientId($pagarmeId);
+        }
+        return $this->recipientRepository->findByPagarmeId($pagarmeId);
     }
 
     public function delete($id)

@@ -14,6 +14,7 @@ use Pagarme\Core\Kernel\ValueObjects\Configuration\PixConfig;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\RecurrenceConfig;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\VoucherConfig;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\DebitConfig;
+use Pagarme\Core\Kernel\ValueObjects\Configuration\GooglePayConfig;
 use Pagarme\Core\Kernel\ValueObjects\Key\AbstractSecretKey;
 use Pagarme\Core\Kernel\ValueObjects\Key\AbstractPublicKey;
 use Pagarme\Core\Kernel\ValueObjects\Key\TestPublicKey;
@@ -42,6 +43,7 @@ final class Configuration extends AbstractEntity
      * @var bool
      */
     private $creditCardEnabled;
+    private $googlepayEnabled;
     /**
      *
      * @var bool
@@ -158,6 +160,7 @@ final class Configuration extends AbstractEntity
 
     /** @var DebitConfig */
     private $debitConfig;
+    private $googlePayConfig;
 
     /**
      * @var PixConfig
@@ -222,6 +225,18 @@ final class Configuration extends AbstractEntity
         return $this->debitConfig;
     }
 
+    public function getGooglePayConfig()
+    {
+        return $this->googlePayConfig;
+    }
+
+    /**
+     * @param GooglePayConfig $googlePayConfig
+     */
+    public function setGooglePayConfig(GooglePayConfig $googlePayConfig)
+    {
+        $this->googlePayConfig = $googlePayConfig;
+    }
     /**
      * @param DebitConfig $debitConfig
      */
@@ -421,6 +436,19 @@ final class Configuration extends AbstractEntity
         return $this;
     }
 
+     /**
+     *
+     * @param bool $googlepayEnabled
+     * @return Configuration
+     */
+    public function setGooglePayEnabled($googlepayEnabled)
+    {
+        $this->googlepayEnabled = filter_var(
+            $googlepayEnabled,
+            FILTER_VALIDATE_BOOLEAN
+        );
+        return $this;
+    }
     /**
      * @param $sendMailEnable
      * @return $this
@@ -491,6 +519,10 @@ final class Configuration extends AbstractEntity
     protected function isCreditCardEnabled()
     {
         return $this->creditCardEnabled;
+    }
+    protected function isGooglePayEnabled()
+    {
+        return $this->googlepayEnabled;
     }
 
     /**
@@ -845,6 +877,7 @@ final class Configuration extends AbstractEntity
             "voucherConfig" => $this->getVoucherConfig(),
             "debitConfig" => $this->getDebitConfig(),
             "pixConfig" => $this->getPixConfig(),
+            "googlePayConfig" => $this->getGooglePayConfig(),
             "marketplaceConfig" => $this->getMarketplaceConfig()
         ];
     }

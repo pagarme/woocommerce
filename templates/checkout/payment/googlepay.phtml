@@ -1,0 +1,38 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2022 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var \Woocommerce\Pagarme\Block\Checkout\Payment\Googlepay $this */
+
+declare( strict_types=1 );
+
+if (!function_exists('add_action')) {
+    exit(0);
+}
+wp_localize_script(
+    WCMP_JS_HANDLER_BASE_NAME . 'googlepay',
+    'wc_pagarme_googlepay',
+    [
+        'merchantName' => $this->getConfig()->getGooglepayGoogleMerchantName(),
+        'merchantId' => $this->getConfig()->getGooglepayGoogleMerchantId(),
+        'accountId' => $this->getConfig()->getAccountId()
+    ]
+);
+?>
+<?= $this->createBlock(
+    '\Woocommerce\Pagarme\Block\Checkout\Form\GooglePay',
+    'pagarme.checkout.form.googlepay',
+    [
+        'payment_instance' => $this->getPaymentInstance(),
+        'show_message' => false,
+        'show_image' => true
+    ]
+)->toHtml() ?>
+<div id="pagarme-googlepay"></div>
+
+<script async onload="pagarmeGooglePay.addGooglePayButton()" src="https://pay.google.com/gp/p/js/pay.js"></script>

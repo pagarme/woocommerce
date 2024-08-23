@@ -16,6 +16,7 @@ final class PaymentMethod extends AbstractValueObject
     const CASH = 'cash';
     const DEBIT_CARD = 'debitCard';
     const PIX = 'pix';
+    const GOOGLEPAY = 'googlepay';
 
     private $method;
 
@@ -47,6 +48,10 @@ final class PaymentMethod extends AbstractValueObject
     static public function pix()
     {
         return new self(self::PIX);
+    }
+    static public function googlepay()
+    {
+        return new self(self::GOOGLEPAY);
     }
 
     static public function ticket()

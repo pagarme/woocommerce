@@ -164,6 +164,8 @@ class Checkout
         $fields = [
             'payment_method' => str_replace('-', '_', $paymentRequest->getPaymentMethod())
         ];
+
+        
         if ($cards = $paymentRequest->getCards()) {
             foreach ($cards as $key => $card) {
                 $key++;
@@ -204,9 +206,15 @@ class Checkout
                 $fields['pagarmetoken' . $key] = $card->getToken();
             }
         }
+        $this->extractGooglePayToken($fields, $paymentRequest);
         $this->extractMulticustomers($fields, $paymentRequest);
         $this->extractOrderValue($fields, $paymentRequest);
         return $fields;
+    }
+
+    private function extractGooglePayToken(&$fields, $paymentRequest)
+    {
+        $fields['googlepay']['token'] = $paymentRequest->getDataByKey('googlepay');
     }
 
     private function addInstallmentsOnMetaData(&$order, $fields)
