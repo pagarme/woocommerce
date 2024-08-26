@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-07-03 15:55-0300\n"
+"PO-Revision-Date: 2024-08-21 11:52-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1130,8 +1130,8 @@ msgstr "Total"
 msgid "Billet And Card"
 msgstr "Boleto e Cartão"
 
-msgid "Pagar.me - Capture/Cancellation"
-msgstr "Pagar.me - Captura/Cancelamento"
+msgid "Pagar.me - Charges"
+msgstr "Pagar.me - Cobranças"
 
 msgid "Last Four Digits"
 msgstr "Últimos quatro dígitos"
@@ -1142,8 +1142,17 @@ msgstr "Titular"
 msgid "No records found."
 msgstr "Nenhum registro foi encontrado."
 
+msgid "Created At"
+msgstr "Criado Em"
+
+msgid "Charge ID"
+msgstr "ID da Cobrança"
+
 msgid "Refunded"
 msgstr "Reembolsado"
+
+msgid "Capture"
+msgstr "Capturar"
 
 msgid "Captured"
 msgstr "Capturado"
@@ -1464,13 +1473,6 @@ msgstr "O mês de expiração do cartão deve estar entre 01 e 12."
 msgid "Pagar.me: Payment failed."
 msgstr "Pagar.me: Pagamento falhou."
 
-msgid ""
-"<span>Attention!</span> It is now possible to use Woocommerce's automatic refund flow. <b>Soon, this button will be "
-"dedicated to manual capture only</b>."
-msgstr ""
-"<span>Atenção!</span> Já é possível utilizar o fluxo de reembolso automático do Woocommerce. <b>Em breve, este botão "
-"será dedicado somente a captura manual</b>."
-
 msgid "There was a problem attempting to refund: %1$s"
 msgstr "Ocorreu um problema ao tentar reembolsar: %1$s"
 
@@ -1482,3 +1484,13 @@ msgstr "A cobrança %s foi totalmente reembolsada."
 
 msgid "Charge %1$s was partially refunded. Amount: %2$s"
 msgstr "A cobrança %1$s foi parcialmente reembolsada. Valor: %2$s"
+
+msgid ""
+"<p>You may have filled in one or more details incorrectly.</p>Try to fill in the details exactly as they appear on "
+"your card or bank app to complete the payment."
+msgstr ""
+"<p>Você pode ter preenchido um ou mais dados incorretamente.</p>Tente preencher os dados exatamente como aparecem no "
+"cartão ou app do banco para conclusão do pagamento."
+
+msgid "Error processing payment. Please try again later."
+msgstr "Erro ao processar o pagamento. Por favor tente novamente mais tarde."

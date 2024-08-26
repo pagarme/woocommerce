@@ -16,13 +16,14 @@ use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBox\Modal;
 if (!function_exists('add_action')) {
     exit(0);
 }
+
+$charges = $this->getCharges($this->getOrder()->ID);
 ?>
-<?php if ($this->getCharges()) : ?>
+<?php if ($charges) :
+    $gmtOffset = floatval(get_option('gmt_offset'));
+    $minutesOffset = intval(3600 * $gmtOffset);
+    ?>
     <div class="wrapper">
-        <p class="pagarme-refund-message">
-            <?= __("<span>Attention!</span> It is now possible to use Woocommerce's automatic refund flow. <b>Soon, "
-                . "this button will be dedicated to manual capture only</b>.", 'woo-pagarme-payments') ?>
-        </p>
         <table>
             <thead>
             <tr>
@@ -31,10 +32,24 @@ if (!function_exists('add_action')) {
                 <?php endforeach; ?>
             </tr>
             </thead>
-            <?php foreach ($this->getCharges() as $charge) : ?>
+            <?php foreach ($charges as $charge) :
+                $chargeTimestamp = $charge->getLastTransaction()->getCreatedAt()->getTimestamp();
+                $offsetTimestamp = $chargeTimestamp + $minutesOffset;
+
+                $chargeID = $charge->getPagarmeId()->getValue();
+                $chargeUrl = $this->getChargeUrl($chargeID);
+                if ($chargeUrl) {
+                    $chargeID = sprintf(
+                        '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+                        $chargeUrl,
+                        $chargeID
+                    );
+                }
+                ?>
                 <tr>
-                    <td><?= $charge->getPagarmeId()->getValue() ?></td>
-                    <td><?= strtoupper($this->getTransaction($charge)->getTransactionType()->getType()) ?></td>
+                    <td><?= date('d/m/Y H:i:s', $offsetTimestamp) ?></td>
+                    <td><?= $chargeID ?></td>
+                    <td><?= strtoupper($charge->getLastTransaction()->getTransactionType()->getType()) ?></td>
                     <?php foreach ($this->getTotals() as $total) : ?>
                         <td>
                             <?=
@@ -49,12 +64,12 @@ if (!function_exists('add_action')) {
                     <td>
                         <button data-type="cancel"
                             <?= $this->getChargeInstance()->is_allowed_cancel($charge) ? '' : 'disabled=disabled' ?>
-                            class="button-primary"><?= __('Cancel', 'woo-pagarme-payments') ?></button>
+                                class="button-primary"><?= __('Cancel', 'woo-pagarme-payments') ?></button>
 
                         <?php if ($this->getTransaction($charge)->getTransactionType()->getType() === 'credit_card') : ?>
                             <button data-type="capture" data-ref="<?= $charge->getPagarmeId()->getValue() ?>"
                                 <?= $this->getChargeInstance()->is_allowed_capture($charge) ? '' : 'disabled=disabled' ?>
-                                class="button-primary"><?= __('Capture', 'woo-pagarme-payments') ?></button>
+                                    class="button-primary"><?= __('Capture', 'woo-pagarme-payments') ?></button>
                         <?php endif; ?>
                     </td>
                     <?= $this->createBlock(

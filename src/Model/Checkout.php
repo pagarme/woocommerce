@@ -141,8 +141,8 @@ class Checkout
             $order->update_meta('payment_method', $fields['payment_method']);
             $order->update_meta("attempts", $attempts);
             $this->addAuthenticationOnMetaData($order, $fields);
-            WC()->cart->empty_cart();
             if ($response) {
+                WC()->cart->empty_cart();
                 do_action("on_pagarme_response", $wc_order->get_id(), $response);
                 $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
