@@ -32,23 +32,18 @@ class PostFormatter
     /** @var Gateway */
     private $gateway;
 
-    /** @var PaymentRequest */
-    private $paymentRequest;
-
     /**
      * @param Gateway|null $gateway
      * @param null $paymentMethod
      * @param null $orderId
      */
     public function __construct(
-        PaymentRequest $paymentRequest = null,
         Gateway $gateway = null,
         $paymentMethod = null,
         $orderId = null
     ) {
         $this->paymentMethod = $paymentMethod;
         $this->gateway = $gateway ?? new Gateway;
-        $this->paymentRequest = $paymentRequest ?? new PaymentRequest;
         $this->orderId = $orderId;
     }
 
@@ -95,7 +90,14 @@ class PostFormatter
      */
     public function assemblePaymentRequest()
     {
-        $_POST[PaymentRequest::PAGARME_PAYMENT_REQUEST_KEY] = $this->paymentRequest;
+        $_POST[PaymentRequest::PAGARME_PAYMENT_REQUEST_KEY] = new PaymentRequest();
+    }
+
+    public function formatReactCheckout()
+    {
+        if (!empty($_POST['pagarme']) && is_string($_POST['pagarme'])) {
+            $_POST['pagarme'] = json_decode($_POST['pagarme'], true);
+        }
     }
 
     /**
@@ -106,7 +108,7 @@ class PostFormatter
     private function dataToFilterFromPost($paymentMethod)
     {
         if ($paymentMethod) {
-            return $this->gateway->getPaymentInstace($paymentMethod)->getRequirementsData();
+            return $this->gateway->getPaymentInstance($paymentMethod)->getRequirementsData();
         }
         return $_POST;
     }
@@ -142,7 +144,7 @@ class PostFormatter
                 $arrayFieldKey
             );
             if ($paymentMethod) {
-                $formattedPost = $this->gateway->getPaymentInstace($paymentMethod)->renameFieldsPost($field, $formattedPost, $arrayFieldKey);
+                $formattedPost = $this->gateway->getPaymentInstance($paymentMethod)->renameFieldsPost($field, $formattedPost, $arrayFieldKey);
             }
         }
         return $formattedPost;

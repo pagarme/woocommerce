@@ -2,7 +2,7 @@
     "name": "pagarme/woocommerce-pagarme-payments",
     "description": "Pagar.me module for Woocommerce",
     "type": "wordpress-plugin",
-    "version": "3.2.1",
+    "version": "3.3.3",
     "license": "GPL",
     "autoload": {
         "psr-4": {
@@ -14,15 +14,23 @@
             "Woocommerce\\Pagarme\\Tests\\": "tests/"
         }
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/WordPress/wordpress-develop/"
+        }
+    ],
     "require": {
         "mashape/unirest-php": "^3.0",
-        "pagarme/ecommerce-module-core": "2.3.*",
+        "pagarme/ecommerce-module-core": "~2.4.1",
         "psr/log": "1.1.4",
-        "monolog/monolog": "<2"
+        "monolog/monolog": "<2",
+        "haydenpierce/class-finder": "^0.5.3"
     },
     "require-dev": {
         "mockery/mockery": "1.6.*",
         "phpunit/phpunit": "10.5.*",
-        "brain/monkey": "2.*"
+        "brain/monkey": "2.*",
+        "wordpress/wordpress": "dev-master"
     }
 }

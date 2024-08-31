@@ -14,6 +14,7 @@ namespace Woocommerce\Pagarme\Model\Payment;
 use stdClass;
 use WC_Order;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\Payment\CreditCard\Brands;
 use Woocommerce\Pagarme\Model\Payment\CreditCard\BrandsInterface;
 
@@ -61,12 +62,21 @@ class CreditCard extends Card implements PaymentInterface
      */
     public function getConfigDataProvider()
     {
+        global $wp;
         $jsConfigProvider = parent::getConfigDataProvider();
         $brands = new Brands;
         foreach ($brands->getBrands() as $class) {
             /** @var BrandsInterface $bank */
             $brand = new $class;
             $jsConfigProvider['brands'][$brand->getBrandCode()] = $brand->getConfigDataProvider();
+        }
+        $jsConfigProvider['tdsEnabled'] = Subscription::hasSubscriptionProductInCart()
+            || Subscription::isChangePaymentSubscription()
+            || isset($wp->query_vars['order-pay'])
+            ? false
+            : $this->getConfig()->isTdsEnabled();
+        if ($jsConfigProvider['tdsEnabled']) {
+            $jsConfigProvider['tdsMinAmount'] = $this->getConfig()->getTdsMinAmount();
         }
         return $jsConfigProvider;
     }

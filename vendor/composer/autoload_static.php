@@ -13,6 +13,7 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         ),
         'W' => 
         array (
+            'Woocommerce\\Pagarme\\Tests\\' => 26,
             'Woocommerce\\Pagarme\\' => 20,
         ),
         'P' => 
@@ -27,12 +28,21 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         array (
             'Monolog\\' => 8,
         ),
+        'H' => 
+        array (
+            'HaydenPierce\\ClassFinder\\UnitTest\\' => 34,
+            'HaydenPierce\\ClassFinder\\' => 25,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'apimatic\\jsonmapper\\' => 
         array (
             0 => __DIR__ . '/..' . '/apimatic/jsonmapper/src',
+        ),
+        'Woocommerce\\Pagarme\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/tests',
         ),
         'Woocommerce\\Pagarme\\' => 
         array (
@@ -61,6 +71,14 @@ class ComposerStaticInitbb567e266966327c41fd47379c4c230d
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'HaydenPierce\\ClassFinder\\UnitTest\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/haydenpierce/class-finder/test/unit',
+        ),
+        'HaydenPierce\\ClassFinder\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/haydenpierce/class-finder/src',
         ),
     );
 

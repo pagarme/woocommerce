@@ -13,6 +13,7 @@ namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
+use Woocommerce\Pagarme\Model\Payment\Billet as BilletModel;
 use Woocommerce\Pagarme\Model\Payment\Billet\BankInterface;
 use Woocommerce\Pagarme\Model\Payment\Billet\Banks;
 use Woocommerce\Pagarme\Model\Subscription;
@@ -35,8 +36,14 @@ class Billet extends AbstractGateway
 
     const PAYMENT_INSTRUCTIONS_MAX_LENGTH = 255;
 
+    const LEGACY_CONFIG_NAME = "woocommerce_pagarme-banking-ticket_settings";
+
+    const LEGACY_SETTINGS_NAME = [
+        "billet_checkout_instructions" => "description",
+    ];
+
     /** @var string */
-    protected $method = \Woocommerce\Pagarme\Model\Payment\Billet::PAYMENT_CODE;
+    protected $method = BilletModel::PAYMENT_CODE;
 
     /**
      * @return boolean
@@ -55,15 +62,34 @@ class Billet extends AbstractGateway
     }
 
     /**
+     * @return null|string
+     */
+    protected function getOldTitleName() 
+    {
+        if(!empty($this->config->getData("billet_title"))) {
+            return $this->config->getData("billet_title");
+        }
+        $oldData = get_option(self::LEGACY_CONFIG_NAME);
+        if (empty($oldData['title'])){
+            return null;
+        }
+        return $oldData['title'];
+    }
+
+    /**
      * @return array
      */
     public function append_form_fields()
     {
-        return [
+        $fields = [
+            BilletModel::getCheckoutInstructionsKey() => $this->field_billet_checkout_instructions(),
             'billet_deadline_days' => $this->field_billet_deadline_days(),
             'billet_instructions' => $this->field_billet_instructions(),
-            'billet_allowed_in_subscription' => $this->field_billet_allowed_for_subscription(),
         ];
+        if (Subscription::hasSubscriptionPlugin()) {
+            $fields['billet_allowed_in_subscription'] = $this->field_billet_allowed_for_subscription();
+        }
+        return $fields;
     }
 
     /**
@@ -171,6 +197,22 @@ class Billet extends AbstractGateway
             'custom_attributes' => array(
                 'data-field' => 'billet-allowed-for-subscription',
             ),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function field_billet_checkout_instructions()
+    {
+        return [
+            'title' => BilletModel::getCheckoutInstructionsTitle(),
+            'type' => 'textarea',
+            'class' => 'pagarme-option-text-area',
+            'description' => BilletModel::getCheckoutInstructionsDescription(),
+            'desc_tip' => true,
+            'default' => $this->getOldConfiguration(BilletModel::getCheckoutInstructionsKey()) ??
+                BilletModel::getDefaultCheckoutInstructions(),
         ];
     }
 

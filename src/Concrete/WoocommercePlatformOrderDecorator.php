@@ -2,20 +2,18 @@
 
 namespace Woocommerce\Pagarme\Concrete;
 
-use Woocommerce\Pagarme\Model\Order;
-use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
-use Woocommerce\Pagarme\Model\Api;
-use Woocommerce\Pagarme\Model\Config;
-use Woocommerce\Pagarme\Model\Payment as WCModelPayment;
-use Woocommerce\Pagarme\Helper\Utils;
+use Exception;
 use Pagarme\Core\Kernel\Abstractions\AbstractPlatformOrderDecorator;
 use Pagarme\Core\Kernel\Aggregates\Charge;
 use Pagarme\Core\Kernel\Interfaces\PlatformInvoiceInterface;
+use Pagarme\Core\Kernel\Services\LocalizationService;
+use Pagarme\Core\Kernel\Services\LogService;
 use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\Services\OrderService;
 use Pagarme\Core\Kernel\ValueObjects\Id\OrderId;
 use Pagarme\Core\Kernel\ValueObjects\OrderState;
 use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
+use Pagarme\Core\Marketplace\Aggregates\Split;
 use Pagarme\Core\Payment\Aggregates\Address;
 use Pagarme\Core\Payment\Aggregates\Customer;
 use Pagarme\Core\Payment\Aggregates\Item;
@@ -32,9 +30,15 @@ use Pagarme\Core\Payment\ValueObjects\CustomerPhones;
 use Pagarme\Core\Payment\ValueObjects\CustomerType;
 use Pagarme\Core\Payment\ValueObjects\Phone;
 use Pagarme\Core\Recurrence\Services\RecurrenceService;
-use Pagarme\Core\Kernel\Services\LocalizationService;
-use Pagarme\Core\Kernel\Services\LogService;
+use stdClass;
+use Throwable;
+use WC_Customer;
 use WC_Order;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
+use Woocommerce\Pagarme\Model\Order;
+use Woocommerce\Pagarme\Model\Payment as WCModelPayment;
 
 class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 {
@@ -51,18 +55,24 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private $orderService;
 
+    /** @var Customer */
+    private $customer;
+
     public function __construct($formData = null, $paymentMethod = null)
     {
-        $this->i18n = new LocalizationService();
-        $this->formData = $formData;
+        $this->i18n          = new LocalizationService();
+        $this->formData      = $formData;
         $this->paymentMethod = $this->formatPaymentMethod($paymentMethod);
-        $this->orderService = new OrderService();
+        $this->orderService  = new OrderService();
         parent::__construct();
     }
 
     private function formatPaymentMethod($paymentMethod)
     {
-        $paymentMethodParts = explode('_', $paymentMethod);
+        if (empty($paymentMethod)) {
+            return "";
+        }
+        $paymentMethodParts    = explode('_', $paymentMethod);
         $formatedPaymentMethod = '';
 
         foreach ($paymentMethodParts as $part) {
@@ -92,14 +102,14 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getState()
     {
         $statusToState = [
-            'pending' => 'stateNew',
-            'paid' => 'complete',
-            'pending_payment' => 'pending_payment',
-            'failed' => 'closed',
-            'processing' => 'processing',
-            'on_hold' => 'holded',
-            'canceled' => 'canceled',
-            'refunded' => 'complete',
+            'pending'                 => 'stateNew',
+            'paid'                    => 'complete',
+            'pending_payment'         => 'pending_payment',
+            'failed'                  => 'closed',
+            'processing'              => 'processing',
+            'on_hold'                 => 'holded',
+            'canceled'                => 'canceled',
+            'refunded'                => 'complete',
             'authentication_required' => 'processing'
         ];
 
@@ -115,7 +125,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $coreToWoocommerceStatus = array(
             'canceled' => 'cancelled',
-            'pending' => 'on-hold'
+            'pending'  => 'on-hold'
         );
 
         return array_key_exists($coreStatus, $coreToWoocommerceStatus) ?
@@ -126,7 +136,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $woocommerceToCoreStatus = array(
             'cancelled' => 'canceled',
-            'on-hold' => 'pending'
+            'on-hold'   => 'pending'
         );
 
         return array_key_exists($woocommerceStatus, $woocommerceToCoreStatus) ?
@@ -135,11 +145,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function setStatusAfterLog(OrderStatus $status)
     {
-        $log = new LogService('Order', true);
-        $stringCoreStatus = $status->getStatus();
+        $log                     = new LogService('Order', true);
+        $stringCoreStatus        = $status->getStatus();
         $stringWoocommerceStatus = $this->getWoocommerceStatusFromCoreStatus($stringCoreStatus);
         if ($this->getPlatformOrder()->get_status() === 'completed') {
             $log->info('Impediment to change the order status to ' . $status->getStatus() . '. Order is complete.');
+
             return;
         }
         $order = new Order($this->getPlatformOrder()->get_id());
@@ -153,7 +164,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getStatus()
     {
         $woocommerceStatus = $this->getPlatformOrder()->get_status();
-        $coreStatus = $this->getCoreStatusFromWoocommerceStatus($woocommerceStatus);
+        $coreStatus        = $this->getCoreStatusFromWoocommerceStatus($woocommerceStatus);
+
         return $coreStatus;
     }
 
@@ -165,6 +177,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     /**
      * @param string $message
+     *
      * @return bool
      */
     public function sendEmail($message)
@@ -175,6 +188,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     /**
      * @param OrderStatus $orderStatus
+     *
      * @return string
      */
     public function getStatusLabel(OrderStatus $orderStatus)
@@ -194,6 +208,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     /**
      * @param string $name
      * @param string $value
+     *
      * @return void
      */
     public function setAdditionalInformation($name, $value)
@@ -203,6 +218,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     /**
      * @param Charge[] $charges
+     *
      * @return array[['key' => value]]
      */
     public function extractAdditionalChargeInformation(array $charges)
@@ -249,12 +265,14 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     public function getTotalPaid()
     {
         $platformOrder = $this->getPlatformOrder();
+
         return $platformOrder->is_paid() ? $platformOrder->get_total() : 0;
     }
 
     public function getTotalDue()
     {
         $platformOrder = $this->getPlatformOrder();
+
         return !$platformOrder->is_paid() ? $platformOrder->get_total() : 0;
     }
 
@@ -395,35 +413,56 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     /** @return Customer */
     public function getCustomer()
     {
+        if (!empty($this->customer)) {
+            return $this->customer;
+        }
+
         $customerId = get_current_user_id();
         if (!empty($this->getPlatformOrder()->get_user_id())) {
             $customerId = $this->getPlatformOrder()->get_user_id() ?? null;
         }
         if (!empty($customerId)) {
-            return $this->getRegisteredCustomer($customerId);
+            $customer = $this->getRegisteredCustomer($customerId);
+            $this->setCustomer($customer);
+
+            return $customer;
         }
 
-        return $this->getGuestCustomer();
+        $customer = $this->getGuestCustomer();
+        $this->setCustomer($customer);
+
+        return $customer;
+    }
+
+    /**
+     * @param Customer $customer
+     *
+     * @return void
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
     }
 
     /**
      * @param PagarmeCustomer $pagarmeCustomer
+     *
      * @return Customer
-     * @throws \Exception
+     * @throws Exception
      */
     private function getRegisteredCustomer($woocommerceCustomerId)
     {
         $order = new Order($this->getPlatformOrder()->get_id());
 
-        $address = Utils::build_customer_address_from_order($order);
+        $address  = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
-        $phones = Utils::build_customer_phones_from_order($order);
-        if(empty($document['value'])) {
-            $customerPlatform = new \WC_Customer($woocommerceCustomerId);
+        $phones   = Utils::build_customer_phones_from_order($order);
+        if (empty($document['value'])) {
+            $customerPlatform  = new WC_Customer($woocommerceCustomerId);
             $document['value'] = $customerPlatform->get_meta("billing_cpf") ??
-                                    $customerPlatform->get_meta("billing_cnpj");
+                                 $customerPlatform->get_meta("billing_cnpj");
         }
-        $homeNumber = $phones["home_phone"]["complete_phone"];
+        $homeNumber   = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
         $customerRepository = new CoreCustomerRepository();
@@ -452,7 +491,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $customer->setDocument($cleanDocument);
         $customer->setType(CustomerType::individual());
 
-        $homePhone = new Phone($homeNumber);
+        $homePhone   = new Phone($homeNumber);
         $mobilePhone = new Phone($mobileNumber);
 
         $customer->setPhones(
@@ -468,17 +507,17 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     /**
      * @return Customer
-     * @throws \Exception
+     * @throws Exception
      */
     private function getGuestCustomer()
     {
         $order = new Order($this->getPlatformOrder()->get_id());
 
-        $address = Utils::build_customer_address_from_order($order);
+        $address  = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
-        $phones = Utils::build_customer_phones_from_order($order);
+        $phones   = Utils::build_customer_phones_from_order($order);
 
-        $homeNumber = $phones["home_phone"]["complete_phone"];
+        $homeNumber   = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
         $fullName = "{$order->billing_first_name} {$order->billing_last_name}";
@@ -501,7 +540,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $customer->setDocument($cleanDocument);
         $customer->setType(CustomerType::individual());
 
-        $homePhone = new Phone($homeNumber);
+        $homePhone   = new Phone($homeNumber);
         $mobilePhone = new Phone($mobileNumber);
 
         $customer->setPhones(
@@ -517,14 +556,14 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     /** @return Item[] */
     public function getItemCollection()
     {
-        $moneyService = new MoneyService();
+        $moneyService   = new MoneyService();
         $itemCollection = $this->getPlatformOrder()->get_items();
 
         foreach ($itemCollection as $woocommerceItem) {
             //adjusting price.
             $woocommerceProduct = $woocommerceItem->get_product();
-            $price = $woocommerceProduct->get_price();
-            $price = $price > 0 ? $price : "0.01";
+            $price              = $woocommerceProduct->get_price();
+            $price              = $price > 0 ? $price : "0.01";
 
             if ($price === null) {
                 continue;
@@ -540,7 +579,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             }
 
             $itemQuantity = absint($woocommerceItem['qty']);
-            $itemName = sanitize_title($woocommerceItem['name']);
+            $itemName     = sanitize_title($woocommerceItem['name']);
 
             $item->setQuantity($itemQuantity);
             $item->setDescription(
@@ -551,6 +590,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
             $items[] = $item;
         }
+
         return $items;
     }
 
@@ -577,10 +617,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $payments = $this->getPaymentCollection();
 
         if (empty($payments)) {
-            $payment = new WCModelPayment($this->formData['payment_method']);
+            $payment         = new WCModelPayment($this->formData['payment_method']);
             $pagarmeCustomer = $this->getCustomer();
 
-            $customer = new \stdClass();
+            $customer     = new stdClass();
             $customer->id = $pagarmeCustomer->getPagarmeId() ?
                 $pagarmeCustomer->getPagarmeId()->getValue() : null;
 
@@ -599,25 +639,26 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $paymentMethods = $paymentFactory->createFromJson(
             json_encode($paymentData)
         );
+
         return $paymentMethods;
     }
 
     private function isBilletAndCreditCardPayment()
     {
-        $firstPaymentMethod = $this->paymentInformation[0]['payment_method'];
+        $firstPaymentMethod  = $this->paymentInformation[0]['payment_method'];
         $secondPaymentMethod = $this->paymentInformation[1]['payment_method'];
 
         return ($firstPaymentMethod === 'boleto' && $secondPaymentMethod === 'credit_card')
-            || ($firstPaymentMethod === 'credit_card' && $secondPaymentMethod === 'boleto');
+               || ($firstPaymentMethod === 'credit_card' && $secondPaymentMethod === 'boleto');
     }
 
     private function isTwoCreditCardPayment()
     {
-        $firstPaymentMethod = $this->paymentInformation[0]['payment_method'];
+        $firstPaymentMethod  = $this->paymentInformation[0]['payment_method'];
         $secondPaymentMethod = $this->paymentInformation[1]['payment_method'];
 
         return $firstPaymentMethod === 'credit_card' &&
-            $secondPaymentMethod === 'credit_card';
+               $secondPaymentMethod === 'credit_card';
     }
 
     private function isBilletPayment()
@@ -627,6 +668,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
 
         $payment = $this->paymentInformation[0];
+
         return $payment['payment_method'] === 'boleto';
     }
 
@@ -637,6 +679,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
 
         $payment = $this->paymentInformation[0];
+
         return $payment['payment_method'] === 'credit_card';
     }
 
@@ -647,6 +690,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
 
         $payment = $this->paymentInformation[0];
+
         return $payment['payment_method'] === 'pix';
     }
 
@@ -657,6 +701,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
 
         $payment = $this->paymentInformation[0];
+
         return $payment['payment_method'] === 'voucher';
     }
 
@@ -701,6 +746,21 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (!isset($paymentData[$creditCardDataIndex])) {
             $paymentData[$creditCardDataIndex] = [];
         }
+
+        if (!empty($this->formData['authentication'])) {
+            $authenticationFormData = $this->formData['authentication'];
+            $authentication         = new stdClass();
+            $authentication->type   = 'threed_secure';
+            $authentication->status = $authenticationFormData['trans_status'];
+
+            $threeDSecure                = new stdClass();
+            $threeDSecure->mpi           = 'pagarme';
+            $threeDSecure->transactionId = $authenticationFormData['tds_server_trans_id'];
+
+            $authentication->threeDSecure   = $threeDSecure;
+            $newPaymentData->authentication = $authentication;
+        }
+
         $paymentData[$creditCardDataIndex][] = $newPaymentData;
     }
 
@@ -743,25 +803,19 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $customerId = $this->getCustomer()->getPagarmeId() ?
             $this->getCustomer()->getPagarmeId()->getValue() : null;
-        $brand = $this->formData["brand"];
+        $brand      = $this->formData["brand"];
 
-        $newPaymentData = new \stdClass();
-        $newPaymentData->customerId = $customerId;
-        $newPaymentData->brand = $brand;
-        $newPaymentData->identifier = $identifier;
-        $newPaymentData->installments = intval($this->formData["installments"]);
+        $newPaymentData                  = new stdClass();
+        $newPaymentData->customerId      = $customerId;
+        $newPaymentData->brand           = $brand;
+        $newPaymentData->identifier      = $identifier;
+        $newPaymentData->installments    = intval($this->formData["installments"]);
         $newPaymentData->recurrenceCycle = $this->formData["recurrence_cycle"] ?? null;
-        $newPaymentData->saveOnSuccess =
-            isset($this->formData["save_credit_card"]);
-
-        $amount = isset($this->formData["card_order_value"]) ?
-            $this->formData["card_order_value"] :
-            $this->getGrandTotal() - $this->getBaseTaxAmount();
-
+        $newPaymentData->saveOnSuccess   = isset($this->formData["save_credit_card"]);
+        $amount = $this->formData["card_order_value"] ?? $this->getGrandTotal();
         $amount = number_format($amount, 2, '.', '');
         $amount = str_replace('.', '', $amount);
         $amount = str_replace(',', '', $amount);
-
         $newPaymentData->amount = $amount;
 
         if (isset($this->formData["enable_multicustomers_card"]) && $this->formData["enable_multicustomers_card"]) {
@@ -776,7 +830,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private function extractPaymentDataFromTwoCreditCards(&$paymentData)
     {
         $moneyService = new MoneyService();
-        $indexes = ['', '2'];
+        $indexes      = ['', '2'];
         foreach ($indexes as $index) {
             $identifier = null;
             $customerId = $this->getCustomer()->getPagarmeId() ?
@@ -785,20 +839,20 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $brand = null;
             try {
                 $brand = strtolower($this->formData["brand{$index}"]);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
             }
 
             $cardTokenFlag = empty($index) ? "pagarmetoken1" : "pagarmetoken2";
-            $identifier = $this->formData[$cardTokenFlag];
+            $identifier    = $this->formData[$cardTokenFlag];
 
             if (empty($identifier) && isset($this->formData["card_id{$index}"])) {
                 $identifier = $this->formData["card_id{$index}"];
             }
 
-            $newPaymentData = new \stdClass();
-            $newPaymentData->customerId = $customerId;
-            $newPaymentData->identifier = $identifier;
-            $newPaymentData->brand = $brand;
+            $newPaymentData               = new stdClass();
+            $newPaymentData->customerId   = $customerId;
+            $newPaymentData->identifier   = $identifier;
+            $newPaymentData->brand        = $brand;
             $newPaymentData->installments = intval($this->formData["installments{$index}"]);
 
 
@@ -842,25 +896,25 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $order = new Order($this->getPlatformOrder()->get_id());
 
         $fields = [
-            "multicustomer_{$paymentMethod}[name]" => "name",
-            "multicustomer_{$paymentMethod}[email]" => "email",
-            "multicustomer_{$paymentMethod}[cpf]" => "document",
-            "multicustomer_{$paymentMethod}[street]" => "street",
-            "multicustomer_{$paymentMethod}[number]" => "number",
+            "multicustomer_{$paymentMethod}[name]"         => "name",
+            "multicustomer_{$paymentMethod}[email]"        => "email",
+            "multicustomer_{$paymentMethod}[cpf]"          => "document",
+            "multicustomer_{$paymentMethod}[street]"       => "street",
+            "multicustomer_{$paymentMethod}[number]"       => "number",
             "multicustomer_{$paymentMethod}[neighborhood]" => "neighborhood",
-            "multicustomer_{$paymentMethod}[complement]" => "complement",
-            "multicustomer_{$paymentMethod}[city]" => "city",
-            "multicustomer_{$paymentMethod}[state]" => "state",
-            "multicustomer_{$paymentMethod}[zip_code]" => "zipCode"
+            "multicustomer_{$paymentMethod}[complement]"   => "complement",
+            "multicustomer_{$paymentMethod}[city]"         => "city",
+            "multicustomer_{$paymentMethod}[state]"        => "state",
+            "multicustomer_{$paymentMethod}[zip_code]"     => "zipCode"
         ];
 
-        $multibuyer = new \stdClass();
+        $multibuyer = new stdClass();
 
-        $phones = Utils::build_customer_phones_from_order($order);
-        $homeNumber = $phones["home_phone"]["complete_phone"];
+        $phones       = Utils::build_customer_phones_from_order($order);
+        $homeNumber   = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
-        $multibuyer->homePhone = $homeNumber;
+        $multibuyer->homePhone   = $homeNumber;
         $multibuyer->mobilePhone = $mobileNumber;
 
         foreach ($fields as $key => $attribute) {
@@ -883,14 +937,14 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     private function extractPaymentDataFromBilletCreditcard(&$paymentData)
     {
         $moneyService = new MoneyService();
-        $identifier = null;
-        $customerId = $this->getCustomer()->getPagarmeId() ?
+        $identifier   = null;
+        $customerId   = $this->getCustomer()->getPagarmeId() ?
             $this->getCustomer()->getPagarmeId()->getValue() : null;
 
         $brand = null;
         try {
             $brand = strtolower($this->formData["brand"]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
         }
 
         $identifier = $this->formData['pagarmetoken1'];
@@ -899,10 +953,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $identifier = $this->formData["card_id"];
         }
 
-        $newPaymentData = new \stdClass();
-        $newPaymentData->identifier = $identifier;
-        $newPaymentData->customerId = $customerId;
-        $newPaymentData->brand = $brand;
+        $newPaymentData               = new stdClass();
+        $newPaymentData->identifier   = $identifier;
+        $newPaymentData->customerId   = $customerId;
+        $newPaymentData->brand        = $brand;
         $newPaymentData->installments = intval($this->formData['installments']);
 
         $newPaymentData->saveOnSuccess =
@@ -931,7 +985,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         //boleto
 
-        $newPaymentData = new \stdClass();
+        $newPaymentData = new stdClass();
 
         $amount = str_replace(
             ['.', ','],
@@ -958,9 +1012,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromBillet(&$paymentData)
     {
-        $moneyService = new MoneyService();
+        $moneyService    = new MoneyService();
         $billetDataIndex = BoletoPayment::getBaseCode();
-        $newPaymentData = (object) $this->paymentInformation[0][$billetDataIndex];
+        $newPaymentData  = (object) $this->paymentInformation[0][$billetDataIndex];
 
         $amount = isset($this->formData["billet_value"]) ?
             $this->formData["billet_value"] : $this->getGrandTotal();
@@ -981,8 +1035,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function extractPaymentDataFromPix(&$paymentData)
     {
-        $moneyService = new MoneyService();
-        $newPaymentData = new \stdClass();
+        $moneyService   = new MoneyService();
+        $newPaymentData = new stdClass();
 
         $amount = $this->getGrandTotal();
 
@@ -1009,19 +1063,17 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (!$identifier) {
             $identifier = $this->formData["card_id"];
         }
-        $newPaymentData = new \stdClass();
-        $newPaymentData->customerId = $this->getCustomer()->getPagarmeId() ?
+        $newPaymentData               = new stdClass();
+        $newPaymentData->customerId   = $this->getCustomer()->getPagarmeId() ?
             $this->getCustomer()->getPagarmeId()->getValue() : null;
-        $newPaymentData->identifier = $identifier;
-        $newPaymentData->brand = strtolower($this->formData["brand"]);
-        $newPaymentData->installments = (int)1;
-        $amount = isset($this->formData["card_order_value"]) ?
-            $this->formData["card_order_value"] :
-            $this->getGrandTotal() - $this->getBaseTaxAmount();
-        $amount = number_format($amount, 2, '.', '');
-        $amount = str_replace('.', '', $amount);
-        $amount = str_replace(',', '', $amount);
-        $newPaymentData->amount = $amount;
+        $newPaymentData->identifier   = $identifier;
+        $newPaymentData->brand        = strtolower($this->formData["brand"]);
+        $newPaymentData->installments = (int) 1;
+        $amount                       = $this->formData["card_order_value"] ?? $this->getGrandTotal();
+        $amount                       = number_format($amount, 2, '.', '');
+        $amount                       = str_replace('.', '', $amount);
+        $amount                       = str_replace(',', '', $amount);
+        $newPaymentData->amount       = $amount;
 
         if ($this->formData["enable_multicustomers_voucher"]) {
             $newPaymentData->customer = $this->extractMultibuyerData(
@@ -1029,7 +1081,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             );
         }
 
-        $voucherDataIndex = NewVoucherPayment::getBaseCode();
+        $voucherDataIndex              = NewVoucherPayment::getBaseCode();
         $newPaymentData->saveOnSuccess =
             isset($this->formData["save_credit_card"]);
         if (!isset($paymentData[$voucherDataIndex])) {
@@ -1037,6 +1089,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
 
         $paymentData[$voucherDataIndex][] = $newPaymentData;
+
         return $voucherDataIndex;
     }
 
@@ -1088,6 +1141,28 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $address;
     }
 
+    private function fieldNotSet($requiredField, $platformAddress)
+    {
+        $fieldIsNotSet = !array_key_exists($requiredField, $platformAddress)
+                         || empty($platformAddress[$requiredField]);
+
+        if ($requiredField === 'number') {
+            $fieldIsNotSet = !array_key_exists($requiredField, $platformAddress)
+                             || (
+                                 empty($platformAddress[$requiredField])
+                                 && (
+                                     $platformAddress[$requiredField] === null
+                                     || !is_numeric(trim($platformAddress[$requiredField]))
+                                 )
+                             );
+        }
+
+        return $fieldIsNotSet;
+    }
+
+    /**
+     * @throws Exception
+     */
     private function validateAddressFields($platformAddress)
     {
         $requiredFields = [
@@ -1101,14 +1176,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         ];
 
         foreach ($requiredFields as $requiredField) {
-            $fieldIsNotSet = !array_key_exists($requiredField, $platformAddress)
-                || empty($platformAddress[$requiredField]);
-
-            if ($fieldIsNotSet) {
-                $message = "Missing $requiredField in customer address";
+            if ($this->fieldNotSet($requiredField, $platformAddress)) {
+                $message          = "Missing $requiredField in customer address";
                 $ExceptionMessage = $this->i18n->getDashboard($message);
-                $exception = new \Exception($ExceptionMessage);
-
+                $exception        = new Exception($ExceptionMessage);
                 $log = new LogService('Order', true);
                 $log->exception($exception);
 
@@ -1124,6 +1195,31 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     public function handleSplitOrder()
     {
-        // woocommerce does not have split order;
+        global $wp_filter;
+        if ( !isset($wp_filter['pagarme_split_order'])) {
+            return null;
+        }
+
+        $order = $this->getPlatformOrder();
+        $paymentMethod = $this->getPaymentMethodPlatform();
+
+        $splitDataFromOrder = apply_filters('pagarme_split_order', $order, $paymentMethod);
+        $this->validateSellerArray($splitDataFromOrder);
+        $splitData = new Split();
+        $splitData->setSellersData($splitDataFromOrder['sellers']);
+        $splitData->setMarketplaceData($splitDataFromOrder['marketplace']);
+        return $splitData;
+    }
+
+    private function validateSellerArray($splitDataFromOrder)
+    {
+        foreach ($splitDataFromOrder['sellers'] as $data) {
+            $requiredFields = ['marketplaceCommission', 'commission', 'pagarmeId'];
+            foreach ($requiredFields as $field) {
+                if (!array_key_exists($field, $data)) {
+                    throw new \InvalidArgumentException("The field '$field' is required for each seller.");
+                }
+            }
+        }
     }
 }

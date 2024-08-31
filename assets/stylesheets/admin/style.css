@@ -50,16 +50,8 @@
     color: #e02b27;
 }
 
-.woocommerce_page_woo-pagarme-payments .swal2-modal {
-    line-height: normal;
-}
-
 .woocommerce_page_woo-pagarme-payments .swal2-modal .swal2-title {
     margin-bottom: 0.6em;
-}
-
-.woocommerce_page_woo-pagarme-payments .swal2-modal .swal2-content {
-    line-height: 1.3em;
 }
 
 #woo-pagarme-additional-information table.woocommerce-table {
@@ -83,13 +75,23 @@
     background-color: #f8f8f8;
 }
 
+#woo-pagarme-capture .wrapper {
+    overflow-y: auto;
+}
+
 #woo-pagarme-capture .wrapper table {
     width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#woo-pagarme-capture .wrapper table thead th,
+#woo-pagarme-capture .wrapper table tbody tr td {
+    text-align: left;
+    padding: 1em;
 }
 
 #woo-pagarme-capture .wrapper table thead th {
-    text-align: left;
-    padding: 1em;
     font-weight: 600;
     background: #f8f8f8;
 }
@@ -98,22 +100,10 @@
     cursor: pointer;
 }
 
-#woo-pagarme-capture .wrapper table thead th:last-child {
-    padding-right: 2em;
-}
-
-#woo-pagarme-capture .wrapper table thead th:first-child {
-    padding-left: 2em;
-}
-
 #woo-pagarme-capture .wrapper table thead th .wc-arrow {
     float: right;
     position: relative;
     margin-right: -1em;
-}
-
-#woo-pagarme-capture .wrapper table tbody tr td {
-    padding-top: .6em;
 }
 
 #woo-pagarme-capture .wrapper table tbody th textarea,
@@ -130,16 +120,6 @@
     color: #555;
 }
 
-#woo-pagarme-capture .wrapper table tbody th:last-child,
-#woo-pagarme-capture .wrapper table td:last-child {
-    padding-right: 2em;
-}
-
-#woo-pagarme-capture .wrapper table tbody th:first-child,
-#woo-pagarme-capture .wrapper table td:first-child {
-    padding-left: 2em;
-}
-
 #mainform .invalid-field{
     border-color: #d63638;
     box-shadow: 0 0 2px rgba(214,54,56,.8);
@@ -151,4 +131,17 @@
 
 .woocommerce table.form-table textarea.wide-input.pagarme-option-text-area {
     width: 400px;
+}
+
+.pagarme-refund-message {
+    padding: 1em;
+    border: 1px solid #c3c4c7;
+    border-left: 4px solid #d63638;
+    background: #fff4f4;
+    text-align: center;
+}
+
+.pagarme-refund-message span {
+    color: #d63638;
+    font-weight: bold;
 }

@@ -1,14 +1,17 @@
-=== Pagar.me módulo para WooCommerce ===
-Contributors: Pagar.me
-Tags: payments, pagarme, ecommerce, e-commerce, store, sales, sell, shop, cart, checkout, woocommerce, creditcard
+=== Pagar.me para WooCommerce ===
+Contributors: pagarme
+Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
-Tested up to: 6.3
+Tested up to: 6.5.5
 Requires PHP: 7.1
-Stable tag: 3.2.1
+Stable tag: 3.3.3
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
-Desenvolvemos um módulo que integra o Woocomerce a Pagar.me de forma prática e segura, assim não é preciso que seu time de tecnologia desenvolva nenhuma linha de código. Basta instalar e configurar o módulo para usar!
+Aceite diversos métodos de pagamento de forma simples e segura utilizando o Pagar.me!
+
+== Description ==
+Desenvolvemos um plugin que integra o Woocomerce a Pagar.me de forma prática e segura, assim não é preciso que seu time de tecnologia desenvolva nenhuma linha de código. Basta instalar e configurar o módulo para usar!
 
 == Installation ==
 Nosso processo de instalação é simples e bem detalhado:
@@ -22,26 +25,20 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
-= 3.2.1 (30/01/2024) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.1)
+= 3.3.3 (14/08/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.3)
+
+* **Melhorias:**
+  *  Passando pedido e meio de pagamento para o cálculo do split
 
 * **Correções:**
-  * Parcelamento de cartão de crédito
+  *  Perdendo informação de bandeira ao trocar meios de pagamento no checkout
 
-= 3.2.0 (29/01/2024) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.2.0)
-
-* **Novas implementações:**
-  * Autonomia na escolha dos métodos de pagamento para Subscriptions 
-  * Parcelamento em até 12x no cartão de crédito para Subscriptions
+= 3.3.2 (03/07/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.2)
 
 * **Correções:**
-  * Erro ao acessar a página de edição de produtos
-  * Compatibilização com PHP 8.2/8.3
-  * Erro ao finalizar compra de custo 0
-  * Campos primeiro nome e sobrenome não obrigatórios
-  * Falha ao gerar o pedido recorrente por falta de CustomerId
-  * Redução duplicada de estoque - @tiagopapile
+  *  Exibe uma parcela (à vista) quando o valor do carrinho é menor que a configuração de valor mínimo de parcelas
 
 == Upgrade Notice ==
 Nosso plugin agora é compatível com Woocommerce Subscriptions

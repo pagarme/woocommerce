@@ -11,9 +11,10 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
-use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
-use Woocommerce\Pagarme\Model\Config\Source\Yesno;
+use Woocommerce\Pagarme\Model\Payment\Pix as PixModel;
 use Woocommerce\Pagarme\Model\Subscription;
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
+use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 
 defined('ABSPATH') || exit;
 
@@ -28,11 +29,19 @@ if (!function_exists('add_action')) {
 class Pix extends AbstractGateway
 {
     /** @var string */
-    protected $method = \Woocommerce\Pagarme\Model\Payment\Pix::PAYMENT_CODE;
+    protected $method = PixModel::PAYMENT_CODE;
 
     private static $minimumValueQrCodeExpirationTime = 1;
 
     const QR_CODE_EXPIRATION_TIME_FIELD_NAME = 'QR code expiration time';
+
+    /**
+     * @return void
+     */
+    public function addRefundSupport()
+    {
+        $this->supports[] = 'refunds';
+    }
 
     /**
      * @return boolean
@@ -55,11 +64,15 @@ class Pix extends AbstractGateway
      */
     public function append_form_fields()
     {
-        return [
+        $fields = [
+            PixModel::getCheckoutInstructionsKey() => $this->field_pix_checkout_instructions(),
             'pix_qrcode_expiration_time' => $this->field_pix_qrcode_expiration_time(),
             'pix_additional_data' => $this->field_pix_additional_data(),
-            'pix_allowed_in_subscription' => $this->field_pix_allowed_for_subscription(),
         ];
+        if (Subscription::hasSubscriptionPlugin()) {
+            $fields['pix_allowed_in_subscription'] = $this->field_pix_allowed_for_subscription();
+        }
+        return $fields;
     }
 
     public function field_pix_qrcode_expiration_time()
@@ -119,6 +132,22 @@ class Pix extends AbstractGateway
             'custom_attributes' => array(
                 'data-field' => 'pix-allowed-for-subscription',
             ),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function field_pix_checkout_instructions()
+    {
+        return [
+            'title' => PixModel::getCheckoutInstructionsTitle(),
+            'type' => 'textarea',
+            'class' => 'pagarme-option-text-area',
+            'description' => PixModel::getCheckoutInstructionsDescription(),
+            'desc_tip' => true,
+            'default' => $this->config->getData(PixModel::getCheckoutInstructionsKey()) ??
+                PixModel::getDefaultCheckoutInstructions()
         ];
     }
 

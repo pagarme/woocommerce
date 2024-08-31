@@ -3,18 +3,16 @@
  * @author      Open Source Team
  * @copyright   2022 Pagar.me (https://pagar.me)
  * @license     https://pagar.me Copyright
- *
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types = 1);
 
 namespace Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form;
 
 use Woocommerce\Pagarme\Model\Config;
-use Woocommerce\Pagarme\Core;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Abstract Field
@@ -35,7 +33,7 @@ abstract class AbstractField
     private $id;
 
     /** @var string */
-    private  $name;
+    private $name;
 
     /** @var string|null */
     private $current = null;
@@ -56,13 +54,10 @@ abstract class AbstractField
     protected $config;
 
     /** @var bool */
-    protected $readonly = false;
-
-    /** @var bool */
     protected $isVisible = true;
 
     /**
-     * @param Config $config
+     * @param Config|null $config
      * @param string $template
      * @param array $data
      */
@@ -91,6 +86,7 @@ abstract class AbstractField
 
     /**
      * @param array $data
+     *
      * @return $this
      */
     public function setData(array $data = [])
@@ -101,6 +97,7 @@ abstract class AbstractField
                 $this->{$method}($value);
             }
         }
+
         return $this;
     }
 
@@ -126,6 +123,7 @@ abstract class AbstractField
     {
         if (!method_exists($this, 'elementCallBack')) {
             $this->includeTemplate();
+
             return;
         }
         $this->elementCallBack($values);
@@ -136,16 +134,18 @@ abstract class AbstractField
      */
     public function includeTemplate(string $file = 'main.phtml')
     {
-        include plugin_dir_path(WCMP_ROOT_SRC ) . DIRECTORY_SEPARATOR . $this->templatePath . $file;
+        include plugin_dir_path(WCMP_ROOT_SRC) . DIRECTORY_SEPARATOR . $this->templatePath . $file;
     }
 
     /**
      * @param string $section
+     *
      * @return $this
      */
     public function setSection(string $section)
     {
         $this->section = $section;
+
         return $this;
     }
 
@@ -158,48 +158,14 @@ abstract class AbstractField
     }
 
     /**
-     * @return bool
-     */
-    public function getVisible()
-    {
-        return $this->isVisible;
-    }
-
-    /**
-     * @param bool $value
-     * @return $this
-     */
-    public function setVisible(bool $value)
-    {
-        $this->isVisible = $value;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getReadonly()
-    {
-        return $this->readonly;
-    }
-
-    /**
-     * @param bool $value
-     * @return $this
-     */
-    public function setReadonly(bool $value)
-    {
-        $this->isVisible = $value;
-        return $this;
-    }
-
-    /**
      * @param string $id
+     *
      * @return $this
      */
     public function setId(string $id)
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -213,11 +179,13 @@ abstract class AbstractField
 
     /**
      * @param string $page
+     *
      * @return $this
      */
     public function setPage(string $page)
     {
         $this->page = $page;
+
         return $this;
     }
 
@@ -231,11 +199,13 @@ abstract class AbstractField
 
     /**
      * @param string $title
+     *
      * @return $this
      */
     public function setTitle(string $title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -249,11 +219,13 @@ abstract class AbstractField
 
     /**
      * @param $name
+     *
      * @return $this
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -267,11 +239,13 @@ abstract class AbstractField
 
     /**
      * @param $current
+     *
      * @return $this
      */
     public function setCurrent($current)
     {
         $this->current = $current;
+
         return $this;
     }
 
@@ -283,16 +257,19 @@ abstract class AbstractField
         if (!$this->current) {
             return $this->getDefault();
         }
+
         return $this->current;
     }
 
     /**
      * @param $default
+     *
      * @return $this
      */
     public function setDefault($default)
     {
         $this->default = $default;
+
         return $this;
     }
 
@@ -306,18 +283,21 @@ abstract class AbstractField
 
     /**
      * @param $description
+     *
      * @return $this
      */
     public function setDescription($description)
     {
-        if (is_array($description)){
+        if (is_array($description)) {
             $this->description = vsprintf(
                 __($description['format'], 'woo-pagarme-payments'),
                 $description['values']
             );
+
             return $this;
         }
         $this->description = __($description, 'woo-pagarme-payments');
+
         return $this;
     }
 
@@ -344,6 +324,7 @@ abstract class AbstractField
         if ($key) {
             $this->{$key} = '';
         }
+
         return $this;
     }
 }

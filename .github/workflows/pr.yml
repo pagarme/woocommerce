@@ -95,7 +95,7 @@ jobs:
         with:
           args: >
             -Dsonar.php.coverage.reportPaths=coverage/clover.xml
-            -Dsonar.coverage.exclusions=tests/**,assets/**,templates/**,woo-pagarme-payments.php
+            -Dsonar.coverage.exclusions=tests/**,assets/**,src/Controller/**,templates/**,woo-pagarme-payments.php
             -Dsonar.tests=tests/
             -Dsonar.sources=src,assets,templates,woo-pagarme-payments.php
 

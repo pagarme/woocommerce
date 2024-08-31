@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-01-19 11:54-0300\n"
+"PO-Revision-Date: 2024-07-03 15:55-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.3\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;"
 "_nx:4c,1,2;_nx_noop:4c,1,2\n"
@@ -286,7 +286,7 @@ msgstr "Configurações de Cartão de crédito"
 
 #: src/Controller/Gateways.php:390
 msgid "Soft descriptor"
-msgstr "Soft descriptor"
+msgstr "Identificação na fatura do cartão"
 
 #: src/Controller/Gateways.php:392
 msgid "Maximum of 13 characters"
@@ -472,8 +472,8 @@ msgid "Settings"
 msgstr "Configurações"
 
 #. Plugin Name of the plugin/theme
-msgid "Pagar.me module for Woocommerce"
-msgstr "Pagar.me módulo para Woocommerce"
+msgid "Pagar.me for WooCommerce"
+msgstr "Pagar.me para WooCommerce"
 
 #: src/Model/Gateway.php:85
 msgid "1x"
@@ -485,7 +485,7 @@ msgstr "%dx de %s (%s)"
 
 #: src/Model/Gateway.php:142
 msgid "This card brand not is allowed on checkout."
-msgstr "Essa bandeira não é permitda no checkout."
+msgstr "Essa bandeira não é permitida no checkout."
 
 #: src/Model/Order.php:66
 msgid "Paid"
@@ -530,7 +530,7 @@ msgstr "Processo de Antifraude em análise manual."
 msgid "Anti-fraud process pending."
 msgstr "Processo de antifraude pendente."
 
-#: src/Model/Order.php:100
+#: src/Model/Order.php:117
 msgid "Pagar.me: Payment canceled."
 msgstr "Pagar.me: Pagamento cancelado."
 
@@ -602,7 +602,7 @@ msgstr "Status"
 msgid "Card Holder Name"
 msgstr "Nome impresso no cartão"
 
-#: src/View/Checkouts.php:245 templates/checkout/common-card-item.php:35
+#: src/View/Checkouts.php:245 templates/checkout/common-card-item.php:35 src/Block/ReactCheckout/AbstractCard.php:69
 msgid "Card number"
 msgstr "Número do cartão"
 
@@ -643,9 +643,17 @@ msgstr "Validade"
 msgid "MM / YY"
 msgstr "MM / AA"
 
+#: src/Block/ReactCheckout/AbstractCard.php:70
+msgid "Expiration Date (MM/AA)"
+msgstr "Validade (MM/AA)"
+
 #: templates/checkout/common-card-item.php:68
 msgid "Card code"
 msgstr "Código do cartão"
+
+#: src/Block/ReactCheckout/AbstractCard.php:71
+msgid "Card code (CVV)"
+msgstr "Código do cartão (CVV)"
 
 msgid "Card Holder Document Number"
 msgstr "Documento do titular do cartão"
@@ -921,20 +929,30 @@ msgstr "Configurações que só funcionam para clientes Gateway que têm contrat
 msgid "Enable card wallet"
 msgstr "Habilitar card wallet"
 
-msgid "Description that appears on the credit card bill."
-msgstr "Descrição que aparece na fatura do cartão de crédito."
+msgid "Name that will appear on the buyer's card bill."
+msgstr "Nome que aparecerá na fatura do cartão do comprador."
 
-msgid "Description that appears on the voucher bill."
-msgstr "Descrição que aparece na fatura do cartão de voucher."
+msgid "Name that will appear on the buyer's voucher bill."
+msgstr "Nome que aparecerá na fatura do voucher do comprador."
 
-msgid "Installment configuration"
-msgstr "Configuração de parcelamento"
+msgid "Subscription settings"
+msgstr "Configurações de assinatura"
+
+msgid "Installment settings"
+msgstr "Configurações de parcelamento"
+
+msgid "Do you have any questions about these settings? For more information and examples, visit our %sdocumentation »%s"
+msgstr ""
+"Está com alguma dúvida sobre essas configurações? Para mais informações e exemplos, acesse nossa %sdocumentação »%s"
 
 msgid "For all card brands"
 msgstr "Para todas as bandeiras de cartão"
 
 msgid "By card brand"
-msgstr "Por cada bandeira de cartão"
+msgstr "Por bandeira de cartão"
+
+msgid "Use default 1.0"
+msgstr "Usar padrão 1.0"
 
 msgid "Max number of installments"
 msgstr "Número máximo de parcelas"
@@ -945,14 +963,25 @@ msgstr "Taxa de juros inicial (%)"
 msgid "Incremental interest rate (%)"
 msgstr "Taxa de juros incremental (%)"
 
-msgid "Allows for cards to be saved for future purchases."
-msgstr "Permite que os cartões sejam salvos para compras futuras."
+msgid "Interest rate (%)"
+msgstr "Taxa de juros (%)"
 
-msgid "Interest rate applied starting with the first installment with interest."
-msgstr "Taxa de juros aplicada a partir da primeira parcela com juros."
+msgid ""
+"Allows users to pay for a new order with cards saved from previous orders. Card details are saved on Pagar.me and not "
+"in your store."
+msgstr ""
+"Permite que os usuários paguem um novo pedido com dados de cartões salvos de pedidos anteriores. Os detalhes do "
+"cartão são salvos no Pagar.me e não na sua loja."
 
-msgid "Interest rate added for each installment with interest."
-msgstr "Taxa de juros adicionada para cada parcela com juros."
+msgid "Fee that will be charged from the first installment with interest."
+msgstr "Taxa que será cobrada a partir da primeira parcela com juros."
+
+msgid ""
+"Fee that will be charged increasingly from the second installment with interest added to the initial interest rate."
+msgstr "Taxa que será cobrada de forma crescente a partir da segunda parcela com juros somada a taxa de juros inicial."
+
+msgid "Fee that will be charged increasingly to all installments."
+msgstr "Taxa de juros padrão a ser aplicada de forma crescente a todas as parcelas."
 
 msgid "Number of installments without interest"
 msgstr "Quantidade de parcelas sem juros"
@@ -1074,11 +1103,8 @@ msgstr "Não"
 msgid "Pagar.me integration"
 msgstr "Integração Pagar.me"
 
-msgid "Card Wallet"
-msgstr "Carteira"
-
-msgid "Card wallet"
-msgstr "Carteira"
+msgid "Allow payments with saved cards"
+msgstr "Permitir pagamentos com cartões salvos"
 
 msgid "Cancel"
 msgstr "Cancelar"
@@ -1116,14 +1142,11 @@ msgstr "Titular"
 msgid "No records found."
 msgstr "Nenhum registro foi encontrado."
 
-msgid "Partially Reversed"
-msgstr "Parcialmente Revertido"
+msgid "Refunded"
+msgstr "Reembolsado"
 
-msgid "Partially Canceled"
-msgstr "Parcialmente Cancelado"
-
-msgid "Partially Captured"
-msgstr "Capturado Parcialmente"
+msgid "Captured"
+msgstr "Capturado"
 
 msgid "Total Amount"
 msgstr "Total"
@@ -1302,3 +1325,160 @@ msgstr "Funciona apenas para assinaturas mensais e anuais."
 
 msgid "Your cart has one or more daily or weekly subscription products, which do not allow installments."
 msgstr "Seu carrinho possui um ou mais produtos de assinatura diário ou semanal, que não permitem parcelamentos."
+
+#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
+msgid "Pix payment method"
+msgstr "Meio de pagamento Pix"
+
+#: src/Controller/Gateways/Pix.php:130
+msgid "Checkout instructions"
+msgstr "Instruções do checkout"
+
+#: src/Controller/Gateways/Pix.php:132
+msgid "Instructions text that appears in checkout."
+msgstr "Texto de instruções que aparece no checkout."
+
+#: src/Model/Pix.php:55
+msgid ""
+"The QR Code for your payment with PIX will be generated after confirming the purchase. Point your phone at the screen "
+"to capture the code or copy and paste the code into your payments app."
+msgstr ""
+"O QR Code para seu pagamento através de PIX será gerado após a confirmação da compra. Aponte seu celular para a tela "
+"para capturar o código ou copie e cole o código em seu aplicativo de pagamentos."
+
+#: src/Mode;/Billet.php:55
+msgid ""
+"The billet will be displayed after purchase confirmation and can be paid at any bank agency, via your smartphone or "
+"computer through digital banking services."
+msgstr ""
+"O Boleto bancário será exibido após a confirmação da compra e poderá ser pago em qualquer agência bancária, pelo seu "
+"smartphone ou computador através de serviços digitais de bancos."
+
+#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
+msgid "Billet payment method"
+msgstr "Meio de pagamento Boleto"
+
+#: src/Block/ReactCheckout/AbstractPaymentMethodBlock.php:35
+msgid "Credit Card payment method"
+msgstr "Meio de pagamento Cartão de Crédito"
+
+#: assets/javascripts/front/reactCheckout/payments/creditCard/installmentsFormatter.js:13
+msgid "of"
+msgstr "de"
+
+#: assets/javascripts/front/reactCheckout/payments/creditCard/installmentsFormatter.js:13
+msgid "Unable to generate a transaction. Unavailable service."
+msgstr "Não foi possível gerar uma transação. Serviço indisponível."
+
+#: src/Core.php:348
+msgid "Please, check the errors below."
+msgstr "Por favor, verifique os erros abaixo."
+
+msgid "Please enter a valid name."
+msgstr "Por favor, digite um nome válido."
+
+msgid "Please enter a valid credit card number."
+msgstr "Por favor, digite um número de cartão válido."
+
+msgid "Please enter a expiry date."
+msgstr "Por favor, digite a data de validade."
+
+msgid "The expiry month must be between 01 and 12."
+msgstr "O mês da data de validade deve ser entre 01 e 12."
+
+msgid "The expiry year must have two digits."
+msgstr "O ano da data de validade deve conter dois dígitos."
+
+msgid "Please enter a valid CVV number."
+msgstr "Por favor, digite o número CVV."
+
+msgid "The CVV number must be between 3 and 4 characters."
+msgstr "O número CVV deve ter entre 3 e 4 caracteres."
+
+msgid "3DS settings"
+msgstr "Configurações de 3DS"
+
+msgid "Enable 3DS"
+msgstr "Habilitar 3DS"
+
+msgid "Minimum value for 3DS authentication"
+msgstr "Valor mínimo para autenticação 3DS"
+
+msgid "Failed to generate Token for 3DS, try again."
+msgstr "Falha ao gerar Token para 3DS, tente novamente."
+
+msgid "There was a problem finding the email."
+msgstr "Ocorreu um problema ao encontrar o e-mail."
+
+msgid "There was a problem finding the address."
+msgstr "Ocorreu um problema ao encontrar o endereço."
+
+msgid "There was a problem when assembling the card's expiration data."
+msgstr "Ocorreu um problema ao montar o dado de expiração do cartão."
+
+msgid "There was a problem when assembling the purchase data."
+msgstr "Ocorreu um problema ao montar o dado de compra."
+
+msgid "3DS Status"
+msgstr "Status 3DS"
+
+msgid "Y - Transaction approved and authenticated by the Issuer"
+msgstr "Y - Transação aprovada e autenticada pelo Emissor"
+
+msgid "A - Transaction approved and authenticated by Brand"
+msgstr "A - Transação aprovada e autenticada pela Bandeira"
+
+msgid "I - Only data sent to the Brand and Issuer"
+msgstr "I - Apenas dados enviados a Bandeira e Emissor"
+
+msgid "U - Authentication unavailable"
+msgstr "U - Autenticação indisponível"
+
+msgid "N - Transaction rejected by the Issuer"
+msgstr "N - Transação rejeitada pelo Emissor"
+
+msgid "R - Transaction rejected by Issuer (post-challenge)"
+msgstr "R - Transação rejeitada pelo Emissor (pós-desafio)"
+
+msgid "Invalid Data"
+msgstr "Dados Inválidos"
+
+msgid "Tokenization timeout."
+msgstr "Timeout na tokenização."
+
+msgid "The number field is not a valid number."
+msgstr "O número do cartão não é válido."
+
+msgid "The number field is required."
+msgstr "O campo Número do Cartão é obrigatório."
+
+msgid "The cvv field is not a valid number."
+msgstr "O número do CVV não é válido."
+
+msgid "The holder_name field is required."
+msgstr "O campo Nome impresso no cartão é obrigatório."
+
+msgid "The field exp_month must be between 1 and 12."
+msgstr "O mês de expiração do cartão deve estar entre 01 e 12."
+
+msgid "Pagar.me: Payment failed."
+msgstr "Pagar.me: Pagamento falhou."
+
+msgid ""
+"<span>Attention!</span> It is now possible to use Woocommerce's automatic refund flow. <b>Soon, this button will be "
+"dedicated to manual capture only</b>."
+msgstr ""
+"<span>Atenção!</span> Já é possível utilizar o fluxo de reembolso automático do Woocommerce. <b>Em breve, este botão "
+"será dedicado somente a captura manual</b>."
+
+msgid "There was a problem attempting to refund: %1$s"
+msgstr "Ocorreu um problema ao tentar reembolsar: %1$s"
+
+msgid "The refund amount is grater than the amount current available on Pagar.me charge."
+msgstr "O valor do reembolso é maior que o valor atualmente disponível na cobrança da Pagar.me."
+
+msgid "Charge %s was fully refunded."
+msgstr "A cobrança %s foi totalmente reembolsada."
+
+msgid "Charge %1$s was partially refunded. Amount: %2$s"
+msgstr "A cobrança %1$s foi parcialmente reembolsada. Valor: %2$s"

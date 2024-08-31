@@ -1,13 +1,13 @@
 /* globals pagarmeCard */
-
+/* jshint esversion: 8 */
 let pagarmeTokenize = {
     appId: jQuery('[data-pagarmecheckout-app-id]').data('pagarmecheckoutAppId'),
-    apiUrl: 'https://api.mundipagg.com/core/v1/tokens',
+    apiUrl: 'https://api.pagar.me/core/v5/tokens',
     token: 'token',
     vendor: 'pagarme',
     paymentMethodTarget: 'data-pagarmecheckout-method',
     sequenceTarget: 'data-pagarmecheckout-card-num',
-    tokenElementTarget: 'data-pagarmecheckout-element',
+    tokenElementTarget: 'data-pagarme-element',
     getEndpoint: function () {
         let url = new URL(this.apiUrl);
         url.searchParams.append('appId', this.appId);
@@ -18,9 +18,6 @@ let pagarmeTokenize = {
     },
 
     execute: async function () {
-        if (wc_pagarme_checkout.validate() === false) {
-            return;
-        }
         let el = pagarmeCard.getCheckoutPaymentElement();
         if (pagarmeCard.isPagarmePayment() && pagarmeCard.haveCardForm(el) !== false) {
             pagarmeTokenize.getCardsForm(el).each(await pagarmeTokenize.tokenize);
@@ -55,7 +52,7 @@ let pagarmeTokenize = {
     createCardObject: function (field) {
         let obj = {};
         jQuery.each(jQuery(field).find('input'), function () {
-            let prop = this.getAttribute('data-pagarmecheckout-element'),
+            let prop = this.getAttribute('data-pagarme-element'),
                 ignore = ['brand-input', 'exp_date', 'card-order-value', null],
                 value;
             value = this.value;
@@ -108,11 +105,11 @@ let pagarmeTokenize = {
     showError: function (text) {
         swal.close();
         const message = {
-            type: 'error',
+            icon: 'error',
             html: text,
             allowOutsideClick: false
         };
-        swal(message);
+        swal.fire(message);
     },
 
     listError: function (errors) {
@@ -143,11 +140,7 @@ let pagarmeTokenize = {
     },
 
     createTokenInput: async function (response, field) {
-        try {
-            await pagarmeTokenize.clearInputTokens(field);
-        } catch (e) {
-            this.showError(e.message);
-        }
+        await pagarmeTokenize.clearInputTokens(field);
         const objJSON = JSON.parse(response);
         let input = jQuery(document.createElement('input'));
         if (!(field instanceof jQuery)) {
@@ -178,3 +171,4 @@ let pagarmeTokenize = {
         });
     }
 };
+

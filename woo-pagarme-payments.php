@@ -1,20 +1,23 @@
 <?php
 /*
- * Plugin Name: Pagar.me module for Woocommerce
- * Version:     3.2.1
+ * Plugin Name: Pagar.me for WooCommerce
+ * Version:     3.3.3
  * Author:      Pagar.me
  * Author URI:  https://pagar.me
  * License:     GPL2
  * Description: Enable Pagar.me Gateway for WooCommerce
  * Requires at least: 4.1
- * Tested up to: 6.3.1
+ * Tested up to: 6.6.1
  * WC requires at least: 3.9.0
- * WC tested up to: 8.2.0
+ * WC tested up to: 9.1.4
  * Domain Path: /languages
+ * Requires Plugins: woocommerce
  * Text Domain: woo-pagarme-payments
  */
 
 use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\FeatureCompatibilization;
+
 
 const BRAZILIAN_MARKET_URL = 'https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/';
 const PAGARME_REQUIREMENTS_URL = 'https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce';
@@ -125,7 +128,6 @@ function wcmpAddNoticeButton($buttons)
 
     return $html;
 }
-
 
 function wcmpAdminNoticePhpVersion()
 {
@@ -310,12 +312,20 @@ function wcmpPluginsLoadedCheck()
 
 add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
 add_action( 'before_woocommerce_init', 'checkCompatibilityWithFeatures', 0);
+add_action('woocommerce_blocks_loaded', 'addWoocommerceSupportedBlocks');
 
 function checkCompatibilityWithFeatures()
 {
-    $compatibilization = new \Woocommerce\Pagarme\Model\FeatureCompatibilization();
+    $compatibilization = new FeatureCompatibilization();
     $compatibilization->callCompatibilization();
 }
+
+function addWoocommerceSupportedBlocks()
+{
+    $compatibilization = new FeatureCompatibilization();
+    $compatibilization->addSupportedBlocks();
+}
+
 function versionUpdateWarning($currentVersion, $newVersion)
 {
     $currentVersionMajorPart = explode('.', $currentVersion)[0];

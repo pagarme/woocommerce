@@ -173,7 +173,14 @@ class Gateway extends Template
      */
     public function getCartTotals()
     {
-        return WC()->cart->total;
+        global $wp;
+
+        if (!isset($wp->query_vars['order-pay'])) {
+            return WC()->cart->total;
+        }
+        $orderId = $wp->query_vars['order-pay'];
+        $order = wc_get_order($orderId);
+        return $order->get_total();
     }
 
     /**

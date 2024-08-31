@@ -17,12 +17,6 @@ if (!function_exists('add_action')) {
 
 global $woocommerce;
 
-wp_localize_script(
-    'pagarme-checkout-card',
-    'wc_pagarme_checkout',
-    ['config' => $this->getConfigDataProvider()]
-);
-
 $wc_api = $this->getHomeUrl();
 ?>
 <div id="wcmp-checkout-errors">
@@ -32,5 +26,5 @@ $wc_api = $this->getHomeUrl();
 <?= $this->createBlock($this->getPaymentClass(), 'pagarme.checkout.payment', ['payment_instance' => $this->getPaymentInstance()])->toHtml() ?>
 <script type="application/javascript">
     var ajaxUrl = "<?= admin_url('admin-ajax.php'); ?>";
-    var cartTotal = <?= WC()->cart->total ?>;
+    var cartTotal = <?= $this->getCartTotals() ?>;
 </script>

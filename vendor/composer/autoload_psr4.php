@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'apimatic\\jsonmapper\\' => array($vendorDir . '/apimatic/jsonmapper/src'),
+    'Woocommerce\\Pagarme\\Tests\\' => array($baseDir . '/tests'),
     'Woocommerce\\Pagarme\\' => array($baseDir . '/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Pagarme\\Core\\Test\\Mock\\' => array($vendorDir . '/pagarme/ecommerce-module-core/tests/mock'),
@@ -14,4 +15,6 @@ return array(
     'Pagarme\\Core\\' => array($vendorDir . '/pagarme/ecommerce-module-core/src'),
     'PagarmeCoreApiLib\\' => array($vendorDir . '/pagarme/pagarmecoreapi/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'HaydenPierce\\ClassFinder\\UnitTest\\' => array($vendorDir . '/haydenpierce/class-finder/test/unit'),
+    'HaydenPierce\\ClassFinder\\' => array($vendorDir . '/haydenpierce/class-finder/src'),
 );

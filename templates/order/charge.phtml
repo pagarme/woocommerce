@@ -29,7 +29,8 @@ if (!function_exists('add_action')) {
                         $this->getTransactionClass($transaction),
                         'pagarme.order.charge.transaction',
                         [
-                            'transaction' => $transaction
+                            'transaction' => $transaction,
+                            'orderId' => $this->getCharge()->getCode()
                         ]
                     )->toHtml();
                 ?>

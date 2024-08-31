@@ -121,6 +121,51 @@
             "install-path": "../apimatic/unirest-php"
         },
         {
+            "name": "haydenpierce/class-finder",
+            "version": "0.5.3",
+            "version_normalized": "0.5.3.0",
+            "source": {
+                "type": "git",
+                "url": "git@gitlab.com:hpierce1102/ClassFinder.git",
+                "reference": "40703445c18784edcc6411703e7c3869af11ec8c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://gitlab.com/api/v4/projects/hpierce1102%2FClassFinder/repository/archive.zip?sha=40703445c18784edcc6411703e7c3869af11ec8c",
+                "reference": "40703445c18784edcc6411703e7c3869af11ec8c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "~9.0"
+            },
+            "time": "2023-06-18T17:43:01+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "HaydenPierce\\ClassFinder\\": "src/",
+                    "HaydenPierce\\ClassFinder\\UnitTest\\": "test/unit"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Hayden Pierce",
+                    "email": "hayden@haydenpierce.com"
+                }
+            ],
+            "description": "A library that can provide of a list of classes in a given namespace",
+            "install-path": "../haydenpierce/class-finder"
+        },
+        {
             "name": "mashape/unirest-php",
             "version": "v3.0.4",
             "version_normalized": "3.0.4.0",
@@ -260,23 +305,23 @@
         },
         {
             "name": "pagarme/ecommerce-module-core",
-            "version": "2.3.1",
-            "version_normalized": "2.3.1.0",
+            "version": "2.4.1",
+            "version_normalized": "2.4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pagarme/ecommerce-module-core.git",
-                "reference": "9c9e927cea9b1bf90a499d2146f042f1f7f1c921"
+                "reference": "3e75e5365882c6806f2ac76e6901ee17815d101e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/9c9e927cea9b1bf90a499d2146f042f1f7f1c921",
-                "reference": "9c9e927cea9b1bf90a499d2146f042f1f7f1c921",
+                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/3e75e5365882c6806f2ac76e6901ee17815d101e",
+                "reference": "3e75e5365882c6806f2ac76e6901ee17815d101e",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "monolog/monolog": "<3",
-                "pagarme/pagarmecoreapi": "v5.6.3",
+                "pagarme/pagarmecoreapi": "v5.6.4",
                 "php": ">=7.1"
             },
             "require-dev": {
@@ -285,7 +330,7 @@
                 "nesbot/carbon": "1.39.0",
                 "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9"
             },
-            "time": "2023-11-14T15:38:42+00:00",
+            "time": "2024-03-07T13:35:21+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -306,23 +351,23 @@
             ],
             "description": "Core component for Pagar.me e-commerce platform modules.",
             "support": {
-                "source": "https://github.com/pagarme/ecommerce-module-core/tree/2.3.1"
+                "source": "https://github.com/pagarme/ecommerce-module-core/tree/2.4.1"
             },
             "install-path": "../pagarme/ecommerce-module-core"
         },
         {
             "name": "pagarme/pagarmecoreapi",
-            "version": "v5.6.3",
-            "version_normalized": "5.6.3.0",
+            "version": "v5.6.4",
+            "version_normalized": "5.6.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pagarme/pagarme-core-api-php.git",
-                "reference": "49e0d222c50c69ac3e0debea9b69202e6555d3ef"
+                "reference": "acab7709b2579221417946b261f6c24710604eb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/pagarme-core-api-php/zipball/49e0d222c50c69ac3e0debea9b69202e6555d3ef",
-                "reference": "49e0d222c50c69ac3e0debea9b69202e6555d3ef",
+                "url": "https://api.github.com/repos/pagarme/pagarme-core-api-php/zipball/acab7709b2579221417946b261f6c24710604eb8",
+                "reference": "acab7709b2579221417946b261f6c24710604eb8",
                 "shasum": ""
             },
             "require": {
@@ -336,7 +381,7 @@
             "require-dev": {
                 "squizlabs/php_codesniffer": "^2.7"
             },
-            "time": "2023-09-28T18:22:12+00:00",
+            "time": "2023-12-15T13:58:12+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -365,7 +410,7 @@
             ],
             "support": {
                 "issues": "https://github.com/pagarme/pagarme-core-api-php/issues",
-                "source": "https://github.com/pagarme/pagarme-core-api-php/tree/v5.6.3"
+                "source": "https://github.com/pagarme/pagarme-core-api-php/tree/v5.6.4"
             },
             "install-path": "../pagarme/pagarmecoreapi"
         },

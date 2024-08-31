@@ -9,6 +9,7 @@ use Pagarme\Core\Kernel\Services\MoneyService;
 use Pagarme\Core\Kernel\ValueObjects\CardBrand;
 use Pagarme\Core\Kernel\ValueObjects\Configuration\CardConfig;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\CardInstallments;
 use Woocommerce\Pagarme\Model\Config;
 
 final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
@@ -106,6 +107,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $configData = self::fillWithPixConfig($configData, $storeConfig);
         $configData = self::fillWithVoucherConfig($configData, $storeConfig);
         $configData = self::fillWithHubConfig($configData, $storeConfig);
+        $configData = self::fillWithMarketplaceConfig($configData);
 
         // These method calls are commented for now because they are not implemented yet:
         // $configData = self::fillWithAddressConfig($configData, $storeConfig);
@@ -118,6 +120,20 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         );
 
         self::$moduleConfig = $config;
+    }
+
+    /**
+     * @override
+     * @return string
+     */
+    public static function getInstallmentType()
+    {
+        $storeConfig = new Config;
+        $installmentType = $storeConfig->getInstallmentType();
+        if ( $installmentType == CardInstallments::INSTALLMENTS_LEGACY ) {
+            return "1.0";
+        }
+        return "2.0";
     }
 
     private static function checkWebSiteExists()
@@ -255,6 +271,28 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         return $dataObj;
     }
 
+    private static function fillWithMarketplaceConfig($configData)
+    {
+        global $wp_filter;
+        if (
+            !isset($wp_filter['pagarme_marketplace_config'])
+        ) {
+            return $configData;
+        }
+        $configSplit = new \stdClass();
+        $configSplit->enabled = true;
+        $configSplit->responsibilityForProcessingFees = "marketplace_sellers";
+        $configSplit->responsibilityForChargebacks = "marketplace_sellers";
+        $configSplit->responsibilityForReceivingSplitRemainder = "marketplace_sellers";
+        $configSplit->responsibilityForReceivingExtrasAndDiscounts = "marketplace_sellers";
+        $configSplit->mainRecipientId = null;
+
+        $configSplit = apply_filters( "pagarme_marketplace_config", $configSplit);
+        $configData->marketplaceConfig = $configSplit;
+
+        return $configData;
+    }
+
     private static function fillWithAddressConfig($dataObj, $storeConfig)
     {
         // Not implemented on Woocommerce because there is no address configuration
@@ -299,7 +337,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
                 true,
                 CardBrand::$brandMethod(),
                 (!empty($max) ? $max : 1),
-                (!empty($maxWithout) ? $maxWithout : 1),
+                (!empty($maxWithout) ? $maxWithout : 0),
                 $initial,
                 $incremental,
                 (!empty($minValue) ? $minValue : 0) * 100
