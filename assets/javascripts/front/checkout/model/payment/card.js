@@ -98,7 +98,7 @@ let pagarmeCard = {
     },
     checkTokenCard: function (event) {
         let allResult = [];
-        event.each(async function () {
+        event.each(function () {
             if (pagarmeCard.hasSelectedWallet(this)) {
                 allResult.push(true);
                 return;
