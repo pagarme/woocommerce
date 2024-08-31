@@ -414,7 +414,7 @@ let pagarmeCard = {
     execute: async function (event) {
         try {
             for (let i = 1; !pagarmeCard.isTokenized() && i <= this.limitTokenize; i++) {
-                if (i === this.limit) {
+                if (i === this.limitTokenize) {
                     this.removeLoader(event);
                     throw new Error("Tokenize timeout");
                 }
