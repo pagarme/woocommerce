@@ -412,7 +412,7 @@ let pagarmeCard = {
         return output;
     },
     execute: async function (event) {
-        this.showLoader();
+        this.showLoader(event);
         try {
             for (let i = 1; !pagarmeCard.isTokenized() && i <= this.limitTokenize; i++) {
                 if (i === this.limitTokenize) {
