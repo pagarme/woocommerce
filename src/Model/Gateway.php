@@ -69,12 +69,12 @@ class Gateway
      * @param bool $isGatewayType
      * @return array
      */
-    public function getInstallmentOptions($isGatewayType = false)
+    public function getInstallmentOptions($isGatewayType = false, $initialValue = 1)
     {
         $installments = [];
         $installmentsAmount = $this->getInstallmentsMaximumQuantity($isGatewayType);
 
-        for ($i = 0; $i <= $installmentsAmount; ++$i) {
+        for ($i = $initialValue; $i <= $installmentsAmount; ++$i) {
             $installments[$i] = $i;
         }
 

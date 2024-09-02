@@ -18,6 +18,7 @@ wp_localize_script(
     WCMP_JS_HANDLER_BASE_NAME . 'googlepay',
     'wc_pagarme_googlepay',
     [
+        'allowedCcFlags' => $this->getConfig()->getCcFlags(),
         'merchantName' => $this->getConfig()->getGooglepayGoogleMerchantName(),
         'merchantId' => $this->getConfig()->getGooglepayGoogleMerchantId(),
         'accountId' => $this->getConfig()->getAccountId()

@@ -1,19 +1,26 @@
 /* globals wc_pagarme_checkout */
 /* jshint esversion: 11 */
 let pagarmeGooglePay = {
+    woocommercePaymentMethods: 'input[name="payment_method"]',
+    googlePayAllowedBrands: ["AMEX", "ELO", "MASTERCARD", "VISA"],
+    pagarmeAllowedBrands: wc_pagarme_googlepay.allowedCcFlags,
+
     getGooglePaymentsClient: function () {
-        let self = this;
         let environment = "TEST";
-        // if (window.checkoutConfig.pagarme_is_sandbox_mode === false) {
-        //     environment = "PRODUCTION";
-        // }
+        if (parseInt(PagarmeGlobalVars.isSandboxMode, 10) !== 1) {
+            environment = "PRODUCTION";
+        }
 
         return new google.payments.api.PaymentsClient({
             environment: environment,
         });
     },
+
     addGooglePayButton: function () {
-        let self = this;
+        if (jQuery('#pagarme-googlepay button').length > 0) {
+            return;
+        }
+
         let paymentsClient = this.getGooglePaymentsClient();
         const button = paymentsClient.createButton({
             buttonColor: "default",
@@ -22,9 +29,8 @@ let pagarmeGooglePay = {
             buttonLocale: "pt",
             buttonSizeMode: "fill",
             onClick: this.onGooglePaymentButtonClicked
-            
         });
-        document.getElementById("pagarme-googlepay").appendChild(button);
+        jQuery('#pagarme-googlepay').append(button);
     },
 
     onPaymentAuthorized: function (paymentData) {
@@ -51,6 +57,7 @@ let pagarmeGooglePay = {
             apiVersion: 2,
             apiVersionMinor: 0,
         };
+
         const tokenizationSpecification = {
             type: "PAYMENT_GATEWAY",
             parameters: {
@@ -63,12 +70,14 @@ let pagarmeGooglePay = {
             type: "CARD",
             parameters: {
                 allowedAuthMethods: ["PAN_ONLY"],
-                allowedCardNetworks:  ["ELO", "MASTERCARD", "VISA"],
+                allowedCardNetworks: this.getAllowedCardNetworks(),
             },
         };
+
         const cardPaymentMethod = Object.assign({}, baseCardPaymentMethod, {
             tokenizationSpecification: tokenizationSpecification,
         });
+
         const paymentDataRequest = Object.assign({}, baseRequest);
         paymentDataRequest.allowedPaymentMethods = [cardPaymentMethod];
         paymentDataRequest.transactionInfo =
@@ -77,7 +86,22 @@ let pagarmeGooglePay = {
             merchantId: wc_pagarme_googlepay.merchantId,
             merchantName: wc_pagarme_googlepay.merchantName,
         };
+
         return paymentDataRequest;
+    },
+
+    getAllowedCardNetworks: function() {
+        const self = this;
+        let allowedCardNetworks = [];
+
+        jQuery.each(this.googlePayAllowedBrands, function(key, value) {
+            const index = jQuery.inArray(value.toLowerCase(), self.pagarmeAllowedBrands);
+            if(index !== -1) {
+                allowedCardNetworks.push(value.toUpperCase());
+            }
+        });
+
+        return allowedCardNetworks;
     },
 
     onGooglePaymentButtonClicked: function () {
@@ -89,7 +113,6 @@ let pagarmeGooglePay = {
         paymentsClient
             .loadPaymentData(paymentDataRequest)
             .then(function (paymentData) {
-                console.log(paymentData);
                 pagarmeGooglePay.processPayment(paymentData, self);
             })
             .catch(function (err) {
@@ -101,7 +124,6 @@ let pagarmeGooglePay = {
     },
 
     getGoogleTransactionInfo: function () {
-        // debugger;
         return {
             countryCode: "BR",
             currencyCode: "BRL",
@@ -122,8 +144,8 @@ let pagarmeGooglePay = {
 
 
     processPayment: function(paymentData) {
-        const checkoutPaymentElement = pagarmeGooglePay.getCheckoutPaymentElement();
-        let inputName =  'pagarme[googlepay][googlepay][payload]'
+        let checkoutPaymentElement = pagarmeGooglePay.getCheckoutPaymentElement();
+        let inputName =  'pagarme[googlepay][googlepay][payload]';
         let input = jQuery(document.createElement('input'));
         if (!(checkoutPaymentElement instanceof jQuery)) {
             checkoutPaymentElement = jQuery(checkoutPaymentElement);
@@ -131,27 +153,48 @@ let pagarmeGooglePay = {
         input.attr('type', 'hidden')
             .attr('name', inputName)
             .attr('id', "googlepaytoken")
-            .attr('value', paymentData.paymentMethodData.tokenizationData.token)
+            .attr('value', paymentData.paymentMethodData.tokenizationData.token);
         checkoutPaymentElement.append(input);
         checkoutPaymentElement.submit();
         jQuery('form#order_review').submit();
     },
+
     getCheckoutPaymentElement: function () {
         const value = jQuery('form .payment_methods input[name="payment_method"]:checked').val();
         return jQuery('.wc_payment_method.payment_method_' + value);
     },
 
+    togglePlaceOrderButton() {
+        const placeOrderButton = jQuery('#place_order'),
+            activeMethod = jQuery(`${this.woocommercePaymentMethods}:checked`).val();
+
+        if (activeMethod === 'woo-pagarme-payments-googlepay') {
+            placeOrderButton.slideUp();
+            return;
+        }
+
+        placeOrderButton.slideDown();
+    },
+
     addEventListener: function () {
         jQuery(document.body).on('updated_checkout', function () {
             pagarmeGooglePay.addGooglePayButton();
-        })
+            pagarmeGooglePay.togglePlaceOrderButton();
+        });
 
         jQuery(`${this.fieldsetCardElements} input`).on('change', function () {
             pagarmeGooglePay.clearErrorMessages();
         });
+
+        jQuery('form.checkout').on('change', `${this.woocommercePaymentMethods}`, function(){
+            pagarmeGooglePay.togglePlaceOrderButton();
+        });
+
     },
+
     start: function () {
         this.addEventListener();
     }
 };
+
 pagarmeGooglePay.start();
