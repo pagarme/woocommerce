@@ -606,4 +606,60 @@ class Utils
 
         return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
     }
+
+    /**
+     * @param $path
+     * @param $fileName
+     *
+     * @return string
+     */
+    private static function getScriptUrl($path, $fileName): string
+    {
+        return Core::plugins_url('assets/javascripts/' . $path . '/' . $fileName . '.js');
+    }
+
+    /**
+     * @param array $deps
+     *
+     * @return array
+     */
+    private static function setScriptDeps(array $deps = []): array
+    {
+        $defaultDeps = ['jquery'];
+        $mergedDeps = array_merge($defaultDeps, $deps);
+
+        return array_unique($mergedDeps);
+    }
+
+    /**
+     * @param $path
+     * @param $fileName
+     *
+     * @return false|int
+     */
+    private static function getScriptVersion($path, $fileName)
+    {
+        return Core::filemtime('assets/javascripts/' . $path . '/' . $fileName . '.js');
+    }
+
+    /**
+     *
+     *
+     * @param string $path The path to the script file, starting after the folders `assets/javascript/[path]`
+     * @param string $fileName The file name, without the extension `.js`
+     * @param array $deps Array of dependencies. `jquery` is added automatically
+     *
+     * @return array Returns an array with three keys: `src`, `deps` and `ver`, to be used with `wp_register_script`
+     */
+    public static function getRegisterScriptParameters(string $path, string $fileName, array $deps = []): array
+    {
+        $path = rtrim($path, '/');
+        $fileName = trim($fileName);
+
+        return [
+            'src'  => self::getScriptUrl($path, $fileName),
+            'deps' => self::setScriptDeps($deps),
+            'ver'  => self::getScriptVersion($path, $fileName)
+        ];
+    }
 }
