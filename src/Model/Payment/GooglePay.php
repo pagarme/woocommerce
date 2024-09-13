@@ -38,8 +38,4 @@ class GooglePay extends AbstractPayment implements PaymentInterface
     protected $dictionary = [
         'token' => 'token'
     ];
-    public function getAccountId()
-    {
-        return "TESTE";
-    }   
 }

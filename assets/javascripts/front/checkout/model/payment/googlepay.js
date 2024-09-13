@@ -7,7 +7,7 @@ let pagarmeGooglePay = {
 
     getGooglePaymentsClient: function () {
         let environment = "TEST";
-        if (parseInt(PagarmeGlobalVars.isSandboxMode, 10) !== 1) {
+        if (parseInt(wc_pagarme_googlepay.isSandboxMode, 10) !== 1) {
             environment = "PRODUCTION";
         }
 
@@ -69,7 +69,7 @@ let pagarmeGooglePay = {
         const baseCardPaymentMethod = {
             type: "CARD",
             parameters: {
-                allowedAuthMethods: ["PAN_ONLY"],
+                allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
                 allowedCardNetworks: this.getAllowedCardNetworks(),
             },
         };
@@ -155,6 +155,7 @@ let pagarmeGooglePay = {
             .attr('id', "googlepaytoken")
             .attr('value', paymentData.paymentMethodData.tokenizationData.token);
         checkoutPaymentElement.append(input);
+        jQuery("#payment_method_woo-pagarme-payments-credit_card").val("woo-pagarme-payments-googlepay");
         checkoutPaymentElement.submit();
         jQuery('form#order_review').submit();
     },
@@ -175,19 +176,19 @@ let pagarmeGooglePay = {
 
         placeOrderButton.slideDown();
     },
-
+    
     addEventListener: function () {
         jQuery(document.body).on('updated_checkout', function () {
             pagarmeGooglePay.addGooglePayButton();
             pagarmeGooglePay.togglePlaceOrderButton();
         });
+        
+        jQuery(document).on('payment_method_selected', function(){
+            pagarmeGooglePay.togglePlaceOrderButton();
+        });
 
         jQuery(`${this.fieldsetCardElements} input`).on('change', function () {
             pagarmeGooglePay.clearErrorMessages();
-        });
-
-        jQuery('form.checkout').on('change', `${this.woocommercePaymentMethods}`, function(){
-            pagarmeGooglePay.togglePlaceOrderButton();
         });
 
     },

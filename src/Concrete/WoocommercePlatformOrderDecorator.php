@@ -756,9 +756,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         &$paymentData
     ) {
         $newPaymentData = new stdClass();
-        // $newPaymentData->amount =
-            // $this->moneyService->floatToCents($this->platformOrder->getGrandTotal());
-        $cleanJson = stripslashes($this->formData['googlepay']['token']);
+        $moneyService = new MoneyService();
+        $cleanJson =  $this->formData['googlepay']['token'];
+        if(!json_decode($this->formData['googlepay']['token'])) {
+            $cleanJson =  stripslashes($this->formData['googlepay']['token']);
+        }
+        $newPaymentData->amount = $moneyService->floatToCents($this->getGrandTotal());
         $newPaymentData->googlepayData = $cleanJson;
         $newPaymentData->additionalInformation = ["googlepayData" => $cleanJson];
         $googlepayIndex = 'googlepay';

@@ -15,6 +15,32 @@ declare(strict_types=1);
 if (!function_exists('add_action')) {
     exit(0);
 }
+
+wp_localize_script(
+    WCMP_JS_HANDLER_BASE_NAME . 'googlepay',
+    'wc_pagarme_googlepay',
+    [
+        'allowedCcFlags' => $this->getConfig()->getCcFlags(),
+        'merchantName' => $this->getConfig()->getGooglepayGoogleMerchantName(),
+        'merchantId' => $this->getConfig()->getGooglepayGoogleMerchantId(),
+        'accountId' => $this->getConfig()->getAccountId(),
+        'isSandboxMode' => $this->getConfig()->getIsSandboxMode()
+    ]
+);
+?>
+
+
+<div id="pagarme-googlepay"></div>
+
+<script async onload="pagarmeGooglePay.addGooglePayButton()" src="https://pay.google.com/gp/p/js/pay.js"></script>
+
+<div class="pagarme_creditcard_divider">
+    <p>
+        Ou pagar com cartão
+    </p>
+</div>
+
+<?php
 $this->createBlock(
     '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
     'pagarme.checkout.form.card',

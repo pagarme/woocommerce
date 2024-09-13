@@ -10,22 +10,21 @@ const backendConfig = wc.wcSettings.getSetting(
     "woo-pagarme-payments-googlepay_data",
 );
 
-let googleResponse = [];
+const environment = backendConfig.isSandboxMode ? "TEST" : "PRODUCTION";
+
 const PagarmeGooglePayComponent = (props) => {
-    // console.log(props)
     const { emitResponse, eventRegistration } = props;
 
     useGooglepay(emitResponse, eventRegistration, backendConfig);
-
+    
     const {
         setToken
     } = useDispatch(pagarmeTokenStore);
-
-
+    
     return (
+        
         <GooglePayButton
-           
-            environment="TEST"
+            environment={environment}
             buttonLocale="pt"
             buttonType="pay"
             paymentRequest={{
@@ -62,6 +61,7 @@ const PagarmeGooglePayComponent = (props) => {
             onLoadPaymentData={(paymentRequest) => {
                 let googleToken = paymentRequest.paymentMethodData.tokenizationData.token;
                 setToken(googleToken);
+                jQuery(".wc-block-components-checkout-place-order-button").click();
             }}
         />
     );
@@ -91,5 +91,23 @@ const pagarmeGooglePayPaymentMethod = {
     canMakePayment: () => true,
     ariaLabel: backendConfig.ariaLabel,
 };
+const togglePlaceOrderButton = function() {
+    const placeOrderButton = jQuery('.wc-block-components-checkout-place-order-button');
+    var activeMethod = jQuery('input[name="radio-control-wc-payment-method-options"]:checked').val();
 
+    if (activeMethod === 'woo-pagarme-payments-googlepay') {
+        placeOrderButton.slideUp();
+        return;
+    }
+
+    placeOrderButton.slideDown();
+};
+
+jQuery(document).on('change load', function(){
+    togglePlaceOrderButton();
+});
+
+setTimeout(() => {
+    togglePlaceOrderButton();
+}, 1000);
 registerPaymentMethod(pagarmeGooglePayPaymentMethod);

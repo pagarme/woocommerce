@@ -2,6 +2,7 @@
 
 namespace Woocommerce\Pagarme\Block\ReactCheckout;
 
+use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Payment\GooglePay as GooglePayModel;
 
 class GooglePay extends AbstractPaymentMethodBlock
@@ -18,8 +19,12 @@ class GooglePay extends AbstractPaymentMethodBlock
     /** @var GooglePayModel */
     protected $paymentModel;
 
+    /** @var Config */
+    protected $config;
+
     public function __construct()
     {
+        $this->config = new Config;
         $paymentModel = new GooglePayModel();
         parent::__construct($paymentModel);
     }
@@ -27,9 +32,10 @@ class GooglePay extends AbstractPaymentMethodBlock
     public function getAdditionalPaymentMethodData()
     {
         return [
-            'accountId' => $this->settings['account_id'],
-            'merchantName' => $this->settings['googlepay_google_merchant_name'],
-            'merchantId' => $this->settings['googlepay_google_merchant_id']
+            'accountId' => $this->config->getAccountId(),
+            'merchantName' => $this->config->getGooglepayGoogleMerchantName(),
+            'merchantId' => $this->config->getGooglepayGoogleMerchantId(),
+            'isSandboxMode' => $this->config->getIsSandboxMode()
         ];
     }
 }

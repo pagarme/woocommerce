@@ -25,7 +25,7 @@ class CreditCard extends Gateway
      * @var string
      */
     protected $_template = 'templates/checkout/payment/credit-card';
-
+    protected $scripts = ['checkout/model/payment/googlepay'];
     /**
      * @return int
      */

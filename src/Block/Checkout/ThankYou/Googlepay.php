@@ -19,15 +19,10 @@ defined( 'ABSPATH' ) || exit;
  * Class CreditCard
  * @package Woocommerce\Pagarme\Block\Checkout\ThankYou
  */
-class Googlepay extends ThankYou
+class Googlepay extends CreditCard
 {
     /**
      * @var string
      */
-    protected $_template = 'templates/checkout/thankyou/googlepay';
-
-    public function getCharge()
-    {
-        return null;
-    }
+    protected $_template = 'templates/checkout/thankyou/credit-card';
 }
