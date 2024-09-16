@@ -57,6 +57,8 @@ class Recipient extends AbstractEntity implements RecipientInterface
     /** @var int */
     private $transferDay = 0;
     /** @var string */
+    private $status = '';
+    /** @var string */
     private $createdAt;
     /** @var string */
     private $updatedAt;
@@ -475,6 +477,48 @@ class Recipient extends AbstractEntity implements RecipientInterface
     {
         $this->transferDay = $transferDay;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     * @return Recipient
+     */
+    public function setStatus($status, $kycStatus = '')
+    {
+        $recipientStatus = static::parseStatus($status, $kycStatus);
+        $this->status = $recipientStatus;
+        return $this;
+    }
+
+    public static function parseStatus($status, $kycStatus)
+    {
+        if ($status === 'registration') {
+            if ($kycStatus === 'pending') {
+                return static::REGISTERED;
+            }
+
+            if ($kycStatus === 'denied') {
+                return static::DISAPPROVED;
+            }
+        }
+
+        if ($status === 'affiliation' && $kycStatus === 'pending') {
+            return static::WAITING_FOR_ANALYSIS;
+        }
+
+        if ($kycStatus === 'partially_denied') {
+            return static::VALIDATION_REQUESTED;
+        }
+
+        return $status;
     }
 
     /**

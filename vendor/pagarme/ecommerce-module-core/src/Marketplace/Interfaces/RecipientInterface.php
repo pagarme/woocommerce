@@ -4,6 +4,22 @@ namespace Pagarme\Core\Marketplace\Interfaces;
 
 interface RecipientInterface
 {
+    const REGISTERED = 'registered';
+
+    const VALIDATION_REQUESTED = 'validation_requested';
+
+    const WAITING_FOR_ANALYSIS = 'waiting_for_analysis';
+
+    const ACTIVE = 'active';
+
+    const DISAPPROVED = 'disapproved';
+
+    const SUSPENDED = 'suspended';
+
+    const BLOCKED = 'blocked';
+
+    const INACTIVE = 'inactive';
+
     /**
      * @return int
      */

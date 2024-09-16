@@ -12,12 +12,6 @@ class InstallCommand extends AbstractCommand
     {
         $moduleConfig = MPSetup::getModuleConfiguration();
 
-        if ($moduleConfig->isHubEnabled()) {
-            $exception = new Exception("Hub already installed!");
-            $this->logService->exception($exception);
-            throw $exception;
-        }
-
         $moduleConfig->setAccountId($this->getAccountId());
 
         $moduleConfig->setMerchantId($this->getMerchantId());
