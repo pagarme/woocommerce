@@ -15,7 +15,7 @@ declare(strict_types=1);
 if (!function_exists('add_action')) {
     exit(0);
 }
-
+$a = $this->getConfig();
 wp_localize_script(
     WCMP_JS_HANDLER_BASE_NAME . 'googlepay',
     'wc_pagarme_googlepay',
@@ -27,6 +27,8 @@ wp_localize_script(
         'isSandboxMode' => $this->getConfig()->getIsSandboxMode()
     ]
 );
+
+if($this->getConfig()->getEnableGooglepay()  == "yes"):
 ?>
 
 
@@ -41,6 +43,7 @@ wp_localize_script(
 </div>
 
 <?php
+endif; // Enable or disable googlepay
 $this->createBlock(
     '\Woocommerce\Pagarme\Block\Checkout\Form\Card',
     'pagarme.checkout.form.card',
