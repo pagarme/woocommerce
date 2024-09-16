@@ -1,55 +1,35 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./assets/javascripts/front/reactCheckout/payments/PaymentWithInstructions/index.js":
-/*!******************************************************************************************!*\
-  !*** ./assets/javascripts/front/reactCheckout/payments/PaymentWithInstructions/index.js ***!
-  \******************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "./node_modules/@google-pay/button-react/dist/index.umd.min.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@google-pay/button-react/dist/index.umd.min.js ***!
+  \*********************************************************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _usePaymentWithInstructions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./usePaymentWithInstructions */ "./assets/javascripts/front/reactCheckout/payments/PaymentWithInstructions/usePaymentWithInstructions.js");
+!function(e,t){ true?module.exports=t(__webpack_require__(/*! react */ "react")):0}(this,(function(e){"use strict";function t(e){return e&&"object"==typeof e&&"default"in e?e:{default:e}}var n=t(e);
+/*! *****************************************************************************
+    Copyright (c) Microsoft Corporation.
 
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
 
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
+    ***************************************************************************** */function o(e,t,n,o){return new(n||(n=Promise))((function(i,a){function s(e){try{l(o.next(e))}catch(e){a(e)}}function r(e){try{l(o.throw(e))}catch(e){a(e)}}function l(e){var t;e.done?i(e.value):(t=e.value,t instanceof n?t:new n((function(e){e(t)}))).then(s,r)}l((o=o.apply(e,t||[])).next())}))}let i={};function a(e){const t=i[e];if(t)return t;const n=new Promise(((t,n)=>{const o=document.createElement("script");o.src=e,o.async=!0;const a=()=>{t()},s=()=>{o.removeEventListener("load",a),o.removeEventListener("error",s),delete i[e],o.remove(),n(new Error(`Unable to load script ${e}`))};o.addEventListener("load",a),o.addEventListener("error",s),document.body.appendChild(o)}));return i[e]=n,n}class s{constructor(e){this.handleClick=e=>o(this,void 0,void 0,(function*(){const t=this.config;if(!t)throw new Error("google-pay-button: Missing configuration");const n=this.createLoadPaymentDataRequest(t);try{if(t.onClick&&t.onClick(e),e.defaultPrevented)return;const o=yield this.client.loadPaymentData(n);t.onLoadPaymentData&&t.onLoadPaymentData(o)}catch(e){"CANCELED"===e.statusCode?t.onCancel&&t.onCancel(e):t.onError?t.onError(e):console.error(e)}})),this.options=e}getElement(){return this.element}isGooglePayLoaded(){var e,t;return"google"in(window||__webpack_require__.g)&&!!(null===(t=null===(e=null===google||void 0===google?void 0:google.payments)||void 0===e?void 0:e.api)||void 0===t?void 0:t.PaymentsClient)}mount(e){var t;return o(this,void 0,void 0,(function*(){if(!this.isGooglePayLoaded())try{yield a("https://pay.google.com/gp/p/js/pay.js")}catch(e){return void((null===(t=this.config)||void 0===t?void 0:t.onError)?this.config.onError(e):console.error(e))}this.element=e,e&&(this.appendStyles(),this.config&&this.updateElement())}))}unmount(){this.element=void 0}configure(e){let t;return this.config=e,this.oldInvalidationValues&&!this.isClientInvalidated(e)||(t=this.updateElement()),this.oldInvalidationValues=this.getInvalidationValues(e),null!=t?t:Promise.resolve()}createClientOptions(e){const t={environment:e.environment,merchantInfo:this.createMerchantInfo(e)};return(e.onPaymentDataChanged||e.onPaymentAuthorized)&&(t.paymentDataCallbacks={},e.onPaymentDataChanged&&(t.paymentDataCallbacks.onPaymentDataChanged=t=>e.onPaymentDataChanged(t)||{}),e.onPaymentAuthorized&&(t.paymentDataCallbacks.onPaymentAuthorized=t=>e.onPaymentAuthorized(t)||{})),t}createIsReadyToPayRequest(e){const t=e.paymentRequest;return{apiVersion:t.apiVersion,apiVersionMinor:t.apiVersionMinor,allowedPaymentMethods:t.allowedPaymentMethods,existingPaymentMethodRequired:e.existingPaymentMethodRequired}}createLoadPaymentDataRequest(e){return Object.assign(Object.assign({},e.paymentRequest),{merchantInfo:this.createMerchantInfo(e)})}createMerchantInfo(e){const t=Object.assign({},e.paymentRequest.merchantInfo);return t.softwareInfo||(t.softwareInfo={id:this.options.softwareInfoId,version:this.options.softwareInfoVersion}),t}isMounted(){return null!=this.element&&!1!==this.element.isConnected}removeButton(){if(this.element instanceof ShadowRoot||this.element instanceof Element)for(const e of Array.from(this.element.children))"STYLE"!==e.tagName&&e.remove()}updateElement(){return o(this,void 0,void 0,(function*(){if(!this.isMounted())return;const e=this.getElement();if(!this.config)throw new Error("google-pay-button: Missing configuration");this.removeButton();try{this.client=new google.payments.api.PaymentsClient(this.createClientOptions(this.config))}catch(e){return void(this.config.onError?this.config.onError(e):console.error(e))}const t={buttonType:this.config.buttonType,buttonColor:this.config.buttonColor,buttonRadius:this.config.buttonRadius,buttonSizeMode:this.config.buttonSizeMode,buttonLocale:this.config.buttonLocale,onClick:this.handleClick,allowedPaymentMethods:this.config.paymentRequest.allowedPaymentMethods},n=e.getRootNode();n instanceof ShadowRoot&&(t.buttonRootNode=n);const o=this.client.createButton(t);this.setClassName(e,[e.className,"not-ready"]),e.appendChild(o);let i,a=!1;try{i=yield this.client.isReadyToPay(this.createIsReadyToPayRequest(this.config)),a=i.result&&!this.config.existingPaymentMethodRequired||i.result&&i.paymentMethodPresent&&this.config.existingPaymentMethodRequired||!1}catch(e){this.config.onError?this.config.onError(e):console.error(e)}if(this.isMounted()){if(a){try{this.client.prefetchPaymentData(this.createLoadPaymentDataRequest(this.config))}catch(e){console.log("Error with prefetch",e)}this.setClassName(e,(e.className||"").split(" ").filter((e=>e&&"not-ready"!==e)))}if((this.isReadyToPay!==(null==i?void 0:i.result)||this.paymentMethodPresent!==(null==i?void 0:i.paymentMethodPresent))&&(this.isReadyToPay=!!(null==i?void 0:i.result),this.paymentMethodPresent=null==i?void 0:i.paymentMethodPresent,this.config.onReadyToPayChange)){const e={isButtonVisible:a,isReadyToPay:this.isReadyToPay};this.paymentMethodPresent&&(e.paymentMethodPresent=this.paymentMethodPresent),this.config.onReadyToPayChange(e)}}}))}setClassName(e,t){const n=t.filter((e=>e)).join(" ");n?e.className=n:e.removeAttribute("class")}appendStyles(){var e,t,n;if("undefined"==typeof document)return;const o=null===(e=this.element)||void 0===e?void 0:e.getRootNode(),i=`default-google-style-${this.options.cssSelector.replace(/[^\w-]+/g,"")}-${null===(t=this.config)||void 0===t?void 0:t.buttonLocale}`;if(o&&!(null===(n=o.getElementById)||void 0===n?void 0:n.call(o,i))){const e=document.createElement("style");e.id=i,e.type="text/css",e.innerHTML=`\n          ${this.options.cssSelector} {\n            display: inline-block;\n          }\n          ${this.options.cssSelector}.not-ready {\n            width: 0;\n            height: 0;\n            overflow: hidden;\n          }\n        `,o instanceof Document&&o.head?o.head.appendChild(e):o.appendChild(e)}}isClientInvalidated(e){if(!this.oldInvalidationValues)return!0;return this.getInvalidationValues(e).some(((e,t)=>JSON.stringify(e)!==JSON.stringify(this.oldInvalidationValues[t])))}getInvalidationValues(e){var t,n;return[e.environment,e.existingPaymentMethodRequired,!!e.onPaymentDataChanged,!!e.onPaymentAuthorized,e.buttonType,e.buttonColor,e.buttonRadius,e.buttonLocale,e.buttonSizeMode,e.paymentRequest.merchantInfo.merchantId,e.paymentRequest.merchantInfo.merchantName,null===(t=e.paymentRequest.merchantInfo.softwareInfo)||void 0===t?void 0:t.id,null===(n=e.paymentRequest.merchantInfo.softwareInfo)||void 0===n?void 0:n.version,e.paymentRequest.allowedPaymentMethods]}}const r="google-pay-button-container";class l extends n.default.Component{constructor(){super(...arguments),this.manager=new s({cssSelector:`.${r}`,softwareInfoId:"@google-pay/button-react",softwareInfoVersion:"3.1.0"}),this.elementRef=n.default.createRef()}componentDidMount(){return o(this,void 0,void 0,(function*(){const e=this.elementRef.current;e&&(yield this.manager.configure(this.props),yield this.manager.mount(e))}))}componentWillUnmount(){this.manager.unmount()}componentDidUpdate(){this.manager.configure(this.props)}render(){return n.default.createElement("div",{ref:this.elementRef,className:[r,this.props.className].filter((e=>e)).join(" "),style:this.props.style})}}return l}));
 
-const PaymentWithInstructions = ({
-  emitResponse,
-  eventRegistration,
-  backendConfig
-}) => {
-  (0,_usePaymentWithInstructions__WEBPACK_IMPORTED_MODULE_1__["default"])(emitResponse, eventRegistration, backendConfig);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "pagarme-payment-method-instructions"
-  }, backendConfig.instructions), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "pagarme-payment-method-logo"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
-    className: "logo",
-    src: backendConfig.logo,
-    alt: backendConfig.label,
-    title: backendConfig.label
-  })));
-};
-PaymentWithInstructions.propTypes = {
-  emitResponse: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().object).isRequired,
-  eventRegistration: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().object).isRequired,
-  backendConfig: (prop_types__WEBPACK_IMPORTED_MODULE_2___default().object).isRequired
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PaymentWithInstructions);
 
 /***/ }),
 
-/***/ "./assets/javascripts/front/reactCheckout/payments/PaymentWithInstructions/usePaymentWithInstructions.js":
-/*!***************************************************************************************************************!*\
-  !*** ./assets/javascripts/front/reactCheckout/payments/PaymentWithInstructions/usePaymentWithInstructions.js ***!
-  \***************************************************************************************************************/
+/***/ "./assets/javascripts/front/reactCheckout/payments/GooglePay/useGooglepay.js":
+/*!***********************************************************************************!*\
+  !*** ./assets/javascripts/front/reactCheckout/payments/GooglePay/useGooglepay.js ***!
+  \***********************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -57,14 +37,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _store_googlepay__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store/googlepay */ "./assets/javascripts/front/reactCheckout/payments/store/googlepay.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
+/* jshint esversion: 9 */
 
-const usePaymentWithInstructions = (emitResponse, eventRegistration, backendConfig) => {
+
+
+const useGooglepay = (emitResponse, eventRegistration, backendConfig) => {
+  const {
+    reset
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_store_googlepay__WEBPACK_IMPORTED_MODULE_0__["default"]);
   const {
     onPaymentSetup
   } = eventRegistration;
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+  const cards = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
+    return select(_store_googlepay__WEBPACK_IMPORTED_MODULE_0__["default"]).getToken();
+  });
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     return onPaymentSetup(() => {
       const paymentMethodData = {
         payment_method: backendConfig.key
@@ -72,13 +64,99 @@ const usePaymentWithInstructions = (emitResponse, eventRegistration, backendConf
       return {
         type: emitResponse.responseTypes.SUCCESS,
         meta: {
-          paymentMethodData
+          paymentMethodData: {
+            pagarme: JSON.stringify({
+              [backendConfig.key]: {
+                [backendConfig.key]: {
+                  ['payload']: cards
+                }
+              }
+            }),
+            payment_method: backendConfig.key
+          }
         }
       };
     });
-  }, [onPaymentSetup, backendConfig]);
+  }, [onPaymentSetup, cards, backendConfig]);
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (usePaymentWithInstructions);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (useGooglepay);
+
+/***/ }),
+
+/***/ "./assets/javascripts/front/reactCheckout/payments/store/googlepay.js":
+/*!****************************************************************************!*\
+  !*** ./assets/javascripts/front/reactCheckout/payments/store/googlepay.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
+// pagarmeTokenStore.js
+
+
+const DEFAULT_CARD = {
+  token: "",
+  errors: {}
+};
+const DEFAULT_STATE = {
+  ...DEFAULT_CARD
+};
+const actions = {
+  setToken(token) {
+    return {
+      type: "SET_PROPERTY_VALUE",
+      value: token,
+      propertyName: "token"
+    };
+  },
+  setErrors(errors) {
+    return {
+      type: "SET_PROPERTY_VALUE",
+      value: errors,
+      propertyName: "errors"
+    };
+  },
+  reset() {
+    return {
+      type: "RESET"
+    };
+  }
+};
+const pagarmeTokenStore = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createReduxStore)("pagarme-googlepay", {
+  reducer(state = DEFAULT_STATE, action) {
+    switch (action.type) {
+      case "SET_PROPERTY_VALUE":
+        // console.log(action);
+        if (!action.propertyName) {
+          return state;
+        }
+        return {
+          ...state,
+          [action.propertyName]: action.value
+        };
+      case "RESET":
+        return DEFAULT_STATE;
+      default:
+        return state;
+    }
+  },
+  actions,
+  selectors: {
+    getToken(state) {
+      return state.token;
+    },
+    getErrors(state) {
+      return state.errors;
+    }
+  }
+});
+(0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.register)(pagarmeTokenStore);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (pagarmeTokenStore);
 
 /***/ }),
 
@@ -1185,6 +1263,28 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "react":
+/*!************************!*\
+  !*** external "React" ***!
+  \************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = window["React"];
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = window["wp"]["data"];
+
+/***/ }),
+
 /***/ "@wordpress/element":
 /*!*********************************!*\
   !*** external ["wp","element"] ***!
@@ -1193,30 +1293,6 @@ if (false) {} else {
 
 "use strict";
 module.exports = window["wp"]["element"];
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/extends.js":
-/*!************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/extends.js ***!
-  \************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _extends)
-/* harmony export */ });
-function _extends() {
-  return _extends = Object.assign ? Object.assign.bind() : function (n) {
-    for (var e = 1; e < arguments.length; e++) {
-      var t = arguments[e];
-      for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]);
-    }
-    return n;
-  }, _extends.apply(null, arguments);
-}
-
 
 /***/ })
 
@@ -1240,7 +1316,7 @@ function _extends() {
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -1271,6 +1347,18 @@ function _extends() {
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -1292,16 +1380,22 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!*************************************************************************!*\
-  !*** ./assets/javascripts/front/reactCheckout/payments/Billet/index.js ***!
-  \*************************************************************************/
+/*!****************************************************************************!*\
+  !*** ./assets/javascripts/front/reactCheckout/payments/GooglePay/index.js ***!
+  \****************************************************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _PaymentWithInstructions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../PaymentWithInstructions */ "./assets/javascripts/front/reactCheckout/payments/PaymentWithInstructions/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _google_pay_button_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @google-pay/button-react */ "./node_modules/@google-pay/button-react/dist/index.umd.min.js");
+/* harmony import */ var _google_pay_button_react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_google_pay_button_react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _useGooglepay__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./useGooglepay */ "./assets/javascripts/front/reactCheckout/payments/GooglePay/useGooglepay.js");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _store_googlepay__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store/googlepay */ "./assets/javascripts/front/reactCheckout/payments/store/googlepay.js");
+
+
 
 
 
@@ -1309,36 +1403,100 @@ __webpack_require__.r(__webpack_exports__);
 const {
   registerPaymentMethod
 } = window.wc.wcBlocksRegistry;
-const backendConfig = wc.wcSettings.getSetting("woo-pagarme-payments-billet_data");
-const PagarmeBilletComponent = props => {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_PaymentWithInstructions__WEBPACK_IMPORTED_MODULE_2__["default"], (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, props, {
-    backendConfig: backendConfig
-  }));
+const backendConfig = wc.wcSettings.getSetting("woo-pagarme-payments-googlepay_data");
+const environment = backendConfig.isSandboxMode ? "TEST" : "PRODUCTION";
+const PagarmeGooglePayComponent = props => {
+  const {
+    emitResponse,
+    eventRegistration
+  } = props;
+  (0,_useGooglepay__WEBPACK_IMPORTED_MODULE_2__["default"])(emitResponse, eventRegistration, backendConfig);
+  const {
+    setToken
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)(_store_googlepay__WEBPACK_IMPORTED_MODULE_4__["default"]);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)((_google_pay_button_react__WEBPACK_IMPORTED_MODULE_1___default()), {
+    environment: environment,
+    buttonLocale: "pt",
+    buttonType: "pay",
+    paymentRequest: {
+      apiVersion: 2,
+      apiVersionMinor: 0,
+      allowedPaymentMethods: [{
+        type: "CARD",
+        parameters: {
+          allowedAuthMethods: ["PAN_ONLY"],
+          allowedCardNetworks: ["MASTERCARD", "VISA", "ELO"]
+        },
+        tokenizationSpecification: {
+          type: "PAYMENT_GATEWAY",
+          parameters: {
+            gateway: 'pagarme',
+            gatewayMerchantId: backendConfig.accountId
+          }
+        }
+      }],
+      merchantInfo: {
+        merchantId: backendConfig.merchantId,
+        merchantName: backendConfig.merchantName
+      },
+      transactionInfo: {
+        totalPriceStatus: "FINAL",
+        totalPriceLabel: "Total",
+        totalPrice: (props.billing.cartTotal.value / 100).toString(),
+        currencyCode: "BRL",
+        countryCode: "BR"
+      }
+    },
+    onLoadPaymentData: paymentRequest => {
+      let googleToken = paymentRequest.paymentMethodData.tokenizationData.token;
+      setToken(googleToken);
+      jQuery(".wc-block-components-checkout-place-order-button").click();
+    }
+  });
 };
-const PagarmeBilletLabel = ({
+const PagarmeGooglePayLabel = ({
   components
 }) => {
   const {
     PaymentMethodLabel
   } = components;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(PaymentMethodLabel, {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PaymentMethodLabel, {
     text: backendConfig.label
   });
 };
-PagarmeBilletLabel.propTypes = {
-  components: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().object)
+PagarmeGooglePayComponent.propTypes = {
+  emitResponse: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object),
+  eventRegistration: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object)
 };
-const pagarmeBilletPaymentMethod = {
+PagarmeGooglePayLabel.propTypes = {
+  components: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object)
+};
+const pagarmeGooglePayPaymentMethod = {
   name: backendConfig.name,
-  label: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(PagarmeBilletLabel, null),
-  content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(PagarmeBilletComponent, null),
-  edit: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(PagarmeBilletComponent, null),
+  label: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PagarmeGooglePayLabel, null),
+  content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PagarmeGooglePayComponent, null),
+  edit: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PagarmeGooglePayComponent, null),
   canMakePayment: () => true,
   ariaLabel: backendConfig.ariaLabel
 };
-registerPaymentMethod(pagarmeBilletPaymentMethod);
+const togglePlaceOrderButton = function () {
+  const placeOrderButton = jQuery('.wc-block-components-checkout-place-order-button');
+  var activeMethod = jQuery('input[name="radio-control-wc-payment-method-options"]:checked').val();
+  if (activeMethod === 'woo-pagarme-payments-googlepay') {
+    placeOrderButton.slideUp();
+    return;
+  }
+  placeOrderButton.slideDown();
+};
+jQuery(document).on('change load', function () {
+  togglePlaceOrderButton();
+});
+setTimeout(() => {
+  togglePlaceOrderButton();
+}, 1000);
+registerPaymentMethod(pagarmeGooglePayPaymentMethod);
 })();
 
 /******/ })()
 ;
-//# sourceMappingURL=billet.js.map
+//# sourceMappingURL=googlepay.js.map
