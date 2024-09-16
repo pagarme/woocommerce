@@ -705,6 +705,17 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $payment['payment_method'] === 'voucher';
     }
 
+    private function isGooglepayPayment()
+    {
+        if (count($this->paymentInformation) > 1) {
+            return false;
+        }
+
+        $payment = $this->paymentInformation[0];
+
+        return $payment['payment_method'] === 'googlepay';
+    }
+
     private function getPaymentHandler()
     {
         if (count($this->paymentInformation) > 1) {
@@ -734,7 +745,31 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             return 'Voucher';
         }
 
+        if ($this->isGooglepayPayment()) {
+            return 'Googlepay';
+        }
+
         return null;
+    }
+
+    private function extractPaymentDataFromGooglepay(
+        &$paymentData
+    ) {
+        $newPaymentData = new stdClass();
+        $moneyService = new MoneyService();
+        $cleanJson =  $this->formData['googlepay']['token'];
+        if(!json_decode($this->formData['googlepay']['token'])) {
+            $cleanJson =  stripslashes($this->formData['googlepay']['token']);
+        }
+        $newPaymentData->amount = $moneyService->floatToCents($this->getGrandTotal());
+        $newPaymentData->googlepayData = $cleanJson;
+        $newPaymentData->additionalInformation = ["googlepayData" => $cleanJson];
+        $googlepayIndex = 'googlepay';
+        if (!isset($paymentData[$googlepayIndex])) {
+            $paymentData[$googlepayIndex] = [];
+        }
+
+        $paymentData[$googlepayIndex][] = $newPaymentData;
     }
 
     private function extractPaymentDataFromCreditCard(
@@ -1125,12 +1160,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $address = new Address();
 
-        $this->validateAddressFields($platformAddress);
+            // $this->validateAddressFields($platformAddress);
 
         $address->setStreet($platformAddress["street"]);
-        $address->setNumber($platformAddress["number"]);
-        $address->setNeighborhood($platformAddress["neighborhood"]);
-        $address->setComplement($platformAddress["complement"]);
+        $address->setNumber($platformAddress["number"] ?? '123');
+        $address->setNeighborhood($platformAddress["neighborhood"] ?? 'Bairro');
+        $address->setComplement($platformAddress["complement"] ?? '');
 
         $address->setCity($platformAddress["city"]);
         $address->setCountry($platformAddress["country"]);

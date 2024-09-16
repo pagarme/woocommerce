@@ -11,13 +11,10 @@ declare( strict_types=1 );
 
 namespace Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBox;
 
-use Exception;
 use Pagarme\Core\Kernel\Aggregates\Charge;
-use Pagarme\Core\Kernel\Services\ChargeService;
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\AbstractMetaBox;
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order\MetaBoxInterface;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Order;
 use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
@@ -36,10 +33,7 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
     protected $sortOrder = 1;
 
     /** @var int */
-    protected $title = 'Pagar.me - Charges';
-
-    /** @var Config */
-    private $config;
+    protected $title = 'Pagar.me - Capture/Cancellation';
 
     /**
      * @var Order
@@ -64,15 +58,13 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
         Json $jsonSerialize = null,
         array $data = [],
         Order $order = null,
-        \Woocommerce\Pagarme\Model\Charge $charge = null,
-        Config $config = null
+        \Woocommerce\Pagarme\Model\Charge $charge = null
     ) {
         parent::__construct($jsonSerialize, $data);
         try {
             $this->order = $order ?? new Order($this->getOrderId());
         } catch (\Exception $e) {}
         $this->charge = $charge ?? new \Woocommerce\Pagarme\Model\Charge;
-        $this->config = $config ?? new Config();
     }
 
     /**
@@ -98,26 +90,14 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
     }
 
     /**
-     * @return Charge[]|null
-     * @throws Exception
+     * @return false|Charge
      */
-    public function getCharges($orderCode)
+    public function getCharges()
     {
-        $chargeService = new ChargeService();
-        if ($orderCode) {
-            return $chargeService->findChargesByCode($orderCode);
+        if ($this->getOrder()) {
+            return $this->getOrder()->get_charges();
         }
-
         return null;
-    }
-
-    public function getChargeUrl($chargeID)
-    {
-        if (!$this->config->isAccAndMerchSaved()) {
-            return false;
-        }
-
-        return $this->config->getDashUrl() . 'charges/' . $chargeID;
     }
 
     /**
@@ -134,7 +114,6 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
     public function getHeaderGrid()
     {
         return [
-            'Created At',
             'Charge ID',
             'Type',
             "Total Amount",

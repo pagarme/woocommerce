@@ -3,33 +3,33 @@
  * @author      Open Source Team
  * @copyright   2022 Pagar.me (https://pagar.me)
  * @license     https://pagar.me Copyright
+ *
  * @link        https://pagar.me
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use WP_Error;
 use Exception;
 use WC_Admin_Settings;
 use WC_Payment_Gateway;
-use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
-use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
-use Woocommerce\Pagarme\Block\Template;
-use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Core;
-use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Charge;
-use Woocommerce\Pagarme\Model\Checkout;
-use Woocommerce\Pagarme\Model\Config;
-use Woocommerce\Pagarme\Model\Config\Source\Yesno;
-use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Order;
-use Woocommerce\Pagarme\Model\Payment\CreditCard;
-use Woocommerce\Pagarme\Model\Payment\PostFormatter;
+use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Charge;
+use Woocommerce\Pagarme\Model\Gateway;
+use Woocommerce\Pagarme\Model\Checkout;
+use Woocommerce\Pagarme\Block\Template;
 use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
-use WP_Error;
+use Woocommerce\Pagarme\Model\Config\Source\Yesno;
+use Woocommerce\Pagarme\Model\Payment\PostFormatter;
+use Woocommerce\Pagarme\Block\Order\EmailPaymentDetails;
+use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
+use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 
 defined('ABSPATH') || exit;
 
@@ -51,13 +51,13 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var string */
     const PAYMENT_OPTION_UPDATE_SLUG = 'woocommerce_update_options_payment_gateways_';
 
-    /** @var string */
+    /** @var string  */
     const PAYMENT_OPTIONS_SETTINGS_NAME = 'woocommerce_%s_settings';
 
-    /** @var array */
+    /** @var array  */
     const LEGACY_SETTINGS_NAME = [];
 
-    /** @var array */
+    /** @var array  */
     const LEGACY_SETTINGS_NEEDS_CONVERSION = [];
 
     const LEGACY_CONFIG_NAME = "";
@@ -86,7 +86,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /** @var GatewayBlock */
     private $gatewayBlock;
 
-    /** @var Template */
+    /** @var Template*/
     private $template;
 
     /** @var Yesno */
@@ -145,7 +145,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
         add_action('woocommerce_thankyou_' . $this->id, [$this, 'thank_you_page']);
         add_action('admin_enqueue_scripts', array($this, 'payments_scripts'));
-        add_action('woocommerce_email_after_order_table', [$this, 'pagarme_email_payment_info'], 15, 2);
+        add_action('woocommerce_email_after_order_table', [$this, 'pagarme_email_payment_info'], 15, 2 );
         $this->subscription = new Subscription($this);
         $this->addRefundSupport();
     }
@@ -181,11 +181,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /**
      * @param $orderId
-     *
-     * @return array|null
+     * @return array
      * @throws Exception
      */
-    public function process_payment($orderId)
+    public function process_payment($orderId): array
     {
         $wooOrder = $this->wooOrderRepository->getById($orderId);
         if ($this->subscription->isChangePaymentSubscription()) {
@@ -197,28 +196,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if ($this->subscription->hasSubscriptionFreeTrial()) {
             return $this->subscription->processFreeTrialSubscription($wooOrder);
         }
-
-        $process = $this->checkout->process($wooOrder);
-        if ($process) {
-            return [
-                'result'   => 'success',
-                'redirect' => $this->get_return_url($wooOrder)
-            ];
-        }
-
-        $errorMessage = $this->method == CreditCard::PAYMENT_CODE ? __(
-            '<p>You may have filled in one or more details incorrectly.</p>Try to fill in the details exactly as they '
-            . 'appear on your card or bank app to complete the payment.',
-            'woo-pagarme-payments'
-        ) : __('Error processing payment. Please try again later.', 'woo-pagarme-payments');
-
-        if (Utils::isCheckoutBlock()) {
-            wp_die($errorMessage, 'error');
-        }
-
-        wc_add_notice($errorMessage, 'error');
-
-        return null;
+        $this->checkout->process($wooOrder);
+        return [
+            'result'   => 'success',
+            'redirect' => $this->get_return_url($wooOrder)
+        ];
     }
 
     /**
@@ -233,7 +215,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /**
      * @param $orderId
-     *
      * @return void
      */
     public function receipt_page($orderId)
@@ -243,7 +224,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /**
      * @param $order_id
-     *
      * @return void
      */
     public function checkout_transparent($order_id)
@@ -254,7 +234,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /**
      * @param $order_id
-     *
      * @return void
      * @throws Exception
      */
@@ -267,10 +246,10 @@ abstract class AbstractGateway extends WC_Payment_Gateway
                 '\Woocommerce\Pagarme\Block\Checkout\ThankYou',
                 'pagarme.checkout.thank-you',
                 [
-                    'woo_order'      => $order,
-                    'pagarme_order'  => $pagarmeOrder,
+                    'woo_order' => $order,
+                    'pagarme_order' => $pagarmeOrder,
                     'payment_method' => $this->method,
-                    'container'      => true
+                    'container' => true
                 ]
             )->toHtml();
         }
@@ -313,7 +292,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if ($title = $this->get_option('title')) {
             return $title;
         }
-
         return $this->getPaymentMethodTitle();
     }
 
@@ -322,7 +300,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      */
     public function getPaymentMethodTitle()
     {
-        return __(ucwords(str_replace('-', ' ', str_replace('_', ' ', $this->method))), 'woo-pagarme-payments');
+        return __($this->model->getPaymentInstance($this->method)->getName(), 'woo-pagarme-payments');
     }
 
     /**
@@ -355,7 +333,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if ($this->isGatewayType()) {
             return $this->gateway_form_fields();
         }
-
         return [];
     }
 
@@ -376,7 +353,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if (empty($isPaymentGateway) || !key_exists($this->method, $isPaymentGateway)) {
             return $this->model->config->getIsGatewayIntegrationType();
         }
-
         return $isPaymentGateway[$this->method];
     }
 
@@ -390,11 +366,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             'type'    => 'select',
             'options' => $this->yesnoOptions->toLabelsArray(true),
             'label'   => __('Enable', 'woo-pagarme-payments') . ' ' .
-                         __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
+                __($this->getPaymentMethodTitle(), 'woo-pagarme-payments'),
             'default' => __(
-                             $this->config->getData('enable_' . $this->method),
-                             'woo-pagarme-payments'
-                         ) ?? strtolower(Yesno::NO),
+                $this->config->getData('enable_' . $this->method),
+                'woo-pagarme-payments'
+                ) ?? strtolower(Yesno::NO),
         ];
     }
 
@@ -412,19 +388,16 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         ];
     }
 
-    protected function getOldTitleName()
-    {
+    protected function getOldTitleName() {
         return null;
     }
-
     /**
      * @param string $fieldName
-     *
      * @return string
      */
     protected function getOldConfiguration($fieldName)
     {
-        if ($this->config->getData($fieldName)) {
+        if($this->config->getData($fieldName)) {
             return $this->config->getData($fieldName);
         }
         $oldData = get_option($this::LEGACY_CONFIG_NAME);
@@ -432,7 +405,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         if ($oldData !== false && $legacyFieldName !== false && array_key_exists($legacyFieldName, $oldData)) {
             return $this->getOldData($legacyFieldName, $fieldName, $oldData);
         }
-
         return null;
     }
 
@@ -445,21 +417,18 @@ abstract class AbstractGateway extends WC_Payment_Gateway
             !empty($oldData[$legacyFieldName])
             && in_array($fieldName, $this::LEGACY_SETTINGS_NEEDS_CONVERSION)
         ) {
-            $functionHandler = "convert" . Utils::snakeToPascalCase($fieldName);
-
+            $functionHandler = "convert".Utils::snakeToPascalCase($fieldName);
             return $this->$functionHandler($oldData);
         }
-
         return $oldData[$legacyFieldName];
     }
 
-
+    
     protected function getLegacyFieldsName($fieldName)
     {
         if (array_key_exists($fieldName, $this::LEGACY_SETTINGS_NAME)) {
             return $this::LEGACY_SETTINGS_NAME[$fieldName];
         }
-
         return false;
     }
 
@@ -467,7 +436,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      * @param mixed $optionName
      * @param mixed $oldValue
      * @param mixed $values
-     *
      * @return void
      */
     public function beforeUpdateAdminOptions($optionName, $oldValue, $values)
@@ -483,7 +451,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     /**
      * @param mixed $optionName
      * @param mixed $values
-     *
      * @return void
      */
     public function beforeAddAdminOptions($optionName, $values)
@@ -498,7 +465,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /**
      * @param array $values
-     *
      * @return void
      */
     protected function saveAdminOptionsInCoreConfig($values)
@@ -517,7 +483,6 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
     /**
      * @param mixed $order
-     *
      * @return void
      */
     public function pagarme_email_payment_info($order, $sent_to_admin)

@@ -16,21 +16,17 @@ use Woocommerce\Pagarme\Block\Checkout\Gateway;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class CreditCard
+ * Class Pix
  * @package Woocommerce\Pagarme\Block\Checkout\Payment
  */
-class CreditCard extends Gateway
+class Googlepay extends Gateway
 {
     /**
      * @var string
      */
-    protected $_template = 'templates/checkout/payment/credit-card';
-    protected $scripts = ['checkout/model/payment/googlepay'];
-    /**
-     * @return int
+    protected $_template = 'templates/checkout/payment/googlepay';
+        /**
+     * @var string[]
      */
-    public function getQtyCards()
-    {
-        return 1;
-    }
+    protected $scripts = ['checkout/model/payment/googlepay'];
 }

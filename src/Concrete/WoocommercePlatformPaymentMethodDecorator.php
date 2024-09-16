@@ -15,6 +15,8 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
 
     /** @var string */
     const PIX = "pix";
+    /** @var string */
+    const GOOGLEPAY = "googlepay";
 
     private $paymentMethod;
 
@@ -60,5 +62,10 @@ class WoocommercePlatformPaymentMethodDecorator implements PlatformPaymentMethod
     private function getPix()
     {
         return self::PIX;
+    }
+
+    private function getGooglepay()
+    {
+        return self::GOOGLEPAY;
     }
 }
