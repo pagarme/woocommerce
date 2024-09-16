@@ -103,11 +103,4 @@ const togglePlaceOrderButton = function() {
     placeOrderButton.slideDown();
 };
 
-jQuery(document).on('change load', function(){
-    togglePlaceOrderButton();
-});
-
-setTimeout(() => {
-    togglePlaceOrderButton();
-}, 1000);
 registerPaymentMethod(pagarmeGooglePayPaymentMethod);

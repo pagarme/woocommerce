@@ -277,7 +277,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
         $dataObj->testMode = $storeConfig->getIsSandboxMode();
         $dataObj->allowNoAddress = $storeConfig->getAllowNoAddress();
         $dataObj->sendMail = false;
-        $dataObj->createOrder = false;
+        $dataObj->createOrder = true;
 
         if (self::$moduleConfig !== null) {
             $oldStoreId = self::$moduleConfig->getStoreId();

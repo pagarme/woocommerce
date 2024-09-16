@@ -15,7 +15,7 @@ declare(strict_types=1);
 if (!function_exists('add_action')) {
     exit(0);
 }
-$a = $this->getConfig();
+
 wp_localize_script(
     WCMP_JS_HANDLER_BASE_NAME . 'googlepay',
     'wc_pagarme_googlepay',
@@ -38,7 +38,7 @@ if($this->getConfig()->getEnableGooglepay()  == "yes"):
 
 <div class="pagarme_creditcard_divider">
     <p>
-        Ou pagar com cartão
+        <?=__("Or pay with card", 'woo-pagarme-payments')?>
     </p>
 </div>
 

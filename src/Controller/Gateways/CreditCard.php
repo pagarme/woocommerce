@@ -372,7 +372,7 @@ class CreditCard extends AbstractGateway
             'title' => __('Number of installments without interest', 'woo-pagarme-payments'),
             'type' => 'select',
             'default' => $this->getOldConfiguration('cc_installments_without_interest') ?? 3,
-            'options' => $this->model->getInstallmentOptions($this->isGatewayType(), 0),
+            'options' => $this->model->getInstallmentOptions($this->isGatewayType()),
             'custom_attributes' => array(
                 'data-field' => 'installments-without-interest',
             ),
@@ -767,7 +767,7 @@ class CreditCard extends AbstractGateway
 
         return $cardList;
     }
-
+    
     protected function convertCcInstallmentsInterest($value)
     {
         return $value['interest_rate'] * ($value['free_installments'] + 1);

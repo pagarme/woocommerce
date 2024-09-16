@@ -25,7 +25,7 @@ use Woocommerce\Pagarme\Service\CardService;
 use Woocommerce\Pagarme\Service\CustomerService;
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
 
-class Subscription extends Meta
+class Subscription
 {
     /** @var Config */
     private $config;
@@ -301,7 +301,7 @@ class Subscription extends Meta
      */
     private function saveCardInSubscription(array $card, \WC_Subscription $subscription)
     {
-        $subscription->update_meta_data('_pagarme_payment_subscription', json_encode($card), true);
+        $subscription->add_meta_data('_pagarme_payment_subscription', json_encode($card), true);
         $subscription->save();
     }
 

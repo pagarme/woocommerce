@@ -6,6 +6,7 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use WC_Blocks_Utils;
 use WC_Order;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Order;
@@ -593,5 +594,16 @@ class Utils
     public static function snakeToPascalCase($value)
     {
         return ucfirst(str_replace('_', '', ucwords($value, '_')));
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isCheckoutBlock() {
+        if (!class_exists(WC_Blocks_Utils::class)) {
+            return false;
+        }
+
+        return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
     }
 }

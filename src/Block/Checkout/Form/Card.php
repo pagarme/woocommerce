@@ -13,7 +13,6 @@ namespace Woocommerce\Pagarme\Block\Checkout\Form;
 
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
-use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\Payment\Voucher;
 use Woocommerce\Pagarme\Block\Checkout\Gateway;
@@ -150,16 +149,14 @@ class Card extends Gateway
 
     public static function getLocalizeScriptArgs($args = array())
     {
-        $config = new Config();
         $defaults = array(
             'ajaxUrl'        => Utils::get_admin_url('admin-ajax.php'),
+            'WPLANG'         => get_locale(),
+            'spinnerUrl'     => Core::plugins_url('assets/images/icons/spinner.png'),
+            'prefix'         => Core::PREFIX,
             'checkoutErrors' => array(
                 'pt_BR' => self::getCardErrorsMessagesTranslated(),
             ),
-            'isSandboxMode'  => $config->getIsSandboxMode(),
-            'prefix'         => Core::PREFIX,
-            'spinnerUrl'     => Core::plugins_url('assets/images/icons/spinner.png'),
-            'WPLANG'         => get_locale(),
         );
 
         return array_merge($defaults, $args);
