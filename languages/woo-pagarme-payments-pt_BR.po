@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-09-16 15:56-0300\n"
+"PO-Revision-Date: 2024-09-16 16:49-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1130,8 +1130,8 @@ msgstr "Total"
 msgid "Billet And Card"
 msgstr "Boleto e Cartão"
 
-msgid "Pagar.me - Capture/Cancellation"
-msgstr "Pagar.me - Captura/Cancelamento"
+msgid "Pagar.me - Charges"
+msgstr "Pagar.me - Cobranças"
 
 msgid "Last Four Digits"
 msgstr "Últimos quatro dígitos"
@@ -1142,8 +1142,17 @@ msgstr "Titular"
 msgid "No records found."
 msgstr "Nenhum registro foi encontrado."
 
+msgid "Created At"
+msgstr "Criado Em"
+
+msgid "Charge ID"
+msgstr "ID da Cobrança"
+
 msgid "Refunded"
 msgstr "Reembolsado"
+
+msgid "Capture"
+msgstr "Capturar"
 
 msgid "Captured"
 msgstr "Capturado"
