@@ -20,6 +20,7 @@ use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use WC_Order;
 use WC_Subscriptions_Product;
 use Woocommerce\Pagarme\Controller\Orders;
+use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Service\LogService;
 use Woocommerce\Pagarme\Service\CardService;
 use Woocommerce\Pagarme\Service\CustomerService;
@@ -301,7 +302,14 @@ class Subscription
      */
     private function saveCardInSubscription(array $card, \WC_Subscription $subscription)
     {
-        $subscription->add_meta_data('_pagarme_payment_subscription', json_encode($card), true);
+        $key = '_pagarme_payment_subscription';
+        $value = json_encode($card);
+        if (FeatureCompatibilization::isHposActivated()) {
+            $subscription->update_meta_data($key, Utils::rm_tags($value));
+            $subscription->save();
+            return;
+        }
+        update_metadata('post', $subscription->get_id(), $key, $value);
         $subscription->save();
     }
 
