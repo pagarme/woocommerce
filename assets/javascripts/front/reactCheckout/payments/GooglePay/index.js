@@ -91,16 +91,5 @@ const pagarmeGooglePayPaymentMethod = {
     canMakePayment: () => true,
     ariaLabel: backendConfig.ariaLabel,
 };
-const togglePlaceOrderButton = function() {
-    const placeOrderButton = jQuery('.wc-block-components-checkout-place-order-button');
-    var activeMethod = jQuery('input[name="radio-control-wc-payment-method-options"]:checked').val();
-
-    if (activeMethod === 'woo-pagarme-payments-googlepay') {
-        placeOrderButton.slideUp();
-        return;
-    }
-
-    placeOrderButton.slideDown();
-};
 
 registerPaymentMethod(pagarmeGooglePayPaymentMethod);

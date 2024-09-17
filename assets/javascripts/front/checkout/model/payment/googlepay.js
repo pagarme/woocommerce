@@ -164,27 +164,10 @@ let pagarmeGooglePay = {
         const value = jQuery('form .payment_methods input[name="payment_method"]:checked').val();
         return jQuery('.wc_payment_method.payment_method_' + value);
     },
-
-    togglePlaceOrderButton() {
-        const placeOrderButton = jQuery('#place_order'),
-            activeMethod = jQuery(`${this.woocommercePaymentMethods}:checked`).val();
-
-        if (activeMethod === 'woo-pagarme-payments-googlepay') {
-            placeOrderButton.slideUp();
-            return;
-        }
-
-        placeOrderButton.slideDown();
-    },
     
     addEventListener: function () {
         jQuery(document.body).on('updated_checkout', function () {
             pagarmeGooglePay.addGooglePayButton();
-            pagarmeGooglePay.togglePlaceOrderButton();
-        });
-        
-        jQuery(document).on('payment_method_selected', function(){
-            pagarmeGooglePay.togglePlaceOrderButton();
         });
 
         jQuery(`${this.fieldsetCardElements} input`).on('change', function () {

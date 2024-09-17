@@ -128,9 +128,9 @@
             'dev_requirement' => true,
         ),
         'pagarme/ecommerce-module-core' => array(
-            'pretty_version' => 'dev-develop',
-            'version' => 'dev-develop',
-            'reference' => '946de19bd2a969afe3f7d3f51093bdb0f122b836',
+            'pretty_version' => '2.6.0',
+            'version' => '2.6.0.0',
+            'reference' => '83eff7118a3a6ead781a920d2fa42b6a186105d2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../pagarme/ecommerce-module-core',
             'aliases' => array(),

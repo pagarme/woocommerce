@@ -16,7 +16,7 @@ use Woocommerce\Pagarme\Block\Checkout\Gateway;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Pix
+ * Class Googlepay
  * @package Woocommerce\Pagarme\Block\Checkout\Form
  */
 class GooglePay extends Gateway

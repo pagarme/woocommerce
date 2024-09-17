@@ -16,7 +16,7 @@ use Woocommerce\Pagarme\Block\Checkout\ThankYou;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class CreditCard
+ * Class Googlepay
  * @package Woocommerce\Pagarme\Block\Checkout\ThankYou
  */
 class Googlepay extends CreditCard

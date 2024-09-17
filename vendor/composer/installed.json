@@ -693,17 +693,17 @@
         },
         {
             "name": "pagarme/ecommerce-module-core",
-            "version": "dev-develop",
-            "version_normalized": "dev-develop",
+            "version": "2.6.0",
+            "version_normalized": "2.6.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pagarme/ecommerce-module-core.git",
-                "reference": "946de19bd2a969afe3f7d3f51093bdb0f122b836"
+                "reference": "83eff7118a3a6ead781a920d2fa42b6a186105d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/946de19bd2a969afe3f7d3f51093bdb0f122b836",
-                "reference": "946de19bd2a969afe3f7d3f51093bdb0f122b836",
+                "url": "https://api.github.com/repos/pagarme/ecommerce-module-core/zipball/83eff7118a3a6ead781a920d2fa42b6a186105d2",
+                "reference": "83eff7118a3a6ead781a920d2fa42b6a186105d2",
                 "shasum": ""
             },
             "require": {
@@ -718,7 +718,7 @@
                 "nesbot/carbon": "1.39.0",
                 "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9"
             },
-            "time": "2024-07-23T18:30:25+00:00",
+            "time": "2024-09-11T17:34:41+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -739,7 +739,7 @@
             ],
             "description": "Core component for Pagar.me e-commerce platform modules.",
             "support": {
-                "source": "https://github.com/pagarme/ecommerce-module-core/tree/develop"
+                "source": "https://github.com/pagarme/ecommerce-module-core/tree/2.6.0"
             },
             "install-path": "../pagarme/ecommerce-module-core"
         },
