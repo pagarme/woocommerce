@@ -115,12 +115,7 @@ let pagarmeCard = {
     },
     checkToken: function (event) {
         event = this.formatEventToJQuery(event);
-        return !!event.find(this.tokenElement).length && this.checkTokenExpirationDate(event.find(this.tokenElement));
-    },
-    checkTokenExpirationDate: function (event) {
-        const expirationDateTimeAttribute = event.attr(this.tokenExpirationAttribute);
-        const expirationDate = new Date(expirationDateTimeAttribute);
-        return expirationDate > new Date();
+        return !!event.find(this.tokenElement).length;
     },
     getCardDataContingency: async function (cardNumber) {
         let oldPrefix = '',
@@ -433,9 +428,7 @@ let pagarmeCard = {
             } else {
                 this.showError(er.message);
             }
-        } finally {
-            this.removeLoader(event);
-        }
+        } 
     },
     canExecute: function (event) {
         const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
