@@ -423,12 +423,13 @@ let pagarmeCard = {
             let formCheckout = this.formatEventToJQuery(event);
             formCheckout.submit();
         } catch (er) {
+            this.removeLoader(event);
             if (typeof er === 'string') {
                 this.showError(er);
             } else {
                 this.showError(er.message);
             }
-        } 
+        }
     },
     canExecute: function (event) {
         const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
