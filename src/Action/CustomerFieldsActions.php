@@ -20,15 +20,6 @@ defined('ABSPATH') || exit;
  */
 class CustomerFieldsActions implements RunnerInterface
 {
-    const ADDRESS_TYPES = [
-        'billing',
-        'shipping'
-    ];
-    const DOCUMENT_TYPES = [
-        'cpf',
-        'cnpj',
-    ];
-
     private $customerFields;
 
     public function __construct()
@@ -39,9 +30,17 @@ class CustomerFieldsActions implements RunnerInterface
     public function run()
     {
         add_filter('woocommerce_checkout_init', array($this, 'enqueueScript'));
-        add_filter('woocommerce_default_address_fields', array($this, 'overrideAddressFields'));
         add_filter('woocommerce_checkout_fields', array($this, 'addDocumentField'));
         add_action('woocommerce_checkout_process', array($this, 'validateDocument'));
+        add_action(
+            'woocommerce_admin_order_data_after_billing_address',
+            array($this, 'displayBillingDocumentOrderMeta')
+        );
+        add_action(
+            'woocommerce_admin_order_data_after_shipping_address',
+            array($this, 'displayShippingDocumentOrderMeta')
+        );
+        add_filter('woocommerce_default_address_fields', array($this, 'overrideAddressFields'));
     }
 
     public function enqueueScript()
@@ -67,7 +66,7 @@ class CustomerFieldsActions implements RunnerInterface
             return $fields;
         }
 
-        foreach (self::ADDRESS_TYPES as $addressType) {
+        foreach ($this->customerFields::ADDRESS_TYPES as $addressType) {
             $fields[$addressType]["{$addressType}_document"] = array(
                 'label'       => __('Document', 'woo-pagarme-payments'),
                 'placeholder' => __('CPF or CNPJ', 'woo-pagarme-payments'),
@@ -82,13 +81,14 @@ class CustomerFieldsActions implements RunnerInterface
 
     /**
      * @return void
-     * @uses isValidCnpj()
-     * @uses isValidCpf()
+     * @uses CustomerFields::isValidCnpj()
+     * @uses CustomerFields::isValidCpf()
      */
     public function validateDocument()
     {
-        foreach (self::ADDRESS_TYPES as $addressType) {
-            $document = $_POST["{$addressType}_document"];
+        foreach ($this->customerFields::ADDRESS_TYPES as $addressType) {
+            $fieldName = "{$addressType}_document";
+            $document = $_POST[$fieldName];
 
             if (!$document) {
                 continue;
@@ -103,19 +103,22 @@ class CustomerFieldsActions implements RunnerInterface
                         'Please, enter a valid document number in the <b>%s Document</b>.',
                         'woo-pagarme-payments'
                     ),
-                    __(
-                        ucwords($addressType),
+                    _x(
+                        ucfirst($addressType),
+                        'checkout-document-error',
                         'woo-pagarme-payments'
                     )
                 );
 
-                wc_add_notice($errorMessage, 'error');
+                wc_add_notice($errorMessage, 'error', ['pagarme-error' => $fieldName]);
                 continue;
             }
 
-            $documentType = $documentLength === 11 ? self::DOCUMENT_TYPES[0] : self::DOCUMENT_TYPES[1];
-            $functionName = 'isValid' . ucwords($documentType);
-            $isValidDocument = $this->{$functionName}($documentNumber);
+            $documentType = $documentLength === 11
+                ? $this->customerFields::DOCUMENT_TYPES[0]
+                : $this->customerFields::DOCUMENT_TYPES[1];
+            $functionName = 'isValid' . ucfirst($documentType);
+            $isValidDocument = $this->customerFields->{$functionName}($documentNumber);
 
             if (!$isValidDocument) {
                 $errorMessage = sprintf(
@@ -124,14 +127,35 @@ class CustomerFieldsActions implements RunnerInterface
                         'woo-pagarme-payments'
                     ),
                     strtoupper($documentType),
-                    __(
-                        ucwords($addressType),
+                    _x(
+                        ucfirst($addressType),
+                        'checkout-document-error',
                         'woo-pagarme-payments'
                     )
                 );
-                wc_add_notice($errorMessage, 'error');
+                wc_add_notice($errorMessage, 'error', ['pagarme-error' => $fieldName]);
             }
         }
+    }
+
+    /**
+     * @param $order
+     *
+     * @return void
+     */
+    public function displayBillingDocumentOrderMeta($order)
+    {
+        $this->customerFields->displayDocumentOrderMeta($order, $this->customerFields::ADDRESS_TYPES[0]);
+    }
+
+    /**
+     * @param $order
+     *
+     * @return void
+     */
+    public function displayShippingDocumentOrderMeta($order)
+    {
+        $this->customerFields->displayDocumentOrderMeta($order, $this->customerFields::ADDRESS_TYPES[1]);
     }
 
     /**
@@ -152,61 +176,5 @@ class CustomerFieldsActions implements RunnerInterface
         $fields['address_2']['label_class'] = '';
 
         return $fields;
-    }
-
-    /**
-     * @param $cpf
-     *
-     * @return bool
-     */
-    private function isValidCpf($cpf): bool
-    {
-        if (strlen($cpf) !== 11 || preg_match('/(\d)\1{10}/', $cpf)) {
-            return false;
-        }
-
-        for ($t = 9; $t < 11; $t ++) {
-            for ($d = 0, $c = 0; $c < $t; $c ++) {
-                $d += $cpf[$c] * (($t + 1) - $c);
-            }
-            $d = ((10 * $d) % 11) % 10;
-            if ($cpf[$c] != $d) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $cnpj
-     *
-     * @return bool
-     */
-    private function isValidCnpj($cnpj): bool
-    {
-        if (strlen($cnpj) != 14 || preg_match('/(\d)\1{13}/', $cnpj)) {
-            return false;
-        }
-
-        for ($i = 0, $j = 5, $sum = 0; $i < 12; $i ++) {
-            $sum += $cnpj[$i] * $j;
-            $j = ($j == 2) ? 9 : $j - 1;
-        }
-
-        $remainder = $sum % 11;
-
-        if ($cnpj[12] != ($remainder < 2 ? 0 : 11 - $remainder)) {
-            return false;
-        }
-
-        for ($i = 0, $j = 6, $sum = 0; $i < 13; $i ++) {
-            $sum += $cnpj[$i] * $j;
-            $j = ($j == 2) ? 9 : $j - 1;
-        }
-
-        $remainder = $sum % 11;
-
-        return $cnpj[13] == ($remainder < 2 ? 0 : 11 - $remainder);
     }
 }

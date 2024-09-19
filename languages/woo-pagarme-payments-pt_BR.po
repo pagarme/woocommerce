@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-09-09 19:35-0300\n"
+"PO-Revision-Date: 2024-09-16 14:34-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1501,9 +1501,11 @@ msgstr "Documento"
 msgid "CPF or CNPJ"
 msgstr "CPF ou CNPJ"
 
+msgctxt "checkout-document-error"
 msgid "Billing"
 msgstr "faturamento"
 
+msgctxt "checkout-document-error"
 msgid "Shipping"
 msgstr "envio"
 
@@ -1512,6 +1514,15 @@ msgstr "Por favor, digite um número de documento válido <b>no campo Documento 
 
 msgid "Please, enter a valid %s number in the <b>%s Document</b>."
 msgstr "Por favor, digite um número de %s válido <b>no campo &quot;Documento&quot; do endereço de %s</b>."
+
+msgid "%s Document"
+msgstr "Documento de %s"
+
+msgid "Billing"
+msgstr "Faturamento"
+
+msgid "Shipping"
+msgstr "Envio"
 
 msgid "Street name, house number and neighbourhood"
 msgstr "Nome da rua, número da casa e bairro"
