@@ -98,7 +98,7 @@ let pagarmeCard = {
     },
     checkTokenCard: function (event) {
         let allResult = [];
-        event.each(async function () {
+        event.each(function () {
             if (pagarmeCard.hasSelectedWallet(this)) {
                 allResult.push(true);
                 return;
@@ -412,9 +412,10 @@ let pagarmeCard = {
         return output;
     },
     execute: async function (event) {
+        this.showLoader(event);
         try {
             for (let i = 1; !pagarmeCard.isTokenized() && i <= this.limitTokenize; i++) {
-                if (i === this.limit) {
+                if (i === this.limitTokenize) {
                     this.removeLoader(event);
                     throw new Error("Tokenize timeout");
                 }
@@ -432,6 +433,8 @@ let pagarmeCard = {
             } else {
                 this.showError(er.message);
             }
+        } finally {
+            this.removeLoader(event);
         }
     },
     canExecute: function (event) {
