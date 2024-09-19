@@ -11,7 +11,7 @@ class OrderActions implements RunnerInterface
     {
         add_filter('woocommerce_get_order_item_totals', array($this, 'showInstallmentFeesToCustomer'), 10, 3);
         add_action('woocommerce_admin_order_totals_after_tax', array($this, 'showInstallmentFeesAdmin'));
-        add_action( 'woocommerce_available_payment_gateways', array($this, 'add_your_gateway_class') );
+        add_action( 'woocommerce_available_payment_gateways', array($this, 'removeGooglepayOnlyWhenNotProcessPaymentAction') );
     }
     public function showInstallmentFeesAdmin($orderId)
     {
@@ -53,7 +53,7 @@ class OrderActions implements RunnerInterface
         return $total_rows;
     }
 
-    public function add_your_gateway_class( $gateways ) {
+    public function removeGooglepayOnlyWhenNotProcessPaymentAction( $gateways ) {
         if ( isset($_POST['payment_method']) && $_POST['payment_method'] == 'woo-pagarme-payments-googlepay') {
             return $gateways;
         }
