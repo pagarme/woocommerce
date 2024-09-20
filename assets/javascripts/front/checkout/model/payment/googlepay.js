@@ -166,7 +166,7 @@ let pagarmeGooglePay = {
     },
     
     addEventListener: function () {
-        jQuery(document.body).on('updated_checkout', function () {
+        jQuery(document.body).on('updated_checkout payment_method_selected', function () {
             pagarmeGooglePay.addGooglePayButton();
         });
 

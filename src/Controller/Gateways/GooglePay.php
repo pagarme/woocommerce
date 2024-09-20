@@ -22,7 +22,7 @@ class GooglePay extends AbstractGateway
 {
     /** @var string */
     protected $method = ModelGooglePay::PAYMENT_CODE;
-       /**
+    /**
      * @return void
      */
     public function addRefundSupport()
@@ -45,10 +45,10 @@ class GooglePay extends AbstractGateway
     public function field_account_id()
     {
         return [
-            'title' => __('ID da conta Pagar.me', 'woo-pagarme-payments'),
+            'title' => __('Pagar.me account ID', 'woo-pagarme-payments'),
             'default' => $this->config->getData('account_id') ?? '',
             'type' => 'text',
-            'description'     => sprintf( __( 'Consulte em: <a href="%s">Configurações &rarr; Chaves &rarr; ID da Conta »</a>', 'woocommerce' ), "#" ),
+            'description' => __('See: Settings &rarr; Keys &rarr; Account ID', 'woo-pagarme-payments'),
         ];
     }
 
@@ -58,18 +58,27 @@ class GooglePay extends AbstractGateway
             'title' => __('MerchantId Google Pay', 'woo-pagarme-payments'),
             'default' => '',
             'type' => 'text',
-            'description'     => sprintf( __( 'Identificador de comerciante do Google, adiquira o seu <a href="%s">aqui</a>.', 'woocommerce' ), "#" ),
+            'description' => sprintf(
+                __(
+                    'Google Merchant Identifier, get yours <a href="%s">here</a>.',
+                    'woo-pagarme-payments'
+                ),
+                "https://pay.google.com/business/console/?hl=pt-br"
+            ),
         ];
     }
 
     public function field_googlepay_google_merchant_name()
     {
         return [
-            'title' => __('Nome da loja na Google Pay', 'woo-pagarme-payments'),
+            'title' => __('Store name on Google Pay', 'woo-pagarme-payments'),
             'default' => '',
             'desc_tip' => true,
             'type' => 'text',
-            'desc'     => __( 'Nome da sua loja que será exibido ao cliente enquanto compra através do Google Pay.', 'woocommerce' ),
+            'desc' => __(
+                'Your store name that will be displayed to the customer while purchasing through Google Pay.',
+                'woo-pagarme-payments'
+            ),
         ];
     }
 }
