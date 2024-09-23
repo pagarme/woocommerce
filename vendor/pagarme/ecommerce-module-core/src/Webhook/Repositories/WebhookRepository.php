@@ -31,6 +31,7 @@ class WebhookRepository extends AbstractRepository
     public function find($objectId)
     {
         $table = $this->db->getTable(AbstractDatabaseDecorator::TABLE_WEBHOOK);
+        $objectId = filter_var($objectId, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "SELECT * FROM $table WHERE id = '$objectId'";
 
         $result = $this->db->fetch($query);

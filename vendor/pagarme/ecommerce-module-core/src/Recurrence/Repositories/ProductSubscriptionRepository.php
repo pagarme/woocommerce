@@ -104,7 +104,7 @@ class ProductSubscriptionRepository extends AbstractRepository
         $table = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_RECURRENCE_PRODUCTS_SUBSCRIPTION
         );
-
+        $objectId = filter_var($objectId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table WHERE id = $objectId";
 
         $result = $this->db->fetch($query);
@@ -171,6 +171,7 @@ class ProductSubscriptionRepository extends AbstractRepository
         $table = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_RECURRENCE_PRODUCTS_SUBSCRIPTION
         );
+        $productId = filter_var($productId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table WHERE product_id = $productId";
 
         $result = $this->db->fetch($query);

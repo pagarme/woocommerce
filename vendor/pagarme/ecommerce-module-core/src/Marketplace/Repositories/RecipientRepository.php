@@ -27,23 +27,32 @@ class RecipientRepository extends AbstractRepository
             AbstractDatabaseDecorator::TABLE_RECIPIENTS
         );
 
-        $query = "
-            INSERT INTO $table (
-                `external_id`,
-                `name`,
-                `email`,
-                `document_type`,
-                `document`,
-                `pagarme_id`
-            ) VALUES (
-                '{$object->getExternalId()}',
-                '{$object->getName()}',
-                '{$object->getEmail()}',
-                '{$object->getDocumentType()}',
-                '{$object->getDocument()}',
-                '{$object->getPagarmeId()->getValue()}'
-            )
-        ";
+        $query = "INSERT INTO $table (
+            `external_id`,
+            `name`,
+            `email`,
+            `type`,
+            `document`,
+            `pagarme_id`";
+
+        $queryStatusFieldValue = '';
+
+        if (!empty($object->getStatus())) {
+            $query .= ",`status`";
+            $queryStatusFieldValue = ",{$object->getStatus()}";
+        }
+
+        $query .= ") VALUES (
+            '{$object->getExternalId()}',
+            '{$object->getName()}',
+            '{$object->getEmail()}',
+            '{$object->getDocumentType()}',
+            '{$object->getDocument()}',
+            '{$object->getPagarmeId()->getValue()}'";
+
+        $query .= $queryStatusFieldValue;
+
+        $query .= ")";
 
         $this->db->query($query);
     }
@@ -59,7 +68,8 @@ class RecipientRepository extends AbstractRepository
                 `external_id`='{$object->getExternalId()}',
                 `name`='{$object->getName()}',
                 `email`='{$object->getEmail()}',
-                `pagarme_id`='{$object->getPagarmeId()->getValue()}'
+                `pagarme_id`='{$object->getPagarmeId()->getValue()}',
+                `status`='{$object->getStatus()}'
             WHERE `id`='{$object->getId()}'
         ";
 
@@ -82,7 +92,7 @@ class RecipientRepository extends AbstractRepository
         $table = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_RECIPIENTS
         );
-
+        $objectId = filter_var($objectId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table WHERE id = $objectId";
 
         $result = $this->db->fetch($query);
@@ -102,7 +112,7 @@ class RecipientRepository extends AbstractRepository
             AbstractDatabaseDecorator::TABLE_RECIPIENTS
         );
 
-        $query = "SELECT * FROM {$table} WHERE pagarme_id = {$pagarmeId}";
+        $query = "SELECT * FROM {$table} WHERE pagarme_id = '{$pagarmeId}'";
 
         $result = $this->db->fetch($query);
 
@@ -165,7 +175,7 @@ class RecipientRepository extends AbstractRepository
         $table = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_RECIPIENTS
         );
-
+        $sellerId = filter_var($sellerId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM `$table` as t ";
         $query .= "WHERE t.external_id = '$sellerId';";
 

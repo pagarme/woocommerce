@@ -11,6 +11,7 @@ final class TransactionType extends AbstractValueObject
     const VOUCHER = "voucher";
     const DEBIT_CARD = "debit_card";
     const PIX = 'pix';
+    const GOOGLEPAY = 'googlepay';
     /**
      *
      * @var string
@@ -50,6 +51,10 @@ final class TransactionType extends AbstractValueObject
     public static function pix()
     {
         return new self(self::PIX);
+    }
+    public static function googlepay()
+    {
+        return new self(self::GOOGLEPAY);
     }
 
     /**

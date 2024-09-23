@@ -52,7 +52,8 @@ class WoocommerceCoreSetupTest extends TestCase
             'getMultimethods2Card',
             'getMulticustomers',
             'getEnablePix',
-            'getEnableVoucher'
+            'getEnableVoucher',
+            'getEnableGooglepay'
 
         )->andReturn(true);
         $configMock->shouldReceive('getSecretKey')->andReturn('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
@@ -72,6 +73,9 @@ class WoocommerceCoreSetupTest extends TestCase
         $configMock->shouldReceive('getBilletBank')->andReturn(001);
         $configMock->shouldReceive('getPixQrcodeExpirationTime')->andReturn(3600);
         $configMock->shouldReceive('getPixAdditionalData')->andReturn(null);
+        $configMock->shouldReceive('getAccountId')->andReturn(false);
+        $configMock->shouldReceive('getGooglepayGoogleMerchantId')->andReturn('BCXXXXXXXXXXX');
+        $configMock->shouldReceive('getGooglepayGoogleMerchantName')->andReturn('TESTE');
         $configMock->shouldReceive('getHubInstallId')->andReturn('XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX');
         $configMock->shouldReceive('getHubEnvironment')->andReturn('sandbox');
         $config = new WoocommerceCoreSetup();

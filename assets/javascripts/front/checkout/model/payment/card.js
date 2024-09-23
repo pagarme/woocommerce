@@ -433,6 +433,7 @@ let pagarmeCard = {
     },
     canExecute: function (event) {
         const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
+        
         const cardBrand = checkoutPaymentElement.parents('.pagarme-card-number-row')
             .find(this.brandTarget);
         if (cardBrand?.val()?.length === 0 || wc_pagarme_checkout.errorTokenize === true) {
@@ -443,6 +444,7 @@ let pagarmeCard = {
             !pagarmeCard.isTokenized() &&
             pagarmeCard.haveCardForm(checkoutPaymentElement)
         ) {
+            jQuery("#payment_method_woo-pagarme-payments-credit_card").val("woo-pagarme-payments-credit_card");
             if (typeof pagarmeTds == 'object') {
                 const tdsExecuted = pagarmeTds.start(event);
 
