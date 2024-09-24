@@ -56,7 +56,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
      */
     public function getNumber()
     {
-        return $this->number;
+        return $this->number ?? '';
     }
 
     /**
@@ -105,16 +105,16 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
      * @return Address
      * @throws \Exception
      */
-    public function setStreet($street)
+    public function setStreet($street, $multipleLineStreet = true)
     {
-        $streetWithoutComma = str_replace(
-            self::ADDRESS_LINE_SEPARATOR,
+        $street = str_replace(
+            $multipleLineStreet ? self::ADDRESS_LINE_SEPARATOR : '',
             '',
             $street ?? ''
         );
 
         $streetWithoutLineBreaks = StringFunctionsHelper::removeLineBreaks(
-            $streetWithoutComma
+            $street
         );
 
         $this->street = substr($streetWithoutLineBreaks, 0, 64);
@@ -137,7 +137,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
      */
     public function getNeighborhood()
     {
-        return $this->neighborhood;
+        return $this->neighborhood ?? '';
     }
 
     /**
@@ -289,12 +289,17 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
 
     public function getLine1()
     {
-        $line = [];
-        $line[] = $this->getNumber();
-        $line[] = $this->getStreet();
-        $line[] = $this->getNeighborhood();
+        if ($this->getNumber()) {
+            $line[] = $this->getNumber();
+        }
 
-        return implode (self::ADDRESS_LINE_SEPARATOR, $line);
+        $line[] = $this->getStreet();
+
+        if ($this->getNeighborhood()) {
+            $line[] = $this->getNeighborhood();
+        }
+
+        return implode(self::ADDRESS_LINE_SEPARATOR, $line);
     }
 
     public function getLine2()
@@ -336,7 +341,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
     /**
       * Specify data which should be serialized to JSON
       * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-      * @return string data which can be serialized by <b>json_encode</b>,
+      * @return \stdClass data which can be serialized by <b>json_encode</b>,
       * which is a value of any type other than a resource.
       * @since 5.4.0
     */
@@ -345,9 +350,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
     {
         $obj = new \stdClass();
 
-        $obj->number = $this->number;
         $obj->street = $this->street;
-        $obj->neighborhood = $this->neighborhood;
         $obj->complement = $this->complement;
         $obj->zipCode = $this->zipCode;
         $obj->city = $this->city;
@@ -355,6 +358,14 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         $obj->country = $this->country;
         $obj->line1 = $this->getLine1();
         $obj->line2 = $this->getLine2();
+
+        if (!empty($this->number)) {
+            $obj->number = $this->number;
+        }
+
+        if (!empty($this->neighborhood)) {
+            $obj->neighborhood = $this->neighborhood;
+        }
 
         return $obj;
     }
@@ -371,11 +382,17 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         $addressRequest->country = $this->getCountry();
         $addressRequest->line1 = $this->getLine1();
         $addressRequest->line2 = $this->getLine2();
-        $addressRequest->neighborhood = $this->getNeighborhood();
-        $addressRequest->number = $this->getNumber();
         $addressRequest->state = $this->getState();
         $addressRequest->street = $this->getStreet();
         $addressRequest->zipCode = $this->getZipCode();
+
+        if ($this->getNumber()){
+            $addressRequest->number = $this->getNumber();
+        }
+
+        if ($this->getNeighborhood()){
+            $addressRequest->neighborhood = $this->getNeighborhood();
+        }
 
         return $addressRequest;
     }

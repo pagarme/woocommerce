@@ -460,7 +460,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (empty($document['value'])) {
             $customerPlatform  = new WC_Customer($woocommerceCustomerId);
             $document['value'] = $customerPlatform->get_meta("billing_cpf") ??
-                                 $customerPlatform->get_meta("billing_cnpj");
+                                 $customerPlatform->get_meta("billing_cnpj") ??
+                                 $customerPlatform->get_meta("billing_document");
         }
         $homeNumber   = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
@@ -534,7 +535,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $cleanDocument = preg_replace(
             '/\D/',
             '',
-            $document["value"]
+            $document['value']
         );
 
         $customer->setDocument($cleanDocument);
@@ -1116,6 +1117,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $shipping;
     }
 
+    /**
+     * @throws Exception
+     */
     protected function getAddress($platformAddress)
     {
         $config = new Config();
@@ -1123,20 +1127,26 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             return null;
         }
 
+        $multipleLineStreet = !empty($platformAddress["number"]) && !empty($platformAddress["neighborhood"]);
+
         $address = new Address();
 
         $this->validateAddressFields($platformAddress);
 
-        $address->setStreet($platformAddress["street"]);
-        $address->setNumber($platformAddress["number"]);
-        $address->setNeighborhood($platformAddress["neighborhood"]);
+        $address->setStreet($platformAddress["street"], $multipleLineStreet);
         $address->setComplement($platformAddress["complement"]);
-
         $address->setCity($platformAddress["city"]);
         $address->setCountry($platformAddress["country"]);
         $address->setZipCode($platformAddress["zip_code"]);
-
         $address->setState($platformAddress["state"]);
+
+        if (!empty($platformAddress["number"])) {
+            $address->setNumber($platformAddress["number"]);
+        }
+
+        if (!empty($platformAddress["neighborhood"])) {
+            $address->setNeighborhood($platformAddress["neighborhood"]);
+        }
 
         return $address;
     }
@@ -1167,8 +1177,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $requiredFields = [
             'street',
-            'number',
-            'neighborhood',
             'city',
             'country',
             'zip_code',

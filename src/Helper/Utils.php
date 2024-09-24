@@ -470,16 +470,21 @@ class Utils
      */
     public static function build_customer_address_from_order(Order $order)
     {
-        return array(
+        $address = array(
             'street'       => substr($order->getWcOrder()->get_billing_address_1(), 0, 64),
-            'number'       => substr($order->get_meta('billing_number'), 0, 15),
             'complement'   => substr($order->getWcOrder()->get_billing_address_2(), 0, 64),
             'zip_code'     => preg_replace('/[^\d]+/', '', $order->getWcOrder()->get_billing_postcode()),
-            'neighborhood' => substr($order->get_meta('billing_neighborhood'), 0, 64),
             'city'         => substr($order->get_meta('billing_city'), 0, 64),
             'state'        => substr($order->get_meta('billing_state'), 0, 2),
             'country'      => 'BR'
         );
+
+        if (!empty($order->get_meta('billing_number')) && !empty($order->get_meta('billing_neighborhood'))) {
+            $address['number'] = substr($order->get_meta('billing_number'), 0, 15);
+            $address['neighborhood'] = substr($order->get_meta('billing_neighborhood'), 0, 64);
+        }
+
+        return $address;
     }
 
     /**
@@ -503,10 +508,31 @@ class Utils
             );
         }
 
+        if (!empty($order->get_meta('billing_document'))) {
+            $document = $order->get_meta('billing_document');
+            $documentType = self::getCustomerType($document);
+            return array(
+                'type'  => $documentType,
+                'value' => $document,
+            );
+        }
+
         return array(
             'type'  => '',
             'value' => '',
         );
+    }
+
+    public static function getCustomerType($document): string
+    {
+        $documentNumber = preg_replace('/\D/', '', $document ?? '');
+        return strlen($documentNumber) === 14 ? 'company' : 'individual';
+    }
+
+    public static function getDocumentType($document): string
+    {
+        $documentNumber = preg_replace('/\D/', '', $document ?? '');
+        return strlen($documentNumber) === 14 ? 'cnpj' : 'cp';
     }
 
     /**

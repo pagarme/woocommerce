@@ -46,7 +46,7 @@ final class AddressAttributes extends AbstractValueObject
      */
     public function getNumber()
     {
-        return $this->number;
+        return $this->number ?? '';
     }
 
     /**
@@ -54,7 +54,7 @@ final class AddressAttributes extends AbstractValueObject
      */
     public function getNeighborhood()
     {
-        return $this->neighborhood;
+        return $this->neighborhood ?? '';
     }
 
     /**

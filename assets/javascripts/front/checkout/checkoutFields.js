@@ -27,11 +27,13 @@ const pagarmeCustomerFields = {
                     pagarmeCustomerFields.shippingDocumentId
                 ];
             jQuery.each(documentFieldIds, function () {
-                const documentField = jQuery('#' + this + '_field');
-                if (jQuery('.woocommerce-error li[data-pagarme-error="' + this + '"]').length) {
-                    documentField.addClass('woocommerce-invalid');
+                const documentField = '#' + this + '_field',
+                    isDocumentEmpty = jQuery('.woocommerce-error li[data-id="' + this + '"]').length,
+                    isDocumentInvalid = jQuery('.woocommerce-error li[data-pagarme-error="' + this + '"]').length;
+                if (isDocumentEmpty || isDocumentInvalid) {
+                    jQuery(documentField).addClass('woocommerce-invalid');
                 } else {
-                    documentField.removeClass('woocommerce-invalid');
+                    jQuery(documentField).removeClass('woocommerce-invalid');
                 }
             });
         });

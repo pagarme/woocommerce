@@ -188,15 +188,23 @@ class Order extends Meta
      */
     public function get_shipping_info()
     {
-        return array(
+        $address =  array(
             'address_1'    => $this->handle_shipping_properties('address_1'),
-            'number'       => $this->handle_shipping_properties('number'),
             'address_2'    => $this->handle_shipping_properties('address_2'),
             'postcode'     => $this->handle_shipping_properties('postcode'),
-            'neighborhood' => $this->handle_shipping_properties('neighborhood'),
             'city'         => $this->handle_shipping_properties('city'),
             'state'        => $this->handle_shipping_properties('state'),
         );
+
+        if (!empty($this->handle_shipping_properties('number'))) {
+            $address['number'] = $this->handle_shipping_properties('number');
+        }
+
+        if (!empty($this->handle_shipping_properties('neighborhood'))) {
+            $address['neighborhood'] = $this->handle_shipping_properties('neighborhood');
+        }
+
+        return $address;
     }
 
     private function handle_shipping_properties($prop)
