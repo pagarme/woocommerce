@@ -56,7 +56,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
      */
     public function getNumber()
     {
-        return $this->number ?? '';
+        return $this->number;
     }
 
     /**
@@ -78,8 +78,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
 
         $this->number = substr($numberWithoutLineBreaks, 0, 15);
 
-        if (empty($this->number) && ($this->number === null || !is_numeric(trim($this->number)))) {
-
+        if (!empty($this->number) && !is_numeric(trim($this->number))) {
             $inputName = $this->i18n->getDashboard('number');
             $message = $this->i18n->getDashboard(
                 "The %s should not be empty!",
@@ -105,14 +104,8 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
      * @return Address
      * @throws \Exception
      */
-    public function setStreet($street, $multipleLineStreet = true)
+    public function setStreet($street)
     {
-        $street = str_replace(
-            $multipleLineStreet ? self::ADDRESS_LINE_SEPARATOR : '',
-            '',
-            $street ?? ''
-        );
-
         $streetWithoutLineBreaks = StringFunctionsHelper::removeLineBreaks(
             $street
         );
@@ -158,17 +151,6 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         );
 
         $this->neighborhood = substr($neighborhoodWithoutLineBreaks, 0, 64);
-
-        if (empty($this->neighborhood)) {
-
-            $inputName = $this->i18n->getDashboard('neighborhood');
-            $message = $this->i18n->getDashboard(
-                "The %s should not be empty!",
-                $inputName
-            );
-
-            throw new \Exception($message, 400);
-        }
 
         return $this;
     }
@@ -351,21 +333,15 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         $obj = new \stdClass();
 
         $obj->street = $this->street;
+        $obj->number = $this->number ?? '0';
         $obj->complement = $this->complement;
+        $obj->neighborhood = $this->neighborhood;
         $obj->zipCode = $this->zipCode;
         $obj->city = $this->city;
         $obj->state = $this->state;
         $obj->country = $this->country;
         $obj->line1 = $this->getLine1();
         $obj->line2 = $this->getLine2();
-
-        if (!empty($this->number)) {
-            $obj->number = $this->number;
-        }
-
-        if (!empty($this->neighborhood)) {
-            $obj->neighborhood = $this->neighborhood;
-        }
 
         return $obj;
     }
@@ -377,22 +353,16 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
     {
         $addressRequest = new CreateAddressRequest();
 
-        $addressRequest->city = $this->getCity();
+        $addressRequest->street = $this->getStreet();
+        $addressRequest->number = $this->getNumber();
         $addressRequest->complement = $this->getComplement();
+        $addressRequest->neighborhood = $this->getNeighborhood();
+        $addressRequest->city = $this->getCity();
+        $addressRequest->state = $this->getState();
         $addressRequest->country = $this->getCountry();
+        $addressRequest->zipCode = $this->getZipCode();
         $addressRequest->line1 = $this->getLine1();
         $addressRequest->line2 = $this->getLine2();
-        $addressRequest->state = $this->getState();
-        $addressRequest->street = $this->getStreet();
-        $addressRequest->zipCode = $this->getZipCode();
-
-        if ($this->getNumber()){
-            $addressRequest->number = $this->getNumber();
-        }
-
-        if ($this->getNeighborhood()){
-            $addressRequest->neighborhood = $this->getNeighborhood();
-        }
 
         return $addressRequest;
     }

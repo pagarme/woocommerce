@@ -59,17 +59,11 @@ class CustomerService
         $address->setCountry($addressData['country']);
         $address->setState($addressData['state']);
         $address->setCity($addressData['city']);
+        $address->setNeighborhood($addressData['neighborhood']);
         $address->setZipCode($addressData['zipcode']);
         $address->setStreet($addressData['street']);
+        $address->setNumber($addressData['number']);
         $address->setComplement($addressData['complement']);
-
-        if (!empty($addressData['number'])) {
-            $address->setNumber($addressData['number']);
-        }
-
-        if (!empty($addressData['neighborhood'])) {
-            $address->setNeighborhood($addressData['neighborhood']);
-        }
 
         return $address;
     }

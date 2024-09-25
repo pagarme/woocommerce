@@ -237,24 +237,16 @@ abstract class AbstractPayment
             $addressArray = $this->getCustomerAddressFromWcOrder($wc_order);
         }
 
-        $address = [
+        return [
             'street' => $addressArray["street"],
             'complement' => $addressArray["complement"],
+            'number' => $addressArray["number"],
             'zip_code' => $addressArray["zip_code"],
+            'neighborhood' => $addressArray["neighborhood"],
             'city' => $addressArray["city"],
             'state' => $addressArray["state"],
             'country' => $addressArray["country"]
         ];
-
-        if (!empty($addressArray['number'])) {
-            $address['number'] = $addressArray['number'];
-        }
-
-        if (!empty($addressArray['neighborhood'])) {
-            $address['neighborhood'] = $addressArray['neighborhood'];
-        }
-
-        return $address;
     }
 
     /**

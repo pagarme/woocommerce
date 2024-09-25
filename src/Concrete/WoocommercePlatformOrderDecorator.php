@@ -1127,26 +1127,18 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             return null;
         }
 
-        $multipleLineStreet = !empty($platformAddress["number"]) && !empty($platformAddress["neighborhood"]);
-
         $address = new Address();
 
         $this->validateAddressFields($platformAddress);
 
-        $address->setStreet($platformAddress["street"], $multipleLineStreet);
+        $address->setStreet($platformAddress["street"]);
+        $address->setNumber($platformAddress["number"] ?? '0');
         $address->setComplement($platformAddress["complement"]);
+        $address->setNeighborhood($platformAddress["neighborhood"]);
         $address->setCity($platformAddress["city"]);
         $address->setCountry($platformAddress["country"]);
         $address->setZipCode($platformAddress["zip_code"]);
         $address->setState($platformAddress["state"]);
-
-        if (!empty($platformAddress["number"])) {
-            $address->setNumber($platformAddress["number"]);
-        }
-
-        if (!empty($platformAddress["neighborhood"])) {
-            $address->setNeighborhood($platformAddress["neighborhood"]);
-        }
 
         return $address;
     }

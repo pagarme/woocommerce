@@ -470,21 +470,16 @@ class Utils
      */
     public static function build_customer_address_from_order(Order $order)
     {
-        $address = array(
+        return array(
             'street'       => substr($order->getWcOrder()->get_billing_address_1(), 0, 64),
+            'number'       => substr($order->get_meta('billing_number'), 0, 15),
             'complement'   => substr($order->getWcOrder()->get_billing_address_2(), 0, 64),
             'zip_code'     => preg_replace('/[^\d]+/', '', $order->getWcOrder()->get_billing_postcode()),
+            'neighborhood' => substr($order->get_meta('billing_neighborhood'), 0, 64),
             'city'         => substr($order->get_meta('billing_city'), 0, 64),
             'state'        => substr($order->get_meta('billing_state'), 0, 2),
             'country'      => 'BR'
         );
-
-        if (!empty($order->get_meta('billing_number')) && !empty($order->get_meta('billing_neighborhood'))) {
-            $address['number'] = substr($order->get_meta('billing_number'), 0, 15);
-            $address['neighborhood'] = substr($order->get_meta('billing_neighborhood'), 0, 64);
-        }
-
-        return $address;
     }
 
     /**
@@ -532,7 +527,7 @@ class Utils
     public static function getDocumentType($document): string
     {
         $documentNumber = preg_replace('/\D/', '', $document ?? '');
-        return strlen($documentNumber) === 14 ? 'cnpj' : 'cp';
+        return strlen($documentNumber) === 14 ? 'cnpj' : 'cpf';
     }
 
     /**
@@ -596,20 +591,28 @@ class Utils
         $total = self::format_order_price($wc_order->get_shipping_total());
         $shipping = $order->get_shipping_info();
 
-        return array(
+        $customerShipping = array(
             'amount'      => $total,
             'description' => $method,
             'address'     => array(
                 'street'       => substr($shipping['address_1'], 0, 64),
-                'number'       => substr($shipping['number'], 0, 15),
                 'complement'   => substr($shipping['address_2'], 0, 64),
                 'zip_code'     => substr(preg_replace('/[^\d]+/', '', $shipping['postcode']), 0, 16),
-                'neighborhood' => substr($shipping['neighborhood'], 0, 64),
                 'city'         => substr($shipping['city'], 0, 64),
                 'state'        => substr($shipping['state'], 0, 2),
                 'country'      => 'BR',
             ),
         );
+
+        if (!empty($shipping['number'])) {
+            $customerShipping['address']['number'] = substr($shipping['number'], 0, 15);
+        }
+
+        if (!empty($shipping['neighborhood'])) {
+            $customerShipping['address']['neighborhood'] = substr($shipping['neighborhood'], 0, 64);
+        }
+
+        return $customerShipping;
     }
 
     /**
