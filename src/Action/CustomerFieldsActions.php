@@ -50,7 +50,8 @@ class CustomerFieldsActions implements RunnerInterface
             'pagarme_customer_fields',
             $parameters['src'],
             $parameters['deps'],
-            $parameters['ver']
+            $parameters['ver'],
+            true
         );
         wp_enqueue_script('pagarme_customer_fields');
     }
@@ -77,6 +78,39 @@ class CustomerFieldsActions implements RunnerInterface
         }
 
         return $fields;
+    }
+
+    public function addDocumentFieldOnCheckoutBlocks() {
+
+        if ( ! function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
+            return;
+        }
+        woocommerce_register_additional_checkout_field(
+            array(
+                'id'                => 'address/document',
+                'label'             => 'CPF ou CNPJ',
+                'location'          => 'address',
+                'type'              => 'text',
+                'class'             => array( 'form-row-wide' ),
+                'required'          => true,
+                'index'             => 25,
+                'show_in_order_confirmation' => true,
+                'sanitize_callback' => function( $field_value ) {
+                    return str_replace( ' ', '', $field_value );
+                },
+            ),
+        );
+    
+        add_action(
+            'woocommerce_validate_additional_field',
+            function ( \WP_Error $errors, $field_key, $field_value ) {
+                if ( 'address/document' === $field_key ) {
+                    $this->validateDocument()
+                }
+            },
+            10,
+            3
+        );
     }
 
     /**
