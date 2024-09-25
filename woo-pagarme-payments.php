@@ -17,6 +17,7 @@
 
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\FeatureCompatibilization;
+use Woocommerce\Pagarme\Action\CustomerFieldsActions;
 
 const BRAZILIAN_MARKET_URL = 'https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/';
 const PAGARME_REQUIREMENTS_URL = 'https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce';
@@ -329,6 +330,10 @@ function wcmpPluginsLoadedCheck()
 add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
 add_action('before_woocommerce_init', 'checkCompatibilityWithFeatures', 0);
 add_action('woocommerce_blocks_loaded', 'addWoocommerceSupportedBlocks');
+add_action('woocommerce_blocks_loaded', 'addDocumentFieldOnCheckoutblocks');
+
+
+
 
 function hasAnyBillingDocument($missingFields)
 {
@@ -339,6 +344,12 @@ function hasAnyBillingDocument($missingFields)
     return ($hasCpf && (!$hasCnpj || !$hasDocument))
            || ($hasCnpj && (!$hasCpf || !$hasDocument))
            || ($hasDocument && (!$hasCpf || !$hasCnpj));
+}
+
+function addDocumentFieldOnCheckoutblocks()
+{
+    $checkoutFields = new CustomerFieldsActions();
+    $checkoutFields->addDocumentFieldOnCheckoutBlocks();
 }
 
 function checkCompatibilityWithFeatures()
