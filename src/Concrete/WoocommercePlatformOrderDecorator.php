@@ -1132,7 +1132,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $this->validateAddressFields($platformAddress);
 
         $address->setStreet($platformAddress["street"]);
-        $address->setNumber($platformAddress["number"] ?? '0');
+        $address->setNumber($platformAddress["number"]);
         $address->setComplement($platformAddress["complement"]);
         $address->setNeighborhood($platformAddress["neighborhood"]);
         $address->setCity($platformAddress["city"]);

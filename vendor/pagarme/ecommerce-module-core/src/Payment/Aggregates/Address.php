@@ -333,7 +333,7 @@ final class Address extends AbstractEntity implements ConvertibleToSDKRequestsIn
         $obj = new \stdClass();
 
         $obj->street = $this->street;
-        $obj->number = $this->number ?? '0';
+        $obj->number = $this->number;
         $obj->complement = $this->complement;
         $obj->neighborhood = $this->neighborhood;
         $obj->zipCode = $this->zipCode;

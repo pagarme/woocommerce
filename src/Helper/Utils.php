@@ -591,28 +591,20 @@ class Utils
         $total = self::format_order_price($wc_order->get_shipping_total());
         $shipping = $order->get_shipping_info();
 
-        $customerShipping = array(
+        return array(
             'amount'      => $total,
             'description' => $method,
             'address'     => array(
                 'street'       => substr($shipping['address_1'], 0, 64),
+                'number'       => substr($shipping['number'], 0, 15),
                 'complement'   => substr($shipping['address_2'], 0, 64),
                 'zip_code'     => substr(preg_replace('/[^\d]+/', '', $shipping['postcode']), 0, 16),
+                'neighborhood' => substr($shipping['neighborhood'], 0, 64),
                 'city'         => substr($shipping['city'], 0, 64),
                 'state'        => substr($shipping['state'], 0, 2),
                 'country'      => 'BR',
             ),
         );
-
-        if (!empty($shipping['number'])) {
-            $customerShipping['address']['number'] = substr($shipping['number'], 0, 15);
-        }
-
-        if (!empty($shipping['neighborhood'])) {
-            $customerShipping['address']['neighborhood'] = substr($shipping['neighborhood'], 0, 64);
-        }
-
-        return $customerShipping;
     }
 
     /**
