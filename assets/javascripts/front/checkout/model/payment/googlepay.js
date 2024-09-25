@@ -116,6 +116,7 @@ let pagarmeGooglePay = {
                 pagarmeGooglePay.processPayment(paymentData, self);
             })
             .catch(function (err) {
+                jQuery("#payment_method_woo-pagarme-payments-credit_card").val("woo-pagarme-payments-credit_card");
                 if (err.statusCode === "CANCELED") {
                     return;
                 }
@@ -158,6 +159,7 @@ let pagarmeGooglePay = {
         jQuery("#payment_method_woo-pagarme-payments-credit_card").val("woo-pagarme-payments-googlepay");
         checkoutPaymentElement.submit();
         jQuery('form#order_review').submit();
+        jQuery("#payment_method_woo-pagarme-payments-credit_card").val("woo-pagarme-payments-credit_card");
     },
 
     getCheckoutPaymentElement: function () {
