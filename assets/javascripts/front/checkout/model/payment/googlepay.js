@@ -4,7 +4,7 @@ let pagarmeGooglePay = {
     woocommercePaymentMethods: 'input[name="payment_method"]',
     googlePayAllowedBrands: ["AMEX", "ELO", "MASTERCARD", "VISA"],
     pagarmeAllowedBrands: wc_pagarme_googlepay.allowedCcFlags,
-    woocommercePaymentId: "payment_method_woo-pagarme-payments-credit_card",
+    woocommercePaymentId: "#payment_method_woo-pagarme-payments-credit_card",
 
     getGooglePaymentsClient: function () {
         let environment = "TEST";
@@ -117,7 +117,7 @@ let pagarmeGooglePay = {
                 pagarmeGooglePay.processPayment(paymentData, self);
             })
             .catch(function (err) {
-                jQuery("#". pagarmeGooglePay.woocommercePaymentId ).val("woo-pagarme-payments-credit_card");
+                jQuery(pagarmeGooglePay.woocommercePaymentId ).val("woo-pagarme-payments-credit_card");
                 if (err.statusCode === "CANCELED") {
                     return;
                 }
@@ -157,10 +157,10 @@ let pagarmeGooglePay = {
             .attr('id', "googlepaytoken")
             .attr('value', paymentData.paymentMethodData.tokenizationData.token);
         checkoutPaymentElement.append(input);
-        jQuery("#" . pagarmeGooglePay.woocommercePaymentId ).val("woo-pagarme-payments-googlepay");
+        jQuery(pagarmeGooglePay.woocommercePaymentId ).val("woo-pagarme-payments-googlepay");
         checkoutPaymentElement.submit();
         jQuery('form#order_review').submit();
-        jQuery("#" . pagarmeGooglePay.woocommercePaymentId ).val("woo-pagarme-payments-credit_card");
+        jQuery(pagarmeGooglePay.woocommercePaymentId ).val("woo-pagarme-payments-credit_card");
     },
 
     getCheckoutPaymentElement: function () {
