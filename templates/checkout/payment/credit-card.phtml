@@ -28,10 +28,8 @@ wp_localize_script(
     ]
 );
 
-if($this->getConfig()->getEnableGooglepay()  == "yes"):
+if ( $this->getConfig()->getEnableGooglepay()  == "yes" && !$this->hasSubscriptionProductInCart() ) :
 ?>
-
-
 <div id="pagarme-googlepay"></div>
 <div class="pagarme_creditcard_divider">
     <p>
