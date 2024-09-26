@@ -19,7 +19,6 @@ use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\FeatureCompatibilization;
 use Woocommerce\Pagarme\Action\CustomerFieldsActions;
 
-const BRAZILIAN_MARKET_URL = 'https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/';
 const PAGARME_REQUIREMENTS_URL = 'https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce';
 
 if (!defined('ABSPATH') || !function_exists('add_action')) {
@@ -233,7 +232,7 @@ function wcmpAdminNoticeCheckoutFields()
         'billing_cnpj',
         'billing_document',
         'billing_first_name',
-        'billing_last_name',
+        'billing_last_name'
     ];
 
     if (!(new Config())->getAllowNoAddress()) {
@@ -267,21 +266,17 @@ function wcmpAdminNoticeCheckoutFields()
     }
 
     $message .= '</ul><p>';
-    $message .= __('Please, make sure to include them for Pagar.me module to work.', 'woo-pagarme-payments');
-    $message .= '</p><p>';
     $message .= sprintf(
-        __('You can install %s or any other plugin of your choice to add the missing fields. %sRead '
-           . 'documentation »%s', 'woo-pagarme-payments'),
-        sprintf(
-            '<a href="%s" target="_blank" rel="noopener">Brazilian Market on WooCommerce</a>',
-            BRAZILIAN_MARKET_URL
-        ),
+        __("Please, make sure to include them for Pagar.me plugin to work. If you are customizing the "
+            . "checkout, the address fields must have the 'name' attribute exactly as listed above. %sRead "
+            . "documentation »%s", "woo-pagarme-payments"),
         sprintf(
             '<a href="%s" target="_blank" rel="noopener">',
             PAGARME_REQUIREMENTS_URL
         ),
         '</a>'
     );
+    $message .= '</p>';
 
     wcmpRenderAdminNoticeHtml($message);
 }
@@ -331,9 +326,6 @@ add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
 add_action('before_woocommerce_init', 'checkCompatibilityWithFeatures', 0);
 add_action('woocommerce_blocks_loaded', 'addWoocommerceSupportedBlocks');
 add_action('woocommerce_blocks_loaded', 'addDocumentFieldOnCheckoutblocks');
-
-
-
 
 function hasAnyBillingDocument($missingFields)
 {

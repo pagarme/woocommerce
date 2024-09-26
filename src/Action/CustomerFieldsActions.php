@@ -12,6 +12,7 @@ namespace Woocommerce\Pagarme\Action;
 
 use Woocommerce\Pagarme\Controller\Checkout\CustomerFields;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\Config;
 
 defined('ABSPATH') || exit;
 
@@ -80,36 +81,29 @@ class CustomerFieldsActions implements RunnerInterface
         return $fields;
     }
 
-    public function addDocumentFieldOnCheckoutBlocks() {
-
-        if ( ! function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
+    /**
+     * @throws \Exception
+     */
+    public function addDocumentFieldOnCheckoutBlocks()
+    {
+        if (!function_exists('woocommerce_register_additional_checkout_field')) {
             return;
         }
+
         woocommerce_register_additional_checkout_field(
             array(
-                'id'                => 'address/document',
-                'label'             => 'CPF ou CNPJ',
-                'location'          => 'address',
-                'type'              => 'text',
-                'class'             => array( 'form-row-wide' ),
-                'required'          => true,
-                'index'             => 25,
+                'id'                         => 'address/document',
+                'label'                      => __('CPF or CNPJ', 'woo-pagarme-payments'),
+                'location'                   => 'address',
+                'type'                       => 'text',
+                'class'                      => array('form-row-wide'),
+                'required'                   => true,
+                'index'                      => 25,
                 'show_in_order_confirmation' => true,
-                'sanitize_callback' => function( $field_value ) {
-                    return str_replace( ' ', '', $field_value );
+                'sanitize_callback'          => function ($field_value) {
+                    return str_replace(' ', '', $field_value);
                 },
-            ),
-        );
-    
-        add_action(
-            'woocommerce_validate_additional_field',
-            function ( \WP_Error $errors, $field_key, $field_value ) {
-                if ( 'address/document' === $field_key ) {
-                    $this->validateDocument()
-                }
-            },
-            10,
-            3
+            )
         );
     }
 
@@ -199,6 +193,12 @@ class CustomerFieldsActions implements RunnerInterface
      */
     public function overrideAddressFields(array $fields): array
     {
+        $config = new Config();
+
+        if (!$config->getModifyAddress()) {
+            return $fields;
+        }
+
         $fields['address_1']['placeholder'] = __(
             'Street name, house number and neighbourhood',
             'woo-pagarme-payments'

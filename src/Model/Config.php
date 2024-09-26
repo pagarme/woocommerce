@@ -263,6 +263,11 @@ class Config extends DataObject
         return $this->isEnabled('multicustomers');
     }
 
+    public function getModifyAddress()
+    {
+        return $this->isEnabled('modify_address');
+    }
+
     public function getAllowNoAddress()
     {
         return $this->isEnabled('allow_no_address');
