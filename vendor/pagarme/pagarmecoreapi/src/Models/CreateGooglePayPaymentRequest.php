@@ -22,9 +22,10 @@ class CreateGooglePayPaymentRequest implements JsonSerializable
      * @var string $payload public property
      */
     public $payload;
+    
     /**
      * @required
-     * @var string $card public property
+     * @var object $card public property
      */
     public $card;
     
@@ -36,7 +37,6 @@ class CreateGooglePayPaymentRequest implements JsonSerializable
      */
     public function __construct()
     {
-        $a = func_get_args();
         if (3 == func_num_args()) {
             $this->statementDescriptor  = func_get_arg(0);
             $this->payload              = func_get_arg(1);

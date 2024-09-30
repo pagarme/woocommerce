@@ -2,7 +2,6 @@
 
 namespace Pagarme\Core\Payment\Aggregates\Payments;
 
-use Pagarme\Core\Middle\Model\Customer\Address;
 use Pagarme\Core\Payment\ValueObjects\PaymentMethod;
 use PagarmeCoreApiLib\Models\CreateGooglePayPaymentRequest;
 
@@ -100,17 +99,7 @@ final class GooglePayPayment extends AbstractPayment
 
     private function getBillingAddress()
     {
-
-        $billingAddress = new Address();
-        $billingAddress->setCountry($this->billingAddress->country);
-        $billingAddress->setState($this->billingAddress->state);
-        $billingAddress->setCity($this->billingAddress->city);
-        $billingAddress->setNeighborhood($this->billingAddress->neighborhood);
-        $billingAddress->setZipCode($this->billingAddress->zipCode);
-        $billingAddress->setStreet($this->billingAddress->street);
-        $billingAddress->setNumber($this->billingAddress->number);
-        $billingAddress->setComplement($this->billingAddress->complement);
-        return $billingAddress->convertToSdk();
+        return $this->billingAddress;
     }
 
     /**
