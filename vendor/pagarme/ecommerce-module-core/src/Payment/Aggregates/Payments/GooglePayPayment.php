@@ -2,6 +2,7 @@
 
 namespace Pagarme\Core\Payment\Aggregates\Payments;
 
+use Pagarme\Core\Middle\Model\Customer\Address;
 use Pagarme\Core\Payment\ValueObjects\PaymentMethod;
 use PagarmeCoreApiLib\Models\CreateGooglePayPaymentRequest;
 
@@ -18,6 +19,10 @@ final class GooglePayPayment extends AbstractPayment
      */
     public $additionalInformation;
 
+    /**
+     * @var array $billingAddress
+     */
+    public $billingAddress;
 
     /**
      * @return array
@@ -25,6 +30,14 @@ final class GooglePayPayment extends AbstractPayment
     public function getAdditionalInformation()
     {
         return $this->additionalInformation;
+    }
+
+    /**
+     * @param array $billingAddress
+     */
+    public function setBillingAddress($billingAddress)
+    {
+        $this->billingAddress = $billingAddress;
     }
 
     /**
@@ -85,6 +98,21 @@ final class GooglePayPayment extends AbstractPayment
         return $this->moduleConfig->getCardStatementDescriptor();
     }
 
+    private function getBillingAddress()
+    {
+
+        $billingAddress = new Address();
+        $billingAddress->setCountry($this->billingAddress->country);
+        $billingAddress->setState($this->billingAddress->state);
+        $billingAddress->setCity($this->billingAddress->city);
+        $billingAddress->setNeighborhood($this->billingAddress->neighborhood);
+        $billingAddress->setZipCode($this->billingAddress->zipCode);
+        $billingAddress->setStreet($this->billingAddress->street);
+        $billingAddress->setNumber($this->billingAddress->number);
+        $billingAddress->setComplement($this->billingAddress->complement);
+        return $billingAddress->convertToSdk();
+    }
+
     /**
      * @return CreateGooglePayPaymentRequest
      */
@@ -93,6 +121,8 @@ final class GooglePayPayment extends AbstractPayment
         $payload = new \stdClass();
         $payload->type = "google_pay";
         $payload->google_pay = $this->getGooglePayload();
-        return new CreateGooglePayPaymentRequest($this->getStatementDescriptor(), $payload);
+        $card = new \stdClass();
+        $card->billing_address = $this->getBillingAddress();
+        return new CreateGooglePayPaymentRequest($this->getStatementDescriptor(), $payload, $card);
     }
 }
