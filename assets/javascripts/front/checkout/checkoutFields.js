@@ -3,9 +3,9 @@
 const pagarmeCustomerFields = {
     billingDocumentId: 'billing_document',
     shippingDocumentId: 'shipping_document',
-    billingPagarmeDocumentId: 'billing-address-document',
-    shippingPagarmeDocumentId: 'shipping-address-document',
-   
+    blocksBillingDocumentId: 'billing-address-document',
+    blocksShippingDocumentId: 'shipping-address-document',
+
     documentMasks: [
         '000.000.000-00999',
         '00.000.000/0000-00'
@@ -21,20 +21,17 @@ const pagarmeCustomerFields = {
     applyDocumentMask() {
         jQuery('#' + this.billingDocumentId).mask(this.documentMasks[0], this.documentMaskOptions);
         jQuery('#' + this.shippingDocumentId).mask(this.documentMasks[0], this.documentMaskOptions);
-        jQuery('#' + this.billingPagarmeDocumentId).mask(this.documentMasks[0], this.documentMaskOptions);
-        jQuery('#' + this.shippingPagarmeDocumentId).mask(this.documentMasks[0], this.documentMaskOptions);
+        jQuery('#' + this.blocksBillingDocumentId).mask(this.documentMasks[0], this.documentMaskOptions);
+        jQuery('#' + this.blocksShippingDocumentId).mask(this.documentMasks[0], this.documentMaskOptions);
     },
 
     addEventListener() {
-        jQuery(document.body).on('DOMContentLoaded', function () {
-            pagarmeCustomerFields.applyDocumentMask();
-        });
         jQuery(document.body).on('checkout_error', function () {
             const documentFieldIds = [
                     pagarmeCustomerFields.billingDocumentId,
                     pagarmeCustomerFields.shippingDocumentId,
-                    pagarmeCustomerFields.billingPagarmeDocumentId,
-                    pagarmeCustomerFields.shippingPagarmeDocumentId
+                    pagarmeCustomerFields.blocksBillingDocumentId,
+                    pagarmeCustomerFields.blocksShippingDocumentId
                 ];
             jQuery.each(documentFieldIds, function () {
                 const documentField = '#' + this + '_field',
@@ -50,8 +47,11 @@ const pagarmeCustomerFields = {
     },
 
     start: function () {
-        this.applyDocumentMask();
         this.addEventListener();
+
+        setTimeout(function() {
+            pagarmeCustomerFields.applyDocumentMask();
+        }, 2000);
     }
 };
 

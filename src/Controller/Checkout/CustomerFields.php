@@ -10,6 +10,13 @@ declare(strict_types = 1);
 
 namespace Woocommerce\Pagarme\Controller\Checkout;
 
+use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
+use Automattic\WooCommerce\Blocks\Package;
+use Exception;
+use InvalidArgumentException;
+use Woocommerce\Pagarme\Helper\Utils;
+use WP_Error;
+
 class CustomerFields
 {
     const ADDRESS_TYPES = [
@@ -20,6 +27,31 @@ class CustomerFields
         'cpf',
         'cnpj',
     ];
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function hasCheckoutBlocksDocumentField()
+    {
+        $checkoutFields = Package::container()->get(CheckoutFields::class);
+        $possibleNames = array_merge(
+            self::DOCUMENT_TYPES,
+            [
+                'document'
+            ]
+        );
+
+        foreach ($possibleNames as $possibleName) {
+            $hasDocument = preg_grep("/{$possibleName}/", $checkoutFields->get_address_fields_keys());
+
+            if ($hasDocument) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * @param $fields
@@ -33,46 +65,157 @@ class CustomerFields
     }
 
     /**
-     * @param string $cpf
-     *
-     * @return bool
+     * @return void
      */
-    public function isValidCpf(string $cpf): bool
+    public function validateDocument()
     {
-        if (!$this->isValidCpfFormat($cpf)) {
-            return false;
-        }
+        foreach (self::ADDRESS_TYPES as $addressType) {
+            $fieldName = "{$addressType}_document";
+            $document = $_POST[$fieldName];
 
-        for ($digit = 9; $digit < 11; $digit ++) {
-            if (!$this->isValidCpfDigit($cpf, $digit)) {
-                return false;
+            if (!$document) {
+                continue;
+            }
+
+            $documentNumber = preg_replace('/\D/', '', $document);
+
+            if ($this->isValidDocumentLength($documentNumber)) {
+                $errorMessage = sprintf(
+                    __(
+                        'Please, enter a valid document number in the <b>%s Document</b>.',
+                        'woo-pagarme-payments'
+                    ),
+                    _x(
+                        ucfirst($addressType),
+                        'checkout-document-error',
+                        'woo-pagarme-payments'
+                    )
+                );
+
+                wc_add_notice($errorMessage, 'error', ['pagarme-error' => $fieldName]);
+                continue;
+            }
+
+            if (!$this->isValidDocument($documentNumber)) {
+                $documentType = $this->getDocumentType($documentNumber);
+                $errorMessage = sprintf(
+                    __(
+                        'Please, enter a valid %s number in the <b>%s Document</b>.',
+                        'woo-pagarme-payments'
+                    ),
+                    strtoupper($documentType),
+                    _x(
+                        ucfirst($addressType),
+                        'checkout-document-error',
+                        'woo-pagarme-payments'
+                    )
+                );
+                wc_add_notice($errorMessage, 'error', ['pagarme-error' => $fieldName]);
             }
         }
-
-        return true;
     }
 
     /**
-     * @param string $cnpj
+     * @param $documentNumber
      *
      * @return bool
      */
-    public function isValidCnpj(string $cnpj): bool
+    private function isValidDocumentLength($documentNumber): bool
     {
-        if (!$this->isValidCnpjFormat($cnpj)) {
-            return false;
-        }
+        $documentLength = strlen($documentNumber);
 
-        $firstCheckDigit = $this->calculateCnpjCheckDigit(substr($cnpj, 0, 12), 5);
-        if ($cnpj[12] != $firstCheckDigit) {
-            return false;
-        }
-
-        $secondCheckDigit = $this->calculateCnpjCheckDigit(substr($cnpj, 0, 13), 6);
-
-        return $cnpj[13] == $secondCheckDigit;
+        return $documentLength !== 11 && $documentLength !== 14;
     }
 
+    /**
+     * @param $documentNumber
+     *
+     * @return mixed
+     * @uses isValidCnpj()
+     * @uses isValidCpf()
+     */
+    private function isValidDocument($documentNumber)
+    {
+        $documentType = $this->getDocumentType($documentNumber);
+        $functionName = $this->getDocumentValidationFunctionName($documentType);
+
+        return $this->{$functionName}($documentNumber);
+    }
+
+    /**
+     * @param $documentNumber
+     *
+     * @return string
+     */
+    private function getDocumentType($documentNumber): string
+    {
+        return Utils::getDocumentType($documentNumber);
+    }
+
+    /**
+     * @param string $documentType Must be one of the two values: `cpf` or `cnpj`
+     *
+     * @return string
+     */
+    private function getDocumentValidationFunctionName(string $documentType): string
+    {
+        if ($documentType !== self::DOCUMENT_TYPES[0] && $documentType !== self::DOCUMENT_TYPES[1]) {
+            throw new InvalidArgumentException();
+        }
+
+        return 'isValid' . ucfirst($documentType);
+    }
+
+    /**
+     * @param $documentNumber
+     *
+     * @return true|WP_Error
+     */
+    public function validateCheckoutBlocksDocument($documentNumber)
+    {
+        $documentNumber = preg_replace('/\D/', '', $documentNumber);
+        $errorCode = 'pagarme_invalid_document';
+
+        if ($this->isValidDocumentLength($documentNumber)) {
+            $errorMessage = __(
+                'Please, enter a valid document number.',
+                'woo-pagarme-payments'
+            );
+
+            return new WP_Error(
+                $errorCode,
+                $errorMessage
+            );
+        }
+
+        if (!$this->isValidDocument($documentNumber)) {
+            $documentType = $this->getDocumentType($documentNumber);
+            $errorMessage = sprintf(
+                __(
+                    'Please, enter a valid %s number.',
+                    'woo-pagarme-payments'
+                ),
+                strtoupper($documentType)
+            );
+
+            return new WP_Error(
+                $errorCode,
+                $errorMessage
+            );
+        }
+
+        $wpError = new WP_Error();
+        $wpError->remove($errorCode);
+
+        return $wpError;
+    }
+
+    /**
+     * @param $order
+     * @param $addressType
+     *
+     * @return void
+     */
     public function displayDocumentOrderMeta($order, $addressType)
     {
         if (!$order) {
@@ -107,6 +250,26 @@ class CustomerFields
     private function getDocumentMetaNameByAddressType(string $addressType): string
     {
         return "_{$addressType}_document";
+    }
+
+    /**
+     * @param string $cpf
+     *
+     * @return bool
+     */
+    private function isValidCpf(string $cpf): bool
+    {
+        if (!$this->isValidCpfFormat($cpf)) {
+            return false;
+        }
+
+        for ($digit = 9; $digit < 11; $digit ++) {
+            if (!$this->isValidCpfDigit($cpf, $digit)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -150,6 +313,27 @@ class CustomerFields
         $remainder = (10 * $sum) % 11;
 
         return ($remainder === 10) ? 0 : $remainder;
+    }
+
+    /**
+     * @param string $cnpj
+     *
+     * @return bool
+     */
+    private function isValidCnpj(string $cnpj): bool
+    {
+        if (!$this->isValidCnpjFormat($cnpj)) {
+            return false;
+        }
+
+        $firstCheckDigit = $this->calculateCnpjCheckDigit(substr($cnpj, 0, 12), 5);
+        if ($cnpj[12] != $firstCheckDigit) {
+            return false;
+        }
+
+        $secondCheckDigit = $this->calculateCnpjCheckDigit(substr($cnpj, 0, 13), 6);
+
+        return $cnpj[13] == $secondCheckDigit;
     }
 
     /**

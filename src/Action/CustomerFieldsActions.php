@@ -10,6 +10,7 @@ declare(strict_types = 1);
 
 namespace Woocommerce\Pagarme\Action;
 
+use Exception;
 use Woocommerce\Pagarme\Controller\Checkout\CustomerFields;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
@@ -32,6 +33,7 @@ class CustomerFieldsActions implements RunnerInterface
     {
         add_filter('woocommerce_checkout_init', array($this, 'enqueueScript'));
         add_filter('woocommerce_checkout_fields', array($this, 'addDocumentField'));
+        add_action('woocommerce_init', array($this, 'addDocumentFieldOnCheckoutBlocks'));
         add_action('woocommerce_checkout_process', array($this, 'validateDocument'));
         add_action(
             'woocommerce_admin_order_data_after_billing_address',
@@ -82,11 +84,14 @@ class CustomerFieldsActions implements RunnerInterface
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function addDocumentFieldOnCheckoutBlocks()
     {
-        if (!function_exists('woocommerce_register_additional_checkout_field')) {
+        if (
+            $this->customerFields->hasCheckoutBlocksDocumentField()
+            || !function_exists('woocommerce_register_additional_checkout_field')
+        ) {
             return;
         }
 
@@ -100,8 +105,8 @@ class CustomerFieldsActions implements RunnerInterface
                 'required'                   => true,
                 'index'                      => 25,
                 'show_in_order_confirmation' => true,
-                'sanitize_callback'          => function ($field_value) {
-                    return str_replace(' ', '', $field_value);
+                'validate_callback'          => function ($documentNumber) {
+                    return $this->customerFields->validateCheckoutBlocksDocument($documentNumber);
                 },
             )
         );
@@ -109,61 +114,10 @@ class CustomerFieldsActions implements RunnerInterface
 
     /**
      * @return void
-     * @uses CustomerFields::isValidCnpj()
-     * @uses CustomerFields::isValidCpf()
      */
     public function validateDocument()
     {
-        foreach ($this->customerFields::ADDRESS_TYPES as $addressType) {
-            $fieldName = "{$addressType}_document";
-            $document = $_POST[$fieldName];
-
-            if (!$document) {
-                continue;
-            }
-
-            $documentNumber = preg_replace('/\D/', '', $document);
-            $documentLength = strlen($documentNumber);
-
-            if ($documentLength !== 11 && $documentLength !== 14) {
-                $errorMessage = sprintf(
-                    __(
-                        'Please, enter a valid document number in the <b>%s Document</b>.',
-                        'woo-pagarme-payments'
-                    ),
-                    _x(
-                        ucfirst($addressType),
-                        'checkout-document-error',
-                        'woo-pagarme-payments'
-                    )
-                );
-
-                wc_add_notice($errorMessage, 'error', ['pagarme-error' => $fieldName]);
-                continue;
-            }
-
-            $documentType = $documentLength === 11
-                ? $this->customerFields::DOCUMENT_TYPES[0]
-                : $this->customerFields::DOCUMENT_TYPES[1];
-            $functionName = 'isValid' . ucfirst($documentType);
-            $isValidDocument = $this->customerFields->{$functionName}($documentNumber);
-
-            if (!$isValidDocument) {
-                $errorMessage = sprintf(
-                    __(
-                        'Please, enter a valid %s number in the <b>%s Document</b>.',
-                        'woo-pagarme-payments'
-                    ),
-                    strtoupper($documentType),
-                    _x(
-                        ucfirst($addressType),
-                        'checkout-document-error',
-                        'woo-pagarme-payments'
-                    )
-                );
-                wc_add_notice($errorMessage, 'error', ['pagarme-error' => $fieldName]);
-            }
-        }
+        $this->customerFields->validateDocument();
     }
 
     /**

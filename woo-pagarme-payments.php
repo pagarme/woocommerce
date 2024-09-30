@@ -325,7 +325,6 @@ function wcmpPluginsLoadedCheck()
 add_action('plugins_loaded', 'wcmpPluginsLoadedCheck', 0);
 add_action('before_woocommerce_init', 'checkCompatibilityWithFeatures', 0);
 add_action('woocommerce_blocks_loaded', 'addWoocommerceSupportedBlocks');
-add_action('woocommerce_blocks_loaded', 'addDocumentFieldOnCheckoutblocks');
 
 function hasAnyBillingDocument($missingFields)
 {
@@ -336,12 +335,6 @@ function hasAnyBillingDocument($missingFields)
     return ($hasCpf && (!$hasCnpj || !$hasDocument))
            || ($hasCnpj && (!$hasCpf || !$hasDocument))
            || ($hasDocument && (!$hasCpf || !$hasCnpj));
-}
-
-function addDocumentFieldOnCheckoutblocks()
-{
-    $checkoutFields = new CustomerFieldsActions();
-    $checkoutFields->addDocumentFieldOnCheckoutBlocks();
 }
 
 function checkCompatibilityWithFeatures()
