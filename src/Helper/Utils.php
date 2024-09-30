@@ -505,7 +505,7 @@ class Utils
 
         if (!empty($order->get_meta('billing_document'))) {
             $document = $order->get_meta('billing_document');
-            $documentType = self::getCustomerType($document);
+            $documentType = self::getCustomerTypeByDocumentNumber($document);
             return array(
                 'type'  => $documentType,
                 'value' => $document,
@@ -518,13 +518,13 @@ class Utils
         );
     }
 
-    public static function getCustomerType($document): string
+    public static function getCustomerTypeByDocumentNumber($document): string
     {
         $documentNumber = preg_replace('/\D/', '', $document ?? '');
         return strlen($documentNumber) === 14 ? 'company' : 'individual';
     }
 
-    public static function getDocumentType($document): string
+    public static function getDocumentTypeByDocumentNumber($document): string
     {
         $documentNumber = preg_replace('/\D/', '', $document ?? '');
         return strlen($documentNumber) === 14 ? 'cnpj' : 'cpf';

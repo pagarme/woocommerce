@@ -79,7 +79,7 @@ class CustomerFields
 
             $documentNumber = preg_replace('/\D/', '', $document);
 
-            if ($this->isValidDocumentLength($documentNumber)) {
+            if (!$this->isValidDocumentLength($documentNumber)) {
                 $errorMessage = sprintf(
                     __(
                         'Please, enter a valid document number in the <b>%s Document</b>.',
@@ -124,7 +124,7 @@ class CustomerFields
     {
         $documentLength = strlen($documentNumber);
 
-        return $documentLength !== 11 && $documentLength !== 14;
+        return $documentLength === 11 || $documentLength === 14;
     }
 
     /**
@@ -149,7 +149,7 @@ class CustomerFields
      */
     private function getDocumentType($documentNumber): string
     {
-        return Utils::getDocumentType($documentNumber);
+        return Utils::getDocumentTypeByDocumentNumber($documentNumber);
     }
 
     /**
@@ -167,25 +167,28 @@ class CustomerFields
     }
 
     /**
+     * @param WP_Error $errors
      * @param $documentNumber
      *
-     * @return true|WP_Error
+     * @return WP_Error
      */
-    public function validateCheckoutBlocksDocument($documentNumber)
+    public function validateCheckoutBlocksDocument(WP_Error $errors, $documentNumber)
     {
         $documentNumber = preg_replace('/\D/', '', $documentNumber);
         $errorCode = 'pagarme_invalid_document';
 
-        if ($this->isValidDocumentLength($documentNumber)) {
+        if (!$this->isValidDocumentLength($documentNumber)) {
             $errorMessage = __(
                 'Please, enter a valid document number.',
                 'woo-pagarme-payments'
             );
 
-            return new WP_Error(
+            $errors->add(
                 $errorCode,
                 $errorMessage
             );
+
+            return $errors;
         }
 
         if (!$this->isValidDocument($documentNumber)) {
@@ -198,16 +201,17 @@ class CustomerFields
                 strtoupper($documentType)
             );
 
-            return new WP_Error(
+            $errors->add(
                 $errorCode,
                 $errorMessage
             );
+
+            return $errors;
         }
 
-        $wpError = new WP_Error();
-        $wpError->remove($errorCode);
+        $errors->remove($errorCode);
 
-        return $wpError;
+        return $errors;
     }
 
     /**

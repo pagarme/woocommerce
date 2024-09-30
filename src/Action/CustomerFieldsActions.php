@@ -14,6 +14,7 @@ use Exception;
 use Woocommerce\Pagarme\Controller\Checkout\CustomerFields;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\Config;
+use WP_Error;
 
 defined('ABSPATH') || exit;
 
@@ -33,8 +34,9 @@ class CustomerFieldsActions implements RunnerInterface
     {
         add_filter('woocommerce_checkout_init', array($this, 'enqueueScript'));
         add_filter('woocommerce_checkout_fields', array($this, 'addDocumentField'));
-        add_action('woocommerce_init', array($this, 'addDocumentFieldOnCheckoutBlocks'));
         add_action('woocommerce_checkout_process', array($this, 'validateDocument'));
+        add_action('woocommerce_init', array($this, 'addDocumentFieldOnCheckoutBlocks'));
+        add_action('woocommerce_validate_additional_field', array($this, 'validateCheckoutBlocksDocument'), 10, 3);
         add_action(
             'woocommerce_admin_order_data_after_billing_address',
             array($this, 'displayBillingDocumentOrderMeta')
@@ -104,10 +106,7 @@ class CustomerFieldsActions implements RunnerInterface
                 'class'                      => array('form-row-wide'),
                 'required'                   => true,
                 'index'                      => 25,
-                'show_in_order_confirmation' => true,
-                'validate_callback'          => function ($documentNumber) {
-                    return $this->customerFields->validateCheckoutBlocksDocument($documentNumber);
-                },
+                'show_in_order_confirmation' => true
             )
         );
     }
@@ -118,6 +117,20 @@ class CustomerFieldsActions implements RunnerInterface
     public function validateDocument()
     {
         $this->customerFields->validateDocument();
+    }
+
+    /**
+     * @param WP_Error $errors
+     * @param $fieldKey
+     * @param $documentNumber
+     *
+     * @return void
+     */
+    public function validateCheckoutBlocksDocument(WP_Error $errors, $fieldKey, $documentNumber)
+    {
+        if ($fieldKey == 'address/document') {
+            $this->customerFields->validateCheckoutBlocksDocument($errors, $documentNumber);
+        }
     }
 
     /**

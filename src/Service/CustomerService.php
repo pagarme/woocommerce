@@ -85,7 +85,7 @@ class CustomerService
             'email' => $billingData['email'],
             'name' => $billingData['first_name'] . ' ' . $billingData['last_name'],
             'document' => $document,
-            'document_type' => Utils::getDocumentType($document),
+            'document_type' => Utils::getDocumentTypeByDocumentNumber($document),
             'home_phone' => $billingData['phone'],
             'mobile_phone' => $wcOrder->get_meta('_billing_cellphone'),
             'street' => $billingData['street'],
