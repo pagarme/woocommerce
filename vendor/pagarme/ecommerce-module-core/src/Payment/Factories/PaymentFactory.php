@@ -311,7 +311,7 @@ final class PaymentFactory
             if (!empty($value->additionalInformation)) {
                 $payment->setAdditionalInformation($value->additionalInformation);
             }
-
+            $payment->setBillingAddress($value->billing_address);
             $payment->setAmount($value->amount);
 
             $payments[] = $payment;

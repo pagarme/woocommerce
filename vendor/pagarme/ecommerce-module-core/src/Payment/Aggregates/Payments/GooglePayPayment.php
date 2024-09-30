@@ -18,6 +18,10 @@ final class GooglePayPayment extends AbstractPayment
      */
     public $additionalInformation;
 
+    /**
+     * @var array $billingAddress
+     */
+    public $billingAddress;
 
     /**
      * @return array
@@ -25,6 +29,14 @@ final class GooglePayPayment extends AbstractPayment
     public function getAdditionalInformation()
     {
         return $this->additionalInformation;
+    }
+
+    /**
+     * @param array $billingAddress
+     */
+    public function setBillingAddress($billingAddress)
+    {
+        $this->billingAddress = $billingAddress;
     }
 
     /**
@@ -85,6 +97,11 @@ final class GooglePayPayment extends AbstractPayment
         return $this->moduleConfig->getCardStatementDescriptor();
     }
 
+    private function getBillingAddress()
+    {
+        return $this->billingAddress;
+    }
+
     /**
      * @return CreateGooglePayPaymentRequest
      */
@@ -93,6 +110,8 @@ final class GooglePayPayment extends AbstractPayment
         $payload = new \stdClass();
         $payload->type = "google_pay";
         $payload->google_pay = $this->getGooglePayload();
-        return new CreateGooglePayPaymentRequest($this->getStatementDescriptor(), $payload);
+        $card = new \stdClass();
+        $card->billing_address = $this->getBillingAddress();
+        return new CreateGooglePayPaymentRequest($this->getStatementDescriptor(), $payload, $card);
     }
 }
