@@ -97,6 +97,7 @@ final class SavedCardRepository extends AbstractRepository
     public function find($objectId)
     {
         $table = $this->db->getTable(AbstractDatabaseDecorator::TABLE_SAVED_CARD);
+        $objectId = filter_var($objectId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table WHERE id = '$objectId'";
 
         $result = $this->db->fetch($query);

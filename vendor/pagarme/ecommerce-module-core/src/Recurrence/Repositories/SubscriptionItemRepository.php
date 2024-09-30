@@ -77,7 +77,7 @@ class SubscriptionItemRepository extends AbstractRepository
         $subscriptionItemTable = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION_ITEM
         );
-
+        $code = filter_var($code, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "
             SELECT *
               FROM {$subscriptionItemTable}                  
@@ -167,7 +167,7 @@ class SubscriptionItemRepository extends AbstractRepository
         $subscriptionItemTable = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION_ITEM
         );
-
+        $objectId = filter_var($objectId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM {$subscriptionItemTable} WHERE id = '" . $objectId . "'";
         $result = $this->db->fetch($query);
 

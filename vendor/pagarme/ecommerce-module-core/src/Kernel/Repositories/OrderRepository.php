@@ -65,7 +65,7 @@ final class OrderRepository extends AbstractRepository
     public function findByCode($codeId)
     {
         $orderTable = $this->db->getTable(AbstractDatabaseDecorator::TABLE_ORDER);
-
+        $codeId = filter_var($codeId, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "SELECT * FROM `$orderTable` ";
         $query .= "WHERE code = '{$codeId}';";
 
@@ -117,7 +117,7 @@ final class OrderRepository extends AbstractRepository
     public function findByPlatformId($platformID)
     {
         $orderTable = $this->db->getTable(AbstractDatabaseDecorator::TABLE_ORDER);
-
+        $platformID = filter_var($platformID, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "SELECT * FROM `$orderTable` ";
         $query .= "WHERE code = '{$platformID}' ORDER BY id DESC;";
 

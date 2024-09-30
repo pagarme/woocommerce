@@ -14,6 +14,7 @@ use Pagarme\Core\Payment\Aggregates\Payments\NewCreditCardPayment;
 use Pagarme\Core\Payment\Aggregates\Payments\NewDebitCardPayment;
 use Pagarme\Core\Payment\Aggregates\Payments\NewVoucherPayment;
 use Pagarme\Core\Payment\Aggregates\Payments\PixPayment;
+use Pagarme\Core\Payment\Aggregates\Payments\GooglePayPayment;
 use Pagarme\Core\Payment\Aggregates\Payments\SavedCreditCardPayment;
 use Pagarme\Core\Payment\Aggregates\Payments\SavedVoucherCardPayment;
 use Pagarme\Core\Payment\ValueObjects\BoletoBank;
@@ -39,6 +40,7 @@ final class PaymentFactory
             'createVoucherPayments',
             'createDebitCardPayments',
             'createPixPayments',
+            'createGooglePayPayments',
         ];
 
         $this->moduleConfig = MPSetup::getModuleConfiguration();
@@ -273,6 +275,43 @@ final class PaymentFactory
                 $payment->setAdditionalInformation($additionalInformation);
             }
 
+            $payment->setAmount($value->amount);
+
+            $payments[] = $payment;
+        }
+
+        return $payments;
+    }
+
+
+    /**
+     * @param array $data
+     * @return GooglePayPayment[]
+     * @throws InvalidParamException
+     */
+    private function createGooglePayPayments($data)
+    {
+        $googlepayDataIndex = "googlepay";
+
+        if (!isset($data->$googlepayDataIndex)) {
+            return [];
+        }
+
+        $googlepayData = $data->$googlepayDataIndex;
+
+        $payments = [];
+        foreach ($googlepayData as $value) {
+            $payment = new GooglePayPayment();
+
+            $customer = $this->createCustomer($value);
+            if ($customer !== null) {
+                $payment->setCustomer($customer);
+            }
+
+            if (!empty($value->additionalInformation)) {
+                $payment->setAdditionalInformation($value->additionalInformation);
+            }
+            $payment->setBillingAddress($value->billing_address);
             $payment->setAmount($value->amount);
 
             $payments[] = $payment;

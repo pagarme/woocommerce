@@ -304,16 +304,14 @@ class ChargeService
 
     /**
      * @param $code
-     *
-     * @return Charge[]
-     * @throws \Exception
+     * @return array|null
+     * @throws Exception
      */
     public function findChargeWithOutOrder($code)
     {
         $chargeRepository = new ChargeRepository();
 
         return $chargeRepository->findChargeWithOutOrder($code);
-
     }
 
     /**
@@ -328,7 +326,7 @@ class ChargeService
 
         return $chargeRepository->findChargesByCode($code);
     }
-
+    
     /**
      * @param Charge $charge
      * @throws Exception

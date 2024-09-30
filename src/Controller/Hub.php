@@ -67,15 +67,12 @@ class Hub
         );
 
         $this->settings->setData(
-            'account_id',
-            $moduleConfig->getAccountId()->getValue()
-        );
-
-        $this->settings->setData(
             'merchant_id',
             $moduleConfig->getMerchantId()->getValue()
         );
 
+        $this->settings->setAccountId($moduleConfig->getAccountId()->getValue());
+    
         $this->settings->setData('sandbox_secret_key', null);
         $this->settings->setData('sandbox_public_key', null);
         $this->settings->setData('environment', null);

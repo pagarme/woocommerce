@@ -30,7 +30,7 @@ class PTBR extends AbstractI18NTable
             'Remaining amount: %.2f' => "Quantidade faltante: %.2f",
             "Some charges couldn't be canceled at Pagarme. Reasons:" => "Algumas cobranças não puderam ser canceladas na Pagarme. Razões:",
             "without interest" => "sem juros",
-            "with %.2f%% of interest" => "com %.2f%% de juros",
+            "with interest" => "com juros",
             "%dx of %s %s (Total: %s)" => "%dx de %s %s (Total: %s)",
             "Order payment failed" => "Pagamento do pedido falhou",
             "The order will be canceled" => "O pedido será cancelado",
