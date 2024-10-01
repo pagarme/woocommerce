@@ -77,7 +77,7 @@ class ConfigurationRepository extends AbstractRepository
     public function find($objectId)
     {
         $configTable = $this->db->getTable(AbstractDatabaseDecorator::TABLE_MODULE_CONFIGURATION);
-
+        $objectId = filter_var($objectId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT data, id FROM `$configTable` WHERE id = {$objectId};";
 
         $result = $this->db->fetch($query);
@@ -101,7 +101,7 @@ class ConfigurationRepository extends AbstractRepository
         }
 
         $configTable = $this->db->getTable(AbstractDatabaseDecorator::TABLE_MODULE_CONFIGURATION);
-
+        $storeId = filter_var($storeId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT data, id FROM `$configTable` WHERE store_id = {$storeId};";
 
         $result = $this->db->fetch($query);

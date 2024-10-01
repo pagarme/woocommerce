@@ -63,7 +63,7 @@ class RepetitionRepository extends AbstractRepository
     public function deleteBySubscriptionId($subscriptionProductId)
     {
         $table = $this->db->getTable(AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION_REPETITIONS);
-
+        $subscriptionProductId = filter_var($subscriptionProductId, FILTER_SANITIZE_NUMBER_INT);
         $query = "DELETE FROM $table WHERE subscription_id = {$subscriptionProductId}";
 
         $this->db->query($query);
@@ -72,7 +72,7 @@ class RepetitionRepository extends AbstractRepository
     public function find($objectId)
     {
         $table = $this->db->getTable(AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION_REPETITIONS);
-
+        $objectId = filter_var($objectId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table WHERE id = $objectId";
 
         $result = $this->db->fetch($query);
@@ -100,7 +100,7 @@ class RepetitionRepository extends AbstractRepository
     public function findBySubscriptionId($subscriptionId)
     {
         $table = $this->db->getTable(AbstractDatabaseDecorator::TABLE_RECURRENCE_SUBSCRIPTION_REPETITIONS);
-
+        $subscriptionId = filter_var($subscriptionId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table WHERE subscription_id = $subscriptionId";
 
         $result = $this->db->fetch($query);

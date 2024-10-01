@@ -77,6 +77,8 @@ class CheckoutTest extends TestCase
             ->andReturn([$cardMock]);
         $paymentRequestMock->shouldReceive('getData')
             ->andReturn([]);
+        $paymentRequestMock->shouldReceive('getDataByKey')
+            ->andReturn([]);
 
         $_POST[PaymentRequestInterface::PAGARME_PAYMENT_REQUEST_KEY] = $paymentRequestMock;
 

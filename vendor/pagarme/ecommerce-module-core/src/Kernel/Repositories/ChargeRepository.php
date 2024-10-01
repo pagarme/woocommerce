@@ -234,7 +234,7 @@ final class ChargeRepository extends AbstractRepository
         $orderTable = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_ORDER
         );
-
+        $code = filter_var($code, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "SELECT charge.* 
                     FROM `{$chargeTable}` as charge  
                LEFT JOIN `{$orderTable}` as o on charge.order_id = o.pagarme_id 
@@ -254,5 +254,67 @@ final class ChargeRepository extends AbstractRepository
         }
 
         return $chargeList;
+    }
+
+    /**
+     * @param $code
+     * @return Charge[]
+     * @throws \Exception
+     */
+    public function findChargesByCode($code)
+    {
+        $chargeTable = $this->db->getTable(AbstractDatabaseDecorator::TABLE_CHARGE);
+        $transactionTable = $this->db->getTable(AbstractDatabaseDecorator::TABLE_TRANSACTION);
+
+        $this->db->query("SET group_concat_max_len = 8096;");
+
+        $query = "
+            SELECT
+                c.*,
+                t.id as tran_id,
+                t.pagarme_id as tran_pagarme_id,
+                t.charge_id as tran_charge_id,
+                t.amount as tran_amount,
+                t.paid_amount as tran_paid_amount,
+                t.acquirer_name as tran_acquirer_name,
+                t.acquirer_message as tran_acquirer_message,
+                t.acquirer_nsu as tran_acquirer_nsu,
+                t.acquirer_tid as tran_acquirer_tid,
+                t.acquirer_auth_code as tran_acquirer_auth_code,
+                t.type as tran_type,
+                t.status as tran_status,
+                t.created_at as tran_created_at,
+                t.boleto_url as tran_boleto_url,
+                t.card_data as tran_card_data,
+                t.transaction_data as tran_data
+            FROM
+                $chargeTable as c
+                LEFT JOIN $transactionTable as t on c.pagarme_id = t.charge_id
+            WHERE c.code = '$code'
+            ORDER BY c.id DESC;
+        ";
+
+        $result = $this->db->fetch($query);
+
+        if ($result->num_rows === 0) {
+            return [];
+        }
+
+        $factory = new ChargeFactory();
+
+        $charges = [];
+        foreach ($result->rows as &$row) {
+            $row['tran_card_data'] = StringFunctionsHelper::removeLineBreaks(
+                $row['tran_card_data']
+            );
+
+            $row['tran_data'] = StringFunctionsHelper::removeLineBreaks(
+                $row['tran_data']
+            );
+
+            $charges[] = $factory->createFromDbData($row);
+        }
+
+        return $charges;
     }
 }

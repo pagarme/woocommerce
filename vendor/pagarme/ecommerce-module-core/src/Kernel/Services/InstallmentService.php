@@ -110,10 +110,7 @@ final class InstallmentService
 
         $interestLabel = $i18n->getDashboard('without interest');
         if ($installment->getInterest() > 0) {
-            $interestLabel = ", " . $i18n->getDashboard(
-                'with %.2f%% of interest',
-                $installment->getInterest() * 100
-            );
+            $interestLabel = $i18n->getDashboard('with interest');
         }
 
         $moneyService = new MoneyService();

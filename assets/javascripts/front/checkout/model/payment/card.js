@@ -98,7 +98,7 @@ let pagarmeCard = {
     },
     checkTokenCard: function (event) {
         let allResult = [];
-        event.each(async function () {
+        event.each(function () {
             if (pagarmeCard.hasSelectedWallet(this)) {
                 allResult.push(true);
                 return;
@@ -115,12 +115,7 @@ let pagarmeCard = {
     },
     checkToken: function (event) {
         event = this.formatEventToJQuery(event);
-        return !!event.find(this.tokenElement).length && this.checkTokenExpirationDate(event.find(this.tokenElement));
-    },
-    checkTokenExpirationDate: function (event) {
-        const expirationDateTimeAttribute = event.attr(this.tokenExpirationAttribute);
-        const expirationDate = new Date(expirationDateTimeAttribute);
-        return expirationDate > new Date();
+        return !!event.find(this.tokenElement).length;
     },
     getCardDataContingency: async function (cardNumber) {
         let oldPrefix = '',
@@ -412,9 +407,10 @@ let pagarmeCard = {
         return output;
     },
     execute: async function (event) {
+        this.showLoader(event);
         try {
             for (let i = 1; !pagarmeCard.isTokenized() && i <= this.limitTokenize; i++) {
-                if (i === this.limit) {
+                if (i === this.limitTokenize) {
                     this.removeLoader(event);
                     throw new Error("Tokenize timeout");
                 }
@@ -426,7 +422,9 @@ let pagarmeCard = {
             }
             let formCheckout = this.formatEventToJQuery(event);
             formCheckout.submit();
+            formCheckout.find(pagarmeCard.tokenElement).remove();
         } catch (er) {
+            this.removeLoader(event);
             if (typeof er === 'string') {
                 this.showError(er);
             } else {
@@ -436,6 +434,7 @@ let pagarmeCard = {
     },
     canExecute: function (event) {
         const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
+        
         const cardBrand = checkoutPaymentElement.parents('.pagarme-card-number-row')
             .find(this.brandTarget);
         if (cardBrand?.val()?.length === 0 || wc_pagarme_checkout.errorTokenize === true) {

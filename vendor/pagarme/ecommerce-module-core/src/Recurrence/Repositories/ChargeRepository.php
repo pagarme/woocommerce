@@ -166,7 +166,7 @@ final class ChargeRepository extends AbstractRepository
         $table = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_RECURRENCE_CHARGE
         );
-
+        $invoiceId = filter_var($invoiceId, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "
             SELECT 
                 id,
@@ -264,7 +264,7 @@ final class ChargeRepository extends AbstractRepository
         $transactionTable = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_TRANSACTION
         );
-
+        $codeOrder = filter_var($codeOrder, FILTER_SANITIZE_SPECIAL_CHARS);
         $query = "
             SELECT 
                 recurrence_charge.*, 

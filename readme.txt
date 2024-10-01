@@ -4,7 +4,7 @@ Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.5.5
 Requires PHP: 7.1
-Stable tag: 3.3.3
+Stable tag: 3.4.0
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -25,6 +25,21 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.4.0 (01/10/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.0)
+
+* **Novas funcionalidades:**
+  *  Meio de pagamento Google Pay.
+
+* **Melhorias:**
+  *  Passando pedido e meio de pagamento para o cálculo do split;
+  *  Checkout assincrono;
+
+
+* **Correções:**
+  *  Link para desintregar chamando endpoint incorretamente
+  *  Problemas com tokenização
+
 = 3.3.3 (14/08/2024) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.3)
 
@@ -34,11 +49,6 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
 * **Correções:**
   *  Perdendo informação de bandeira ao trocar meios de pagamento no checkout
 
-= 3.3.2 (03/07/2024) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.2)
-
-* **Correções:**
-  *  Exibe uma parcela (à vista) quando o valor do carrinho é menor que a configuração de valor mínimo de parcelas
 
 == Upgrade Notice ==
-Nosso plugin agora é compatível com Woocommerce Subscriptions
+Agora é possível transacionar Via Google Pay

@@ -203,6 +203,12 @@ class Config extends DataObject
         return $this->getMerchantId() && $this->getAccountId();
     }
 
+    public function setAccountId($accountId)
+    {
+        $this->setData('account_id', $accountId);
+        $this->updateGooglepayAccountId($accountId);
+    }
+
     /**
      * @return mixed
      */
@@ -364,6 +370,15 @@ class Config extends DataObject
         $moneyService = new MoneyService();
         $tdsMinAmount = $moneyService->removeSeparators($tdsMinAmount);
         return $moneyService->centsToFloat($tdsMinAmount);
+    }
+
+    private function updateGooglepayAccountId($accountId)
+    {
+        $googlepayOption = get_option( 'woocommerce_woo-pagarme-payments-googlepay_settings' );
+        if(is_array($googlepayOption)) {
+            $googlepayOption['account_id'] = $accountId;
+            update_option( 'woocommerce_woo-pagarme-payments-googlepay_settings', $googlepayOption );
+        }
     }
 
     public function isAnyBilletMethodEnabled()

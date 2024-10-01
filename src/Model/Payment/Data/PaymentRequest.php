@@ -39,6 +39,9 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
     /** @var Pix */
     private $pix;
 
+    /** @var Googlepay */
+    private $googlepay;
+
     /**
      * @param ShippingAddress|null $shippingAddress
      * @param BillingAddress|null $billingAddress
@@ -47,6 +50,7 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
      * @param Json|null $jsonSerialize
      * @param Billet|null $billet
      * @param Pix|null $pix
+     * @param Googlepay|null $googlepay
      * @param array $data
      */
     public function __construct(
@@ -57,6 +61,7 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
         Json $jsonSerialize = null,
         Billet $billet = null,
         Pix $pix = null,
+        Googlepay $googlepay = null,
         array $data = []
     ) {
         parent::__construct($jsonSerialize, $data);
@@ -66,6 +71,7 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
         $this->billingAddress = $billingAddress ?? new BillingAddress;
         $this->billet = $billet ?? new Billet;
         $this->pix = $pix ?? new Pix;
+        $this->googlepay = $googlepay ?? new Googlepay;
         $this->init();
     }
 
@@ -81,6 +87,7 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
             }
         }
         $this->setCards();
+        $this->setGooglepayToken();
         $this->setShippingAddress();
         $this->setBillingAddress();
     }
@@ -174,6 +181,25 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
     {
         if ($this->havePaymentForm(self::PIX, false)) {
             return $this->setData(self::PIX, $this->pix);
+        }
+        return $this;
+    }
+
+    public function setGooglepayToken()
+    {
+        if ($this->havePaymentForm(self::GOOGLEPAY, true)) {
+            return $this->setData(self::GOOGLEPAY, $this->googlepay->getToken());
+        }
+        return $this;
+    }
+
+     /**
+     * @return PaymentRequest
+     */
+    public function setGooglepay()
+    {
+        if ($this->havePaymentForm(self::GOOGLEPAY, false)) {
+            return $this->setData(self::GOOGLEPAY, $this->googlepay->getToken());
         }
         return $this;
     }

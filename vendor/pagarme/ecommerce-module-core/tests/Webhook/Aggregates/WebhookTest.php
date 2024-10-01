@@ -2,11 +2,12 @@
 
 namespace Pagarme\Core\Test\Webhook\Aggregates;
 
-use Pagarme\Core\Recurrence\Aggregates\Charge;
-use Pagarme\Core\Webhook\Aggregates\Webhook;
-use Pagarme\Core\Webhook\ValueObjects\WebhookId;
-use Pagarme\Core\Webhook\ValueObjects\WebhookType;
 use PHPUnit\Framework\TestCase;
+use Pagarme\Core\Webhook\Aggregates\Webhook;
+use Pagarme\Core\Recurrence\Aggregates\Charge;
+use Pagarme\Core\Webhook\ValueObjects\WebhookId;
+use Pagarme\Core\Marketplace\Aggregates\Recipient;
+use Pagarme\Core\Webhook\ValueObjects\WebhookType;
 
 class WebhookIdTests extends TestCase
 {
@@ -41,5 +42,21 @@ class WebhookIdTests extends TestCase
         $this->assertEquals('subscription', $webhook->getType()->getEntityType());
         $this->assertEquals('create', $webhook->getType()->getAction());
         $this->assertEquals('Recurrence', $webhook->getComponent());
+    }
+
+    public function testWebHookObjectMarketplace()
+    {
+        $webhook = new Webhook();
+        $webhook->setId(1);
+        $webhook->setPagarmeId(new WebhookId('hook_xxxxxxxxxxxxxxxx'));
+        $webhook->setType(WebhookType::fromPostType('recipient.updated'));
+        $webhook->setEntity(new Recipient());
+        $webhook->setComponent([]);
+
+        $this->assertEquals(1, $webhook->getId());
+        $this->assertEquals('hook_xxxxxxxxxxxxxxxx', $webhook->getPagarmeId()->getValue());
+        $this->assertEquals('recipient', $webhook->getType()->getEntityType());
+        $this->assertEquals('updated', $webhook->getType()->getAction());
+        $this->assertEquals('Marketplace', $webhook->getComponent());
     }
 }

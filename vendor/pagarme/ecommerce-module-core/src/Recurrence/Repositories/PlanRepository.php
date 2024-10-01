@@ -94,6 +94,7 @@ final class PlanRepository extends AbstractRepository
         $table = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_RECURRENCE_PRODUCTS_PLAN
         );
+        $objectId = filter_var($objectId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table WHERE id = '$objectId' LIMIT 1";
 
         $result = $this->db->fetch($query);
@@ -187,6 +188,7 @@ final class PlanRepository extends AbstractRepository
         $table = $this->db->getTable(
             AbstractDatabaseDecorator::TABLE_RECURRENCE_PRODUCTS_PLAN
         );
+        $productId = filter_var($productId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table WHERE product_id = '{$productId}' LIMIT 1";
 
         $result = $this->db->fetch($query);

@@ -10,7 +10,6 @@ const backendConfig = wc.wcSettings.getSetting(
 
 const PagarmeCreditCardComponent = (props) => {
     const { emitResponse, eventRegistration } = props;
-
     useCreditCard(backendConfig, emitResponse, eventRegistration);
 
     return (

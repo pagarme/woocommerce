@@ -1,14 +1,14 @@
 {
   "name": "woo-pagarme-payments",
-  "version": "3.3.3",
+  "version": "3.4.0",
   "description": "Pagar.me module for Woocommerce",
   "main": "woo-pagarme-payments.php",
   "devDependencies": {
-    "@woocommerce/dependency-extraction-webpack-plugin": "^2.3.0",
+    "@woocommerce/dependency-extraction-webpack-plugin": "*",
     "@wordpress/components": "^26.0.0",
     "@wordpress/data": "^9.22.0",
     "@wordpress/i18n": "^4.55.0",
-    "@wordpress/scripts": "^27.1.0",
+    "@wordpress/scripts": "^19.2.4",
     "grunt": "^1.0.1",
     "grunt-concurrent": "^2.3.1",
     "grunt-contrib-concat": "^1.0.1",
@@ -16,7 +16,7 @@
     "grunt-contrib-uglify": "^3.1.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-wp-i18n": "^1.0.0",
-    "load-grunt-config": "^0.19.2",
+    "load-grunt-config": "^4.0.1",
     "load-grunt-tasks": "^3.5.2",
     "node-wp-i18n": "^1.2.0",
     "prop-types": "^15.8.1",
@@ -27,5 +27,8 @@
     "makepot": "yarn wpi18n makepot --exclude=node_modules,vendor",
     "build": "wp-scripts build",
     "start": "wp-scripts start"
+  },
+  "dependencies": {
+    "@google-pay/button-react": "^3.1.0"
   }
 }

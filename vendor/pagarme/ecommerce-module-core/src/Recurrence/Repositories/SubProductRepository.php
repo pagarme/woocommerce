@@ -105,7 +105,8 @@ class SubProductRepository extends AbstractRepository
     public function findByRecurrenceIdAndProductId($recurrenceId, $productId)
     {
         $table = $this->db->getTable(AbstractDatabaseDecorator::TABLE_RECURRENCE_SUB_PRODUCTS);
-
+        $recurrenceId = filter_var($recurrenceId, FILTER_SANITIZE_NUMBER_INT);
+        $productId = filter_var($productId, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT * FROM $table" .
             " WHERE product_recurrence_id = {$recurrenceId}" .
             " AND product_id = '{$productId}'";

@@ -60,7 +60,7 @@ $success = 'Integration keys successfully removed. Reload the page.';
                             });
                             swal.showLoading();
                             $.ajax({
-                                url: '<?= admin_url('/wc-api/pagarme-hubcommand'); ?>',
+                                url: '<?= site_url('/wc-api/pagarme-hubcommand'); ?>',
                                 type: 'POST',
                                 dataType: "json",
                                 data: JSON.stringify({

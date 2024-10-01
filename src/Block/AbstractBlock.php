@@ -116,11 +116,17 @@ abstract class AbstractBlock extends DataObject
 
     public function getScriptUrl($jsFileName)
     {
+        if(filter_var($jsFileName, FILTER_VALIDATE_URL)) {
+            return $jsFileName;
+        }
         return Core::plugins_url('assets/javascripts/' . $this->areaCode . '/' . $jsFileName . '.js');
     }
 
     public function getScriptVer($jsFileName)
     {
+        if(filter_var($jsFileName, FILTER_VALIDATE_URL)) {
+            return date("Ymd");
+        }
         return Core::filemtime('assets/javascripts/' . $this->areaCode . '/' . $jsFileName . '.js');
     }
 }

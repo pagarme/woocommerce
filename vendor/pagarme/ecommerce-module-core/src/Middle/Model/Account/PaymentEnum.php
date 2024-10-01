@@ -15,4 +15,6 @@ abstract class PaymentEnum
     const PIX = 'pix';
 
     const VOUCHER = 'voucher';
+
+    const GOOGLEPAY = 'googlepay';
 }

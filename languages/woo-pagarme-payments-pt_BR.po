@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-07-03 15:55-0300\n"
+"PO-Revision-Date: 2024-10-01 09:55-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.3\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c;_nc:1,2;_x:1,2c;_ex:1,2c;"
 "_nx:4c,1,2;_nx_noop:4c,1,2\n"
@@ -1124,14 +1124,17 @@ msgstr "Cartão de Crédito"
 msgid "2 Cards"
 msgstr "2 Cartões"
 
+msgid "Googlepay"
+msgstr "Google Pay"
+
 msgid "Amount"
 msgstr "Total"
 
 msgid "Billet And Card"
 msgstr "Boleto e Cartão"
 
-msgid "Pagar.me - Capture/Cancellation"
-msgstr "Pagar.me - Captura/Cancelamento"
+msgid "Pagar.me - Charges"
+msgstr "Pagar.me - Cobranças"
 
 msgid "Last Four Digits"
 msgstr "Últimos quatro dígitos"
@@ -1142,8 +1145,17 @@ msgstr "Titular"
 msgid "No records found."
 msgstr "Nenhum registro foi encontrado."
 
+msgid "Created At"
+msgstr "Criado Em"
+
+msgid "Charge ID"
+msgstr "ID da Cobrança"
+
 msgid "Refunded"
 msgstr "Reembolsado"
+
+msgid "Capture"
+msgstr "Capturar"
 
 msgid "Captured"
 msgstr "Capturado"
@@ -1464,13 +1476,6 @@ msgstr "O mês de expiração do cartão deve estar entre 01 e 12."
 msgid "Pagar.me: Payment failed."
 msgstr "Pagar.me: Pagamento falhou."
 
-msgid ""
-"<span>Attention!</span> It is now possible to use Woocommerce's automatic refund flow. <b>Soon, this button will be "
-"dedicated to manual capture only</b>."
-msgstr ""
-"<span>Atenção!</span> Já é possível utilizar o fluxo de reembolso automático do Woocommerce. <b>Em breve, este botão "
-"será dedicado somente a captura manual</b>."
-
 msgid "There was a problem attempting to refund: %1$s"
 msgstr "Ocorreu um problema ao tentar reembolsar: %1$s"
 
@@ -1482,3 +1487,31 @@ msgstr "A cobrança %s foi totalmente reembolsada."
 
 msgid "Charge %1$s was partially refunded. Amount: %2$s"
 msgstr "A cobrança %1$s foi parcialmente reembolsada. Valor: %2$s"
+
+msgid ""
+"<p>You may have filled in one or more details incorrectly.</p>Try to fill in the details exactly as they appear on "
+"your card or bank app to complete the payment."
+msgstr ""
+"<p>Você pode ter preenchido um ou mais dados incorretamente.</p>Tente preencher os dados exatamente como aparecem no "
+"cartão ou app do banco para conclusão do pagamento."
+
+msgid "Error processing payment. Please try again later."
+msgstr "Erro ao processar o pagamento. Por favor tente novamente mais tarde."
+
+msgid "Or pay with card"
+msgstr "Ou pague com cartão"
+
+msgid "Check the Pagar.me Dashboard at: Settings &rarr; Keys &rarr; Account ID"
+msgstr "Consulte na Dashboard Pagar.me em: Configurações &rarr; Chaves &rarr; ID da Conta"
+
+msgid "Google Merchant Identifier, get yours <a href=\"%s\">here</a>."
+msgstr "Identificador de comerciante do Google, adquira o seu <a href=\"%s\">aqui</a>"
+
+msgid "Your store name that will be displayed to the customer while purchasing through Google Pay."
+msgstr "Nome da sua loja que será exibido ao cliente enquanto compra através do Google Pay."
+
+msgid "Store name on Google Pay"
+msgstr "Nome da loja na Google Pay"
+
+msgid "Pagar.me account ID"
+msgstr "ID da conta Pagar.me"
