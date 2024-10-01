@@ -422,6 +422,7 @@ let pagarmeCard = {
             }
             let formCheckout = this.formatEventToJQuery(event);
             formCheckout.submit();
+            formCheckout.find(pagarmeCard.tokenElement).remove();
         } catch (er) {
             this.removeLoader(event);
             if (typeof er === 'string') {
