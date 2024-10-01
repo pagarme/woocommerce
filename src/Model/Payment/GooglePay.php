@@ -30,7 +30,7 @@ class GooglePay extends AbstractPayment implements PaymentInterface
 
     /** @var string[] */
     protected $requirementsData = [
-        'payment_method', 
+        'payment_method',
         'token'
     ];
 

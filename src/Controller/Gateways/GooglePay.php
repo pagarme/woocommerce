@@ -48,7 +48,7 @@ class GooglePay extends AbstractGateway
             'title' => __('Pagar.me account ID', 'woo-pagarme-payments'),
             'default' => $this->config->getData('account_id') ?? '',
             'type' => 'text',
-            'description' => __('See: Settings &rarr; Keys &rarr; Account ID', 'woo-pagarme-payments'),
+            'description' => __('Check the Pagar.me Dashboard at: Settings &rarr; Keys &rarr; Account ID', 'woo-pagarme-payments'),
         ];
     }
 
