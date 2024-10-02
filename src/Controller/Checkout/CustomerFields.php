@@ -159,7 +159,7 @@ class CustomerFields
      */
     private function getDocumentValidationFunctionName(string $documentType): string
     {
-        if ($documentType !== self::DOCUMENT_TYPES[0] && $documentType !== self::DOCUMENT_TYPES[1]) {
+        if (in_array($documentType, self::ADDRESS_TYPES, true)) {
             throw new InvalidArgumentException();
         }
 
