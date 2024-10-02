@@ -96,8 +96,6 @@ class PostFormatter
     public function formatReactCheckout()
     {
         if (!empty($_POST['pagarme']) && is_string($_POST['pagarme'])) {
-            $_POST['billing_document'] = $_POST['address/document'];
-            $_POST['shipping_document'] = $_POST['address/document'];
             $_POST['pagarme'] = json_decode($_POST['pagarme'], true);
         }
     }

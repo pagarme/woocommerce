@@ -7,7 +7,7 @@ const pagarmeCustomerFields = {
     blocksShippingDocumentId: 'shipping-address-document',
 
     documentMasks: [
-        '000.000.000-00999',
+        '000.000.000-009999',
         '00.000.000/0000-00'
     ],
     documentMaskOptions: {
@@ -51,7 +51,7 @@ const pagarmeCustomerFields = {
 
         setTimeout(function() {
             pagarmeCustomerFields.applyDocumentMask();
-        }, 2000);
+        }, 5000);
     }
 };
 

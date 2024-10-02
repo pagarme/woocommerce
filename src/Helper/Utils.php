@@ -487,34 +487,28 @@ class Utils
      *
      * @return array|string[]
      */
-    public static function build_document_from_order(Order $order)
+    public static function build_document_from_order(Order $order): array
     {
-        if (!empty($order->get_meta('billing_cpf'))) {
-            return array(
-                'type'  => 'individual',
-                'value' => $order->get_meta('billing_cpf'),
-            );
-        }
+        $documentFields = [
+            'billing_cpf',
+            'billing_cnpj',
+            'billing_document',
+            'wc_billing/address/document'
+        ];
 
-        if (!empty($order->get_meta('billing_cnpj'))) {
-            return array(
-                'type'  => 'company',
-                'value' => $order->get_meta('billing_cnpj'),
-            );
-        }
-
-        if (!empty($order->get_meta('billing_document'))) {
-            $document = $order->get_meta('billing_document');
-            $documentType = self::getCustomerTypeByDocumentNumber($document);
-            return array(
-                'type'  => $documentType,
-                'value' => $document,
-            );
+        foreach ($documentFields as $field) {
+            if (!empty($order->get_meta($field))) {
+                $document = $order->get_meta($field);
+                return [
+                    'type'  => self::getCustomerTypeByDocumentNumber($document),
+                    'value' => $document
+                ];
+            }
         }
 
         return array(
             'type'  => '',
-            'value' => '',
+            'value' => ''
         );
     }
 

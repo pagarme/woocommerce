@@ -218,10 +218,6 @@ function wcmpAdminNoticeCheckoutFields()
         return;
     }
 
-    if (!class_exists('WC_Session')) {
-        include_once WP_PLUGIN_DIR . '/woocommerce/includes/abstracts/abstract-wc-session.php';
-    }
-
     WC()->session = new WC_Session_Handler;
     WC()->customer = new WC_Customer;
     $billingFields = WC()->checkout->get_checkout_fields()['billing'];
