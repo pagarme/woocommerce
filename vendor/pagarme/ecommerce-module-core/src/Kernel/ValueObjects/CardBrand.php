@@ -26,6 +26,7 @@ final class CardBrand extends AbstractValueObject
     CONST SODEXO_PREMIUM = "SodexoPremium";
     CONST SODEXO_REFEICAO = "SodexoRefeicao";
     CONST SODEXO_COMBUSTIVEL = "SodexoCombustivel";
+    CONST TICKET = "Ticket";
     CONST VR = "VR";
     CONST ALELO = "Alelo";
     CONST BANESE = "Banese";
@@ -132,6 +133,11 @@ final class CardBrand extends AbstractValueObject
     static public function sodexocombustivel()
     {
         return new self(self::SODEXO_COMBUSTIVEL);
+    }
+
+    static public function ticket()
+    {
+        return new self(self::TICKET);
     }
 
     static public function vr()

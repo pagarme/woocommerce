@@ -36,7 +36,7 @@ class Voucher extends AbstractGateway
 
     const VOUCHER_CARD_BRANDS_FIELD_NAME = 'Voucher Card Brands';
 
-    const DEFAULT_BRANDS = ['alelo', 'sodexo', 'vr'];
+    const DEFAULT_BRANDS = ['alelo', 'sodexo', 'ticket', 'vr'];
 
     /**
      * @return void
