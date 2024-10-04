@@ -39,7 +39,11 @@ jobs:
           php composer.phar --version
       -
         name: Check PHP sintax
-        run: find . -name \*.php -exec php -l "{}" \;
+        run: |
+          find . -name \*.php -exec php -l "{}" \; | tee errors.log
+          if grep -q "Sintax errors:" errors.log; then
+            exit 1
+          fi
       -
         name: Install project dependences
         run:
