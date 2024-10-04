@@ -763,7 +763,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
         $newPaymentData->amount = $moneyService->floatToCents($this->getGrandTotal());
         $newPaymentData->googlepayData = $cleanJson;
-        $newPaymentData->billing_address = $this->getCustomer()?->getAddress()?->convertToSDKRequest();
+        $newPaymentData->billing_address = $this->getCustomer()->getAddress()->convertToSDKRequest();
         $newPaymentData->additionalInformation = ["googlepayData" => $cleanJson];
         $googlepayIndex = 'googlepay';
         if (!isset($paymentData[$googlepayIndex])) {
