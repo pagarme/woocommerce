@@ -341,7 +341,7 @@ class Subscription
      * @param $paymentMethod
      * @return array
      */
-    private function formatPaymentMethod($paymentMethod): array
+    private function formatPaymentMethod($paymentMethod)
     {
         $paymentMethod = str_replace('woo-pagarme-payments-', '', $paymentMethod);
         return str_replace('-', '_', $paymentMethod);
