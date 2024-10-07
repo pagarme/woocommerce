@@ -93,15 +93,24 @@ class Address implements ConvertToLegacyInterface
     {
         return $this->number ?? "";
     }
-    
+
     public function getComplement()
     {
         return $this->complement ?? "";
     }
-    
+
     public function getLine1()
     {
-        $address = [$this->getNumber(), $this->getStreet(), $this->getNeighborhood()];
+        if (!empty($this->getNumber())) {
+            $address[] = $this->getNumber();
+        }
+
+        $address[] = $this->getStreet();
+
+        if (!empty($this->getNeighborhood())) {
+            $address[] = $this->getNeighborhood();
+        }
+
         return implode(self::ADDRESS_SEPARATOR, $address);
     }
 

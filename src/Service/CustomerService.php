@@ -3,6 +3,7 @@
 namespace Woocommerce\Pagarme\Service;
 
 use WC_Customer;
+use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Model\CoreAuth;
 use Pagarme\Core\Middle\Model\Customer;
 use Pagarme\Core\Middle\Proxy\CustomerProxy;
@@ -63,33 +64,47 @@ class CustomerService
         $address->setStreet($addressData['street']);
         $address->setNumber($addressData['number']);
         $address->setComplement($addressData['complement']);
+
         return $address;
     }
-    
+
     public function extractCustomerDataByWcOrder($wcOrder)
     {
         $billingData = $wcOrder->get_data()['billing'];
+
         $document = $wcOrder->get_meta('_billing_cpf');
         if (empty($document)) {
             $document = $wcOrder->get_meta('_billing_cnpj');
         }
-        return [
+        if (empty($document)) {
+            $document = $wcOrder->get_meta('_billing_document');
+        }
+
+        $customerData = [
             'code' => $wcOrder->get_customer_id(),
             'email' => $billingData['email'],
             'name' => $billingData['first_name'] . ' ' . $billingData['last_name'],
             'document' => $document,
-            'document_type' => empty($wcOrder->get_meta('_billing_cnpj')) ? 'cpf' : 'cnpj',
+            'document_type' => Utils::getDocumentTypeByDocumentNumber($document),
             'home_phone' => $billingData['phone'],
             'mobile_phone' => $wcOrder->get_meta('_billing_cellphone'),
             'street' => $billingData['street'],
-            'neighborhood' => $billingData['neighborhood'],
-            'number' => $billingData['number'],
             'country' => $billingData['country'],
             'city' => $billingData['city'],
             'state' => $billingData['state'],
             'complement' => $billingData['complement'],
             'zipcode' => $billingData['postcode']
         ];
+
+        if (!empty($billingData['number'])) {
+            $customerData['number'] = $billingData['number'];
+        }
+
+        if (!empty($billingData['neighborhood'])) {
+            $customerData['neighborhood'] = $billingData['neighborhood'];
+        }
+
+        return $customerData;
     }
 
     public function saveOnPlatform($customer)

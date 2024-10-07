@@ -236,6 +236,7 @@ abstract class AbstractPayment
         if (empty($addressArray)) {
             $addressArray = $this->getCustomerAddressFromWcOrder($wc_order);
         }
+
         return [
             'street' => $addressArray["street"],
             'complement' => $addressArray["complement"],

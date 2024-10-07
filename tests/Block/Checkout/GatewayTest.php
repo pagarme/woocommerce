@@ -49,7 +49,7 @@ class GatewayTest extends TestCase
 
         $orderMock = Mockery::mock(WC_Order::class);
         $orderMock->shouldReceive('get_total')
-            ->andReturn(10);
+                  ->andReturn(10);
 
         Brain\Monkey\Functions\stubs([
             'wc_get_order' => $orderMock

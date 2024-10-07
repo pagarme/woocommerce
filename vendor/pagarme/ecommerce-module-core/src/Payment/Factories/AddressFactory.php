@@ -14,8 +14,8 @@ final class AddressFactory
 
         $address->setStreet($data->street);
         $address->setNumber($data->number);
-        $address->setNeighborhood($data->neighborhood);
         $address->setComplement($data->complement);
+        $address->setNeighborhood($data->neighborhood);
         $address->setCity($data->city);
         $address->setState($data->state);
         $address->setZipCode($data->zipCode);
