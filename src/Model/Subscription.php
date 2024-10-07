@@ -37,6 +37,8 @@ class Subscription
     /** @var AbstractGateway */
     private $payment;
 
+    private $logger;
+
     /** @var array */
     const ONE_INSTALLMENT_PERIODS = ['day', 'week'];
 
@@ -52,6 +54,7 @@ class Subscription
         $this->orders = new Orders;
         $this->addSupportToSubscription();
         $this->setPaymentEnabled();
+        $this->logger = new LogService('Renew Subscription');
     }
 
     private function addSupportToSubscription(): void
@@ -338,19 +341,64 @@ class Subscription
      * @param $paymentMethod
      * @return array
      */
-    private function formatPaymentMethod($paymentMethod)
+    private function formatPaymentMethod($paymentMethod): array
     {
         $paymentMethod = str_replace('woo-pagarme-payments-', '', $paymentMethod);
         return str_replace('-', '_', $paymentMethod);
     }
 
+    /**
+     * @param $order
+     *
+     * @return false|mixed
+     */
     private function getCardSubscriptionData($order)
     {
-        $cardData = $order->get_meta("pagarme_payment_subscription");
-        if (!$cardData) {
+        $cardData = $order->get_meta('pagarme_payment_subscription');
+
+        if (empty($cardData)) {
+            $this->logger->info('Card data not found in the order meta.');
+            $cardData = $this->getCardSubscriptionDataFromSubscriptionOrParentOrder($order->ID);
+        }
+
+        if (empty($cardData)) {
             return false;
         }
+
         return json_decode($cardData, true);
+    }
+
+    /**
+     * @param $orderId
+     *
+     * @return array|false|mixed|string
+     */
+    private function getCardSubscriptionDataFromSubscriptionOrParentOrder($orderId)
+    {
+        $subscriptions = wcs_get_subscriptions_for_order($orderId, ['order_type' => 'any']);
+        foreach ($subscriptions as $subscription) {
+            if ($subscription->get_type() !== 'shop_subscription') {
+                continue;
+            }
+
+            $cardData = $subscription->get_meta('_pagarme_payment_subscription');
+
+            if (!empty($cardData)) {
+                return $cardData;
+            }
+
+            $this->logger->info('Card data not found in the subscription meta.');
+            $parentOrder = wc_get_order($subscription->get_data()['parent_id']);
+            $cardData = $parentOrder->get_meta('pagarme_payment_subscription');
+
+            if (!empty($cardData)) {
+                return $cardData;
+            }
+        }
+
+        $this->logger->info('Card data not found in the subscription parent order meta.');
+
+        return false;
     }
 
 
