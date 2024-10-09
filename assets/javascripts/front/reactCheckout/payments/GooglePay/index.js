@@ -1,26 +1,18 @@
-import PropTypes from "prop-types";
 import GooglePayButton from "@google-pay/button-react";
-import useGooglepay from "./useGooglepay";
-import { useDispatch, useSelect } from "@wordpress/data";
+import { useDispatch } from "@wordpress/data";
 import pagarmeTokenStore from "../store/googlepay"
 
-const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
-
-const backendConfig = wc.wcSettings.getSetting(
-    "woo-pagarme-payments-googlepay_data",
-);
-
-const environment = backendConfig.isSandboxMode ? "TEST" : "PRODUCTION";
-
 const PagarmeGooglePayComponent = (props) => {
-    const { emitResponse, eventRegistration } = props;
-
-    useGooglepay(emitResponse, eventRegistration, backendConfig);
+    const backendConfig = wc.wcSettings.getSetting(
+        "woo-pagarme-payments-googlepay_data",
+    );
+    
+    const environment = backendConfig.isSandboxMode ? "TEST" : "PRODUCTION";
     
     const {
         setToken
     } = useDispatch(pagarmeTokenStore);
-    
+
     return (
         
         <GooglePayButton
@@ -35,7 +27,7 @@ const PagarmeGooglePayComponent = (props) => {
                         type: "CARD",
                         parameters: {
                             allowedAuthMethods: ["PAN_ONLY"],
-                            allowedCardNetworks: ["MASTERCARD", "VISA", "ELO"],
+                            allowedCardNetworks: backendConfig.allowedGoogleBrands,
                         },
                         tokenizationSpecification: {
                             type: "PAYMENT_GATEWAY",
@@ -67,29 +59,4 @@ const PagarmeGooglePayComponent = (props) => {
     );
     
 };
-
-const PagarmeGooglePayLabel = ({ components }) => {
-    const { PaymentMethodLabel } = components;
-    return <PaymentMethodLabel text={backendConfig.label} />;
-};
-
-PagarmeGooglePayComponent.propTypes = {
-    emitResponse: PropTypes.object,
-    eventRegistration: PropTypes.object,
-};
-
-PagarmeGooglePayLabel.propTypes = {
-    components: PropTypes.object,
-};
-
-
-const pagarmeGooglePayPaymentMethod = {
-    name: backendConfig.name,
-    label: <PagarmeGooglePayLabel />,
-    content: <PagarmeGooglePayComponent />,
-    edit: <PagarmeGooglePayComponent />,
-    canMakePayment: () => true,
-    ariaLabel: backendConfig.ariaLabel,
-};
-
-registerPaymentMethod(pagarmeGooglePayPaymentMethod);
+export default PagarmeGooglePayComponent;
