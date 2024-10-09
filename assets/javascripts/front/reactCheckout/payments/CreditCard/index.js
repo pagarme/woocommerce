@@ -6,7 +6,6 @@ import PagarmeGooglePayComponent from "../GooglePay";
 import useCreditCard from "./useCreditCard";
 import pagarmeTokenStore from "../store/googlepay";
 import { useSelect } from "@wordpress/data";
-// import '../assets/stylesheets/front/reactCheckout.css';
 
 const backendConfig = wc.wcSettings.getSetting(
     "woo-pagarme-payments-credit_card_data",
