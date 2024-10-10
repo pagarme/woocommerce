@@ -23,14 +23,13 @@ const useCreditCard = (backendConfig, emitResponse, eventRegistration, googleCar
         return onPaymentSetup(async () => {
             try {
                 if (googleCards) {
-                    let token = googleCards;
                     resetGoogleToken();
                     return {
                         type: emitResponse.responseTypes.SUCCESS,
                         meta: {
                             paymentMethodData: {
                                 pagarme: JSON.stringify({
-                                    ['googlepay']: {'googlepay': {['payload']: token}}
+                                    ['googlepay']: {'googlepay': {['payload']: googleCards}}
                                 }),
                                 payment_method: 'googlepay',
                             },
