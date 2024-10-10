@@ -38,13 +38,12 @@ const pagarmeTokenStore = createReduxStore("pagarme-googlepay", {
     reducer(state = DEFAULT_STATE, action) {
         switch (action.type) {
             case "SET_PROPERTY_VALUE":
-                // console.log(action);
                 if (!action.propertyName) {           
                     return state;
                 }
                 return {
                     ...state,
-                    [action.propertyName]: action.value,
+                    [action.propertyName]: action.value
                 };
             case "RESET":
                 return DEFAULT_STATE;

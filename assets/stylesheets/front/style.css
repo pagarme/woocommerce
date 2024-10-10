@@ -94,26 +94,27 @@
     font-style: italic;
 }
 
-#payment .pagarme_creditcard_divider {
+.pagarme_creditcard_divider{
     margin: 1em 0 0;
 }
 
-#payment .pagarme_creditcard_divider p {
+.pagarme_creditcard_divider p {
     display: flex;
     flex-direction: row;
 }
 
-#payment .pagarme_creditcard_divider p:after , 
-#payment .pagarme_creditcard_divider p:before {
+.pagarme_creditcard_divider p:after,  
+.pagarme_creditcard_divider p:before {
     content: "";
     flex: 1 1;
     border-bottom: 1px solid;
     margin: auto;
 }
-#payment .pagarme_creditcard_divider p:after {
+.pagarme_creditcard_divider p:after {
     margin-left: 0.5em;
 }
-#payment .pagarme_creditcard_divider p:before {
+
+.pagarme_creditcard_divider p:before {
     margin-right: 0.5em;
 }
 
