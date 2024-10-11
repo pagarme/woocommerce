@@ -340,8 +340,23 @@ class Subscription
         $fields = [
             'payment_method' => $this->formatPaymentMethod($order->wc_order->get_payment_method())
         ];
-        $card = $this->getCardSubscriptionData($order);
-        if ($card !== null) {
+
+        $card = $this->getSubscriptionCurrentOrderCardData($order);
+
+        $subscription = null;
+        if (empty($card)) {
+            $subscription = $this->getSubscription($order->ID);
+        }
+
+        if (empty($card) && !empty($subscription)) {
+            $card = $this->getSubscriptionCardData($subscription);
+        }
+
+        if (empty($card) && !empty($subscription)) {
+            $card = $this->getSubscriptionParentOrderCardData($subscription);
+        }
+
+        if (!empty($card)) {
             $fields['card_order_value'] = $order->wc_order->get_total();
             $fields['brand'] = $card['brand'];
             $fields['installments'] = 1;
@@ -349,6 +364,7 @@ class Subscription
             $fields['pagarmetoken'] = $card['cardId'];
             $fields['recurrence_cycle'] = "subsequent";
         }
+
         return $fields;
     }
 
@@ -365,19 +381,77 @@ class Subscription
     /**
      * @param $order
      *
-     * @return false|mixed
+     * @return mixed|null
      */
-    private function getCardSubscriptionData($order)
+    private function getSubscriptionCurrentOrderCardData($order)
     {
-        $cardData = $order->get_meta('pagarme_payment_subscription');
+        $cardData = get_metadata(
+            'post',
+            $order->ID,
+            '_pagarme_payment_subscription',
+            true
+        );
 
-        if (empty($cardData)) {
-            $this->logger->info('Card data not found in the order meta.');
-            $cardData = $this->getCardSubscriptionDataFromSubscriptionOrParentOrder($order->ID);
+        if (empty($cardData) && FeatureCompatibilization::isHposActivated()) {
+            $cardData = $order->get_meta('pagarme_payment_subscription');
         }
 
         if (empty($cardData)) {
-            return false;
+            $this->logger->info('Card data not found in the current order.');
+            return null;
+        }
+
+        return json_decode($cardData, true);
+    }
+
+    /**
+     * @param WC_Subscription $subscription
+     *
+     * @return mixed|null
+     */
+    private function getSubscriptionCardData(WC_Subscription $subscription)
+    {
+        $cardData = get_metadata(
+            'post',
+            $subscription->get_id(),
+            '_pagarme_payment_subscription',
+            true
+        );
+
+        if (empty($cardData) && FeatureCompatibilization::isHposActivated()) {
+            $cardData = $subscription->get_meta('_pagarme_payment_subscription');
+        }
+
+        if (empty($cardData)) {
+            $this->logger->info('Card data not found in the subscription.');
+            return null;
+        }
+
+        return json_decode($cardData, true);
+    }
+
+    /**
+     * @param WC_Subscription $subscription
+     *
+     * @return mixed|null
+     */
+    private function getSubscriptionParentOrderCardData(WC_Subscription $subscription)
+    {
+        $parentOrder = wc_get_order($subscription->get_data()['parent_id']);
+        $cardData = get_metadata(
+            'post',
+            $parentOrder->get_id(),
+            '_pagarme_payment_subscription',
+            true
+        );
+
+        if (empty($cardData) && FeatureCompatibilization::isHposActivated()) {
+            $cardData = $parentOrder->get_meta('_pagarme_payment_subscription');
+        }
+
+        if (!empty($cardData)) {
+            $this->logger->info('Card data not found in the subscription parent order.');
+            return null;
         }
 
         return json_decode($cardData, true);
@@ -386,9 +460,9 @@ class Subscription
     /**
      * @param $orderId
      *
-     * @return string|null
+     * @return WC_Subscription|null
      */
-    private function getCardSubscriptionDataFromSubscriptionOrParentOrder($orderId)
+    private function getSubscription($orderId)
     {
         $subscriptions = wcs_get_subscriptions_for_order($orderId, ['order_type' => 'any']);
         foreach ($subscriptions as $subscription) {
@@ -396,26 +470,11 @@ class Subscription
                 continue;
             }
 
-            $cardData = $subscription->get_meta('_pagarme_payment_subscription');
-
-            if (!empty($cardData)) {
-                return $cardData;
-            }
-
-            $this->logger->info('Card data not found in the subscription meta.');
-            $parentOrder = wc_get_order($subscription->get_data()['parent_id']);
-            $cardData = $parentOrder->get_meta('_pagarme_payment_subscription');
-
-            if (!empty($cardData)) {
-                return $cardData;
-            }
+            return $subscription;
         }
-
-        $this->logger->info('Card data not found in the subscription parent order meta.');
 
         return null;
     }
-
 
     private function getCardDataByResponse($response)
     {
