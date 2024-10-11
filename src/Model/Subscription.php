@@ -18,6 +18,7 @@ use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 use Pagarme\Core\Payment\Repositories\CustomerRepository;
 use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use WC_Order;
+use WC_Subscription;
 use WC_Subscriptions_Product;
 use Woocommerce\Pagarme\Controller\Orders;
 use Woocommerce\Pagarme\Helper\Utils;
@@ -124,9 +125,13 @@ class Subscription
         if (!$cardData) {
             return;
         }
+
+        $order = wc_get_order($orderId);
+        $this->saveCardInSubscriptionOrder($cardData, $order);
+
         $subscriptions = wcs_get_subscriptions_for_order($orderId);
         foreach ($subscriptions as $subscription) {
-            $this->saveCardInSubscription($cardData, $subscription);
+            $this->saveCardInSubscriptionOrder($cardData, $subscription);
         }
     }
 
@@ -181,12 +186,12 @@ class Subscription
     public function processChangePaymentSubscription($subscription)
     {
         try {
-            $subscription = new \WC_Subscription($subscription);
+            $subscription = new WC_Subscription($subscription);
             $newPaymentMethod = wc_clean($_POST['payment_method']);
             if ('woo-pagarme-payments-credit_card' == $newPaymentMethod) {
                 $pagarmeCustomer = $this->getPagarmeCustomer($subscription);
                 $cardResponse = $this->createCreditCard($pagarmeCustomer);
-                $this->saveCardInSubscription($cardResponse, $subscription);
+                $this->saveCardInSubscriptionOrder($cardResponse, $subscription);
                 \WC_Subscriptions_Change_Payment_Gateway::update_payment_method($subscription, $newPaymentMethod);
             }
             return [
@@ -248,7 +253,7 @@ class Subscription
         if($customer->getPagarmeCustomerId() !== false) {
             return;
         }
-        $subscription = new \WC_Subscription($subscriptionId);
+        $subscription = new WC_Subscription($subscriptionId);
         $customerId = $this->getPagarmeIdFromLastValidOrder($subscription);
         $customer->savePagarmeCustomerId($customerCode, $customerId);
     }
@@ -299,25 +304,35 @@ class Subscription
 
     /**
      * Save card information on table post_meta
+     *
      * @param array $card
-     * @param \WC_Subscription $subscription
+     * @param WC_Subscription|WC_Order $order
+     *
      * @return void
      */
-    private function saveCardInSubscription(array $card, \WC_Subscription $subscription)
+    private function saveCardInSubscriptionOrder(array $card, $order)
     {
+        if (
+            empty($card)
+            || (!is_a($order, 'WC_Order') && !is_a($order, 'WC_Subscription'))
+        ) {
+            return;
+        }
+
         $key = '_pagarme_payment_subscription';
         $value = json_encode($card);
         if (FeatureCompatibilization::isHposActivated()) {
-            $subscription->update_meta_data($key, Utils::rm_tags($value));
-            $subscription->save();
+            $order->update_meta_data($key, Utils::rm_tags($value));
+            $order->save();
             return;
         }
-        update_metadata('post', $subscription->get_id(), $key, $value);
-        $subscription->save();
+        update_metadata('post', $order->get_id(), $key, $value);
+        $order->save();
     }
 
     /**
-     * @param WC_Order $order
+     * @param Order $order
+     *
      * @return array
      */
     private function convertOrderObject(Order $order)
@@ -371,7 +386,7 @@ class Subscription
     /**
      * @param $orderId
      *
-     * @return array|false|mixed|string
+     * @return string|null
      */
     private function getCardSubscriptionDataFromSubscriptionOrParentOrder($orderId)
     {
@@ -389,7 +404,7 @@ class Subscription
 
             $this->logger->info('Card data not found in the subscription meta.');
             $parentOrder = wc_get_order($subscription->get_data()['parent_id']);
-            $cardData = $parentOrder->get_meta('pagarme_payment_subscription');
+            $cardData = $parentOrder->get_meta('_pagarme_payment_subscription');
 
             if (!empty($cardData)) {
                 return $cardData;
@@ -398,7 +413,7 @@ class Subscription
 
         $this->logger->info('Card data not found in the subscription parent order meta.');
 
-        return false;
+        return null;
     }
 
 
