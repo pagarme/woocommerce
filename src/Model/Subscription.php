@@ -150,7 +150,7 @@ class Subscription
                 $fields
             );
 
-            $order->payment_method = $fields['payment_method'];
+            $order->update_meta('payment_method', $fields['payment_method']);
             if ($response) {
                 $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
@@ -353,7 +353,6 @@ class Subscription
         return json_decode($cardData, true);
     }
 
-
     private function getCardDataByResponse($response)
     {
         $charges = $this->getChargesByResponse($response);
@@ -367,10 +366,14 @@ class Subscription
             'brand' => $cardData->getBrand()->getName(),
             'holder_name' => $cardData->getOwnerName(),
             'first_six_digits' => $cardData->getFirstSixDigits()->getValue(),
-            'last_four_digits' => $cardData->getLastFourDigits()->getValue()
+            'last_four_digits' => $cardData->getLastFourDigits()->getValue(),
+            'chargeId' => $charges->getPagarmeId(),
         ];
     }
 
+    /**
+     * @return \Pagarme\Core\Kernel\Aggregates\Charge|boolean;
+     */
     private function getChargesByResponse($response)
     {
         if (!$response) {
