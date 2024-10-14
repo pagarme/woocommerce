@@ -458,7 +458,7 @@ class Subscription
             $cardData = $parentOrder->get_meta('_pagarme_payment_subscription');
         }
 
-        if (!empty($cardData)) {
+        if (empty($cardData)) {
             $this->logger->info('Card data not found in the subscription parent order.');
             return null;
         }
