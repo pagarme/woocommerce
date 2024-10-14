@@ -2,24 +2,42 @@ const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
 
 import PropTypes from "prop-types";
 import Card from "../Card";
+import PagarmeGooglePayComponent from "../GooglePay";
 import useCreditCard from "./useCreditCard";
+import pagarmeTokenStore from "../store/googlepay";
+import { useSelect } from "@wordpress/data";
 
 const backendConfig = wc.wcSettings.getSetting(
     "woo-pagarme-payments-credit_card_data",
 );
 
 const PagarmeCreditCardComponent = (props) => {
-    const { emitResponse, eventRegistration } = props;
-    useCreditCard(backendConfig, emitResponse, eventRegistration);
+    const googleCards = useSelect((select) => {
+        return select(pagarmeTokenStore).getToken();
+    });
 
+    const { emitResponse, eventRegistration } = props;
+    const googleActive = backendConfig.googlepayEnable;
+    useCreditCard(backendConfig, emitResponse, eventRegistration, googleCards);
     return (
-        <Card {...props} backendConfig={backendConfig} cardIndex={1} />
+        <div>
+            {googleActive && (
+                <div>
+                    <PagarmeGooglePayComponent  {...props}  />
+                    <div className="pagarme_creditcard_divider">
+                        <p>Ou pague com cartão</p>
+                    </div>
+                </div>
+            )}
+            {!googleCards && (
+                <Card {...props} backendConfig={backendConfig} cardIndex={1} />
+            )}
+        </div>
     );
 };
 
 const PagarmeCreditCardLabel = ({ components }) => {
     const { PaymentMethodLabel } = components;
-
     return <PaymentMethodLabel text={backendConfig.label} />;
 };
 
