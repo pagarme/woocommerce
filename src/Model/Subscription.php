@@ -341,20 +341,7 @@ class Subscription
             'payment_method' => $this->formatPaymentMethod($order->wc_order->get_payment_method())
         ];
 
-        $card = $this->getSubscriptionCurrentOrderCardData($order);
-
-        $subscription = null;
-        if (empty($card)) {
-            $subscription = $this->getSubscription($order->ID);
-        }
-
-        if (empty($card) && !empty($subscription)) {
-            $card = $this->getSubscriptionCardData($subscription);
-        }
-
-        if (empty($card) && !empty($subscription)) {
-            $card = $this->getSubscriptionParentOrderCardData($subscription);
-        }
+        $card = $this->getCardData($order);
 
         if (!empty($card)) {
             $fields['card_order_value'] = $order->wc_order->get_total();
@@ -376,6 +363,28 @@ class Subscription
     {
         $paymentMethod = str_replace('woo-pagarme-payments-', '', $paymentMethod);
         return str_replace('-', '_', $paymentMethod);
+    }
+
+    /**
+     * @param $order
+     *
+     * @return mixed|null
+     */
+    private function getCardData($order)
+    {
+        $card = $this->getSubscriptionCurrentOrderCardData($order);
+
+        $subscription = null;
+        if (empty($card)) {
+            $subscription = $this->getSubscription($order->ID);
+        }
+
+        if (empty($card) && !empty($subscription)) {
+            $card = $this->getSubscriptionCardData($subscription)
+                    ?? $this->getSubscriptionParentOrderCardData($subscription);
+        }
+
+        return $card;
     }
 
     /**
