@@ -573,23 +573,6 @@ class Subscription
     /**
      * @return boolean
      */
-    public static function getPaymentOrigin()
-    {
-        if (!self::hasSubscriptionPlugin()) {
-            return null;
-        }
-        if (wcs_cart_contains_renewal()) {
-            return "subsequent";
-        }
-        if (\WC_Subscriptions_Cart::cart_contains_subscription()) {
-            return "first";
-        }
-        return null;
-    }
-
-    /**
-     * @return boolean
-     */
     public static function hasSubscriptionPlugin()
     {
         return class_exists('WC_Subscriptions');
