@@ -350,7 +350,7 @@ class Subscription
             $fields['card_id'] = $card['cardId'];
             $fields['pagarmetoken'] = $card['cardId'];
             $fields['recurrence_cycle'] = "subsequent";
-            $fields['payment_origin'] = ["charge_id" => $card['chargeId'] ?? null];
+            $fields['payment_origin'] = isset($card['chargeId']) ? ["charge_id" => $card['chargeId']] : null;
         }
 
         return $fields;
