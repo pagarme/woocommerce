@@ -330,6 +330,7 @@ class Subscription
             $fields['card_id'] = $card['cardId'];
             $fields['pagarmetoken'] = $card['cardId'];
             $fields['recurrence_cycle'] = "subsequent";
+            $fields['payment_origin'] = ["charge_id" => $card['chargeId'] ?? null];
         }
         return $fields;
     }
@@ -424,6 +425,23 @@ class Subscription
      * @return boolean
      */
     public static function getRecurrenceCycle()
+    {
+        if (!self::hasSubscriptionPlugin()) {
+            return null;
+        }
+        if (wcs_cart_contains_renewal()) {
+            return "subsequent";
+        }
+        if (\WC_Subscriptions_Cart::cart_contains_subscription()) {
+            return "first";
+        }
+        return null;
+    }
+
+    /**
+     * @return boolean
+     */
+    public static function getPaymentOrigin()
     {
         if (!self::hasSubscriptionPlugin()) {
             return null;

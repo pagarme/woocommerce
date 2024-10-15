@@ -85,6 +85,10 @@ class CheckoutTest extends TestCase
         $subscriptionMock = Mockery::mock('alias:Woocommerce\Pagarme\Model\Subscription');
         $subscriptionMock->shouldReceive('getRecurrenceCycle')
             ->andReturnNull();
+            
+        $subscriptionMock = Mockery::mock('alias:Woocommerce\Pagarme\Model\Subscription');
+        $subscriptionMock->shouldReceive('getPaymentOrigin')
+            ->andReturnNull();
 
         $orderIdMock = Mockery::mock(OrderId::class);
         $orderIdMock->shouldReceive('getValue')

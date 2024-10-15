@@ -128,6 +128,7 @@ final class PaymentFactory
         $payment->setAmount($cardData->amount);
         $payment->setInstallments($cardData->installments);
         $payment->setRecurrenceCycle($cardData->recurrenceCycle ?? null);
+        $payment->setPaymentOrigin($cardData->paymentOrigin ?? null);
         if (!empty($cardData->authentication)) {
             $payment->setAuthentication(Authentication::createFromStdClass($cardData->authentication));
         }
