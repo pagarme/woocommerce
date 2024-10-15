@@ -11,7 +11,6 @@ module.exports = {
         new DependencyExtractionWebpackPlugin(),
     ],
     entry: {
-        // googlepay: './assets/javascripts/front/reactCheckout/payments/GooglePay/index.js',
         pix: './assets/javascripts/front/reactCheckout/payments/Pix/index.js',
         billet: './assets/javascripts/front/reactCheckout/payments/Billet/index.js',
         credit_card: './assets/javascripts/front/reactCheckout/payments/CreditCard/index.js',

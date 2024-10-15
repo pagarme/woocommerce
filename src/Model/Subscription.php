@@ -18,6 +18,7 @@ use Pagarme\Core\Kernel\ValueObjects\OrderStatus;
 use Pagarme\Core\Payment\Repositories\CustomerRepository;
 use Pagarme\Core\Payment\Repositories\SavedCardRepository;
 use WC_Order;
+use WC_Subscription;
 use WC_Subscriptions_Product;
 use Woocommerce\Pagarme\Controller\Orders;
 use Woocommerce\Pagarme\Helper\Utils;
@@ -37,6 +38,8 @@ class Subscription
     /** @var AbstractGateway */
     private $payment;
 
+    private $logger;
+
     /** @var array */
     const ONE_INSTALLMENT_PERIODS = ['day', 'week'];
 
@@ -52,6 +55,7 @@ class Subscription
         $this->orders = new Orders;
         $this->addSupportToSubscription();
         $this->setPaymentEnabled();
+        $this->logger = new LogService('Renew Subscription');
     }
 
     private function addSupportToSubscription(): void
@@ -121,9 +125,13 @@ class Subscription
         if (!$cardData) {
             return;
         }
+
+        $order = wc_get_order($orderId);
+        $this->saveCardInSubscriptionOrder($cardData, $order);
+
         $subscriptions = wcs_get_subscriptions_for_order($orderId);
         foreach ($subscriptions as $subscription) {
-            $this->saveCardInSubscription($cardData, $subscription);
+            $this->saveCardInSubscriptionOrder($cardData, $subscription);
         }
     }
 
@@ -178,12 +186,12 @@ class Subscription
     public function processChangePaymentSubscription($subscription)
     {
         try {
-            $subscription = new \WC_Subscription($subscription);
+            $subscription = new WC_Subscription($subscription);
             $newPaymentMethod = wc_clean($_POST['payment_method']);
             if ('woo-pagarme-payments-credit_card' == $newPaymentMethod) {
                 $pagarmeCustomer = $this->getPagarmeCustomer($subscription);
                 $cardResponse = $this->createCreditCard($pagarmeCustomer);
-                $this->saveCardInSubscription($cardResponse, $subscription);
+                $this->saveCardInSubscriptionOrder($cardResponse, $subscription);
                 \WC_Subscriptions_Change_Payment_Gateway::update_payment_method($subscription, $newPaymentMethod);
             }
             return [
@@ -245,7 +253,7 @@ class Subscription
         if($customer->getPagarmeCustomerId() !== false) {
             return;
         }
-        $subscription = new \WC_Subscription($subscriptionId);
+        $subscription = new WC_Subscription($subscriptionId);
         $customerId = $this->getPagarmeIdFromLastValidOrder($subscription);
         $customer->savePagarmeCustomerId($customerCode, $customerId);
     }
@@ -296,25 +304,35 @@ class Subscription
 
     /**
      * Save card information on table post_meta
+     *
      * @param array $card
-     * @param \WC_Subscription $subscription
+     * @param WC_Subscription|WC_Order $order
+     *
      * @return void
      */
-    private function saveCardInSubscription(array $card, \WC_Subscription $subscription)
+    private function saveCardInSubscriptionOrder(array $card, $order)
     {
+        if (
+            empty($card)
+            || (!is_a($order, 'WC_Order') && !is_a($order, 'WC_Subscription'))
+        ) {
+            return;
+        }
+
         $key = '_pagarme_payment_subscription';
         $value = json_encode($card);
         if (FeatureCompatibilization::isHposActivated()) {
-            $subscription->update_meta_data($key, Utils::rm_tags($value));
-            $subscription->save();
+            $order->update_meta_data($key, Utils::rm_tags($value));
+            $order->save();
             return;
         }
-        update_metadata('post', $subscription->get_id(), $key, $value);
-        $subscription->save();
+        update_metadata('post', $order->get_id(), $key, $value);
+        $order->save();
     }
 
     /**
-     * @param WC_Order $order
+     * @param Order $order
+     *
      * @return array
      */
     private function convertOrderObject(Order $order)
@@ -322,8 +340,10 @@ class Subscription
         $fields = [
             'payment_method' => $this->formatPaymentMethod($order->wc_order->get_payment_method())
         ];
-        $card = $this->getCardSubscriptionData($order);
-        if ($card !== null) {
+
+        $card = $this->getCardData($order);
+
+        if (!empty($card)) {
             $fields['card_order_value'] = $order->wc_order->get_total();
             $fields['brand'] = $card['brand'];
             $fields['installments'] = 1;
@@ -332,6 +352,7 @@ class Subscription
             $fields['recurrence_cycle'] = "subsequent";
             $fields['payment_origin'] = ["charge_id" => $card['chargeId'] ?? null];
         }
+
         return $fields;
     }
 
@@ -345,13 +366,124 @@ class Subscription
         return str_replace('-', '_', $paymentMethod);
     }
 
-    private function getCardSubscriptionData($order)
+    /**
+     * @param $order
+     *
+     * @return mixed|null
+     */
+    private function getCardData($order)
     {
-        $cardData = $order->get_meta("pagarme_payment_subscription");
-        if (!$cardData) {
-            return false;
+        $card = $this->getSubscriptionCurrentOrderCardData($order);
+
+        $subscription = null;
+        if (empty($card)) {
+            $subscription = $this->getSubscription($order->ID);
         }
+
+        if (empty($card) && !empty($subscription)) {
+            $card = $this->getSubscriptionCardData($subscription)
+                    ?? $this->getSubscriptionParentOrderCardData($subscription);
+        }
+
+        return $card;
+    }
+
+    /**
+     * @param $order
+     *
+     * @return mixed|null
+     */
+    private function getSubscriptionCurrentOrderCardData($order)
+    {
+        $cardData = get_metadata(
+            'post',
+            $order->ID,
+            '_pagarme_payment_subscription',
+            true
+        );
+
+        if (empty($cardData) && FeatureCompatibilization::isHposActivated()) {
+            $cardData = $order->get_meta('pagarme_payment_subscription');
+        }
+
+        if (empty($cardData)) {
+            $this->logger->info('Card data not found in the current order.');
+            return null;
+        }
+
         return json_decode($cardData, true);
+    }
+
+    /**
+     * @param WC_Subscription $subscription
+     *
+     * @return mixed|null
+     */
+    private function getSubscriptionCardData(WC_Subscription $subscription)
+    {
+        $cardData = get_metadata(
+            'post',
+            $subscription->get_id(),
+            '_pagarme_payment_subscription',
+            true
+        );
+
+        if (empty($cardData) && FeatureCompatibilization::isHposActivated()) {
+            $cardData = $subscription->get_meta('_pagarme_payment_subscription');
+        }
+
+        if (empty($cardData)) {
+            $this->logger->info('Card data not found in the subscription.');
+            return null;
+        }
+
+        return json_decode($cardData, true);
+    }
+
+    /**
+     * @param WC_Subscription $subscription
+     *
+     * @return mixed|null
+     */
+    private function getSubscriptionParentOrderCardData(WC_Subscription $subscription)
+    {
+        $parentOrder = wc_get_order($subscription->get_data()['parent_id']);
+        $cardData = get_metadata(
+            'post',
+            $parentOrder->get_id(),
+            '_pagarme_payment_subscription',
+            true
+        );
+
+        if (empty($cardData) && FeatureCompatibilization::isHposActivated()) {
+            $cardData = $parentOrder->get_meta('_pagarme_payment_subscription');
+        }
+
+        if (empty($cardData)) {
+            $this->logger->info('Card data not found in the subscription parent order.');
+            return null;
+        }
+
+        return json_decode($cardData, true);
+    }
+
+    /**
+     * @param $orderId
+     *
+     * @return WC_Subscription|null
+     */
+    private function getSubscription($orderId)
+    {
+        $subscriptions = wcs_get_subscriptions_for_order($orderId, ['order_type' => 'any']);
+        foreach ($subscriptions as $subscription) {
+            if ($subscription->get_type() !== 'shop_subscription') {
+                continue;
+            }
+
+            return $subscription;
+        }
+
+        return null;
     }
 
     private function getCardDataByResponse($response)
