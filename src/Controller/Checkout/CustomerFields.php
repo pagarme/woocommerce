@@ -71,9 +71,9 @@ class CustomerFields
     {
         foreach (self::ADDRESS_TYPES as $addressType) {
             $fieldName = "{$addressType}_document";
-            $document = $_POST[$fieldName];
+            $document = $_POST[$fieldName] ?? '';
 
-            if (!$document) {
+            if (empty($document)) {
                 continue;
             }
 
