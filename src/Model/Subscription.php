@@ -9,6 +9,7 @@
  */
 
 namespace Woocommerce\Pagarme\Model;
+use Pagarme\Core\Kernel\ValueObjects\Id\ChargeId;
 
 if (!defined('ABSPATH')) {
     exit(0);
@@ -160,6 +161,7 @@ class Subscription
 
             $order->update_meta('payment_method', $fields['payment_method']);
             if ($response) {
+                $this->addChargeIdInProcessSubscription($response, $wc_order->get_id());
                 $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
@@ -181,6 +183,21 @@ class Subscription
             }
             return false;
         }
+    }
+
+    public function addChargeIdInProcessSubscription($response, $orderId){
+        $subscription = $this->getSubscription($orderId);        
+        
+        if ($subscription->get_payment_method() != 'woo-pagarme-payments-credit_card') { 
+            return;
+
+        }
+        $cardData = json_decode($subscription->get_meta('_pagarme_payment_subscription'), true);
+        
+        if (isset($cardData['chargeId']) && !empty($cardData['chargeId'])) {
+            return;
+        }
+        $this->addMetaDataCardByResponse($subscription->get_id(), $response);
     }
 
     public function processChangePaymentSubscription($subscription)
