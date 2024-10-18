@@ -10,6 +10,7 @@
 
 namespace Woocommerce\Pagarme\Model;
 
+
 if (!defined('ABSPATH')) {
     exit(0);
 }
@@ -26,8 +27,8 @@ use Woocommerce\Pagarme\Service\LogService;
 use Woocommerce\Pagarme\Service\CardService;
 use Woocommerce\Pagarme\Service\CustomerService;
 use Woocommerce\Pagarme\Controller\Gateways\AbstractGateway;
-
-class Subscription
+use Woocommerce\Pagarme\Model\SubscriptionMeta;
+class Subscription extends SubscriptionMeta
 {
     /** @var Config */
     private $config;
@@ -104,14 +105,6 @@ class Subscription
         if (!$this->payment->isSubscriptionActive() && $this->hasSubscriptionProductInCart()) {
             $this->payment->enabled = "no";
         }
-    }
-
-    /**
-     * @return Config
-     */
-    public function getConfig()
-    {
-        return $this->config;
     }
 
     public function addMetaDataCardByResponse($orderId, $response)
