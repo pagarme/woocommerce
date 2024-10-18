@@ -21,6 +21,7 @@ use Woocommerce\Pagarme\Model\Payment\Data\AbstractPayment;
 use Woocommerce\Pagarme\Model\Payment\Data\Card;
 use Woocommerce\Pagarme\Model\Payment\Data\Multicustomers;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
+use Woocommerce\Pagarme\Service\CardService;
 
 class Checkout
 {
@@ -125,6 +126,7 @@ class Checkout
         if ($type === CheckoutTypes::TRANSPARENT_VALUE) {
             $fields = $this->convertCheckoutObject($_POST[PaymentRequestInterface::PAGARME_PAYMENT_REQUEST_KEY]);
             $fields['recurrence_cycle'] = Subscription::getRecurrenceCycle();
+            $this->formatFieldsWhenIsSubscription($fields, $wc_order);
             $attempts = intval($wc_order->get_meta('_pagarme_attempts') ?? 0) + 1;
             $wc_order->update_meta_data("_pagarme_attempts", $attempts);
             $response = $this->orders->create_order(
@@ -159,6 +161,29 @@ class Checkout
             $order->getWcOrder()->save();
             return false;
         }
+    }
+    private function formatFieldsWhenIsSubscription(&$fields, $wc_order)
+    {
+        if(!wcs_order_contains_renewal($wc_order)){
+            return;
+        }
+        if ($fields['payment_method'] === 'credit_card') {
+            $fields['card_id'] = $this->getCardId($fields, $wc_order);
+            // If same, return payment_origin in $fields
+            Subscription::asSameCardInSubscription($fields, $wc_order);
+            unset($fields['pagarmetoken1']);
+        }
+    }
+
+    private function getCardId($fields, $wc_order)
+    {
+        if($fields['card_id']){
+            return $fields['card_id'];
+        }
+        $customer = new Customer($wc_order->get_customer_id());
+        $cardService = new CardService();
+        $pagarmeCard = $cardService->create($fields['pagarmetoken1'], $customer->getPagarmeCustomerId());
+        return $pagarmeCard['cardId'];
     }
 
     private function convertCheckoutObject(PaymentRequestInterface $paymentRequest)
@@ -214,6 +239,9 @@ class Checkout
 
     private function extractGooglePayToken(&$fields, $paymentRequest)
     {
+        if(!$paymentRequest->getDataByKey('googlepay')){
+            return;
+        }
         $fields['googlepay']['token'] = $paymentRequest->getDataByKey('googlepay');
     }
 

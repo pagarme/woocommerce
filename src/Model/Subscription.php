@@ -602,6 +602,25 @@ class Subscription
         return wc_string_to_bool($this->config->getData('cc_subscription_installments'));
     }
 
+
+    /**
+     * @param $fields array
+     * @param $order WC_Order
+     * @return void
+     */
+    public static function asSameCardInSubscription(&$fields, $order)
+    {
+        $subscription = current(wcs_get_subscriptions_for_renewal_order($order));
+        $dataCard = $subscription->get_meta('_pagarme_payment_subscription');
+        $dataCard = json_decode($dataCard, true);
+        if($dataCard['cardId'] == $fields['card_id']){
+            $fields['payment_origin'] = ["charge_id" => $dataCard['chargeId']];
+            return;
+        }
+        unset($dataCard['chargeId']);
+        $subscription->update_meta_data('_pagarme_payment_subscription', json_encode($dataCard));
+        $subscription->save();
+    }
     /**
      * @return boolean
      */
