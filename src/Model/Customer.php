@@ -33,11 +33,11 @@ class Customer
      * @param CoreCustomerRepository $customerRepository
      */
     /** phpcs:disable */
-    public function __construct($ID, $cardRepository, $customerRepository)
+    public function __construct($ID, $cardRepository = null, $customerRepository = null)
     {
         $this->ID = (int) $ID;
-        $this->cardRepository = $cardRepository;
-        $this->customerRepository = $customerRepository;
+        $this->cardRepository = $cardRepository ?? new CoreSavedCardRepository();
+        $this->customerRepository = $customerRepository ?? new CoreCustomerRepository();
     }
 
     public function __get($prop_name)
