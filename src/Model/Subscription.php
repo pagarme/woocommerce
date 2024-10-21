@@ -151,7 +151,7 @@ class Subscription extends SubscriptionMeta
     }
 
     public function addChargeIdInProcessSubscription($response, $orderId){
-        $subscription = $this->getSubscription($orderId);        
+        $subscription = $this->getSubscription($orderId);
         
         if ($subscription->get_payment_method() != 'woo-pagarme-payments-credit_card') {
             return;
@@ -362,7 +362,6 @@ class Subscription extends SubscriptionMeta
     }
 
     /**
-     * 
      * @param \Pagarme\Core\Kernel\Aggregates\Transaction $transactions
      * @return \Pagarme\Core\Payment\Aggregates\SavedCard|boolean
      */
