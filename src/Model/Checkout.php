@@ -146,8 +146,8 @@ class Checkout
             $order->update_meta("attempts", $attempts);
             $this->addAuthenticationOnMetaData($order, $fields);
             if ($response) {
+                do_action("on_pagarme_response",  $response);
                 WC()->cart->empty_cart();
-                do_action("on_pagarme_response", $wc_order->get_id(), $response);
                 $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
@@ -164,13 +164,14 @@ class Checkout
     }
     private function formatFieldsWhenIsSubscription(&$fields, $wc_order)
     {
-        if(!wcs_order_contains_renewal($wc_order)){
+        if(Subscription::hasSubscriptionProductInCart() == false){
             return;
         }
         if ($fields['payment_method'] === 'credit_card') {
             $fields['card_id'] = $this->getCardId($fields, $wc_order);
             // If same, return payment_origin in $fields
-            Subscription::asSameCardInSubscription($fields, $wc_order);
+            $subscription = new Subscription();
+            $subscription->asSameCardInSubscription($fields, $wc_order);
             unset($fields['pagarmetoken1']);
         }
     }

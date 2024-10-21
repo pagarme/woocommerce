@@ -2,23 +2,39 @@
 
 namespace Woocommerce\Pagarme\Model;
 
+use Woocommerce\Pagarme\Service\CardService;
+use Woocommerce\Pagarme\Helper\Utils;
 class SubscriptionMeta
 {
-    protected const PAYMENT_DATA_KEY = '_pagarme_payment_subscription';
+    protected const PAYMENT_DATA_KEY = "_pagarme_payment_subscription";
+    private $logger;
 
+
+    public function __construct($logger)
+    {
+        $this->logger = $logger;
+    }
     /**
      * @param int $orderId
      * @param \Pagarme\Core\Kernel\Aggregates\Order $response
      * @return void
      */
-    protected function saveCardInSubscriptionUsingOrderResponse($response)
+    public function saveCardInSubscriptionUsingOrderResponse($response)
     {
-        $platformOrderId = $response->getPlatformOrder()->getId();
+        $platformOrder = $response->getPlatformOrder()->getPlatformOrder();
+        $subscription = $this->getSubscription($platformOrder->getCode());
+        $subscriptionCard = $this->getCardToProcessSubscription($subscription);
         $cardData = $this->getCardDataByResponse($response);
-        $this->addMetaDataCard($platformOrderId, $cardData);
+        if (
+            isset($subscriptionCard['chargeId']) &&
+            wcs_order_contains_early_renewal($platformOrder) == true
+        ) {
+            return;
+        }
+        $this->saveCardDataToOrderAndSubscriptions($platformOrder->getCode(), $cardData);
     }
 
-    public function addMetaDataCard($orderId, $cardData)
+    public function saveCardDataToOrderAndSubscriptions($orderId, $cardData)
     {
         if (!$cardData) {
             return;
@@ -26,14 +42,13 @@ class SubscriptionMeta
 
         $order = wc_get_order($orderId);
         $this->saveCardInSubscriptionOrder($cardData, $order);
-
-        $subscriptions = wcs_get_subscriptions_for_order($orderId);
+        $subscriptions = $this->getAllSubscriptionsForOrder($orderId);
         foreach ($subscriptions as $subscription) {
             $this->saveCardInSubscriptionOrder($cardData, $subscription);
         }
     }
 
-    private function createCreditCard($pagarmeCustomer)
+    protected function createCreditCard($pagarmeCustomer)
     {
         $data = wc_clean($_POST['pagarme']);
         $card = new CardService();
@@ -50,14 +65,14 @@ class SubscriptionMeta
     }
 
     /**
-     * Save card information on table post_meta
+     * Save card information on table post_meta or wc_order_meta
      *
      * @param array $card
      * @param WC_Subscription|WC_Order $order
      *
      * @return void
      */
-    private function saveCardInSubscriptionOrder(array $card, $order)
+    protected function saveCardInSubscriptionOrder(array $card, $order)
     {
         if (
             empty($card)
@@ -65,15 +80,77 @@ class SubscriptionMeta
         ) {
             return;
         }
-
-        $key = '_pagarme_payment_subscription';
         $value = json_encode($card);
         if (FeatureCompatibilization::isHposActivated()) {
-            $order->update_meta_data($key, Utils::rm_tags($value));
+            $order->update_meta_data(self::PAYMENT_DATA_KEY, Utils::rm_tags($value));
             $order->save();
             return;
         }
-        update_metadata('post', $order->get_id(), $key, $value);
+        update_metadata('post', $order->get_id(), self::PAYMENT_DATA_KEY, $value);
         $order->save();
+    }
+
+    /**
+     * @param \Woocommerce\Pagarme\Model\Order $order
+     *
+     * @return array
+     */
+    protected function getCardToProcessSubscription($order)
+    {
+        $cardData = get_metadata(
+            'post',
+            $order->ID,
+            self::PAYMENT_DATA_KEY,
+            true
+        );
+
+        if (empty($cardData) && FeatureCompatibilization::isHposActivated()) {
+            $cardData = $order->get_meta(self::PAYMENT_DATA_KEY);
+        }
+
+        if (empty($cardData)) {
+            $this->logger->info('Card data not found in the current order.');
+            return null;
+        }
+
+        return json_decode($cardData, true);
+    }
+
+    /**
+     * @param mixed $response
+     * @return mixed
+     */
+    protected function getCardDataByResponse($response)
+    {
+        $charges = $this->getChargesByResponse($response);
+        $transactions = $this->getTransactionsByCharges($charges);
+        $cardData = $this->getCardDataByTransaction($transactions);
+        if (!$cardData) {
+            return $cardData;
+        }
+        return [
+            'cardId' => $cardData->getPagarmeId(),
+            'brand' => $cardData->getBrand()->getName(),
+            'holder_name' => $cardData->getOwnerName(),
+            'first_six_digits' => $cardData->getFirstSixDigits()->getValue(),
+            'last_four_digits' => $cardData->getLastFourDigits()->getValue(),
+            'chargeId' => $charges->getPagarmeId(),
+        ];
+    }
+
+    /**
+     * @param $order
+     * @return array|null
+     */
+    protected function getCardData($order)
+    {
+        $card = $this->getCardToProcessSubscription($order);
+
+        if (empty($card)) {
+            $subscription = $this->getSubscription($order->ID);
+            return $this->getCardToProcessSubscription($subscription);
+        }
+
+        return $card;
     }
 }
