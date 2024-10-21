@@ -45,6 +45,7 @@ class CheckoutTest extends TestCase
         Brain\Monkey\tearDown();
     }
 
+    
     public function testProcessWithTdsAuthenticatedCreditCardPaymentMethodShouldSetAuthenticationNode()
     {
         $gatewayMock = Mockery::mock(Gateway::class);
@@ -52,8 +53,9 @@ class CheckoutTest extends TestCase
         $ordersMock = Mockery::mock(Orders::class);
         $wooOrderRepositoryMock = Mockery::mock(WooOrderRepository::class);
 
-        $subscriptionMock = Mockery::mock(Subscription::class);
+        $subscriptionMock = Mockery::mock('alias:'.Subscription::class);
         $subscriptionMock->shouldReceive('hasSubscriptionProductInCart')->andReturn(false);
+        $subscriptionMock->shouldReceive('getRecurrenceCycle')->andReturn(null);
 
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
         $_SERVER['REQUEST_METHOD'] = 'POST';
