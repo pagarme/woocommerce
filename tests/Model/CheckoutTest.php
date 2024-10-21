@@ -11,6 +11,7 @@ use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Checkout;
 use Woocommerce\Pagarme\Controller\Orders;
+use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\WooOrderRepository;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequest;
@@ -50,6 +51,9 @@ class CheckoutTest extends TestCase
         $configMock = Mockery::mock(Config::class);
         $ordersMock = Mockery::mock(Orders::class);
         $wooOrderRepositoryMock = Mockery::mock(WooOrderRepository::class);
+
+        $subscriptionMock = Mockery::mock(Subscription::class);
+        $subscriptionMock->shouldReceive('hasSubscriptionProductInCart')->andReturn(false);
 
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
         $_SERVER['REQUEST_METHOD'] = 'POST';
@@ -133,6 +137,7 @@ class CheckoutTest extends TestCase
             ->andReturn($wcOrderMock);
         $orderModelMock->shouldReceive('update_meta')
             ->andReturn([]);
+        
         $wcCheckoutMock = Mockery::mock(WC_Cart::class);
         $wcCheckoutMock->shouldReceive('empty_cart')
             ->andReturnSelf();
