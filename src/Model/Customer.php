@@ -7,7 +7,6 @@ if (!defined('ABSPATH')) {
     exit(0);
 }
 
-use Woocommerce\Pagarme\Helper\Utils;
 use Pagarme\Core\Payment\Repositories\SavedCardRepository as CoreSavedCardRepository;
 use Pagarme\Core\Payment\Repositories\CustomerRepository as CoreCustomerRepository;
 use Woocommerce\Pagarme\Service\CustomerService;
@@ -33,11 +32,11 @@ class Customer
      * @param CoreCustomerRepository $customerRepository
      */
     /** phpcs:disable */
-    public function __construct($ID, $cardRepository, $customerRepository)
+    public function __construct($ID, $cardRepository = null, $customerRepository = null)
     {
         $this->ID = (int) $ID;
-        $this->cardRepository = $cardRepository;
-        $this->customerRepository = $customerRepository;
+        $this->cardRepository = $cardRepository ?? new CoreSavedCardRepository();
+        $this->customerRepository = $customerRepository ?? new CoreCustomerRepository();
     }
 
     public function __get($prop_name)
@@ -125,6 +124,11 @@ class Customer
         return $customer->getPagarmeId()->getValue();
     }
     
+    /**
+     * @param string $code
+     * @param string $pagarmeId
+     * @return void
+     */
     public function savePagarmeCustomerId($code, $pagarmeId)
     {
         $customerService = new CustomerService();
@@ -132,5 +136,23 @@ class Customer
         $customer->setCode($code);
         $customer->setPagarmeId($pagarmeId);
         $customerService->saveOnPlatform($customer);
+    }
+
+    /**
+     * @param \WC_Order $wcOrder
+     * @param boolean|null $createIfNotExists create customer on Pagar.me if not exists
+     * @return string|\Exception
+     */
+    public function getPagarmeCustomerIdByOrder($wcOrder, $createIfNotExists = true)
+    {
+        $customer = $this->customerRepository->findByCode($wcOrder->get_customer_id());
+        if ($customer) {
+            return $customer->getPagarmeId()->getValue();
+        }
+        if (!$createIfNotExists) {
+            throw new \Exception('Customer not found');
+        }
+        $customer = new CustomerService();
+        return $customer->createCustomerByOrder($wcOrder);
     }
 }
