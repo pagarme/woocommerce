@@ -167,7 +167,7 @@ class CustomerFieldsActions implements RunnerInterface
         }
 
         $fields['address_1']['placeholder'] = __(
-            'Street name, house number and neighbourhood',
+            'Street, number and neighbourhood',
             'woo-pagarme-payments'
         );
         $fields['address_2']['label'] = __(
