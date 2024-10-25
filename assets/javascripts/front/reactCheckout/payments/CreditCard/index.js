@@ -15,7 +15,7 @@ const PagarmeCreditCardComponent = (props) => {
     const googleCards = useSelect((select) => {
         return select(pagarmeTokenStore).getToken();
     });
-    
+
     const { emitResponse, eventRegistration } = props;
     const googleActive = backendConfig.googlepayEnable;
     useCreditCard(backendConfig, emitResponse, eventRegistration, googleCards);

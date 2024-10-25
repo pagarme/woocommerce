@@ -3,7 +3,6 @@ import { useDispatch } from "@wordpress/data";
 import pagarmeTokenStore from "../store/googlepay"
 import validateBilling from "./validateBilling";
 
-
 const PagarmeGooglePayComponent = (props) => {
     const backendConfig = wc.wcSettings.getSetting(
         "woo-pagarme-payments-googlepay_data",
