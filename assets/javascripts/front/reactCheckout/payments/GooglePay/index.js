@@ -10,7 +10,7 @@ const PagarmeGooglePayComponent = (props) => {
     );
     
     const environment = backendConfig.isSandboxMode ? "TEST" : "PRODUCTION";
-    const billingAddress = props.billing.billingAddress;
+    const billingAddress = props?.billing?.billingAddress;
     const {
         setToken
     } = useDispatch(pagarmeTokenStore);
