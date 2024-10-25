@@ -425,7 +425,7 @@ class Subscription extends SubscriptionMeta
      * @param $order WC_Order
      * @return void
      */
-    public function asSameCardInSubscription(&$fields, $order)
+    public function isSameCardInSubscription(&$fields, $order)
     {
         $subscription = $this->getSubscription($order->get_id());
         $dataCard = $this->getCardToProcessSubscription($order);

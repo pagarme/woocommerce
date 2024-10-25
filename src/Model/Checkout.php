@@ -171,7 +171,7 @@ class Checkout
             $fields['card_id'] = $this->getCardId($fields, $wc_order);
             // If same, return payment_origin in $fields
             $subscription = new Subscription();
-            $subscription->asSameCardInSubscription($fields, $wc_order);
+            $subscription->isSameCardInSubscription($fields, $wc_order);
             unset($fields['pagarmetoken1']);
         }
     }
