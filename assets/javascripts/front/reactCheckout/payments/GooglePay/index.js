@@ -1,6 +1,8 @@
 import GooglePayButton from "@google-pay/button-react";
 import { useDispatch } from "@wordpress/data";
 import pagarmeTokenStore from "../store/googlepay"
+import validateBilling from "./validateBilling";
+
 
 const PagarmeGooglePayComponent = (props) => {
     const backendConfig = wc.wcSettings.getSetting(
@@ -8,7 +10,7 @@ const PagarmeGooglePayComponent = (props) => {
     );
     
     const environment = backendConfig.isSandboxMode ? "TEST" : "PRODUCTION";
-    
+    const billingAddress = props.billing.billingAddress;
     const {
         setToken
     } = useDispatch(pagarmeTokenStore);
@@ -51,8 +53,10 @@ const PagarmeGooglePayComponent = (props) => {
                 },
             }}
             onLoadPaymentData={(paymentRequest) => {
-                let googleToken = paymentRequest.paymentMethodData.tokenizationData.token;
-                setToken(googleToken);
+                if(validateBilling(billingAddress)) {
+                    let googleToken = paymentRequest.paymentMethodData.tokenizationData.token;
+                    setToken(googleToken);
+                }
                 jQuery(".wc-block-components-checkout-place-order-button").click();
             }}
         />

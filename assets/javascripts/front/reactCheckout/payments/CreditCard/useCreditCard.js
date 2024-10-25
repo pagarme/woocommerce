@@ -5,20 +5,19 @@ import tokenizeMultiCards from "../Card/token/tokenizeMultiCards";
 import { useDispatch, useSelect } from "@wordpress/data";
 import { useEffect } from "@wordpress/element";
 import pagarmeTokenStore from "../store/googlepay";
+import { useCheckoutContext } from '@woocommerce/blocks-checkout';
 
 const useCreditCard = (backendConfig, emitResponse, eventRegistration, googleCards) => {
     const { reset } = useDispatch(pagarmeCardsStore);
     const { reset: resetGoogleToken } = useDispatch(pagarmeTokenStore);
     const { onPaymentSetup } = eventRegistration;
-
+    
     const cards = useSelect((select) => {
         return select(pagarmeCardsStore).getCards();
     });
-
     useEffect(() => {
         reset();
     }, []);
-
     useEffect(() => {
         return onPaymentSetup(async () => {
             try {

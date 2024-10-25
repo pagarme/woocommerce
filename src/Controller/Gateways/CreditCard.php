@@ -148,7 +148,7 @@ class CreditCard extends AbstractGateway
             'type' => 'select',
             'title' => __('Operation Type', 'woo-pagarme-payments'),
             'class' => 'wc-enhanced-select',
-            'default' => $this->config->getCcOperationType() ?? 1,
+            'default' => $this->config->getCcOperationType() ?? 2,
             'options' => array(
                 1 => __('Authorize', 'woo-pagarme-payments'),
                 2 => __('Authorize and Capture', 'woo-pagarme-payments'),
