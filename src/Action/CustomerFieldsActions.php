@@ -36,7 +36,6 @@ class CustomerFieldsActions implements RunnerInterface
         add_filter('woocommerce_checkout_fields', array($this, 'addDocumentField'));
         add_action('woocommerce_checkout_process', array($this, 'validateDocument'));
         add_action('woocommerce_init', array($this, 'addDocumentFieldOnCheckoutBlocks'));
-        add_action('woocommerce_init', array($this, 'overrideAddressFieldOnCheckoutBlocks'));
         add_action('woocommerce_validate_additional_field', array($this, 'validateCheckoutBlocksDocument'), 10, 3);
         add_action(
             'woocommerce_admin_order_data_after_billing_address',
@@ -112,34 +111,6 @@ class CustomerFieldsActions implements RunnerInterface
         );
     }
 
-    public function overrideAddressFieldOnCheckoutBlocks()
-    {
-        // $config = new Config();
-
-        // if (!$config->getModifyAddress()) {
-        //     return;
-        // }
-        // Override address_1 field to change placeholder with checkoutblocks
-        // add_action('woocommerce_address_to_edit', array($this, 'test'));
-        // woocommerce_register_additional_checkout_field(
-        //     array(
-        //         'id'                         => 'address/1',
-        //         'label'                      => __('Street name, house number and neighbourhood', 'woo-pagarme-payments'),
-        //         'location'                   => 'address',
-        //         'type'                       => 'text',
-        //         'class'                      => array('form-row-wide'),
-        //         'required'                   => true,
-        //         'show_in_order_confirmation' => true
-        //     )
-        // );
-        
-    }
-
-    public function teste($dados, $teste)
-    {
-        $data = $dados;
-        $data1 = $teste;
-    }
     /**
      * @return void
      */
