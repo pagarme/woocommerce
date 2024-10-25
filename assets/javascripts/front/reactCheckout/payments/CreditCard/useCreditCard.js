@@ -18,7 +18,7 @@ const useCreditCard = (backendConfig, emitResponse, eventRegistration, googleCar
     useEffect(() => {
         reset();
     }, []);
-    
+
     useEffect(() => {
         return onPaymentSetup(async () => {
             try {
