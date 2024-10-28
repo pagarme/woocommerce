@@ -208,7 +208,7 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
         $json['operation_type']         = $this->operationType;
         $json['recurrency_cycle']       = $this->recurrencyCycle;
         $json['recurrence_cycle']       = $this->recurrenceCycle;
-        $json['payment_origin']       = $this->paymentOrigin;
+        $json['payment_origin']         = $this->paymentOrigin;
 
         return $json;
     }

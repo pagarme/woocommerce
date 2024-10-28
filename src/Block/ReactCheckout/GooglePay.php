@@ -50,11 +50,6 @@ class GooglePay extends AbstractPaymentMethodBlock
     {
         return false;
     }
-
-    private function hasSubscriptionInCart()
-    {
-        return Subscription::hasSubscriptionProductInCart();
-    }
     
     public function getAdditionalPaymentMethodData()
     {
@@ -65,7 +60,7 @@ class GooglePay extends AbstractPaymentMethodBlock
             'merchantId' => $this->config->getGooglepayGoogleMerchantId(),
             'isSandboxMode' => $this->config->getIsSandboxMode(),
             'allowedGoogleBrands' => $this->getGooglepayBrands(),
-            'hasSubscriptionInCart' => $this->hasSubscriptionInCart()
+            'hasSubscriptionInCart' => Subscription::hasSubscriptionProductInCart()
         ];
     }
 }
