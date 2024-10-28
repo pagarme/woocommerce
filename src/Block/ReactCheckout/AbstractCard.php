@@ -36,8 +36,7 @@ abstract class AbstractCard extends AbstractPaymentMethodBlock {
             'brands'           => $this->paymentModel->getConfigDataProvider()['brands'],
             'errorMessages'    => CardBlock::getCardErrorsMessagesTranslated(),
             'cards'            => $this->paymentModel->getCards(),
-            'fieldErrors'      => $this->getFieldErrors(),
-            'googlepayEnable'    => $this->config->getEnableGooglepay() === 'yes'
+            'fieldErrors'      => $this->getFieldErrors()
         ];
 
         if ( $additionalData['walletEnabled'] ) {

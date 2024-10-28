@@ -10,18 +10,22 @@ import { useSelect } from "@wordpress/data";
 const backendConfig = wc.wcSettings.getSetting(
     "woo-pagarme-payments-credit_card_data",
 );
+const googlePayBackendConfig = wc.wcSettings.getSetting(
+    "woo-pagarme-payments-googlepay_data",
+);
 
 const PagarmeCreditCardComponent = (props) => {
     const googleCards = useSelect((select) => {
         return select(pagarmeTokenStore).getToken();
     });
-
     const { emitResponse, eventRegistration } = props;
-    const googleActive = backendConfig.googlepayEnable;
+    const googleActive = googlePayBackendConfig.enabled;
+    const hasSubscriptionInCart = googlePayBackendConfig.hasSubscriptionInCart;
+
     useCreditCard(backendConfig, emitResponse, eventRegistration, googleCards);
     return (
         <div>
-            {googleActive && (
+            {googleActive && !hasSubscriptionInCart && (
                 <div>
                     <PagarmeGooglePayComponent  {...props}  />
                     <div className="pagarme_creditcard_divider">

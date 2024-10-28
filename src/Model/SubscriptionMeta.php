@@ -22,7 +22,7 @@ class SubscriptionMeta
     public function saveCardInSubscriptionUsingOrderResponse($response)
     {
         $platformOrder = $response->getPlatformOrder()->getPlatformOrder();
-        $subscription = $this->getSubscription($platformOrder->getCode());
+        $subscription = $this->getSubscription($platformOrder->get_id());
         $subscriptionCard = $this->getCardToProcessSubscription($subscription);
         $cardData = $this->getCardDataByResponse($response);
         if (
@@ -31,7 +31,7 @@ class SubscriptionMeta
         ) {
             return;
         }
-        $this->saveCardDataToOrderAndSubscriptions($platformOrder->getCode(), $cardData);
+        $this->saveCardDataToOrderAndSubscriptions($platformOrder->get_id(), $cardData);
     }
 
     public function saveCardDataToOrderAndSubscriptions($orderId, $cardData)

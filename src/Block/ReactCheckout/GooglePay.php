@@ -3,6 +3,7 @@
 namespace Woocommerce\Pagarme\Block\ReactCheckout;
 
 use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\Payment\GooglePay as GooglePayModel;
 
 class GooglePay extends AbstractPaymentMethodBlock
@@ -53,11 +54,13 @@ class GooglePay extends AbstractPaymentMethodBlock
     public function getAdditionalPaymentMethodData()
     {
         return [
+            'enabled' => $this->config->getEnableGooglepay() === 'yes', 
             'accountId' => $this->config->getAccountId(),
             'merchantName' => $this->config->getGooglepayGoogleMerchantName(),
             'merchantId' => $this->config->getGooglepayGoogleMerchantId(),
             'isSandboxMode' => $this->config->getIsSandboxMode(),
-            'allowedGoogleBrands' => $this->getGooglepayBrands()
+            'allowedGoogleBrands' => $this->getGooglepayBrands(),
+            'hasSubscriptionInCart' => Subscription::hasSubscriptionProductInCart()
         ];
     }
 }
