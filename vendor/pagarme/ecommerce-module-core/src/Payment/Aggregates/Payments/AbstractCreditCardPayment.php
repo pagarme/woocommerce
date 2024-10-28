@@ -24,6 +24,8 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
     /** @var string */
     protected $recurrenceCycle;
     /** @var string */
+    protected $paymentOrigin;
+    /** @var string */
     protected $statementDescriptor;
     /** @var boolean */
     protected $capture;
@@ -138,6 +140,16 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
     public function setRecurrenceCycle($recurrenceCycle)
     {
         $this->recurrenceCycle = $recurrenceCycle;
+    }
+
+    public function getPaymentOrigin()
+    {
+        return $this->paymentOrigin;
+    }
+
+    public function setPaymentOrigin($paymentOrigin)
+    {
+        $this->paymentOrigin = $paymentOrigin;
     }
 
     /**
@@ -262,6 +274,7 @@ abstract class AbstractCreditCardPayment extends AbstractPayment
         $cardRequest->capture = $this->isCapture();
         $cardRequest->installments = $this->getInstallments();
         $cardRequest->recurrenceCycle = $this->getRecurrenceCycle();
+        $cardRequest->paymentOrigin = $this->getPaymentOrigin();
         $cardRequest->statementDescriptor = $this->getStatementDescriptor();
         if (!empty($this->getAuthentication())) {
             $cardRequest->authentication = $this->getAuthenticationSDK();
