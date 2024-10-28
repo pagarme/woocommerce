@@ -41,6 +41,15 @@ class GooglePay extends AbstractPaymentMethodBlock
         }
         return $allowedBrands;
     }
+
+    /**
+     * @return boolean
+     */
+    protected function jsUrl()
+    {
+        return false;
+    }
+    
     public function getAdditionalPaymentMethodData()
     {
         return [
