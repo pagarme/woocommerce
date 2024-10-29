@@ -23,6 +23,9 @@ class SubscriptionMeta
     {
         $platformOrder = $response->getPlatformOrder()->getPlatformOrder();
         $subscription = $this->getSubscription($platformOrder->get_id());
+        if($subscription == null) {
+            return;
+        }
         $subscriptionCard = $this->getCardToProcessSubscription($subscription);
         $cardData = $this->getCardDataByResponse($response);
         if (
