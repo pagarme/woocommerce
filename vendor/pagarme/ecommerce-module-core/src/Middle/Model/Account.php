@@ -11,10 +11,6 @@ class Account extends ModelWithErrors
 {
     const ACCOUNT_DISABLED = 'accountDisabled';
 
-    const DOMAIN_EMPTY = 'domainEmpty';
-
-    const DOMAIN_INCORRECT = 'domainIncorrect';
-
     const WEBHOOK_INCORRECT = 'webhookIncorrect';
 
     const MULTIPAYMENTS_DISABLED = 'multiPaymentsDisabled';
@@ -242,7 +238,6 @@ class Account extends ModelWithErrors
     public function validate($storeSettings = null)
     {
         $this->validateAccountEnabled();
-        $this->validateDomain($storeSettings);
         $this->validateWebhooks($storeSettings);
         $this->validateMultiBuyer();
         $this->validateMultiPayments();
@@ -263,34 +258,6 @@ class Account extends ModelWithErrors
         if (!$this->isAccountEnabled()) {
             $this->addError(self::ACCOUNT_DISABLED);
         }
-    }
-
-    /**
-     * @param StoreSettings|null $storeSettings
-     * @return void
-     */
-    private function validateDomain($storeSettings = null)
-    {
-        $domains = $this->getDomains();
-        if (empty($domains) && (empty($storeSettings) || !$storeSettings->isSandbox())) {
-            $this->addError(self::DOMAIN_EMPTY);
-            return;
-        }
-
-        if ($this->canNotValidateUrlSetting($storeSettings)) {
-            return;
-        }
-
-        $siteUrls = $storeSettings->getStoreUrls();
-        foreach ($domains as $domain) {
-            foreach ($siteUrls as $siteUrl) {
-                if (strpos($siteUrl, $domain) !== false) {
-                    return;
-                }
-            }
-        }
-
-        $this->addError(self::DOMAIN_INCORRECT);
     }
 
     /**

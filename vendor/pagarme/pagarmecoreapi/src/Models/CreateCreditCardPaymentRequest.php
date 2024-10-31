@@ -121,6 +121,13 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
     public $recurrenceCycle;
 
     /**
+     * Defines whether the card has been used one or more times.
+     * @maps payment_origin
+     * @var string|null $paymentOrigin public property
+     */
+    public $paymentOrigin;
+
+    /**
      * Constructor to set initial or default values of member properties
      * @param integer                             $installments         Initialization value for $this->installments
      * @param string                              $statementDescriptor  Initialization value for $this-
@@ -145,11 +152,13 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
      *                                                                    >recurrencyCycle
      * @param string                              $recurrenceCycle      Initialization value for $this-
      *                                                                    >recurrenceCycle
+     * @param string                              $paymentOrigin        Initialization value for $this-
+     *                                                                    >paymentOrigin
      */
     public function __construct()
     {
         switch (func_num_args()) {
-            case 16:
+            case 17:
                 $this->installments         = func_get_arg(0);
                 $this->statementDescriptor  = func_get_arg(1);
                 $this->card                 = func_get_arg(2);
@@ -166,6 +175,7 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
                 $this->operationType        = func_get_arg(13);
                 $this->recurrencyCycle      = func_get_arg(14);
                 $this->recurrenceCycle      = func_get_arg(15);
+                $this->paymentOrigin        = func_get_arg(16);
                 break;
 
             default:
@@ -198,6 +208,7 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
         $json['operation_type']         = $this->operationType;
         $json['recurrency_cycle']       = $this->recurrencyCycle;
         $json['recurrence_cycle']       = $this->recurrenceCycle;
+        $json['payment_origin']         = $this->paymentOrigin;
 
         return $json;
     }

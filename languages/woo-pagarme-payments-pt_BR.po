@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Pagar.me Payments 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-pagarme-payments\n"
 "POT-Creation-Date: 2018-06-22 13:58-0300\n"
-"PO-Revision-Date: 2024-10-01 09:55-0300\n"
+"PO-Revision-Date: 2024-10-24 16:33-0300\n"
 "Last-Translator: Pagar.me\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -422,6 +422,16 @@ msgstr "Logs"
 #: src/Controller/Gateways.php:667
 msgid "Log Pagar.me events, you can check this log in WooCommerce>Status>Logs."
 msgstr "Registra eventos da Pagar.me, você pode conferir esse arquivo de log em WooCommerce>Status>Logs."
+
+msgid "Modify address fields"
+msgstr "Modificar campos de endereço"
+
+msgid ""
+"Corrects the 'label' and 'placeholder' attributes of the 'Address' and 'Complement' fields to instruct users on how "
+"to fill them in correctly."
+msgstr ""
+"Corrige os atributos 'label' e 'placeholder' dos campos de 'Endereço' e 'Complemento' para instruir os usuários no "
+"preenchimento correto dos mesmos."
 
 msgid "Allow order without address"
 msgstr "Permitir compras sem endereço"
@@ -849,8 +859,12 @@ msgid "The following checkout fields are required, but were not found:"
 msgstr "Os seguintes campos de checkout são obrigatórios, mas não foram encontrados:"
 
 #: woo-pagarme-payments.php:194
-msgid "Please, make sure to include them for Pagar.me module to work."
-msgstr "Por favor, certifique-se de incluí-los para que o módulo da Pagar.me funcione."
+msgid ""
+"Please, make sure to include them for Pagar.me plugin to work. If you are customizing the checkout, the address "
+"fields must have the 'name' attribute exactly as listed above. %sRead documentation »%s"
+msgstr ""
+"Por favor, certifique-se de incluí-los para que o plugin Pagar.me funcione. Se você estiver personalizando o "
+"checkout, os campos de endereço devem ter o atributo 'name' exatamente como listado acima. %sLeia a documentação »%s"
 
 msgid "You can install %s or any other plugin of your choice to add the missing fields. %sRead documentation »%s"
 msgstr ""
@@ -1226,22 +1240,6 @@ msgstr ""
 "Sua conta está desativada na Dash da Pagar.me. Por favor, entre em contato com o nosso time de atendimento para "
 "habilitá-la."
 
-#: src/Controller/HubAccounts.php:90 src/Controller/HubAccounts.php:96
-msgid ""
-"No domain registered on Pagar.me Dash. Please enter your website's domain on the Dash to be able to process payment "
-"in your store."
-msgstr ""
-"Nenhum domínio cadastrado na Dash da Pagar.me. Por favor, insira o domínio do seu site na Dash para poder processar o "
-"pagamento em sua loja."
-
-#: src/Controller/HubAccounts.php:90 src/Controller/HubAccounts.php:96
-msgid ""
-"The registered domain is different from the URL of your website. Please correct the domain configured on the Dash to "
-"be able to process payment in your store."
-msgstr ""
-"O domínio cadastrado é diferente da URL do seu site. Por favor, corrija o domínio configurado na Dash para poder "
-"processar o pagamento em sua loja."
-
 msgid ""
 "Pix payment method is enabled on your store, but disabled on Pagar.me Dash. Please, access the Dash configurations "
 "and enable it to be able to process Pix payment on your store."
@@ -1505,7 +1503,7 @@ msgid "Check the Pagar.me Dashboard at: Settings &rarr; Keys &rarr; Account ID"
 msgstr "Consulte na Dashboard Pagar.me em: Configurações &rarr; Chaves &rarr; ID da Conta"
 
 msgid "Google Merchant Identifier, get yours <a href=\"%s\">here</a>."
-msgstr "Identificador de comerciante do Google, adquira o seu <a href=\"%s\">aqui</a>"
+msgstr "Identificador de comerciante do Google, adquira o seu <a href=\"%s\">aqui</a>."
 
 msgid "Your store name that will be displayed to the customer while purchasing through Google Pay."
 msgstr "Nome da sua loja que será exibido ao cliente enquanto compra através do Google Pay."
@@ -1515,3 +1513,44 @@ msgstr "Nome da loja na Google Pay"
 
 msgid "Pagar.me account ID"
 msgstr "ID da conta Pagar.me"
+
+msgid "Document"
+msgstr "Documento"
+
+msgid "CPF or CNPJ"
+msgstr "CPF ou CNPJ"
+
+msgctxt "checkout-document-error"
+msgid "Billing"
+msgstr "faturamento"
+
+msgctxt "checkout-document-error"
+msgid "Shipping"
+msgstr "envio"
+
+msgid "Please, enter a valid document number."
+msgstr "Por favor, digite um número de documento válido."
+
+msgid "Please, enter a valid %s number."
+msgstr "Por favor, digite um número de %s válido."
+
+msgid "Please, enter a valid document number in the <b>%s Document</b>."
+msgstr "Por favor, digite um número de documento válido <b>no campo Documento de %s</b>."
+
+msgid "Please, enter a valid %s number in the <b>%s Document</b>."
+msgstr "Por favor, digite um número de %s válido <b>no campo &quot;Documento&quot; do endereço de %s</b>."
+
+msgid "%s Document"
+msgstr "Documento de %s"
+
+msgid "Billing"
+msgstr "Faturamento"
+
+msgid "Shipping"
+msgstr "Envio"
+
+msgid "Street, number and neighbourhood"
+msgstr "Rua, número e bairro"
+
+msgid "Additional address data"
+msgstr "Complemento"

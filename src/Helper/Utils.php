@@ -487,26 +487,41 @@ class Utils
      *
      * @return array|string[]
      */
-    public static function build_document_from_order(Order $order)
+    public static function build_document_from_order(Order $order): array
     {
-        if (!empty($order->get_meta('billing_cpf'))) {
-            return array(
-                'type'  => 'individual',
-                'value' => $order->get_meta('billing_cpf'),
-            );
-        }
+        $documentFields = [
+            'billing_cpf',
+            'billing_cnpj',
+            'billing_document',
+            'wc_billing/address/document'
+        ];
 
-        if (!empty($order->get_meta('billing_cnpj'))) {
-            return array(
-                'type'  => 'company',
-                'value' => $order->get_meta('billing_cnpj'),
-            );
+        foreach ($documentFields as $field) {
+            if (!empty($order->get_meta($field))) {
+                $document = $order->get_meta($field);
+                return [
+                    'type'  => self::getCustomerTypeByDocumentNumber($document),
+                    'value' => $document
+                ];
+            }
         }
 
         return array(
             'type'  => '',
-            'value' => '',
+            'value' => ''
         );
+    }
+
+    public static function getCustomerTypeByDocumentNumber($document): string
+    {
+        $documentNumber = preg_replace('/\D/', '', $document ?? '');
+        return strlen($documentNumber) === 14 ? 'company' : 'individual';
+    }
+
+    public static function getDocumentTypeByDocumentNumber($document): string
+    {
+        $documentNumber = preg_replace('/\D/', '', $document ?? '');
+        return strlen($documentNumber) === 14 ? 'cnpj' : 'cpf';
     }
 
     /**
@@ -605,5 +620,61 @@ class Utils
         }
 
         return WC_Blocks_Utils::has_block_in_page(wc_get_page_id('checkout'), 'woocommerce/checkout');
+    }
+
+    /**
+     * @param $path
+     * @param $fileName
+     *
+     * @return string
+     */
+    private static function getScriptUrl($path, $fileName): string
+    {
+        return Core::plugins_url('assets/javascripts/' . $path . '/' . $fileName . '.js');
+    }
+
+    /**
+     * @param array $deps
+     *
+     * @return array
+     */
+    private static function setScriptDeps(array $deps = []): array
+    {
+        $defaultDeps = ['jquery'];
+        $mergedDeps = array_merge($defaultDeps, $deps);
+
+        return array_unique($mergedDeps);
+    }
+
+    /**
+     * @param $path
+     * @param $fileName
+     *
+     * @return false|int
+     */
+    private static function getScriptVersion($path, $fileName)
+    {
+        return Core::filemtime('assets/javascripts/' . $path . '/' . $fileName . '.js');
+    }
+
+    /**
+     *
+     *
+     * @param string $path The path to the script file, starting after the folders `assets/javascript/[path]`
+     * @param string $fileName The file name, without the extension `.js`
+     * @param array $deps Array of dependencies. `jquery` is added automatically
+     *
+     * @return array Returns an array with three keys: `src`, `deps` and `ver`, to be used with `wp_register_script`
+     */
+    public static function getRegisterScriptParameters(string $path, string $fileName, array $deps = []): array
+    {
+        $path = rtrim($path, '/');
+        $fileName = trim($fileName);
+
+        return [
+            'src'  => self::getScriptUrl($path, $fileName),
+            'deps' => self::setScriptDeps($deps),
+            'ver'  => self::getScriptVersion($path, $fileName)
+        ];
     }
 }

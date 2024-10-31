@@ -21,6 +21,7 @@ use Woocommerce\Pagarme\Model\Payment\Data\AbstractPayment;
 use Woocommerce\Pagarme\Model\Payment\Data\Card;
 use Woocommerce\Pagarme\Model\Payment\Data\Multicustomers;
 use Woocommerce\Pagarme\Model\Payment\Data\PaymentRequestInterface;
+use Woocommerce\Pagarme\Service\CardService;
 
 class Checkout
 {
@@ -72,6 +73,7 @@ class Checkout
     public function validateCheckout($fields, $errors)
     {
         if (
+            isset($fields['billing_number']) &&
             $fields['billing_number'] === 0 &&
             !key_exists('billing_number_required', $errors->errors)
         ) {
@@ -82,6 +84,7 @@ class Checkout
         }
         if (
             $fields['ship_to_different_address'] &&
+            isset($fields['shipping_number']) &&
             $fields['shipping_number'] === 0 &&
             !key_exists('shipping_number_required', $errors->errors)
         ) {
@@ -123,6 +126,7 @@ class Checkout
         if ($type === CheckoutTypes::TRANSPARENT_VALUE) {
             $fields = $this->convertCheckoutObject($_POST[PaymentRequestInterface::PAGARME_PAYMENT_REQUEST_KEY]);
             $fields['recurrence_cycle'] = Subscription::getRecurrenceCycle();
+            $this->formatFieldsWhenIsSubscription($fields, $wc_order);
             $attempts = intval($wc_order->get_meta('_pagarme_attempts') ?? 0) + 1;
             $wc_order->update_meta_data("_pagarme_attempts", $attempts);
             $response = $this->orders->create_order(
@@ -142,8 +146,8 @@ class Checkout
             $order->update_meta("attempts", $attempts);
             $this->addAuthenticationOnMetaData($order, $fields);
             if ($response) {
+                do_action("on_pagarme_response",  $response);
                 WC()->cart->empty_cart();
-                do_action("on_pagarme_response", $wc_order->get_id(), $response);
                 $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
@@ -157,6 +161,30 @@ class Checkout
             $order->getWcOrder()->save();
             return false;
         }
+    }
+    private function formatFieldsWhenIsSubscription(&$fields, $wc_order)
+    {
+        if(Subscription::hasSubscriptionProductInCart() == false){
+            return;
+        }
+        if ($fields['payment_method'] === 'credit_card') {
+            $fields['card_id'] = $this->getCardId($fields, $wc_order);
+            // If same, return payment_origin in $fields
+            $subscription = new Subscription();
+            $subscription->isSameCardInSubscription($fields, $wc_order);
+            unset($fields['pagarmetoken1']);
+        }
+    }
+
+    private function getCardId($fields, $wc_order)
+    {
+        if($fields['card_id']){
+            return $fields['card_id'];
+        }
+        $customer = new Customer($wc_order->get_customer_id());
+        $cardService = new CardService();
+        $pagarmeCard = $cardService->create($fields['pagarmetoken1'], $customer->getPagarmeCustomerId());
+        return $pagarmeCard['cardId'];
     }
 
     private function convertCheckoutObject(PaymentRequestInterface $paymentRequest)
@@ -212,6 +240,9 @@ class Checkout
 
     private function extractGooglePayToken(&$fields, $paymentRequest)
     {
+        if(!$paymentRequest->getDataByKey('googlepay')){
+            return;
+        }
         $fields['googlepay']['token'] = $paymentRequest->getDataByKey('googlepay');
     }
 

@@ -460,7 +460,8 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         if (empty($document['value'])) {
             $customerPlatform  = new WC_Customer($woocommerceCustomerId);
             $document['value'] = $customerPlatform->get_meta("billing_cpf") ??
-                                 $customerPlatform->get_meta("billing_cnpj");
+                                 $customerPlatform->get_meta("billing_cnpj") ??
+                                 $customerPlatform->get_meta("billing_document");
         }
         $homeNumber   = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
@@ -534,7 +535,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $cleanDocument = preg_replace(
             '/\D/',
             '',
-            $document["value"]
+            $document['value']
         );
 
         $customer->setDocument($cleanDocument);
@@ -763,7 +764,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         }
         $newPaymentData->amount = $moneyService->floatToCents($this->getGrandTotal());
         $newPaymentData->googlepayData = $cleanJson;
-        $newPaymentData->billing_address = $this->getCustomer()?->getAddress()?->convertToSDKRequest();
+        $newPaymentData->billing_address = $this->getCustomer()->getAddress()->convertToSDKRequest();
         $newPaymentData->additionalInformation = ["googlepayData" => $cleanJson];
         $googlepayIndex = 'googlepay';
         if (!isset($paymentData[$googlepayIndex])) {
@@ -847,6 +848,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $newPaymentData->identifier      = $identifier;
         $newPaymentData->installments    = intval($this->formData["installments"]);
         $newPaymentData->recurrenceCycle = $this->formData["recurrence_cycle"] ?? null;
+        $newPaymentData->paymentOrigin   = $this->formData["payment_origin"] ?? null;
         $newPaymentData->saveOnSuccess   = isset($this->formData["save_credit_card"]);
         $amount = $this->formData["card_order_value"] ?? $this->getGrandTotal();
         $amount = number_format($amount, 2, '.', '');
@@ -1152,6 +1154,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         return $shipping;
     }
 
+    /**
+     * @throws Exception
+     */
     protected function getAddress($platformAddress)
     {
         $config = new Config();
@@ -1165,13 +1170,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $address->setStreet($platformAddress["street"]);
         $address->setNumber($platformAddress["number"]);
-        $address->setNeighborhood($platformAddress["neighborhood"]);
         $address->setComplement($platformAddress["complement"]);
-
+        $address->setNeighborhood($platformAddress["neighborhood"]);
         $address->setCity($platformAddress["city"]);
         $address->setCountry($platformAddress["country"]);
         $address->setZipCode($platformAddress["zip_code"]);
-
         $address->setState($platformAddress["state"]);
 
         return $address;
@@ -1203,8 +1206,6 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
     {
         $requiredFields = [
             'street',
-            'number',
-            'neighborhood',
             'city',
             'country',
             'zip_code',

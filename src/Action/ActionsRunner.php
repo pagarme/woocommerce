@@ -2,10 +2,14 @@
 
 namespace Woocommerce\Pagarme\Action;
 
+/**
+ * @uses CustomerFieldsActions, OrderActions
+ */
 class ActionsRunner implements RunnerInterface
 {
     private $actionClasses = [
-        "OrderActions"
+        "OrderActions",
+        "CustomerFieldsActions"
     ];
 
     public function run()

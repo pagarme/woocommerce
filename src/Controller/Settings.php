@@ -145,6 +145,18 @@ class Settings
                         ],
                         [
                             'fieldObject' => Select::class,
+                            'id' => 'modify_address',
+                            'title' => 'Modify address fields',
+                            'options' => $this->yesNoOptions->toLabelsArray(),
+                            'default' => strtolower(Yesno::YES),
+                            'description' => [
+                                'format' => "Corrects the 'label' and 'placeholder' attributes of the 'Address' and "
+                                    . "'Complement' fields to instruct users on how to fill them in correctly.",
+                                'values' => []
+                            ],
+                        ],
+                        [
+                            'fieldObject' => Select::class,
                             'id' => 'allow_no_address',
                             'title' => 'Allow order without address',
                             'options' => $this->yesNoOptions->toLabelsArray(),

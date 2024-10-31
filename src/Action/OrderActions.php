@@ -4,6 +4,9 @@ namespace Woocommerce\Pagarme\Action;
 
 use Woocommerce\Pagarme\Model\Order;
 
+/**
+ * @used-by ActionsRunner
+ */
 class OrderActions implements RunnerInterface
 {
 
@@ -32,7 +35,7 @@ class OrderActions implements RunnerInterface
         if (!$orderPagarme->isPagarmePaymentMethod()) {
             return $total_rows;
         }
-        
+
         $total = $order->get_total();
         $installmentsValue = $orderPagarme->get_meta('pagarme_card_tax');
         if (empty($installmentsValue)) {

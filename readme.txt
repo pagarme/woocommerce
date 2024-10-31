@@ -4,7 +4,7 @@ Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.5.5
 Requires PHP: 7.1
-Stable tag: 3.4.0
+Stable tag: 3.4.2
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -25,30 +25,24 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
-= 3.4.0 (01/10/2024) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.0)
+👻 3.4.2 (31/10/2024) 👻
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.2)
 
 * **Novas funcionalidades:**
-  *  Meio de pagamento Google Pay.
+  *  Adição de identificador da bandeira.
 
 * **Melhorias:**
-  *  Passando pedido e meio de pagamento para o cálculo do split;
-  *  Checkout assincrono;
-
-
-* **Correções:**
-  *  Link para desintregar chamando endpoint incorretamente
-  *  Problemas com tokenização
-
-= 3.3.3 (14/08/2024) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.3.3)
-
-* **Melhorias:**
-  *  Passando pedido e meio de pagamento para o cálculo do split
+  *  Bandeira de Ticket;
+  *  Mudanças em relação ao processo de renovação ao plugin de Subscriptions.
 
 * **Correções:**
-  *  Perdendo informação de bandeira ao trocar meios de pagamento no checkout
+  *  Problema ao importar JS de GooglePay.
 
+= 3.4.1 (03/10/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.1)
+
+* **Correções:**
+  *  Problema de sintax em versões de PHP 7.4.x ou menor.
 
 == Upgrade Notice ==
-Agora é possível transacionar Via Google Pay
+Agora é possível transacionar com Ticket
