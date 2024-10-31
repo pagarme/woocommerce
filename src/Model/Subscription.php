@@ -285,7 +285,7 @@ class Subscription extends SubscriptionMeta
             'payment_method' => $this->formatPaymentMethod($order->getWcOrder()->get_payment_method())
         ];
 
-        $card = $this->getCardData($order);
+        $card = $this->getCardData($order->getWcOrder());
 
         if (!empty($card)) {
             $fields['card_order_value'] = $order->getWcOrder()->get_total();
@@ -447,6 +447,6 @@ class Subscription extends SubscriptionMeta
     private function getPagarmeCustomer($wcOrder)
     {
         $customer = new Customer($wcOrder->get_customer_id());
-        return $customer->getPagarmeCustomerIdByOrder($wcOrder);
+        return $customer->getPagarmeCustomerIdByOrder($wcOrder, true);
     }
 }

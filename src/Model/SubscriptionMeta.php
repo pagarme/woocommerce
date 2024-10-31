@@ -23,6 +23,9 @@ class SubscriptionMeta
     {
         $platformOrder = $response->getPlatformOrder()->getPlatformOrder();
         $subscription = $this->getSubscription($platformOrder->get_id());
+        if($subscription == null) {
+            return;
+        }
         $subscriptionCard = $this->getCardToProcessSubscription($subscription);
         $cardData = $this->getCardDataByResponse($response);
         if (
@@ -91,15 +94,14 @@ class SubscriptionMeta
     }
 
     /**
-     * @param \Woocommerce\Pagarme\Model\Order $order
-     *
+     * @param \WC_Order | \WC_Subscription $order
      * @return array
      */
     protected function getCardToProcessSubscription($order)
     {
         $cardData = get_metadata(
             'post',
-            $order->ID,
+            $order->get_id(),
             self::PAYMENT_DATA_KEY,
             true
         );
