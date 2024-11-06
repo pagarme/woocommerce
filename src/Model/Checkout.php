@@ -178,12 +178,15 @@ class Checkout
 
     private function getCardId($fields, $wc_order)
     {
-        if($fields['card_id']){
+        if (isset($fields['card_id']) && $fields['card_id']) {
             return $fields['card_id'];
         }
         $customer = new Customer($wc_order->get_customer_id());
         $cardService = new CardService();
-        $pagarmeCard = $cardService->create($fields['pagarmetoken1'], $customer->getPagarmeCustomerId());
+        $pagarmeCard = $cardService->create(
+            $fields['pagarmetoken1'],
+            $customer->getPagarmeCustomerIdByOrder($wc_order)
+        );
         return $pagarmeCard['cardId'];
     }
 
