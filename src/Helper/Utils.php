@@ -677,4 +677,15 @@ class Utils
             'ver'  => self::getScriptVersion($path, $fileName)
         ];
     }
+
+    /**
+     * @return bool
+     */
+    public static function isCheckoutBlocksActive()
+    {
+        if (!class_exists('\Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils')) {
+            return false;
+        }
+        return \Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::is_checkout_block_default();
+    }
 }
