@@ -219,7 +219,6 @@ function wcmpAdminNoticeCheckoutFields()
     }
 
     WC()->session = new WC_Session_Handler;
-    WC()->customer = new WC_Customer;
     $billingFields = WC()->checkout->get_checkout_fields()['billing'];
 
     $missingFields = [];
