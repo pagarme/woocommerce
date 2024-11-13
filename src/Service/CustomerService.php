@@ -116,6 +116,9 @@ class CustomerService
         if (empty($document)) {
             $document = $wcOrder->get_meta('_wc_billing/address/document');
         }
+        if (empty($document)) {
+            throw new \InvalidArgumentException(__("Please, enter a valid document number.", 'woo-pagarme-payments'), 1);
+        }
         return $document;    
     }
 
