@@ -91,8 +91,8 @@ class CustomerFieldsActions implements RunnerInterface
     public function addDocumentFieldOnCheckoutBlocks()
     {
         if (
-            Utils::isCheckoutBlocksActive() == false &&
-            ($this->customerFields->hasCheckoutBlocksDocumentField()
+            !Utils::isCheckoutBlocksActive()
+            && ($this->customerFields->hasCheckoutBlocksDocumentField()
             || !function_exists('woocommerce_register_additional_checkout_field'))
         ) {
             return;
