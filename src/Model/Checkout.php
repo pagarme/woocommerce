@@ -164,7 +164,7 @@ class Checkout
     }
     private function formatFieldsWhenIsSubscription(&$fields, $wc_order)
     {
-        if(Subscription::hasSubscriptionProductInCart() == false){
+        if(!Subscription::hasSubscriptionProductInCart() || Subscription::getRecurrenceCycle() != 'subsequent'){
             return;
         }
         if ($fields['payment_method'] === 'credit_card') {
