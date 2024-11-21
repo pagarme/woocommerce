@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Pagar.me for WooCommerce
- * Version:     3.4.2
+ * Version:     3.4.3
  * Author:      Pagar.me
  * Author URI:  https://pagar.me
  * License:     GPL2

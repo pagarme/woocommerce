@@ -12,7 +12,7 @@ function wc_pagarme_define($name, $value)
 
 wc_pagarme_define('WCMP_SLUG', 'woo-pagarme-payments');
 wc_pagarme_define('WCMP_PREFIX', 'pagarme');
-wc_pagarme_define('WCMP_VERSION', '3.4.2');
+wc_pagarme_define('WCMP_VERSION', '3.4.3');
 wc_pagarme_define('WCMP_ROOT_PATH', dirname(__FILE__) . '/');
 wc_pagarme_define('WCMP_ROOT_SRC', WCMP_ROOT_PATH . 'src/');
 wc_pagarme_define('WCMP_ROOT_FILE', WCMP_ROOT_PATH . WCMP_SLUG . '.php');

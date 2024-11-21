@@ -4,7 +4,7 @@ Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.5.5
 Requires PHP: 7.1
-Stable tag: 3.4.2
+Stable tag: 3.4.3
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -25,6 +25,16 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.4.3 (21/11/2024) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.3)
+
+* **Correções:**
+  *  Problema na tela de Produtos;
+  *  Problema com versões antigas e Checkout Blocks;
+  *  Aceitar S/N (Não numeral) no campo de Número do endereço;
+  *  Problema com transação deslogado e assinatura. 
+
+
 👻 3.4.2 (31/10/2024) 👻
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.2)
 
@@ -38,11 +48,6 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
 * **Correções:**
   *  Problema ao importar JS de GooglePay.
 
-= 3.4.1 (03/10/2024) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.1)
-
-* **Correções:**
-  *  Problema de sintax em versões de PHP 7.4.x ou menor.
 
 == Upgrade Notice ==
 Agora é possível transacionar com Ticket
