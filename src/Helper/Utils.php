@@ -472,7 +472,7 @@ class Utils
     {
         return array(
             'street'       => substr($order->getWcOrder()->get_billing_address_1(), 0, 64),
-            'number'       => substr($order->get_meta('billing_number'), 0, 15),
+            'number'       => preg_replace('/[^\d]+/', '', substr($order->get_meta('billing_number'), 0, 15) ),
             'complement'   => substr($order->getWcOrder()->get_billing_address_2(), 0, 64),
             'zip_code'     => preg_replace('/[^\d]+/', '', $order->getWcOrder()->get_billing_postcode()),
             'neighborhood' => substr($order->get_meta('billing_neighborhood'), 0, 64),
@@ -590,7 +590,7 @@ class Utils
             'description' => $method,
             'address'     => array(
                 'street'       => substr($shipping['address_1'], 0, 64),
-                'number'       => substr($shipping['number'], 0, 15),
+                'number'       => preg_replace('/[^\d]+/', '', substr($shipping['number'], 0, 15) ),
                 'complement'   => substr($shipping['address_2'], 0, 64),
                 'zip_code'     => substr(preg_replace('/[^\d]+/', '', $shipping['postcode']), 0, 16),
                 'neighborhood' => substr($shipping['neighborhood'], 0, 64),
