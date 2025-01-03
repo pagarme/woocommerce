@@ -148,11 +148,12 @@ class Checkout
             if ($response) {
                 do_action("on_pagarme_response",  $response);
                 WC()->cart->empty_cart();
-                $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
+                $order->getWcOrder()->set_transaction_id($response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
                 $this->addInstallmentsOnMetaData($order, $fields);
                 $order->update_meta('response_data', json_encode($response));
+                $order->getWcOrder()->save();
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
             }

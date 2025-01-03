@@ -127,11 +127,12 @@ class Subscription extends SubscriptionMeta
             $order->update_meta('payment_method', $fields['payment_method']);
             if ($response) {
                 $this->addChargeIdInProcessSubscription($response, $wc_order->get_id());
-                $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
+                $order->getWcOrder()->set_transaction_id($response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
                 $order->update_meta('response_data', json_encode($response));
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
+                $order->getWcOrder()->save();
                 return true;
             }
             $order->update_meta('pagarme_status', 'failed');
