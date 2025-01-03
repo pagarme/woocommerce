@@ -42,7 +42,9 @@ class Googlepay extends AbstractPayment
     }
 
     protected function init() {
-        $this->{$this->getMethod('token')}($this->getPostPaymentContent()['googlepay']['payload']);
+        if ($this->getPostPaymentContent() && is_array($this->getPostPaymentContent()) && array_key_exists('googlepay', $this->getPostPaymentContent())) {
+            $this->{$this->getMethod('token')}($this->getPostPaymentContent()['googlepay']['payload']);
+        }
     }
 
     protected function setToken($data)
