@@ -131,6 +131,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->yesnoOptions = $yesnoOptions ?? new Yesno;
         $this->method_title = $this->getPaymentMethodTitle();
         $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->method_title;
+        $this->view_transaction_url = $this->config->getDashUrl() . 'orders/%s';
         $this->has_fields = false;
         $this->init_form_fields();
         $this->init_settings();
