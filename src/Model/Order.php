@@ -201,6 +201,22 @@ class Order extends Meta
 
     private function handle_shipping_properties($prop)
     {
+        $method_get_shipping = 'get_shipping_' . $prop;
+        if (method_exists($this->wc_order, $method_get_shipping)) {
+            $shipping_prop = $this->wc_order->{$method_get_shipping}();
+            if ( ! empty( $shipping_prop ) ) {
+                return $shipping_prop;
+            }
+        }
+
+        $method_get_billing = 'get_billing_' . $prop;
+        if (method_exists($this->wc_order, $method_get_billing)) {
+            $shipping_prop = $this->wc_order->{$method_get_billing}();
+            if ( ! empty( $shipping_prop ) ) {
+                return $shipping_prop;
+            }
+        }
+
         $shipping_prop = $this->__get("shipping_{$prop}");
 
         if (empty($shipping_prop)) {

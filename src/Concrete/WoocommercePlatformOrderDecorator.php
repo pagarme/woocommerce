@@ -476,12 +476,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $customer = $savedCustomer;
         }
 
-        $fullName = "{$order->billing_first_name} {$order->billing_last_name}";
+        $fullName = "{$this->getPlatformOrder()->get_billing_first_name()} {$this->getPlatformOrder()->get_billing_last_name()}";
         $fullName = substr($fullName, 0, 64);
         $fullName = preg_replace("/  /", " ", $fullName);
 
         $customer->setName($fullName);
-        $customer->setEmail(substr($order->billing_email, 0, 64));
+        $customer->setEmail(substr($this->getPlatformOrder()->get_billing_email(), 0, 64));
 
         $cleanDocument = preg_replace(
             '/\D/',
@@ -521,11 +521,11 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $homeNumber   = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
-        $fullName = "{$order->billing_first_name} {$order->billing_last_name}";
+        $fullName = "{$this->getPlatformOrder()->get_billing_first_name()} {$this->getPlatformOrder()->get_billing_last_name()}";
         $fullName = substr($fullName, 0, 64);
         $fullName = preg_replace("/  /", " ", $fullName);
 
-        $email = substr($order->billing_email, 0, 64);
+        $email = substr($this->getPlatformOrder()->get_billing_email(), 0, 64);
 
         $customer = new Customer();
 
