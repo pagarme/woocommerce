@@ -188,7 +188,7 @@ class Utils
      */
     public static function get_site_url($path = '')
     {
-        return esc_url(get_site_url(null, $path));
+        return esc_url(get_home_url(null, $path));
     }
 
     /**
