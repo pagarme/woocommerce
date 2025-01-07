@@ -44,6 +44,6 @@ Descubra como personalizar o comportamento do nosso plugin! Acesse nossas docume
 
 ## Contribuidores
 
-| ![eduardobattisti avatar](https://avatars.githubusercontent.com/u/56602897?s=60&v=4) | ![tiagopapile avatar](https://avatars.githubusercontent.com/u/82596706?s=60&v=4) |
-|--------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| [eduardobattisti](https://github.com/eduardobattisti)                                | [tiagopapile](https://github.com/tiagopapile)                                    |
+| ![eduardobattisti avatar](https://avatars.githubusercontent.com/u/56602897?s=60&v=4) | ![tiagopapile avatar](https://avatars.githubusercontent.com/u/82596706?s=60&v=4) | ![gutobenn avatar](https://avatars.githubusercontent.com/u/607762?s=60&v=4) |
+|---|---|---|
+| [eduardobattisti](https://github.com/eduardobattisti) | [tiagopapile](https://github.com/tiagopapile) | [gutobenn](https://github.com/gutobenn) |
