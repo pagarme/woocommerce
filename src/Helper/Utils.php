@@ -476,8 +476,8 @@ class Utils
             'complement'   => substr($order->getWcOrder()->get_billing_address_2(), 0, 64),
             'zip_code'     => preg_replace('/[^\d]+/', '', $order->getWcOrder()->get_billing_postcode()),
             'neighborhood' => substr($order->get_meta('billing_neighborhood'), 0, 64),
-            'city'         => substr($order->get_meta('billing_city'), 0, 64),
-            'state'        => substr($order->get_meta('billing_state'), 0, 2),
+            'city'         => substr($order->getWcOrder()->get_billing_city(), 0, 64),
+            'state'        => substr($order->getWcOrder()->get_billing_state(), 0, 2),
             'country'      => 'BR'
         );
     }
@@ -533,7 +533,7 @@ class Utils
     {
 
         $phones = array();
-        $phone = $order->get_meta('billing_phone');
+        $phone = $order->getWcOrder()->get_billing_phone();
         $cellphone = $order->get_meta('billing_cellphone');
 
         if ($phone) {
