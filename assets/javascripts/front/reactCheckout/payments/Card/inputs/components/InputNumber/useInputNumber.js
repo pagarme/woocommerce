@@ -58,7 +58,6 @@ const useInputNumber = (
     };
 
     const changeBrand = async (cardNumber) => {
-        // cardNumber = formatCardNumber(inputValue);
         if (cardNumber.length !== 16) {
             resetBrand();
             return;
