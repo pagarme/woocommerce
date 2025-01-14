@@ -434,7 +434,7 @@ let pagarmeCard = {
     },
     canExecute: function (event) {
         const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
-        
+
         const cardBrand = checkoutPaymentElement.parents('.pagarme-card-number-row')
             .find(this.brandTarget);
         if (cardBrand?.val()?.length === 0 || wc_pagarme_checkout.errorTokenize === true) {
@@ -500,7 +500,7 @@ let pagarmeCard = {
             pagarmeCard.preventSpecialCharacter(this);
         });
 
-        jQuery(this.cardNumberTarget).on('change', function (event) {
+        jQuery(this.cardNumberTarget).on('input', function (event) {
             pagarmeCard.keyEventHandlerCard(event);
         });
 
@@ -509,7 +509,7 @@ let pagarmeCard = {
         });
     },
     renewEventListener: function () {
-        jQuery(this.cardNumberTarget).on('change', function (event) {
+        jQuery(this.cardNumberTarget).on('input', function (event) {
             pagarmeCard.keyEventHandlerCard(event);
         });
         jQuery(`${this.fieldsetCardElements} input`).on('change', function () {

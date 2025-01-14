@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 const { formatPrice } = window.wc.priceFormat;
 
 const formatInstallmentLabel = ({
@@ -10,7 +11,7 @@ const formatInstallmentLabel = ({
     const formatedPrice = formatPrice(installmentPrice);
     const formatedFinalPrice = formatPrice(finalPrice);
     if (value === 1) {
-        return `${optionLabel} (${formatedPrice})`;
+        return `${value}x ${optionLabel} ${formatedPrice}`;
     }
 
     return `${value}x ${optionLabel} ${formatedPrice} (${formatedFinalPrice}) ${extraText}`.trim();
