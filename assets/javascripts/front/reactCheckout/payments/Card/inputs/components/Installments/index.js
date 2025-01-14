@@ -1,8 +1,7 @@
 /* jshint esversion: 8 */
 import PropTypes from "prop-types";
+import { SelectControl } from '@wordpress/components';
 import useInstallments from "./useInstallments";
-
-const { ComboboxControl } = wp.components;
 
 const Installments = ({
     label,
@@ -27,19 +26,16 @@ const Installments = ({
         );
 
     return (
-        <div className="wc-block-components-select-input pagarme-installments-combobox">
-            <div className={"wc-block-components-combobox is-active"}>
-                <ComboboxControl
-                    className={"wc-block-components-combobox-control"}
-                    label={label}
-                    onChange={installmentsChangeHandler}
-                    value={selectedInstallment}
-                    options={installmentsOptions}
-                    onFilterValueChange={filterHandler}
-                    allowReset={false}
-                    autoComplete={"off"}
-                />
-            </div>
+        <div className="wc-blocks-components-select">
+            <SelectControl
+                label={label}
+                onChange={installmentsChangeHandler}
+                value={selectedInstallment}
+                options={installmentsOptions}
+                onFilterValueChange={filterHandler}
+                allowReset={false}
+                autoComplete={"off"}
+            />
         </div>
     );
 };
