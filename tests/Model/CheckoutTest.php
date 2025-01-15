@@ -120,6 +120,8 @@ class CheckoutTest extends TestCase
             ->andReturn("tran_xxxxxxxxxxxxxxxx");
         $wcOrderMock->shouldReceive('update_meta_data')
             ->andReturnSelf();
+        $wcOrderMock->shouldReceive('save')
+            ->andReturnSelf();
 
         $ordersMock->shouldReceive('create_order')
             ->withArgs(function ($wcOrder, $paymentMethod, $fields) use ($wcOrderMock) {
