@@ -31,7 +31,7 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
 * **Correções:**
   *  Corrige suporte para pagamentos de assinatura em Checkout Blocks;
   *  Utilização das funções padrões do Woocommerce para retornar dados;
-  *  Padronização de nomeclatura de arquivo utilizando PSR-4;
+  *  Padronização de nomenclatura de arquivo utilizando PSR-4;
   *  Correção de tokenização de cartão quando utilizado autocomplete.
 
 * **Melhorias:**
