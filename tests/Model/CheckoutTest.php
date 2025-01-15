@@ -116,6 +116,8 @@ class CheckoutTest extends TestCase
             ->andReturnSelf();
         $wcOrderMock->shouldReceive('get_meta')
             ->andReturn("");
+        $wcOrderMock->shouldReceive('transaction_id')
+            ->andReturn("tran_xxxxxxxxxxxxxxxx");
         $wcOrderMock->shouldReceive('update_meta_data')
             ->andReturnSelf();
 
