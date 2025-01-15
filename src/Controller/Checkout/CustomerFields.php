@@ -34,6 +34,9 @@ class CustomerFields
      */
     public function hasCheckoutBlocksDocumentField()
     {
+        if (!Utils::isCheckoutBlocksActive()) {
+            return false;
+        }
         $checkoutFields = Package::container()->get(CheckoutFields::class);
         $possibleNames = array_merge(
             self::DOCUMENT_TYPES,

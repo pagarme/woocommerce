@@ -172,8 +172,10 @@ class APIService
         $metadata->moduleVersion = $versionService->getModuleVersion();
         $metadata->coreVersion = $versionService->getCoreVersion();
         $metadata->platformVersion = $versionService->getPlatformVersion();
-        $metadata->checkoutBlocks = CartCheckoutUtils::is_checkout_block_default();
-        if($this->hasCreditCardInPayments($orderRequest->payments) && !empty(MPSetup::getInstallmentType())){
+        $metadata->checkoutBlocks = class_exists("\Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils")
+            && CartCheckoutUtils::is_checkout_block_default();
+
+        if ($this->hasCreditCardInPayments($orderRequest->payments) && !empty(MPSetup::getInstallmentType())) {
             $metadata->interestType = MPSetup::getInstallmentType();
         }
         return $metadata;
@@ -182,7 +184,7 @@ class APIService
     private function hasCreditCardInPayments($payments)
     {
         foreach ($payments as $payment) {
-            if($payment->paymentMethod === TransactionType::CREDIT_CARD) {
+            if ($payment->paymentMethod === TransactionType::CREDIT_CARD) {
                 return true;
             }
         }

@@ -33,11 +33,12 @@ const useInputNumber = (
         cssClasses += " has-error";
     }
 
-    const inputChangeHandler = (event) => {
-        setInputValue(cardIndex, event.target.value);
+    const resetBrand = () => {
+        setBrand(cardIndex, "");
+        setBrandImageSrc("");
     };
 
-    const getBrandContengency = (bin) => {
+    const getBrandContingency = (bin) => {
         let oldPrefix = "";
         let brand = null;
         for (const [currentBrandKey, currentBrand] of Object.entries(brands)) {
@@ -56,13 +57,7 @@ const useInputNumber = (
         return brand;
     };
 
-    const resetBrand = () => {
-        setBrand(cardIndex, "");
-        setBrandImageSrc("");
-    };
-
-    const changeBrand = async () => {
-        const cardNumber = formatCardNumber(inputValue);
+    const changeBrand = async (cardNumber) => {
         if (cardNumber.length !== 16) {
             resetBrand();
             return;
@@ -78,7 +73,7 @@ const useInputNumber = (
 
             let brand = result.brand;
             if (!response.ok || typeof result.brandName == "undefined") {
-                brand = getBrandContengency(bin);
+                brand = getBrandContingency(bin);
             }
 
             if (brand === null) {
@@ -104,9 +99,14 @@ const useInputNumber = (
         }
     };
 
+    const inputChangeHandler = (event) => {
+        setInputValue(cardIndex, event.target.value);
+        changeBrand(formatCardNumber(event.target.value));
+    };
+
     const inputBlurHandler = (event) => {
         validateInputNumber(event.target.value);
-        changeBrand();
+        changeBrand(formatCardNumber(event.target.value));
         setIsActive(false);
     };
 

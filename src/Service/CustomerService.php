@@ -71,15 +71,7 @@ class CustomerService
     public function extractCustomerDataByWcOrder($wcOrder)
     {
         $billingData = $wcOrder->get_data()['billing'];
-
-        $document = $wcOrder->get_meta('_billing_cpf');
-        if (empty($document)) {
-            $document = $wcOrder->get_meta('_billing_cnpj');
-        }
-        if (empty($document)) {
-            $document = $wcOrder->get_meta('_billing_document');
-        }
-
+        $document = $this->getCustomerDocumentByOrder($wcOrder);
         $customerData = [
             'code' => $wcOrder->get_customer_id(),
             'email' => $billingData['email'],
@@ -88,11 +80,11 @@ class CustomerService
             'document_type' => Utils::getDocumentTypeByDocumentNumber($document),
             'home_phone' => $billingData['phone'],
             'mobile_phone' => $wcOrder->get_meta('_billing_cellphone'),
-            'street' => $billingData['street'],
+            'street' => $billingData['street'] ?? $billingData['address_1'],
             'country' => $billingData['country'],
             'city' => $billingData['city'],
             'state' => $billingData['state'],
-            'complement' => $billingData['complement'],
+            'complement' => $billingData['complement'] ?? $billingData['address_2'],
             'zipcode' => $billingData['postcode']
         ];
 
@@ -105,6 +97,29 @@ class CustomerService
         }
 
         return $customerData;
+    }
+
+    /**
+    * Get customer document by order
+    * @param WC_Order $wcOrder
+    * @return string
+    */
+    public function getCustomerDocumentByOrder($wcOrder)
+    {
+        $document = $wcOrder->get_meta('_billing_cpf');
+        if (empty($document)) {
+            $document = $wcOrder->get_meta('_billing_cnpj');
+        }
+        if (empty($document)) {
+            $document = $wcOrder->get_meta('_billing_document');
+        }
+        if (empty($document)) {
+            $document = $wcOrder->get_meta('_wc_billing/address/document');
+        }
+        if (empty($document)) {
+            throw new \InvalidArgumentException(__("Please, enter a valid document number.", 'woo-pagarme-payments'), 1);
+        }
+        return $document;
     }
 
     public function saveOnPlatform($customer)

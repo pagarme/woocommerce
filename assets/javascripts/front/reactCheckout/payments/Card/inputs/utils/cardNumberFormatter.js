@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 export function formatCardNumber(number) {
-    return number.replace(/\s|•/g, "");
+    return number.replace(/\D/g, "");
 }

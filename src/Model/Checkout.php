@@ -148,11 +148,12 @@ class Checkout
             if ($response) {
                 do_action("on_pagarme_response",  $response);
                 WC()->cart->empty_cart();
-                $order->update_meta('transaction_id', $response->getPagarmeId()->getValue());
+                $order->getWcOrder()->set_transaction_id($response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_id', $response->getPagarmeId()->getValue());
                 $order->update_meta('pagarme_status', $response->getStatus()->getStatus());
                 $this->addInstallmentsOnMetaData($order, $fields);
                 $order->update_meta('response_data', json_encode($response));
+                $order->getWcOrder()->save();
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
                 return true;
             }
@@ -164,7 +165,7 @@ class Checkout
     }
     private function formatFieldsWhenIsSubscription(&$fields, $wc_order)
     {
-        if(Subscription::hasSubscriptionProductInCart() == false){
+        if(!Subscription::hasSubscriptionProductInCart() || Subscription::getRecurrenceCycle() != 'subsequent'){
             return;
         }
         if ($fields['payment_method'] === 'credit_card') {
@@ -178,12 +179,15 @@ class Checkout
 
     private function getCardId($fields, $wc_order)
     {
-        if($fields['card_id']){
+        if (isset($fields['card_id']) && $fields['card_id']) {
             return $fields['card_id'];
         }
         $customer = new Customer($wc_order->get_customer_id());
         $cardService = new CardService();
-        $pagarmeCard = $cardService->create($fields['pagarmetoken1'], $customer->getPagarmeCustomerId());
+        $pagarmeCard = $cardService->create(
+            $fields['pagarmetoken1'],
+            $customer->getPagarmeCustomerIdByOrder($wc_order)
+        );
         return $pagarmeCard['cardId'];
     }
 
