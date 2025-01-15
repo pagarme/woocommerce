@@ -4,7 +4,7 @@ Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.5.5
 Requires PHP: 7.1
-Stable tag: 3.4.3
+Stable tag: 3.4.4
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -25,6 +25,18 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
+= 3.4.4 (15/01/2025) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.4)
+
+* **Correções:**
+  *  Corrige suporte para pagamentos de assinatura em Checkout Blocks;
+  *  Utilização das funções padrões do Woocommerce para retornar dados;
+  *  Padronização de nomenclatura de arquivo utilizando PSR-4;
+  *  Correção de tokenização de cartão quando utilizado autocomplete.
+
+* **Melhorias:**
+  *  Adicionando link para o pedido na Dashboard Pagar.me.
+
 = 3.4.3 (21/11/2024) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.3)
 
@@ -33,20 +45,6 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
   *  Problema com versões antigas e Checkout Blocks;
   *  Aceitar S/N (Não numeral) no campo de Número do endereço;
   *  Problema com transação deslogado e assinatura. 
-
-
-👻 3.4.2 (31/10/2024) 👻
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.4.2)
-
-* **Novas funcionalidades:**
-  *  Adição de identificador da bandeira.
-
-* **Melhorias:**
-  *  Bandeira de Ticket;
-  *  Mudanças em relação ao processo de renovação ao plugin de Subscriptions.
-
-* **Correções:**
-  *  Problema ao importar JS de GooglePay.
 
 
 == Upgrade Notice ==
