@@ -500,7 +500,7 @@ let pagarmeCard = {
             pagarmeCard.preventSpecialCharacter(this);
         });
 
-        jQuery(this.cardNumberTarget).on('input', function (event) {
+        jQuery(this.cardNumberTarget).on('change', function (event) {
             pagarmeCard.keyEventHandlerCard(event);
         });
 
@@ -509,7 +509,7 @@ let pagarmeCard = {
         });
     },
     renewEventListener: function () {
-        jQuery(this.cardNumberTarget).on('input', function (event) {
+        jQuery(this.cardNumberTarget).on('change', function (event) {
             pagarmeCard.keyEventHandlerCard(event);
         });
         jQuery(`${this.fieldsetCardElements} input`).on('change', function () {
