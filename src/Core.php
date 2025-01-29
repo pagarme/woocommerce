@@ -225,10 +225,16 @@ class Core
     public static function get_webhook_url($custom_url = false)
     {
         $url = !$custom_url ? Utils::get_site_url() : $custom_url;
-        if ( !$custom_url ) {
-            $parsedUrl = parse_url($url);
-            $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
-        }
+
+		// Foi alterado no passado para corrigir URLs com subdiretórios.
+	    // Recentemente tivemos quatro cases de clientes que tiveram
+	    // problemas com a URL do webhook em domínios com
+	    // subdiretórios, por isso removemos o código abaixo.
+
+//        if ( !$custom_url ) {
+//            $parsedUrl = parse_url($url);
+//            $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
+//        }
 
         return sprintf('%s/wc-api/%s/', $url, self::get_webhook_name());
     }
