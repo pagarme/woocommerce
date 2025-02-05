@@ -228,17 +228,9 @@ class Core
      *
      * @return string
      */
-    public static function get_webhook_url($custom_url = false)
+    public static function get_webhook_url()
     {
-        if (!$custom_url) {
-            return (new WooCommerce())->api_request_url(self::get_webhook_name());
-        }
-
-        return sprintf(
-            '%s/wc-api/%s/',
-            $custom_url,
-            self::get_webhook_name()
-        );
+        return (new WooCommerce())->api_request_url(self::get_webhook_name());
     }
 
     /**
@@ -254,17 +246,9 @@ class Core
      *
      * @return string
      */
-    public static function get_hub_command_url($custom_url = false)
+    public static function get_hub_command_url()
     {
-        if (!$custom_url) {
-            return (new WooCommerce())->api_request_url(self::get_hub_command_name());
-        }
-
-        return sprintf(
-            '%s/wc-api/%s/',
-            $custom_url,
-            self::get_hub_command_name()
-        );
+        return (new WooCommerce())->api_request_url(self::get_hub_command_name());
     }
 
     /**
