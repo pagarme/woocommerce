@@ -228,15 +228,15 @@ class Core
      *
      * @return string
      */
-    public static function get_webhook_url()
+    public static function getWebhookUrl()
     {
-        return (new WooCommerce())->api_request_url(self::get_webhook_name());
+        return (new WooCommerce())->api_request_url(self::getWebhookName());
     }
 
     /**
      * @return string
      */
-    public static function get_webhook_name()
+    public static function getWebhookName()
     {
         return Utils::add_prefix('-webhook');
     }
@@ -246,15 +246,15 @@ class Core
      *
      * @return string
      */
-    public static function get_hub_command_url()
+    public static function getHubCommandUrl()
     {
-        return (new WooCommerce())->api_request_url(self::get_hub_command_name());
+        return (new WooCommerce())->api_request_url(self::getHubCommandName());
     }
 
     /**
      * @return string
      */
-    public static function get_hub_command_name()
+    public static function getHubCommandName()
     {
         return Utils::add_prefix('-hubcommand');
     }
@@ -262,15 +262,15 @@ class Core
     /**
      * @return string
      */
-    public static function get_hub_url()
+    public static function getHubUrl()
     {
-        return (new WooCommerce())->api_request_url(self::get_hub_name());
+        return (new WooCommerce())->api_request_url(self::getHubName());
     }
 
     /**
      * @return string
      */
-    public static function get_hub_name()
+    public static function getHubName()
     {
         return Utils::add_prefix('-hub');
     }

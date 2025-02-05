@@ -35,7 +35,7 @@ class CoreTest extends TestCase
         $wooCommerce = Mockery::mock("overload:WooCommerce");
         $wooCommerce->shouldReceive('api_request_url')->with($webhookName)->andReturn($webhookLink);
 
-        $getWebhookUrl = Core::get_webhook_url();
+        $getWebhookUrl = Core::getWebhookUrl();
 
         $this->assertEquals($webhookLink, $getWebhookUrl);
     }
@@ -53,7 +53,7 @@ class CoreTest extends TestCase
         $wooCommerce = Mockery::mock("overload:WooCommerce");
         $wooCommerce->shouldReceive('api_request_url')->with($webhookName)->andReturn($webhookLink);
 
-        $getWebhookUrl = Core::get_webhook_url();
+        $getWebhookUrl = Core::getWebhookUrl();
 
         $this->assertEquals($webhookLink, $getWebhookUrl);
     }
