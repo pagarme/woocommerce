@@ -123,7 +123,7 @@ class Gateway
 
         $params = sprintf(
             '?redirect=%s?install_token=%s',
-            Core::get_hub_url(),
+            Core::getHubUrl(),
             $this->get_hub_install_token()
         );
 

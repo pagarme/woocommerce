@@ -18,7 +18,7 @@ class Webhooks
     public function __construct()
     {
         $this->config = new Config();
-        add_action('woocommerce_api_' . Core::get_webhook_name(), array($this, 'handle_requests'));
+        add_action('woocommerce_api_' . Core::getWebhookName(), array($this, 'handle_requests'));
     }
 
     public function handle_requests()
