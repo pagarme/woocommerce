@@ -22,7 +22,7 @@ class HubCommand
     public function __construct()
     {
         $this->settings = new Config;
-        add_action('woocommerce_api_' . Core::get_hub_command_name(), array($this, 'handle_requests'));
+        add_action('woocommerce_api_' . Core::getHubCommandName(), array($this, 'handle_requests'));
     }
 
     public function handle_requests()
