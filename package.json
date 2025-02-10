@@ -1,6 +1,6 @@
 {
   "name": "woo-pagarme-payments",
-  "version": "3.4.4",
+  "version": "3.5.0",
   "description": "Pagar.me module for Woocommerce",
   "main": "woo-pagarme-payments.php",
   "devDependencies": {
