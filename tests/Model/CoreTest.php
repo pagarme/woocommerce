@@ -2,10 +2,10 @@
 
 namespace Woocommerce\Pagarme\Tests\Model;
 
-use PHPUnit\Framework\TestCase;
-use Woocommerce\Pagarme\Core;
 use Brain;
 use Mockery;
+use PHPUnit\Framework\TestCase;
+use Woocommerce\Pagarme\Core;
 
 class CoreTest extends TestCase
 {
@@ -21,45 +21,40 @@ class CoreTest extends TestCase
         Mockery::close();
         Brain\Monkey\tearDown();
     }
-    public function testGetWebhookWithoutCustomUrlAndWithPath()
-    {
-        $domain = "https://mycustomdomain.test";
-        $webhookLink = $domain . "/wc-api/pagarme-webhook/";
-        
-        $utils = Mockery::mock("alias:Woocommerce\Pagarme\Helper\Utils");
-        $utils->shouldReceive('get_site_url')->andReturn($domain);
-        $utils->shouldReceive('add_prefix')->andReturn('pagarme-webhook');
-        
-        $getUrl = Core::get_webhook_url();
 
-        $this->assertEquals($webhookLink, $getUrl);
+    public function testGetWebhookUrlWithoutCustomUrlWithoutSubfolder()
+    {
+        $wpHomeAddress = "https://domain.test/";
+        $apiPath = "wc-api/";
+        $webhookName = "pagarme-webhook";
+        $webhookLink = $wpHomeAddress . $apiPath . $webhookName;
+
+        $utils = Mockery::mock("alias:Woocommerce\Pagarme\Helper\Utils");
+        $utils->shouldReceive('add_prefix')->with('-webhook')->andReturn($webhookName);
+
+        $wooCommerce = Mockery::mock("overload:WooCommerce");
+        $wooCommerce->shouldReceive('api_request_url')->with($webhookName)->andReturn($webhookLink);
+
+        $getWebhookUrl = Core::getWebhookUrl();
+
+        $this->assertEquals($webhookLink, $getWebhookUrl);
     }
 
-    public function testGetWebhookWithoutCustomUrlWithPath()
+    public function testGetWebhookUrlWithoutCustomUrlWithSubfolder()
     {
-        $domain = "https://mycustomdomain.test";
-        $domainWithPath = "https://mycustomdomain.test/app/customPath";
-        $webhookLink = $domain . "/wc-api/pagarme-webhook/";
-        
-        $utils = Mockery::mock("alias:Woocommerce\Pagarme\Helper\Utils");
-        $utils->shouldReceive('get_site_url')->andReturn($domainWithPath);
-        $utils->shouldReceive('add_prefix')->andReturn('pagarme-webhook');
-        
-        $getUrl = Core::get_webhook_url();
+        $wpHomeAddress = "https://domain.test/subfolder/";
+        $apiPath = "wc-api/";
+        $webhookName = "pagarme-webhook";
+        $webhookLink = $wpHomeAddress . $apiPath . $webhookName;
 
-        $this->assertEquals($webhookLink, $getUrl);
-    }
-    public function testGetWebhookWithoutCustomUrl()
-    {
-        $customDomain = "https://mycustomdomain.test";
-        $webhookLink = $customDomain . "/wc-api/pagarme-webhook/";
-        
         $utils = Mockery::mock("alias:Woocommerce\Pagarme\Helper\Utils");
-        $utils->shouldReceive('get_site_url')->andReturn($customDomain);
-        $utils->shouldReceive('add_prefix')->andReturn('pagarme-webhook');
-        
-        $getUrl = Core::get_webhook_url($customDomain);
+        $utils->shouldReceive('add_prefix')->with('-webhook')->andReturn($webhookName);
 
-        $this->assertEquals($webhookLink, $getUrl);
+        $wooCommerce = Mockery::mock("overload:WooCommerce");
+        $wooCommerce->shouldReceive('api_request_url')->with($webhookName)->andReturn($webhookLink);
+
+        $getWebhookUrl = Core::getWebhookUrl();
+
+        $this->assertEquals($webhookLink, $getWebhookUrl);
     }
 }

@@ -167,7 +167,7 @@ class Config extends DataObject
     {
         return sprintf(
             '?redirect=%s?install_token=%s',
-            Core::get_hub_url(),
+            Core::getHubUrl(),
             $this->getHubInstallToken()
         );
     }

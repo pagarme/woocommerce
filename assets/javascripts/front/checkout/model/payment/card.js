@@ -11,6 +11,7 @@ let pagarmeCard = {
     valueTarget: 'input[data-pagarme-element="order-value"]',
     installmentsTarget: '[data-pagarme-component="installments"]',
     installmentsInfoTarget: '[data-pagarme-component="installments-info"]',
+    maskTargets: 'input[class*="pagarme-card-form"][data-mask]',
     mundiCdn: 'https://cdn.mundipagg.com/assets/images/logos/brands/png/',
     tokenElement: '[data-pagarme-element="token"]',
     fieldsetCardElements: 'fieldset[data-pagarmecheckout="card"]',
@@ -475,6 +476,7 @@ let pagarmeCard = {
     addEventListener: function () {
         jQuery(document.body).on('updated_checkout', function () {
             pagarmeCard.renewEventListener();
+            jQuery.applyDataMask(pagarmeCard.maskTargets);
             let creditCardField = jQuery(pagarmeCard.cardNumberTarget);
             creditCardField.each(function () {
                 if (jQuery(this)?.val() && pagarmeCard.isVisible(jQuery(this)[0])) {
@@ -500,7 +502,7 @@ let pagarmeCard = {
             pagarmeCard.preventSpecialCharacter(this);
         });
 
-        jQuery(this.cardNumberTarget).on('input', function (event) {
+        jQuery(this.cardNumberTarget).on('change', function (event) {
             pagarmeCard.keyEventHandlerCard(event);
         });
 
@@ -509,7 +511,7 @@ let pagarmeCard = {
         });
     },
     renewEventListener: function () {
-        jQuery(this.cardNumberTarget).on('input', function (event) {
+        jQuery(this.cardNumberTarget).on('change', function (event) {
             pagarmeCard.keyEventHandlerCard(event);
         });
         jQuery(`${this.fieldsetCardElements} input`).on('change', function () {

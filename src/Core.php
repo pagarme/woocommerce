@@ -6,6 +6,7 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use WooCommerce;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Action\ActionsRunner;
 
@@ -222,48 +223,54 @@ class Core
         endif;
     }
 
-    public static function get_webhook_url($custom_url = false)
+    /**
+     * @param $custom_url
+     *
+     * @return string
+     */
+    public static function getWebhookUrl()
     {
-        $url = !$custom_url ? Utils::get_site_url() : $custom_url;
-        if ( !$custom_url ) {
-            $parsedUrl = parse_url($url);
-            $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
-        }
-
-        return sprintf('%s/wc-api/%s/', $url, self::get_webhook_name());
+        return (new WooCommerce())->api_request_url(self::getWebhookName());
     }
 
-    public static function get_webhook_name()
+    /**
+     * @return string
+     */
+    public static function getWebhookName()
     {
         return Utils::add_prefix('-webhook');
     }
 
-    public static function get_hub_command_url($custom_url = false)
+    /**
+     * @param $custom_url
+     *
+     * @return string
+     */
+    public static function getHubCommandUrl()
     {
-        $url = !$custom_url ? Utils::get_site_url() : $custom_url;
-
-        return sprintf(
-            '%s/wc-api/%s/',
-            $url,
-            self::get_hub_command_name()
-        );
+        return (new WooCommerce())->api_request_url(self::getHubCommandName());
     }
 
-    public static function get_hub_command_name()
+    /**
+     * @return string
+     */
+    public static function getHubCommandName()
     {
         return Utils::add_prefix('-hubcommand');
     }
 
-    public static function get_hub_url()
+    /**
+     * @return string
+     */
+    public static function getHubUrl()
     {
-        return sprintf(
-            '%s/wc-api/%s/',
-            Utils::get_site_url(),
-            self::get_hub_name()
-        );
+        return (new WooCommerce())->api_request_url(self::getHubName());
     }
 
-    public static function get_hub_name()
+    /**
+     * @return string
+     */
+    public static function getHubName()
     {
         return Utils::add_prefix('-hub');
     }
