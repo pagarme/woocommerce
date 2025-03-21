@@ -36,23 +36,38 @@ let pagarmeCard = {
         }
         return !!elem.has(this.fieldsetCardElements).length;
     },
+    getSelectedPaymentMethod: function () {
+        return jQuery('form .payment_methods input[name="payment_method"]:checked');
+    },
     getCheckoutPaymentElement: function () {
-        const value = jQuery('form .payment_methods input[name="payment_method"]:checked').val();
+        const value = pagarmeCard.getSelectedPaymentMethod().val();
         return jQuery('.wc_payment_method.payment_method_' + value);
     },
     isPagarmePayment: function () {
-        let paymentSelected = jQuery('form .payment_methods input[name="payment_method"]:checked');
-        if(paymentSelected.length <= 0) {
+        const selectedPayment = pagarmeCard.getSelectedPaymentMethod();
+        if(selectedPayment.length <= 0) {
             return false;
         }
-        paymentSelected = paymentSelected.val();
-        if(!paymentSelected) {
+        const selectedPaymentVal = selectedPayment.val();
+        if(!selectedPaymentVal) {
             return false;
         }
-        if(paymentSelected.indexOf('pagarme') == '-1') {
+        if(selectedPaymentVal.indexOf('pagarme') === -1) {
             return false;
         }
-        return paymentSelected.indexOf('pagarme');
+        return selectedPaymentVal.indexOf('pagarme');
+    },
+    isPagarmeCard: function () {
+        if (!pagarmeCard.isPagarmePayment()) {
+            return false;
+        }
+
+        const selectedIsPagarmeCard = pagarmeCard.getSelectedPaymentMethod().val().indexOf('card');
+        if(selectedIsPagarmeCard === -1) {
+            return false;
+        }
+
+        return selectedIsPagarmeCard;
     },
     preventSpecialCharacter: function (element) {
         let selectionStart = element.selectionStart;
@@ -486,9 +501,17 @@ let pagarmeCard = {
         });
 
         jQuery(document).ready(function () {
-            jQuery('form.checkout').on('checkout_place_order', function (event) {
-                return pagarmeCard.canExecute(event);
-            });
+            jQuery('form.checkout')
+                .on('checkout_place_order', function (event) {
+                    return pagarmeCard.canExecute(event);
+                })
+                .on( 'click', '#place_order', function(event){
+                    if (pagarmeCard.isPagarmeCard()) {
+                        event.preventDefault();
+                        jQuery(pagarmeCard.cardNumberTarget).trigger('change');
+                        jQuery('form.checkout').submit();
+                    }
+                });
             jQuery('form#order_review').on('submit', function (event) {
                 return pagarmeCard.canExecute(event);
             });
