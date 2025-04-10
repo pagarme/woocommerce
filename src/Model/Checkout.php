@@ -266,7 +266,7 @@ class Checkout
         if (!array_key_exists('authentication', $fields)) {
             return;
         }
-        $order->pagarme_tds_authentication = json_encode($fields["authentication"]);
+        $order->update_meta('pagarme_tds_authentication', json_encode($fields['authentication']));
     }
 
     private function extractMulticustomers(array &$fields, PaymentRequestInterface $paymentRequest)
