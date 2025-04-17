@@ -488,6 +488,14 @@ let pagarmeCard = {
         jQuery(this.voucherDocumentHolder).empty();
         jQuery(this.voucherDocumentHolder).val(cpf);
     },
+    fillCardBrandIfEmpty: function () {
+        if (pagarmeCard.isPagarmeCard()) {
+            const brandInputVal = pagarmeCard.getSelectedPaymentMethod().parent().find(pagarmeCard.brandTarget).val();
+            if (brandInputVal === '') {
+                jQuery(pagarmeCard.cardNumberTarget).trigger('change');
+            }
+        }
+    },
     addEventListener: function () {
         jQuery(document.body).on('updated_checkout', function () {
             pagarmeCard.renewEventListener();
@@ -501,18 +509,12 @@ let pagarmeCard = {
         });
 
         jQuery(document).ready(function () {
-            jQuery('form.checkout')
-                .on('checkout_place_order', function (event) {
-                    return pagarmeCard.canExecute(event);
-                })
-                .on( 'click', '#place_order', function(event){
-                    if (pagarmeCard.isPagarmeCard()) {
-                        event.preventDefault();
-                        jQuery(pagarmeCard.cardNumberTarget).trigger('change');
-                        jQuery('form.checkout').submit();
-                    }
-                });
+            jQuery('form.checkout').on('checkout_place_order', function (event) {
+                pagarmeCard.fillCardBrandIfEmpty();
+                return pagarmeCard.canExecute(event);
+            });
             jQuery('form#order_review').on('submit', function (event) {
+                pagarmeCard.fillCardBrandIfEmpty();
                 return pagarmeCard.canExecute(event);
             });
         });
