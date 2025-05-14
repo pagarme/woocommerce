@@ -2,6 +2,7 @@
 
 namespace Woocommerce\Pagarme\Tests\Concrete;
 
+use Pagarme\Core\Kernel\Services\InstallmentService;
 use PHPUnit\Framework\TestCase;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
 use Mockery;
@@ -64,7 +65,7 @@ class WoocommerceCoreSetupTest extends TestCase
         $configMock->shouldReceive('getIsInstallmentsDefaultConfig')->andReturn(0);
         $configMock->shouldReceive('getCcFlags')->andReturn(['visa', 'mastercard']);
         $configMock->shouldReceive('getCcInstallmentsByFlag')->andReturn([]);
-        $configMock->shouldReceive('getCcInstallmentsMaximum')->andReturn(12);
+        $configMock->shouldReceive('getCcInstallmentsMaximum')->andReturn(InstallmentService::MAX_PSP_INSTALLMENTS_NUMBER);
         $configMock->shouldReceive('getCcInstallmentsInterest')->andReturn(0);
         $configMock->shouldReceive('getCcInstallmentsInterestIncrease')->andReturn(0);
         $configMock->shouldReceive('getCcInstallmentsWithoutInterest')->andReturn(0);

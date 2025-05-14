@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
+use Pagarme\Core\Kernel\Services\InstallmentService;
 use WC_Admin_Settings;
 use Woocommerce\Pagarme\Controller\Gateways\Exceptions\InvalidOptionException;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
@@ -332,7 +333,9 @@ class CreditCard extends AbstractGateway
         $installments['maximum'] = [
             'title' => __('Max number of installments', 'woo-pagarme-payments'),
             'type' => 'select',
-            'default' => $this->getOldConfiguration('cc_installments_maximum') ?? 12,
+            'default' =>
+                $this->getOldConfiguration('cc_installments_maximum')
+                ?? InstallmentService::MAX_PSP_INSTALLMENTS_NUMBER,
             'options' => $this->model->getInstallmentOptions($this->isGatewayType()),
             'custom_attributes' => array(
                 'data-field' => 'installments-maximum',
@@ -767,7 +770,7 @@ class CreditCard extends AbstractGateway
 
         return $cardList;
     }
-    
+
     protected function convertCcInstallmentsInterest($value)
     {
         return $value['interest_rate'] * ($value['free_installments'] + 1);

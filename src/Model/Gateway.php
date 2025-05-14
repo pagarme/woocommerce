@@ -8,6 +8,7 @@ if (!function_exists('add_action')) {
 
 use Exception;
 use Pagarme\Core\Hub\Services\HubIntegrationService;
+use Pagarme\Core\Kernel\Services\InstallmentService;
 use ReflectionClass;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 use Woocommerce\Pagarme\Core;
@@ -87,7 +88,9 @@ class Gateway
      */
     public function getInstallmentsMaximumQuantity($isGatewayType)
     {
-        return $isGatewayType ? 24 : 12;
+        return $isGatewayType
+            ? InstallmentService::MAX_GATEWAY_INSTALLMENTS_NUMBER
+            : InstallmentService::MAX_PSP_INSTALLMENTS_NUMBER;
     }
 
     public function getSoftDescriptorMaxLength($isGatewayType)
