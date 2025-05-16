@@ -2,19 +2,17 @@
 
 namespace Pagarme\Core\Recurrence\Services;
 
+use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup;
 use Pagarme\Core\Kernel\Interfaces\PlatformProductInterface;
+use Pagarme\Core\Kernel\Services\InstallmentService;
 use Pagarme\Core\Recurrence\Aggregates\Plan;
-use Pagarme\Core\Recurrence\Aggregates\ProductSubscription;
 use Pagarme\Core\Recurrence\Aggregates\SubProduct;
 use Pagarme\Core\Recurrence\Repositories\SubscriptionItemRepository;
 use Pagarme\Core\Recurrence\ValueObjects\IntervalValueObject;
 use Pagarme\Core\Recurrence\ValueObjects\SubscriptionItemId;
-use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup;
 
 class RecurrenceService
 {
-    const MAX_INSTALLMENTS_NUMBER = 12;
-
     //@todo Change the function name because we've change the name of subscription product to recurrence product
 
     public function getRecurrenceProductByProductId($productId)
@@ -37,7 +35,7 @@ class RecurrenceService
             return $interval->getIntervalCount();
         }
 
-        return self::MAX_INSTALLMENTS_NUMBER;
+        return InstallmentService::MAX_PSP_INSTALLMENTS_NUMBER;
     }
 
     protected function getProductSubscription($productId)

@@ -11,6 +11,9 @@ use Pagarme\Core\Kernel\ValueObjects\Installment;
 
 final class InstallmentService
 {
+    const MAX_PSP_INSTALLMENTS_NUMBER = 18;
+    const MAX_GATEWAY_INSTALLMENTS_NUMBER = 24;
+
     /**
      *
      * @param  Order|null     $order

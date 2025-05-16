@@ -4,6 +4,7 @@ namespace Pagarme\Core\Test\Mock\Concrete;
 
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup;
 use Pagarme\Core\Kernel\Factories\ConfigurationFactory;
+use Pagarme\Core\Kernel\Services\InstallmentService;
 use PDO;
 use PDOException;
 
@@ -127,14 +128,14 @@ class PlatformCoreSetup extends AbstractModuleCoreSetup
             'testMode' => true,
             'hubInstallId' => NULL,
             'addressAttributes' => [
-                    'street' => 'street_1',
-                    'number' => 'street_2',
-                    'neighborhood' => 'street_4',
-                    'complement' => 'street_3',
+                'street' => 'street_1',
+                'number' => 'street_2',
+                'neighborhood' => 'street_4',
+                'complement' => 'street_3',
             ],
             'keys' => [
-                    'KEY_SECRET' => 'sk_test_0004RBxs0RhQP4qZ',
-                    'KEY_PUBLIC' => 'pk_test_0006gbVi8iEgb4oB',
+                'KEY_SECRET' => 'sk_test_0004RBxs0RhQP4qZ',
+                'KEY_PUBLIC' => 'pk_test_0006gbVi8iEgb4oB',
             ],
             'cardOperation' => 'auth_and_capture',
             'installmentsEnabled' => true,
@@ -149,7 +150,7 @@ class PlatformCoreSetup extends AbstractModuleCoreSetup
                     'brand' => 'noBrand',
                     'incrementalInterest' => 1,
                     'initialInterest' => 10,
-                    'maxInstallment' => 12,
+                    'maxInstallment' => InstallmentService::MAX_PSP_INSTALLMENTS_NUMBER,
                     'maxInstallmentWithoutInterest' => 6,
                     'minValue' => 1000,
                 ],
@@ -158,7 +159,7 @@ class PlatformCoreSetup extends AbstractModuleCoreSetup
                     'brand' => 'Visa',
                     'incrementalInterest' => 1,
                     'initialInterest' => 10,
-                    'maxInstallment' => 12,
+                    'maxInstallment' => InstallmentService::MAX_PSP_INSTALLMENTS_NUMBER,
                     'maxInstallmentWithoutInterest' => 6,
                     'minValue' => 1000,
                 ],
@@ -167,7 +168,7 @@ class PlatformCoreSetup extends AbstractModuleCoreSetup
                     'brand' => 'Mastercard',
                     'incrementalInterest' => 1,
                     'initialInterest' => 10,
-                    'maxInstallment' => 12,
+                    'maxInstallment' => InstallmentService::MAX_PSP_INSTALLMENTS_NUMBER,
                     'maxInstallmentWithoutInterest' => 6,
                     'minValue' => 1000,
                 ]

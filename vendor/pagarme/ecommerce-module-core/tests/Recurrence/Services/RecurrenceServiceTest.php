@@ -2,6 +2,7 @@
 
 namespace Pagarme\Core\Test\Recurrence\Services;
 
+use Pagarme\Core\Kernel\Services\InstallmentService;
 use Pagarme\Core\Kernel\Services\LogService;
 use Pagarme\Core\Recurrence\Factories\ProductSubscriptionFactory;
 use Pagarme\Core\Recurrence\Repositories\ProductSubscriptionRepository;
@@ -22,8 +23,8 @@ class RecurrenceServiceTest extends AbstractSetupTest
         $logMock->shouldReceive('info')->andReturnTrue();
 
         $this->service = \Mockery::mock(RecurrenceService::class)
-            ->makePartial()
-            ->shouldAllowMockingProtectedMethods();
+                                 ->makePartial()
+                                 ->shouldAllowMockingProtectedMethods();
         $this->service->shouldReceive('getLogService')->andReturn($logMock);
 
         parent::setUp();
@@ -56,7 +57,7 @@ class RecurrenceServiceTest extends AbstractSetupTest
 
         $maxInstallment = $this->service->getMaxInstallmentByRecurrenceInterval($interval);
 
-        $this->assertEquals(12, $maxInstallment);
+        $this->assertEquals(InstallmentService::MAX_PSP_INSTALLMENTS_NUMBER, $maxInstallment);
     }
 
     private function insertProductSubscription()
