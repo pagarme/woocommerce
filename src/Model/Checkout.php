@@ -106,7 +106,7 @@ class Checkout
     /**
      * @param WC_Order|null $wc_order
      * @param string $type
-     * @return bool|void
+     * @return bool|array
      * @throws \Exception
      */
     public function process(WC_Order $wc_order = null, string $type = CheckoutTypes::TRANSPARENT_VALUE)
@@ -145,7 +145,7 @@ class Checkout
             $order->update_meta('payment_method', $fields['payment_method']);
             $order->update_meta("attempts", $attempts);
             $this->addAuthenticationOnMetaData($order, $fields);
-            if ($response) {
+            if ($response instanceof \Pagarme\Core\Kernel\Aggregates\Order) {
                 do_action("on_pagarme_response",  $response);
                 WC()->cart->empty_cart();
                 $order->getWcOrder()->set_transaction_id($response->getPagarmeId()->getValue());
@@ -160,7 +160,7 @@ class Checkout
             $order->update_meta('pagarme_status', 'failed');
             $order->update_by_pagarme_status('failed');
             $order->getWcOrder()->save();
-            return false;
+            return $response;
         }
     }
     private function formatFieldsWhenIsSubscription(&$fields, $wc_order)

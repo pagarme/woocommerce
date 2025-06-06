@@ -388,7 +388,21 @@ final class Transaction extends AbstractEntity
         $this->postData = $postData;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getGatewayResponse()
+    {
+        return $this->getPostData()->gateway_response;
+    }
 
+    /**
+     * @return array
+     */
+    public function getGatewayErrorMessages()
+    {
+        return $this->getGatewayResponse()->errors ?? [];
+    }
 
     /**
      * Specify data which should be serialized to JSON

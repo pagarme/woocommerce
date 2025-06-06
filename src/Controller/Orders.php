@@ -38,6 +38,14 @@ class Orders
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
     }
 
+    /**
+     * Create a Pagar.me order from a WooCommerce order.
+     *
+     * @param WC_Order $wc_order
+     * @param string $payment_method
+     * @param array $form_fields
+     * @return array|Exception
+     */
     public function create_order(WC_Order $wc_order, $payment_method, $form_fields)
     {
         try {
@@ -69,7 +77,7 @@ class Orders
                 $this->settings->log()->add('woo-pagarme', 'CREATE ORDER ERROR: ' . $e->__toString());
             }
             error_log($e->__toString());
-            return null;
+            return $e;
         }
     }
 
