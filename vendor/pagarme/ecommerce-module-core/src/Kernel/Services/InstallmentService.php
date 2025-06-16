@@ -11,7 +11,7 @@ use Pagarme\Core\Kernel\ValueObjects\Installment;
 
 final class InstallmentService
 {
-    const MAX_PSP_INSTALLMENTS_NUMBER = 19;
+    const MAX_PSP_INSTALLMENTS_NUMBER = 18;
     const MAX_GATEWAY_INSTALLMENTS_NUMBER = 24;
     const INSTALLMENT_OVER_ISSUER_LIMIT_ERROR_MESSAGE_PTBR =
         'Banco emissor não aceita o parcelamento selecionado. Por favor, selecione uma opção de parcelamento menor.';
