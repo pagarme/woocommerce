@@ -3,6 +3,7 @@
 namespace Pagarme\Core\Kernel\Services;
 
 use Pagarme\Core\Kernel\Abstractions\AbstractDataService;
+use Pagarme\Core\Kernel\Aggregates\Charge;
 use Pagarme\Core\Kernel\Aggregates\Order;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;

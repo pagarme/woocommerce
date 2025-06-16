@@ -3,6 +3,7 @@
 namespace Pagarme\Core\Kernel\I18N;
 
 use Pagarme\Core\Kernel\Abstractions\AbstractI18NTable;
+use Pagarme\Core\Kernel\Services\InstallmentService;
 
 class PTBR extends AbstractI18NTable
 {
@@ -55,7 +56,7 @@ class PTBR extends AbstractI18NTable
             "document" => "CPF/CNPJ",
             "Can't create order." => "Não foi possível criar o pedido.",
             "Can't create payment. Please review the information and try again." => "Não foi possível realizar o pagamento. Por favor revise os dados e tente novamente.",
-            'Issuing bank does not accept the selected installment. Please select a smaller installment option.' => 'Banco emissor não aceita o parcelamento selecionado. Por favor, selecione uma opção de parcelamento menor.',
+            'Issuing bank does not accept the selected installment. Please select a smaller installment option.' => InstallmentService::INSTALLMENT_OVER_ISSUER_LIMIT_ERROR_MESSAGE_PTBR,
             'Invalid address configuration. Please fill the address configuration on admin panel.' => 'Configurações de endereço inválidas. Preencha as configurações de endereço no painel de administração',
             'week' => "semana",
             'weeks' => "semanas",

@@ -11,6 +11,7 @@ declare(strict_types = 1);
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Exception;
+use Pagarme\Core\Kernel\Services\InstallmentService;
 use WC_Admin_Settings;
 use WC_Payment_Gateway;
 use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
@@ -201,7 +202,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
         $process = $this->checkout->process($wooOrder);
 
-        if ($process && !isset($process['errors'])) {
+        if ($process && $process->getCode() !== 400 ) {
             return [
                 'result'   => 'success',
                 'redirect' => $this->get_return_url($wooOrder)
@@ -415,19 +416,23 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     }
 
     /**
-     * @return string
+     * @param $response
+     *
+     * @return string|null
      */
     public function getErrorMessage($response)
     {
+        if ($response->getMessage() && InstallmentService::isInstallmentErrorMessage($response->getMessage())) {
+            return $response->getMessage();
+        }
+
         $errorMessage = 'Error processing payment. Please try again later.';
-        if($this->method == CreditCard::PAYMENT_CODE) {
+        if($this->method === CreditCard::PAYMENT_CODE) {
             $errorMessage =
                 '<p>You may have filled in one or more details incorrectly.</p>Try to fill in the details exactly as they '
                 . 'appear on your card or bank app to complete the payment.';
         }
-        if ($response['errors'] ) {
-            $errorMessage = $response['errors'];
-        }
+
         return __($errorMessage, 'woo-pagarme-payments');
     }
 
