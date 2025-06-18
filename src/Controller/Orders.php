@@ -6,6 +6,8 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
+use Pagarme\Core\Kernel\Aggregates\Order as CoreOrder;
 use Woocommerce\Pagarme\Block\Adminhtml\Sales\Order as BlockOrder;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Order;
@@ -44,7 +46,8 @@ class Orders
      * @param WC_Order $wc_order
      * @param string $payment_method
      * @param array $form_fields
-     * @return array|Exception
+     *
+     * @return Exception|AbstractEntity|CoreOrder
      */
     public function create_order(WC_Order $wc_order, $payment_method, $form_fields)
     {
@@ -69,9 +72,8 @@ class Orders
             $orderDecorator->setPaymentMethod($paymentMethodDecorator->getPaymentMethod());
             $orderDecorator->setAttempts($wc_order->get_meta('_pagarme_attempts'));
             $orderService = new OrderService();
-            $response = $orderService->createOrderAtPagarme($orderDecorator);
 
-            return array_shift($response);
+            return $orderService->createOrderAtPagarme($orderDecorator);
         } catch (Exception $e) {
             if (!empty($this->settings)) {
                 $this->settings->log()->add('woo-pagarme', 'CREATE ORDER ERROR: ' . $e->__toString());

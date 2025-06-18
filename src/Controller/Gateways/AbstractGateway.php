@@ -11,6 +11,7 @@ declare(strict_types = 1);
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Exception;
+use Pagarme\Core\Kernel\Aggregates\Order as CoreOrder;
 use Pagarme\Core\Kernel\Services\InstallmentService;
 use WC_Admin_Settings;
 use WC_Payment_Gateway;
@@ -202,7 +203,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
 
         $process = $this->checkout->process($wooOrder);
 
-        if ($process && $process->getCode() !== 400 ) {
+        if ($process instanceof CoreOrder) {
             return [
                 'result'   => 'success',
                 'redirect' => $this->get_return_url($wooOrder)

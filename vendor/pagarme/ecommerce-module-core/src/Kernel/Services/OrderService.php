@@ -3,6 +3,7 @@
 namespace Pagarme\Core\Kernel\Services;
 
 use Pagarme\Core\Kernel\Abstractions\AbstractDataService;
+use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
 use Pagarme\Core\Kernel\Aggregates\Charge;
 use Pagarme\Core\Kernel\Aggregates\Order;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
@@ -238,8 +239,9 @@ final class OrderService
 
     /**
      * @param PlatformOrderInterface $platformOrder
-     * @return array
-     * @throws \Exception
+     *
+     * @return Order|AbstractEntity
+     * @throws Exception
      */
     public function createOrderAtPagarme(PlatformOrderInterface $platformOrder)
     {
@@ -280,7 +282,7 @@ final class OrderService
                 $this->persistListChargeFailed($response);
 
                 $message = $this->handleResponseMessage($response);
-                throw new \Exception($message, 400);
+                throw new Exception($message, 400);
             }
 
             if (strpos(MPSetup::getPlatformVersion(), 'Wordpress') === false) {
@@ -311,11 +313,11 @@ final class OrderService
                     $paymentOrder
                 );
                 $message = $this->handleResponseMessage($response);
-                throw new \Exception($message, 400);
+                throw new Exception($message, 400);
             }
 
-            return [$order];
-        } catch (\Exception $e) {
+            return $order;
+        } catch (Exception $e) {
             $this->logService->orderInfo(
                 $platformOrder->getCode(),
                 $e->getMessage(),
@@ -326,7 +328,7 @@ final class OrderService
             $paymentOrder->setCode($platformOrder->getcode());
             $frontMessage = $exceptionHandler->handle($e, $paymentOrder);
 
-            throw new \Exception($frontMessage, 400);
+            throw new Exception($frontMessage, 400);
         }
     }
 
