@@ -11,6 +11,8 @@ declare(strict_types = 1);
 namespace Woocommerce\Pagarme\Controller\Gateways;
 
 use Exception;
+use Pagarme\Core\Kernel\Aggregates\Order as CoreOrder;
+use Pagarme\Core\Kernel\Services\InstallmentService;
 use WC_Admin_Settings;
 use WC_Payment_Gateway;
 use Woocommerce\Pagarme\Block\Checkout\Gateway as GatewayBlock;
@@ -200,18 +202,14 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         }
 
         $process = $this->checkout->process($wooOrder);
-        if ($process) {
+
+        if ($process instanceof CoreOrder) {
             return [
                 'result'   => 'success',
                 'redirect' => $this->get_return_url($wooOrder)
             ];
         }
-
-        $errorMessage = $this->method == CreditCard::PAYMENT_CODE ? __(
-            '<p>You may have filled in one or more details incorrectly.</p>Try to fill in the details exactly as they '
-            . 'appear on your card or bank app to complete the payment.',
-            'woo-pagarme-payments'
-        ) : __('Error processing payment. Please try again later.', 'woo-pagarme-payments');
+        $errorMessage = $this->getErrorMessage($process);
 
         if (Utils::isCheckoutBlock()) {
             wp_die($errorMessage, 'error');
@@ -416,6 +414,27 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     protected function getOldTitleName()
     {
         return null;
+    }
+
+    /**
+     * @param $response
+     *
+     * @return string|null
+     */
+    public function getErrorMessage($response)
+    {
+        if ($response->getMessage() && InstallmentService::isInstallmentErrorMessage($response->getMessage())) {
+            return $response->getMessage();
+        }
+
+        $errorMessage = 'Error processing payment. Please try again later.';
+        if($this->method === CreditCard::PAYMENT_CODE) {
+            $errorMessage =
+                '<p>You may have filled in one or more details incorrectly.</p>Try to fill in the details exactly as they '
+                . 'appear on your card or bank app to complete the payment.';
+        }
+
+        return __($errorMessage, 'woo-pagarme-payments');
     }
 
     /**

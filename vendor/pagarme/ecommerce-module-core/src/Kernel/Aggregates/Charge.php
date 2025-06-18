@@ -454,6 +454,15 @@ final class Charge extends AbstractEntity implements ChargeInterface
     }
 
     /**
+     * @return array
+     */
+    public function getGatewayErrorMessages()
+    {
+        $lastTransaction = $this->getLastTransaction();
+        return $lastTransaction->getGatewayErrorMessages();
+    }
+
+    /**
      * Specify data which should be serialized to JSON
      *
      * @link   https://php.net/manual/en/jsonserializable.jsonserialize.php
