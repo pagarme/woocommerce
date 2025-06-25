@@ -13,6 +13,9 @@ if (!defined('ABSPATH')) {
     exit(0);
 }
 
+use Exception;
+use Pagarme\Core\Kernel\Aggregates\Order as CoreOrder;
+use WC_Data_Exception;
 use WC_Order;
 use Woocommerce\Pagarme\Controller\Orders;
 use Woocommerce\Pagarme\Helper\Utils;
@@ -106,8 +109,9 @@ class Checkout
     /**
      * @param WC_Order|null $wc_order
      * @param string $type
-     * @return bool|void
-     * @throws \Exception
+     *
+     * @return array|Exception|CoreOrder|void
+     * @throws WC_Data_Exception
      */
     public function process(WC_Order $wc_order = null, string $type = CheckoutTypes::TRANSPARENT_VALUE)
     {
@@ -145,7 +149,7 @@ class Checkout
             $order->update_meta('payment_method', $fields['payment_method']);
             $order->update_meta("attempts", $attempts);
             $this->addAuthenticationOnMetaData($order, $fields);
-            if ($response) {
+            if ($response instanceof CoreOrder) {
                 do_action("on_pagarme_response",  $response);
                 WC()->cart->empty_cart();
                 $order->getWcOrder()->set_transaction_id($response->getPagarmeId()->getValue());
@@ -155,12 +159,12 @@ class Checkout
                 $order->update_meta('response_data', json_encode($response));
                 $order->getWcOrder()->save();
                 $order->update_by_pagarme_status($response->getStatus()->getStatus());
-                return true;
+                return $response;
             }
             $order->update_meta('pagarme_status', 'failed');
             $order->update_by_pagarme_status('failed');
             $order->getWcOrder()->save();
-            return false;
+            return $response;
         }
     }
     private function formatFieldsWhenIsSubscription(&$fields, $wc_order)

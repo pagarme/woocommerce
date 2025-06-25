@@ -11,6 +11,11 @@ use Pagarme\Core\Kernel\ValueObjects\Installment;
 
 final class InstallmentService
 {
+    const MAX_PSP_INSTALLMENTS_NUMBER = 18;
+    const MAX_GATEWAY_INSTALLMENTS_NUMBER = 24;
+    const INSTALLMENT_OVER_ISSUER_LIMIT_ERROR_MESSAGE_PTBR =
+        'Banco emissor não aceita o parcelamento selecionado. Por favor, selecione uma opção de parcelamento menor.';
+
     /**
      *
      * @param  Order|null     $order
@@ -102,6 +107,16 @@ final class InstallmentService
             return MPSetup::getModuleConfiguration()->isInstallmentsDefaultConfig();
         }
         return false;
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return bool
+     */
+    public static function isInstallmentErrorMessage($message)
+    {
+        return strpos($message, self::INSTALLMENT_OVER_ISSUER_LIMIT_ERROR_MESSAGE_PTBR) >= 0;
     }
 
     public function getLabelFor(Installment $installment)

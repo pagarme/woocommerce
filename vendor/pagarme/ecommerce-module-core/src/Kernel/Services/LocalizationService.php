@@ -32,7 +32,7 @@ final class LocalizationService
         $locale = AbstractModuleCoreSetup::getDashboardLanguage();
         /**
          *
- * @var AbstractI18NTable $i18nTable 
+ * @var AbstractI18NTable $i18nTable
 */
         $i18nTable = $this->getI18NTableOrDefaultFor($locale);
 
@@ -50,7 +50,7 @@ final class LocalizationService
 
     private function getI18NTableOrDefaultFor($locale)
     {
-        $langClass = str_replace('_', '', $locale ?? '');
+        $langClass = str_replace(['_', '-'], '', $locale ?? '');
         $langClass = strtoupper($langClass);
         $langClass = "Pagarme\\Core\\Kernel\\I18N\\$langClass";
 
