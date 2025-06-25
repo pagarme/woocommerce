@@ -1,15 +1,15 @@
 <?php
 /*
  * Plugin Name: Pagar.me for WooCommerce
- * Version:     3.5.1
+ * Version:     3.6.0
  * Author:      Pagar.me
  * Author URI:  https://pagar.me
  * License:     GPL2
  * Description: Enable Pagar.me Gateway for WooCommerce
  * Requires at least: 4.1
- * Tested up to: 6.6.1
+ * Tested up to: 6.8.1
  * WC requires at least: 3.9.0
- * WC tested up to: 9.1.4
+ * WC tested up to: 9.9.5
  * Domain Path: /languages
  * Requires Plugins: woocommerce
  * Text Domain: woo-pagarme-payments
