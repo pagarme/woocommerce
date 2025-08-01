@@ -9,7 +9,7 @@ use stdClass;
 class WebhookValidatorService
 {
     const JWKS_URL = 'https://hubapi.pagar.me/.well-known/jwks.json';
-    const JWKS_CACHE_KEY = 'pagarme-webhook-jwks';
+    const JWKS_CACHE_KEY = 'pagarme-webhook-jwks-2025-08-01-15-12';
     const JWKS_CACHE_TTL = 31536000; // 1 year in seconds
     const DEFAULT_ALGORITHM = 'RS256';
     const DEFAULT_KTY_TYPE = 'RSA';
@@ -25,15 +25,11 @@ class WebhookValidatorService
      */
     public static function validateSignature(string $payloadJson, string $signatureHeader): bool
     {
-        $logService = new LogService(
-            'Webhook',
-            true
-        );
+        $logService = new LogService('Webhook', true);
 
         $headerParts = self::parseSignatureHeader($signatureHeader);
         if (!isset($headerParts['alg'], $headerParts['kid'], $headerParts['signature'])) {
-            $e = new Exception("Invalid signature header: Missing alg, kid, or signature.");
-            $logService->exception($e);
+            $logService->exception(new Exception("Invalid signature header: Missing alg, kid, or signature."));
             return false;
         }
 
@@ -42,8 +38,9 @@ class WebhookValidatorService
         $receivedSignatureB64 = $headerParts['signature'];
 
         if ($alg !== self::DEFAULT_ALGORITHM) {
-            $e = new Exception("Unsupported algorithm: {$alg}. Expected " . self::DEFAULT_ALGORITHM . ".");
-            $logService->exception($e);
+            $logService->exception(
+                new Exception("Unsupported algorithm: {$alg}. Expected " . self::DEFAULT_ALGORITHM . ".")
+            );
             return false;
         }
 
@@ -67,13 +64,9 @@ class WebhookValidatorService
             }
         }
 
-        $jwksUrl = self::JWKS_URL;
-        $jwksData = self::fetchAndParseJwks($jwksUrl);
-
+        $jwksData = self::fetchAndParseJwks();
         if ($jwksData === null) {
-            $e = new Exception("Failed to fetch or parse JWKS from {$jwksUrl}.");
-            $logService->exception($e);
-
+            $logService->exception(new Exception("Failed to fetch or parse JWKS from ". self::JWKS_URL));
             return false;
         }
 
@@ -134,19 +127,33 @@ class WebhookValidatorService
 
     /**
      * Fetches JWKS from a URL and parses it.
-     * @param string $jwksUrl
      * @return stdClass|null JWKS data as an object, or null on failure.
      */
-    private static function fetchAndParseJwks(string $jwksUrl): ?stdClass
+    private static function fetchAndParseJwks(): ?stdClass
     {
-        $jwksJson = @file_get_contents($jwksUrl);
+        $curlHandle = curl_init(self::JWKS_URL);
+        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlHandle, CURLOPT_TIMEOUT, 10);
+        curl_setopt($curlHandle, CURLOPT_FAILONERROR, true);
+
+        $jwksJson = curl_exec($curlHandle);
         if ($jwksJson === false) {
+            curl_close($curlHandle);
             return null;
         }
+
+        $httpCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
+        curl_close($curlHandle);
+
+        if ($httpCode !== 200) {
+            return null;
+        }
+
         $jwksData = json_decode($jwksJson, false);
         if ($jwksData === null || !isset($jwksData->keys) || !is_array($jwksData->keys)) {
             return null;
         }
+
         return $jwksData;
     }
 
@@ -160,12 +167,7 @@ class WebhookValidatorService
     private static function findJwkInJwks(stdClass $jwksData, string $kid, string $alg): ?stdClass
     {
         foreach ($jwksData->keys as $key) {
-            if (
-                isset($key->kid) && $key->kid === $kid
-                && isset($key->kty) && $key->kty === self::DEFAULT_KTY_TYPE
-                && isset($key->use) && $key->use === self::DEFAULT_USE
-                && (!isset($key->alg) || $key->alg === $alg)
-            ) {
+            if (self::isTheExpectedKey($key, $kid, $alg)) {
                 return $key;
             }
         }
@@ -295,23 +297,20 @@ class WebhookValidatorService
         string $payloadJson
     ): bool
     {
-        $logService = new LogService(
-            'Webhook',
-            true
-        );
+        $logService = new LogService('Webhook', true);
 
         $publicKeyJwk = self::findJwkInJwks($jwksData, $kid, $alg);
         if ($publicKeyJwk === null) {
-            $e = new Exception("Public key with KID '{$kid}' and ALG '{$alg}' not found or invalid in JWKS.");
-            $logService->exception($e);
+            $logService->exception(
+                new Exception("Public key with KID '{$kid}' and ALG '{$alg}' not found or invalid in JWKS.")
+            );
 
             return false;
         }
 
         $pemPublicKey = self::createPemFromModulusAndExponent($publicKeyJwk->n, $publicKeyJwk->e);
         if ($pemPublicKey === null) {
-            $e = new Exception("Failed to construct PEM public key from JWK components.");
-            $logService->exception($e);
+            $logService->exception(new Exception("Failed to construct PEM public key from JWK components."));
 
             return false;
         }
@@ -324,10 +323,8 @@ class WebhookValidatorService
             OPENSSL_ALGO_SHA256
         );
 
-        if ($isValid === - 1) {
-            $e = new Exception("OpenSSL verification error: " . openssl_error_string());
-            $logService->exception($e);
-
+        if ($isValid === -1) {
+            $logService->exception(new Exception("OpenSSL verification error: " . openssl_error_string()));
             return false;
         }
 
@@ -340,5 +337,20 @@ class WebhookValidatorService
     private static function getCachedJwks()
     {
         return apcu_fetch(self::JWKS_CACHE_KEY);
+    }
+
+    /**
+     * @param $key
+     * @param string $kid
+     * @param string $alg
+     *
+     * @return bool
+     */
+    private static function isTheExpectedKey($key, string $kid, string $alg): bool
+    {
+        return isset($key->kid) && $key->kid === $kid
+               && isset($key->kty) && $key->kty === self::DEFAULT_KTY_TYPE
+               && isset($key->use) && $key->use === self::DEFAULT_USE
+               && (!isset($key->alg) || $key->alg === $alg);
     }
 }
