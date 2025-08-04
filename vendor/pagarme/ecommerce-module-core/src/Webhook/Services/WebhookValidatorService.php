@@ -9,7 +9,7 @@ use stdClass;
 class WebhookValidatorService
 {
     const JWKS_URL = 'https://hubapi.pagar.me/.well-known/jwks.json';
-    const JWKS_CACHE_KEY = 'pagarme-webhook-jwks-2025-08-01-15-12';
+    const JWKS_CACHE_KEY = 'pagarme-webhook-jwks';
     const JWKS_CACHE_TTL = 31536000; // 1 year in seconds
     const DEFAULT_ALGORITHM = 'RS256';
     const DEFAULT_KTY_TYPE = 'RSA';
@@ -69,31 +69,6 @@ class WebhookValidatorService
             $logService->exception(new Exception("Failed to fetch or parse JWKS from ". self::JWKS_URL));
             return false;
         }
-
-        // TODO: Remove this hardcoded JWKS data after tests
-        $jwksData = json_decode('{
-  "additionalData": {},
-  "keys": [
-    {
-      "additionalData": {},
-      "alg": "RS256",
-      "e": "AQAB",
-      "keyId": "HxjPxUiSQG8sxf9wGan4GVQXpuuBcIt6WJv1Lznn2iQ",
-      "keyOps": [],
-      "kid": "HxjPxUiSQG8sxf9wGan4GVQXpuuBcIt6WJv1Lznn2iQ",
-      "kty": "RSA",
-      "n": "tg6njFTG-5IV1FQCDgZnxcpsNytW4g0DyI_QdBzmtfmCGaJyiZQSxaT-1fI4fDmFwaFMMwQFBh4weEscmiZB_fnMoHbn1qYDpNVw67FrOxhGrO2sqqaoAFvhHusCRBftgsjth6Gu4_4Vtbq-gAq2aqLct2ScPANUNa_uC6mLv5sKI3BlYwohd-E5CzK07l2JL4QmU4NjsLYy_dfApT_7EDWZXzb6AWFhamV5fY0GYvewj4bZVLNRsWiE6w3dmFPrmUy-t5-NgmV2pkLSHggl3gs1EagHoizo9zPS70jwjgMU7BMrRbycjbzeutn35zvoFyFHisAV8h-pcKIQup-R7Q",
-      "oth": [],
-      "use": "sig",
-      "x5c": [],
-      "keySize": 2048,
-      "cryptoProviderFactory": {
-        "cryptoProviderCache": {},
-        "signatureProviderObjectPoolCacheSize": 32
-      }
-    }
-  ]
-}');
 
         if($apcuAvailable) {
             apcu_store(self::JWKS_CACHE_KEY, $jwksData, self::JWKS_CACHE_TTL);
