@@ -28,6 +28,7 @@ class Webhooks
     public function handle_requests()
     {
         $webHookSignature = $_SERVER[self::WEBHOOK_SIGNATURE_HEADER] ?? null;
+        $this->config->log()->info("SERVER: \n\n" . json_encode($_SERVER));
         if (!$webHookSignature) {
             $this->config->log()->info('Unauthorized Webhook Received: no signature header found!');
             wp_die(
