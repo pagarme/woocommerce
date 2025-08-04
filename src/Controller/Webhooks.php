@@ -30,17 +30,29 @@ class Webhooks
         $webHookSignature = $_SERVER[self::WEBHOOK_SIGNATURE_HEADER] ?? null;
         if (!$webHookSignature) {
             $this->config->log()->info('Unauthorized Webhook Received: no signature header found!');
-            wp_die('Unauthorized Webhook Received: no signature header found!', 'Unauthorized', array('response' => 401));
+            wp_die(
+                'Unauthorized Webhook Received: no signature header found!',
+                'Unauthorized',
+                array('response' => 401)
+            );
         }
         $payload = file_get_contents('php://input');
         if (empty($payload)) {
             $this->config->log()->info('Unauthorized Webhook Received: empty payload!');
-            wp_die('Unauthorized Webhook Received: empty payload!', 'Unauthorized', array('response' => 401));
+            wp_die(
+                "Unauthorized Webhook Received: empty payload!",
+                'Unauthorized',
+                array('response' => 401)
+            );
         }
 
         if (!WebhookValidatorService::validateSignature($payload, $webHookSignature)) {
             $this->config->log()->info('Unauthorized Webhook Received: invalid signature!');
-            wp_die('Unauthorized Webhook Received: invalid signature!', 'Unauthorized Webhook Received', array('response' => 401));
+            wp_die(
+                'Unauthorized Webhook Received: invalid signature!',
+                'Unauthorized Webhook Received',
+                array('response' => 401)
+            );
         }
 
         $body = json_decode($payload);
