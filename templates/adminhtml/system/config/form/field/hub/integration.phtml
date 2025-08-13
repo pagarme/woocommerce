@@ -17,32 +17,26 @@ $confirm = 'Are you shure you wish to delete the keys? This action removes the i
            'store, but first you must access Pagar.me Hub and click on Delete.';
 $success = 'Integration keys successfully removed. Reload the page.';
 ?>
+
 <a href="<?= esc_url($this->config->getHubUrl()); ?>" class="button button-primary pagarme-hub-integration-btn">
-    <?= esc_attr($this->getButtonLabel()); ?>
+    <?= esc_attr($this->getIntegrationButtonLabel()); ?>
     <img alt="Pagarme Avatar"
             src="<?= plugins_url('/pagarme-payments-for-woocommerce/assets/images/pagarme-avatar-white.svg') ?>">
 </a>
-<?php if ($this->config->isAccAndMerchSaved()) : ?>
-    <a href="<?= $this->config->getDashUrl(); ?>" target="_blank" rel="noopener" class="button button-secondary">
-        <?= __('Access Pagar.me Dash', 'woo-pagarme-payments'); ?>
-    </a>
-<?php endif; ?>
 
-<?php if ($this->config->getHubInstallId() && !$this->config->getAccountId()) : ?>
-    <p class="pagarme-hub-desintegration">
-        <?= __(
-                "Have you removed your integration on Pagar.me Hub, but it shows active? " .
-                "Click <a id='pagarme-hub-desintegration-link'>here</a> to remove your keys.",
-                "woo-pagarme-payments"
-            ); ?>
-    </p>
+<?php if ($this->userCanDesintegrate()) : ?>
+    <a id="pagarme-hub-desintegration-link" class="button button-secondary">
+        <?= __('Delete integration', 'woo-pagarme-payments'); ?>
+        <span class="dashicons dashicons-no"></span>
+    </a>
+
     <script>
         jQuery(function ($) {
             swal.close();
             const content = {
                 title: '<?= esc_attr(__('Disintegrate?', 'woo-pagarme-payments')); ?>',
                 text: '<?= esc_attr(__($confirm, 'woo-pagarme-payments')); ?>',
-                icon: 'info',
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
@@ -67,24 +61,26 @@ $success = 'Integration keys successfully removed. Reload the page.';
                                     command: 'Uninstall',
                                     force: true
                                 }),
-                                success: function (response) {
+                                success: function () {
                                     swal.fire({
                                         title: '<?= esc_attr(
-                                                __( 'Disintegration Complete', 'woo-pagarme-payments' )
-                                            ); ?>',
+                                            __( 'Disintegration Complete', 'woo-pagarme-payments' )
+                                        ); ?>',
                                         text: '<?= esc_attr( __( $success, 'woo-pagarme-payments' ) ); ?>',
                                         icon: 'success'
-                                    });
-                                    document.location.reload(true);
+                                    })
+                                        .then(() => {
+                                            document.location.reload(true);
+                                        });
                                 },
-                                fail: function (response) {
+                                fail: function () {
                                     swal.fire({
                                         title: '<?= esc_attr(
-                                                __( 'Disintegration Error', 'woo-pagarme-payments' )
-                                            ); ?>',
+                                            __( 'Disintegration Error', 'woo-pagarme-payments' )
+                                        ); ?>',
                                         text: '<?= esc_attr(
-                                                __( 'Integration keys not removed.', 'woo-pagarme-payments' )
-                                            ); ?>',
+                                            __( 'Integration keys not removed.', 'woo-pagarme-payments' )
+                                        ); ?>',
                                         icon: 'error'
                                     });
                                 }
