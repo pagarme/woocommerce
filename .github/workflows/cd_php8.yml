@@ -1,5 +1,6 @@
 name: CD PHP8
-
+permissions:
+  contents: read
 on:
   pull_request:
     branches: [ "develop" ]

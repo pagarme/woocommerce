@@ -23,5 +23,9 @@
       "test:e2e": "npx playwright test --project e2e --config playwright.config.js",
       "test:e2e:headed": "npx playwright test --project e2e --config playwright.config.js --headed",
       "test:e2e:ci": "npx test:e2e --workers 2"
+    },
+    "overrides": {
+      "axios": "0.30.1",
+      "follow-redirects": "1.15.6"
     }
   }

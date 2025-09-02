@@ -1,4 +1,7 @@
 name: PR Steps
+permissions:
+  contents: read
+  pull-requests: write
 on:
   pull_request:
   push:

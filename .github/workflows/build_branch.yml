@@ -1,4 +1,6 @@
 name: BUILD BRANCH
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:

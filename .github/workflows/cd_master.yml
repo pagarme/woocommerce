@@ -1,5 +1,6 @@
 name: CD MASTER
-
+permissions:
+  contents: read
 on:
   pull_request:
     branches: [ "master" ]
