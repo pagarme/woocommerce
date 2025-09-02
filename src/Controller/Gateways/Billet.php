@@ -242,4 +242,9 @@ class Billet extends AbstractGateway
 
         return $value;
     }
+
+    public function hasCheckoutBlocksSupport(): bool
+    {
+        return true;
+    }
 }

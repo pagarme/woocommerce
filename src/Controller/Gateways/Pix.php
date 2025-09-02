@@ -216,4 +216,9 @@ class Pix extends AbstractGateway
         );
         return $value;
     }
+
+    public function hasCheckoutBlocksSupport(): bool
+    {
+        return true;
+    }
 }
