@@ -14,7 +14,7 @@
       "expect-playwright": "0.8.0",
       "playwright": "1.29.2",
       "@faker-js/faker": "7.6.0",
-      "wait-on": "7.0.1"
+      "wait-on": "7.2.0"
     },
     "scripts": {
       "allure:generate": "npx allure generate ./allure-results --clean -o allure-report",
