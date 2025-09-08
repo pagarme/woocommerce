@@ -80,7 +80,7 @@ class Settings
             add_action('wp_ajax_pagarme_toggle_payment_subscription', array($this, 'pagarme_toggle_payment_subscription'));
         }
         
-        if(Utils::isCheckoutBlocksActive()){
+        if (Utils::isCheckoutBlocksActive()){
             add_filter('woocommerce_payment_gateways_setting_columns', array($this, 'checkoutblocks_status_column'));
             add_action('woocommerce_payment_gateways_setting_column_checkoutblocks_status', array($this, 'populate_checkoutblocks_status_column'));
         }
@@ -437,18 +437,18 @@ class Settings
     public function populate_checkoutblocks_status_column($gateway)
     {
         echo '<td class="checkoutblocks_status">';
-        if (!method_exists($gateway, 'hasCheckoutBlocksSupport')){
+        if (!method_exists($gateway, 'hasCheckoutBlocksSupport')) {
             echo '</td>';
             return;
         }
 
         if ($gateway->hasCheckoutBlocksSupport()) {
-                $status_html = '<span class="status-enabled tips" data-tip="' . esc_attr__( 'Is active to CheckoutBlocks', 'woo-pagarme-payments') . '">' . esc_html__( 'Yes', 'woo-pagarme-payments') . '</span>';
-            } else {
-                $status_html = "<a href='https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce#pagamentos-com-checkout-blocks'>".esc_attr__( 'Learn the reason', 'woo-pagarme-payments')."</a>";
-            }
-            echo $status_html;
-            echo '</td>';
+            $status_html = '<span class="status-enabled tips" data-tip="' . esc_attr__( 'Is active to CheckoutBlocks', 'woo-pagarme-payments') . '">' . esc_html__( 'Yes', 'woo-pagarme-payments') . '</span>';
+        } else {
+            $status_html = "<a href='https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce#pagamentos-com-checkout-blocks'>" . esc_attr__( 'Learn the reason', 'woo-pagarme-payments') . "</a>";
+        }
+        echo $status_html;
+        echo '</td>';
     }
 
     /**
