@@ -383,7 +383,7 @@ class Settings
 
     public static function checkoutblocks_status_column($header)
     {
-        $columnPosition = array_search('subscription_payments_toggles', array_keys($header)) + 1;
+        $columnPosition = array_search('description', array_keys($header)) + 1;
         $newColumn = ['checkoutblocks_status' => __('Available in Checkout Blocks', 'woo-pagarme-payments')];
 
         return array_slice($header, 0, $columnPosition, true)
