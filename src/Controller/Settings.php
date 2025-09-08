@@ -437,11 +437,15 @@ class Settings
     public function populate_checkoutblocks_status_column($gateway)
     {
         echo '<td class="checkoutblocks_status">';
+        if (!method_exists($gateway, 'hasCheckoutBlocksSupport')){
+            echo '</td>';
+            return;
+        }
 
         if ($gateway->hasCheckoutBlocksSupport()) {
                 $status_html = '<span class="status-enabled tips" data-tip="' . esc_attr__( 'Is active to CheckoutBlocks', 'woo-pagarme-payments') . '">' . esc_html__( 'Yes', 'woo-pagarme-payments') . '</span>';
             } else {
-                $status_html = "<a href='#'>".esc_attr__( 'Understand why', 'woo-pagarme-payments')."</a>";
+                $status_html = "<a href='https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce#pagamentos-com-checkout-blocks'>".esc_attr__( 'Learn the reason', 'woo-pagarme-payments')."</a>";
             }
             echo $status_html;
             echo '</td>';
