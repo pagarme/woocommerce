@@ -445,7 +445,7 @@ class Settings
         if ($gateway->hasCheckoutBlocksSupport()) {
             $status_html = '<span class="status-enabled tips" data-tip="' . esc_attr__( 'Is active to CheckoutBlocks', 'woo-pagarme-payments') . '">' . esc_html__( 'Yes', 'woo-pagarme-payments') . '</span>';
         } else {
-            $status_html = "<a href='https://docs.pagar.me/docs/requisitos-de-instala%C3%A7%C3%A3o-woocommerce#pagamentos-com-checkout-blocks'>" . esc_attr__( 'Learn the reason', 'woo-pagarme-payments') . "</a>";
+            $status_html = "<a href='https://docs.pagar.me/docs/configurando-os-meios-de-pagamento-woocommerce'>" . esc_attr__( 'Learn the reason', 'woo-pagarme-payments') . "</a>";
         }
         echo $status_html;
         echo '</td>';
