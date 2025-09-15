@@ -26,6 +26,7 @@ use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Config\Source\Yesno;
 use Woocommerce\Pagarme\Model\Gateway;
 use Woocommerce\Pagarme\Model\Subscription;
+use Woocommerce\Pagarme\Helper\Utils;
 
 /**
  * Abstract Settings
@@ -77,6 +78,11 @@ class Settings
             add_filter('woocommerce_payment_gateways_setting_columns', array($this, 'subscription_payments_toggles_column'));
             add_action('woocommerce_payment_gateways_setting_column_subscription_payments_toggles', array($this, 'populate_subscription_payments_toggles_column'));
             add_action('wp_ajax_pagarme_toggle_payment_subscription', array($this, 'pagarme_toggle_payment_subscription'));
+        }
+        
+        if (Utils::isCheckoutBlocksActive()){
+            add_filter('woocommerce_payment_gateways_setting_columns', array($this, 'checkoutblocks_status_column'));
+            add_action('woocommerce_payment_gateways_setting_column_checkoutblocks_status', array($this, 'populate_checkoutblocks_status_column'));
         }
 
         $this->gateway_load();
@@ -375,6 +381,16 @@ class Settings
             + array_slice($header, $columnPosition, count($header) - $columnPosition, true);
     }
 
+    public static function checkoutblocks_status_column($header)
+    {
+        $columnPosition = array_search('description', array_keys($header)) + 1;
+        $newColumn = ['checkoutblocks_status' => __('Available in Checkout Blocks', 'woo-pagarme-payments')];
+
+        return array_slice($header, 0, $columnPosition, true)
+            + $newColumn
+            + array_slice($header, $columnPosition, null, true);
+    }
+
     /**
      * @param $gateway
      */
@@ -418,6 +434,22 @@ class Settings
         echo '</td>';
     }
 
+    public function populate_checkoutblocks_status_column($gateway)
+    {
+        echo '<td class="checkoutblocks_status">';
+        if (!method_exists($gateway, 'hasCheckoutBlocksSupport')) {
+            echo '</td>';
+            return;
+        }
+
+        if ($gateway->hasCheckoutBlocksSupport()) {
+            $status_html = '<span class="status-enabled tips" data-tip="' . esc_attr__( 'Is active to CheckoutBlocks', 'woo-pagarme-payments') . '">' . esc_html__( 'Yes', 'woo-pagarme-payments') . '</span>';
+        } else {
+            $status_html = "<a href='https://docs.pagar.me/docs/configurando-os-meios-de-pagamento-woocommerce'>" . esc_attr__( 'Learn the reason', 'woo-pagarme-payments') . "</a>";
+        }
+        echo $status_html;
+        echo '</td>';
+    }
 
     /**
      * @param $gateway

@@ -1554,3 +1554,12 @@ msgstr "Rua, número e bairro"
 
 msgid "Additional address data"
 msgstr "Complemento"
+
+msgid "Learn the reason"
+msgstr "Entenda o motivo"
+
+msgid "Is active to CheckoutBlocks"
+msgstr "Está ativo para o CheckoutBlocks"
+
+msgid "Available in Checkout Blocks"
+msgstr "Disponível no Checkout Blocks"
