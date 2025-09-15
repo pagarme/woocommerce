@@ -169,6 +169,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         return false;
     }
 
+    public function hasCheckoutBlocksSupport(): bool
+    {
+        return false;
+    }
+
     public function payments_scripts()
     {
         wp_register_script('pagarme_payments', $this->jsUrl('pagarme_payments'), [], false, true);
