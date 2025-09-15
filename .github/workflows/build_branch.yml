@@ -19,6 +19,9 @@ on:
         required: false
         type: string
         default: latest-stable
+permissions:
+  contents: read
+  actions: read
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
