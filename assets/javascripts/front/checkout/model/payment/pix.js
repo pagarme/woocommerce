@@ -14,7 +14,7 @@ let pagarmePix = {
         if (!elem.length) {
             return;
         }
-        const rawCode = elem.attr('rawCode');
+        const rawCode = elem.data('rawCode');
         const message = {
             icon: 'success',
             text: 'Código copiado.'
