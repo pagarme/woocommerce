@@ -22,7 +22,8 @@ on:
         required: false
         type: string
         default: latest-stable
-
+permissions:
+  contents: read
 jobs:
   publish:
     runs-on: ubuntu-latest
