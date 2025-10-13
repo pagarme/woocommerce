@@ -16,7 +16,7 @@ use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\AbstractField;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class Select
+ * Class Dash
  * @package Woocommerce\Pagarme\Block\Adminthml\System\Config\Form\Field
  */
 class Dash extends AbstractField
