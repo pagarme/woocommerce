@@ -5,6 +5,11 @@ on:
     branches:
     - master
 
+permissions:
+  contents: read
+  pull-requests: read
+  actions: write
+
 concurrency:
   group: ${{github.workflows}}-${{github.ref}}
   cancel-in-progress: true

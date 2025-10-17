@@ -775,4 +775,9 @@ class CreditCard extends AbstractGateway
     {
         return $value['interest_rate'] * ($value['free_installments'] + 1);
     }
+
+    public function hasCheckoutBlocksSupport(): bool
+    {
+        return true;
+    }
 }

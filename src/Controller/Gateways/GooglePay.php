@@ -81,4 +81,9 @@ class GooglePay extends AbstractGateway
             ),
         ];
     }
+
+    public function hasCheckoutBlocksSupport(): bool
+    {
+        return true;
+    }
 }

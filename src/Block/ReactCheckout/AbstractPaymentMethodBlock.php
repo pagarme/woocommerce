@@ -48,7 +48,7 @@ abstract class AbstractPaymentMethodBlock extends AbstractPaymentMethodType
         $paymentData = [
             'name'      => $this->name,
             'key'       => static::PAYMENT_METHOD_KEY,
-            'label'     => $this->paymentModel->getName() ,
+            'label'     => $this->settings['title'] ?? __($this->paymentModel->getName(), 'woo-pagarme-payments'),
             'ariaLabel' => __( static::ARIA_LABEL, 'woo-pagarme-payments' )
         ];
 
