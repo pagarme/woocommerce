@@ -228,15 +228,13 @@ class Order extends Meta
 
     private function log($content)
     {
-
-        $file = 'woo-pagarme';
         $message =
             'ORDER STATUS UPDATE: #' .
             $this->wc_order->get_id() .
             json_encode($content, JSON_PRETTY_PRINT);
 
         if (!empty($this->settings)) {
-            $this->settings->log()->add($file, $message);
+            $this->settings->log()->info($message);
         }
     }
 
