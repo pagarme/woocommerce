@@ -30,21 +30,33 @@
     margin-right: 0;
 }
 
-.hub_button_integration-field > a.button.pagarme-hub-integration-btn {
+.hub_button_integration-field > a.button.pagarme-hub-integration-btn,
+.hub_button_integration-field > a.button#pagarme-hub-desintegration-link,
+.access_dash_button-field > a.button.pagarme-access-dash-btn {
     position: relative;
     padding-right: 38px;
 }
 
-.hub_button_integration-field > a.button.pagarme-hub-integration-btn > img {
+.hub_button_integration-field > a.button.pagarme-hub-integration-btn > img,
+.hub_button_integration-field > a.button#pagarme-hub-desintegration-link > span.dashicons,
+.access_dash_button-field > a.button.pagarme-access-dash-btn > img {
     position: absolute;
     top: 50%;
     right: 11px;
     max-height: 1.4em;
+}
+
+.hub_button_integration-field > a.button.pagarme-hub-integration-btn > img,
+.access_dash_button-field > a.button.pagarme-access-dash-btn > img {
     margin-top: -0.7em;
 }
 
+.hub_button_integration-field > a.button#pagarme-hub-desintegration-link > span.dashicons {
+    margin-top: -0.5em;
+}
+
 .pagarme-message-warning {
-    margin: 1em 0 0;
+    margin: 1em 0 0 1em;
     padding: 1em;
     background: #fae5e5;
     color: #e02b27;

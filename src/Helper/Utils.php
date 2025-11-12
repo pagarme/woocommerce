@@ -10,6 +10,7 @@ use WC_Blocks_Utils;
 use WC_Order;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Order;
+use WP_User;
 
 class Utils
 {
@@ -687,5 +688,18 @@ class Utils
             return false;
         }
         return \Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::is_checkout_block_default();
+    }
+
+    /**
+     * Check if current user is an instance of WP_User and has the 'administrator' role.
+     * Use this to determine if the current user has admin privileges.
+     *
+     * @return bool `true` if the current user is an admin, `false` otherwise.
+     */
+    public static function isCurrentUserAdmin()
+    {
+        $currentUser = wp_get_current_user();
+        return ($currentUser instanceof WP_User)
+               && in_array('administrator', $currentUser->roles, true);
     }
 }

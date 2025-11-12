@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub;
 
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\AbstractField;
+use Woocommerce\Pagarme\Helper\Utils;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -37,10 +38,20 @@ class Integration extends AbstractField
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getButtonLabel()
+    public function getIntegrationButtonLabel()
     {
         return ($this->config->getHubInstallId()) ? __('View Integration', 'woo-pagarme-payments') : __('Integrate With Pagar.me', 'woo-pagarme-payments');
+    }
+
+    /**
+     * Check if current user has permission to desintegrate with Pagar.me Hub
+     *
+     * @return bool `true` if is an admin and if the account and merchant are saved, `false` otherwise
+     */
+    public function userCanDesintegrate()
+    {
+        return Utils::isCurrentUserAdmin() && $this->config->isAccAndMerchSaved();
     }
 }

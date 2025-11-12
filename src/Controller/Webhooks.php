@@ -6,13 +6,17 @@ if (!function_exists('add_action')) {
     exit(0);
 }
 
+use Pagarme\Core\Webhook\Services\WebhookValidatorService;
 use Woocommerce\Pagarme\Helper\Utils;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Order;
+use WP_Error;
 
 class Webhooks
 {
+    const WEBHOOK_SIGNATURE_HEADER = 'HTTP_X_WEBHOOK_ASYMMETRIC_SIGNATURE';
+
     private $config;
 
     public function __construct()
@@ -23,17 +27,45 @@ class Webhooks
 
     public function handle_requests()
     {
-        $body = Utils::get_json_post_data();
+        $webHookSignature = $_SERVER[self::WEBHOOK_SIGNATURE_HEADER] ?? null;
+        if (!$webHookSignature) {
+            $this->config->log()->info('Unauthorized Webhook Received: no signature header found!');
+            wp_die(
+                'Unauthorized Webhook Received: no signature header found!',
+                'Unauthorized',
+                array('response' => 401)
+            );
+        }
+        $payload = file_get_contents('php://input');
+        if (empty($payload)) {
+            $this->config->log()->info('Unauthorized Webhook Received: empty payload!');
+            wp_die(
+                "Unauthorized Webhook Received: empty payload!",
+                'Unauthorized',
+                array('response' => 401)
+            );
+        }
+
+        if (!WebhookValidatorService::validateSignature($payload, $webHookSignature)) {
+            $this->config->log()->info('Unauthorized Webhook Received: invalid signature!');
+            wp_die(
+                'Unauthorized Webhook Received: invalid signature!',
+                'Unauthorized Webhook Received',
+                array('response' => 401)
+            );
+        }
+
+        $body = json_decode($payload);
 
         if (empty($body)) {
-            $this->config->log()->add('woo-pagarme', 'Webhook Received: empty body!');
+            $this->config->log()->info('Webhook Received: empty body!');
             return;
         }
         if (!$this->orderByWoocommerce($body->data->code, $body->data->order->metadata, $body->id) ) {
             return;
         }
 
-        $this->config->log()->add('woo-pagarme', 'Webhook Received: ' . json_encode($body, JSON_PRETTY_PRINT));
+        $this->config->log()->info('Webhook Received: ' . json_encode($body, JSON_PRETTY_PRINT));
 
         $event = $this->sanitize_event_name($body->type);
 
@@ -69,7 +101,7 @@ class Webhooks
     {
         if(!wc_get_order($orderId)) {
             if(strpos($this->getMetadata($metadata), "Woocommerce") !== false) {
-                $this->config->log()->add('woo-pagarme', 'Webhook Received but not proccessed: ' . $webhookId);
+                $this->config->log()->info('Webhook Received but not proccessed: ' . $webhookId);
             }
             return false;
         }

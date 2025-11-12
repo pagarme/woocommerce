@@ -7,7 +7,6 @@ if (!function_exists('add_action')) {
 }
 
 use Pagarme\Core\Hub\Services\HubIntegrationService;
-use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Helper\Utils;
@@ -27,6 +26,13 @@ class HubCommand
 
     public function handle_requests()
     {
+        if (!Utils::isCurrentUserAdmin()) {
+            return $this->sendResponse(
+                'You do not have permission to access this resource.',
+                self::HTTP_BAD_REQUEST
+            );
+        }
+
         $params = Utils::get_json_post_data();
 
         if (empty($params)) {
