@@ -19,7 +19,7 @@ if (!function_exists('add_action')) {
     <p><img src="<?= $this->getQrCodeUrl() ?>" alt="Pix QRCode" class="pagarme-qr-code-img" /></p>
     <button type="button"
             id="pagarme-qr-code-button"
-            rawCode="<?= $this->getRawQrCode() ?>"
+            data-rawCode="<?= $this->getRawQrCode() ?>"
             class="pagarme-payment-button">
         <?= __('Copy Code', 'woo-pagarme-payments'); ?>
     </button>
