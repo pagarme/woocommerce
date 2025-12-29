@@ -76,7 +76,7 @@ class Orders
             return $orderService->createOrderAtPagarme($orderDecorator);
         } catch (Exception $e) {
             if (!empty($this->settings)) {
-                $this->settings->log()->add('woo-pagarme', 'CREATE ORDER ERROR: ' . $e->__toString());
+                $this->settings->log()->error('CREATE ORDER ERROR: ' . $e->__toString());
             }
             error_log($e->__toString());
             return $e;

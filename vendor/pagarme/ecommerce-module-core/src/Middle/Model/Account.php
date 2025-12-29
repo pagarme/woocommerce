@@ -11,8 +11,6 @@ class Account extends ModelWithErrors
 {
     const ACCOUNT_DISABLED = 'accountDisabled';
 
-    const WEBHOOK_INCORRECT = 'webhookIncorrect';
-
     const MULTIPAYMENTS_DISABLED = 'multiPaymentsDisabled';
 
     const MULTIBUYERS_DISABLED = 'multiBuyersDisabled';
@@ -238,7 +236,6 @@ class Account extends ModelWithErrors
     public function validate($storeSettings = null)
     {
         $this->validateAccountEnabled();
-        $this->validateWebhooks($storeSettings);
         $this->validateMultiBuyer();
         $this->validateMultiPayments();
 
@@ -258,31 +255,6 @@ class Account extends ModelWithErrors
         if (!$this->isAccountEnabled()) {
             $this->addError(self::ACCOUNT_DISABLED);
         }
-    }
-
-    /**
-     * @param StoreSettings|null $storeSettings
-     * @return void
-     */
-    private function validateWebhooks($storeSettings = null)
-    {
-        if ($this->canNotValidateUrlSetting($storeSettings)) {
-            return;
-        }
-
-        $siteUrls = $storeSettings->getStoreUrls();
-        foreach ($this->getWebhooks() as $webhook) {
-            if ($webhook->status !== 'active') {
-                continue;
-            }
-            foreach ($siteUrls as $siteUrl) {
-                if (strpos($webhook->url, $siteUrl) !== false) {
-                    return;
-                }
-            }
-        }
-
-        $this->addError(self::WEBHOOK_INCORRECT);
     }
 
     private function validateMultiBuyer()

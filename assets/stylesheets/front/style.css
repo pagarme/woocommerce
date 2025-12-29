@@ -103,7 +103,7 @@
     flex-direction: row;
 }
 
-.pagarme_creditcard_divider p:after,  
+.pagarme_creditcard_divider p:after,
 .pagarme_creditcard_divider p:before {
     content: "";
     flex: 1 1;
@@ -116,6 +116,10 @@
 
 .pagarme_creditcard_divider p:before {
     margin-right: 0.5em;
+}
+
+body.woocommerce-checkout.woocommerce-order-received #page #content #main .woocommerce .woocommerce-order .woocommerce-message:has(.pagarme-response) {
+    display: block !important;
 }
 
 .woocommerce-order .woocommerce-message .pagarme-response p:last-child {

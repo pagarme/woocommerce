@@ -1,0 +1,23 @@
+<?php
+/**
+ * @author      Open Source Team
+ * @copyright   2025 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
+/** @var $this \Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Dash */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
+<?php if ($this->config->isAccAndMerchSaved()) : ?>
+    <a href="<?= $this->config->getDashUrl(); ?>" target="_blank" rel="noopener"
+       class="button button-secondary pagarme-access-dash-btn">
+        <?= __('Access Pagar.me Dash', 'woo-pagarme-payments'); ?>
+        <img alt="Pagarme Avatar"
+             src="<?= plugins_url('/pagarme-payments-for-woocommerce/assets/images/pagarme-avatar.svg') ?>">
+    </a>
+<?php endif; ?>

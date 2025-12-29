@@ -16,6 +16,7 @@ if (!function_exists('add_action')) {
 }
 
 use WC_Subscriptions_Core_Plugin;
+use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Dash;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Environment;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Hub\Integration;
 use Woocommerce\Pagarme\Block\Adminhtml\System\Config\Form\Field\Select;
@@ -125,74 +126,77 @@ class Settings
             $this->sectionsFields = $value;
             return;
         }
-        $this->sectionsFields = [
-            'section' => [
-                [
-                    'id' => 'options_section',
-                    'title' => 'General',
-                    'fields' => [
-                        [
-                            'fieldObject' => Integration::class,
-                            'id' => 'hub_button_integration',
-                            'title' => 'Pagar.me integration',
-                        ],
-                        [
-                            'fieldObject' => Environment::class,
-                            'id' => 'hub_environment',
-                            'title' => 'Integration environment',
-                            'default' => '',
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'multicustomers',
-                            'title' => 'Multi-buyers',
-                            'options' => $this->yesNoOptions->toLabelsArray(),
-                            'default' => strtolower(Yesno::NO),
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'modify_address',
-                            'title' => 'Modify address fields',
-                            'options' => $this->yesNoOptions->toLabelsArray(),
-                            'default' => strtolower(Yesno::YES),
-                            'description' => [
-                                'format' => "Corrects the 'label' and 'placeholder' attributes of the 'Address' and "
-                                    . "'Complement' fields to instruct users on how to fill them in correctly.",
-                                'values' => []
-                            ],
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'allow_no_address',
-                            'title' => 'Allow order without address',
-                            'options' => $this->yesNoOptions->toLabelsArray(),
-                            'default' => strtolower(Yesno::NO),
-                            'description' => [
-                                'format' => 'For PSP customers with Pagar.me Antifraud active, it is mandatory to fill'
-                                    . ' in all address fields. %sRead documentation »%s',
-                                'values' => [
-                                    '<a href="'
-                                        . self::PAGARME_DOCS_ANTIFRAUD_URL
-                                        . '" target="_blank" rel="noopener">',
-                                    '</a>'
-                                ]
-                            ],
-                        ],
-                        [
-                            'fieldObject' => Select::class,
-                            'id' => 'enable_logs',
-                            'title' => 'Logs',
-                            'options' => $this->yesNoOptions->toLabelsArray(),
-                            'default' => strtolower(Yesno::NO),
-                            'description' => 'Log Pagar.me events, you can check this log in WooCommerce>Status>Logs.'
-                        ]
-                    ],
-                ]
+
+        $fields = [
+            [
+                'fieldObject' => Integration::class,
+                'id' => 'hub_button_integration',
+                'title' => 'Pagar.me integration',
             ]
         ];
 
+        if ($this->config->isAccAndMerchSaved()){
+            $fields[] = [
+                'fieldObject' => Environment::class,
+                'id' => 'hub_environment',
+                'title' => 'Integration environment',
+                'default' => '',
+            ];
+            $fields[] = [
+                'fieldObject' => Dash::class,
+                'id' => 'access_dash_button',
+                'title' => 'Pagar.me order panel',
+                'default' => '',
+            ];
+        }
+
+        $fields[] = [
+                'fieldObject' => Select::class,
+                'id' => 'multicustomers',
+                'title' => 'Multi-buyers',
+                'options' => $this->yesNoOptions->toLabelsArray(),
+                'default' => strtolower(Yesno::NO),
+            ];
+        $fields[] = [
+            'fieldObject' => Select::class,
+            'id' => 'modify_address',
+            'title' => 'Modify address fields',
+            'options' => $this->yesNoOptions->toLabelsArray(),
+            'default' => strtolower(Yesno::YES),
+            'description' => [
+                'format' => "Corrects the 'label' and 'placeholder' attributes of the 'Address' and "
+                            . "'Complement' fields to instruct users on how to fill them in correctly.",
+                'values' => []
+            ]
+        ];
+        $fields[] = [
+            'fieldObject' => Select::class,
+            'id' => 'allow_no_address',
+            'title' => 'Allow order without address',
+            'options' => $this->yesNoOptions->toLabelsArray(),
+            'default' => strtolower(Yesno::NO),
+            'description' => [
+                'format' => 'For PSP customers with Pagar.me Antifraud active, it is mandatory to fill'
+                            . ' in all address fields. %sRead documentation »%s',
+                'values' => [
+                    '<a href="'
+                    . self::PAGARME_DOCS_ANTIFRAUD_URL
+                    . '" target="_blank" rel="noopener">',
+                    '</a>'
+                ]
+            ]
+        ];
+        $fields[] = [
+            'fieldObject' => Select::class,
+            'id' => 'enable_logs',
+            'title' => 'Logs',
+            'options' => $this->yesNoOptions->toLabelsArray(),
+            'default' => strtolower(Yesno::NO),
+            'description' => 'Log Pagar.me events, you can check this log in WooCommerce>Status>Logs.'
+        ];
+
         if (empty($this->config->getAccountId()) && $this->config->getHubInstallId()) {
-            $this->sectionsFields['section'][0]['fields'][] =
+            $fields[] =
                 [
                     'fieldObject' => Select::class,
                     'id' => 'is_gateway_integration_type',
@@ -202,6 +206,16 @@ class Settings
                     'description' => 'Configurations that only works for Gateway customers, who have a direct contract with an acquirer.'
                 ];
         }
+
+        $this->sectionsFields = [
+            'section' => [
+                [
+                    'id' => 'options_section',
+                    'title' => 'General',
+                    'fields' => $fields
+                ]
+            ]
+        ];
     }
 
     /**
