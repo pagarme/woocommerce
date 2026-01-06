@@ -173,9 +173,14 @@ final class Configuration extends AbstractEntity
     private $merchantId;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $accountId;
+
+    /**
+     * @var string|null
+     */
+    private $paymentProfileId;
 
     /**
      * @var MarketplaceConfig
@@ -293,14 +298,37 @@ final class Configuration extends AbstractEntity
         $this->voucherConfig = $voucherConfig;
     }
 
+    /**
+     * @param string|null $accountId
+     */
     public function setAccountId($accountId)
     {
         $this->accountId = $accountId;
     }
 
+    /**
+     * @param string|null $paymentProfileId
+     */
+    public function setPaymentProfileId($paymentProfileId)
+    {
+        $this->paymentProfileId = $paymentProfileId;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getAccountId()
     {
         return $this->accountId;
+    }
+
+    /**
+     * Get Payment Profile ID (One Stone)
+     * @return string|null
+     */
+    public function getPaymentProfileId()
+    {
+        return $this->paymentProfileId;
     }
 
     public function setMerchantId($merchantId)
@@ -855,6 +883,7 @@ final class Configuration extends AbstractEntity
             "hubEnvironment" => $this->hubEnvironment,
             "merchantId" => $this->getMerchantId(),
             "accountId" => $this->getAccountId(),
+            "paymentProfileId" => $this->getPaymentProfileId(),
             "addressAttributes" => $this->getAddressAttributes(),
             "allowNoAddress" => $this->getAllowNoAddress(),
             "keys" => $this->keys,
