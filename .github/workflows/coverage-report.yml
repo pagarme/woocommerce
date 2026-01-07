@@ -21,10 +21,6 @@ on:
             RUNS_ON:
                 type: string
                 default: small-runner
-        secrets:
-            EXPORTED_PAGARME_GH_PAT:
-            docker_username:
-            docker_password:
 
 permissions: write-all
 
@@ -94,7 +90,7 @@ jobs:
 
                   # All files minimum coverage in percentage. For example, 0, 50, 100
                   # Default: 0
-                  all-files-minimum-coverage: ${{ inputs.ALL_FILES_MINIMUN }}
+                  all-files-minimum-coverage: ${{ inputs.ALL_FILES_MINIMUM }}
 
                   # Changed files minimum coverage in percentage. For example, 0, 50, 100
                   # Default: 0
