@@ -4,6 +4,7 @@ namespace Pagarme\Core\Kernel\Aggregates;
 
 use Exception;
 use Pagarme\Core\Kernel\Abstractions\AbstractEntity;
+use Pagarme\Core\Kernel\Abstractions\AbstractPoiTypeEnums;
 use Pagarme\Core\Kernel\Exceptions\InvalidParamException;
 use Pagarme\Core\Kernel\Helper\StringFunctionsHelper;
 use Pagarme\Core\Kernel\ValueObjects\AbstractValidString;
@@ -29,63 +30,64 @@ final class Configuration extends AbstractEntity
     const CARD_OPERATION_AUTH_AND_CAPTURE = 'auth_and_capture';
 
     /**
-     *
      * @var bool
      */
     private $enabled;
+
     /**
-     *
      * @var bool
      */
     private $boletoEnabled;
+
     /**
-     *
      * @var bool
      */
     private $creditCardEnabled;
-    private $googlepayEnabled;
+
     /**
-     *
+     * @var bool
+     */
+    private $googlepayEnabled;
+
+    /**
      * @var bool
      */
     private $twoCreditCardsEnabled;
+
     /**
-     *
      * @var bool
      */
     private $boletoCreditCardEnabled;
+
     /**
-     *
      * @var bool
      */
     private $testMode;
+
     /**
-     *
      * @var GUID
      */
     private $hubInstallId;
 
     /**
-     *
      * @var string
      */
     private $hubEnvironment;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $cardOperation;
 
     /**
-     *
      * @var AbstractValidString[]
      */
     private $keys;
 
     /**
-     *
      * @var CardConfig[]
      */
     private $cardConfigs;
-
 
     /**
      * @var bool
@@ -97,52 +99,82 @@ final class Configuration extends AbstractEntity
      */
     private $antifraudMinAmount;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $installmentsEnabled;
 
-    /** @var AddressAttributes */
+    /**
+     * @var AddressAttributes
+     */
     private $addressAttributes;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $allowNoAddress;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $cardStatementDescriptor;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $boletoInstructions;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $storeId;
 
-    /** @var Configuration */
+    /**
+     * @var Configuration
+     */
     private $parentConfiguration;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $methodsInherited;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $inheritAll;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $saveCards;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $saveVoucherCards;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $multiBuyer;
 
-    /** @var RecurrenceConfig */
+    /**
+     * @var RecurrenceConfig
+     */
     private $recurrenceConfig;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $installmentsDefaultConfig;
 
     /** @var int */
     private $boletoDueDays;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $boletoBankCode;
 
     /**
@@ -155,11 +187,19 @@ final class Configuration extends AbstractEntity
      */
     private $createOrderEnabled;
 
-    /** @var VoucherConfig */
+    /**
+     * @var VoucherConfig
+     */
     private $voucherConfig;
 
-    /** @var DebitConfig */
+    /**
+     * @var DebitConfig
+     */
     private $debitConfig;
+
+    /**
+     * @var GooglePayConfig
+     */
     private $googlePayConfig;
 
     /**
@@ -181,6 +221,12 @@ final class Configuration extends AbstractEntity
      * @var string|null
      */
     private $paymentProfileId;
+
+    /**
+     * Point of Interaction Type
+     * @var string|null
+     */
+    private $poiType;
 
     /**
      * @var MarketplaceConfig
@@ -242,6 +288,7 @@ final class Configuration extends AbstractEntity
     {
         $this->googlePayConfig = $googlePayConfig;
     }
+
     /**
      * @param DebitConfig $debitConfig
      */
@@ -315,6 +362,25 @@ final class Configuration extends AbstractEntity
     }
 
     /**
+     * Set POI Type (One Stone)
+     * @param string|null $poiType
+     * @throws InvalidParamException
+     */
+    public function setPoiType($poiType)
+    {
+        if ($poiType !== null) {
+            if (!AbstractPoiTypeEnums::isValidPoiType($poiType)) {
+                throw new InvalidParamException(
+                    "Invalid POI Type. Accepted values: " . implode(', ', AbstractPoiTypeEnums::getPoiTypes()),
+                    'poiType'
+                );
+            }
+        }
+
+        $this->poiType = $poiType;
+    }
+
+    /**
      * @return string|null
      */
     public function getAccountId()
@@ -329,6 +395,15 @@ final class Configuration extends AbstractEntity
     public function getPaymentProfileId()
     {
         return $this->paymentProfileId;
+    }
+
+    /**
+     * Get POI Type (One Stone)
+     * @return string|null
+     */
+    public function getPoiType()
+    {
+        return $this->poiType;
     }
 
     public function setMerchantId($merchantId)
@@ -464,7 +539,7 @@ final class Configuration extends AbstractEntity
         return $this;
     }
 
-     /**
+    /**
      *
      * @param bool $googlepayEnabled
      * @return Configuration
@@ -477,6 +552,7 @@ final class Configuration extends AbstractEntity
         );
         return $this;
     }
+
     /**
      * @param $sendMailEnable
      * @return $this
@@ -548,6 +624,7 @@ final class Configuration extends AbstractEntity
     {
         return $this->creditCardEnabled;
     }
+
     protected function isGooglePayEnabled()
     {
         return $this->googlepayEnabled;
@@ -837,7 +914,7 @@ final class Configuration extends AbstractEntity
             throw new InvalidParamException("Boleto due days should be an integer!", $boletoDueDays);
         }
 
-        $this->boletoDueDays = (int) $boletoDueDays;
+        $this->boletoDueDays = (int)$boletoDueDays;
     }
 
     /**
@@ -884,6 +961,7 @@ final class Configuration extends AbstractEntity
             "merchantId" => $this->getMerchantId(),
             "accountId" => $this->getAccountId(),
             "paymentProfileId" => $this->getPaymentProfileId(),
+            "poiType" => $this->getPoiType(),
             "addressAttributes" => $this->getAddressAttributes(),
             "allowNoAddress" => $this->getAllowNoAddress(),
             "keys" => $this->keys,
@@ -1007,7 +1085,7 @@ final class Configuration extends AbstractEntity
     {
         $methodSplited = explode(
             "_",
-            preg_replace('/(?<=\\w)(?=[A-Z])/',"_$1", $method ?? '')
+            preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $method ?? '')
         );
 
         $targetObject = $this;
