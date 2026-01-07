@@ -1,0 +1,6 @@
+{
+    "threshold": 0,
+    "reporters": ["html", "console", "sarif"],
+    "ignore": ["**/__snapshots__/**", "**/node_modules/**", "**/test/**"],
+    "absolute": true
+}

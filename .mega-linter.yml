@@ -1,0 +1,7 @@
+ENABLE:
+    - JAVASCRIPT
+    - TYPESCRIPT
+    - PHP
+    - HTML
+    - COPYPASTE
+    - CSS

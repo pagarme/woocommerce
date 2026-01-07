@@ -1,0 +1,105 @@
+name: Coverage-Report
+
+on:
+    workflow_call:
+        inputs:
+            WORKING_DIRECTORY:
+                type: string
+            ARTIFACT_NAME:
+                type: string
+            ARTIFACT_PATTERN:
+                type: string
+            PROJECT:
+                type: string
+            PR_MINIMUM:
+                type: number
+            NAME_HTML_REPORT:
+                type: string
+            ALL_FILES_MINIMUM:
+                type: number
+                default: 0
+            RUNS_ON:
+                type: string
+                default: small-runner
+        secrets:
+            EXPORTED_PAGARME_GH_PAT:
+            docker_username:
+            docker_password:
+
+permissions: write-all
+
+jobs:
+    lcov:
+        runs-on: ${{ inputs.RUNS_ON }}
+        container:
+            image: btfshadow/lcov
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: '0'
+                  submodules: recursive
+                  token: ${{ secrets.EXPORTED_PAGARME_GH_PAT }}
+            - uses: actions/download-artifact@v4
+              if: ${{ inputs.ARTIFACT_NAME }}
+              with:
+                  name: ${{ inputs.ARTIFACT_NAME }}
+                  path: coverage-temp
+            - name: Download All Artifacts
+              if: ${{ inputs.ARTIFACT_PATTERN }}
+              uses: actions/download-artifact@v4
+              with:
+                  path: coverage-temp
+                  pattern: ${{ inputs.ARTIFACT_PATTERN }}
+                  merge-multiple: true
+            - name: Setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
+
+            - name: Move Lcov
+              if: ${{ inputs.ARTIFACT_NAME }}
+              run: |
+                  mkdir -p ${{ inputs.WORKING_DIRECTORY }}coverage/
+                  cp coverage-temp/lcov.info ${{ inputs.WORKING_DIRECTORY }}coverage/lcov.info
+
+            # - uses: hrishikesh-kadam/setup-lcov@v1
+
+            - name: Merge lcov
+              if: ${{ inputs.ARTIFACT_PATTERN }}
+              run: |
+                  # Cria pasta para salvar o coverage
+                  mkdir ${{ inputs.WORKING_DIRECTORY }}coverage/
+                  # Pasta raiz onde você quer buscar os arquivos lcov.info
+                  ROOT_DIR="coverage-temp/"
+                  # Encontra todos os arquivos lcov.info e imprime a linha completa com --add-tracefile
+                  lcovs=$(find "$ROOT_DIR" -type f -name "lcov.info" | awk '{printf "--add-tracefile %s ", $0} END {print ""}')
+                  lcov $lcovs --output-file ${{ inputs.WORKING_DIRECTORY }}coverage/lcov.info
+
+            - uses: kefasjw/lcov-pull-request-report@main
+              with:
+                  # Lcov file location. For example, coverage/lcov.info
+                  lcov-file: ${{ inputs.WORKING_DIRECTORY }}coverage/lcov.info
+
+                  # Github token required for getting list of changed files and posting comments
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+
+                  # Working directory
+                  # Default: empty (repository root)
+                  working-directory: ${{ inputs.WORKING_DIRECTORY }}
+
+                  # Report comment title
+                  # Default: empty
+                  comment-title: ${{ inputs.PROJECT }}
+
+                  # All files minimum coverage in percentage. For example, 0, 50, 100
+                  # Default: 0
+                  all-files-minimum-coverage: ${{ inputs.ALL_FILES_MINIMUN }}
+
+                  # Changed files minimum coverage in percentage. For example, 0, 50, 100
+                  # Default: 0
+                  changed-files-minimum-coverage: ${{ inputs.PR_MINIMUM }}
+
+                  # Artifact name of the generated html. Requires LCOV to be installed
+                  # Default: empty (skip uploading artifact)
+                  artifact-name: ${{ inputs.NAME_HTML_REPORT }}
