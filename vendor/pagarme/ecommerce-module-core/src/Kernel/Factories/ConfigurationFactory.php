@@ -96,6 +96,14 @@ class ConfigurationFactory implements FactoryInterface
             $config->setAccountId($data->accountId);
         }
 
+        if (!empty($data->paymentProfileId)) {
+            $config->setPaymentProfileId($data->paymentProfileId);
+        }
+
+        if (!empty($data->poiType)) {
+            $config->setPoiType($data->poiType);
+        }
+
         if (!empty($data->sendMail)) {
             $config->setSendMailEnabled($data->sendMail);
         }
