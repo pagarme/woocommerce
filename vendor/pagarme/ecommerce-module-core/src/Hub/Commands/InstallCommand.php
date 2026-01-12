@@ -2,7 +2,6 @@
 
 namespace Pagarme\Core\Hub\Commands;
 
-use Exception;
 use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use Pagarme\Core\Kernel\Repositories\ConfigurationRepository;
 
@@ -13,6 +12,10 @@ class InstallCommand extends AbstractCommand
         $moduleConfig = MPSetup::getModuleConfiguration();
 
         $moduleConfig->setAccountId($this->getAccountId());
+
+        $moduleConfig->setPaymentProfileId($this->getPaymentProfileId());
+
+        $moduleConfig->setPoiType($this->getPoiType());
 
         $moduleConfig->setMerchantId($this->getMerchantId());
 

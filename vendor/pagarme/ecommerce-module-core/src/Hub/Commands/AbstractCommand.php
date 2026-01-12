@@ -26,6 +26,16 @@ abstract class AbstractCommand implements CommandInterface
     protected $accountId;
     /**
      *
+     * @var string
+     */
+    private $paymentProfileId;
+    /**
+     *
+     * @var string
+     */
+    private $poiType;
+    /**
+     *
      * @var PublicKey|TestPublicKey
      */
     protected $accountPublicKey;
@@ -86,6 +96,24 @@ abstract class AbstractCommand implements CommandInterface
 
     /**
      *
+     * @return AbstractCommand
+     */
+    public function getPaymentProfileId()
+    {
+        return $this->paymentProfileId;
+    }
+
+    /**
+     *
+     * @return AbstractCommand
+     */
+    public function getPoiType()
+    {
+        return $this->poiType;
+    }
+
+    /**
+     *
      * @param  AccountId $accountId
      * @return AbstractCommand
      */
@@ -93,6 +121,24 @@ abstract class AbstractCommand implements CommandInterface
     {
         $this->accountId = $accountId;
         return $this;
+    }
+
+    /**
+     *
+     * @param $paymentProfileId
+     */
+    public function setPaymentProfileId($paymentProfileId)
+    {
+        $this->paymentProfileId = $paymentProfileId;
+    }
+
+    /**
+     *
+     * @param $poiType
+     */
+    public function setPoiType($poiType)
+    {
+        $this->poiType = $poiType;
     }
 
     /**
