@@ -28,12 +28,12 @@ abstract class AbstractCommand implements CommandInterface
      *
      * @var string
      */
-    private $paymentProfileId;
+    protected $paymentProfileId;
     /**
      *
      * @var string
      */
-    private $poiType;
+    protected $poiType;
     /**
      *
      * @var PublicKey|TestPublicKey
