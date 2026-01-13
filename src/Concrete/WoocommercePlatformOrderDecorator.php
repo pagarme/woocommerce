@@ -110,13 +110,13 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             'on_hold'                 => 'holded',
             'canceled'                => 'canceled',
             'refunded'                => 'complete',
-            'authentication_required' => 'processing'
+            'authentication_required' => 'processing',
+            'completed'               => 'complete',
         ];
 
         $status = $this->getStatus();
 
-        $state = $statusToState[$status] ?
-            $statusToState[$status] : 'processing';
+        $state = $statusToState[$status] ?? 'processing';
 
         return OrderState::$state();
     }
