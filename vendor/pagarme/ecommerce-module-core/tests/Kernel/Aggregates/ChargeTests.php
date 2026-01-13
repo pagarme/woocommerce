@@ -405,4 +405,109 @@ class ChargeTests extends TestCase
         return $transaction;
     }
 
+    // ========== NOVOS TESTES ADICIONADOS ==========
+
+    public function testSetAndGetCustomerId()
+    {
+        $charge = new Charge();
+        $customerId = 'cust_123456789';
+        $charge->setCustomerId($customerId);
+        
+        $this->assertEquals($customerId, $charge->getCustomerId());
+    }
+
+    public function testAddTransactionWithDifferentCreatedAt()
+    {
+        $transaction1 = $this->getTransaction("_____old");
+        $transaction1->setCreatedAt(Carbon::now()->subHours(2));
+
+        $transaction2 = $this->getTransaction("_____new");
+        $transaction2->setCreatedAt(Carbon::now());
+
+        $charge = new Charge();
+        $charge->addTransaction($transaction1);
+        $charge->addTransaction($transaction2);
+
+        // Should return the most recent transaction
+        $lastTransaction = $charge->getLastTransaction();
+        $this->assertEquals($transaction2->getPagarmeId(), $lastTransaction->getPagarmeId());
+    }
+
+    public function testCancelWithValueGreaterThanPaid()
+    {
+        $charge = new Charge();
+        $charge->setAmount(1000);
+        $charge->setPaidAmount(500);
+        $charge->setStatus(ChargeStatus::paid());
+
+        $transaction = $this->getTransaction("_____1");
+        $charge->addTransaction($transaction);
+
+        // Try to cancel more than paid amount
+        $charge->cancel(1000);
+
+        // Should only refund the paid amount
+        $this->assertEquals(500, $charge->getRefundedAmount());
+    }
+
+    public function testPaymentFlowFromPendingToPaid()
+    {
+        $charge = new Charge();
+        $charge->setAmount(1000);
+        $charge->setStatus(ChargeStatus::pending());
+
+        $transaction = $this->getTransaction("_____flow");
+        $charge->addTransaction($transaction);
+
+        // Initially pending
+        $this->assertTrue($charge->getStatus()->equals(ChargeStatus::pending()));
+
+        // Pay the charge
+        $charge->pay(1000);
+
+        // Should be paid
+        $this->assertTrue($charge->getStatus()->equals(ChargeStatus::paid()));
+        $this->assertEquals(1000, $charge->getPaidAmount());
+    }
+
+    public function testMultiplePartialRefunds()
+    {
+        $charge = new Charge();
+        $charge->setAmount(1000);
+        $charge->setStatus(ChargeStatus::pending());
+
+        $transaction = $this->getTransaction("_____refund");
+        $charge->addTransaction($transaction);
+
+        $charge->pay(1000);
+
+        // First partial refund
+        $charge->cancel(200);
+        $this->assertEquals(200, $charge->getRefundedAmount());
+        $this->assertTrue($charge->getStatus()->equals(ChargeStatus::paid()));
+
+        // Second partial refund
+        $charge->cancel(300);
+        $this->assertEquals(500, $charge->getRefundedAmount());
+        $this->assertTrue($charge->getStatus()->equals(ChargeStatus::paid()));
+    }
+
+    public function testSetAmountThrowsExceptionWhenNotNumeric()
+    {
+        $this->expectException(InvalidParamException::class);
+        $this->expectExceptionMessage('Amount should be an integer!');
+
+        $charge = new Charge();
+        $charge->setAmount('not-a-number');
+    }
+
+    public function testSetPaidAmountThrowsExceptionWhenNotNumeric()
+    {
+        $this->expectException(InvalidParamException::class);
+        $this->expectExceptionMessage('Amount should be an integer!');
+
+        $charge = new Charge();
+        $charge->setPaidAmount('invalid');
+    }
+
 }
