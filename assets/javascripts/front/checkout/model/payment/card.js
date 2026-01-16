@@ -45,14 +45,14 @@ let pagarmeCard = {
     },
     isPagarmePayment: function () {
         const selectedPayment = pagarmeCard.getSelectedPaymentMethod();
-        if(selectedPayment.length <= 0) {
+        if (selectedPayment.length <= 0) {
             return false;
         }
         const selectedPaymentVal = selectedPayment.val();
-        if(!selectedPaymentVal) {
+        if (!selectedPaymentVal) {
             return false;
         }
-        if(selectedPaymentVal.indexOf('pagarme') === -1) {
+        if (selectedPaymentVal.indexOf('pagarme') === -1) {
             return false;
         }
         return selectedPaymentVal.indexOf('pagarme');
@@ -63,7 +63,7 @@ let pagarmeCard = {
         }
 
         const selectedIsPagarmeCard = pagarmeCard.getSelectedPaymentMethod().val().indexOf('card');
-        if(selectedIsPagarmeCard === -1) {
+        if (selectedIsPagarmeCard === -1) {
             return false;
         }
 
@@ -74,7 +74,7 @@ let pagarmeCard = {
         const regex = /[^a-z ]/gi;
         const val = jQuery(element).val();
 
-        if(regex.test(val)) {
+        if (regex.test(val)) {
             jQuery(element).val(val.replace(regex, ''));
             selectionStart--;
         }
@@ -252,7 +252,7 @@ let pagarmeCard = {
         if (doesNotHaveBrand) {
             pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[
-                    'invalidBrand'
+                'invalidBrand'
                 ]
             );
             return;
@@ -344,7 +344,7 @@ let pagarmeCard = {
                 }
             });
             ajax.done(function (response) {
-                pagarmeCard._done(select, info, storageName, cardForm, JSON.parse(response));
+                pagarmeCard._done(select, info, storageName, cardForm, response);
             });
             ajax.fail(function () {
                 pagarmeCard._fail(cardForm);
@@ -357,7 +357,7 @@ let pagarmeCard = {
     _done: function (select, info, storageName, event, response) {
         if (info.length) {
             info.addClass('pagarme-hidden');
-            if(response.installmentsConfig > 1) {
+            if (response.installmentsConfig > 1) {
                 info.removeClass('pagarme-hidden');
             }
         }
@@ -373,7 +373,7 @@ let pagarmeCard = {
 
         if (typeof formattedEvent.unblock === 'function') {
             formattedEvent.unblock();
-           return;
+            return;
         }
 
         if (typeof jQuery.unblockUI === 'function') {
@@ -391,7 +391,7 @@ let pagarmeCard = {
                     opacity: 0.6
                 }
             });
-           return;
+            return;
         }
 
         if (typeof jQuery.blockUI === 'function') {
@@ -477,7 +477,7 @@ let pagarmeCard = {
         pagarmeTokenize.execute();
         pagarmeCard.execute(event);
     },
-    brandIsVisaOrMaster: function() {
+    brandIsVisaOrMaster: function () {
         const checkoutPaymentElement = this.getCheckoutPaymentElement();
         const brand = jQuery(checkoutPaymentElement).find(this.brandTarget)
             .val();
@@ -562,4 +562,4 @@ let pagarmeCard = {
         this.onChangeBillingCpf();
     }
 };
-pagarmeCard.start();
+pagarmeCard.start(); 
