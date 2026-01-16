@@ -562,4 +562,4 @@ let pagarmeCard = {
         this.onChangeBillingCpf();
     }
 };
-pagarmeCard.start();
+pagarmeCard.start(); 
