@@ -80,12 +80,17 @@ class Checkout
 
         );
         $optionsHtml = $this->cardInstallments->renderOptions($installments);
-        echo json_encode([
+        
+        // Ensure no previous output contaminates the JSON response
+        if (ob_get_length()) {
+            ob_clean();
+        }
+        
+        wp_send_json([
             'installmentsConfig' => $installmentsConfig,
             'optionsHtml' => wp_kses_no_null($optionsHtml),
             'installments' => $installments
         ]);
-        exit();
     }
 
     public function parse_cards($data, $key = 'card')
