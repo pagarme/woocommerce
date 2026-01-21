@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 ?>
-<?php if ($this->config->isAccAndMerchSaved()) : ?>
+<?php if ($this->config->isDashConfigAccessible()) : ?>
     <a href="<?= $this->config->getDashUrl(); ?>" target="_blank" rel="noopener"
        class="button button-secondary pagarme-access-dash-btn">
         <?= __('Access Pagar.me Dash', 'woo-pagarme-payments'); ?>

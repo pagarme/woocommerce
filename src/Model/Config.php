@@ -7,21 +7,22 @@
  * @link        https://pagar.me
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace Woocommerce\Pagarme\Model;
 
-use Woocommerce\Pagarme\Core;
-use Pagarme\Core\Kernel\Services\MoneyService;
-use Woocommerce\Pagarme\Model\Data\DataObject;
-use Pagarme\Core\Middle\Model\Account\PaymentEnum;
 use Pagarme\Core\Hub\Services\HubIntegrationService;
-use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
-use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
-use Woocommerce\Pagarme\Model\Config\PagarmeCoreConfigManagement;
+use Pagarme\Core\Kernel\Services\MoneyService;
+use Pagarme\Core\Middle\Model\Account\PaymentEnum;
+use WC_Logger;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\Config\PagarmeCoreConfigManagement;
+use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
+use Woocommerce\Pagarme\Model\Data\DataObject;
+use Woocommerce\Pagarme\Model\Serialize\Serializer\Json;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class Config
@@ -63,7 +64,7 @@ class Config extends DataObject
             }
             add_action(
                 'update_option_' . $this->getOptionKey(),
-                [ $this, 'updateOption' ],
+                [$this, 'updateOption'],
                 10, 3
             );
         }
@@ -127,7 +128,7 @@ class Config extends DataObject
      */
     public function getIsSandboxMode()
     {
-        return ( $this->getHubEnvironment() === static::HUB_SANDBOX_ENVIRONMENT ||
+        return ($this->getHubEnvironment() === static::HUB_SANDBOX_ENVIRONMENT ||
             strpos(($this->getProductionSecretKey()) ?? '', 'sk_test') !== false ||
             strpos(($this->getProductionPublicKey()) ?? '', 'pk_test') !== false
         );
@@ -199,8 +200,10 @@ class Config extends DataObject
     /**
      * @return bool
      */
-    public function isAccAndMerchSaved() : bool {
-        return $this->getMerchantId() && $this->getAccountId();
+    public function isDashConfigAccessible(): bool
+    {
+        return $this->getPaymentProfileId()
+            || ($this->getMerchantId() && $this->getAccountId());
     }
 
     public function setAccountId($accountId)
@@ -210,10 +213,51 @@ class Config extends DataObject
     }
 
     /**
+     * @return string|null
+     */
+    public function getPaymentProfileId()
+    {
+        return $this->getData('payment_profile_id');
+    }
+
+    /**
+     * @param string $paymentProfileId
+     */
+    public function setPaymentProfileId($paymentProfileId)
+    {
+        $this->setData('payment_profile_id', $paymentProfileId);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPoiType()
+    {
+        return $this->getData('poi_type');
+    }
+
+    /**
+     * @param string $poiType
+     */
+    public function setPoiType($poiType)
+    {
+        $this->setData('poi_type', $poiType);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOneStoneEnabled(): bool
+    {
+        return !empty($this->getPaymentProfileId());
+    }
+
+    /**
      * @return mixed
      */
-    public function getDashUrl() {
-        if (!$this->isAccAndMerchSaved()) {
+    public function getDashUrl()
+    {
+        if (!$this->isDashConfigAccessible()) {
             return null;
         }
         return sprintf(
@@ -311,7 +355,7 @@ class Config extends DataObject
 
         return
             $type === CardInstallments::INSTALLMENTS_FOR_ALL_FLAGS
-            ||  $type === CardInstallments::INSTALLMENTS_LEGACY;
+            || $type === CardInstallments::INSTALLMENTS_LEGACY;
     }
 
     public function getInstallmentType()
@@ -368,7 +412,7 @@ class Config extends DataObject
         if (is_string($tdsMinAmount) && ctype_digit($tdsMinAmount)) {
             return intval($tdsMinAmount);
         }
-        if(is_int($tdsMinAmount)) {
+        if (is_int($tdsMinAmount)) {
             return $tdsMinAmount;
         }
 
@@ -379,10 +423,10 @@ class Config extends DataObject
 
     private function updateGooglepayAccountId($accountId)
     {
-        $googlepayOption = get_option( 'woocommerce_woo-pagarme-payments-googlepay_settings' );
-        if(is_array($googlepayOption)) {
+        $googlepayOption = get_option('woocommerce_woo-pagarme-payments-googlepay_settings');
+        if (is_array($googlepayOption)) {
             $googlepayOption['account_id'] = $accountId;
-            update_option( 'woocommerce_woo-pagarme-payments-googlepay_settings', $googlepayOption );
+            update_option('woocommerce_woo-pagarme-payments-googlepay_settings', $googlepayOption);
         }
     }
 
@@ -411,7 +455,7 @@ class Config extends DataObject
 
     public function log()
     {
-        return new \WC_Logger();
+        return new WC_Logger();
     }
 
     /**
@@ -422,5 +466,4 @@ class Config extends DataObject
     {
         return $this->getData($configKey) === self::ENABLED;
     }
-
 }
