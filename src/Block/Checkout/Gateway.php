@@ -176,7 +176,10 @@ class Gateway extends Template
         global $wp;
 
         if (!isset($wp->query_vars['order-pay'])) {
-            return WC()->cart->total;
+            if (isset(WC()->cart)) {
+                return WC()->cart->total;
+            }
+            return 0;
         }
         $orderId = $wp->query_vars['order-pay'];
         $order = wc_get_order($orderId);
