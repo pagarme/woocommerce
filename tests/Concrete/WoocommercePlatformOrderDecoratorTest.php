@@ -2,6 +2,7 @@
 
 namespace Woocommerce\Pagarme\Tests\Concrete;
 
+use Brain;
 use Mockery;
 use WC_Order;
 use PHPUnit\Framework\TestCase;
@@ -17,9 +18,17 @@ use Pagarme\Core\Payment\Aggregates\Payments\AbstractCreditCardPayment;
  */
 class WoocommercePlatformOrderDecoratorTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        Brain\Monkey\setUp();
+    }
+
     public function tearDown(): void
     {
         Mockery::close();
+        Brain\Monkey\tearDown();
+        parent::tearDown();
     }
 
     public function testGetPaymentMethodCollectionWithTdsAuthenticatedCreditCardPaymentMethodShouldSetAuthenticationNode()
@@ -71,10 +80,11 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
 
     public function testHandleSplitOrderWithCallFilter()
     {
-        require_once("vendor/wordpress/wordpress/src/wp-includes/plugin.php");
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
-        add_filter('pagarme_split_order', function($order, $paymentMethod){
-            return [
+
+        Brain\Monkey\Filters\expectApplied('pagarme_split_order')
+            ->once()
+            ->andReturn([
                 'sellers' => [
                     [
                         'marketplaceCommission' => 400,
@@ -85,8 +95,8 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
                 'marketplace' => [
                     'totalCommission' => 400
                 ]
-            ];
-        }, 10, 2);
+            ]);
+
         $splitReturn = $platformOrderDecorator->handleSplitOrder();
         $this->assertInstanceOf(Split::class, $splitReturn);
     }
@@ -94,10 +104,12 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
     public function testHandleSplitOrderWithWrongCallFilter()
     {
         $this->expectException(\InvalidArgumentException::class);
-        require_once("vendor/wordpress/wordpress/src/wp-includes/plugin.php");
+
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
-        add_filter('pagarme_split_order', function($order, $paymentMethod){
-            return [
+
+        Brain\Monkey\Filters\expectApplied('pagarme_split_order')
+            ->once()
+            ->andReturn([
                 'sellers' => [
                     [
                         'commission'            => 800,
@@ -107,11 +119,11 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
                 'marketplace' => [
                     'totalCommission' => 400
                 ]
-            ];
-        }, 10, 2);
+            ]);
+
         $platformOrderDecorator->handleSplitOrder();
     }
-    
+
 
     private function returnBasicPlatformOrderDecorator()
     {

@@ -53,5 +53,65 @@ if (!defined('WCMP_JS_HANDLER_BASE_NAME')) {
     define('WCMP_JS_HANDLER_BASE_NAME', 'pagarme_scripts_');
 }
 
-// Initialize Brain Monkey for WordPress function mocking
-\Brain\Monkey\setUp();
+// Mock WooCommerce classes that may be needed in tests
+if (!class_exists('WC_Logger')) {
+    /**
+     * Mock WC_Logger class for testing
+     */
+    class WC_Logger
+    {
+        public function add($handle, $message, $level = 'info')
+        {
+            // Mock implementation
+            return true;
+        }
+
+        public function log($level, $message, $context = [])
+        {
+            // Mock implementation
+            return true;
+        }
+
+        public function emergency($message, $context = [])
+        {
+            return $this->log('emergency', $message, $context);
+        }
+
+        public function alert($message, $context = [])
+        {
+            return $this->log('alert', $message, $context);
+        }
+
+        public function critical($message, $context = [])
+        {
+            return $this->log('critical', $message, $context);
+        }
+
+        public function error($message, $context = [])
+        {
+            return $this->log('error', $message, $context);
+        }
+
+        public function warning($message, $context = [])
+        {
+            return $this->log('warning', $message, $context);
+        }
+
+        public function notice($message, $context = [])
+        {
+            return $this->log('notice', $message, $context);
+        }
+
+        public function info($message, $context = [])
+        {
+            return $this->log('info', $message, $context);
+        }
+
+        public function debug($message, $context = [])
+        {
+            return $this->log('debug', $message, $context);
+        }
+    }
+}
+
+// Note: Brain Monkey setup is handled in each test class's setUp() method
