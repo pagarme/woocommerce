@@ -1,0 +1,1293 @@
+<?php
+
+namespace Woocommerce\Pagarme\Tests\Model;
+
+use Brain;
+use Mockery;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use Pagarme\Core\Hub\Services\HubIntegrationService;
+use Pagarme\Core\Kernel\Services\MoneyService;
+use Pagarme\Core\Kernel\ValueObjects\Id\InstallId;
+use Pagarme\Core\Middle\Model\Account\PaymentEnum;
+use WC_Logger;
+use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup as CoreSetup;
+use Woocommerce\Pagarme\Core;
+use Woocommerce\Pagarme\Model\CardInstallments;
+use Woocommerce\Pagarme\Model\Config;
+use Woocommerce\Pagarme\Model\Config\PagarmeCoreConfigManagement;
+use Woocommerce\Pagarme\Model\Config\Source\EnvironmentsTypes;
+
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
+class ConfigTest extends TestCase
+{
+    public function setUp(): void
+    {
+        parent::setUp();
+        Brain\Monkey\setUp();
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        Mockery::close();
+        Brain\Monkey\tearDown();
+    }
+
+    // ==========================================
+    // 1. TESTES DE CONSTRUTOR E INICIALIZAÇÃO
+    // ==========================================
+
+    public function testConstructorWithDefaultParametersShouldInitializeCorrectly()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+
+        $reflectionClass = new ReflectionClass($config);
+        $property = $reflectionClass->getProperty('pagarmeCoreConfigManagement');
+        $property->setAccessible(true);
+        $value = $property->getValue($config);
+
+        $this->assertInstanceOf(PagarmeCoreConfigManagement::class, $value);
+    }
+
+    public function testConstructorWithDataArrayShouldSetDataCorrectly()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $data = [
+            'test_key' => 'test_value',
+            'another_key' => 'another_value'
+        ];
+
+        $config = new Config(null, null, $data);
+
+        $this->assertEquals('test_value', $config->getData('test_key'));
+        $this->assertEquals('another_value', $config->getData('another_key'));
+    }
+
+    public function testInitWithValidOptionsShouldLoadDataFromWordPress()
+    {
+        $optionData = [
+            'enable_pix' => 'yes',
+            'enable_billet' => 'no',
+        ];
+
+        Brain\Monkey\Functions\expect('get_option')
+            ->once()
+            ->andReturn($optionData);
+
+        Brain\Monkey\Functions\expect('add_action')
+            ->once();
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')
+            ->with('settings')
+            ->andReturn('pagarme_settings');
+
+        $config = new Config();
+
+        $this->assertEquals('yes', $config->getData('enable_pix'));
+        $this->assertEquals('no', $config->getData('enable_billet'));
+    }
+
+    public function testInitWithNoOptionsShouldNotLoadData()
+    {
+        Brain\Monkey\Functions\expect('get_option')
+            ->once()
+            ->andReturn(false);
+
+        Brain\Monkey\Functions\expect('add_action')
+            ->never();
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')
+            ->with('settings')
+            ->andReturn('pagarme_settings');
+
+        $config = new Config();
+
+        $this->assertEmpty($config->getData());
+    }
+
+    // ==========================================
+    // 2. TESTES DE SAVE E UPDATE
+    // ==========================================
+
+    public function testSaveWithoutParameterShouldSaveCurrentInstance()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')
+            ->with('settings')
+            ->andReturn('pagarme_settings');
+
+        Brain\Monkey\Functions\expect('update_option')
+            ->once()
+            ->with('pagarme_settings', Mockery::any());
+
+        $configManagementMock = Mockery::mock(PagarmeCoreConfigManagement::class);
+        $configManagementMock->shouldReceive('update')
+            ->once();
+
+        $config = new Config($configManagementMock);
+        $config->save();
+
+        $this->assertTrue(true);
+    }
+
+    public function testSaveWithConfigParameterShouldSaveProvidedConfig()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')
+            ->with('settings')
+            ->andReturn('pagarme_settings');
+
+        $newConfigData = ['test_key' => 'test_value'];
+
+        Brain\Monkey\Functions\expect('update_option')
+            ->once()
+            ->with('pagarme_settings', $newConfigData);
+
+        $configManagementMock = Mockery::mock(PagarmeCoreConfigManagement::class);
+        $configManagementMock->shouldReceive('update')
+            ->once();
+
+        $config = new Config($configManagementMock);
+        $newConfig = new Config(null, null, $newConfigData);
+
+        $config->save($newConfig);
+
+        $this->assertTrue(true);
+    }
+
+    public function testUpdateOptionWithValidPostDataShouldUpdateConfiguration()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')
+            ->with('settings')
+            ->andReturn('pagarme_settings');
+
+        $_POST['pagarme_settings'] = [
+            'enable_pix' => 'yes',
+            'enable_billet' => 'no'
+        ];
+
+        Brain\Monkey\Functions\expect('sanitize_text_field')
+            ->twice()
+            ->andReturnUsing(function ($value) {
+                return $value;
+            });
+
+        Brain\Monkey\Functions\expect('update_option')
+            ->once();
+
+        $configManagementMock = Mockery::mock(PagarmeCoreConfigManagement::class);
+        $configManagementMock->shouldReceive('update')->once();
+
+        $config = new Config($configManagementMock);
+        $config->updateOption();
+
+        $this->assertEquals('yes', $config->getData('enable_pix'));
+        $this->assertEquals('no', $config->getData('enable_billet'));
+
+        unset($_POST['pagarme_settings']);
+    }
+
+    public function testUpdateOptionWithoutPostDataShouldNotUpdate()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')
+            ->with('settings')
+            ->andReturn('pagarme_settings');
+
+        Brain\Monkey\Functions\expect('update_option')
+            ->never();
+
+        $configManagementMock = Mockery::mock(PagarmeCoreConfigManagement::class);
+        $configManagementMock->shouldReceive('update')->never();
+
+        $config = new Config($configManagementMock);
+        $config->updateOption();
+
+        $this->assertTrue(true);
+    }
+
+    // ==========================================
+    // 3. TESTES DE DETECÇÃO DE SANDBOX MODE
+    // ==========================================
+
+    public function testGetIsSandboxModeWithSandboxEnvironmentShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('hub_environment', Config::HUB_SANDBOX_ENVIRONMENT);
+
+        $result = $config->getIsSandboxMode();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetIsSandboxModeWithTestSecretKeyShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('production_secret_key', 'sk_test_abc123xyz');
+        $config->setData('hub_environment', 'Production');
+
+        $result = $config->getIsSandboxMode();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetIsSandboxModeWithTestPublicKeyShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('production_public_key', 'pk_test_abc123xyz');
+        $config->setData('hub_environment', 'Production');
+        $config->setData('production_secret_key', 'sk_live_abc123xyz');
+
+        $result = $config->getIsSandboxMode();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetIsSandboxModeWithProductionKeysShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('production_secret_key', 'sk_live_abc123xyz');
+        $config->setData('production_public_key', 'pk_live_abc123xyz');
+        $config->setData('hub_environment', 'Production');
+
+        $result = $config->getIsSandboxMode();
+
+        $this->assertFalse($result);
+    }
+
+    // ==========================================
+    // 4. TESTES DE HUB URLS
+    // ==========================================
+
+    public function testGetHubUrlWithoutInstallIdShouldReturnIntegrateUrl()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $coreSetupMock = Mockery::mock('alias:' . CoreSetup::class);
+        $coreSetupMock->shouldReceive('getHubAppPublicAppKey')
+            ->andReturn('test_app_id');
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('getHubUrl')
+            ->andReturn('https://test.site/hub');
+
+        $installIdMock = Mockery::mock(InstallId::class);
+        $installIdMock->shouldReceive('getValue')
+            ->andReturn('install_token_123');
+
+        $hubServiceMock = Mockery::mock('overload:' . HubIntegrationService::class);
+        $hubServiceMock->shouldReceive('startHubIntegration')
+            ->andReturn($installIdMock);
+
+        $config = new Config();
+        $config->setData('hub_install_id', null);
+
+        $result = $config->getHubUrl();
+
+        $this->assertStringContainsString('https://hub.pagar.me/apps/test_app_id/authorize', $result);
+        $this->assertStringContainsString('install_token=install_token_123', $result);
+    }
+
+    public function testGetHubUrlWithInstallIdShouldReturnViewIntegrationUrl()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $coreSetupMock = Mockery::mock('alias:' . CoreSetup::class);
+        $coreSetupMock->shouldReceive('getHubAppPublicAppKey')
+            ->andReturn('test_app_id');
+
+        $config = new Config();
+        $config->setData('hub_install_id', 'install_123');
+
+        $result = $config->getHubUrl();
+
+        $this->assertEquals('https://hub.pagar.me/apps/test_app_id/edit/install_123', $result);
+    }
+
+    // ==========================================
+    // 5. TESTES DE DASH CONFIGURATION
+    // ==========================================
+
+    public function testIsDashConfigAccessibleWithPaymentProfileIdShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('payment_profile_id', 'profile_123');
+
+        $result = $config->isDashConfigAccessible();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsDashConfigAccessibleWithMerchantAndAccountIdShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('merchant_id', 'merchant_123');
+        $config->setData('account_id', 'account_123');
+
+        $result = $config->isDashConfigAccessible();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsDashConfigAccessibleWithoutRequiredDataShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+
+        $result = $config->isDashConfigAccessible();
+
+        $this->assertFalse($result);
+    }
+
+    public function testGetDashUrlWithValidConfigShouldReturnFormattedUrl()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('merchant_id', 'merchant_123');
+        $config->setData('account_id', 'account_456');
+
+        $result = $config->getDashUrl();
+
+        $this->assertEquals('https://dash.pagar.me/merchant_123/account_456/', $result);
+    }
+
+    public function testGetDashUrlWithoutAccessShouldReturnNull()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+
+        $result = $config->getDashUrl();
+
+        $this->assertNull($result);
+    }
+
+    // ==========================================
+    // 6. TESTES DE KEYS (PUBLIC/SECRET)
+    // ==========================================
+
+    public function testGetPublicKeyInProductionShouldReturnProductionKey()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('production_public_key', 'pk_live_production');
+        $config->setData('sandbox_public_key', 'pk_test_sandbox');
+        $config->setData('hub_environment', 'Production');
+
+        $result = $config->getPublicKey();
+
+        $this->assertEquals('pk_live_production', $result);
+    }
+
+    public function testGetPublicKeyInSandboxShouldReturnSandboxKey()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('production_public_key', 'pk_live_production');
+        $config->setData('sandbox_public_key', 'pk_test_sandbox');
+        $config->setData('hub_environment', EnvironmentsTypes::SANDBOX_VALUE);
+
+        $result = $config->getPublicKey();
+
+        $this->assertEquals('pk_test_sandbox', $result);
+    }
+
+    public function testGetPublicKeyInSandboxWithoutSandboxKeyShouldReturnProductionKey()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('production_public_key', 'pk_live_production');
+        $config->setData('hub_environment', EnvironmentsTypes::SANDBOX_VALUE);
+
+        $result = $config->getPublicKey();
+
+        $this->assertEquals('pk_live_production', $result);
+    }
+
+    public function testGetSecretKeyInProductionShouldReturnProductionKey()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('production_secret_key', 'sk_live_production');
+        $config->setData('sandbox_secret_key', 'sk_test_sandbox');
+        $config->setData('hub_environment', 'Production');
+
+        $result = $config->getSecretKey();
+
+        $this->assertEquals('sk_live_production', $result);
+    }
+
+    public function testGetSecretKeyInSandboxShouldReturnSandboxKey()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('production_secret_key', 'sk_live_production');
+        $config->setData('sandbox_secret_key', 'sk_test_sandbox');
+        $config->setData('hub_environment', EnvironmentsTypes::SANDBOX_VALUE);
+
+        $result = $config->getSecretKey();
+
+        $this->assertEquals('sk_test_sandbox', $result);
+    }
+
+    // ==========================================
+    // 7. TESTES DE CARD OPERATIONS
+    // ==========================================
+
+    public function testGetCardOperationForCoreWithOperationType2ShouldReturnAuthAndCapture()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('cc_operation_type', 2);
+
+        $result = $config->getCardOperationForCore();
+
+        $this->assertEquals('auth_and_capture', $result);
+    }
+
+    public function testGetCardOperationForCoreWithOperationType1ShouldReturnAuthOnly()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('cc_operation_type', 1);
+
+        $result = $config->getCardOperationForCore();
+
+        $this->assertEquals('auth_only', $result);
+    }
+
+    public function testGetCcFlagsWithDataShouldReturnArray()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $flags = ['visa', 'mastercard', 'elo'];
+
+        $config = new Config();
+        $config->setData('cc_flags', $flags);
+
+        $result = $config->getCcFlags();
+
+        $this->assertEquals($flags, $result);
+    }
+
+    public function testGetCcFlagsWithoutDataShouldReturnEmptyArray()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+
+        $result = $config->getCcFlags();
+
+        $this->assertEquals([], $result);
+    }
+
+    // ==========================================
+    // 8. TESTES DE PAYMENT METHODS ENABLED
+    // ==========================================
+
+    public function testIsPixEnabledWithYesValueShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_pix', Config::ENABLED);
+
+        $result = $config->isPixEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsPixEnabledWithNoValueShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_pix', 'no');
+
+        $result = $config->isPixEnabled();
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsBilletEnabledWithYesValueShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_billet', Config::ENABLED);
+
+        $result = $config->isBilletEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsCreditCardEnabledWithYesValueShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_credit_card', Config::ENABLED);
+
+        $result = $config->isCreditCardEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsVoucherEnabledWithYesValueShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_voucher', Config::ENABLED);
+
+        $result = $config->isVoucherEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsTwoCreditCardEnabledWithYesValueShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('multimethods_2_cards', Config::ENABLED);
+
+        $result = $config->isTwoCreditCardEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsBilletAndCreditCardEnabledWithYesValueShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('multimethods_billet_card', Config::ENABLED);
+
+        $result = $config->isBilletAndCreditCardEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    // ==========================================
+    // 9. TESTES DE COMPOSITE METHODS
+    // ==========================================
+
+    public function testIsAnyBilletMethodEnabledWithBilletEnabledShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_billet', Config::ENABLED);
+
+        $result = $config->isAnyBilletMethodEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsAnyBilletMethodEnabledWithBilletAndCardEnabledShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('multimethods_billet_card', Config::ENABLED);
+
+        $result = $config->isAnyBilletMethodEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsAnyBilletMethodEnabledWithAllDisabledShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_billet', 'no');
+        $config->setData('multimethods_billet_card', 'no');
+
+        $result = $config->isAnyBilletMethodEnabled();
+
+        $this->assertFalse($result);
+    }
+
+    public function testIsAnyCreditCardMethodEnabledWithCreditCardEnabledShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_credit_card', Config::ENABLED);
+
+        $result = $config->isAnyCreditCardMethodEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsAnyCreditCardMethodEnabledWithTwoCardsEnabledShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('multimethods_2_cards', Config::ENABLED);
+
+        $result = $config->isAnyCreditCardMethodEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsAnyCreditCardMethodEnabledWithBilletAndCardEnabledShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('multimethods_billet_card', Config::ENABLED);
+
+        $result = $config->isAnyCreditCardMethodEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    // ==========================================
+    // 10. TESTES DE AVAILABLE PAYMENT METHODS
+    // ==========================================
+
+    public function testAvailablePaymentMethodsShouldReturnCorrectArray()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_pix', Config::ENABLED);
+        $config->setData('enable_billet', Config::ENABLED);
+        $config->setData('enable_credit_card', Config::ENABLED);
+        $config->setData('enable_voucher', Config::ENABLED);
+
+        $result = $config->availablePaymentMethods();
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey(PaymentEnum::PIX, $result);
+        $this->assertArrayHasKey(PaymentEnum::BILLET, $result);
+        $this->assertArrayHasKey(PaymentEnum::CREDIT_CARD, $result);
+        $this->assertArrayHasKey(PaymentEnum::VOUCHER, $result);
+    }
+
+    public function testAvailablePaymentMethodsWithAllEnabledShouldReturnAllTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_pix', Config::ENABLED);
+        $config->setData('enable_billet', Config::ENABLED);
+        $config->setData('enable_credit_card', Config::ENABLED);
+        $config->setData('enable_voucher', Config::ENABLED);
+
+        $result = $config->availablePaymentMethods();
+
+        $this->assertTrue($result[PaymentEnum::PIX]);
+        $this->assertTrue($result[PaymentEnum::BILLET]);
+        $this->assertTrue($result[PaymentEnum::CREDIT_CARD]);
+        $this->assertTrue($result[PaymentEnum::VOUCHER]);
+    }
+
+    public function testAvailablePaymentMethodsWithAllDisabledShouldReturnAllFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_pix', 'no');
+        $config->setData('enable_billet', 'no');
+        $config->setData('enable_credit_card', 'no');
+        $config->setData('enable_voucher', 'no');
+
+        $result = $config->availablePaymentMethods();
+
+        $this->assertFalse($result[PaymentEnum::PIX]);
+        $this->assertFalse($result[PaymentEnum::BILLET]);
+        $this->assertFalse($result[PaymentEnum::CREDIT_CARD]);
+        $this->assertFalse($result[PaymentEnum::VOUCHER]);
+    }
+
+    // ==========================================
+    // 11. TESTES DE TDS (3D SECURE)
+    // ==========================================
+
+    public function testIsTdsEnabledWithYesValueShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('tds_enabled', Config::ENABLED);
+
+        $result = $config->isTdsEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetTdsMinAmountWithEmptyValueShouldReturnZero()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('tds_min_amount', '');
+
+        $result = $config->getTdsMinAmount();
+
+        $this->assertEquals(0, $result);
+    }
+
+    public function testGetTdsMinAmountWithNumericStringShouldReturnInteger()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('tds_min_amount', '100');
+
+        $result = $config->getTdsMinAmount();
+
+        $this->assertEquals(100, $result);
+    }
+
+    public function testGetTdsMinAmountWithIntegerShouldReturnInteger()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('tds_min_amount', 150);
+
+        $result = $config->getTdsMinAmount();
+
+        $this->assertEquals(150, $result);
+    }
+
+    public function testGetTdsMinAmountWithFormattedStringShouldConvertCorrectly()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $moneyServiceMock = Mockery::mock('overload:' . MoneyService::class);
+        $moneyServiceMock->shouldReceive('removeSeparators')
+            ->with('1.234,56')
+            ->andReturn('123456');
+        $moneyServiceMock->shouldReceive('centsToFloat')
+            ->with('123456')
+            ->andReturn(1234.56);
+
+        $config = new Config();
+        $config->setData('tds_min_amount', '1.234,56');
+
+        $result = $config->getTdsMinAmount();
+
+        $this->assertEquals(1234.56, $result);
+    }
+
+    // ==========================================
+    // 12. TESTES DE SETTERS E GETTERS ESPECÍFICOS
+    // ==========================================
+
+    public function testSetAccountIdShouldSetDataAndUpdateGooglepay()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => ['account_id' => 'old_account'],
+        ]);
+
+        Brain\Monkey\Functions\expect('update_option')
+            ->once()
+            ->with('woocommerce_woo-pagarme-payments-googlepay_settings', Mockery::on(function ($arg) {
+                return is_array($arg) && $arg['account_id'] === 'acc_123';
+            }));
+
+        $config = new Config();
+        $config->setAccountId('acc_123');
+
+        $this->assertEquals('acc_123', $config->getData('account_id'));
+    }
+
+    public function testSetAccountIdWithoutGooglepayOptionShouldOnlySetData()
+    {
+        Brain\Monkey\Functions\expect('get_option')
+            ->twice()
+            ->andReturn(false);
+
+        Brain\Monkey\Functions\expect('update_option')
+            ->never();
+
+        $config = new Config();
+        $config->setAccountId('acc_123');
+
+        $this->assertEquals('acc_123', $config->getData('account_id'));
+    }
+
+    public function testSetPaymentProfileIdShouldSetDataCorrectly()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setPaymentProfileId('profile_123');
+
+        $this->assertEquals('profile_123', $config->getData('payment_profile_id'));
+    }
+
+    public function testSetPoiTypeShouldSetDataCorrectly()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setPoiType('type_123');
+
+        $this->assertEquals('type_123', $config->getData('poi_type'));
+    }
+
+    public function testGetPaymentProfileIdShouldReturnStoredValue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('payment_profile_id', 'profile_456');
+
+        $result = $config->getPaymentProfileId();
+
+        $this->assertEquals('profile_456', $result);
+    }
+
+    public function testGetPoiTypeShouldReturnStoredValue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('poi_type', 'type_456');
+
+        $result = $config->getPoiType();
+
+        $this->assertEquals('type_456', $result);
+    }
+
+    // ==========================================
+    // 13. TESTES DE ONESTONE
+    // ==========================================
+
+    public function testIsOneStoneEnabledWithPaymentProfileIdShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('payment_profile_id', 'profile_123');
+
+        $result = $config->isOneStoneEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsOneStoneEnabledWithoutPaymentProfileIdShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+
+        $result = $config->isOneStoneEnabled();
+
+        $this->assertFalse($result);
+    }
+
+    // ==========================================
+    // 14. TESTES DE INSTALLMENTS
+    // ==========================================
+
+    public function testGetIsInstallmentsDefaultConfigWithLegacyTypeShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('cc_installment_type', CardInstallments::INSTALLMENTS_LEGACY);
+
+        $result = $config->getIsInstallmentsDefaultConfig();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetIsInstallmentsDefaultConfigWithAllFlagsTypeShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('cc_installment_type', CardInstallments::INSTALLMENTS_FOR_ALL_FLAGS);
+
+        $result = $config->getIsInstallmentsDefaultConfig();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetIsInstallmentsDefaultConfigWithOtherTypeShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('cc_installment_type', CardInstallments::INSTALLMENTS_BY_FLAG);
+
+        $result = $config->getIsInstallmentsDefaultConfig();
+
+        $this->assertFalse($result);
+    }
+
+    public function testGetInstallmentTypeShouldReturnStoredValue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('cc_installment_type', CardInstallments::INSTALLMENTS_BY_FLAG);
+
+        $result = $config->getInstallmentType();
+
+        $this->assertEquals(CardInstallments::INSTALLMENTS_BY_FLAG, $result);
+    }
+
+    // ==========================================
+    // 15. TESTES DE FEATURE FLAGS AUXILIARES
+    // ==========================================
+
+    public function testGetMulticustomersShouldCheckMulticustomersFlag()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('multicustomers', Config::ENABLED);
+
+        $result = $config->getMulticustomers();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetModifyAddressShouldCheckModifyAddressFlag()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('modify_address', Config::ENABLED);
+
+        $result = $config->getModifyAddress();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetAllowNoAddressShouldCheckAllowNoAddressFlag()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('allow_no_address', Config::ENABLED);
+
+        $result = $config->getAllowNoAddress();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetCcAllowSaveShouldCheckCcAllowSaveFlag()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('cc_allow_save', Config::ENABLED);
+
+        $result = $config->getCcAllowSave();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetVoucherCardWalletShouldCheckVoucherCardWalletFlag()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('voucher_card_wallet', Config::ENABLED);
+
+        $result = $config->getVoucherCardWallet();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetEnableLogsShouldCheckEnableLogsFlag()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('enable_logs', Config::ENABLED);
+
+        $result = $config->getEnableLogs();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetIsGatewayIntegrationTypeShouldCheckFlag()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('is_gateway_integration_type', Config::ENABLED);
+
+        $result = $config->getIsGatewayIntegrationType();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetAntifraudEnabledShouldCheckAntifraudEnabledFlag()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('antifraud_enabled', Config::ENABLED);
+
+        $result = $config->getAntifraudEnabled();
+
+        $this->assertTrue($result);
+    }
+
+    // ==========================================
+    // 16. TESTES DE VOUCHER PSP
+    // ==========================================
+
+    public function testGetIsVoucherPSPWithVoucherTrueShouldReturnTrue()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('is_payment_psp', ['voucher' => true]);
+
+        $result = $config->getIsVoucherPSP();
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetIsVoucherPSPWithVoucherFalseShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('is_payment_psp', ['voucher' => false]);
+
+        $result = $config->getIsVoucherPSP();
+
+        $this->assertFalse($result);
+    }
+
+    public function testGetIsVoucherPSPWithoutVoucherKeyShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+        $config->setData('is_payment_psp', ['credit_card' => true]);
+
+        $result = $config->getIsVoucherPSP();
+
+        $this->assertFalse($result);
+    }
+
+    // ==========================================
+    // 17. TESTES DE LOGGER
+    // ==========================================
+
+    public function testLogShouldReturnWCLoggerInstance()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $config = new Config();
+
+        $result = $config->log();
+
+        $this->assertInstanceOf(WC_Logger::class, $result);
+    }
+
+    // ==========================================
+    // 18. TESTES DE OPTION KEY
+    // ==========================================
+
+    public function testGetOptionKeyShouldReturnPrefixedSettingsKey()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')
+            ->with('settings')
+            ->andReturn('pagarme_settings');
+
+        $config = new Config();
+
+        $result = $config->getOptionKey();
+
+        $this->assertEquals('pagarme_settings', $result);
+    }
+}
