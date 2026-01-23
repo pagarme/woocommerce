@@ -82,20 +82,25 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
     {
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
 
-        Brain\Monkey\Filters\expectApplied('pagarme_split_order')
-            ->once()
-            ->andReturn([
-                'sellers' => [
-                    [
-                        'marketplaceCommission' => 400,
-                        'commission'            => 800,
-                        'pagarmeId'             => "re_xxxxxxxxxxxxxxx"
-                    ]
-                ],
-                'marketplace' => [
-                    'totalCommission' => 400
-                ]
-            ]);
+        // Mock do apply_filters para simular o filtro sendo aplicado
+        Brain\Monkey\Functions\when('apply_filters')
+            ->alias(function($filter, $value, ...$args) {
+                if ($filter === 'pagarme_split_order') {
+                    return [
+                        'sellers' => [
+                            [
+                                'marketplaceCommission' => 400,
+                                'commission'            => 800,
+                                'pagarmeId'             => "re_xxxxxxxxxxxxxxx"
+                            ]
+                        ],
+                        'marketplace' => [
+                            'totalCommission' => 400
+                        ]
+                    ];
+                }
+                return $value;
+            });
 
         $splitReturn = $platformOrderDecorator->handleSplitOrder();
         $this->assertInstanceOf(Split::class, $splitReturn);
@@ -107,19 +112,25 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
 
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
 
-        Brain\Monkey\Filters\expectApplied('pagarme_split_order')
-            ->once()
-            ->andReturn([
-                'sellers' => [
-                    [
-                        'commission'            => 800,
-                        'pagarmeId'             => "re_xxxxxxxxxxxxxxx"
-                    ]
-                ],
-                'marketplace' => [
-                    'totalCommission' => 400
-                ]
-            ]);
+        // Mock do apply_filters para simular o filtro retornando dados inválidos
+        Brain\Monkey\Functions\when('apply_filters')
+            ->alias(function($filter, $value, ...$args) {
+                if ($filter === 'pagarme_split_order') {
+                    return [
+                        'sellers' => [
+                            [
+                                'commission'            => 800,
+                                'pagarmeId'             => "re_xxxxxxxxxxxxxxx"
+                                // Faltando 'marketplaceCommission' - isso deve causar InvalidArgumentException
+                            ]
+                        ],
+                        'marketplace' => [
+                            'totalCommission' => 400
+                        ]
+                    ];
+                }
+                return $value;
+            });
 
         $platformOrderDecorator->handleSplitOrder();
     }

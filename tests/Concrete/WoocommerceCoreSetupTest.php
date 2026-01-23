@@ -36,11 +36,13 @@ class WoocommerceCoreSetupTest extends TestCase
 
     public function testMarketplaceConfigWithCallFilter()
     {
-        Brain\Monkey\Filters\expectApplied('pagarme_marketplace_config')
-            ->once()
-            ->andReturnUsing(function($object) {
-                $object->mainRecipientId = "re_xxxxxxxxx0x00000xxxx000xx";
-                return $object;
+        // Mock do apply_filters para simular o filtro sendo aplicado
+        Brain\Monkey\Functions\when('apply_filters')
+            ->alias(function($filter, $value, ...$args) {
+                if ($filter === 'pagarme_marketplace_config' && $value !== null) {
+                    $value->mainRecipientId = "re_xxxxxxxxx0x00000xxxx000xx";
+                }
+                return $value;
             });
 
         $configMock = $this->getMockForConfiguration();
