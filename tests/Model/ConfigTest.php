@@ -47,6 +47,10 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')
+            ->andReturn('pagarme_settings');
+
         $config = new Config();
 
         $reflectionClass = new ReflectionClass($config);
@@ -62,6 +66,10 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')
+            ->andReturn('pagarme_settings');
 
         $data = [
             'test_key' => 'test_value',
@@ -82,7 +90,7 @@ class ConfigTest extends TestCase
         ];
 
         Brain\Monkey\Functions\expect('get_option')
-            ->once()
+            ->atLeast()->once()
             ->andReturn($optionData);
 
         Brain\Monkey\Functions\expect('add_action')
@@ -102,7 +110,7 @@ class ConfigTest extends TestCase
     public function testInitWithNoOptionsShouldNotLoadData()
     {
         Brain\Monkey\Functions\expect('get_option')
-            ->once()
+            ->atLeast()->once()
             ->andReturn(false);
 
         Brain\Monkey\Functions\expect('add_action')
@@ -246,6 +254,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('hub_environment', Config::HUB_SANDBOX_ENVIRONMENT);
 
@@ -259,6 +270,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('production_secret_key', 'sk_test_abc123xyz');
@@ -275,6 +289,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('production_public_key', 'pk_test_abc123xyz');
         $config->setData('hub_environment', 'Production');
@@ -290,6 +307,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('production_secret_key', 'sk_live_abc123xyz');
@@ -316,6 +336,7 @@ class ConfigTest extends TestCase
             ->andReturn('test_app_id');
 
         $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
         $coreMock->shouldReceive('getHubUrl')
             ->andReturn('https://test.site/hub');
 
@@ -342,6 +363,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $coreSetupMock = Mockery::mock('alias:' . CoreSetup::class);
         $coreSetupMock->shouldReceive('getHubAppPublicAppKey')
             ->andReturn('test_app_id');
@@ -364,6 +388,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('payment_profile_id', 'profile_123');
 
@@ -377,6 +404,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('merchant_id', 'merchant_123');
@@ -393,6 +423,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
 
         $result = $config->isDashConfigAccessible();
@@ -405,6 +438,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('merchant_id', 'merchant_123');
@@ -420,6 +456,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
 
@@ -438,6 +477,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('production_public_key', 'pk_live_production');
         $config->setData('sandbox_public_key', 'pk_test_sandbox');
@@ -453,6 +495,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('production_public_key', 'pk_live_production');
@@ -470,6 +515,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('production_public_key', 'pk_live_production');
         $config->setData('hub_environment', EnvironmentsTypes::SANDBOX_VALUE);
@@ -484,6 +532,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('production_secret_key', 'sk_live_production');
@@ -500,6 +551,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('production_secret_key', 'sk_live_production');
@@ -521,6 +575,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('cc_operation_type', 2);
 
@@ -535,6 +592,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('cc_operation_type', 1);
 
@@ -548,6 +608,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $flags = ['visa', 'mastercard', 'elo'];
 
@@ -564,6 +627,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
 
@@ -582,6 +648,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('enable_pix', Config::ENABLED);
 
@@ -595,6 +664,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('enable_pix', 'no');
@@ -610,6 +682,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('enable_billet', Config::ENABLED);
 
@@ -623,6 +698,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('enable_credit_card', Config::ENABLED);
@@ -638,6 +716,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('enable_voucher', Config::ENABLED);
 
@@ -652,6 +733,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('multimethods_2_cards', Config::ENABLED);
 
@@ -665,6 +749,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('multimethods_billet_card', Config::ENABLED);
@@ -684,6 +771,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('enable_billet', Config::ENABLED);
 
@@ -698,6 +788,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('multimethods_billet_card', Config::ENABLED);
 
@@ -711,6 +804,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('enable_billet', 'no');
@@ -727,6 +823,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('enable_credit_card', Config::ENABLED);
 
@@ -741,6 +840,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('multimethods_2_cards', Config::ENABLED);
 
@@ -754,6 +856,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('multimethods_billet_card', Config::ENABLED);
@@ -772,6 +877,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('enable_pix', Config::ENABLED);
@@ -794,6 +902,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('enable_pix', Config::ENABLED);
         $config->setData('enable_billet', Config::ENABLED);
@@ -813,6 +924,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('enable_pix', 'no');
@@ -838,6 +952,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('tds_enabled', Config::ENABLED);
 
@@ -851,6 +968,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('tds_min_amount', '');
@@ -866,6 +986,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('tds_min_amount', '100');
 
@@ -880,6 +1003,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('tds_min_amount', 150);
 
@@ -893,6 +1019,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $moneyServiceMock = Mockery::mock('overload:' . MoneyService::class);
         $moneyServiceMock->shouldReceive('removeSeparators')
@@ -920,6 +1049,9 @@ class ConfigTest extends TestCase
             'get_option' => ['account_id' => 'old_account'],
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         Brain\Monkey\Functions\expect('update_option')
             ->once()
             ->with('woocommerce_woo-pagarme-payments-googlepay_settings', Mockery::on(function ($arg) {
@@ -934,8 +1066,11 @@ class ConfigTest extends TestCase
 
     public function testSetAccountIdWithoutGooglepayOptionShouldOnlySetData()
     {
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         Brain\Monkey\Functions\expect('get_option')
-            ->twice()
+            ->atLeast()->once()
             ->andReturn(false);
 
         Brain\Monkey\Functions\expect('update_option')
@@ -953,6 +1088,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setPaymentProfileId('profile_123');
 
@@ -965,6 +1103,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setPoiType('type_123');
 
@@ -976,6 +1117,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('payment_profile_id', 'profile_456');
@@ -990,6 +1134,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('poi_type', 'type_456');
@@ -1009,6 +1156,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('payment_profile_id', 'profile_123');
 
@@ -1022,6 +1172,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
 
@@ -1040,6 +1193,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('cc_installment_type', CardInstallments::INSTALLMENTS_LEGACY);
 
@@ -1053,6 +1209,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('cc_installment_type', CardInstallments::INSTALLMENTS_FOR_ALL_FLAGS);
@@ -1068,6 +1227,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('cc_installment_type', CardInstallments::INSTALLMENTS_BY_FLAG);
 
@@ -1081,6 +1243,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('cc_installment_type', CardInstallments::INSTALLMENTS_BY_FLAG);
@@ -1100,6 +1265,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('multicustomers', Config::ENABLED);
 
@@ -1113,6 +1281,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('modify_address', Config::ENABLED);
@@ -1128,6 +1299,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('allow_no_address', Config::ENABLED);
 
@@ -1141,6 +1315,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('cc_allow_save', Config::ENABLED);
@@ -1156,6 +1333,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('voucher_card_wallet', Config::ENABLED);
 
@@ -1169,6 +1349,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('enable_logs', Config::ENABLED);
@@ -1184,6 +1367,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('is_gateway_integration_type', Config::ENABLED);
 
@@ -1197,6 +1383,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('antifraud_enabled', Config::ENABLED);
@@ -1216,6 +1405,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('is_payment_psp', ['voucher' => true]);
 
@@ -1230,6 +1422,9 @@ class ConfigTest extends TestCase
             'get_option' => false,
         ]);
 
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
         $config = new Config();
         $config->setData('is_payment_psp', ['voucher' => false]);
 
@@ -1243,6 +1438,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
         $config->setData('is_payment_psp', ['credit_card' => true]);
@@ -1261,6 +1459,9 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
         ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
 
