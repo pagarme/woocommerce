@@ -80,6 +80,10 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
 
     public function testHandleSplitOrderWithCallFilter()
     {
+        // Mock da variável global $wp_filter para simular a existência do filtro
+        global $wp_filter;
+        $wp_filter['pagarme_split_order'] = true;
+
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
 
         // Mock do apply_filters para simular o filtro sendo aplicado
@@ -104,11 +108,18 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
 
         $splitReturn = $platformOrderDecorator->handleSplitOrder();
         $this->assertInstanceOf(Split::class, $splitReturn);
+
+        // Limpar a variável global após o teste
+        unset($wp_filter['pagarme_split_order']);
     }
 
     public function testHandleSplitOrderWithWrongCallFilter()
     {
         $this->expectException(\InvalidArgumentException::class);
+
+        // Mock da variável global $wp_filter para simular a existência do filtro
+        global $wp_filter;
+        $wp_filter['pagarme_split_order'] = true;
 
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
 
@@ -132,7 +143,12 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
                 return $value;
             });
 
-        $platformOrderDecorator->handleSplitOrder();
+        try {
+            $platformOrderDecorator->handleSplitOrder();
+        } finally {
+            // Limpar a variável global após o teste
+            unset($wp_filter['pagarme_split_order']);
+        }
     }
 
 
