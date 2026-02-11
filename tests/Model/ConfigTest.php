@@ -36,11 +36,6 @@ class ConfigTest extends TestCase
         Mockery::close();
         Brain\Monkey\tearDown();
     }
-
-    // ==========================================
-    // 1. TESTES DE CONSTRUTOR E INICIALIZAÇÃO
-    // ==========================================
-
     public function testConstructorWithDefaultParametersShouldInitializeCorrectly()
     {
         Brain\Monkey\Functions\stubs([
@@ -125,11 +120,6 @@ class ConfigTest extends TestCase
 
         $this->assertEmpty($config->getData());
     }
-
-    // ==========================================
-    // 2. TESTES DE SAVE E UPDATE
-    // ==========================================
-
     public function testSaveWithoutParameterShouldSaveCurrentInstance()
     {
         Brain\Monkey\Functions\stubs([
@@ -143,16 +133,20 @@ class ConfigTest extends TestCase
 
         Brain\Monkey\Functions\expect('update_option')
             ->once()
-            ->with('pagarme_settings', Mockery::any());
+            ->with('pagarme_settings', Mockery::any())
+            ->andReturn(true);
 
         $configManagementMock = Mockery::mock(PagarmeCoreConfigManagement::class);
         $configManagementMock->shouldReceive('update')
-            ->once();
+            ->once()
+            ->with(Mockery::type(Config::class));
 
         $config = new Config($configManagementMock);
+        $config->setData('test_key', 'test_value');
         $config->save();
 
-        $this->assertTrue(true);
+        $this->assertEquals('test_value', $config->getData('test_key'));
+        $this->addToAssertionCount(1);
     }
 
     public function testSaveWithConfigParameterShouldSaveProvidedConfig()
@@ -170,18 +164,27 @@ class ConfigTest extends TestCase
 
         Brain\Monkey\Functions\expect('update_option')
             ->once()
-            ->with('pagarme_settings', $newConfigData);
+            ->with('pagarme_settings', $newConfigData)
+            ->andReturn(true);
 
         $configManagementMock = Mockery::mock(PagarmeCoreConfigManagement::class);
         $configManagementMock->shouldReceive('update')
-            ->once();
+            ->once()
+            ->with(Mockery::on(function ($arg) use ($newConfigData) {
+                return $arg instanceof Config
+                    && $arg->getData('test_key') === $newConfigData['test_key'];
+            }));
 
         $config = new Config($configManagementMock);
         $newConfig = new Config(null, null, $newConfigData);
 
         $config->save($newConfig);
 
-        $this->assertTrue(true);
+        // Verifica que a nova configuração tem os dados corretos
+        $this->assertEquals('test_value', $newConfig->getData('test_key'));
+
+        // As expectativas do Mockery (once()) serão verificadas automaticamente no tearDown
+        $this->addToAssertionCount(1);
     }
 
     public function testUpdateOptionWithValidPostDataShouldUpdateConfiguration()
@@ -238,10 +241,19 @@ class ConfigTest extends TestCase
         $configManagementMock = Mockery::mock(PagarmeCoreConfigManagement::class);
         $configManagementMock->shouldReceive('update')->never();
 
+        // Garantir que $_POST não contém a chave esperada
+        $originalPost = $_POST;
+        $_POST = [];
+
         $config = new Config($configManagementMock);
         $config->updateOption();
 
-        $this->assertTrue(true);
+        // Restaurar $_POST
+        $_POST = $originalPost;
+
+        // As expectativas do Mockery (never()) serão verificadas automaticamente no tearDown
+        // Se update_option ou update fossem chamados, o teste falharia
+        $this->addToAssertionCount(1);
     }
 
     // ==========================================
