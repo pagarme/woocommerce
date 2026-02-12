@@ -180,10 +180,7 @@ class ConfigTest extends TestCase
 
         $config->save($newConfig);
 
-        // Verifica que a nova configuração tem os dados corretos
         $this->assertEquals('test_value', $newConfig->getData('test_key'));
-
-        // As expectativas do Mockery (once()) serão verificadas automaticamente no tearDown
         $this->addToAssertionCount(1);
     }
 
@@ -241,24 +238,16 @@ class ConfigTest extends TestCase
         $configManagementMock = Mockery::mock(PagarmeCoreConfigManagement::class);
         $configManagementMock->shouldReceive('update')->never();
 
-        // Garantir que $_POST não contém a chave esperada
         $originalPost = $_POST;
         $_POST = [];
 
         $config = new Config($configManagementMock);
         $config->updateOption();
 
-        // Restaurar $_POST
         $_POST = $originalPost;
 
-        // As expectativas do Mockery (never()) serão verificadas automaticamente no tearDown
-        // Se update_option ou update fossem chamados, o teste falharia
         $this->addToAssertionCount(1);
     }
-
-    // ==========================================
-    // 3. TESTES DE DETECÇÃO DE SANDBOX MODE
-    // ==========================================
 
     public function testGetIsSandboxModeWithSandboxEnvironmentShouldReturnTrue()
     {
@@ -307,7 +296,6 @@ class ConfigTest extends TestCase
         $config = new Config();
         $config->setData('production_public_key', 'pk_test_abc123xyz');
         $config->setData('hub_environment', 'Production');
-        $config->setData('production_secret_key', 'sk_live_abc123xyz');
 
         $result = $config->getIsSandboxMode();
 
@@ -324,18 +312,14 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('production_secret_key', 'sk_live_abc123xyz');
-        $config->setData('production_public_key', 'pk_live_abc123xyz');
+        $config->setData('production_secret_key', 'sk_abc123xyz');
+        $config->setData('production_public_key', 'pk_abc123xyz');
         $config->setData('hub_environment', 'Production');
 
         $result = $config->getIsSandboxMode();
 
         $this->assertFalse($result);
     }
-
-    // ==========================================
-    // 4. TESTES DE HUB URLS
-    // ==========================================
 
     public function testGetHubUrlWithoutInstallIdShouldReturnIntegrateUrl()
     {
@@ -390,10 +374,6 @@ class ConfigTest extends TestCase
         $this->assertEquals('https://hub.pagar.me/apps/test_app_id/edit/install_123', $result);
     }
 
-    // ==========================================
-    // 5. TESTES DE DASH CONFIGURATION
-    // ==========================================
-
     public function testIsDashConfigAccessibleWithPaymentProfileIdShouldReturnTrue()
     {
         Brain\Monkey\Functions\stubs([
@@ -404,7 +384,7 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('payment_profile_id', 'profile_123');
+        $config->setData('payment_profile_id', 'pp_123');
 
         $result = $config->isDashConfigAccessible();
 
@@ -421,8 +401,8 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('merchant_id', 'merchant_123');
-        $config->setData('account_id', 'account_123');
+        $config->setData('merchant_id', 'merch_123');
+        $config->setData('account_id', 'acc_123');
 
         $result = $config->isDashConfigAccessible();
 
@@ -455,12 +435,12 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('merchant_id', 'merchant_123');
-        $config->setData('account_id', 'account_456');
+        $config->setData('merchant_id', 'merch_123');
+        $config->setData('account_id', 'acc_456');
 
         $result = $config->getDashUrl();
 
-        $this->assertEquals('https://dash.pagar.me/merchant_123/account_456/', $result);
+        $this->assertEquals('https://dash.pagar.me/merch_123/acc_456/', $result);
     }
 
     public function testGetDashUrlWithoutAccessShouldReturnNull()
@@ -479,10 +459,6 @@ class ConfigTest extends TestCase
         $this->assertNull($result);
     }
 
-    // ==========================================
-    // 6. TESTES DE KEYS (PUBLIC/SECRET)
-    // ==========================================
-
     public function testGetPublicKeyInProductionShouldReturnProductionKey()
     {
         Brain\Monkey\Functions\stubs([
@@ -493,13 +469,13 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('production_public_key', 'pk_live_production');
+        $config->setData('production_public_key', 'pk_production');
         $config->setData('sandbox_public_key', 'pk_test_sandbox');
         $config->setData('hub_environment', 'Production');
 
         $result = $config->getPublicKey();
 
-        $this->assertEquals('pk_live_production', $result);
+        $this->assertEquals('pk_production', $result);
     }
 
     public function testGetPublicKeyInSandboxShouldReturnSandboxKey()
@@ -512,7 +488,7 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('production_public_key', 'pk_live_production');
+        $config->setData('production_public_key', 'pk_production');
         $config->setData('sandbox_public_key', 'pk_test_sandbox');
         $config->setData('hub_environment', EnvironmentsTypes::SANDBOX_VALUE);
 
@@ -531,12 +507,12 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('production_public_key', 'pk_live_production');
+        $config->setData('production_public_key', 'pk_production');
         $config->setData('hub_environment', EnvironmentsTypes::SANDBOX_VALUE);
 
         $result = $config->getPublicKey();
 
-        $this->assertEquals('pk_live_production', $result);
+        $this->assertEquals('pk_production', $result);
     }
 
     public function testGetSecretKeyInProductionShouldReturnProductionKey()
@@ -549,13 +525,13 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('production_secret_key', 'sk_live_production');
+        $config->setData('production_secret_key', 'sk_production');
         $config->setData('sandbox_secret_key', 'sk_test_sandbox');
         $config->setData('hub_environment', 'Production');
 
         $result = $config->getSecretKey();
 
-        $this->assertEquals('sk_live_production', $result);
+        $this->assertEquals('sk_production', $result);
     }
 
     public function testGetSecretKeyInSandboxShouldReturnSandboxKey()
@@ -568,7 +544,7 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('production_secret_key', 'sk_live_production');
+        $config->setData('production_secret_key', 'sk_production');
         $config->setData('sandbox_secret_key', 'sk_test_sandbox');
         $config->setData('hub_environment', EnvironmentsTypes::SANDBOX_VALUE);
 
@@ -576,10 +552,6 @@ class ConfigTest extends TestCase
 
         $this->assertEquals('sk_test_sandbox', $result);
     }
-
-    // ==========================================
-    // 7. TESTES DE CARD OPERATIONS
-    // ==========================================
 
     public function testGetCardOperationForCoreWithOperationType2ShouldReturnAuthAndCapture()
     {
@@ -649,10 +621,6 @@ class ConfigTest extends TestCase
 
         $this->assertEquals([], $result);
     }
-
-    // ==========================================
-    // 8. TESTES DE PAYMENT METHODS ENABLED
-    // ==========================================
 
     public function testIsPixEnabledWithYesValueShouldReturnTrue()
     {
@@ -773,10 +741,6 @@ class ConfigTest extends TestCase
         $this->assertTrue($result);
     }
 
-    // ==========================================
-    // 9. TESTES DE COMPOSITE METHODS
-    // ==========================================
-
     public function testIsAnyBilletMethodEnabledWithBilletEnabledShouldReturnTrue()
     {
         Brain\Monkey\Functions\stubs([
@@ -880,11 +844,26 @@ class ConfigTest extends TestCase
         $this->assertTrue($result);
     }
 
-    // ==========================================
-    // 10. TESTES DE AVAILABLE PAYMENT METHODS
-    // ==========================================
+    public function testIsAnyCreditCardMethodEnabledWithAllDisabledShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
 
-    public function testAvailablePaymentMethodsShouldReturnCorrectArray()
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
+        $config = new Config();
+        $config->setData('enable_credit_card', 'no');
+        $config->setData('multimethods_2_cards', 'no');
+        $config->setData('multimethods_billet_card', 'no');
+
+        $result = $config->isAnyCreditCardMethodEnabled();
+
+        $this->assertFalse($result);
+    }
+
+    public function testAvailablePaymentMethodsShouldReturnCorrectArrayAndAllTrue()
     {
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
@@ -906,24 +885,6 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey(PaymentEnum::BILLET, $result);
         $this->assertArrayHasKey(PaymentEnum::CREDIT_CARD, $result);
         $this->assertArrayHasKey(PaymentEnum::VOUCHER, $result);
-    }
-
-    public function testAvailablePaymentMethodsWithAllEnabledShouldReturnAllTrue()
-    {
-        Brain\Monkey\Functions\stubs([
-            'get_option' => false,
-        ]);
-
-        $coreMock = Mockery::mock('alias:' . Core::class);
-        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
-
-        $config = new Config();
-        $config->setData('enable_pix', Config::ENABLED);
-        $config->setData('enable_billet', Config::ENABLED);
-        $config->setData('enable_credit_card', Config::ENABLED);
-        $config->setData('enable_voucher', Config::ENABLED);
-
-        $result = $config->availablePaymentMethods();
 
         $this->assertTrue($result[PaymentEnum::PIX]);
         $this->assertTrue($result[PaymentEnum::BILLET]);
@@ -954,10 +915,6 @@ class ConfigTest extends TestCase
         $this->assertFalse($result[PaymentEnum::VOUCHER]);
     }
 
-    // ==========================================
-    // 11. TESTES DE TDS (3D SECURE)
-    // ==========================================
-
     public function testIsTdsEnabledWithYesValueShouldReturnTrue()
     {
         Brain\Monkey\Functions\stubs([
@@ -973,6 +930,23 @@ class ConfigTest extends TestCase
         $result = $config->isTdsEnabled();
 
         $this->assertTrue($result);
+    }
+
+    public function testIsTdsEnabledWithNoValueShouldReturnFalse()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+        ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
+        $config = new Config();
+        $config->setData('tds_enabled', 'no');
+
+        $result = $config->isTdsEnabled();
+
+        $this->assertFalse($result);
     }
 
     public function testGetTdsMinAmountWithEmptyValueShouldReturnZero()
@@ -1051,14 +1025,10 @@ class ConfigTest extends TestCase
         $this->assertEquals(1234.56, $result);
     }
 
-    // ==========================================
-    // 12. TESTES DE SETTERS E GETTERS ESPECÍFICOS
-    // ==========================================
-
     public function testSetAccountIdShouldSetDataAndUpdateGooglepay()
     {
         Brain\Monkey\Functions\stubs([
-            'get_option' => ['account_id' => 'old_account'],
+            'get_option' => ['account_id' => 'acc_old'],
         ]);
 
         $coreMock = Mockery::mock('alias:' . Core::class);
@@ -1104,9 +1074,9 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setPaymentProfileId('profile_123');
+        $config->setPaymentProfileId('pp_123');
 
-        $this->assertEquals('profile_123', $config->getData('payment_profile_id'));
+        $this->assertEquals('pp_123', $config->getData('payment_profile_id'));
     }
 
     public function testSetPoiTypeShouldSetDataCorrectly()
@@ -1119,9 +1089,9 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setPoiType('type_123');
+        $config->setPoiType('ecommerce');
 
-        $this->assertEquals('type_123', $config->getData('poi_type'));
+        $this->assertEquals('ecommerce', $config->getData('poi_type'));
     }
 
     public function testGetPaymentProfileIdShouldReturnStoredValue()
@@ -1134,11 +1104,11 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('payment_profile_id', 'profile_456');
+        $config->setData('payment_profile_id', 'pp_456');
 
         $result = $config->getPaymentProfileId();
 
-        $this->assertEquals('profile_456', $result);
+        $this->assertEquals('pp_456', $result);
     }
 
     public function testGetPoiTypeShouldReturnStoredValue()
@@ -1151,16 +1121,12 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('poi_type', 'type_456');
+        $config->setData('poi_type', 'ecommerce');
 
         $result = $config->getPoiType();
 
-        $this->assertEquals('type_456', $result);
+        $this->assertEquals('ecommerce', $result);
     }
-
-    // ==========================================
-    // 13. TESTES DE ONESTONE
-    // ==========================================
 
     public function testIsOneStoneEnabledWithPaymentProfileIdShouldReturnTrue()
     {
@@ -1172,7 +1138,7 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('payment_profile_id', 'profile_123');
+        $config->setData('payment_profile_id', 'pp_123');
 
         $result = $config->isOneStoneEnabled();
 
@@ -1194,10 +1160,6 @@ class ConfigTest extends TestCase
 
         $this->assertFalse($result);
     }
-
-    // ==========================================
-    // 14. TESTES DE INSTALLMENTS
-    // ==========================================
 
     public function testGetIsInstallmentsDefaultConfigWithLegacyTypeShouldReturnTrue()
     {
@@ -1266,10 +1228,6 @@ class ConfigTest extends TestCase
 
         $this->assertEquals(CardInstallments::INSTALLMENTS_BY_FLAG, $result);
     }
-
-    // ==========================================
-    // 15. TESTES DE FEATURE FLAGS AUXILIARES
-    // ==========================================
 
     public function testGetMulticustomersShouldCheckMulticustomersFlag()
     {
@@ -1407,10 +1365,6 @@ class ConfigTest extends TestCase
         $this->assertTrue($result);
     }
 
-    // ==========================================
-    // 16. TESTES DE VOUCHER PSP
-    // ==========================================
-
     public function testGetIsVoucherPSPWithVoucherTrueShouldReturnTrue()
     {
         Brain\Monkey\Functions\stubs([
@@ -1462,10 +1416,6 @@ class ConfigTest extends TestCase
         $this->assertFalse($result);
     }
 
-    // ==========================================
-    // 17. TESTES DE LOGGER
-    // ==========================================
-
     public function testLogShouldReturnWCLoggerInstance()
     {
         Brain\Monkey\Functions\stubs([
@@ -1481,10 +1431,6 @@ class ConfigTest extends TestCase
 
         $this->assertInstanceOf(WC_Logger::class, $result);
     }
-
-    // ==========================================
-    // 18. TESTES DE OPTION KEY
-    // ==========================================
 
     public function testGetOptionKeyShouldReturnPrefixedSettingsKey()
     {
