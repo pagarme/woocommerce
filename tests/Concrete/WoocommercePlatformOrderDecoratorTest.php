@@ -80,13 +80,11 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
 
     public function testHandleSplitOrderWithCallFilter()
     {
-        // Mock da variável global $wp_filter para simular a existência do filtro
         global $wp_filter;
         $wp_filter['pagarme_split_order'] = true;
 
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
 
-        // Mock do apply_filters para simular o filtro sendo aplicado
         Brain\Monkey\Functions\when('apply_filters')
             ->alias(function($filter, $value, ...$args) {
                 if ($filter === 'pagarme_split_order') {
@@ -109,7 +107,6 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
         $splitReturn = $platformOrderDecorator->handleSplitOrder();
         $this->assertInstanceOf(Split::class, $splitReturn);
 
-        // Limpar a variável global após o teste
         unset($wp_filter['pagarme_split_order']);
     }
 
@@ -117,13 +114,11 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        // Mock da variável global $wp_filter para simular a existência do filtro
         global $wp_filter;
         $wp_filter['pagarme_split_order'] = true;
 
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
 
-        // Mock do apply_filters para simular o filtro retornando dados inválidos
         Brain\Monkey\Functions\when('apply_filters')
             ->alias(function($filter, $value, ...$args) {
                 if ($filter === 'pagarme_split_order') {
@@ -132,7 +127,6 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
                             [
                                 'commission'            => 800,
                                 'pagarmeId'             => "re_xxxxxxxxxxxxxxx"
-                                // Faltando 'marketplaceCommission' - isso deve causar InvalidArgumentException
                             ]
                         ],
                         'marketplace' => [
@@ -146,7 +140,6 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
         try {
             $platformOrderDecorator->handleSplitOrder();
         } finally {
-            // Limpar a variável global após o teste
             unset($wp_filter['pagarme_split_order']);
         }
     }

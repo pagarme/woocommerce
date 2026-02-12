@@ -4,15 +4,12 @@
  * PHPUnit bootstrap file for Pagarme Payments for WooCommerce tests
  */
 
-// Load Composer autoloader
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-// Define WordPress constants if not already defined
 if (!defined('ABSPATH')) {
     define('ABSPATH', '/tmp/wordpress/');
 }
 
-// Define plugin constants needed for tests
 if (!defined('WCMP_SLUG')) {
     define('WCMP_SLUG', 'woo-pagarme-payments');
 }
@@ -53,7 +50,6 @@ if (!defined('WCMP_JS_HANDLER_BASE_NAME')) {
     define('WCMP_JS_HANDLER_BASE_NAME', 'pagarme_scripts_');
 }
 
-// Mock WooCommerce classes that may be needed in tests
 if (!class_exists('WC_Logger')) {
     /**
      * Mock WC_Logger class for testing
@@ -62,13 +58,11 @@ if (!class_exists('WC_Logger')) {
     {
         public function add($handle, $message, $level = 'info')
         {
-            // Mock implementation
             return true;
         }
 
         public function log($level, $message, $context = [])
         {
-            // Mock implementation
             return true;
         }
 
@@ -113,5 +107,3 @@ if (!class_exists('WC_Logger')) {
         }
     }
 }
-
-// Note: Brain Monkey setup is handled in each test class's setUp() method

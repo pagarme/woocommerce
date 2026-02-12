@@ -36,11 +36,9 @@ class WoocommerceCoreSetupTest extends TestCase
 
     public function testMarketplaceConfigWithCallFilter()
     {
-        // Mock da variável global $wp_filter para simular a existência do filtro
         global $wp_filter;
         $wp_filter['pagarme_marketplace_config'] = true;
 
-        // Mock do apply_filters para simular o filtro sendo aplicado
         Brain\Monkey\Functions\when('apply_filters')
             ->alias(function($filter, $value, ...$args) {
                 if ($filter === 'pagarme_marketplace_config' && $value !== null) {
@@ -52,7 +50,6 @@ class WoocommerceCoreSetupTest extends TestCase
         $configMock = $this->getMockForConfiguration();
         $this->assertInstanceOf(MarketplaceConfig::class, $configMock->getModuleConfiguration()->getMarketplaceConfig());
 
-        // Limpar a variável global após o teste
         unset($wp_filter['pagarme_marketplace_config']);
     }
 
