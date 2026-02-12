@@ -135,7 +135,7 @@ class Settings
             ]
         ];
 
-        if ($this->config->isDashConfigAccessible()){
+        if ($this->config->isPagarmeDashConfigAccessible()){
             $fields[] = [
                 'fieldObject' => Environment::class,
                 'id' => 'hub_environment',

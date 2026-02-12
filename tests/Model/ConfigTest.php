@@ -374,7 +374,7 @@ class ConfigTest extends TestCase
         $this->assertEquals('https://hub.pagar.me/apps/test_app_id/edit/install_123', $result);
     }
 
-    public function testIsDashConfigAccessibleWithPaymentProfileIdShouldReturnTrue()
+    public function testIsDashConfigAccessibleWithPaymentProfileIdShouldReturnFalse()
     {
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
@@ -386,9 +386,9 @@ class ConfigTest extends TestCase
         $config = new Config();
         $config->setData('payment_profile_id', 'pp_123');
 
-        $result = $config->isDashConfigAccessible();
+        $result = $config->isPagarmeDashConfigAccessible();
 
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 
     public function testIsDashConfigAccessibleWithMerchantAndAccountIdShouldReturnTrue()
@@ -404,7 +404,7 @@ class ConfigTest extends TestCase
         $config->setData('merchant_id', 'merch_123');
         $config->setData('account_id', 'acc_123');
 
-        $result = $config->isDashConfigAccessible();
+        $result = $config->isPagarmeDashConfigAccessible();
 
         $this->assertTrue($result);
     }
@@ -420,7 +420,7 @@ class ConfigTest extends TestCase
 
         $config = new Config();
 
-        $result = $config->isDashConfigAccessible();
+        $result = $config->isPagarmeDashConfigAccessible();
 
         $this->assertFalse($result);
     }
@@ -438,7 +438,7 @@ class ConfigTest extends TestCase
         $config->setData('merchant_id', 'merch_123');
         $config->setData('account_id', 'acc_456');
 
-        $result = $config->getDashUrl();
+        $result = $config->getPagarmeDashUrl();
 
         $this->assertEquals('https://dash.pagar.me/merch_123/acc_456/', $result);
     }
@@ -454,7 +454,7 @@ class ConfigTest extends TestCase
 
         $config = new Config();
 
-        $result = $config->getDashUrl();
+        $result = $config->getPagarmeDashUrl();
 
         $this->assertNull($result);
     }

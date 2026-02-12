@@ -200,10 +200,9 @@ class Config extends DataObject
     /**
      * @return bool
      */
-    public function isDashConfigAccessible(): bool
+    public function isPagarmeDashConfigAccessible(): bool
     {
-        return $this->getPaymentProfileId()
-            || ($this->getMerchantId() && $this->getAccountId());
+        return $this->getMerchantId() && $this->getAccountId();
     }
 
     public function setAccountId($accountId)
@@ -255,9 +254,9 @@ class Config extends DataObject
     /**
      * @return mixed
      */
-    public function getDashUrl()
+    public function getPagarmeDashUrl()
     {
-        if (!$this->isDashConfigAccessible()) {
+        if (!$this->isPagarmeDashConfigAccessible()) {
             return null;
         }
         return sprintf(

@@ -136,7 +136,7 @@ class HubAccounts
     private function getHubNoticeButtons($dashPage)
     {
         $buttons = [];
-        $dashUrl = $this->config->getDashUrl();
+        $dashUrl = $this->config->getPagarmeDashUrl();
         if ($dashUrl) {
             $dashUrl .= "settings/{$dashPage}/";
             $buttons[] = wcmpSingleButtonArray(
