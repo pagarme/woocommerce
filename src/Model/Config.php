@@ -31,6 +31,9 @@ defined('ABSPATH') || exit;
 class Config extends DataObject
 {
     const ENABLED = 'yes';
+    const ACCOUNT_ID = 'account_id';
+    const PAYMENT_PROFILE_ID = 'payment_profile_id';
+    const POI_TYPE = 'poi_type';
 
     /** @var string */
     const HUB_SANDBOX_ENVIRONMENT = 'Sandbox';
@@ -207,7 +210,7 @@ class Config extends DataObject
 
     public function setAccountId($accountId)
     {
-        $this->setData('account_id', $accountId);
+        $this->setData(Config::ACCOUNT_ID, $accountId);
         $this->updateGooglepayAccountId($accountId);
     }
 
@@ -216,7 +219,7 @@ class Config extends DataObject
      */
     public function getPaymentProfileId()
     {
-        return $this->getData('payment_profile_id');
+        return $this->getData(Config::PAYMENT_PROFILE_ID);
     }
 
     /**
@@ -224,7 +227,7 @@ class Config extends DataObject
      */
     public function setPaymentProfileId($paymentProfileId)
     {
-        $this->setData('payment_profile_id', $paymentProfileId);
+        $this->setData(Config::PAYMENT_PROFILE_ID, $paymentProfileId);
     }
 
     /**
@@ -232,7 +235,7 @@ class Config extends DataObject
      */
     public function getPoiType()
     {
-        return $this->getData('poi_type');
+        return $this->getData(Config::POI_TYPE);
     }
 
     /**
@@ -240,7 +243,7 @@ class Config extends DataObject
      */
     public function setPoiType($poiType)
     {
-        $this->setData('poi_type', $poiType);
+        $this->setData(Config::POI_TYPE, $poiType);
     }
 
     /**
@@ -424,7 +427,7 @@ class Config extends DataObject
     {
         $googlepayOption = get_option('woocommerce_woo-pagarme-payments-googlepay_settings');
         if (is_array($googlepayOption)) {
-            $googlepayOption['account_id'] = $accountId;
+            $googlepayOption[Config::ACCOUNT_ID] = $accountId;
             update_option('woocommerce_woo-pagarme-payments-googlepay_settings', $googlepayOption);
         }
     }

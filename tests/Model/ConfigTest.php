@@ -384,7 +384,7 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('payment_profile_id', 'pp_123');
+        $config->setData(Config::PAYMENT_PROFILE_ID, 'pp_123');
 
         $result = $config->isPagarmeDashConfigAccessible();
 
@@ -402,7 +402,7 @@ class ConfigTest extends TestCase
 
         $config = new Config();
         $config->setData('merchant_id', 'merch_123');
-        $config->setData('account_id', 'acc_123');
+        $config->setData(Config::ACCOUNT_ID, 'acc_123');
 
         $result = $config->isPagarmeDashConfigAccessible();
 
@@ -436,7 +436,7 @@ class ConfigTest extends TestCase
 
         $config = new Config();
         $config->setData('merchant_id', 'merch_123');
-        $config->setData('account_id', 'acc_456');
+        $config->setData(Config::ACCOUNT_ID, 'acc_456');
 
         $result = $config->getPagarmeDashUrl();
 
@@ -1028,7 +1028,7 @@ class ConfigTest extends TestCase
     public function testSetAccountIdShouldSetDataAndUpdateGooglepay()
     {
         Brain\Monkey\Functions\stubs([
-            'get_option' => ['account_id' => 'acc_old'],
+            'get_option' => [Config::ACCOUNT_ID => 'acc_old'],
         ]);
 
         $coreMock = Mockery::mock('alias:' . Core::class);
@@ -1037,13 +1037,13 @@ class ConfigTest extends TestCase
         Brain\Monkey\Functions\expect('update_option')
             ->once()
             ->with('woocommerce_woo-pagarme-payments-googlepay_settings', Mockery::on(function ($arg) {
-                return is_array($arg) && $arg['account_id'] === 'acc_123';
+                return is_array($arg) && $arg[Config::ACCOUNT_ID] === 'acc_123';
             }));
 
         $config = new Config();
         $config->setAccountId('acc_123');
 
-        $this->assertEquals('acc_123', $config->getData('account_id'));
+        $this->assertEquals('acc_123', $config->getData(Config::ACCOUNT_ID));
     }
 
     public function testSetAccountIdWithoutGooglepayOptionShouldOnlySetData()
@@ -1061,7 +1061,7 @@ class ConfigTest extends TestCase
         $config = new Config();
         $config->setAccountId('acc_123');
 
-        $this->assertEquals('acc_123', $config->getData('account_id'));
+        $this->assertEquals('acc_123', $config->getData(Config::ACCOUNT_ID));
     }
 
     public function testSetPaymentProfileIdShouldSetDataCorrectly()
@@ -1076,7 +1076,7 @@ class ConfigTest extends TestCase
         $config = new Config();
         $config->setPaymentProfileId('pp_123');
 
-        $this->assertEquals('pp_123', $config->getData('payment_profile_id'));
+        $this->assertEquals('pp_123', $config->getData(Config::PAYMENT_PROFILE_ID));
     }
 
     public function testSetPoiTypeShouldSetDataCorrectly()
@@ -1091,7 +1091,7 @@ class ConfigTest extends TestCase
         $config = new Config();
         $config->setPoiType('ecommerce');
 
-        $this->assertEquals('ecommerce', $config->getData('poi_type'));
+        $this->assertEquals('ecommerce', $config->getData(Config::POI_TYPE));
     }
 
     public function testGetPaymentProfileIdShouldReturnStoredValue()
@@ -1104,7 +1104,7 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('payment_profile_id', 'pp_456');
+        $config->setData(Config::PAYMENT_PROFILE_ID, 'pp_456');
 
         $result = $config->getPaymentProfileId();
 
@@ -1121,7 +1121,7 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('poi_type', 'ecommerce');
+        $config->setData(Config::POI_TYPE, 'ecommerce');
 
         $result = $config->getPoiType();
 
@@ -1138,7 +1138,7 @@ class ConfigTest extends TestCase
         $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
 
         $config = new Config();
-        $config->setData('payment_profile_id', 'pp_123');
+        $config->setData(Config::PAYMENT_PROFILE_ID, 'pp_123');
 
         $result = $config->isOneStoneEnabled();
 
