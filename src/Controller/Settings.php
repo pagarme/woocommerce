@@ -80,7 +80,7 @@ class Settings
             add_action('woocommerce_payment_gateways_setting_column_subscription_payments_toggles', array($this, 'populate_subscription_payments_toggles_column'));
             add_action('wp_ajax_pagarme_toggle_payment_subscription', array($this, 'pagarme_toggle_payment_subscription'));
         }
-        
+
         if (Utils::isCheckoutBlocksActive()){
             add_filter('woocommerce_payment_gateways_setting_columns', array($this, 'checkoutblocks_status_column'));
             add_action('woocommerce_payment_gateways_setting_column_checkoutblocks_status', array($this, 'populate_checkoutblocks_status_column'));
@@ -135,7 +135,7 @@ class Settings
             ]
         ];
 
-        if ($this->config->isAccAndMerchSaved()){
+        if ($this->config->isPagarmeDashConfigAccessible()){
             $fields[] = [
                 'fieldObject' => Environment::class,
                 'id' => 'hub_environment',

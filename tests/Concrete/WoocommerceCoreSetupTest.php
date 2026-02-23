@@ -2,6 +2,7 @@
 
 namespace Woocommerce\Pagarme\Tests\Concrete;
 
+use Brain;
 use Pagarme\Core\Kernel\Services\InstallmentService;
 use PHPUnit\Framework\TestCase;
 use Woocommerce\Pagarme\Concrete\WoocommerceCoreSetup;
@@ -14,27 +15,42 @@ use Pagarme\Core\Kernel\ValueObjects\Configuration\MarketplaceConfig;
  */
 class WoocommerceCoreSetupTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Brain\Monkey\setUp();
+    }
+
     protected function tearDown(): void
     {
         Mockery::close();
+        Brain\Monkey\tearDown();
+        parent::tearDown();
     }
 
     public function testMarketplaceConfigWithoutCallFilter()
     {
-        require_once("vendor/wordpress/wordpress/src/wp-includes/plugin.php");
         $configMock = $this->getMockForConfiguration();
         $this->assertNull($configMock->getModuleConfiguration()->getMarketplaceConfig());
     }
 
     public function testMarketplaceConfigWithCallFilter()
     {
-        require_once("vendor/wordpress/wordpress/src/wp-includes/plugin.php");
-        add_filter('pagarme_marketplace_config', function($object){
-            $object->mainRecipientId = "re_xxxxxxxxx0x00000xxxx000xx";
-            return $object;
-        });
+        global $wp_filter;
+        $wp_filter['pagarme_marketplace_config'] = true;
+
+        Brain\Monkey\Functions\when('apply_filters')
+            ->alias(function($filter, $value, ...$args) {
+                if ($filter === 'pagarme_marketplace_config' && $value !== null) {
+                    $value->mainRecipientId = "re_xxxxxxxxx0x00000xxxx000xx";
+                }
+                return $value;
+            });
+
         $configMock = $this->getMockForConfiguration();
         $this->assertInstanceOf(MarketplaceConfig::class, $configMock->getModuleConfiguration()->getMarketplaceConfig());
+
+        unset($wp_filter['pagarme_marketplace_config']);
     }
 
     private function getMockForConfiguration()
