@@ -429,6 +429,7 @@ class ConfigTest extends TestCase
     {
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
+            'esc_url'    => static fn($url) => $url,
         ]);
 
         $coreMock = Mockery::mock('alias:' . Core::class);
@@ -438,7 +439,7 @@ class ConfigTest extends TestCase
         $config->setData('merchant_id', 'merch_123');
         $config->setData(Config::ACCOUNT_ID, 'acc_456');
 
-        $result = $config->getPagarmeDashUrl();
+        $result = $config->getDashboardUrl();
 
         $this->assertEquals('https://dash.pagar.me/merch_123/acc_456/', $result);
     }
@@ -447,6 +448,7 @@ class ConfigTest extends TestCase
     {
         Brain\Monkey\Functions\stubs([
             'get_option' => false,
+            'esc_url'    => static fn($url) => $url,
         ]);
 
         $coreMock = Mockery::mock('alias:' . Core::class);
@@ -454,7 +456,62 @@ class ConfigTest extends TestCase
 
         $config = new Config();
 
-        $result = $config->getPagarmeDashUrl();
+        $result = $config->getDashboardUrl();
+
+        $this->assertNull($result);
+    }
+
+    public function testGetDashUrlWithPaymentProfileIdShouldReturnStoneDashUrl()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+            'esc_url'    => static fn($url) => $url,
+        ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
+        $config = new Config();
+        $config->setData('merchant_id', 'merch_123');
+        $config->setData(Config::ACCOUNT_ID, 'acc_456');
+        $config->setData(Config::PAYMENT_PROFILE_ID, 'pp_789');
+
+        $result = $config->getDashboardUrl();
+
+        $this->assertEquals('https://dash.stone.com.br/pp_789/', $result);
+    }
+
+    public function testGetStoneDashUrlWithPaymentProfileIdShouldReturnFormattedUrl()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+            'esc_url'    => static fn($url) => $url,
+        ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
+        $config = new Config();
+        $config->setData(Config::PAYMENT_PROFILE_ID, 'pp_123');
+
+        $result = $config->getStoneDashUrl();
+
+        $this->assertEquals('https://dash.stone.com.br/pp_123/', $result);
+    }
+
+    public function testGetStoneDashUrlWithoutPaymentProfileIdShouldReturnNull()
+    {
+        Brain\Monkey\Functions\stubs([
+            'get_option' => false,
+            'esc_url'    => static fn($url) => $url,
+        ]);
+
+        $coreMock = Mockery::mock('alias:' . Core::class);
+        $coreMock->shouldReceive('tag_name')->andReturn('pagarme_settings');
+
+        $config = new Config();
+
+        $result = $config->getStoneDashUrl();
 
         $this->assertNull($result);
     }

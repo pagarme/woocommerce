@@ -262,11 +262,33 @@ class Config extends DataObject
         if (!$this->isPagarmeDashConfigAccessible()) {
             return null;
         }
-        return sprintf(
+        return esc_url(sprintf(
             'https://dash.pagar.me/%s/%s/',
             $this->getMerchantId(),
             $this->getAccountId()
-        );
+        ));
+    }
+
+    public function getDashboardUrl()
+    {
+        if ($this->isOneStoneEnabled()) {
+            return $this->getStoneDashUrl();
+        }
+        return $this->getPagarmeDashUrl();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStoneDashUrl()
+    {
+        if (!$this->getPaymentProfileId()) {
+            return null;
+        }
+        return esc_url(sprintf(
+            'https://dash.stone.com.br/%s/',
+            $this->getPaymentProfileId()
+        ));
     }
 
     /**
