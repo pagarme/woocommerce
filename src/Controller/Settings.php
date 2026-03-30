@@ -135,7 +135,7 @@ class Settings
             ]
         ];
 
-        if ($this->config->isAccAndMerchSaved()){
+        if ($this->config->hasIdentifiersSaved()){
             $fields[] = [
                 'fieldObject' => Environment::class,
                 'id' => 'hub_environment',
