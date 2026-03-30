@@ -135,7 +135,11 @@ class Settings
             ]
         ];
 
+<<<<<<< HEAD
         if ($this->config->isPagarmeDashConfigAccessible()){
+=======
+        if ($this->config->hasIdentifiersSaved()){
+>>>>>>> 45155f1 (feat: refactor configuration methods and add tests for identifier checks)
             $fields[] = [
                 'fieldObject' => Environment::class,
                 'id' => 'hub_environment',

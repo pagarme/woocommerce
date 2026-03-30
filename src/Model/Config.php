@@ -203,9 +203,14 @@ class Config extends DataObject
     /**
      * @return bool
      */
+<<<<<<< HEAD
     public function isPagarmeDashConfigAccessible(): bool
     {
         return $this->getMerchantId() && $this->getAccountId();
+=======
+    public function hasIdentifiersSaved() : bool {
+        return ($this->getMerchantId() && $this->getAccountId()) || $this->getPaymentProfileId();
+>>>>>>> 45155f1 (feat: refactor configuration methods and add tests for identifier checks)
     }
 
     public function setAccountId($accountId)
@@ -216,6 +221,7 @@ class Config extends DataObject
 
     /**
      * @return string|null
+<<<<<<< HEAD
      */
     public function getPaymentProfileId()
     {
@@ -260,13 +266,25 @@ class Config extends DataObject
     public function getPagarmeDashUrl()
     {
         if (!$this->isPagarmeDashConfigAccessible()) {
+=======
+     */
+    public function getDashUrl() {
+        if (!$this->hasIdentifiersSaved()) {
+>>>>>>> 45155f1 (feat: refactor configuration methods and add tests for identifier checks)
             return null;
         }
-        return sprintf(
+        $paymentProfileId = $this->getPaymentProfileId();
+        if ($paymentProfileId) {
+            return esc_url(sprintf(
+                'https://dash.stone.com.br/%s/',
+                $paymentProfileId
+            ));
+        }
+        return esc_url(sprintf(
             'https://dash.pagar.me/%s/%s/',
             $this->getMerchantId(),
             $this->getAccountId()
-        );
+        ));
     }
 
     /**

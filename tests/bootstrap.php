@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 /**
  * PHPUnit bootstrap file for Pagarme Payments for WooCommerce tests
  */
@@ -107,3 +108,14 @@ if (!class_exists('WC_Logger')) {
         }
     }
 }
+=======
+define('ABSPATH', '/tmp/wordpress/');
+
+function plugin_basename(string $file): string
+{
+    return basename(dirname($file)) . '/' . basename($file);
+}
+
+require_once dirname(__DIR__) . '/constants.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+>>>>>>> 45155f1 (feat: refactor configuration methods and add tests for identifier checks)

@@ -113,7 +113,11 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
 
     public function getChargeUrl($chargeID)
     {
+<<<<<<< HEAD
         if (!$this->config->isPagarmeDashConfigAccessible()) {
+=======
+        if (!$this->config->hasIdentifiersSaved()) {
+>>>>>>> 45155f1 (feat: refactor configuration methods and add tests for identifier checks)
             return false;
         }
 

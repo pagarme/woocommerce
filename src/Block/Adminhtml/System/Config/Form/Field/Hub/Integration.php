@@ -52,6 +52,10 @@ class Integration extends AbstractField
      */
     public function userCanDesintegrate()
     {
+<<<<<<< HEAD
         return Utils::isCurrentUserAdmin() && $this->config->isPagarmeDashConfigAccessible();
+=======
+        return Utils::isCurrentUserAdmin() && $this->config->hasIdentifiersSaved();
+>>>>>>> 45155f1 (feat: refactor configuration methods and add tests for identifier checks)
     }
 }
