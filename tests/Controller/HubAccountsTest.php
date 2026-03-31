@@ -162,6 +162,25 @@ class HubAccountsTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    public function testSaveIdentifiersFromWebhookWhenPoiTypeIsMissingShouldReturn()
+    {
+        // Arrange
+        $identifier = new \stdClass();
+        $identifier->{Config::PAYMENT_PROFILE_ID} = 'pp_123';
+
+        $body = new \stdClass();
+        $body->identifier = $identifier;
+
+        $this->configMock->shouldNotReceive('setPaymentProfileId');
+        $this->configMock->shouldNotReceive('setPoiType');
+
+        // Act
+        $this->hubAccounts->saveIdentifiersFromWebhook($body);
+
+        // Assert
+        $this->expectNotToPerformAssertions();
+    }
+
     // helpers
 
     private function buildWebhookBody(string $poiType, string $paymentProfileId): object

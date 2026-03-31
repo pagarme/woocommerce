@@ -92,7 +92,9 @@ class HubCommand
             'environment' => null,
             'account_id' => null,
             'merchant_id' => null,
-            'hub_account_errors' => null
+            'hub_account_errors' => null,
+            Config::PAYMENT_PROFILE_ID => null,
+            Config::POI_TYPE => null,
         ];
         $this->settings->addData($keysToClear)->save();
         return 'Hub uninstalled successfully';
