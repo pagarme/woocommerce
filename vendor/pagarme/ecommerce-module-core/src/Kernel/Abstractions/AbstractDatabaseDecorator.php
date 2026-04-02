@@ -57,5 +57,4 @@ abstract class AbstractDatabaseDecorator
      */
     abstract protected function doFetch($query);
     abstract protected function formatResults($query);
-    abstract protected function setLastInsertId($insertId);
 }

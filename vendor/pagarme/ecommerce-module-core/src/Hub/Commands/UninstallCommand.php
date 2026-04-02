@@ -3,7 +3,7 @@
 namespace Pagarme\Core\Hub\Commands;
 
 use Exception;
-use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as  MPSetup;
+use Pagarme\Core\Kernel\Abstractions\AbstractModuleCoreSetup as MPSetup;
 use Pagarme\Core\Kernel\Aggregates\Configuration;
 use Pagarme\Core\Kernel\Factories\ConfigurationFactory;
 use Pagarme\Core\Kernel\Repositories\ConfigurationRepository;
@@ -22,7 +22,7 @@ class UninstallCommand extends AbstractCommand
 
         $hubKey = $moduleConfig->getSecretKey();
         if (!$hubKey->equals($this->getAccessToken())) {
-            $exception =  new Exception("Access Denied.");
+            $exception = new Exception("Access Denied.");
             $this->logService->exception($exception);
             throw $exception;
         }
@@ -34,6 +34,10 @@ class UninstallCommand extends AbstractCommand
         ];
         $cleanConfig->testMode = true;
         $cleanConfig->hubInstallId = null;
+        $cleanConfig->accountId = null;
+        $cleanConfig->merchantId = null;
+        $cleanConfig->paymentProfileId = null;
+        $cleanConfig->poiType = [];
 
         $cleanConfig = json_encode($cleanConfig);
         $configFactory = new ConfigurationFactory();
@@ -44,7 +48,6 @@ class UninstallCommand extends AbstractCommand
         $methodInherited = array_merge($method, ['getSecretKey', 'getPublicKey', 'isHubEnabled']);
 
         $cleanConfig->setMethodsInherited(array_unique($methodInherited));
-
 
         $cleanConfig->setId($moduleConfig->getId());
         MPSetup::setModuleConfiguration($cleanConfig);

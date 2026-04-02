@@ -134,7 +134,7 @@ class VoucherConfig extends AbstractValueObject
             if ($cardConfig->equals($newCardConfig)) {
                 throw new InvalidParamException(
                     "The card config is already added!",
-                    $newCardConfig->getBrand()
+                    $newCardConfig->getBrand()->getName()
                 );
             }
         }

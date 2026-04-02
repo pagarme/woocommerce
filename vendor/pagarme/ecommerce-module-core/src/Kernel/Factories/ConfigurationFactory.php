@@ -22,6 +22,8 @@ use Pagarme\Core\Kernel\ValueObjects\Key\SecretKey;
 use Pagarme\Core\Kernel\ValueObjects\Key\TestPublicKey;
 use Pagarme\Core\Kernel\ValueObjects\Key\TestSecretKey;
 use Exception;
+use Pagarme\Core\Kernel\Services\LogService;
+use Throwable;
 
 class ConfigurationFactory implements FactoryInterface
 {
@@ -33,19 +35,25 @@ class ConfigurationFactory implements FactoryInterface
     public function createFromPostData($postData)
     {
         $config = new Configuration();
+        $logService = new LogService('ConfigurationFactory', true);
 
         foreach ($postData['creditCard'] as $brand => $cardConfig) {
-            $config->addCardConfig(
-                new CardConfig(
-                    $cardConfig['is_enabled'],
-                    $brand,
-                    $cardConfig['installments_up_to'],
-                    $cardConfig['installments_without_interest'],
-                    $cardConfig['interest'],
-                    $cardConfig['incremental_interest'],
-                    null
-                )
-            );
+            try {
+                $brandLower = strtolower($brand);
+                $config->addCardConfig(
+                    new CardConfig(
+                        $cardConfig['is_enabled'],
+                        CardBrand::$brandLower(),
+                        $cardConfig['installments_up_to'],
+                        $cardConfig['installments_without_interest'],
+                        $cardConfig['interest'],
+                        $cardConfig['incremental_interest'],
+                        null
+                    )
+                );
+            } catch (Throwable $e) {
+                $logService->exception($e);
+            }
         }
 
         $config->setBoletoEnabled($postData['payment_pagarme_boleto_status']);
@@ -94,6 +102,14 @@ class ConfigurationFactory implements FactoryInterface
 
         if (!empty($data->accountId)) {
             $config->setAccountId($data->accountId);
+        }
+
+        if (!empty($data->paymentProfileId)) {
+            $config->setPaymentProfileId($data->paymentProfileId);
+        }
+
+        if (!empty($data->poiType)) {
+            $config->setPoiType($data->poiType);
         }
 
         if (!empty($data->sendMail)) {
@@ -278,9 +294,9 @@ class ConfigurationFactory implements FactoryInterface
     {
         try {
             return new TestPublicKey($key);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
 
         }
 
@@ -291,17 +307,17 @@ class ConfigurationFactory implements FactoryInterface
     {
         try {
             return new TestSecretKey($key);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
 
         }
 
         try {
             return new SecretKey($key);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
 
         }
 

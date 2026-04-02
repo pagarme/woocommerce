@@ -115,7 +115,7 @@ abstract class AbstractModuleCoreSetup
 
     protected static function saveModuleConfig()
     {
-        if (strpos(static::$instance->getPlatformVersion(), 'Wordpress') === false) {
+        if (strpos((string) static::$instance->getPlatformVersion(), 'Wordpress') === false) {
             $configurationRepository = new ConfigurationRepository;
             $configurationRepository->save(static::$moduleConfig);
         }
@@ -212,13 +212,13 @@ abstract class AbstractModuleCoreSetup
         return self::$platformVersion;
     }
 
-   public static function getInstallmentType() 
-   {
+    public static function getInstallmentType()
+    {
         if(method_exists(self::$instance, 'getInstallmentType')) {
             return self::$instance->getInstallmentType();
         }
         return null;
-   }
+    }
 
     public static function getLogPath()
     {

@@ -15,43 +15,53 @@ use Pagarme\Core\Kernel\ValueObjects\Key\TestPublicKey;
 abstract class AbstractCommand implements CommandInterface
 {
     /**
-     *
      * @var HubAccessTokenKey
      */
     protected $accessToken;
+
     /**
-     *
      * @var AccountId
      */
     protected $accountId;
+
     /**
-     *
+     * @var string|null
+     */
+    protected $paymentProfileId;
+
+    /**
+     * @var array
+     */
+    protected $poiType;
+
+    /**
      * @var PublicKey|TestPublicKey
      */
     protected $accountPublicKey;
+
     /**
-     *
      * @var GUID
      */
     protected $installId;
+
     /**
-     *
      * @var MerchantId
      */
     protected $merchantId;
+
     /**
-     *
      * @var CommandType
      */
     protected $type;
+
     /**
-     *
      * @var LogService
      */
     protected $logService;
 
     public function __construct()
     {
+        $this->poiType = [];
         $this->logService = new LogService('Hub', true);
     }
 
@@ -76,8 +86,7 @@ abstract class AbstractCommand implements CommandInterface
     }
 
     /**
-     *
-     * @return AccountId
+     * @return AccountId|null
      */
     public function getAccountId()
     {
@@ -85,8 +94,7 @@ abstract class AbstractCommand implements CommandInterface
     }
 
     /**
-     *
-     * @param  AccountId $accountId
+     * @param  AccountId|null $accountId
      * @return AbstractCommand
      */
     public function setAccountId($accountId)
@@ -96,7 +104,42 @@ abstract class AbstractCommand implements CommandInterface
     }
 
     /**
-     *
+     * @return string|null
+     */
+    public function getPaymentProfileId()
+    {
+        return $this->paymentProfileId;
+    }
+
+    /**
+     * @param string|null $paymentProfileId
+     * @return AbstractCommand
+     */
+    public function setPaymentProfileId($paymentProfileId)
+    {
+        $this->paymentProfileId = $paymentProfileId;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPoiType()
+    {
+        return $this->poiType;
+    }
+
+    /**
+     * @param array $poiType
+     * @return AbstractCommand
+     */
+    public function setPoiType($poiType)
+    {
+        $this->poiType = $poiType;
+        return $this;
+    }
+
+    /**
      * @return PublicKey|TestPublicKey
      */
     public function getAccountPublicKey()

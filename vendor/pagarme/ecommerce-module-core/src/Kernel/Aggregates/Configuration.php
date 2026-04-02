@@ -19,6 +19,7 @@ use Pagarme\Core\Kernel\ValueObjects\Key\AbstractSecretKey;
 use Pagarme\Core\Kernel\ValueObjects\Key\AbstractPublicKey;
 use Pagarme\Core\Kernel\ValueObjects\Key\TestPublicKey;
 use Pagarme\Core\Kernel\ValueObjects\Id\GUID;
+use Pagarme\Core\Kernel\ValueObjects\PoiType;
 
 final class Configuration extends AbstractEntity
 {
@@ -183,6 +184,12 @@ final class Configuration extends AbstractEntity
     private $paymentProfileId;
 
     /**
+     * Point of Interaction Type
+     * @var array
+     */
+    private $poiType;
+
+    /**
      * @var MarketplaceConfig
      */
     private $marketplaceConfig;
@@ -204,6 +211,7 @@ final class Configuration extends AbstractEntity
         $this->testMode = true;
         $this->inheritAll = false;
         $this->installmentsDefaultConfig = false;
+        $this->poiType = [];
     }
 
     /**
@@ -329,6 +337,43 @@ final class Configuration extends AbstractEntity
     public function getPaymentProfileId()
     {
         return $this->paymentProfileId;
+    }
+
+    /**
+     * @param array|null $poiType
+     */
+    public function setPoiType($poiType)
+    {
+        if (empty($poiType)) {
+            $this->poiType = [];
+            return;
+        }
+
+        if (!is_array($poiType)) {
+            $poiType = (array) $poiType;
+        }
+
+        $sanitized = [];
+
+        foreach ($poiType as $type) {
+            if (!PoiType::isValid($type)) {
+                $type = PoiType::DEFAULT;
+            }
+
+            $sanitized[] = $type;
+        }
+
+        $poiType = array_unique($sanitized);
+
+        $this->poiType = $poiType;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPoiType()
+    {
+        return $this->poiType;
     }
 
     public function setMerchantId($merchantId)
@@ -599,7 +644,7 @@ final class Configuration extends AbstractEntity
             if ($cardConfig->equals($newCardConfig)) {
                 throw new InvalidParamException(
                     "The card config is already added!",
-                    $newCardConfig->getBrand()
+                    $newCardConfig->getBrand()->getName()
                 );
             }
         }
@@ -670,7 +715,7 @@ final class Configuration extends AbstractEntity
      */
     public function setAntifraudMinAmount($antifraudMinAmount)
     {
-        $numbers = '/([^0-9])/i';
+        $numbers = '/[^0-9\-]|(?<=.)-/';
         $replace = '';
 
         $minAmount = preg_replace($numbers, $replace, $antifraudMinAmount ?? '');
@@ -678,6 +723,7 @@ final class Configuration extends AbstractEntity
         if ($minAmount < 0) {
             $minAmount = 0;
         }
+
         $this->antifraudMinAmount = $minAmount;
     }
 
@@ -708,7 +754,7 @@ final class Configuration extends AbstractEntity
     /**
      * @return bool
      */
-    protected function getAllowNoAddress()
+    public function getAllowNoAddress()
     {
         return $this->allowNoAddress;
     }
@@ -884,6 +930,7 @@ final class Configuration extends AbstractEntity
             "merchantId" => $this->getMerchantId(),
             "accountId" => $this->getAccountId(),
             "paymentProfileId" => $this->getPaymentProfileId(),
+            "poiType" => $this->getPoiType(),
             "addressAttributes" => $this->getAddressAttributes(),
             "allowNoAddress" => $this->getAllowNoAddress(),
             "keys" => $this->keys,
