@@ -19,7 +19,7 @@ if (!defined('WCMP_PREFIX')) {
 }
 
 if (!defined('WCMP_VERSION')) {
-    define('WCMP_VERSION', '3.6.1');
+    define('WCMP_VERSION', '3.8.0-rc');
 }
 
 if (!defined('WCMP_ROOT_PATH')) {

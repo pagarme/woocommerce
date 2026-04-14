@@ -4,7 +4,7 @@ Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.8.1
 Requires PHP: 7.1
-Stable tag: 3.6.1
+Stable tag: 3.8.0-rc
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
