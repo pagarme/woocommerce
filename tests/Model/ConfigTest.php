@@ -478,7 +478,7 @@ class ConfigTest extends TestCase
 
         $result = $config->getDashboardUrl();
 
-        $this->assertEquals('https://dash.stone.com.br/pp_789/', $result);
+        $this->assertEquals('https://conta.stone.com.br/pp_789/', $result);
     }
 
     public function testGetStoneDashUrlWithPaymentProfileIdShouldReturnFormattedUrl()
@@ -496,7 +496,7 @@ class ConfigTest extends TestCase
 
         $result = $config->getStoneDashUrl();
 
-        $this->assertEquals('https://dash.stone.com.br/pp_123/', $result);
+        $this->assertEquals('https://conta.stone.com.br/pp_123/', $result);
     }
 
     public function testGetStoneDashUrlWithoutPaymentProfileIdShouldReturnNull()
