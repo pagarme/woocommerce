@@ -16,6 +16,8 @@ class InstallCommand extends AbstractCommand
 
         $moduleConfig->setMerchantId($this->getMerchantId());
 
+        $moduleConfig->setPaymentProfileId($this->getPaymentProfileId());
+
         $moduleConfig->setHubInstallId($this->getInstallId());
 
         $moduleConfig->setHubEnvironment($this->getType());
