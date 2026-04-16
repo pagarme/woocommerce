@@ -151,7 +151,7 @@ class Checkout
             $fields[$name] = Utils::rm_tags($value, true);
 
             if ($name == 'card_number' || $name == 'card_number2') {
-                $fields[$name] = Utils::format_document($value);
+                $fields[$name] = Utils::only_numbers($value);
             }
 
             if ($name == 'card_expiry') {
