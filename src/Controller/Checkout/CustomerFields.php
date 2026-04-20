@@ -133,16 +133,20 @@ class CustomerFields
     /**
      * @param $documentNumber
      *
-     * @return mixed
-     * @uses isValidCnpj()
-     * @uses isValidCpf()
+     * @return bool
      */
-    private function isValidDocument($documentNumber)
+    private function isValidDocument($documentNumber): bool
     {
         $documentType = $this->getDocumentType($documentNumber);
-        $functionName = $this->getDocumentValidationFunctionName($documentType);
 
-        return $this->{$functionName}($documentNumber);
+        if (!in_array($documentType, self::DOCUMENT_TYPES, true)) {
+            throw new InvalidArgumentException();
+        }        
+
+        if ($documentType === 'cpf')
+            return Utils::isValidCpf($documentNumber);
+
+        return Utils::isValidCnpj($documentNumber);
     }
 
     /**
@@ -153,20 +157,6 @@ class CustomerFields
     private function getDocumentType($documentNumber): string
     {
         return Utils::getDocumentTypeByDocumentNumber($documentNumber);
-    }
-
-    /**
-     * @param string $documentType Must be one of the two values: `cpf` or `cnpj`
-     *
-     * @return string
-     */
-    private function getDocumentValidationFunctionName(string $documentType): string
-    {
-        if (in_array($documentType, self::ADDRESS_TYPES, true)) {
-            throw new InvalidArgumentException();
-        }
-
-        return 'isValid' . ucfirst($documentType);
     }
 
     /**
@@ -257,25 +247,5 @@ class CustomerFields
     private function getDocumentMetaNameByAddressType(string $addressType): string
     {
         return "_{$addressType}_document";
-    }
-
-    /**
-     * @param string $cpf
-     *
-     * @return bool
-     */
-    private function isValidCpf(string $cpf): bool
-    {
-       return Utils::isValidCpf($cpf);
-    }
-    
-    /**
-     * @param string $cnpj
-     *
-     * @return bool
-     */
-    private function isValidCnpj(string $cnpj): bool
-    {
-        return Utils::isValidCnpj($cnpj);
     }
 }
