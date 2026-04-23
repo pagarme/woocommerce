@@ -456,7 +456,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $address  = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
-        $isCompanyDocument = $document['type'] === "company";
+        $isCompanyDocument = $document['type'] === CustomerType::COMPANY;
         $documentNumber = $document['value'];
 
         $phones   = Utils::build_customer_phones_from_order($order);
@@ -516,7 +516,7 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $address  = Utils::build_customer_address_from_order($order);
         
         $document = Utils::build_document_from_order($order);
-        $isCompanyDocument = $document['type'] === "company";
+        $isCompanyDocument = $document['type'] === CustomerType::COMPANY;
         $documentNumber = $document['value'];
         
         $phones   = Utils::build_customer_phones_from_order($order);

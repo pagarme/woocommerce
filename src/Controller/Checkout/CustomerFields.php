@@ -15,6 +15,7 @@ use Automattic\WooCommerce\Blocks\Package;
 use Exception;
 use InvalidArgumentException;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Helper\DocumentUtils;
 use WP_Error;
 
 class CustomerFields
@@ -24,8 +25,8 @@ class CustomerFields
         'shipping'
     ];
     const DOCUMENT_TYPES = [
-        'cpf',
-        'cnpj',
+        DocumentUtils::CPF,
+        DocumentUtils::CNPJ,
     ];
 
     /**
@@ -143,10 +144,10 @@ class CustomerFields
             throw new InvalidArgumentException();
         }        
 
-        if ($documentType === 'cpf')
-            return Utils::isValidCpf($documentNumber);
+        if ($documentType === DocumentUtils::CPF)
+            return DocumentUtils::isValidCpf($documentNumber);
 
-        return Utils::isValidCnpj($documentNumber);
+        return DocumentUtils::isValidCnpj($documentNumber);
     }
 
     /**
