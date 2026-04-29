@@ -233,6 +233,10 @@ body.woocommerce-checkout.woocommerce-order-received #page #content #main .wooco
     border: 0;
 }
 
+input[data-pagarme-uppercase="true"] {
+    text-transform: uppercase !important;
+}
+
 /* sm  */
 /* @media (min-width: 576px) {
 

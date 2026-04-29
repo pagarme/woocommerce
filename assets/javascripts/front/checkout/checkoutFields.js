@@ -7,8 +7,8 @@ const pagarmeCustomerFields = {
     blocksShippingDocumentId: 'shipping-address-document',
 
     documentMasks: [
-        '000.000.000-009999',
-        '00.000.000/0000-00'
+        'AAA.AAA.AAA-AAAAAA', // CPF
+        'AA.AAA.AAA/AAAA-AA' // CNPJ
     ],
     documentMaskOptions: {
         onKeyPress: function (document, e, field, options) {

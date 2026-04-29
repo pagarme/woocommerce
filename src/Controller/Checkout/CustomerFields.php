@@ -15,6 +15,7 @@ use Automattic\WooCommerce\Blocks\Package;
 use Exception;
 use InvalidArgumentException;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Helper\DocumentUtils;
 use WP_Error;
 
 class CustomerFields
@@ -24,8 +25,8 @@ class CustomerFields
         'shipping'
     ];
     const DOCUMENT_TYPES = [
-        'cpf',
-        'cnpj',
+        DocumentUtils::CPF,
+        DocumentUtils::CNPJ,
     ];
 
     /**
@@ -80,7 +81,7 @@ class CustomerFields
                 continue;
             }
 
-            $documentNumber = preg_replace('/\D/', '', $document);
+            $documentNumber = Utils::only_alphanumeric($document);
 
             if (!$this->isValidDocumentLength($documentNumber)) {
                 $errorMessage = sprintf(
@@ -133,16 +134,20 @@ class CustomerFields
     /**
      * @param $documentNumber
      *
-     * @return mixed
-     * @uses isValidCnpj()
-     * @uses isValidCpf()
+     * @return bool
      */
-    private function isValidDocument($documentNumber)
+    private function isValidDocument($documentNumber): bool
     {
         $documentType = $this->getDocumentType($documentNumber);
-        $functionName = $this->getDocumentValidationFunctionName($documentType);
 
-        return $this->{$functionName}($documentNumber);
+        if (!in_array($documentType, self::DOCUMENT_TYPES, true)) {
+            throw new InvalidArgumentException();
+        }        
+
+        if ($documentType === DocumentUtils::CPF)
+            return DocumentUtils::isValidCpf($documentNumber);
+
+        return DocumentUtils::isValidCnpj($documentNumber);
     }
 
     /**
@@ -156,20 +161,6 @@ class CustomerFields
     }
 
     /**
-     * @param string $documentType Must be one of the two values: `cpf` or `cnpj`
-     *
-     * @return string
-     */
-    private function getDocumentValidationFunctionName(string $documentType): string
-    {
-        if (in_array($documentType, self::ADDRESS_TYPES, true)) {
-            throw new InvalidArgumentException();
-        }
-
-        return 'isValid' . ucfirst($documentType);
-    }
-
-    /**
      * @param WP_Error $errors
      * @param $documentNumber
      *
@@ -177,7 +168,7 @@ class CustomerFields
      */
     public function validateCheckoutBlocksDocument(WP_Error $errors, $documentNumber)
     {
-        $documentNumber = preg_replace('/\D/', '', $documentNumber);
+        $documentNumber = Utils::only_alphanumeric($documentNumber);
         $errorCode = 'pagarme_invalid_document';
 
         if (!$this->isValidDocumentLength($documentNumber)) {
@@ -257,121 +248,5 @@ class CustomerFields
     private function getDocumentMetaNameByAddressType(string $addressType): string
     {
         return "_{$addressType}_document";
-    }
-
-    /**
-     * @param string $cpf
-     *
-     * @return bool
-     */
-    private function isValidCpf(string $cpf): bool
-    {
-        if (!$this->isValidCpfFormat($cpf)) {
-            return false;
-        }
-
-        for ($digit = 9; $digit < 11; $digit ++) {
-            if (!$this->isValidCpfDigit($cpf, $digit)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $cpf
-     *
-     * @return bool
-     */
-    private function isValidCpfFormat(string $cpf): bool
-    {
-        // Check if CPF length is exactly 11 and not all digits are the same
-        return strlen($cpf) === 11 && !preg_match('/(\d)\1{10}/', $cpf);
-    }
-
-    /**
-     * @param string $cpf
-     * @param int $digit
-     *
-     * @return bool
-     */
-    private function isValidCpfDigit(string $cpf, int $digit): bool
-    {
-        $calculatedDigit = $this->calculateCpfDigit($cpf, $digit);
-
-        return $cpf[$digit] == $calculatedDigit;
-    }
-
-    /**
-     * @param string $cpf
-     * @param int $digit
-     *
-     * @return int
-     */
-    private function calculateCpfDigit(string $cpf, int $digit): int
-    {
-        $sum = 0;
-
-        for ($i = 0; $i < $digit; $i ++) {
-            $sum += $cpf[$i] * (($digit + 1) - $i);
-        }
-
-        $remainder = (10 * $sum) % 11;
-
-        return ($remainder === 10) ? 0 : $remainder;
-    }
-
-    /**
-     * @param string $cnpj
-     *
-     * @return bool
-     */
-    private function isValidCnpj(string $cnpj): bool
-    {
-        if (!$this->isValidCnpjFormat($cnpj)) {
-            return false;
-        }
-
-        $firstCheckDigit = $this->calculateCnpjCheckDigit(substr($cnpj, 0, 12), 5);
-        if ($cnpj[12] != $firstCheckDigit) {
-            return false;
-        }
-
-        $secondCheckDigit = $this->calculateCnpjCheckDigit(substr($cnpj, 0, 13), 6);
-
-        return $cnpj[13] == $secondCheckDigit;
-    }
-
-    /**
-     * @param string $cnpj
-     *
-     * @return bool
-     */
-    private function isValidCnpjFormat(string $cnpj): bool
-    {
-        // Check if CNPJ is 14 characters long and not a sequence of repeated digits
-        return strlen($cnpj) == 14 && !preg_match('/(\d)\1{13}/', $cnpj);
-    }
-
-    /**
-     * @param string $cnpj
-     * @param int $initialWeight
-     *
-     * @return int
-     */
-    private function calculateCnpjCheckDigit(string $cnpj, int $initialWeight): int
-    {
-        $sum = 0;
-        $weight = $initialWeight;
-
-        for ($i = 0; $i < strlen($cnpj); $i ++) {
-            $sum += $cnpj[$i] * $weight;
-            $weight = ($weight == 2) ? 9 : $weight - 1;
-        }
-
-        $remainder = $sum % 11;
-
-        return ($remainder < 2) ? 0 : 11 - $remainder;
     }
 }

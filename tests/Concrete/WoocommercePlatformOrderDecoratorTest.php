@@ -2,6 +2,7 @@
 
 namespace Woocommerce\Pagarme\Tests\Concrete;
 
+use Brain;
 use Mockery;
 use WC_Order;
 use PHPUnit\Framework\TestCase;
@@ -17,9 +18,17 @@ use Pagarme\Core\Payment\Aggregates\Payments\AbstractCreditCardPayment;
  */
 class WoocommercePlatformOrderDecoratorTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        Brain\Monkey\setUp();
+    }
+
     public function tearDown(): void
     {
         Mockery::close();
+        Brain\Monkey\tearDown();
+        parent::tearDown();
     }
 
     public function testGetPaymentMethodCollectionWithTdsAuthenticatedCreditCardPaymentMethodShouldSetAuthenticationNode()
@@ -71,47 +80,70 @@ class WoocommercePlatformOrderDecoratorTest extends TestCase
 
     public function testHandleSplitOrderWithCallFilter()
     {
-        require_once("vendor/wordpress/wordpress/src/wp-includes/plugin.php");
+        global $wp_filter;
+        $wp_filter['pagarme_split_order'] = true;
+
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
-        add_filter('pagarme_split_order', function($order, $paymentMethod){
-            return [
-                'sellers' => [
-                    [
-                        'marketplaceCommission' => 400,
-                        'commission'            => 800,
-                        'pagarmeId'             => "re_xxxxxxxxxxxxxxx"
-                    ]
-                ],
-                'marketplace' => [
-                    'totalCommission' => 400
-                ]
-            ];
-        }, 10, 2);
+
+        Brain\Monkey\Functions\when('apply_filters')
+            ->alias(function($filter, $value, ...$args) {
+                if ($filter === 'pagarme_split_order') {
+                    return [
+                        'sellers' => [
+                            [
+                                'marketplaceCommission' => 400,
+                                'commission'            => 800,
+                                'pagarmeId'             => "re_xxxxxxxxxxxxxxx"
+                            ]
+                        ],
+                        'marketplace' => [
+                            'totalCommission' => 400
+                        ]
+                    ];
+                }
+                return $value;
+            });
+
         $splitReturn = $platformOrderDecorator->handleSplitOrder();
         $this->assertInstanceOf(Split::class, $splitReturn);
+
+        unset($wp_filter['pagarme_split_order']);
     }
 
     public function testHandleSplitOrderWithWrongCallFilter()
     {
         $this->expectException(\InvalidArgumentException::class);
-        require_once("vendor/wordpress/wordpress/src/wp-includes/plugin.php");
+
+        global $wp_filter;
+        $wp_filter['pagarme_split_order'] = true;
+
         $platformOrderDecorator = $this->returnBasicPlatformOrderDecorator();
-        add_filter('pagarme_split_order', function($order, $paymentMethod){
-            return [
-                'sellers' => [
-                    [
-                        'commission'            => 800,
-                        'pagarmeId'             => "re_xxxxxxxxxxxxxxx"
-                    ]
-                ],
-                'marketplace' => [
-                    'totalCommission' => 400
-                ]
-            ];
-        }, 10, 2);
-        $platformOrderDecorator->handleSplitOrder();
+
+        Brain\Monkey\Functions\when('apply_filters')
+            ->alias(function($filter, $value, ...$args) {
+                if ($filter === 'pagarme_split_order') {
+                    return [
+                        'sellers' => [
+                            [
+                                'commission'            => 800,
+                                'pagarmeId'             => "re_xxxxxxxxxxxxxxx"
+                            ]
+                        ],
+                        'marketplace' => [
+                            'totalCommission' => 400
+                        ]
+                    ];
+                }
+                return $value;
+            });
+
+        try {
+            $platformOrderDecorator->handleSplitOrder();
+        } finally {
+            unset($wp_filter['pagarme_split_order']);
+        }
     }
-    
+
 
     private function returnBasicPlatformOrderDecorator()
     {

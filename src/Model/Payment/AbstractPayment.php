@@ -215,7 +215,7 @@ abstract class AbstractPayment
         return array(
             'name'     => Utils::get_value_by($form_fields, $prefix . '[name]'),
             'email'    => Utils::get_value_by($form_fields, $prefix . '[email]'),
-            'document' => Utils::format_document($cpf),
+            'document' => Utils::only_numbers($cpf),
             'type'     => 'individual',
             'address' => array(
                 'street'       => Utils::get_value_by($form_fields, $prefix . '[street]'),

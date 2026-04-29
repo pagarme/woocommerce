@@ -42,6 +42,10 @@ class HubCommandFactory
             new AccountId($object->account_id)
         );
 
+        $command->setPaymentProfileId(
+            $object->payment_profile_id ?? null
+        );
+
         $type = $object->type;
         $command->setType(
             CommandType::$type()

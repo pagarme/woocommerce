@@ -18,6 +18,9 @@ class HubAccounts
     const PAYMENT_DISABLED_MESSAGE = '%1$s payment method is enabled on your store, but disabled on Pagar.me Dash. '
         . 'Please, access the Dash configurations and enable it to be able to process %1$s payment on your store.';
 
+    const IDENTIFIER_POI_TYPE = 'point_of_interaction_type';
+    const IDENTIFIER_ECOMMERCE = 'ecommerce';
+
     private $config;
 
     /**
@@ -34,6 +37,7 @@ class HubAccounts
         $this->config = new Config;
         add_action('woocommerce_api_pagarme-account-info', array($this, 'getAccountInfoOnPagarme'));
         add_action('on_pagarme_charge_paid', array($this, 'getAccountIdFromWebhook'));
+        add_action('on_pagarme_charge_paid', array($this, 'saveIdentifiersFromWebhook'));
         if (!Utils::is_request_ajax()) {
             $this->getHubAccountErrorsNotices();
         }
@@ -136,7 +140,7 @@ class HubAccounts
     private function getHubNoticeButtons($dashPage)
     {
         $buttons = [];
-        $dashUrl = $this->config->getDashUrl();
+        $dashUrl = $this->config->getPagarmeDashUrl();
         if ($dashUrl) {
             $dashUrl .= "settings/{$dashPage}/";
             $buttons[] = wcmpSingleButtonArray(
@@ -231,6 +235,43 @@ class HubAccounts
             $body->account->id
         );
         $this->config->save();
+    }
+
+    public function saveIdentifiersFromWebhook($body)
+    {
+        if (empty($body) || empty($body->identifier)) {
+            return;
+        }
+        $identifier = $body->identifier;
+        if (!$this->isEcommerceIdentifier($identifier)) {
+            return;
+        }
+        $this->savePaymentProfileIdFromWebhook($identifier);
+        $this->savePoiTypeFromWebhook($identifier);
+    }
+
+    private function savePaymentProfileIdFromWebhook($identifier)
+    {
+        if ($this->config->getPaymentProfileId() || empty($identifier->{Config::PAYMENT_PROFILE_ID})) {
+            return;
+        }
+        $this->config->setPaymentProfileId($identifier->{Config::PAYMENT_PROFILE_ID});
+        $this->config->save();
+    }
+
+    private function savePoiTypeFromWebhook($identifier)
+    {
+        if (empty($identifier->{self::IDENTIFIER_POI_TYPE})) {
+            return;
+        }
+        $this->config->setPoiType($identifier->{self::IDENTIFIER_POI_TYPE});
+        $this->config->save();
+    }
+
+    private function isEcommerceIdentifier($identifier): bool
+    {
+        return !empty($identifier->{self::IDENTIFIER_POI_TYPE})
+            && strtolower($identifier->{self::IDENTIFIER_POI_TYPE}) === self::IDENTIFIER_ECOMMERCE;
     }
 
     private function onPagarmePage()

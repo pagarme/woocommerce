@@ -113,11 +113,11 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
 
     public function getChargeUrl($chargeID)
     {
-        if (!$this->config->isAccAndMerchSaved()) {
+        if (!$this->config->isPagarmeDashConfigAccessible()) {
             return false;
         }
 
-        return $this->config->getDashUrl() . 'charges/' . $chargeID;
+        return $this->config->getPagarmeDashUrl() . 'charges/' . $chargeID;
     }
 
     /**
