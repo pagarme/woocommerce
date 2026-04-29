@@ -2,7 +2,7 @@
 Contributors: pagarme
 Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
-Tested up to: 6.8.1
+Tested up to: 6.9.4
 Requires PHP: 7.1
 Stable tag: 3.9.0
 License: MIT

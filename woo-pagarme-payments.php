@@ -7,9 +7,9 @@
  * License:     GPL2
  * Description: Enable Pagar.me Gateway for WooCommerce
  * Requires at least: 4.1
- * Tested up to: 6.8.1
+ * Tested up to: 6.9.4
  * WC requires at least: 3.9.0
- * WC tested up to: 9.9.5
+ * WC tested up to: 10.7.0
  * Domain Path: /languages
  * Requires Plugins: woocommerce
  * Text Domain: woo-pagarme-payments
