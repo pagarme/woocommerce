@@ -31,6 +31,11 @@ abstract class AbstractCommand implements CommandInterface
     protected $accountPublicKey;
     /**
      *
+     * @var string
+     */
+    protected $paymentProfileId;
+    /**
+     *
      * @var GUID
      */
     protected $installId;
@@ -92,6 +97,26 @@ abstract class AbstractCommand implements CommandInterface
     public function setAccountId($accountId)
     {
         $this->accountId = $accountId;
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getPaymentProfileId()
+    {
+        return $this->paymentProfileId;
+    }
+
+    /**
+     *
+     * @param  string|null $paymentProfileId
+     * @return AbstractCommand
+     */
+    public function setPaymentProfileId($paymentProfileId)
+    {
+        $this->paymentProfileId = $paymentProfileId;
         return $this;
     }
 

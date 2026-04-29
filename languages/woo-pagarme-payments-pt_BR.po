@@ -1285,8 +1285,8 @@ msgid "Dash configuration was not retrieved. Please, try again."
 msgstr "As configurações da Dash não foram recuperadas. Por favor, tente novamente."
 
 #: templates/adminhtml/system/config/form/field/hub/integration.phtml:25
-msgid "Access Pagar.me Dash"
-msgstr "Acessar o Dash da Pagar.me"
+msgid "Access Dashboard"
+msgstr "Acessar o Dashboard"
 
 msgid "If your Pagar.me Antifraud is active, orders will fail."
 msgstr "Se o seu Antifraude Pagar.me estiver ativo, os pedidos irão falhar."

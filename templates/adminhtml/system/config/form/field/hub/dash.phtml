@@ -13,10 +13,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 ?>
-<?php if ($this->config->isAccAndMerchSaved()) : ?>
-    <a href="<?= $this->config->getDashUrl(); ?>" target="_blank" rel="noopener"
+<?php if ($this->config->isPagarmeDashConfigAccessible() || $this->config->isOneStoneEnabled()) : ?>
+    <a href="<?= $this->config->getDashboardUrl(); ?>" target="_blank" rel="noopener"
        class="button button-secondary pagarme-access-dash-btn">
-        <?= __('Access Pagar.me Dash', 'woo-pagarme-payments'); ?>
+        <?= __('Access Dashboard', 'woo-pagarme-payments'); ?>
         <img alt="Pagarme Avatar"
              src="<?= plugins_url('/pagarme-payments-for-woocommerce/assets/images/pagarme-avatar.svg') ?>">
     </a>

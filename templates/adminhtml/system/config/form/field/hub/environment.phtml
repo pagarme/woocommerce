@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 ?>
-<?php if ($this->config->isAccAndMerchSaved()) : ?>
+<?php if ($this->config->isPagarmeDashConfigAccessible()) : ?>
     <p>
         <?php echo esc_attr($this->getCurrent()); ?>
         <?php if ($this->config->getHubInstallId() &&

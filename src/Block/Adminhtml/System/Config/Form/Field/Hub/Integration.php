@@ -52,6 +52,6 @@ class Integration extends AbstractField
      */
     public function userCanDesintegrate()
     {
-        return Utils::isCurrentUserAdmin() && $this->config->isAccAndMerchSaved();
+        return Utils::isCurrentUserAdmin() && $this->config->isPagarmeDashConfigAccessible();
     }
 }

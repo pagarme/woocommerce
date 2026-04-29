@@ -71,6 +71,11 @@ class Hub
             $moduleConfig->getMerchantId()->getValue()
         );
 
+        $this->settings->setData(
+            'payment_profile_id',
+            $moduleConfig->getPaymentProfileId()
+        );
+
         $this->settings->setAccountId($moduleConfig->getAccountId()->getValue());
 
         $this->settings->setData('sandbox_secret_key', null);
