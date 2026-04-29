@@ -4,7 +4,7 @@ Tags: payment, pagarme, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.8.1
 Requires PHP: 7.1
-Stable tag: 3.8.0-rc
+Stable tag: 3.9.0
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -25,21 +25,8 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
-
-= 3.6.1 (15/09/2025) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.6.1)
-
-* **Correções:**
-  * Corrige a exibição de título do pagamento no Checkout Blocks;
-
-= 3.6.0 (25/06/2025) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.6.0)
+= 3.9.0 (29/04/2026) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.9.0)
 
 * **Melhorias:**
-  * Permite parcelamento até 18x
-
-
-
-
-== Upgrade Notice ==
-Agora é possível transacionar com Ticket
+  * Habilitando suporte para CNPJ Alfanumerico
