@@ -104,7 +104,7 @@ class Customer implements ConvertToLegacyInterface
 
     public function setDocument($document)
     {
-        $this->document = preg_replace('/\D/', '', $document);
+        $this->document = preg_replace('/[^a-zA-Z0-9]+/', '', $document);
     }
 
     public function setAddress($address)

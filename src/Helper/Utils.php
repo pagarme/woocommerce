@@ -328,16 +328,29 @@ class Utils
     }
 
     /**
-     * Format document number
+     * Format value with only numbers characters
      *
-     * @param string $document
+     * @param string $value
      *
      * @return string
      * @since 1.0
      */
-    public static function format_document($document)
+    public static function only_numbers($value)
     {
-        return preg_replace('/[^0-9]+/', '', $document);
+        return preg_replace('/[^0-9]+/', '', $value);
+    }
+
+     /**
+     * Format value with only alphanumeric characters
+     *
+     * @param string $value
+     *
+     * @return string
+     * @since 1.0
+     */
+    public static function only_alphanumeric($value)
+    {
+        return preg_replace('/[^a-zA-Z0-9]+/', '', $value);
     }
 
     /**
@@ -515,14 +528,30 @@ class Utils
 
     public static function getCustomerTypeByDocumentNumber($document): string
     {
-        $documentNumber = preg_replace('/\D/', '', $document ?? '');
+        $documentNumber = self::only_alphanumeric($document ?? '');
         return strlen($documentNumber) === 14 ? 'company' : 'individual';
     }
 
     public static function getDocumentTypeByDocumentNumber($document): string
     {
-        $documentNumber = preg_replace('/\D/', '', $document ?? '');
+        $documentNumber = self::only_alphanumeric($document ?? '');
         return strlen($documentNumber) === 14 ? 'cnpj' : 'cpf';
+    }
+
+    /**
+     * Check if all characters in a string are equal
+     *
+     * @param string $value The string to check
+     *
+     * @return bool Returns true if all characters are the same, false otherwise
+     */
+    public static function hasAllEqualCharacters(string $value): bool
+    {
+        if (empty($value)) {
+            return false;
+        }
+
+        return strlen(count_chars($value, 3)) === 1;
     }
 
     /**
@@ -611,7 +640,7 @@ class Utils
     {
         return ucfirst(str_replace('_', '', ucwords($value, '_')));
     }
-
+    
     /**
      * @return bool
      */

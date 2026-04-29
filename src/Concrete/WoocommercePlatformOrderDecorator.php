@@ -456,6 +456,9 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
         $address  = Utils::build_customer_address_from_order($order);
         $document = Utils::build_document_from_order($order);
+        $isCompanyDocument = $document['type'] === CustomerType::COMPANY;
+        $documentNumber = $document['value'];
+
         $phones   = Utils::build_customer_phones_from_order($order);
         if (empty($document['value'])) {
             $customerPlatform  = new WC_Customer($woocommerceCustomerId);
@@ -483,14 +486,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $customer->setName($fullName);
         $customer->setEmail(substr($this->getPlatformOrder()->get_billing_email(), 0, 64));
 
-        $cleanDocument = preg_replace(
-            '/\D/',
-            '',
-            $document['value']
-        );
+        $cleanDocument = $isCompanyDocument ? Utils::only_alphanumeric($documentNumber) : Utils::only_numbers($documentNumber);
 
         $customer->setDocument($cleanDocument);
-        $customer->setType(CustomerType::individual());
+        $customer->setType($isCompanyDocument ? CustomerType::company() : CustomerType::individual());
 
         $homePhone   = new Phone($homeNumber);
         $mobilePhone = new Phone($mobileNumber);
@@ -515,9 +514,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $order = new Order($this->getPlatformOrder()->get_id());
 
         $address  = Utils::build_customer_address_from_order($order);
+        
         $document = Utils::build_document_from_order($order);
+        $isCompanyDocument = $document['type'] === CustomerType::COMPANY;
+        $documentNumber = $document['value'];
+        
         $phones   = Utils::build_customer_phones_from_order($order);
-
         $homeNumber   = $phones["home_phone"]["complete_phone"];
         $mobileNumber = $phones["mobile_phone"]["complete_phone"];
 
@@ -532,14 +534,10 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $customer->setName($fullName);
         $customer->setEmail($email);
 
-        $cleanDocument = preg_replace(
-            '/\D/',
-            '',
-            $document['value']
-        );
+        $cleanDocument = $isCompanyDocument ? Utils::only_alphanumeric($documentNumber) : Utils::only_numbers($documentNumber);
 
         $customer->setDocument($cleanDocument);
-        $customer->setType(CustomerType::individual());
+        $customer->setType($isCompanyDocument ? CustomerType::company() : CustomerType::individual());
 
         $homePhone   = new Phone($homeNumber);
         $mobilePhone = new Phone($mobileNumber);
@@ -958,12 +956,12 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         foreach ($fields as $key => $attribute) {
             $value = $this->formData[$key];
 
-            if ($attribute === 'document' || $attribute === 'zipCode') {
-                $value = preg_replace(
-                    '/\D/',
-                    '',
-                    $value
-                );
+            if ($attribute === 'document'){
+                $value = Utils::only_alphanumeric($value);
+            }
+
+            if ($attribute === 'zipCode') {
+                $value = Utils::only_numbers($value);
             }
 
             $multibuyer->$attribute = $value;

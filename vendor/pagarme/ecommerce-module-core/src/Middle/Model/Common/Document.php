@@ -18,7 +18,7 @@ class Document
     }
     public function getDocumentWithoutMask()
     {
-        return preg_replace("/\D/" , "",$this->documentNumber);
+        return preg_replace('/[^a-zA-Z0-9]+/', '', $this->documentNumber);
     }
 
 }

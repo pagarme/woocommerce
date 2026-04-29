@@ -62,9 +62,15 @@ let pagarmeTokenize = {
                 obj['exp_month'] = values[0];
                 obj['exp_year'] = values[1];
             }
-            if ((prop === 'number') || (prop === 'holder_document')) {
+            
+            if (prop === 'number') {
                 value = this.value.replace(/\D/g, '');
             }
+
+            if (prop === 'holder_document') {
+                value = this.value.replace(/[^A-Z0-9]/gi, '');
+            }
+
             if (ignore.includes(prop)) {
                 return;
             }

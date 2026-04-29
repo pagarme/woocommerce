@@ -77,7 +77,9 @@ class CustomerFieldsActions implements RunnerInterface
                 'label'       => __('Document', 'woo-pagarme-payments'),
                 'placeholder' => __('CPF or CNPJ', 'woo-pagarme-payments'),
                 'required'    => true,
-                'class'       => array('form-row-wide'),
+                'custom_attributes' => array(
+                    'data-pagarme-uppercase' => 'true'
+                ),                
                 'priority'    => 25
             );
         }
@@ -104,7 +106,9 @@ class CustomerFieldsActions implements RunnerInterface
                 'label'                      => __('CPF or CNPJ', 'woo-pagarme-payments'),
                 'location'                   => 'address',
                 'type'                       => 'text',
-                'class'                      => array('form-row-wide'),
+                'attributes'                 => array(
+                  'data-pagarme-uppercase' => 'true'
+                ),
                 'required'                   => true,
                 'index'                      => 25,
                 'show_in_order_confirmation' => true
