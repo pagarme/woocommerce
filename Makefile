@@ -23,8 +23,8 @@ up: ## Sobe o ambiente em background (WordPress, MariaDB, phpMyAdmin) + instala 
 	@echo "Inicializando WordPress + WooCommerce (pode demorar na 1a vez)..."
 	@$(COMPOSE) run --rm wp-cli
 	@echo ""
-	@echo "WordPress:    http://localhost:$${WP_PORT:-8080}"
-	@echo "wp-admin:     http://localhost:$${WP_PORT:-8080}/wp-admin  (user: admin / pass: admin)"
+	@echo "WordPress:    $${WP_URL:-http://woo.localhost}"
+	@echo "wp-admin:     $${WP_URL:-http://woo.localhost}/wp-admin  (user: admin / pass: admin)"
 	@echo "phpMyAdmin:   http://localhost:$${PMA_PORT:-8081}          (user: root  / pass: root)"
 	@echo ""
 
@@ -64,8 +64,13 @@ shell-db: ## Abre o cliente mysql no container do banco
 	$(COMPOSE) exec $(DB_SERVICE) mariadb -u wordpress -pwordpress wordpress
 
 .PHONY: install
-install: ## Roda composer install dentro do container
+install: ## Roda composer install dentro do container + reaplica patches em vendor/
 	$(COMPOSE) exec $(WP_SERVICE) bash -c "cd wp-content/plugins/woo-pagarme-payments && composer install"
+	@$(MAKE) patch-vendor
+
+.PHONY: patch-vendor
+patch-vendor: ## (Re)aplica patches PHP 8.4 nos pacotes do vendor/ que nao atualizamos
+	./.dev/patch-vendor.sh
 
 .PHONY: test
 test: ## Executa o phpunit dentro do container

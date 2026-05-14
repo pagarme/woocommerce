@@ -61,7 +61,9 @@ make install    # composer install dentro do container (deps PHP do plugin)
 `make up` invoca um container `wp-cli` que automaticamente:
 - instala o WordPress (se ainda não estiver instalado);
 - instala e ativa a versão **latest** do WooCommerce;
-- ativa o plugin `woo-pagarme-payments`.
+- importa os **produtos de exemplo** do WooCommerce (via `wordpress-importer`);
+- ativa o plugin `woo-pagarme-payments`;
+- garante que `siteurl`/`home` apontem para a URL configurada.
 
 O script é idempotente — pode ser reexecutado a qualquer momento com `make seed`.
 
@@ -69,11 +71,15 @@ Acessos após o boot:
 
 | Serviço | URL | Credenciais |
 |---|---|---|
-| WordPress | <http://localhost:8080> | — |
-| wp-admin | <http://localhost:8080/wp-admin> | `admin` / `admin` |
+| WordPress | <http://woo.localhost> | — |
+| wp-admin | <http://woo.localhost/wp-admin> | `admin` / `admin` |
 | phpMyAdmin | <http://localhost:8081> | `root` / `root` |
 
-As portas podem ser sobrescritas via variáveis de ambiente: `WP_PORT=8090 PMA_PORT=8091 make up`. Defaults do WordPress admin (`WP_ADMIN_USER`, `WP_ADMIN_PASSWORD`, `WP_ADMIN_EMAIL`, `WP_TITLE`) também podem ser sobrescritos via env vars na hora do `make up` / `make seed`.
+> `woo.localhost` resolve automaticamente para `127.0.0.1` no macOS e em Linux modernos (RFC 6761). Se não funcionar, adicione `127.0.0.1 woo.localhost` no `/etc/hosts`.
+
+> Por padrão o WordPress sobe na **porta 80** do host (sem suffix na URL). Se já tiver algo ouvindo lá, sobrescreva: `WP_PORT=8080 WP_URL=http://woo.localhost:8080 make up`.
+
+Defaults do WordPress admin (`WP_ADMIN_USER`, `WP_ADMIN_PASSWORD`, `WP_ADMIN_EMAIL`, `WP_TITLE`) também podem ser sobrescritos via env vars na hora do `make up` / `make seed`.
 
 ### Comandos do Makefile
 
