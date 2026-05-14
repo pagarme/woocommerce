@@ -24,8 +24,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # No Linux, descomente a linha abaixo para o XDebug alcancar a IDE no host.
+    # No macOS/Windows com Docker Desktop, host.docker.internal ja funciona nativamente
+    # e essa linha QUEBRA a resolucao (aponta pra 172.17.0.1 = gateway da VM, nao o host).
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
     networks:
       - woo-pagarme
 
