@@ -105,15 +105,69 @@ Rode `make` (ou `make help`) para listar todos os comandos.
 
 ### XDebug
 
-Configurado em modo `trigger` (XDebug 3, porta `9003`, idekey `PHPSTORM`). Só ativa quando você dispara explicitamente, evitando overhead em todas as requests:
+Configurado em modo `trigger` (XDebug 3, porta `9003`, idekey `PHPSTORM`). Só ativa quando você dispara explicitamente, evitando overhead em todas as requests.
 
-- Cookie `XDEBUG_TRIGGER` (extensões como *Xdebug Helper* fazem isso)
-- Query string: `?XDEBUG_TRIGGER=1`
-- Header HTTP: `X-XDEBUG-TRIGGER: 1`
+#### Configuração no VS Code
 
-Na sua IDE, configure para escutar na porta `9003` com path mapping:
-- Remoto: `/var/www/html/wp-content/plugins/woo-pagarme-payments`
-- Local: raiz deste repositório
+**1. Instale a extensão**
+
+Marketplace → instale **PHP Debug** (publisher: *Xdebug*, ID `xdebug.php-debug`).
+
+**2. Crie `.vscode/launch.json` na raiz do projeto**
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003,
+            "pathMappings": {
+                "/var/www/html/wp-content/plugins/woo-pagarme-payments": "${workspaceFolder}"
+            }
+        }
+    ]
+}
+```
+
+Se quiser depurar também o WordPress core ou outros plugins, adicione mais entradas em `pathMappings` apontando para diretórios locais com aquele código.
+
+**3. Inicie o listener**
+
+`Ctrl+Shift+D` (ou `Cmd+Shift+D` no macOS) → selecione *"Listen for Xdebug"* → clique no botão ▶. A status bar fica laranja com "Listening on port 9003".
+
+**4. Dispare o trigger na request**
+
+Como o modo é `trigger`, o XDebug só conecta se a request sinalizar. Três formas:
+
+- **Browser** (recomendado): instale a extensão **Xdebug Helper** ([Chrome](https://chromewebstore.google.com/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) / [Firefox](https://addons.mozilla.org/firefox/addon/xdebug-helper-for-firefox/)), clique no ícone na barra → *"Debug"*. Pronto — toda página de `woo.localhost` agora dispara.
+- **Query string**: `http://woo.localhost/?XDEBUG_TRIGGER=1`
+- **curl**: `curl -b "XDEBUG_TRIGGER=1" http://woo.localhost/`
+
+**5. Coloque um breakpoint e teste**
+
+Abra qualquer arquivo `src/**/*.php`, clique na margem para colocar um breakpoint, recarregue a página com o trigger ativo. A execução deve parar no breakpoint.
+
+#### Troubleshooting
+
+Acompanhe o log do XDebug com `make xdebug-log` enquanto dispara a request:
+
+| O que aparece no log | Diagnóstico | O que fazer |
+|---|---|---|
+| Nada / vazio | Trigger não chegou | Confirme cookie/query `XDEBUG_TRIGGER` |
+| `Could not connect to host.docker.internal:9003` | VS Code não está ouvindo ou rede do container não alcança o host | (a) Inicie o listener no VS Code. (b) **No Linux**: descomente o bloco `extra_hosts` em `.dev/docker-compose.yml` |
+| `Connected to debugging client ... Sending init packet` mas não para | `pathMappings` errado | Confirme que abriu o VS Code na **raiz do plugin** e que o caminho remoto bate com o do log |
+
+> **Linux**: o `host.docker.internal` não existe nativamente. Descomente no `.dev/docker-compose.yml` o bloco:
+> ```yaml
+> extra_hosts:
+>   - "host.docker.internal:host-gateway"
+> ```
+> Em macOS/Windows com Docker Desktop, **não descomente** — quebra a resolução nativa via vpnkit.
+
+> O `xdebug.log_level` está em `7` (verbose) por padrão para facilitar diagnóstico. Em uso normal você pode baixar para `0` em `.dev/xdebug.ini` se quiser reduzir o ruído no `/tmp/xdebug.log`.
 
 ## Contribuidores
 
