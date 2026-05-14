@@ -130,7 +130,7 @@ class Card extends Gateway
      * @param string|null $id
      * @return string
      */
-    public function getElementId(string $id = null)
+    public function getElementId(?string $id = null)
     {
         $elementId = '[cards][' . $this->getSequence() . ']';
         if ($id) {

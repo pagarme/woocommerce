@@ -53,7 +53,7 @@ class Gateway
     public $payment;
 
     public function __construct(
-        Config $config = null
+        ?Config $config = null
     ) {
         if (!$config) {
             $config = new Config();

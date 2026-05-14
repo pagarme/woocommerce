@@ -283,8 +283,6 @@ function wcmpLoadNotice($name)
 
 function wcmpLoadInstances()
 {
-    require_once __DIR__ . '/vendor/autoload.php';
-
     Woocommerce\Pagarme\Core::instance();
     (new Woocommerce\Pagarme\DB\Migration\Migrator)->execute();
     do_action('wcmp_init');
@@ -298,6 +296,8 @@ function wcmpLoadInstances()
  */
 function wcmpPluginsLoadedCheck()
 {
+    require_once __DIR__ . '/vendor/autoload.php';
+
     $woocommerce = class_exists('WooCommerce');
     add_action('in_plugin_update_message-' . WCMP_PLUGIN_BASE, function ($pluginData) {
         versionUpdateWarning(WCMP_VERSION, $pluginData['new_version']);
@@ -308,7 +308,7 @@ function wcmpPluginsLoadedCheck()
     }
 
     if ($woocommerce) {
-        wcmpLoadInstances();
+        add_action('init', 'wcmpLoadInstances', 0);
     }
 
     if (get_option('permalink_structure') === '') {

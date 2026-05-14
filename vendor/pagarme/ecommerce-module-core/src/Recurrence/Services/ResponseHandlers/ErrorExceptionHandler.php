@@ -12,7 +12,7 @@ final class ErrorExceptionHandler extends AbstractResponseHandler
      * @param PaymentOrder|null $paymentOrder
      * @return mixed
      */
-    public function handle($error, PaymentOrder $paymentOrder = null)
+    public function handle($error, ?PaymentOrder $paymentOrder = null)
     {
         $orderCode = null;
         $exceptionLogMethod = 'exception';

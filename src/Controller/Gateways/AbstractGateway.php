@@ -113,14 +113,14 @@ abstract class AbstractGateway extends WC_Payment_Gateway
      * @param Template|null $template
      */
     public function __construct(
-        Yesno $yesnoOptions = null,
-        Checkout $checkout = null,
-        Gateway $gateway = null,
-        WooOrderRepository $wooOrderRepository = null,
-        PostFormatter $postFormatter = null,
-        Config $config = null,
-        GatewayBlock $gatewayBlock = null,
-        Template $template = null
+        ?Yesno $yesnoOptions = null,
+        ?Checkout $checkout = null,
+        ?Gateway $gateway = null,
+        ?WooOrderRepository $wooOrderRepository = null,
+        ?PostFormatter $postFormatter = null,
+        ?Config $config = null,
+        ?GatewayBlock $gatewayBlock = null,
+        ?Template $template = null
     ) {
         $this->gatewayBlock = $gatewayBlock ?? new GatewayBlock;
         $this->config = $config ?? new Config;

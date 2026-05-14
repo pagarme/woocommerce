@@ -63,10 +63,10 @@ class AdditionalInformation extends AbstractMetaBox implements MetaBoxInterface
      * @param ChargeModel|null $charge
      */
     public function __construct(
-        Json $jsonSerialize = null,
+        ?Json $jsonSerialize = null,
         array $data = [],
-        Order $order = null,
-        ChargeModel $charge = null
+        ?Order $order = null,
+        ?ChargeModel $charge = null
     ) {
         parent::__construct($jsonSerialize, $data);
         try {

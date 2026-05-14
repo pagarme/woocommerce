@@ -406,7 +406,7 @@ class Utils
      */
     public static function str_to_float($string)
     {
-        return floatval(str_replace(',', '.', $string));
+        return floatval(str_replace(',', '.', (string) $string));
     }
 
     /**

@@ -32,9 +32,9 @@ class Googlepay extends AbstractPayment
      * @param Multicustomers|null $multicustomers
      */
     public function __construct(
-        Json  $jsonSerialize = null,
+        ?Json  $jsonSerialize = null,
         array $data = [],
-        Multicustomers $multicustomers = null
+        ?Multicustomers $multicustomers = null
     ) {
         parent::__construct($jsonSerialize, $data);
         $this->multicustomers = $multicustomers ?? new Multicustomers;

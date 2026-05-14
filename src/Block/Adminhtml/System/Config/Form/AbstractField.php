@@ -62,7 +62,7 @@ abstract class AbstractField
      * @param array $data
      */
     public function __construct(
-        Config $config = null,
+        ?Config $config = null,
         string $template = '',
         array $data = []
     ) {

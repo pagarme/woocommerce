@@ -35,7 +35,7 @@ class ShippingMethod extends DataObject
      * @param array $data
      */
     public function __construct(
-        Json $jsonSerialize = null,
+        ?Json $jsonSerialize = null,
         array $data = []
     ) {
         parent::__construct($jsonSerialize, $data);

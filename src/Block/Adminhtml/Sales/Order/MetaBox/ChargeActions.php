@@ -61,11 +61,11 @@ class ChargeActions extends AbstractMetaBox implements MetaBoxInterface
      * @param \Woocommerce\Pagarme\Model\Charge|null $charge
      */
     public function __construct(
-        Json $jsonSerialize = null,
+        ?Json $jsonSerialize = null,
         array $data = [],
-        Order $order = null,
-        \Woocommerce\Pagarme\Model\Charge $charge = null,
-        Config $config = null
+        ?Order $order = null,
+        ?\Woocommerce\Pagarme\Model\Charge $charge = null,
+        ?Config $config = null
     ) {
         parent::__construct($jsonSerialize, $data);
         try {

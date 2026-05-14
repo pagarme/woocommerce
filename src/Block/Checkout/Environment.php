@@ -34,9 +34,9 @@ class Environment extends Template
      * @param array $data
      */
     public function __construct(
-        Json $jsonSerialize = null,
+        ?Json $jsonSerialize = null,
         array $data = [],
-        Config $config = null
+        ?Config $config = null
     ) {
         parent::__construct($jsonSerialize, $data);
         if (!$this->getData('config')) {

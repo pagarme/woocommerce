@@ -39,7 +39,7 @@ class CardInstallments
      * @param Config|null $config
      */
     public function __construct(
-        Config $config = null
+        ?Config $config = null
     ) {
         if (!$config) {
             $config = new Config();
@@ -86,6 +86,7 @@ class CardInstallments
     public function getOptions($total, $maxInstallments, $minAmount, $interest, $interestIncrease, $noInterest)
     {
         $interestBase = $interest;
+        $options = [];
         for ($times = 1; $times <= $maxInstallments; $times++) {
             $interest = $interestBase;
             $amount = $total;

@@ -38,7 +38,7 @@ class PostFormatter
      * @param null $orderId
      */
     public function __construct(
-        Gateway $gateway = null,
+        ?Gateway $gateway = null,
         $paymentMethod = null,
         $orderId = null
     ) {

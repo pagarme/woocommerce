@@ -75,7 +75,7 @@ class TwoCards extends AbstractPayment implements PaymentInterface
      * @param CreditCard|null $creditCard
      */
     public function __construct(
-        CreditCard $creditCard = null
+        ?CreditCard $creditCard = null
     ) {
         $this->creditCard = $creditCard ?? new CreditCard;
     }

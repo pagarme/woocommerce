@@ -45,9 +45,9 @@ class PagarmeCoreConfigManagement
      * @param Json|null $jsonSerialize
      */
     public function __construct(
-        ConfigurationFactory $pagarmeCoreConfigFactory = null,
-        Json $jsonSerialize = null,
-        DataObject $dataObject = null
+        ?ConfigurationFactory $pagarmeCoreConfigFactory = null,
+        ?Json $jsonSerialize = null,
+        ?DataObject $dataObject = null
     ) {
         $this->pagarmeCoreConfigFactory = $pagarmeCoreConfigFactory ?? new ConfigurationFactory;
         $this->jsonSerialize = $jsonSerialize ?? new Json;

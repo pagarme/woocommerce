@@ -29,7 +29,7 @@ class Orders
     private $debug;
 
     public function __construct(
-        BlockOrder $blockOrder = null
+        ?BlockOrder $blockOrder = null
     ) {
         $this->settings = new Config();
         $this->debug    = $this->settings->getEnableLogs();

@@ -47,8 +47,8 @@ class Config extends DataObject
      * @param array $data
      */
     public function __construct(
-        PagarmeCoreConfigManagement $pagarmeCoreConfigManagement = null,
-        Json $jsonSerialize = null,
+        ?PagarmeCoreConfigManagement $pagarmeCoreConfigManagement = null,
+        ?Json $jsonSerialize = null,
         array $data = []
     ) {
         $this->pagarmeCoreConfigManagement = $pagarmeCoreConfigManagement ?? new PagarmeCoreConfigManagement;
@@ -93,7 +93,7 @@ class Config extends DataObject
      * @param Config|null $config
      * @return void
      */
-    public function save(Config $config = null)
+    public function save(?Config $config = null)
     {
         if (!$config) {
             $config = $this;

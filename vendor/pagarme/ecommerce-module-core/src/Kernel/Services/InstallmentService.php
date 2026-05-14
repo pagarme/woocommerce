@@ -24,8 +24,8 @@ final class InstallmentService
      * @return Installment[]
      */
     public function getInstallmentsFor(
-        Order $order = null,
-        CardBrand $brand = null,
+        ?Order $order = null,
+        ?CardBrand $brand = null,
         $value = null,
         $config = null
     ) {

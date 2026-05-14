@@ -54,14 +54,14 @@ class PaymentRequest extends AbstractPayment implements PaymentRequestInterface
      * @param array $data
      */
     public function __construct(
-        ShippingAddress $shippingAddress = null,
-        BillingAddress $billingAddress = null,
-        Cards $cards = null,
-        ShippingMethod $shippingMethod = null,
-        Json $jsonSerialize = null,
-        Billet $billet = null,
-        Pix $pix = null,
-        Googlepay $googlepay = null,
+        ?ShippingAddress $shippingAddress = null,
+        ?BillingAddress $billingAddress = null,
+        ?Cards $cards = null,
+        ?ShippingMethod $shippingMethod = null,
+        ?Json $jsonSerialize = null,
+        ?Billet $billet = null,
+        ?Pix $pix = null,
+        ?Googlepay $googlepay = null,
         array $data = []
     ) {
         parent::__construct($jsonSerialize, $data);

@@ -44,10 +44,10 @@ class Checkout
     private $wooOrderRepository;
 
     public function __construct(
-        Gateway            $gateway = null,
-        Config             $config = null,
-        Orders             $orders = null,
-        WooOrderRepository $wooOrderRepository = null
+        ?Gateway            $gateway = null,
+        ?Config             $config = null,
+        ?Orders             $orders = null,
+        ?WooOrderRepository $wooOrderRepository = null
     ) {
         if (!$config) {
             $config = new Config;
@@ -113,7 +113,7 @@ class Checkout
      * @return array|Exception|CoreOrder|void
      * @throws WC_Data_Exception
      */
-    public function process(WC_Order $wc_order = null, string $type = CheckoutTypes::TRANSPARENT_VALUE)
+    public function process(?WC_Order $wc_order = null, string $type = CheckoutTypes::TRANSPARENT_VALUE)
     {
         if (
             (!Utils::is_request_ajax() && !Utils::isCheckoutRequest())

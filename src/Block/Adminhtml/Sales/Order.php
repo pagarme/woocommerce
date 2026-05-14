@@ -39,8 +39,8 @@ class Order extends Template
      * @param array $data
      */
     public function __construct(
-        MetaBoxes $metaBoxes = null,
-        Json $jsonSerialize = null,
+        ?MetaBoxes $metaBoxes = null,
+        ?Json $jsonSerialize = null,
         array $data = []
     ) {
         parent::__construct($jsonSerialize, $data);

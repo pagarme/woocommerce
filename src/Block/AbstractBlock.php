@@ -39,7 +39,7 @@ abstract class AbstractBlock extends DataObject
     protected $areaCode = 'front';
 
     public function __construct(
-        Json  $jsonSerialize = null,
+        ?Json  $jsonSerialize = null,
         array $data = []
     )
     {

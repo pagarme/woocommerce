@@ -24,7 +24,7 @@ class Accounts
     const OPT_WALLET_ENDPOINT = 'woocommerce_pagarme_wallet_endpoint';
 
     public function __construct(
-        Template $template = null
+        ?Template $template = null
     )
     {
         $this->template = $template ?? new Template();

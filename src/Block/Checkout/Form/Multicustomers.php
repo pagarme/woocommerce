@@ -46,11 +46,11 @@ class Multicustomers extends Gateway
      * @param WC_Countries|null $countries
      */
     public function __construct(
-        Json $jsonSerialize = null,
+        ?Json $jsonSerialize = null,
         array $data = [],
-        GatewayModel $gateway = null,
-        Config $config = null,
-        WC_Countries $countries = null
+        ?GatewayModel $gateway = null,
+        ?Config $config = null,
+        ?WC_Countries $countries = null
     ) {
         parent::__construct($jsonSerialize, $data, $gateway, $config);
         if (!$countries) {

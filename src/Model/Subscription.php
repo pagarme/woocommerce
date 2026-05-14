@@ -39,7 +39,7 @@ class Subscription extends SubscriptionMeta
     const ONE_INSTALLMENT_PERIODS = ['day', 'week'];
 
     public function __construct(
-        AbstractGateway $payment = null
+        ?AbstractGateway $payment = null
     )
     {
         if (!$this->hasSubscriptionPlugin()) {

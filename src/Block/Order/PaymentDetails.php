@@ -31,7 +31,7 @@ class PaymentDetails extends Template
      * @param int|null $orderId
      * @return void
      */
-    public function render(int $orderId = null)
+    public function render(?int $orderId = null)
     {
         $this->setOrderId($orderId)
             ->setOrder(new Order($orderId))->toHtml();

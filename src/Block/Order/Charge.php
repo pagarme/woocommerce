@@ -33,9 +33,9 @@ class Charge extends Template
     private $modelCharge;
 
     public function __construct(
-        Json $jsonSerialize = null,
+        ?Json $jsonSerialize = null,
         array $data = [],
-        \Woocommerce\Pagarme\Model\Charge $modelCharge = null
+        ?\Woocommerce\Pagarme\Model\Charge $modelCharge = null
     ) {
         parent::__construct($jsonSerialize, $data);
         $this->modelCharge = $modelCharge ?? new \Woocommerce\Pagarme\Model\Charge;

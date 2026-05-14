@@ -37,8 +37,8 @@ class Card
      * @param Json|null $json
      */
     public function __construct(
-        Gateway $gateway = null,
-        Json $json = null
+        ?Gateway $gateway = null,
+        ?Json $json = null
     ) {
         $this->gateway = $gateway;
         if (!$this->gateway) {

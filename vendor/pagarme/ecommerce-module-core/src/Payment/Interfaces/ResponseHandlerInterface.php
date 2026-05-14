@@ -6,5 +6,5 @@ use Pagarme\Core\Payment\Aggregates\Order as PaymentOrder;
 
 interface ResponseHandlerInterface
 {
-    public function handle($response, PaymentOrder $paymentOrder = null);
+    public function handle($response, ?PaymentOrder $paymentOrder = null);
 }

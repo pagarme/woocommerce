@@ -41,7 +41,7 @@ class DataObject implements \ArrayAccess
      * @param array $data
      */
     public function __construct(
-        Json $jsonSerialize = null,
+        ?Json $jsonSerialize = null,
         array $data = []
     ) {
         $this->_data = $data;

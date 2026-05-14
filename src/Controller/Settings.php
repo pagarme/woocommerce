@@ -57,8 +57,8 @@ class Settings
     protected $sectionsFields = [];
 
     public function __construct(
-        Select $select = null,
-        Config $config = null
+        ?Select $select = null,
+        ?Config $config = null
     ) {
         $this->select = $select;
         if (!$select) {
@@ -120,7 +120,7 @@ class Settings
         wp_localize_script('pagarme_settings', 'pagarme_settings', $params);
     }
 
-    private function setSectionsFields(array $value = null)
+    private function setSectionsFields(?array $value = null)
     {
         if ($value) {
             $this->sectionsFields = $value;

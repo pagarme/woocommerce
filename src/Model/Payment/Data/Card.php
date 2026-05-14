@@ -36,9 +36,9 @@ class Card extends AbstractPayment
      */
     public function __construct(
         $num = 1,
-        Json  $jsonSerialize = null,
+        ?Json  $jsonSerialize = null,
         array $data = [],
-        Multicustomers $multicustomers = null
+        ?Multicustomers $multicustomers = null
     ) {
         parent::__construct($jsonSerialize, $data);
         $this->num = $num;

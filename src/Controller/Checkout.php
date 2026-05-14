@@ -37,8 +37,8 @@ class Checkout
     protected $ordersController;
 
     public function __construct(
-        CardInstallments $cardInstallments = null,
-        Installments $installments = null
+        ?CardInstallments $cardInstallments = null,
+        ?Installments $installments = null
     ) {
         $this->ordersController = new Orders();
         $paymentDetails = new \Woocommerce\Pagarme\Block\Order\PaymentDetails();

@@ -47,7 +47,7 @@ abstract class AuthenticationStatusEnum
      * @param string|null $status
      * @return string
      */
-    public static function statusMessage(string $status = null)
+    public static function statusMessage(?string $status = null)
     {
         if (empty($status)) {
             return '';

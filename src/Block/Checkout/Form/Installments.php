@@ -42,10 +42,10 @@ class Installments extends Gateway
     protected $subscription;
 
     public function __construct(
-        Json         $jsonSerialize = null,
+        ?Json         $jsonSerialize = null,
         array        $data = [],
-        GatewayModel $gateway = null,
-        Config       $config = null
+        ?GatewayModel $gateway = null,
+        ?Config       $config = null
     )
     {
         parent::__construct($jsonSerialize, $data, $gateway, $config);

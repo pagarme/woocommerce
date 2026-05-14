@@ -24,7 +24,7 @@ class AccountService
      */
     private $order;
 
-    public function __construct(CoreAuth $coreAuth, Config $config, WC_Order $order = null)
+    public function __construct(CoreAuth $coreAuth, Config $config, ?WC_Order $order = null)
     {
         $this->coreAuth = $coreAuth;
         $this->config = $config;

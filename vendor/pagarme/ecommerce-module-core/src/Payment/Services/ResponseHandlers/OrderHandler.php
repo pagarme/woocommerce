@@ -29,7 +29,7 @@ final class OrderHandler extends AbstractResponseHandler
      * @param Order $createdOrder
      * @return mixed
      */
-    public function handle($createdOrder, PaymentOrder $paymentOrder = null)
+    public function handle($createdOrder, ?PaymentOrder $paymentOrder = null)
     {
         $orderStatus = ucfirst($createdOrder->getStatus()->getStatus());
         $statusHandler = 'handleOrderStatus' . $orderStatus;

@@ -74,8 +74,8 @@ class BilletCard extends Card implements PaymentInterface
      * @param Billet|null $billet
      */
     public function __construct(
-        CreditCard $creditCard = null,
-        Billet $billet = null
+        ?CreditCard $creditCard = null,
+        ?Billet $billet = null
     ) {
         $this->creditCard = $creditCard ?? new CreditCard;
         $this->billet = $billet ?? new Billet;

@@ -37,7 +37,7 @@ class Payment
      */
     public function __construct(
         string $paymentMethod,
-        Gateway $gateway = null
+        ?Gateway $gateway = null
     ) {
         if (!$gateway) {
             $gateway = new Gateway;
