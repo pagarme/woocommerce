@@ -21,3 +21,7 @@ vendor/phpunit/
 vendor/sebastian/
 vendor/theseer/
 vendor/wordpress/
+
+# Docker dev overrides locais
+docker-compose.override.yml
+.env
