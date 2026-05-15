@@ -23,7 +23,17 @@ class Checkout
 {
     protected $cards = array();
 
+    /**
+     * @var array
+     * @deprecated This property appears to be unused in the codebase but is kept for backward compatibility.
+     */
     protected $payment_methods = [];
+
+    /**
+     * Flag to indicate if translations have been loaded
+     * @var bool
+     */
+    private $translations_loaded = false;
 
     /** @var CardInstallments */
     protected $cardInstallments;
@@ -45,14 +55,10 @@ class Checkout
         add_action('woocommerce_view_order', [$paymentDetails, 'render']);
         add_action('wp_ajax_xqRhBHJ5sW', array($this, 'build_installments'));
         add_action('wp_ajax_nopriv_xqRhBHJ5sW', array($this, 'build_installments'));
-        $this->payment_methods = [
-            'credit_card'     => __('Credit card', 'woo-pagarme-payments'),
-            'billet'          => __('Boleto', 'woo-pagarme-payments'),
-            'pix'             => __('Pix', 'woo-pagarme-payments'),
-            '2_cards'         => __('2 credit cards', 'woo-pagarme-payments'),
-            'billet_and_card' => __('Credit card and Boleto', 'woo-pagarme-payments'),
-            'voucher'         => __('Voucher', 'woo-pagarme-payments'),
-        ];
+
+        // Load translations later to avoid _load_textdomain_just_in_time warning
+        add_action('init', array($this, 'load_payment_methods_translations'), 20);
+
         $this->cardInstallments = $cardInstallments;
         if (!$this->cardInstallments) {
             $this->cardInstallments = new CardInstallments();
@@ -61,6 +67,42 @@ class Checkout
         if (!$this->installments) {
             $this->installments = new Installments();
         }
+    }
+
+    /**
+     * Loads payment methods translations after init
+     * @return void
+     */
+    public function load_payment_methods_translations()
+    {
+        if ($this->translations_loaded) {
+            return;
+        }
+
+        $this->payment_methods = [
+            'credit_card'     => __('Credit card', 'woo-pagarme-payments'),
+            'billet'          => __('Boleto', 'woo-pagarme-payments'),
+            'pix'             => __('Pix', 'woo-pagarme-payments'),
+            '2_cards'         => __('2 credit cards', 'woo-pagarme-payments'),
+            'billet_and_card' => __('Credit card and Boleto', 'woo-pagarme-payments'),
+            'voucher'         => __('Voucher', 'woo-pagarme-payments'),
+        ];
+
+        $this->translations_loaded = true;
+    }
+
+    /**
+     * Get payment methods (load translations if needed)
+     * @return array
+     */
+    public function get_payment_methods()
+    {
+        // If accessed before init hook fired but translations are needed
+        if (empty($this->payment_methods) && did_action('init')) {
+            $this->load_payment_methods_translations();
+        }
+
+        return $this->payment_methods;
     }
 
     /**
