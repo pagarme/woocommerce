@@ -8,7 +8,7 @@ use stdClass;
 
 class WebhookValidatorService
 {
-    const JWKS_URL = 'https://hubapi.pagar.me/.well-known/jwks.json';
+    const JWKS_URL = 'https://hubapi.stone.com.br/.well-known/jwks.json';
     const JWKS_CACHE_KEY = 'pagarme-webhook-jwks';
     const JWKS_CACHE_TTL = 31536000; // 1 year in seconds
     const DEFAULT_ALGORITHM = 'RS256';
