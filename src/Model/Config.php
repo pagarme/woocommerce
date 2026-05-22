@@ -159,7 +159,7 @@ class Config extends DataObject
     private function getHubBaseUrl()
     {
         return sprintf(
-            'https://sandbox.hub.stone.com.br/apps/%s/authorize',
+            'https://hub.stg.pagar.me/apps/%s/authorize',
             $this->getHubAppId()
         );
     }
