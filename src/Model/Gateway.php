@@ -120,7 +120,7 @@ class Gateway
     private function get_hub_integrate_url()
     {
         $baseUrl = sprintf(
-            'https://hub.stg.pagar.me/apps/%s/authorize',
+            'https://sandbox.hub.stone.com.br/apps/%s/authorize',
             $this->get_hub_app_id()
         );
 
