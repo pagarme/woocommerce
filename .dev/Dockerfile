@@ -16,6 +16,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY php-dev.ini /usr/local/etc/php/conf.d/zz-dev.ini
 COPY xdebug.ini /usr/local/etc/php/conf.d/zz-xdebug.ini
+COPY mu-plugins /var/www/html/wp-content/mu-plugins
 
 RUN a2enmod rewrite
 
