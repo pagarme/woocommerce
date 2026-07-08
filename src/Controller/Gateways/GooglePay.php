@@ -45,10 +45,10 @@ class GooglePay extends AbstractGateway
     public function field_account_id()
     {
         return [
-            'title' => __('Pagar.me account ID', 'woo-pagarme-payments'),
+            'title' => __('Stone account ID', 'woo-pagarme-payments'),
             'default' => $this->config->getData('account_id') ?? '',
             'type' => 'text',
-            'description' => __('Check the Pagar.me Dashboard at: Settings &rarr; Keys &rarr; Account ID', 'woo-pagarme-payments'),
+            'description' => __('Check the Stone Dashboard at: Settings &rarr; Keys &rarr; Account ID', 'woo-pagarme-payments'),
         ];
     }
 

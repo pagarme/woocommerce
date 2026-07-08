@@ -1,11 +1,11 @@
 <?php
 /*
- * Plugin Name: Pagar.me for WooCommerce
+ * Plugin Name: Stone for WooCommerce
  * Version:     3.9.0
- * Author:      Pagar.me
- * Author URI:  https://pagar.me
+ * Author:      Stone
+ * Author URI:  https://stone.com.br
  * License:     GPL2
- * Description: Enable Pagar.me Gateway for WooCommerce
+ * Description: Enable Stone Gateway for WooCommerce
  * Requires at least: 4.1
  * Tested up to: 6.9.4
  * WC requires at least: 3.9.0
@@ -69,7 +69,7 @@ function wcmpRenderAdminNoticeHtml($message, $buttons = [], $type = 'error', $in
                      src="<?= plugins_url('/pagarme-payments-for-woocommerce/assets/images/pagarme-avatar.svg') ?>">
             </div>
             <div class="pagarme-notice-message-container">
-                <p><strong><?= __('Pagar.me module for Woocommerce', 'woo-pagarme-payments'); ?>:</strong></p>
+                <p><strong><?= __('Stone module for Woocommerce', 'woo-pagarme-payments'); ?>:</strong></p>
                 <p><?= $message ?></p>
                 <?php
                 if (!empty($buttons)) {
@@ -190,7 +190,7 @@ function wcmpGetPluginButton($pluginBasename, $pluginName)
 function wcmpAdminNoticeWoocommerce()
 {
     wcmpRenderAdminNoticeHtml(
-        __('Woocommerce plugin is required for Pagar.me module to work.', 'woo-pagarme-payments'),
+        __('Woocommerce plugin is required for Stone module to work.', 'woo-pagarme-payments'),
         wcmpGetPluginButton('woocommerce/woocommerce.php', 'WooCommerce')
     );
 }
@@ -200,7 +200,7 @@ function wcmpAdminNoticePermalink()
     wcmpRenderAdminNoticeHtml(
         __(
             'Permalink structure in Wordpress Settings must be different from &ldquo;<b>Plain</b>&rdquo;. ' .
-            'Please correct this setting to be able to transact with Pagar.me.',
+            'Please correct this setting to be able to transact with Stone.',
             'woo-pagarme-payments'
         ),
         array(
@@ -262,7 +262,7 @@ function wcmpAdminNoticeCheckoutFields()
 
     $message .= '</ul><p>';
     $message .= sprintf(
-        __("Please, make sure to include them for Pagar.me plugin to work. If you are customizing the "
+        __("Please, make sure to include them for Stone plugin to work. If you are customizing the "
             . "checkout, the address fields must have the 'name' attribute exactly as listed above. %sRead "
             . "documentation »%s", "woo-pagarme-payments"),
         sprintf(

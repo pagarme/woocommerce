@@ -70,7 +70,7 @@ class Order extends Meta
         $current_status = $this->wc_order->get_status();
 
         if (!in_array($current_status, ['on-hold', 'completed', 'canceled', 'cancelled', 'processing'])) {
-            $this->wc_order->update_status('on-hold', __('Pagar.me: Awaiting payment confirmation.', 'woo-pagarme-payments'));
+            $this->wc_order->update_status('on-hold', __('Stone: Awaiting payment confirmation.', 'woo-pagarme-payments'));
             wc_maybe_reduce_stock_levels($this->wc_order->get_id());
         }
 
@@ -87,7 +87,7 @@ class Order extends Meta
         $current_status = $this->wc_order->get_status();
 
         if (!in_array($current_status, ['completed', 'processing'])) {
-            $this->wc_order->add_order_note(__('Pagar.me: Payment has already been confirmed.', 'woo-pagarme-payments'));
+            $this->wc_order->add_order_note(__('Stone: Payment has already been confirmed.', 'woo-pagarme-payments'));
             $this->wc_order->payment_complete();
         }
 
@@ -113,7 +113,7 @@ class Order extends Meta
         if (!in_array($current_status, ['cancelled', 'canceled'])) {
             $this->wc_order->update_status(
                 'cancelled',
-                __('Pagar.me: Payment canceled.', 'woo-pagarme-payments')
+                __('Stone: Payment canceled.', 'woo-pagarme-payments')
             );
         }
 
@@ -130,7 +130,7 @@ class Order extends Meta
         $current_status = $this->wc_order->get_status();
 
         if ($current_status !== 'failed') {
-            $this->wc_order->update_status('failed', __('Pagar.me: Payment failed.', 'woo-pagarme-payments'));
+            $this->wc_order->update_status('failed', __('Stone: Payment failed.', 'woo-pagarme-payments'));
         }
 
         $statusArray = [

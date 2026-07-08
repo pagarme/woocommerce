@@ -102,7 +102,7 @@ class Gateway
     {
         return !empty($hub_install_id)
             ? __('View Integration', 'woo-pagarme-payments')
-            : __('Integrate With Pagar.me', 'woo-pagarme-payments');
+            : __('Integrate With Stone', 'woo-pagarme-payments');
     }
 
     public function get_hub_url($hub_install_id)
