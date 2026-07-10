@@ -45,14 +45,6 @@ class Checkout
         add_action('woocommerce_view_order', [$paymentDetails, 'render']);
         add_action('wp_ajax_xqRhBHJ5sW', array($this, 'build_installments'));
         add_action('wp_ajax_nopriv_xqRhBHJ5sW', array($this, 'build_installments'));
-        $this->payment_methods = [
-            'credit_card'     => __('Credit card', 'woo-pagarme-payments'),
-            'billet'          => __('Boleto', 'woo-pagarme-payments'),
-            'pix'             => __('Pix', 'woo-pagarme-payments'),
-            '2_cards'         => __('2 credit cards', 'woo-pagarme-payments'),
-            'billet_and_card' => __('Credit card and Boleto', 'woo-pagarme-payments'),
-            'voucher'         => __('Voucher', 'woo-pagarme-payments'),
-        ];
         $this->cardInstallments = $cardInstallments;
         if (!$this->cardInstallments) {
             $this->cardInstallments = new CardInstallments();
@@ -61,6 +53,24 @@ class Checkout
         if (!$this->installments) {
             $this->installments = new Installments();
         }
+    }
+
+    /**
+     * Lazy-load payment method labels to avoid translation loading too early
+     */
+    private function getPaymentMethods(): array
+    {
+        if (empty($this->payment_methods)) {
+            $this->payment_methods = [
+                'credit_card'     => __('Credit card', 'woo-pagarme-payments'),
+                'billet'          => __('Boleto', 'woo-pagarme-payments'),
+                'pix'             => __('Pix', 'woo-pagarme-payments'),
+                '2_cards'         => __('2 credit cards', 'woo-pagarme-payments'),
+                'billet_and_card' => __('Credit card and Boleto', 'woo-pagarme-payments'),
+                'voucher'         => __('Voucher', 'woo-pagarme-payments'),
+            ];
+        }
+        return $this->payment_methods;
     }
 
     /**
