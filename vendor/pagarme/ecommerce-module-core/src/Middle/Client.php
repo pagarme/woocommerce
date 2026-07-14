@@ -10,7 +10,7 @@ use PagarmeCoreApiLib\Configuration;
  */
 abstract class Client
 {
-    const BASE_URI = 'https://hubapi.pagar.me/';
+    const BASE_URI = 'https://hubapi.stg.pagar.me/';
     const DEFAULT_RESOURCE = 'core/v1';
 
     public $client;
