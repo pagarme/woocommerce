@@ -290,8 +290,8 @@ class Settings
     {
         add_submenu_page(
             'woocommerce',
-            "Pagar.me",
-            "Pagar.me",
+            "Stone",
+            "Stone",
             'manage_options',
             'woo-pagarme-payments',
             array($this, 'settings_page')

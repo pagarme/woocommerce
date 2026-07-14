@@ -286,8 +286,7 @@ class Config extends DataObject
             return null;
         }
         return esc_url(sprintf(
-            'https://conta.stone.com.br/%s/',
-            $this->getPaymentProfileId()
+            'https://conta.stone.com.br'
         ));
     }
 

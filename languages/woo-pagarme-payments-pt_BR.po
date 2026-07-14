@@ -158,8 +158,8 @@ msgid "This the title which the user sees during checkout."
 msgstr "Este é o título que o usuário vê durante o checkout."
 
 #: src/Controller/Gateways.php:178
-msgid "Pagar.me"
-msgstr "Pagar.me"
+msgid "Stone"
+msgstr "Stone"
 
 #: src/Controller/Gateways.php:185
 msgid "Description"
