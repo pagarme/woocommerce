@@ -50,7 +50,7 @@ export async function tokenize(
     };
 
     try {
-        const tokenUrl = `https://api.pagar.me/core/v5/tokens?appId=${appId}`;
+        const tokenUrl = `https://stgapi.mundipagg.com/core/v1/tokens?appId=${appId}`;
         const response = await fetch(tokenUrl, {
             method: "POST",
             body: JSON.stringify(data),

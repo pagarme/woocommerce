@@ -71,7 +71,7 @@ final class WoocommerceCoreSetup extends AbstractModuleCoreSetup
 
     protected static function getPlatformHubAppPublicAppKey()
     {
-        $defaultKey = '1e9c3c13-f8ea-4fdd-b2a0-8795b5593397';
+        $defaultKey = '03322bf1-e904-47b6-b402-53bddf4c2ea5';
         $key = apply_filters('pagarme_hub_app_key', $defaultKey);
         if (!empty($key)) {
             return $key;
