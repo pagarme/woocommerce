@@ -349,7 +349,8 @@ class ConfigTest extends TestCase
 
         $result = $config->getHubUrl();
 
-        $this->assertStringContainsString('https://sandbox.hub.stone.com.br/apps/test_app_id/authorize', $result);
+
+        $this->assertStringContainsString('https://sandbox.hub.stone.com.br/redirect-onestone/#/?q=/apps/test_app_id/authorize', $result);
         $this->assertStringContainsString('install_token=install_token_123', $result);
     }
 
@@ -371,7 +372,8 @@ class ConfigTest extends TestCase
 
         $result = $config->getHubUrl();
 
-        $this->assertEquals('https://sandbox.hub.stone.com.br/apps/test_app_id/edit/install_123', $result);
+
+        $this->assertEquals('https://sandbox.hub.stone.com.br/redirect-onestone/#/?q=/apps/test_app_id/edit/install_123', $result);
     }
 
     public function testIsDashConfigAccessibleWithPaymentProfileIdShouldReturnFalse()

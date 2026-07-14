@@ -1,6 +1,6 @@
-=== Pagar.me para WooCommerce ===
-Contributors: pagarme
-Tags: payment, pagarme, ecommerce, brasil, woocommerce
+=== Stone para WooCommerce ===
+Contributors: stone
+Tags: payment, stone, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.9.4
 Requires PHP: 7.1
@@ -8,10 +8,10 @@ Stable tag: 3.9.0
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
-Aceite diversos métodos de pagamento de forma simples e segura utilizando o Pagar.me!
+Aceite diversos métodos de pagamento de forma simples e segura utilizando o Stone!
 
 == Description ==
-Desenvolvemos um plugin que integra o Woocomerce a Pagar.me de forma prática e segura, assim não é preciso que seu time de tecnologia desenvolva nenhuma linha de código. Basta instalar e configurar o módulo para usar!
+Desenvolvemos um plugin que integra o Woocomerce a Stone de forma prática e segura, assim não é preciso que seu time de tecnologia desenvolva nenhuma linha de código. Basta instalar e configurar o módulo para usar!
 
 == Installation ==
 Nosso processo de instalação é simples e bem detalhado:

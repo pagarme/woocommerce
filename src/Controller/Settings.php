@@ -113,7 +113,7 @@ class Settings
             ),
             'allow_no_address_swal' => array(
                 'title' => __('Are you sure?', 'woo-pagarme-payments'),
-                'text' => __('If your Pagar.me Antifraud is active, orders will fail.', 'woo-pagarme-payments'),
+                'text' => __('If your Stone Antifraud is active, orders will fail.', 'woo-pagarme-payments'),
                 'cancelButtonText' => __('Cancel', 'woo-pagarme-payments'),
             ),
         );
@@ -131,7 +131,7 @@ class Settings
             [
                 'fieldObject' => Integration::class,
                 'id' => 'hub_button_integration',
-                'title' => 'Pagar.me integration',
+                'title' => 'Stone integration',
             ]
         ];
 
@@ -145,7 +145,7 @@ class Settings
             $fields[] = [
                 'fieldObject' => Dash::class,
                 'id' => 'access_dash_button',
-                'title' => 'Pagar.me order panel',
+                'title' => 'Stone order panel',
                 'default' => '',
             ];
         }
@@ -176,7 +176,7 @@ class Settings
             'options' => $this->yesNoOptions->toLabelsArray(),
             'default' => strtolower(Yesno::NO),
             'description' => [
-                'format' => 'For PSP customers with Pagar.me Antifraud active, it is mandatory to fill'
+                'format' => 'For PSP customers with Stone Antifraud active, it is mandatory to fill'
                             . ' in all address fields. %sRead documentation »%s',
                 'values' => [
                     '<a href="'
@@ -192,7 +192,7 @@ class Settings
             'title' => 'Logs',
             'options' => $this->yesNoOptions->toLabelsArray(),
             'default' => strtolower(Yesno::NO),
-            'description' => 'Log Pagar.me events, you can check this log in WooCommerce>Status>Logs.'
+            'description' => 'Log Stone events, you can check this log in WooCommerce>Status>Logs.'
         ];
 
         if (empty($this->config->getAccountId()) && $this->config->getHubInstallId()) {
