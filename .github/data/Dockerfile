@@ -1,12 +1,12 @@
-# A tag correta para Alpine exige o FPM
 ARG WORDPRESS_IMAGE_VERSION=php8.4-fpm-alpine
 FROM wordpress:$WORDPRESS_IMAGE_VERSION
 
-
-# 1. Instala o wget (para o Datadog) e o nginx (para a Azure)
 RUN apk add --no-cache wget nginx
 
-# 2. Configura o Nginx para rodar o WordPress e enviar o PHP para o FPM
+# 1. Ajusta o Nginx para rodar com o mesmo usuário do WordPress (www-data)
+# Isso evita o 403 Forbidden por falta de permissão de leitura
+RUN sed -i 's/user nginx;/user www-data;/' /etc/nginx/nginx.conf
+
 RUN printf "server { \n\
     listen 80; \n\
     root /var/www/html; \n\
@@ -21,20 +21,22 @@ RUN printf "server { \n\
 
 WORKDIR /var/www/html/
 
-# 3. Baixa e instala o Datadog
 RUN wget https://github.com/DataDog/dd-trace-php/releases/latest/download/datadog-setup.php -O datadog-setup.php
 RUN php datadog-setup.php --php-bin=all --enable-appsec
 
-# 4. Copia seus arquivos
-COPY . ./wp-content
-COPY plugins/pagarme-payments-for-woocommerce/.github/data/custom.ini $PHP_INI_DIR/conf.d/
+# 2. Copia os arquivos já passando a posse para o www-data
+COPY --chown=www-data:www-data . ./wp-content
+COPY --chown=www-data:www-data plugins/pagarme-payments-for-woocommerce/.github/data/custom.ini $PHP_INI_DIR/conf.d/
 
-# 5. Cria um script para iniciar o PHP e o Nginx juntos
-RUN printf "#!/bin/sh\nphp-fpm -D\nnginx -g 'daemon off;'\n" > /start.sh \
-    && chmod +x /start.sh
+# 3. Corrige a inicialização: chama o script oficial do WP e depois o Nginx
+RUN printf "#!/bin/sh\n\
+# Roda o entrypoint oficial em background para copiar o index.php e iniciar o PHP\n\
+docker-entrypoint.sh php-fpm &\n\
+# Inicia o nginx em foreground para manter o container vivo\n\
+nginx -g 'daemon off;'\n\
+" > /start.sh && chmod +x /start.sh
 
-# Libera a porta 80 para a Azure
 EXPOSE 80
 
-# Inicia o container executando o script
-CMD ["/start.sh"]
+# Substitui o entrypoint padrão para o nosso script assumir o controle total
+ENTRYPOINT ["/start.sh"]
