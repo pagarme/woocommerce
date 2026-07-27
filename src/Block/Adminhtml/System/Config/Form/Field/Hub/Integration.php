@@ -42,7 +42,7 @@ class Integration extends AbstractField
      */
     public function getIntegrationButtonLabel()
     {
-        return ($this->config->getHubInstallId()) ? __('View Integration', 'woo-pagarme-payments') : __('Integrate With Pagar.me', 'woo-pagarme-payments');
+        return ($this->config->getHubInstallId()) ? __('View Integration', 'woo-pagarme-payments') : __('Integrate With Stone', 'woo-pagarme-payments');
     }
 
     /**

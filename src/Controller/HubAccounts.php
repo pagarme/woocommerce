@@ -15,7 +15,7 @@ use Pagarme\Core\Middle\Model\Account\PaymentMethodSettings;
 
 class HubAccounts
 {
-    const PAYMENT_DISABLED_MESSAGE = '%1$s payment method is enabled on your store, but disabled on Pagar.me Dash. '
+    const PAYMENT_DISABLED_MESSAGE = '%1$s payment method is enabled on your store, but disabled on Stone Dash. '
         . 'Please, access the Dash configurations and enable it to be able to process %1$s payment on your store.';
 
     const IDENTIFIER_POI_TYPE = 'point_of_interaction_type';

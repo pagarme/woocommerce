@@ -159,7 +159,7 @@ class Config extends DataObject
     private function getHubBaseUrl()
     {
         return sprintf(
-            'https://hub.pagar.me/apps/%s/authorize',
+            'https://hub.stone.com.br/redirect-onestone/#/?q=/apps/%s/authorize',
             $this->getHubAppId()
         );
     }
@@ -182,7 +182,7 @@ class Config extends DataObject
     private function getHubViewIntegrationUrl()
     {
         return sprintf(
-            'https://hub.pagar.me/apps/%s/edit/%s',
+            'https://hub.stone.com.br/redirect-onestone/#/?q=/apps/%s/edit/%s',
             $this->getHubAppId(),
             $this->getHubInstallId()
         );
@@ -286,8 +286,7 @@ class Config extends DataObject
             return null;
         }
         return esc_url(sprintf(
-            'https://conta.stone.com.br/%s/',
-            $this->getPaymentProfileId()
+            'https://conta.stone.com.br'
         ));
     }
 

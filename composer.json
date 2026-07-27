@@ -31,6 +31,15 @@
         "mockery/mockery": "1.6.*",
         "phpunit/phpunit": "10.5.*",
         "brain/monkey": "2.*",
-        "wordpress/wordpress": "dev-master"
+        "wordpress/wordpress": "dev-master",
+        "squizlabs/php_codesniffer": "^3.10",
+        "wp-coding-standards/wpcs": "^3.1",
+        "phpcsstandards/phpcsextra": "^1.2",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
