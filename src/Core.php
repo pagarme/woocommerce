@@ -157,7 +157,7 @@ class Core
 
     public static function get_name()
     {
-        return __('Pagar.me module for Woocommerce', 'woo-pagarme-payments');
+        return __('Stone module for Woocommerce', 'woo-pagarme-payments');
     }
 
     public static function plugin_dir_path($path = '')

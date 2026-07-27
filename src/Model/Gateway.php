@@ -102,7 +102,7 @@ class Gateway
     {
         return !empty($hub_install_id)
             ? __('View Integration', 'woo-pagarme-payments')
-            : __('Integrate With Pagar.me', 'woo-pagarme-payments');
+            : __('Integrate With Stone', 'woo-pagarme-payments');
     }
 
     public function get_hub_url($hub_install_id)
@@ -120,7 +120,7 @@ class Gateway
     private function get_hub_integrate_url()
     {
         $baseUrl = sprintf(
-            'https://hub.pagar.me/apps/%s/authorize',
+            'https://hub.stone.com.br/redirect-onestone/#/?q=/apps/%s/authorize',
             $this->get_hub_app_id()
         );
 
@@ -136,7 +136,7 @@ class Gateway
     private function get_hub_view_integration_url($hub_install_id)
     {
         return sprintf(
-            'https://hub.pagar.me/apps/%s/edit/%s',
+            'https://hub.stone.com.br/redirect-onestone/#/?q=/apps/%s/edit/%s',
             $this->get_hub_app_id(),
             $hub_install_id
         );

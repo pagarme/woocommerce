@@ -70,7 +70,7 @@ class Accounts
     {
         $wallet = array(
             'title'    => __('Wallet', 'woo-pagarme-payments'),
-            'desc'     => __('Your wallet for Pagar.me registered credit cards', 'woo-pagarme-payments'),
+            'desc'     => __('Your wallet for Stone registered credit cards', 'woo-pagarme-payments'),
             'id'       => self::OPT_WALLET_ENDPOINT,
             'type'     => 'text',
             'default'  => $this->wallet_endpoint,

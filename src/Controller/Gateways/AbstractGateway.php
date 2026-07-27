@@ -46,7 +46,7 @@ if (!function_exists('add_action')) {
 abstract class AbstractGateway extends WC_Payment_Gateway
 {
     /** @var string */
-    const PAGARME = 'Pagar.me';
+    const PAGARME = 'Stone';
 
     const WC_PAYMENT_PAGARME = 'woo-pagarme-payments';
 
@@ -132,7 +132,7 @@ abstract class AbstractGateway extends WC_Payment_Gateway
         $this->id = 'woo-pagarme-payments-' . $this->method;
         $this->yesnoOptions = $yesnoOptions ?? new Yesno;
         $this->method_title = $this->getPaymentMethodTitle();
-        $this->method_description = __('Payment Gateway Pagar.me', 'woo-pagarme-payments') . ' ' . $this->method_title;
+        add_action('init', [$this, 'set_method_description']);
         $this->view_transaction_url = $this->config->getPagarmeDashUrl()
             ? $this->config->getPagarmeDashUrl() . 'orders/%s'
             : null;
@@ -174,6 +174,11 @@ abstract class AbstractGateway extends WC_Payment_Gateway
     public function hasCheckoutBlocksSupport(): bool
     {
         return false;
+    }
+
+    public function set_method_description(): void
+    {
+        $this->method_description = __('Payment Gateway Stone', 'woo-pagarme-payments') . ' ' . $this->method_title;
     }
 
     public function payments_scripts()
