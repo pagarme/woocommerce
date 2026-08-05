@@ -295,6 +295,7 @@ class Subscription extends SubscriptionMeta
             $fields['card_id'] = $card['cardId'];
             $fields['pagarmetoken'] = $card['cardId'];
             $fields['recurrence_cycle'] = "subsequent";
+            $fields['recurrence_model'] = self::getRecurrenceModelFromOrder($order->getWcOrder());
             $fields['payment_origin'] = isset($card['chargeId']) ? ["charge_id" => $card['chargeId']] : null;
         }
 
@@ -372,6 +373,90 @@ class Subscription extends SubscriptionMeta
             return false;
         }
         return $transactions->getCardData();
+    }
+
+    /**
+     * Determines whether the subscription has a fixed end date (finite billing cycles)
+     * @param int $productId
+     * @return bool
+     */
+    private static function hasFixedEndDate(int $productId): bool
+    {
+        $length = (int) WC_Subscriptions_Product::get_length($productId);
+        return $length > 0;
+    }
+
+    /**
+     * Determines the recurrence model for a subscription product
+     * @param int $productId
+     * @return string 'subscription' for fixed-duration or 'standing_order' for indefinite
+     */
+    private static function getRecurrenceModelFromProductId(int $productId): string
+    {
+        if (self::hasFixedEndDate($productId)) {
+            return 'subscription';
+        }
+        return 'standing_order';
+    }
+
+    /**
+     * Extracts the recurrence model from the first subscription product in the cart
+     * @return string|null 'subscription', 'standing_order', or null if no subscription
+     */
+    public static function getRecurrenceModel(): ?string
+    {
+        if (!self::canProcessSubscriptions()) {
+            return null;
+        }
+        return self::extractRecurrenceModelFromCartItems();
+    }
+
+    /**
+     * Determines whether subscriptions can be processed in the current context
+     * @return bool
+     */
+    private static function canProcessSubscriptions(): bool
+    {
+        return self::hasSubscriptionPlugin() && self::hasSubscriptionProductInCart();
+    }
+
+    /**
+     * Extracts recurrence model from the first subscription item in cart
+     * @return string|null
+     */
+    private static function extractRecurrenceModelFromCartItems(): ?string
+    {
+        foreach (WC()->cart->cart_contents ?? [] as $item) {
+            return self::getRecurrenceModelFromProductId((int) $item['product_id']);
+        }
+        return null;
+    }
+
+    /**
+     * Extracts the recurrence model from the first subscription product in an order
+     * Used when processing subscription renewals
+     * @param WC_Order $wcOrder
+     * @return string|null 'subscription', 'standing_order', or null if no subscription
+     */
+    public static function getRecurrenceModelFromOrder(WC_Order $wcOrder): ?string
+    {
+        if (!self::hasSubscriptionPlugin()) {
+            return null;
+        }
+        return self::extractRecurrenceModelFromOrderItems($wcOrder);
+    }
+
+    /**
+     * Extracts recurrence model from the first subscription item in order
+     * @param WC_Order $wcOrder
+     * @return string|null
+     */
+    private static function extractRecurrenceModelFromOrderItems(WC_Order $wcOrder): ?string
+    {
+        foreach ($wcOrder->get_items() as $item) {
+            return self::getRecurrenceModelFromProductId((int) $item->get_product_id());
+        }
+        return null;
     }
 
     /**

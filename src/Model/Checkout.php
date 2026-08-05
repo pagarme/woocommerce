@@ -130,6 +130,7 @@ class Checkout
         if ($type === CheckoutTypes::TRANSPARENT_VALUE) {
             $fields = $this->convertCheckoutObject($_POST[PaymentRequestInterface::PAGARME_PAYMENT_REQUEST_KEY]);
             $fields['recurrence_cycle'] = Subscription::getRecurrenceCycle();
+            $fields['recurrence_model'] = Subscription::getRecurrenceModel();
             $this->formatFieldsWhenIsSubscription($fields, $wc_order);
             $attempts = intval($wc_order->get_meta('_pagarme_attempts') ?? 0) + 1;
             $wc_order->update_meta_data("_pagarme_attempts", $attempts);
