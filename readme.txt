@@ -4,7 +4,7 @@ Tags: payment, stone, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.9.4
 Requires PHP: 7.1
-Stable tag: 3.9.0
+Stable tag: 3.10.0
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
