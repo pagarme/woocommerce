@@ -30,4 +30,3 @@ Você pode conferir essas atualizações aqui: [Github](https://github.com/pagar
 
 * **Melhorias:**
   * Atualização de branding do plugin e integrações de Pagar.me para Stone (OneStone).
-  * Adição de ambiente de desenvolvimento local via Docker (PHP 8.4, MariaDB e suporte a XDebug).
