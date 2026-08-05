@@ -25,8 +25,8 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
-= 3.9.0 (29/04/2026) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.9.0)
+= 3.10.0 (05/08/2026) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.10.0)
 
 * **Melhorias:**
-  * Habilitando suporte para CNPJ Alfanumerico
+  * Atualização de branding do plugin e integrações de Pagar.me para Stone (OneStone).
