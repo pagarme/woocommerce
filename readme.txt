@@ -25,7 +25,7 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
-= 3.10.1 (05/08/2026) =
+= 3.10.1 (10/08/2026) =
 Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.10.1)
 
 * **Melhorias:**
