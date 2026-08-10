@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Stone for WooCommerce
- * Version:     3.10.0
+ * Version:     3.10.1
  * Author:      Stone
  * Author URI:  https://stone.com.br
  * License:     GPL2
