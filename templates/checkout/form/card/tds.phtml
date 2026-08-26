@@ -21,4 +21,15 @@ if (!$this->canInitTds()) {
         <iframe name="challengeIframe" id="challengeIframe" title="pagarameTdsIframe"></iframe>
     </div>
 </div>
+
+<div id="tdsMethodContainer" style="display: none;"></div>
+<div id="challengeContainer"></div>
+
+<style>
+#challengeContainer iframe {
+    position: fixed;
+    z-index: 9999;
+}
+</style>
+
 <script src="<?= $this->getSdkUrl(); ?>"></script>

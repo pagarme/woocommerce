@@ -786,11 +786,20 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $authenticationFormData = $this->formData['authentication'];
             $authentication         = new stdClass();
             $authentication->type   = 'threed_secure';
-            $authentication->status = $authenticationFormData['trans_status'];
 
             $threeDSecure                = new stdClass();
             $threeDSecure->mpi           = 'pagarme';
-            $threeDSecure->transactionId = $authenticationFormData['tds_server_trans_id'];
+
+            if (isset($authenticationFormData['risk_id']) && isset($authenticationFormData['steps'])) {
+                $authentication->status = $authenticationFormData['steps'][0]['trans_status'] ?? '';
+                $threeDSecure->transactionId = $authenticationFormData['steps'][0]['tds_server_trans_id'] ?? '';
+                if (isset($authenticationFormData['risk_id'])) {
+                    $threeDSecure->riskId = $authenticationFormData['risk_id'];
+                }
+            } else {
+                $authentication->status = $authenticationFormData['trans_status'] ?? '';
+                $threeDSecure->transactionId = $authenticationFormData['tds_server_trans_id'] ?? '';
+            }
 
             $authentication->threeDSecure   = $threeDSecure;
             $newPaymentData->authentication = $authentication;

@@ -286,9 +286,22 @@ const pagarmeTds = {
         return text.replace(/[^0-9]/g, "");
     },
 
+    callTdsLegacy: (tdsToken, tdsData, callback) => {
+        initTds.callTdsFunction(
+            tdsToken,
+            tdsData,
+            callback
+        );
+    },
+
     start: (event) => {
         const canTdsRun = pagarmeTds.canTdsRun();
         if (canTdsRun) {
+            if (typeof pagarmeTdsNx === 'object' && typeof pagarmeTdsNx.execute === 'function') {
+                pagarmeTdsNx.execute(event);
+                return true;
+            }
+
             pagarmeCard.showLoader(event);
             pagarmeTds.checkoutEvent = event;
             pagarmeTds.addTdsAttributeData();

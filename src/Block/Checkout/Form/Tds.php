@@ -34,6 +34,7 @@ class Tds extends Gateway
         'checkout/model/payment/card/tds',
         'checkout/model/payment/card/tdsToken',
         'checkout/model/payment/card/initTds',
+        'checkout/model/payment/card/tdsNx',
     ];
 
     /**
@@ -48,6 +49,20 @@ class Tds extends Gateway
             $url = 'https://auth-3ds-sdx.pagar.me/bundle.js';
         }
         return $url;
+    }
+
+    public function getTifaUrl()
+    {
+        return $this->getConfig()->getIsSandboxMode()
+            ? 'https://tifa-app.stone.com.br/test/v1/tifa/tifa-app.min.js'
+            : 'https://tifa-app.stone.com.br/live/v1/tifa/tifa-app.min.js';
+    }
+
+    public function get3DsNxUrl()
+    {
+        return $this->getConfig()->getIsSandboxMode()
+            ? 'https://3ds-nx-js.stone.com.br/test/v2/3ds2.min.js'
+            : 'https://3ds-nx-js.stone.com.br/live/v2/3ds2.min.js';
     }
 
     public function canInitTds()
