@@ -296,23 +296,41 @@ const pagarmeTds = {
 
     start: (event) => {
         const canTdsRun = pagarmeTds.canTdsRun();
-        if (canTdsRun) {
-            if (typeof pagarmeTdsNx === 'object' && typeof pagarmeTdsNx.execute === 'function') {
-                pagarmeTdsNx.execute(event);
-                return true;
-            }
 
-            pagarmeCard.showLoader(event);
-            pagarmeTds.checkoutEvent = event;
-            pagarmeTds.addTdsAttributeData();
-            const token = pagarmeTds.getToken();
-            if (!token || token.length === 0) {
-                return false;
-            }
-
-            pagarmeTds.callTds(token);
+        // ========== GUARD: Se não pode rodar TDS, retorna falso ==========
+        if (!canTdsRun) {
+            console.log('TDS: Validações falharam, TDS não pode rodar');
+            return false;
         }
 
-        return canTdsRun;
+        // ========== PRIORIDADE 1: 3DS-NX (AuthSwitch) ==========
+        if (typeof pagarmeTdsNx === 'object' && typeof pagarmeTdsNx.execute === 'function') {
+            console.log('TDS: 3DS-NX disponível, iniciando fluxo NX');
+            pagarmeTdsNx.execute(event);
+            // ⚠️ CRÍTICO: Retorna true aqui e BLOQUEIA qualquer fall-through
+            // Impede que o código legado abaixo seja executado
+            return true;
+        }
+
+        // ========== PRIORIDADE 2: 3DS HANDLER LEGADO (FALLBACK) ==========
+        // ✅ SÓ chega aqui se:
+        //    - pagarmeTdsNx não está definido, OU
+        //    - pagarmeTdsNx.execute não é uma função
+        // ✅ Nunca roda junto com 3DS-NX
+
+        console.log('TDS: 3DS-NX não disponível, usando fluxo legado como fallback');
+        pagarmeCard.showLoader(event);
+        pagarmeTds.checkoutEvent = event;
+        pagarmeTds.addTdsAttributeData();
+
+        const token = pagarmeTds.getToken();
+        if (!token || token.length === 0) {
+            console.warn('TDS: Token legado não obtido, abortando');
+            return false;
+        }
+
+        console.log('TDS: Iniciando 3DS Handler legado');
+        pagarmeTds.callTds(token);
+        return true;
     },
 };
