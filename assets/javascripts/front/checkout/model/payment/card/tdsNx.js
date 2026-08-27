@@ -7,10 +7,41 @@ const pagarmeTdsNx = {
     getTdsTokenNx: async () => {
         try {
             console.log('TDS-NX: Fetching token from /wc-api/pagarme-tds-token-nx');
+            // const response = await new Promise((resolve, reject) => {
+            //     const timeout = setTimeout(() => {
+            //         reject(new Error('AJAX request timeout'));
+            //     }, 10000);
+
+            //     jQuery.ajax({
+            //         type: 'GET',
+            //         dataType: 'json',
+            //         url: '/wc-api/pagarme-tds-token-nx',
+            //         async: true,
+            //         cache: false,
+            //         success: (data) => {
+            //             clearTimeout(timeout);
+            //             resolve(data);
+            //         },
+            //         error: (jqXHR, textStatus, errorThrown) => {
+            //             clearTimeout(timeout);
+            //             console.error('TDS-NX: AJAX error', {
+            //                 status: jqXHR.status,
+            //                 statusText: jqXHR.statusText,
+            //                 textStatus: textStatus,
+            //                 errorThrown: errorThrown
+            //             });
+            //             reject(new Error(`AJAX error: ${textStatus}`));
+            //         }
+            //     });
+            // });
+
             const response = await new Promise((resolve, reject) => {
                 const timeout = setTimeout(() => {
+                    console.error('TDS-NX: Requisição AJAX estourou o tempo limite de 10s');
                     reject(new Error('AJAX request timeout'));
                 }, 10000);
+
+                console.log('TDS-NX: Disparando requisição GET para /wc-api/pagarme-tds-token-nx');
 
                 jQuery.ajax({
                     type: 'GET',
@@ -18,22 +49,40 @@ const pagarmeTdsNx = {
                     url: '/wc-api/pagarme-tds-token-nx',
                     async: true,
                     cache: false,
-                    success: (data) => {
+                    success: (data, textStatus, jqXHR) => {
                         clearTimeout(timeout);
+
+                        // 1. Log da resposta bruta que o WordPress enviou
+                        console.group('TDS-NX: Sucesso no AJAX (HTTP ' + jqXHR.status + ')');
+                        console.log('Dados recebidos (data):', data);
+                        console.log('Status do WordPress:', data?.success ? 'wp_send_json_success' : 'wp_send_json_error');
+                        
+                        // 2. Se você injetou o debug_backend no PHP, ele vai printar aqui
+                        if (data?.data?.debug_backend) {
+                            console.log('Debug do Backend/SDK:', data.data.debug_backend);
+                        }
+                        console.groupEnd();
+
                         resolve(data);
                     },
                     error: (jqXHR, textStatus, errorThrown) => {
                         clearTimeout(timeout);
-                        console.error('TDS-NX: AJAX error', {
-                            status: jqXHR.status,
-                            statusText: jqXHR.statusText,
-                            textStatus: textStatus,
-                            errorThrown: errorThrown
-                        });
+
+                        // 3. Log detalhado em caso de erro HTTP (404, 500, etc)
+                        console.group('TDS-NX: Falha na requisição AJAX');
+                        console.error('HTTP Status:', jqXHR.status, jqXHR.statusText);
+                        console.error('Texto da resposta do servidor (HTML/JSON de erro):', jqXHR.responseText);
+                        console.error('Detalhes do erro:', { textStatus, errorThrown });
+                        console.groupEnd();
+
                         reject(new Error(`AJAX error: ${textStatus}`));
                     }
                 });
             });
+
+            // if (response?.data) {
+            //     console.log('TDS-NX Backend Debug:', response.data);
+            // }
 
             if (!response) {
                 console.warn('TDS-NX: Empty response from backend');

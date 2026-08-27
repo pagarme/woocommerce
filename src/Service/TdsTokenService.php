@@ -55,13 +55,36 @@ class TdsTokenService
      * @param string $accountId
      * @return string|null
      */
+    // public function getTdsTokenNx($accountId)
+    // {
+    //     try {
+    //         $tdsTokenProxy = new TdsTokenProxy($this->coreAuth);
+    //         $environment = $this->config->getIsSandboxMode() ? 'test' : 'live';
+
+    //         // Chamada ao método NX correto
+    //         $response = $tdsTokenProxy->getTdsTokenNx($environment, $accountId);
+
+    //         if (!$response || empty($response->tdsToken)) {
+    //             return null;
+    //         }
+
+    //         return $response->tdsToken;
+    //     } catch (\Throwable $e) {
+    //         error_log(sprintf(
+    //             'TDS-NX Token retrieval failed for account %s: %s',
+    //             $accountId,
+    //             $e->getMessage()
+    //         ));
+    //         return null;
+    //     }
+    // }
+
     public function getTdsTokenNx($accountId)
     {
         try {
             $tdsTokenProxy = new TdsTokenProxy($this->coreAuth);
             $environment = $this->config->getIsSandboxMode() ? 'test' : 'live';
 
-            // Chamada ao método NX correto
             $response = $tdsTokenProxy->getTdsTokenNx($environment, $accountId);
 
             if (!$response || empty($response->tdsToken)) {
@@ -70,14 +93,11 @@ class TdsTokenService
 
             return $response->tdsToken;
         } catch (\Throwable $e) {
-            error_log(sprintf(
-                'TDS-NX Token retrieval failed for account %s: %s',
-                $accountId,
-                $e->getMessage()
-            ));
-            return null;
+            // Lança a exceção para que o Controller pegue e devolva no JSON de debug
+            throw new \Exception("Erro ao buscar Token NX na API Pagar.me: " . $e->getMessage(), 0, $e);
         }
     }
+
     // public function getTdsTokenNx($accountId)
     // {
     //     try {

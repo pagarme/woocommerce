@@ -135,9 +135,9 @@ class TdsTokenController extends BaseController
     // }
 
     /**
-     * Endpoint do fluxo 3DS-NX (POST)
+     * Endpoint do fluxo 3DS-NX (POST) via Hub-Api
      *
-     * @param string $environment
+     * @param string $environment ('live' ou 'test')
      * @param string $accountId
      * @return GetTdsTokenResponse
      * @throws APIException
@@ -146,49 +146,127 @@ class TdsTokenController extends BaseController
         $environment,
         $accountId
     ) {
-        // Rota base do endpoint
-        $_queryBuilder = '/v2/management/tds-token';
-        $_queryUrl = APIHelper::cleanUrl(Configuration::$BASEURI . $_queryBuilder);
+        // URL idêntica ao log de produção do Hub-Api
+        $_queryUrl = 'https://hubapi.pagar.me/v2/management/tds-token';
 
-        // Headers para POST JSON
+        // Garante o formato do ambiente ('test' ou 'live')
+        $hubEnv = ($environment === 'test' || $environment === 'sandbox') ? 'test' : 'live';
+
+        // Headers idênticos aos exigidos pelo Hub-Api
         $_headers = array (
-            'user-agent'   => BaseController::USER_AGENT,
-            'Accept'       => 'application/json',
-            'Content-Type' => 'application/json; charset=utf-8'
+            'user-agent'        => BaseController::USER_AGENT,
+            'Accept'            => '*/*',
+            'Content-Type'      => 'application/json',
+            'x-hub-environment' => $hubEnv
         );
 
-        // Body da requisição POST
+        // Body real: a chave DEVE ser 'merchant_id'
         $_bodyBuilder = array(
-            'account_id'  => $accountId,
-            'environment' => $environment
+            'merchant_id' => $accountId
         );
-        $_body = APIHelper::jsonEncode($_bodyBuilder);
+        $_body = json_encode($_bodyBuilder);
 
         // Autenticação Basic Auth
         Request::auth(Configuration::$basicAuthUserName, Configuration::$basicAuthPassword);
 
-        // Instancia a requisição como POST
+        // Instancia a requisição POST
         $_httpRequest = new HttpRequest(HttpMethod::POST, $_headers, $_queryUrl);
         if ($this->getHttpCallBack() != null) {
             $this->getHttpCallBack()->callOnBeforeRequest($_httpRequest);
         }
 
-        // Executa o disparo do POST via Unirest
-        $response = Request::post($_queryUrl, $_headers, $_body);
+        try {
+            $response = Request::post($_queryUrl, $_headers, $_body);
 
-        $_httpResponse = new HttpResponse($response->code, $response->headers, $response->raw_body);
-        $_httpContext = new HttpContext($_httpRequest, $_httpResponse);
+            $_httpResponse = new HttpResponse($response->code, $response->headers, $response->raw_body);
+            $_httpContext = new HttpContext($_httpRequest, $_httpResponse);
 
-        // Callback Pós-Request
-        if ($this->getHttpCallBack() != null) {
-            $this->getHttpCallBack()->callOnAfterRequest($_httpContext);
+            if ($this->getHttpCallBack() != null) {
+                $this->getHttpCallBack()->callOnAfterRequest($_httpContext);
+            }
+
+            $this->validateResponse($_httpResponse, $_httpContext);
+
+            $mapper = $this->getJsonMapper();
+            return $mapper->mapClass($response->body, 'PagarmeCoreApiLib\\Models\\GetTdsTokenResponse');
+
+        } catch (\PagarmeCoreApiLib\APIException $e) {
+            $errorDetail = sprintf(
+                "Status HTTP: %s | Message: %s | URL: %s",
+                $e->getResponseCode(),
+                $e->getMessage(),
+                $_queryUrl
+            );
+            throw new \Exception($errorDetail, $e->getCode(), $e);
+        } catch (\Throwable $e) {
+            throw new \Exception("Erro genérico na API: " . $e->getMessage(), $e->getCode(), $e);
         }
-
-        // Validação de Erros HTTP/API
-        $this->validateResponse($_httpResponse, $_httpContext);
-
-        // Mapeamento da Resposta
-        $mapper = $this->getJsonMapper();
-        return $mapper->mapClass($response->body, 'PagarmeCoreApiLib\\Models\\GetTdsTokenResponse');
     }
+
+    // /**
+    //  * Endpoint do fluxo 3DS-NX (POST)
+    //  *
+    //  * @param string $environment
+    //  * @param string $accountId
+    //  * @return GetTdsTokenResponse
+    //  * @throws APIException
+    //  */
+    // public function getTdsTokenNx(
+    //     $environment,
+    //     $accountId
+    // ) {
+    //     // Rota base do endpoint
+    //     $_queryBuilder = '/v2/management/tds-token';
+    //     $_queryUrl = APIHelper::cleanUrl(Configuration::$BASEURI . $_queryBuilder);
+
+    //     // Headers para POST JSON
+    //     $_headers = array (
+    //         'user-agent'   => BaseController::USER_AGENT,
+    //         'Accept'       => 'application/json',
+    //         'Content-Type' => 'application/json; charset=utf-8'
+    //     );
+
+    //     // Body da requisição POST (Enviando apenas o account_id)
+    //     $_bodyBuilder = array(
+    //         'account_id' => $accountId
+    //     );
+    //     $_body = json_encode($_bodyBuilder);
+
+    //     // Autenticação Basic Auth
+    //     Request::auth(Configuration::$basicAuthUserName, Configuration::$basicAuthPassword);
+
+    //     // Instancia a requisição como POST
+    //     $_httpRequest = new HttpRequest(HttpMethod::POST, $_headers, $_queryUrl);
+    //     if ($this->getHttpCallBack() != null) {
+    //         $this->getHttpCallBack()->callOnBeforeRequest($_httpRequest);
+    //     }
+
+    //     try {
+    //         $response = Request::post($_queryUrl, $_headers, $_body);
+
+    //         $_httpResponse = new HttpResponse($response->code, $response->headers, $response->raw_body);
+    //         $_httpContext = new HttpContext($_httpRequest, $_httpResponse);
+
+    //         if ($this->getHttpCallBack() != null) {
+    //             $this->getHttpCallBack()->callOnAfterRequest($_httpContext);
+    //         }
+
+    //         $this->validateResponse($_httpResponse, $_httpContext);
+
+    //         $mapper = $this->getJsonMapper();
+    //         return $mapper->mapClass($response->body, 'PagarmeCoreApiLib\\Models\\GetTdsTokenResponse');
+
+    //     } catch (\PagarmeCoreApiLib\APIException $e) {
+    //         // Captura segura dos detalhes do erro
+    //         $errorDetail = sprintf(
+    //             "Status HTTP: %s | Message: %s | URL: %s",
+    //             $e->getResponseCode(),
+    //             $e->getMessage(),
+    //             $_queryUrl
+    //         );
+    //         throw new \Exception($errorDetail, $e->getCode(), $e);
+    //     } catch (\Throwable $e) {
+    //         throw new \Exception("Erro genérico na API: " . $e->getMessage(), $e->getCode(), $e);
+    //     }
+    // }
 }

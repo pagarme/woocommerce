@@ -29,28 +29,59 @@ class TdsToken
         wp_die();
     }
 
+    // public function getTdsTokenNx()
+    // {
+    //     try {
+    //         $accountId = $this->config->getAccountId();
+    //         $tdsTokenService = new TdsTokenService($this->config);
+
+    //         $nxToken = $tdsTokenService->getTdsTokenNx($accountId);
+
+    //         wp_send_json_success([
+    //             'token' => $nxToken,
+    //             'flow_preference' => $nxToken ? 'nx' : 'legacy'
+    //         ]);
+    //     } catch (\Throwable $e) {
+    //         error_log(sprintf(
+    //             'TDS-NX endpoint error: %s in %s:%d',
+    //             $e->getMessage(),
+    //             $e->getFile(),
+    //             $e->getLine()
+    //         ));
+    //         wp_send_json_success([
+    //             'token' => null,
+    //             'flow_preference' => 'legacy'
+    //         ]);
+    //     }
+    //     wp_die();
+    // }
+
     public function getTdsTokenNx()
     {
         try {
             $accountId = $this->config->getAccountId();
             $tdsTokenService = new TdsTokenService($this->config);
 
+            // Tenta obter o token
             $nxToken = $tdsTokenService->getTdsTokenNx($accountId);
 
             wp_send_json_success([
                 'token' => $nxToken,
-                'flow_preference' => $nxToken ? 'nx' : 'legacy'
+                'flow_preference' => $nxToken ? 'nx' : 'legacy',
+                'debug_backend' => [
+                    'account_id' => $accountId,
+                    'is_sandbox' => $this->config->getIsSandboxMode(),
+                    'token_result' => $nxToken
+                ]
             ]);
         } catch (\Throwable $e) {
-            error_log(sprintf(
-                'TDS-NX endpoint error: %s in %s:%d',
-                $e->getMessage(),
-                $e->getFile(),
-                $e->getLine()
-            ));
             wp_send_json_success([
                 'token' => null,
-                'flow_preference' => 'legacy'
+                'flow_preference' => 'legacy',
+                'debug_backend' => [
+                    'error_message' => $e->getMessage(),
+                    'error_file' => $e->getFile() . ':' . $e->getLine()
+                ]
             ]);
         }
         wp_die();
