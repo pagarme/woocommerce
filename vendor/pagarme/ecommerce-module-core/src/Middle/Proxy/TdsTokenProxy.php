@@ -25,4 +25,11 @@ class TdsTokenProxy
         );
     }
 
+    public function getTdsTokenNx($environment, $accountId)
+    {
+        return $this->client->getTdsToken()->getTdsTokenNx(
+            $environment,
+            $accountId
+        );
+    }
 }

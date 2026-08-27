@@ -61,7 +61,8 @@ class TdsTokenService
             $tdsTokenProxy = new TdsTokenProxy($this->coreAuth);
             $environment = $this->config->getIsSandboxMode() ? 'test' : 'live';
 
-            $response = $tdsTokenProxy->getTdsToken($environment, $accountId);
+            // Chamada ao método NX correto
+            $response = $tdsTokenProxy->getTdsTokenNx($environment, $accountId);
 
             if (!$response || empty($response->tdsToken)) {
                 return null;
@@ -77,4 +78,26 @@ class TdsTokenService
             return null;
         }
     }
+    // public function getTdsTokenNx($accountId)
+    // {
+    //     try {
+    //         $tdsTokenProxy = new TdsTokenProxy($this->coreAuth);
+    //         $environment = $this->config->getIsSandboxMode() ? 'test' : 'live';
+
+    //         $response = $tdsTokenProxy->getTdsToken($environment, $accountId);
+
+    //         if (!$response || empty($response->tdsToken)) {
+    //             return null;
+    //         }
+
+    //         return $response->tdsToken;
+    //     } catch (\Throwable $e) {
+    //         error_log(sprintf(
+    //             'TDS-NX Token retrieval failed for account %s: %s',
+    //             $accountId,
+    //             $e->getMessage()
+    //         ));
+    //         return null;
+    //     }
+    // }
 }

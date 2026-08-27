@@ -92,4 +92,103 @@ class TdsTokenController extends BaseController
 
         return $mapper->mapClass($response->body, 'PagarmeCoreApiLib\\Models\\GetTdsTokenResponse');
     }
+
+    // /**
+    //  * Endpoint do fluxo 3DS-NX
+    //  */
+    // public function getTdsTokenNx($environment, $accountId)
+    // {
+    //     $_queryBuilder = '{environment}/v2/management/tds-token';
+
+    //     $_queryBuilder = APIHelper::appendUrlWithTemplateParameters($_queryBuilder, [
+    //         'account_id' => $accountId,
+    //         'environment' => $environment
+    //     ]);
+
+    //     $_queryUrl = APIHelper::cleanUrl(Configuration::$BASEURI . $_queryBuilder);
+
+    //     $_headers = array (
+    //         'user-agent' => BaseController::USER_AGENT,
+    //         'Accept'     => 'application/json'
+    //     );
+
+    //     Request::auth(Configuration::$basicAuthUserName, Configuration::$basicAuthPassword);
+
+    //     $_httpRequest = new HttpRequest(HttpMethod::GET, $_headers, $_queryUrl);
+    //     if ($this->getHttpCallBack() != null) {
+    //         $this->getHttpCallBack()->callOnBeforeRequest($_httpRequest);
+    //     }
+
+    //     $response = Request::get($_queryUrl, $_headers);
+
+    //     $_httpResponse = new HttpResponse($response->code, $response->headers, $response->raw_body);
+    //     $_httpContext = new HttpContext($_httpRequest, $_httpResponse);
+
+    //     if ($this->getHttpCallBack() != null) {
+    //         $this->getHttpCallBack()->callOnAfterRequest($_httpContext);
+    //     }
+
+    //     $this->validateResponse($_httpResponse, $_httpContext);
+
+    //     $mapper = $this->getJsonMapper();
+    //     return $mapper->mapClass($response->body, 'PagarmeCoreApiLib\\Models\\GetTdsTokenResponse');
+    // }
+
+    /**
+     * Endpoint do fluxo 3DS-NX (POST)
+     *
+     * @param string $environment
+     * @param string $accountId
+     * @return GetTdsTokenResponse
+     * @throws APIException
+     */
+    public function getTdsTokenNx(
+        $environment,
+        $accountId
+    ) {
+        // Rota base do endpoint
+        $_queryBuilder = '/v2/management/tds-token';
+        $_queryUrl = APIHelper::cleanUrl(Configuration::$BASEURI . $_queryBuilder);
+
+        // Headers para POST JSON
+        $_headers = array (
+            'user-agent'   => BaseController::USER_AGENT,
+            'Accept'       => 'application/json',
+            'Content-Type' => 'application/json; charset=utf-8'
+        );
+
+        // Body da requisição POST
+        $_bodyBuilder = array(
+            'account_id'  => $accountId,
+            'environment' => $environment
+        );
+        $_body = APIHelper::jsonEncode($_bodyBuilder);
+
+        // Autenticação Basic Auth
+        Request::auth(Configuration::$basicAuthUserName, Configuration::$basicAuthPassword);
+
+        // Instancia a requisição como POST
+        $_httpRequest = new HttpRequest(HttpMethod::POST, $_headers, $_queryUrl);
+        if ($this->getHttpCallBack() != null) {
+            $this->getHttpCallBack()->callOnBeforeRequest($_httpRequest);
+        }
+
+        // Executa o disparo do POST via Unirest
+        $response = Request::post($_queryUrl, $_headers, $_body);
+
+        $_httpResponse = new HttpResponse($response->code, $response->headers, $response->raw_body);
+        $_httpContext = new HttpContext($_httpRequest, $_httpResponse);
+
+        // Callback Pós-Request
+        if ($this->getHttpCallBack() != null) {
+            $this->getHttpCallBack()->callOnAfterRequest($_httpContext);
+        }
+
+        // Validação de Erros HTTP/API
+        $this->validateResponse($_httpResponse, $_httpContext);
+
+        // Mapeamento da Resposta
+        $mapper = $this->getJsonMapper();
+        return $mapper->mapClass($response->body, 'PagarmeCoreApiLib\\Models\\GetTdsTokenResponse');
+    }
 }
