@@ -1,124 +1,92 @@
-/* globals pagarmeTds, pagarmeTdsToken, cartTotal, jQuery, wc_pagarme_checkout, PagarmeGlobalVars */
+/* globals jQuery, pagarmeTds, pagarmeTdsToken */
+/* jshint esversion: 11 */
+
+/**
+ * 3DS-NX (AuthSwitch).
+ *
+ * Este módulo NÃO conhece o 3DS legado: não chama `pagarmeTdsToken`, não chama
+ * `initTds` e não chama `pagarmeCard.executeAll`. Ele apenas devolve um veredito
+ * para `pagarmeTds.runFlow`, que é o único dono da decisão de fallback.
+ *
+ * `attempt()` nunca lança:
+ * - `{ status: 'authenticated', authentication }` → NX autenticou.
+ * - `{ status: 'denied', errorKey }`              → NX respondeu negando/cancelando (terminal).
+ * - `{ status: 'unavailable' }`                   → falha técnica antes do NX responder.
+ */
 const pagarmeTdsNx = {
     TIMEOUT_MS: 30000,
     NX_FLOW: 'nx',
     LEGACY_FLOW: 'legacy',
+    containerTarget: '#tdsMethodContainer',
+    challengeTarget: '#challengeContainer',
+    tifaUrlAttribute: 'data-tifa-url',
+    nxUrlAttribute: 'data-3ds-nx-url',
 
-    getTdsTokenNx: async () => {
-        try {
-            console.log('TDS-NX: Fetching token from /wc-api/pagarme-tds-token-nx');
-            // const response = await new Promise((resolve, reject) => {
-            //     const timeout = setTimeout(() => {
-            //         reject(new Error('AJAX request timeout'));
-            //     }, 10000);
-
-            //     jQuery.ajax({
-            //         type: 'GET',
-            //         dataType: 'json',
-            //         url: '/wc-api/pagarme-tds-token-nx',
-            //         async: true,
-            //         cache: false,
-            //         success: (data) => {
-            //             clearTimeout(timeout);
-            //             resolve(data);
-            //         },
-            //         error: (jqXHR, textStatus, errorThrown) => {
-            //             clearTimeout(timeout);
-            //             console.error('TDS-NX: AJAX error', {
-            //                 status: jqXHR.status,
-            //                 statusText: jqXHR.statusText,
-            //                 textStatus: textStatus,
-            //                 errorThrown: errorThrown
-            //             });
-            //             reject(new Error(`AJAX error: ${textStatus}`));
-            //         }
-            //     });
-            // });
-
-            const response = await new Promise((resolve, reject) => {
-                const timeout = setTimeout(() => {
-                    console.error('TDS-NX: Requisição AJAX estourou o tempo limite de 10s');
-                    reject(new Error('AJAX request timeout'));
-                }, 10000);
-
-                console.log('TDS-NX: Disparando requisição GET para /wc-api/pagarme-tds-token-nx');
-
-                jQuery.ajax({
-                    type: 'GET',
-                    dataType: 'json',
-                    url: '/wc-api/pagarme-tds-token-nx',
-                    async: true,
-                    cache: false,
-                    success: (data, textStatus, jqXHR) => {
-                        clearTimeout(timeout);
-
-                        // 1. Log da resposta bruta que o WordPress enviou
-                        console.group('TDS-NX: Sucesso no AJAX (HTTP ' + jqXHR.status + ')');
-                        console.log('Dados recebidos (data):', data);
-                        console.log('Status do WordPress:', data?.success ? 'wp_send_json_success' : 'wp_send_json_error');
-                        
-                        // 2. Se você injetou o debug_backend no PHP, ele vai printar aqui
-                        if (data?.data?.debug_backend) {
-                            console.log('Debug do Backend/SDK:', data.data.debug_backend);
-                        }
-                        console.groupEnd();
-
-                        resolve(data);
-                    },
-                    error: (jqXHR, textStatus, errorThrown) => {
-                        clearTimeout(timeout);
-
-                        // 3. Log detalhado em caso de erro HTTP (404, 500, etc)
-                        console.group('TDS-NX: Falha na requisição AJAX');
-                        console.error('HTTP Status:', jqXHR.status, jqXHR.statusText);
-                        console.error('Texto da resposta do servidor (HTML/JSON de erro):', jqXHR.responseText);
-                        console.error('Detalhes do erro:', { textStatus, errorThrown });
-                        console.groupEnd();
-
-                        reject(new Error(`AJAX error: ${textStatus}`));
-                    }
-                });
-            });
-
-            // if (response?.data) {
-            //     console.log('TDS-NX Backend Debug:', response.data);
-            // }
-
-            if (!response) {
-                console.warn('TDS-NX: Empty response from backend');
-                return { token: null, flowPreference: pagarmeTdsNx.LEGACY_FLOW };
-            }
-
-            if (!response.data) {
-                console.warn('TDS-NX: Invalid response structure (no .data):', response);
-                return { token: null, flowPreference: pagarmeTdsNx.LEGACY_FLOW };
-            }
-
-            const token = response.data.token;
-            const flowPreference = response.data.flow_preference || pagarmeTdsNx.LEGACY_FLOW;
-
-            console.log('TDS-NX: Token fetch successful', {
-                hasToken: !!token,
-                flowPreference: flowPreference
-            });
-
-            if (!token) {
-                console.info('TDS-NX: Token is null, backend requested fallback to legacy');
-            }
-
-            return {
-                token: token,
-                flowPreference: flowPreference
-            };
-        } catch (e) {
-            console.error('TDS-NX: Exception fetching token:', e);
-            return { token: null, flowPreference: pagarmeTdsNx.LEGACY_FLOW };
-        }
+    /**
+     * URLs dos SDKs, resolvidas pelo PHP (respeitam sandbox/produção).
+     *
+     * @returns {{tifa: string|undefined, nx: string|undefined}}
+     */
+    getSdkUrls: () => {
+        const container = jQuery(pagarmeTdsNx.containerTarget);
+        return {
+            tifa: container.attr(pagarmeTdsNx.tifaUrlAttribute),
+            nx: container.attr(pagarmeTdsNx.nxUrlAttribute),
+        };
     },
 
-    loadScriptAsync: (url) => {
+    /**
+     * @returns {Promise<{token: string|null, flowPreference: string}>}
+     */
+    getTdsTokenNx: () => {
+        return new Promise((resolve) => {
+            let request;
+
+            const timeout = setTimeout(() => {
+                if (request) {
+                    request.abort();
+                }
+                resolve({ token: null, flowPreference: pagarmeTdsNx.LEGACY_FLOW });
+            }, pagarmeTdsNx.TIMEOUT_MS);
+
+            request = jQuery.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '/wc-api/pagarme-tds-token-nx',
+                async: true,
+                cache: false,
+                success: (response) => {
+                    clearTimeout(timeout);
+                    resolve({
+                        token: response?.data?.token || null,
+                        flowPreference:
+                            response?.data?.flow_preference ||
+                            pagarmeTdsNx.LEGACY_FLOW,
+                    });
+                },
+                error: () => {
+                    clearTimeout(timeout);
+                    resolve({
+                        token: null,
+                        flowPreference: pagarmeTdsNx.LEGACY_FLOW,
+                    });
+                },
+            });
+        });
+    },
+
+    /**
+     * @param {string} url
+     * @param {string} globalName Global exposto pelo SDK (`tifa`, `ThreeDS`).
+     */
+    loadScriptAsync: (url, globalName) => {
         return new Promise((resolve, reject) => {
-            if (typeof window !== 'undefined' && window[url.includes('tifa') ? 'tifa' : 'ThreeDS'] !== 'undefined') {
+            if (!url) {
+                reject(new Error(`Missing SDK url for ${globalName}`));
+                return;
+            }
+
+            if (typeof window !== 'undefined' && typeof window[globalName] !== 'undefined') {
                 resolve();
                 return;
             }
@@ -128,8 +96,8 @@ const pagarmeTdsNx = {
             script.async = true;
 
             const timeout = setTimeout(() => {
-                reject(new Error(`Script timeout loading ${url}`));
                 script.remove();
+                reject(new Error(`Script timeout loading ${url}`));
             }, pagarmeTdsNx.TIMEOUT_MS);
 
             script.onload = () => {
@@ -146,258 +114,121 @@ const pagarmeTdsNx = {
         });
     },
 
-    formatTdsDataForNx: (cardExpiryDate, acctType = '02') => {
-        const billingAddressStreet = jQuery('input[name="billing_address_1"]').val();
-        const billingAddressNumber = jQuery('input[name="billing_number"]').val();
-        const billingAddressComplement = jQuery('input[name="billing_address_2"]').val();
-        const billingAddressCity = jQuery('input[name="billing_city"]').val();
-        const billingAddressState = jQuery('select[name="billing_state"]').val();
-        const billingAddressPostcode = jQuery('input[name="billing_postcode"]').val();
-
-        let shippingAddressStreet = billingAddressStreet;
-        let shippingAddressNumber = billingAddressNumber;
-        let shippingAddressComplement = billingAddressComplement;
-        let shippingAddressCity = billingAddressCity;
-        let shippingAddressState = billingAddressState;
-        let shippingAddressPostcode = billingAddressPostcode;
-
-        if (jQuery('input[name="ship_to_different_address"]').is(':checked')) {
-            shippingAddressStreet = jQuery('input[name="shipping_address_1"]').val();
-            shippingAddressNumber = jQuery('input[name="shipping_number"]').val();
-            shippingAddressComplement = jQuery('input[name="shipping_address_2"]').val();
-            shippingAddressCity = jQuery('input[name="shipping_city"]').val();
-            shippingAddressState = jQuery('select[name="shipping_state"]').val();
-            shippingAddressPostcode = jQuery('input[name="shipping_postcode"]').val();
-        }
-
-        const customerPhones = [{
-            country_code: '55',
-            subscriber: pagarmeTdsNx.filterOnlyNumbers(jQuery('input[name="billing_phone"]').val()),
-            phone_type: 'mobile',
-        }];
-
-        return {
-            bill_addr: {
-                street: billingAddressStreet,
-                number: billingAddressNumber,
-                complement: billingAddressComplement,
-                city: billingAddressCity,
-                state: billingAddressState,
-                country: 'BRA',
-                post_code: billingAddressPostcode,
-            },
-            ship_addr: {
-                street: shippingAddressStreet,
-                number: shippingAddressNumber,
-                complement: shippingAddressComplement,
-                city: shippingAddressCity,
-                state: shippingAddressState,
-                country: 'BRA',
-                post_code: shippingAddressPostcode,
-            },
-            email: jQuery('input[name="billing_email"]').val(),
-            phones: customerPhones,
-            card_expiry_date: cardExpiryDate,
-            purchase: {
-                amount: parseInt(cartTotal * 100),
-                date: new Date().toISOString(),
-                instal_data: 2,
-            },
-            acct_type: acctType,
-        };
-    },
-
-    filterOnlyNumbers: (text) => {
-        if (!text) return '';
-        return text.replace(/[^0-9]/g, '');
-    },
-
-    executeNxFlow: async (nxToken, tdsData) => {
-        if (!nxToken) {
-            throw new Error('No 3DS-NX token available');
-        }
-
-        if (typeof window.tifa === 'undefined') {
-            throw new Error('Tifa SDK not loaded');
-        }
-
+    executeNxFlow: (nxToken, tdsData) => {
         return new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => {
-                reject(new Error('3DS-NX authentication timeout'));
+            if (typeof window.tifa === 'undefined') {
+                reject(new Error('Tifa SDK not loaded'));
+                return;
+            }
+
+            let settled = false;
+            let timeout = null;
+            const settle = (callback, payload) => {
+                if (settled) {
+                    return;
+                }
+                settled = true;
+                clearTimeout(timeout);
+                callback(payload);
+            };
+
+            timeout = setTimeout(() => {
+                settle(reject, new Error('3DS-NX authentication timeout'));
             }, pagarmeTdsNx.TIMEOUT_MS);
 
             try {
                 window.tifa.init(
                     {
                         token: nxToken,
-                        container: '#tdsMethodContainer',
-                        challengeContainer: '#challengeContainer'
+                        container: pagarmeTdsNx.containerTarget,
+                        challengeContainer: pagarmeTdsNx.challengeTarget,
                     },
                     tdsData,
-                    (result) => {
-                        clearTimeout(timeout);
-                        resolve(result);
-                    },
-                    (error) => {
-                        clearTimeout(timeout);
-                        reject(error);
-                    }
+                    (result) => settle(resolve, result),
+                    (error) => settle(reject, error)
                 );
-            } catch (e) {
-                clearTimeout(timeout);
-                reject(e);
+            } catch (error) {
+                settle(reject, error);
             }
         });
     },
 
     formatNxResponse: (nxResult) => {
-        if (!nxResult) {
-            throw new Error('Empty NX result');
-        }
-
         return {
             risk_id: nxResult.risk_id || nxResult.riskId,
             steps: [
                 {
-                    tds_server_trans_id: nxResult.tds_server_trans_id || nxResult.transactionId,
-                    trans_status: nxResult.trans_status || nxResult.transStatus,
-                    authenticated_card: nxResult.authenticated_card || nxResult.card,
-                    challenge_canceled: nxResult.challenge_canceled || nxResult.challengeCanceled || false
-                }
+                    tds_server_trans_id:
+                        nxResult.tds_server_trans_id || nxResult.transactionId,
+                    trans_status: pagarmeTdsNx.getTransStatus(nxResult),
+                    authenticated_card:
+                        nxResult.authenticated_card || nxResult.card,
+                    challenge_canceled: pagarmeTdsNx.isChallengeCanceled(nxResult),
+                },
             ],
-            _flow_type: 'nx'
+            _flow_type: pagarmeTdsNx.NX_FLOW,
         };
     },
 
-    formatLegacyResponse: (legacyResult) => {
-        return {
-            ...legacyResult,
-            _flow_type: 'legacy'
-        };
+    getTransStatus: (nxResult) => {
+        return nxResult?.trans_status || nxResult?.transStatus || '';
     },
 
-    handleFallback: (event) => {
-        return new Promise((resolve) => {
-            if (typeof pagarmeTds === 'undefined' || typeof pagarmeTds.callTdsLegacy !== 'function') {
-                resolve(null);
-                return;
-            }
-
-            const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
-            const expDate = jQuery(checkoutPaymentElement)
-                .find(pagarmeCard.cardExpiryTarget)
-                .val();
-            let [expMonth, expYear] = expDate.split('/');
-            expMonth = expMonth.trim();
-            expYear = expYear.trim();
-            expYear = `20${expYear}`;
-            const cardExpiryDate = `${expYear}-${expMonth}`;
-
-            const tdsData = pagarmeTds.getTdsData('02', cardExpiryDate);
-            const legacyToken = pagarmeTds.getToken();
-
-            if (!legacyToken) {
-                resolve(null);
-                return;
-            }
-
-            pagarmeTds.callTdsLegacy(
-                legacyToken,
-                tdsData,
-                (legacyResult) => {
-                    if (legacyResult?.error !== undefined) {
-                        resolve(null);
-                        return;
-                    }
-                    resolve(pagarmeTdsNx.formatLegacyResponse(legacyResult));
-                }
-            );
-        });
+    isChallengeCanceled: (nxResult) => {
+        return !!(nxResult?.challenge_canceled || nxResult?.challengeCanceled);
     },
 
-    execute: async (event) => {
-        if (typeof pagarmeTds === 'undefined' || !pagarmeTds.canTdsRun()) {
-            console.log('TDS-NX: TDS cannot run or pagarmeTds undefined');
-            return false;
-        }
-
-        pagarmeCard.showLoader(event);
-        pagarmeTds.checkoutEvent = event;
-        pagarmeTds.addTdsAttributeData();
-
-        const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
-        const expDate = jQuery(checkoutPaymentElement)
-            .find(pagarmeCard.cardExpiryTarget)
-            .val();
-        let [expMonth, expYear] = expDate.split('/');
-        expMonth = expMonth.trim();
-        expYear = expYear.trim();
-        expYear = `20${expYear}`;
-        const cardExpiryDate = `${expYear}-${expMonth}`;
+    /**
+     * @returns {Promise<{status: string, authentication?: object, errorKey?: string}>}
+     */
+    attempt: async () => {
+        let nxResult;
 
         try {
-            console.log('TDS-NX: Starting 3DS-NX flow');
-            const nxTokenData = await pagarmeTdsNx.getTdsTokenNx();
-            console.log('TDS-NX: Token response received:', nxTokenData);
-
-            if (nxTokenData.token && nxTokenData.flowPreference === 'nx') {
-                console.log('TDS-NX: Attempting NX flow');
-                try {
-                    console.log('TDS-NX: Loading Tifa SDK');
-                    await pagarmeTdsNx.loadScriptAsync(
-                        document.currentScript?.getAttribute('data-tifa-url') ||
-                        'https://tifa-app.stone.com.br/live/v1/tifa/tifa-app.min.js'
-                    );
-                    console.log('TDS-NX: Tifa SDK loaded successfully');
-
-                    console.log('TDS-NX: Loading 3DS-NX SDK');
-                    await pagarmeTdsNx.loadScriptAsync(
-                        document.currentScript?.getAttribute('data-3ds-nx-url') ||
-                        'https://3ds-nx-js.stone.com.br/live/v2/3ds2.min.js'
-                    );
-                    console.log('TDS-NX: 3DS-NX SDK loaded successfully');
-
-                    const tdsDataNx = pagarmeTdsNx.formatTdsDataForNx(cardExpiryDate);
-                    console.log('TDS-NX: Executing window.tifa.init()');
-                    const nxResult = await pagarmeTdsNx.executeNxFlow(nxTokenData.token, tdsDataNx);
-                    console.log('TDS-NX: NX flow completed successfully');
-
-                    const formattedResult = pagarmeTdsNx.formatNxResponse(nxResult);
-                    console.log('TDS-NX: Creating TDS field with NX data', formattedResult);
-                    pagarmeTds.createTdsField(JSON.stringify(formattedResult));
-                    pagarmeCard.removeLoader(event);
-                    pagarmeCard.executeAll(event);
-                    return true;
-                } catch (nxError) {
-                    console.warn('TDS-NX: 3DS-NX flow failed, triggering fallback:', nxError);
-                }
-            } else {
-                console.log('TDS-NX: Backend requested legacy flow (token null or flow_preference != nx)');
+            const { token, flowPreference } = await pagarmeTdsNx.getTdsTokenNx();
+            if (!token || flowPreference !== pagarmeTdsNx.NX_FLOW) {
+                return { status: pagarmeTds.STATUS_UNAVAILABLE };
             }
 
-            console.log('TDS-NX: Attempting fallback to legacy 3DS handler');
-            const legacyResult = await pagarmeTdsNx.handleFallback(event);
-            if (legacyResult) {
-                console.log('TDS-NX: Legacy fallback succeeded');
-                pagarmeTds.createTdsField(JSON.stringify(legacyResult));
-                pagarmeCard.removeLoader(event);
-                pagarmeCard.executeAll(event);
-                return true;
+            const cardExpiryDate = pagarmeTds.getCardExpiryDate();
+            if (!cardExpiryDate) {
+                return {
+                    status: pagarmeTds.STATUS_DENIED,
+                    errorKey: pagarmeTds.FAIL_ASSEMBLE_CARD_EXPIRY_DATE,
+                };
             }
 
-            console.error('TDS-NX: Both NX and legacy flows failed');
-            pagarmeCard.removeLoader(event);
-            pagarmeTds.removeTdsAttributeData();
-            return false;
-        } catch (error) {
-            console.error('TDS-NX: Unhandled execution error:', error);
-            pagarmeCard.removeLoader(event);
-            pagarmeTds.removeTdsAttributeData();
-            pagarmeCard.showErrorInPaymentMethod(
-                PagarmeGlobalVars.checkoutErrors.pt_BR['fail_get_token'] ||
-                'Erro ao processar autenticação 3DS'
+            const urls = pagarmeTdsNx.getSdkUrls();
+            await pagarmeTdsNx.loadScriptAsync(urls.tifa, 'tifa');
+            await pagarmeTdsNx.loadScriptAsync(urls.nx, 'ThreeDS');
+
+            nxResult = await pagarmeTdsNx.executeNxFlow(
+                token,
+                pagarmeTds.getTdsData('02', cardExpiryDate)
             );
-            return false;
+        } catch (error) {
+            // Falha técnica antes de o NX responder: o fallback é decisão do pagarmeTds.
+            return { status: pagarmeTds.STATUS_UNAVAILABLE };
         }
-    }
+
+        // A partir daqui o NX RESPONDEU: o resultado é terminal e nunca volta a 'unavailable'.
+        if (!nxResult || pagarmeTdsNx.isChallengeCanceled(nxResult)) {
+            return {
+                status: pagarmeTds.STATUS_DENIED,
+                errorKey: pagarmeTdsToken.FAIL_GET_TOKEN,
+            };
+        }
+
+        if (!pagarmeTdsNx.getTransStatus(nxResult)) {
+            return {
+                status: pagarmeTds.STATUS_DENIED,
+                errorKey: pagarmeTdsToken.FAIL_GET_TOKEN,
+            };
+        }
+
+        return {
+            status: pagarmeTds.STATUS_AUTHENTICATED,
+            authentication: pagarmeTdsNx.formatNxResponse(nxResult),
+        };
+    },
 };

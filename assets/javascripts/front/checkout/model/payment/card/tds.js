@@ -1,8 +1,22 @@
-/* globals cartTotal */
+/* globals cartTotal, jQuery, pagarmeCard, pagarmeTdsNx, pagarmeTdsToken, initTds, wc_pagarme_checkout, PagarmeGlobalVars */
+/* jshint esversion: 11 */
+
+/**
+ * Único ponto de decisão entre 3DS-NX (AuthSwitch) e 3DS legado.
+ *
+ * Contrato:
+ * - `start()` é chamado pelo `checkout_place_order` e SEMPRE retorna de forma síncrona.
+ *   Retornar `true` trava o submit do WooCommerce; quem libera é `finish()`/`abort()`.
+ * - `runFlow()` é a única corrotina do fluxo. O 3DS legado só é alcançável quando o
+ *   NX se declara indisponível (`status === 'unavailable'`).
+ * - `flowInProgress` impede reentrância: um segundo clique não inicia um novo fluxo.
+ */
 const pagarmeTds = {
     authentication: "authentication",
     vendor: "pagarme",
     checkoutEvent: null,
+    flowInProgress: false,
+    TIMEOUT_MS: 30000,
     paymentMethodTarget: "data-pagarmecheckout-method",
     sequenceTarget: "data-pagarmecheckout-card-num",
     elementTarget: "data-pagarmecheckout-element",
@@ -11,6 +25,10 @@ const pagarmeTds = {
     FAIL_GET_BILLING_ADDRESS: "fail_get_billing_address",
     FAIL_ASSEMBLE_CARD_EXPIRY_DATE: "fail_assemble_card_expiry_date",
     FAIL_ASSEMBLE_PURCHASE: "fail_assemble_purchase",
+    STATUS_AUTHENTICATED: "authenticated",
+    STATUS_DENIED: "denied",
+    STATUS_UNAVAILABLE: "unavailable",
+
     addErrors: (errors) => {
         if (errors.error?.email) {
             pagarmeCard.showErrorInPaymentMethod(
@@ -43,19 +61,6 @@ const pagarmeTds = {
                 ]
             );
         }
-    },
-
-    getToken: () => {
-        const data = pagarmeTdsToken.getToken();
-        if (data.error) {
-            pagarmeTds.removeTdsAttributeData();
-            pagarmeCard.showErrorInPaymentMethod(
-                PagarmeGlobalVars.checkoutErrors.pt_BR[data.error]
-            );
-            return "";
-        }
-
-        return data.token;
     },
 
     canTdsRun: () => {
@@ -107,6 +112,27 @@ const pagarmeTds = {
         jQuery(checkoutPaymentElement)
             .find(pagarmeCard.cardCvvTarget)
             .removeAttr(pagarmeTds.elementTarget);
+    },
+
+    /**
+     * @returns {string} `YYYY-MM` ou string vazia quando o campo está incompleto.
+     */
+    getCardExpiryDate: () => {
+        const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
+        const expDate = jQuery(checkoutPaymentElement)
+            .find(pagarmeCard.cardExpiryTarget)
+            .val();
+
+        if (!expDate) {
+            return "";
+        }
+
+        const [rawMonth, rawYear] = expDate.split("/");
+        if (!rawMonth || !rawYear) {
+            return "";
+        }
+
+        return `20${rawYear.trim()}-${rawMonth.trim()}`;
     },
 
     getTdsData: (acctType, cardExpiryDate) => {
@@ -194,52 +220,6 @@ const pagarmeTds = {
         };
     },
 
-    callTds: (tdsToken) => {
-        const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
-
-        const expDate = jQuery(checkoutPaymentElement)
-            .find(pagarmeCard.cardExpiryTarget)
-            .val();
-        let [expMonth, expYear] = expDate.split("/");
-        expMonth = expMonth.trim();
-        expYear = expYear.trim();
-        expYear = `20${expYear}`;
-
-        const cardExpiryDate = `${expYear}-${expMonth}`;
-
-        const tdsData = pagarmeTds.getTdsData("02", cardExpiryDate);
-        initTds.callTdsFunction(
-            tdsToken,
-            tdsData,
-            pagarmeTds.callbackTds.bind(this)
-        );
-    },
-
-    callbackTds: (data) => {
-        pagarmeCard.removeLoader(pagarmeTds.checkoutEvent);
-        if (data?.error !== undefined) {
-            pagarmeTds.addErrors(data);
-            return;
-        }
-        if (data?.trans_status === "" || data?.trans_status === undefined) {
-            return;
-        }
-
-        if (pagarmeTds.checkoutEvent === null) {
-            pagarmeCard.showErrorInPaymentMethod(
-                PagarmeGlobalVars.checkoutErrors.pt_BR[
-                    pagarmeTdsToken.FAIL_GET_TOKEN
-                ]
-            );
-            return;
-        }
-
-        const authentication = JSON.stringify(data);
-        pagarmeTds.createTdsField(authentication);
-
-        pagarmeCard.executeAll(pagarmeTds.checkoutEvent);
-    },
-
     createTdsField: (authentication) => {
         pagarmeTds.removeTdsFields();
         const fieldset = pagarmeCard
@@ -283,54 +263,162 @@ const pagarmeTds = {
     },
 
     filterOnlyNumber: (text) => {
+        if (!text) {
+            return "";
+        }
         return text.replace(/[^0-9]/g, "");
     },
 
-    callTdsLegacy: (tdsToken, tdsData, callback) => {
-        initTds.callTdsFunction(
-            tdsToken,
-            tdsData,
-            callback
+    isNxAvailable: () => {
+        return (
+            typeof pagarmeTdsNx === "object" &&
+            typeof pagarmeTdsNx.attempt === "function"
         );
     },
 
+    /**
+     * Chamado pelo `checkout_place_order`. Nunca dispara AJAX diretamente.
+     *
+     * @returns {boolean} `true` trava o submit do WooCommerce.
+     */
     start: (event) => {
-        const canTdsRun = pagarmeTds.canTdsRun();
-
-        // ========== GUARD: Se não pode rodar TDS, retorna falso ==========
-        if (!canTdsRun) {
-            console.log('TDS: Validações falharam, TDS não pode rodar');
-            return false;
-        }
-
-        // ========== PRIORIDADE 1: 3DS-NX (AuthSwitch) ==========
-        if (typeof pagarmeTdsNx === 'object' && typeof pagarmeTdsNx.execute === 'function') {
-            console.log('TDS: 3DS-NX disponível, iniciando fluxo NX');
-            pagarmeTdsNx.execute(event);
-            // ⚠️ CRÍTICO: Retorna true aqui e BLOQUEIA qualquer fall-through
-            // Impede que o código legado abaixo seja executado
+        // Já existe um fluxo 3DS rodando: trava o checkout e NÃO dispara nada de novo.
+        if (pagarmeTds.flowInProgress) {
             return true;
         }
 
-        // ========== PRIORIDADE 2: 3DS HANDLER LEGADO (FALLBACK) ==========
-        // ✅ SÓ chega aqui se:
-        //    - pagarmeTdsNx não está definido, OU
-        //    - pagarmeTdsNx.execute não é uma função
-        // ✅ Nunca roda junto com 3DS-NX
+        if (!pagarmeTds.canTdsRun()) {
+            return false;
+        }
 
-        console.log('TDS: 3DS-NX não disponível, usando fluxo legado como fallback');
+        pagarmeTds.flowInProgress = true;
+        pagarmeTds.runFlow(event).finally(() => {
+            pagarmeTds.flowInProgress = false;
+        });
+
+        return true;
+    },
+
+    /**
+     * Fluxo sequencial estrito: NX primeiro, legado apenas no bloco de indisponibilidade.
+     */
+    runFlow: async (event) => {
         pagarmeCard.showLoader(event);
         pagarmeTds.checkoutEvent = event;
         pagarmeTds.addTdsAttributeData();
 
-        const token = pagarmeTds.getToken();
-        if (!token || token.length === 0) {
-            console.warn('TDS: Token legado não obtido, abortando');
-            return false;
+        try {
+            // ---------- TENTATIVA 1: 3DS-NX (bloqueante) ----------
+            if (pagarmeTds.isNxAvailable()) {
+                const nx = await pagarmeTdsNx.attempt();
+
+                if (nx.status === pagarmeTds.STATUS_AUTHENTICATED) {
+                    // FIM DO FLUXO. O legado nunca é chamado.
+                    return pagarmeTds.finish(event, nx.authentication);
+                }
+
+                if (nx.status === pagarmeTds.STATUS_DENIED) {
+                    // Negado/cancelado pelo emissor não é falha técnica: sem fallback.
+                    return pagarmeTds.abort(nx.errorKey);
+                }
+                // status === 'unavailable' → única porta de entrada para o legado.
+            }
+
+            // ---------- TENTATIVA 2: 3DS legado (só aqui) ----------
+            const legacy = await pagarmeTds.runLegacy();
+            if (!legacy.authentication) {
+                return pagarmeTds.abort(legacy.errorKey);
+            }
+
+            return pagarmeTds.finish(event, legacy.authentication);
+        } catch (error) {
+            return pagarmeTds.abort(pagarmeTdsToken.FAIL_GET_TOKEN);
+        }
+    },
+
+    /**
+     * Efeitos do sucesso. Fica fora de qualquer `try` de fallback de propósito:
+     * uma falha aqui não pode reabrir o fluxo legado.
+     */
+    finish: (event, authentication) => {
+        pagarmeTds.createTdsField(JSON.stringify(authentication));
+        pagarmeCard.removeLoader(event);
+        pagarmeCard.executeAll(event);
+        return true;
+    },
+
+    /**
+     * @param {string|null} errorKey Chave em `PagarmeGlobalVars.checkoutErrors.pt_BR`.
+     *                               `null` quando a mensagem já foi exibida por `addErrors`.
+     */
+    abort: (errorKey) => {
+        pagarmeCard.removeLoader(pagarmeTds.checkoutEvent);
+        pagarmeTds.removeTdsAttributeData();
+
+        if (errorKey) {
+            pagarmeCard.showErrorInPaymentMethod(
+                PagarmeGlobalVars.checkoutErrors.pt_BR[errorKey] ||
+                    PagarmeGlobalVars.checkoutErrors.pt_BR[
+                        pagarmeTdsToken.FAIL_GET_TOKEN
+                    ]
+            );
         }
 
-        console.log('TDS: Iniciando 3DS Handler legado');
-        pagarmeTds.callTds(token);
-        return true;
+        return false;
+    },
+
+    /**
+     * 3DS legado promisificado. Nunca é chamado em paralelo com o NX.
+     *
+     * @returns {Promise<{authentication?: object, errorKey?: string|null}>}
+     */
+    runLegacy: async () => {
+        const cardExpiryDate = pagarmeTds.getCardExpiryDate();
+        if (!cardExpiryDate) {
+            return { errorKey: pagarmeTds.FAIL_ASSEMBLE_CARD_EXPIRY_DATE };
+        }
+
+        const tokenData = await pagarmeTdsToken.getToken();
+        if (tokenData.error || !tokenData.token) {
+            return { errorKey: pagarmeTdsToken.FAIL_GET_TOKEN };
+        }
+
+        const tdsData = pagarmeTds.getTdsData("02", cardExpiryDate);
+
+        return new Promise((resolve) => {
+            let settled = false;
+            let timeout = null;
+            const settle = (result) => {
+                if (settled) {
+                    return;
+                }
+                settled = true;
+                clearTimeout(timeout);
+                resolve(result);
+            };
+
+            timeout = setTimeout(() => {
+                settle({ errorKey: pagarmeTdsToken.FAIL_GET_TOKEN });
+            }, pagarmeTds.TIMEOUT_MS);
+
+            try {
+                initTds.callTdsFunction(tokenData.token, tdsData, (data) => {
+                    if (data?.error !== undefined) {
+                        pagarmeTds.addErrors(data);
+                        settle({ errorKey: null });
+                        return;
+                    }
+                    if (!data?.trans_status) {
+                        settle({ errorKey: pagarmeTdsToken.FAIL_GET_TOKEN });
+                        return;
+                    }
+                    settle({
+                        authentication: { ...data, _flow_type: "legacy" },
+                    });
+                });
+            } catch (error) {
+                settle({ errorKey: pagarmeTdsToken.FAIL_GET_TOKEN });
+            }
+        });
     },
 };

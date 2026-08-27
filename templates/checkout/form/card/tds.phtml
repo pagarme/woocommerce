@@ -22,7 +22,12 @@ if (!$this->canInitTds()) {
     </div>
 </div>
 
-<div id="tdsMethodContainer" style="display: none;"></div>
+<div
+    id="tdsMethodContainer"
+    style="display: none;"
+    data-tifa-url="<?= esc_url($this->getTifaUrl()); ?>"
+    data-3ds-nx-url="<?= esc_url($this->get3DsNxUrl()); ?>"
+></div>
 <div id="challengeContainer"></div>
 
 <style>

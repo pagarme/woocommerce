@@ -43,42 +43,16 @@ class TdsTokenService
     }
 
     /**
-     * Retrieves TDS token for 3DS-NX (AuthSwitch) flow.
+     * Retrieves the TDS token for the 3DS-NX (AuthSwitch) flow.
      *
-     * Currently uses the legacy getTdsToken() method since the core lib hasn't been
-     * updated with getTdsTokenNx() yet. The 3DS-NX flow determination happens at the
-     * controller level based on account configuration.
-     *
-     * If the account is not enabled for NX or if the service fails,
-     * returns null to trigger fallback to legacy 3DS Handler.
+     * Returns null when the account is not enabled for NX, so the controller can
+     * answer flow_preference 'legacy'. API failures are thrown and handled by the
+     * controller, which logs them and also falls back to the legacy flow.
      *
      * @param string $accountId
      * @return string|null
+     * @throws \Exception
      */
-    // public function getTdsTokenNx($accountId)
-    // {
-    //     try {
-    //         $tdsTokenProxy = new TdsTokenProxy($this->coreAuth);
-    //         $environment = $this->config->getIsSandboxMode() ? 'test' : 'live';
-
-    //         // Chamada ao método NX correto
-    //         $response = $tdsTokenProxy->getTdsTokenNx($environment, $accountId);
-
-    //         if (!$response || empty($response->tdsToken)) {
-    //             return null;
-    //         }
-
-    //         return $response->tdsToken;
-    //     } catch (\Throwable $e) {
-    //         error_log(sprintf(
-    //             'TDS-NX Token retrieval failed for account %s: %s',
-    //             $accountId,
-    //             $e->getMessage()
-    //         ));
-    //         return null;
-    //     }
-    // }
-
     public function getTdsTokenNx($accountId)
     {
         try {
@@ -93,31 +67,11 @@ class TdsTokenService
 
             return $response->tdsToken;
         } catch (\Throwable $e) {
-            // Lança a exceção para que o Controller pegue e devolva no JSON de debug
-            throw new \Exception("Erro ao buscar Token NX na API Pagar.me: " . $e->getMessage(), 0, $e);
+            throw new \Exception(
+                'Failed to retrieve the 3DS-NX token: ' . $e->getMessage(),
+                0,
+                $e
+            );
         }
     }
-
-    // public function getTdsTokenNx($accountId)
-    // {
-    //     try {
-    //         $tdsTokenProxy = new TdsTokenProxy($this->coreAuth);
-    //         $environment = $this->config->getIsSandboxMode() ? 'test' : 'live';
-
-    //         $response = $tdsTokenProxy->getTdsToken($environment, $accountId);
-
-    //         if (!$response || empty($response->tdsToken)) {
-    //             return null;
-    //         }
-
-    //         return $response->tdsToken;
-    //     } catch (\Throwable $e) {
-    //         error_log(sprintf(
-    //             'TDS-NX Token retrieval failed for account %s: %s',
-    //             $accountId,
-    //             $e->getMessage()
-    //         ));
-    //         return null;
-    //     }
-    // }
 }

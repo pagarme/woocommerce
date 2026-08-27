@@ -509,49 +509,57 @@ let pagarmeCard = {
         });
 
         jQuery(document).ready(function () {
-            jQuery('form.checkout').on('checkout_place_order', function (event) {
-                pagarmeCard.fillCardBrandIfEmpty();
-                return pagarmeCard.canExecute(event);
+            // Namespace + off garantem um único handler: dois handlers registrados
+            // significariam dois fluxos 3DS concorrentes por clique.
+            jQuery('form.checkout')
+                .off('checkout_place_order.pagarme')
+                .on('checkout_place_order.pagarme', function (event) {
+                    pagarmeCard.fillCardBrandIfEmpty();
+                    return pagarmeCard.canExecute(event);
+                });
+            jQuery('form#order_review')
+                .off('submit.pagarme')
+                .on('submit.pagarme', function (event) {
+                    pagarmeCard.fillCardBrandIfEmpty();
+                    return pagarmeCard.canExecute(event);
+                });
+        });
+
+        jQuery(this.billingCpfId)
+            .off('change.pagarme')
+            .on('change.pagarme', function () {
+                pagarmeCard.onChangeBillingCpf();
             });
-            jQuery('form#order_review').on('submit', function (event) {
-                pagarmeCard.fillCardBrandIfEmpty();
-                return pagarmeCard.canExecute(event);
+
+        this.bindCardFieldListeners();
+    },
+    bindCardFieldListeners: function () {
+        jQuery(this.cardHolderNameTarget)
+            .off('input.pagarme')
+            .on('input.pagarme', function () {
+                pagarmeCard.preventSpecialCharacter(this);
             });
-        });
 
-        jQuery(this.billingCpfId).on('change', function () {
-            pagarmeCard.onChangeBillingCpf();
-        });
+        jQuery(this.cardNumberTarget)
+            .off('change.pagarme')
+            .on('change.pagarme', function (event) {
+                pagarmeCard.keyEventHandlerCard(event);
+            });
 
-        jQuery(this.cardHolderNameTarget).on('input', function () {
-            pagarmeCard.preventSpecialCharacter(this);
-        });
-
-        jQuery(this.cardNumberTarget).on('change', function (event) {
-            pagarmeCard.keyEventHandlerCard(event);
-        });
-
-        jQuery(`${this.fieldsetCardElements} input`).on('change', function () {
-            pagarmeCard.clearErrorMessages();
-        });
+        jQuery(`${this.fieldsetCardElements} input`)
+            .off('change.pagarmeClearErrors')
+            .on('change.pagarmeClearErrors', function () {
+                pagarmeCard.clearErrorMessages();
+            });
     },
     renewEventListener: function () {
-        jQuery(this.cardNumberTarget).on('change', function (event) {
-            pagarmeCard.keyEventHandlerCard(event);
-        });
-        jQuery(`${this.fieldsetCardElements} input`).on('change', function () {
-            pagarmeCard.clearErrorMessages();
-        });
+        this.bindCardFieldListeners();
         if (typeof pagarmeCheckoutWallet == 'object') {
             pagarmeCheckoutWallet.addEventListener();
         }
         if (typeof pagarmeOrderValue == 'object') {
             pagarmeOrderValue.start();
         }
-
-        jQuery(this.cardHolderNameTarget).on('input', function () {
-            pagarmeCard.preventSpecialCharacter(this);
-        });
     },
     start: function () {
         jQuery(document).ready(function () {
