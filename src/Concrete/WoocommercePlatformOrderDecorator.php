@@ -782,21 +782,40 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
             $paymentData[$creditCardDataIndex] = [];
         }
 
-        if (!empty($this->formData['authentication'])) {
-            $authenticationFormData = $this->formData['authentication'];
-            $authentication         = new stdClass();
-            $authentication->type   = 'threed_secure';
-            $authentication->status = $authenticationFormData['trans_status'];
-
-            $threeDSecure                = new stdClass();
-            $threeDSecure->mpi           = 'pagarme';
-            $threeDSecure->transactionId = $authenticationFormData['tds_server_trans_id'];
-
-            $authentication->threeDSecure   = $threeDSecure;
-            $newPaymentData->authentication = $authentication;
+        if ($this->hasAuthenticationData()) {
+            $newPaymentData->authentication = $this->buildAuthentication();
         }
 
         $paymentData[$creditCardDataIndex][] = $newPaymentData;
+    }
+
+    private function hasAuthenticationData()
+    {
+        return !empty($this->formData['authentication']) || !empty($this->formData['risk_id']);
+    }
+
+    private function buildAuthentication()
+    {
+        $authentication = new stdClass();
+        $authentication->type = 'threed_secure';
+
+        if (!empty($this->formData['authentication'])) {
+            $authenticationFormData = $this->formData['authentication'];
+            $authentication->status = $authenticationFormData['trans_status'];
+
+            $threeDSecure = new stdClass();
+            $threeDSecure->mpi = 'pagarme';
+            $threeDSecure->transactionId = $authenticationFormData['tds_server_trans_id'];
+            $authentication->threeDSecure = $threeDSecure;
+        } elseif (!empty($this->formData['risk_id'])) {
+            $authentication->status = 'Y';
+            $threeDSecure = new stdClass();
+            $threeDSecure->mpi = 'pagarme';
+            $threeDSecure->transactionId = $this->formData['risk_id'];
+            $authentication->threeDSecure = $threeDSecure;
+        }
+
+        return $authentication;
     }
 
 
