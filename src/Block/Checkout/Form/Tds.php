@@ -50,6 +50,20 @@ class Tds extends Gateway
         return $url;
     }
 
+    public function getTifaUrl()
+    {
+        return $this->getConfig()->getIsSandboxMode()
+            ? 'https://tifa-app.stone.com.br/test/v1/tifa/tifa-app.min.js'
+            : 'https://tifa-app.stone.com.br/live/v1/tifa/tifa-app.min.js';
+    }
+
+    public function get3DsNxUrl()
+    {
+        return $this->getConfig()->getIsSandboxMode()
+            ? 'https://3ds-nx-js.stone.com.br/test/v2/3ds2.min.js'
+            : 'https://3ds-nx-js.stone.com.br/live/v2/3ds2.min.js';
+    }
+
     public function canInitTds()
     {
         return $this->getConfig()->isTdsEnabled();
