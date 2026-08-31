@@ -1,19 +1,9 @@
 <?php
-
-/**
- * @author      Open Source Team
- * @copyright   2024 Pagar.me (https://pagar.me)
- * @license     https://pagar.me Copyright
- *
- * @link        https://pagar.me
- */
-
 /** @var \Woocommerce\Pagarme\Block\Checkout\Form\Tds $this */
 
 if (!$this->canInitTds()) {
     return;
 }
-
 ?>
 
 <div id="challengeIframeElement" class="challengeIframeElement">
@@ -21,4 +11,55 @@ if (!$this->canInitTds()) {
         <iframe name="challengeIframe" id="challengeIframe" title="pagarameTdsIframe"></iframe>
     </div>
 </div>
-<script src="<?= $this->getSdkUrl(); ?>"></script>
+
+<script>
+(function() {
+    const tifaUrl = "<?= esc_url($this->getTifaUrl()); ?>";
+    const legacySdkUrl = "<?= esc_url($this->getSdkUrl()); ?>";
+
+    /**
+     * Função auxiliar para injetar tags <script> dinamicamente
+     */
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = () => resolve(src);
+            script.onerror = () => reject(new Error(`Falha ao carregar o script: ${src}`));
+            document.head.appendChild(script);
+        });
+    }
+
+    /**
+     * Tenta inicializar o TIFA. Se falhar no download ou na verificação, carrega o SDK legado.
+     */
+    async function initTdsSdk() {
+        try {
+            await loadScript(tifaUrl);
+
+            // Valida se o objeto global do TIFA foi exposto no 'window'
+            // (Ajuste 'window.Tifa' caso o namespace global da Stone seja diferente)
+            if (typeof window.Tifa === 'undefined' && typeof window.tifa === 'undefined') {
+                throw new Error('TIFA script carregou, mas o objeto global não foi encontrado.');
+            }
+
+            console.log('[Pagar.me 3DS] TIFA SDK carregado com sucesso.');
+            window.pagarmeTdsEngine = 'tifa';
+
+        } catch (error) {
+            console.warn('[Pagar.me 3DS] Falha no TIFA SDK. Alternando para o SDK Legado...', error);
+            
+            try {
+                await loadScript(legacySdkUrl);
+                console.log('[Pagar.me 3DS] SDK Legado carregado com sucesso.');
+                window.pagarmeTdsEngine = 'legacy';
+            } catch (legacyError) {
+                console.error('[Pagar.me 3DS] Erro crítico: Nenhum SDK de 3DS pôde ser carregado.', legacyError);
+            }
+        }
+    }
+
+    initTdsSdk();
+})();
+</script>
