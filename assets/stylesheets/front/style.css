@@ -233,6 +233,29 @@ body.woocommerce-checkout.woocommerce-order-received #page #content #main .wooco
     border: 0;
 }
 
+.pagarme-tds-challenge-container:empty {
+    display: none;
+}
+
+.pagarme-tds-challenge-container iframe {
+    width: 500px;
+    height: 600px;
+    border: 0;
+}
+
+/*
+ * O iframe do 3DS Method precisa carregar sem ficar visível. Usamos tamanho zero
+ * em vez de display:none porque navegadores podem não carregar iframes ocultos.
+ */
+.pagarme-tds-method-container {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    border: 0;
+    visibility: hidden;
+}
+
 input[data-pagarme-uppercase="true"] {
     text-transform: uppercase !important;
 }

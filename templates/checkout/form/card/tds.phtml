@@ -1,19 +1,41 @@
 <?php
+
+/**
+ * @author      Open Source Team
+ * @copyright   2024 Pagar.me (https://pagar.me)
+ * @license     https://pagar.me Copyright
+ *
+ * @link        https://pagar.me
+ */
+
 /** @var \Woocommerce\Pagarme\Block\Checkout\Form\Tds $this */
 
 if (!$this->canInitTds()) {
     return;
 }
+
 ?>
 
 <div id="challengeIframeElement" class="challengeIframeElement">
     <div class="modal-content">
         <iframe name="challengeIframe" id="challengeIframe" title="pagarameTdsIframe"></iframe>
+        <div id="challengeContainer" class="pagarme-tds-challenge-container"></div>
     </div>
 </div>
+<div id="tdsMethodContainer" class="pagarme-tds-method-container"></div>
 
 <script>
-(function() {
+(function () {
+    /**
+     * O template é reinjetado a cada `updated_checkout`, então os scripts inline
+     * rodam novamente. Sem esse guard o SDK seria baixado a cada atualização do
+     * checkout e a promise de readiness seria substituída no meio de uma
+     * autenticação em andamento.
+     */
+    if (window.pagarmeTdsSdkReady) {
+        return;
+    }
+
     const tifaUrl = "<?= esc_url($this->getTifaUrl()); ?>";
     const legacySdkUrl = "<?= esc_url($this->getSdkUrl()); ?>";
 
@@ -32,34 +54,65 @@ if (!$this->canInitTds()) {
     }
 
     /**
+     * O engine só é considerado disponível quando a função que de fato executa a
+     * autenticação existe. Checar apenas a presença do objeto global deixaria o
+     * checkout escolher um SDK que não sabemos chamar.
+     */
+    function getTifaSdk() {
+        const sdk = window.Tifa || window.tifa;
+        return sdk && typeof sdk.authenticate === 'function' ? sdk : null;
+    }
+
+    function getLegacySdk() {
+        const sdk = window.Script3ds;
+        return sdk && typeof sdk.init3ds === 'function' ? sdk : null;
+    }
+
+    async function loadLegacyEngine() {
+        await loadScript(legacySdkUrl);
+        if (!getLegacySdk()) {
+            throw new Error('SDK legado carregou, mas Script3ds.init3ds não foi encontrado.');
+        }
+        window.pagarmeTdsEngine = 'legacy';
+        console.log('[Pagar.me 3DS] SDK Legado carregado com sucesso.');
+        return 'legacy';
+    }
+
+    /**
      * Tenta inicializar o TIFA. Se falhar no download ou na verificação, carrega o SDK legado.
      */
     async function initTdsSdk() {
         try {
             await loadScript(tifaUrl);
 
-            // Valida se o objeto global do TIFA foi exposto no 'window'
-            // (Ajuste 'window.Tifa' caso o namespace global da Stone seja diferente)
-            if (typeof window.Tifa === 'undefined' && typeof window.tifa === 'undefined') {
-                throw new Error('TIFA script carregou, mas o objeto global não foi encontrado.');
+            if (!getTifaSdk()) {
+                throw new Error('TIFA script carregou, mas não expôs uma API de autenticação utilizável.');
             }
 
-            console.log('[Pagar.me 3DS] TIFA SDK carregado com sucesso.');
             window.pagarmeTdsEngine = 'tifa';
-
+            console.log('[Pagar.me 3DS] TIFA SDK carregado com sucesso.');
+            return 'tifa';
         } catch (error) {
             console.warn('[Pagar.me 3DS] Falha no TIFA SDK. Alternando para o SDK Legado...', error);
-            
+
             try {
-                await loadScript(legacySdkUrl);
-                console.log('[Pagar.me 3DS] SDK Legado carregado com sucesso.');
-                window.pagarmeTdsEngine = 'legacy';
+                return await loadLegacyEngine();
             } catch (legacyError) {
                 console.error('[Pagar.me 3DS] Erro crítico: Nenhum SDK de 3DS pôde ser carregado.', legacyError);
+                window.pagarmeTdsEngine = null;
+                return null;
             }
         }
     }
 
-    initTdsSdk();
+    window.pagarmeTdsEngine = null;
+
+    /**
+     * Handle de readiness consumido por `initTds.callTdsFunction`. Os SDKs são
+     * injetados com `async`, então sem esperar por esta promise um submit rápido
+     * chamaria a autenticação antes de qualquer engine existir.
+     * Nunca rejeita: resolve com o nome do engine ou `null`.
+     */
+    window.pagarmeTdsSdkReady = initTdsSdk();
 })();
 </script>

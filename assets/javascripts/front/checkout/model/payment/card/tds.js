@@ -42,7 +42,22 @@ const pagarmeTds = {
                     pagarmeTds.FAIL_ASSEMBLE_PURCHASE
                 ]
             );
+            return;
         }
+
+        // Sem este fallback qualquer erro fora das chaves acima (ex.: SDK
+        // indisponível) deixaria o checkout parado sem mensagem alguma.
+        pagarmeCard.showErrorInPaymentMethod(
+            pagarmeTds.getErrorMessage(errors.error)
+        );
+    },
+
+    getErrorMessage: (error) => {
+        const messages = PagarmeGlobalVars.checkoutErrors.pt_BR;
+        if (typeof error === "string" && messages[error]) {
+            return messages[error];
+        }
+        return messages.serviceUnavailable;
     },
 
     getToken: () => {
