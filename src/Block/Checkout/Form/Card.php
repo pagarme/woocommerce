@@ -213,6 +213,8 @@ class Card extends Gateway
                 __('There was a problem when assembling the card\'s expiration data.', 'woo-pagarme-payments'),
             'fail_assemble_purchase' =>
                 __('There was a problem when assembling the purchase data.', 'woo-pagarme-payments'),
+            'challengeCanceled' =>
+                __('The authentication was canceled. Please try again.', 'woo-pagarme-payments'),
             'invalidBrand' =>
                 __('Invalid Data', 'woo-pagarme-payments'),
             'card: Can\'t check card form: Invalid element received' =>
