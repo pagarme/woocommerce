@@ -22,8 +22,11 @@ class TdsToken
     {
         $accountId = $this->config->getAccountId();
         $tdsTokenService = new TdsTokenService($this->config);
+        $tdsToken = $tdsTokenService->getTdsToken($accountId);
+
         wp_send_json_success([
-            'token' => $tdsTokenService->getTdsToken($accountId)
+            'token' => $tdsToken['token'],
+            'engine' => $tdsToken['engine'],
         ]);
         wp_die();
     }

@@ -13,16 +13,19 @@ const pagarmeTdsToken = {
 
             if (response.length === 0) {
                 return {
-                    error: this.FAIL_GET_TOKEN,
+                    error: pagarmeTdsToken.FAIL_GET_TOKEN,
                 };
             }
 
             const parsedResponse = JSON.parse(response);
 
-            return { token: parsedResponse?.data?.token };
+            return {
+                token: parsedResponse?.data?.token,
+                engine: parsedResponse?.data?.engine,
+            };
         } catch (e) {
             return {
-                error: this.FAIL_GET_TOKEN,
+                error: pagarmeTdsToken.FAIL_GET_TOKEN,
             };
         }
     },

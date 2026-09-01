@@ -22,6 +22,9 @@ defined('ABSPATH') || exit;
  */
 class Tds extends Gateway
 {
+    const TDS_NX_URL_SANDBOX = 'https://3ds-nx-js.stone.com.br/test/v2/3ds2.min.js';
+    const TDS_NX_URL_PRODUCTION = 'https://3ds-nx-js.stone.com.br/live/v2/3ds2.min.js';
+
     /** @var int  */
     protected $sequence = 1;
 
@@ -41,13 +44,14 @@ class Tds extends Gateway
      */
     protected $deps = [WCMP_JS_HANDLER_BASE_NAME . 'card'];
 
-    public function getSdkUrl()
+    /**
+     * Lib 3DS NX, retrocompatível com tokens do 3DS Handler.
+     */
+    public function get3DsNxUrl()
     {
-        $url = 'https://auth-3ds.pagar.me/bundle.js';
-        if ($this->getConfig()->getIsSandboxMode()) {
-            $url = 'https://auth-3ds-sdx.pagar.me/bundle.js';
-        }
-        return $url;
+        return $this->getConfig()->getIsSandboxMode()
+            ? self::TDS_NX_URL_SANDBOX
+            : self::TDS_NX_URL_PRODUCTION;
     }
 
     public function canInitTds()
