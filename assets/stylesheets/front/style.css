@@ -233,27 +233,25 @@ body.woocommerce-checkout.woocommerce-order-received #page #content #main .wooco
     border: 0;
 }
 
-.pagarme-tds-challenge-container:empty {
-    display: none;
-}
-
-.pagarme-tds-challenge-container iframe {
-    width: 500px;
+/*
+ * Challenge do 3DS NX. A lib do AuthSwitch injeta o iframe dentro do
+ * #challengeContainer e não o posiciona: `position: fixed` e `z-index` são
+ * exigidos pela doc de integração, sem eles o desafio renderiza no fluxo da
+ * página. O restante é aparência e pode ser ajustado livremente.
+ */
+#challengeContainer iframe {
+    position: fixed;
+    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    max-width: 500px;
     height: 600px;
     border: 0;
-}
-
-/*
- * O iframe do 3DS Method precisa carregar sem ficar visível. Usamos tamanho zero
- * em vez de display:none porque navegadores podem não carregar iframes ocultos.
- */
-.pagarme-tds-method-container {
-    position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
-    border: 0;
-    visibility: hidden;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background: #fff;
 }
 
 input[data-pagarme-uppercase="true"] {

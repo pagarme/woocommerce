@@ -2,7 +2,6 @@
 
 namespace Woocommerce\Pagarme\Service;
 
-use Pagarme\Core\Middle\Client;
 use Pagarme\Core\Middle\Proxy\TdsTokenProxy;
 use Pagarme\Core\Kernel\Services\LogService;
 use PagarmeCoreApiLib\Models\GetTdsTokenResponse;
@@ -11,6 +10,12 @@ use Woocommerce\Pagarme\Model\CoreAuth;
 
 class TdsTokenService
 {
+    /** Engine do AuthSwitch / 3DS NX, que autentica via `window.tifa.init`. */
+    const ENGINE_NX = 'nx';
+
+    /** Engine do bundle 3DS legado, que autentica via `Script3ds.init3ds`. */
+    const ENGINE_LEGACY = 'legacy';
+
     /**
      * @var CoreAuth
      */
@@ -31,17 +36,27 @@ class TdsTokenService
     }
 
     /**
+     * O emissor do token define qual engine o frontend precisa usar: um token NX
+     * não é aceito pela API do 3DS legado (e vice-versa), então as duas decisões
+     * não podem ser tomadas de forma independente.
+     *
      * @param string $accountId
-     * @return string
+     * @return array{token: string, engine: string}
      */
     public function getTdsToken($accountId)
     {
         $token = $this->getNxToken($accountId);
         if ($token) {
-            return $token;
+            return [
+                'token' => $token,
+                'engine' => self::ENGINE_NX,
+            ];
         }
 
-        return $this->getLegacyToken($accountId);
+        return [
+            'token' => $this->getLegacyToken($accountId),
+            'engine' => self::ENGINE_LEGACY,
+        ];
     }
 
     /**
@@ -51,7 +66,6 @@ class TdsTokenService
     private function getNxToken($accountId)
     {
         try {
-            $environment = $this->config->getIsSandboxMode() ? 'test' : 'live';
             $url = 'https://hubapi.pagar.me/v2/management/tds-token';
 
             $response = wp_remote_post($url, [
@@ -59,6 +73,12 @@ class TdsTokenService
                     'Authorization' => 'Basic ' . base64_encode($this->config->getSecretKey() . ':'),
                     'Content-Type'  => 'application/json',
                 ],
+                /**
+                 * O payload pede `merchant_id`, mas recebe o account id — é o que
+                 * a conta de testes aceita hoje. Config expõe `getMerchantId()`
+                 * separadamente; confirmar com o time do hubapi qual dos dois é o
+                 * esperado antes de subir para produção.
+                 */
                 'body' => json_encode([
                     'merchant_id'  => $accountId
                 ]),

@@ -791,31 +791,44 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
 
     private function hasAuthenticationData()
     {
-        return !empty($this->formData['authentication']) || !empty($this->formData['risk_id']);
+        return !empty($this->formData['authentication']);
     }
 
+    /**
+     * Os dois engines de 3DS chegam pelo mesmo campo `authentication` do
+     * formulário, normalizado no checkout: o NX acrescenta o `risk_id`, o legado
+     * traz apenas o `tds_server_trans_id`.
+     */
     private function buildAuthentication()
     {
+        $authenticationFormData = $this->formData['authentication'];
+
         $authentication = new stdClass();
         $authentication->type = 'threed_secure';
+        $authentication->status = $authenticationFormData['trans_status'] ?? null;
 
-        if (!empty($this->formData['authentication'])) {
-            $authenticationFormData = $this->formData['authentication'];
-            $authentication->status = $authenticationFormData['trans_status'];
-
-            $threeDSecure = new stdClass();
-            $threeDSecure->mpi = 'pagarme';
-            $threeDSecure->transactionId = $authenticationFormData['tds_server_trans_id'];
-            $authentication->threeDSecure = $threeDSecure;
-        } elseif (!empty($this->formData['risk_id'])) {
-            $authentication->status = 'Y';
-            $threeDSecure = new stdClass();
-            $threeDSecure->mpi = 'pagarme';
-            $threeDSecure->transactionId = $this->formData['risk_id'];
-            $authentication->threeDSecure = $threeDSecure;
-        }
+        $threeDSecure = new stdClass();
+        $threeDSecure->mpi = 'pagarme';
+        $threeDSecure->transactionId = $this->getAuthenticationTransactionId($authenticationFormData);
+        $authentication->threeDSecure = $threeDSecure;
 
         return $authentication;
+    }
+
+    /**
+     * O `risk_id` é o identificador que o AuthSwitch manda vincular ao pedido.
+     *
+     * TODO: confirmar na doc da Order API se para o NX ele deve mesmo ir em
+     * `threeDSecure.transactionId` ou em um campo próprio — este é o único ponto
+     * a trocar quando a spec sair.
+     */
+    private function getAuthenticationTransactionId(array $authenticationFormData)
+    {
+        if (!empty($authenticationFormData['risk_id'])) {
+            return $authenticationFormData['risk_id'];
+        }
+
+        return $authenticationFormData['tds_server_trans_id'] ?? null;
     }
 
 

@@ -1,6 +1,10 @@
 const pagarmeTdsToken = {
     FAIL_GET_TOKEN: "fail_get_token",
 
+    /**
+     * O `engine` acompanha o token porque só o backend sabe qual emissor o
+     * gerou, e cada emissor é aceito por apenas um SDK de 3DS.
+     */
     getToken: () => {
         try {
             const response = jQuery.ajax({
@@ -13,16 +17,19 @@ const pagarmeTdsToken = {
 
             if (response.length === 0) {
                 return {
-                    error: this.FAIL_GET_TOKEN,
+                    error: pagarmeTdsToken.FAIL_GET_TOKEN,
                 };
             }
 
             const parsedResponse = JSON.parse(response);
 
-            return { token: parsedResponse?.data?.token };
+            return {
+                token: parsedResponse?.data?.token,
+                engine: parsedResponse?.data?.engine,
+            };
         } catch (e) {
             return {
-                error: this.FAIL_GET_TOKEN,
+                error: pagarmeTdsToken.FAIL_GET_TOKEN,
             };
         }
     },

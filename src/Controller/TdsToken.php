@@ -22,8 +22,15 @@ class TdsToken
     {
         $accountId = $this->config->getAccountId();
         $tdsTokenService = new TdsTokenService($this->config);
+        $tdsToken = $tdsTokenService->getTdsToken($accountId);
+        /**
+         * O `engine` viaja junto com o token para que o checkout não precise
+         * adivinhar qual SDK usar por feature detection: um token NX enviado ao
+         * bundle legado é rejeitado com 401 no `pre-auth`.
+         */
         wp_send_json_success([
-            'token' => $tdsTokenService->getTdsToken($accountId)
+            'token' => $tdsToken['token'],
+            'engine' => $tdsToken['engine'],
         ]);
         wp_die();
     }

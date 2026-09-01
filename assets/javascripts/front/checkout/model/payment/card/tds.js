@@ -60,6 +60,10 @@ const pagarmeTds = {
         return messages.serviceUnavailable;
     },
 
+    /**
+     * Devolve `{ token, engine }`: o engine define qual SDK de 3DS o checkout
+     * pode usar com esse token.
+     */
     getToken: () => {
         const data = pagarmeTdsToken.getToken();
         if (data.error) {
@@ -67,10 +71,10 @@ const pagarmeTds = {
             pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[data.error]
             );
-            return "";
+            return null;
         }
 
-        return data.token;
+        return data;
     },
 
     canTdsRun: () => {
@@ -209,7 +213,7 @@ const pagarmeTds = {
         };
     },
 
-    callTds: (tdsToken) => {
+    callTds: (tokenData) => {
         const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
 
         const expDate = jQuery(checkoutPaymentElement)
@@ -224,7 +228,7 @@ const pagarmeTds = {
 
         const tdsData = pagarmeTds.getTdsData("02", cardExpiryDate);
         initTds.callTdsFunction(
-            tdsToken,
+            tokenData,
             tdsData,
             pagarmeTds.callbackTds.bind(this)
         );
@@ -307,12 +311,12 @@ const pagarmeTds = {
             pagarmeCard.showLoader(event);
             pagarmeTds.checkoutEvent = event;
             pagarmeTds.addTdsAttributeData();
-            const token = pagarmeTds.getToken();
-            if (!token || token.length === 0) {
+            const tokenData = pagarmeTds.getToken();
+            if (!tokenData?.token) {
                 return false;
             }
 
-            pagarmeTds.callTds(token);
+            pagarmeTds.callTds(tokenData);
         }
 
         return canTdsRun;

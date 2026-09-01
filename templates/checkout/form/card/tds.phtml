@@ -16,32 +16,44 @@ if (!$this->canInitTds()) {
 
 ?>
 
+<?php // Modal do 3DS legado: o bundle controla a exibição por conta própria. ?>
 <div id="challengeIframeElement" class="challengeIframeElement">
     <div class="modal-content">
         <iframe name="challengeIframe" id="challengeIframe" title="pagarameTdsIframe"></iframe>
-        <div id="challengeContainer" class="pagarme-tds-challenge-container"></div>
     </div>
 </div>
-<div id="tdsMethodContainer" class="pagarme-tds-method-container"></div>
+
+<?php
+/**
+ * Containers do 3DS NX. Ficam fora do modal legado porque a lib do AuthSwitch
+ * injeta o iframe do challenge aqui dentro e o posiciona via CSS — um ancestral
+ * com `display: none` impediria a renderização. A aplicação não deve mexer na
+ * estrutura interna destes elementos.
+ */
+?>
+<div id="tdsMethodContainer" style="display: none;"></div>
+<div id="challengeContainer"></div>
 
 <script>
 (function () {
     /**
      * O template é reinjetado a cada `updated_checkout`, então os scripts inline
-     * rodam novamente. Sem esse guard o SDK seria baixado a cada atualização do
-     * checkout e a promise de readiness seria substituída no meio de uma
+     * rodam novamente. Sem esse guard os SDKs seriam baixados a cada atualização
+     * do checkout e o cache de carregamento seria substituído no meio de uma
      * autenticação em andamento.
      */
-    if (window.pagarmeTdsSdkReady) {
+    if (window.pagarmeTds3ds) {
         return;
     }
 
-    const tifaUrl = "<?= esc_url($this->getTifaUrl()); ?>";
-    const legacySdkUrl = "<?= esc_url($this->getSdkUrl()); ?>";
+    const urls = {
+        nx: [
+            "<?= esc_url($this->getAuthSwitchUrl()); ?>",
+            "<?= esc_url($this->get3DsNxUrl()); ?>",
+        ],
+        legacy: ["<?= esc_url($this->getSdkUrl()); ?>"],
+    };
 
-    /**
-     * Função auxiliar para injetar tags <script> dinamicamente
-     */
     function loadScript(src) {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -54,65 +66,55 @@ if (!$this->canInitTds()) {
     }
 
     /**
-     * O engine só é considerado disponível quando a função que de fato executa a
+     * Um engine só é considerado pronto quando a função que de fato executa a
      * autenticação existe. Checar apenas a presença do objeto global deixaria o
      * checkout escolher um SDK que não sabemos chamar.
      */
-    function getTifaSdk() {
-        const sdk = window.Tifa || window.tifa;
-        return sdk && typeof sdk.authenticate === 'function' ? sdk : null;
-    }
+    const verifiers = {
+        nx: () => typeof window.tifa?.init === 'function',
+        legacy: () => typeof window.Script3ds?.init3ds === 'function',
+    };
 
-    function getLegacySdk() {
-        const sdk = window.Script3ds;
-        return sdk && typeof sdk.init3ds === 'function' ? sdk : null;
-    }
-
-    async function loadLegacyEngine() {
-        await loadScript(legacySdkUrl);
-        if (!getLegacySdk()) {
-            throw new Error('SDK legado carregou, mas Script3ds.init3ds não foi encontrado.');
-        }
-        window.pagarmeTdsEngine = 'legacy';
-        console.log('[Pagar.me 3DS] SDK Legado carregado com sucesso.');
-        return 'legacy';
-    }
+    const loaded = {};
 
     /**
-     * Tenta inicializar o TIFA. Se falhar no download ou na verificação, carrega o SDK legado.
+     * O engine é definido pelo backend, que sabe qual emissor gerou o token. Não
+     * há fallback entre engines: um token NX é rejeitado pela API do 3DS legado.
+     * Para o NX os dois scripts (AuthSwitch e 3DS NX) são obrigatórios.
      */
-    async function initTdsSdk() {
-        try {
-            await loadScript(tifaUrl);
-
-            if (!getTifaSdk()) {
-                throw new Error('TIFA script carregou, mas não expôs uma API de autenticação utilizável.');
-            }
-
-            window.pagarmeTdsEngine = 'tifa';
-            console.log('[Pagar.me 3DS] TIFA SDK carregado com sucesso.');
-            return 'tifa';
-        } catch (error) {
-            console.warn('[Pagar.me 3DS] Falha no TIFA SDK. Alternando para o SDK Legado...', error);
-
-            try {
-                return await loadLegacyEngine();
-            } catch (legacyError) {
-                console.error('[Pagar.me 3DS] Erro crítico: Nenhum SDK de 3DS pôde ser carregado.', legacyError);
-                window.pagarmeTdsEngine = null;
-                return null;
-            }
+    function load(engine) {
+        if (!urls[engine]) {
+            return Promise.reject(new Error(`Engine de 3DS desconhecido: ${engine}`));
         }
+
+        if (!loaded[engine]) {
+            loaded[engine] = Promise.all(urls[engine].map(loadScript)).then(() => {
+                if (!verifiers[engine]()) {
+                    throw new Error(
+                        `SDK de 3DS "${engine}" carregou, mas não expôs uma API de autenticação utilizável.`
+                    );
+                }
+                return engine;
+            }).catch((error) => {
+                // Sem limpar o cache, uma falha de rede no warm-up condenaria
+                // todas as tentativas seguintes de checkout da mesma página.
+                delete loaded[engine];
+                throw error;
+            });
+        }
+
+        return loaded[engine];
     }
 
-    window.pagarmeTdsEngine = null;
+    window.pagarmeTds3ds = { load };
 
     /**
-     * Handle de readiness consumido por `initTds.callTdsFunction`. Os SDKs são
-     * injetados com `async`, então sem esperar por esta promise um submit rápido
-     * chamaria a autenticação antes de qualquer engine existir.
-     * Nunca rejeita: resolve com o nome do engine ou `null`.
+     * Warm-up: a maioria das contas já está no NX, então adiantamos o download
+     * para não pagar a latência dos dois scripts no submit. O engine legado
+     * continua carregando sob demanda. Remover esta linha quando o legado sair.
      */
-    window.pagarmeTdsSdkReady = initTdsSdk();
+    load('nx').catch((error) => {
+        console.warn('[Pagar.me 3DS] Pré-carregamento do 3DS NX falhou.', error);
+    });
 })();
 </script>

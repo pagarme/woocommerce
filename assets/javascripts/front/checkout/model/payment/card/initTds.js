@@ -1,137 +1,112 @@
-/* globals Script3ds */
 /* jshint esversion: 11 */
 const initTds = {
-    challengeWindowSize: '03',
-    modalTarget: '#challengeIframeElement',
-    methodContainerTarget: '#tdsMethodContainer',
-    challengeContainerTarget: '#challengeContainer',
+    ENGINE_NX: 'nx',
+    ENGINE_LEGACY: 'legacy',
     SDK_UNAVAILABLE: 'serviceUnavailable',
+    CHALLENGE_CANCELED: 'challengeCanceled',
+    challengeWindowSize: '03',
+    methodContainerId: 'tdsMethodContainer',
+    challengeContainerId: 'challengeContainer',
 
-    callTdsFunction(tdsToken, tdsData, callbackTds) {
-        initTds.getSdkReady()
-            .then((engine) => initTds.run(engine, tdsToken, tdsData, callbackTds))
+    /**
+     * O engine vem do backend junto com o token, porque só o emissor do token
+     * define qual SDK sabe usá-lo. Não há fallback entre engines: mandar um
+     * token NX para o bundle legado resulta em 401 no `pre-auth`.
+     */
+    callTdsFunction(tokenData, orderData, callbackTds) {
+        const engine = tokenData?.engine;
+        const token = tokenData?.token;
+
+        initTds.loadEngine(engine)
+            .then(() => initTds.run(engine, token, orderData))
+            .then((result) => callbackTds(result))
             .catch((error) => {
-                console.error('[Pagar.me 3DS] Falha ao iniciar a autenticação.', error);
+                console.error('[Pagar.me 3DS] Falha ao executar a autenticação.', error);
                 callbackTds({ error: initTds.SDK_UNAVAILABLE });
             });
     },
 
     /**
-     * Os SDKs são injetados de forma assíncrona pelo template, então esperamos o
-     * handle de readiness antes de autenticar. Quando ele não existe (template
-     * não renderizado ou script inline bloqueado) caímos na detecção direta.
+     * O loader é publicado pelo template, que conhece as URLs de cada ambiente.
      */
-    getSdkReady() {
-        if (window.pagarmeTdsSdkReady) {
-            return window.pagarmeTdsSdkReady;
+    loadEngine(engine) {
+        if (!window.pagarmeTds3ds) {
+            return Promise.reject(
+                new Error('Loader de 3DS indisponível: o template não foi renderizado.')
+            );
         }
-        return Promise.resolve(window.pagarmeTdsEngine || initTds.detectEngine());
+        return window.pagarmeTds3ds.load(engine);
     },
 
-    detectEngine() {
-        if (initTds.getTifaSdk()) {
-            return 'tifa';
+    run(engine, token, orderData) {
+        if (engine === initTds.ENGINE_NX) {
+            return initTds.runNx(token, orderData);
         }
-        if (initTds.getLegacySdk()) {
-            return 'legacy';
+        if (engine === initTds.ENGINE_LEGACY) {
+            return initTds.runLegacy(token, orderData);
         }
-        return null;
-    },
-
-    getTifaSdk() {
-        const sdk = window.Tifa || window.tifa;
-        return sdk && typeof sdk.authenticate === 'function' ? sdk : null;
-    },
-
-    getLegacySdk() {
-        let sdk = window.Script3ds;
-        if (!sdk && typeof Script3ds !== 'undefined') {
-            sdk = Script3ds;
-        }
-        return sdk && typeof sdk.init3ds === 'function' ? sdk : null;
-    },
-
-    run(engine, tdsToken, tdsData, callbackTds) {
-        const resolvedEngine = engine || initTds.detectEngine();
-
-        if (resolvedEngine === 'tifa') {
-            initTds.runTifa(tdsToken, tdsData, callbackTds);
-            return;
-        }
-
-        if (resolvedEngine === 'legacy') {
-            initTds.runLegacy(tdsToken, tdsData, callbackTds);
-            return;
-        }
-
-        console.error('[Pagar.me 3DS] Nenhum SDK de 3DS disponível para autenticar.');
-        callbackTds({ error: initTds.SDK_UNAVAILABLE });
+        return Promise.reject(new Error(`Engine de 3DS desconhecido: ${engine}`));
     },
 
     /**
-     * O bundle legado controla a exibição de #challengeIframeElement por conta própria.
+     * A lib do AuthSwitch orquestra fingerprint e 3DS e devolve uma Promise; ela
+     * exige os elementos dos containers, não seletores.
      */
-    runLegacy(tdsToken, tdsData, callbackTds) {
-        initTds.getLegacySdk().init3ds(
-            tdsToken,
-            tdsData,
-            callbackTds,
-            initTds.challengeWindowSize
-        );
+    runNx(token, orderData) {
+        const tdsMethodContainerElement = document.getElementById(initTds.methodContainerId);
+        const challengeContainerElement = document.getElementById(initTds.challengeContainerId);
+
+        if (!tdsMethodContainerElement || !challengeContainerElement) {
+            return Promise.reject(
+                new Error('Containers do 3DS NX não encontrados no DOM.')
+            );
+        }
+
+        return window.tifa.init({
+            tds: {
+                token,
+                orderData,
+                tdsMethodContainerElement,
+                challengeContainerElement,
+            },
+        }).then(initTds.normalizeNxResponse);
     },
 
-    runTifa(tdsToken, tdsData, callbackTds) {
-        const sdk = initTds.getTifaSdk();
-        const observer = initTds.observeChallenge();
-        const finish = (result) => {
-            if (observer) {
-                observer.disconnect();
-            }
-            initTds.hideChallengeModal();
-            callbackTds(result);
+    /**
+     * O AuthSwitch agrupa o resultado por produto e devolve o 3DS em um array,
+     * enquanto o resto do checkout trabalha com o formato plano do 3DS legado.
+     */
+    normalizeNxResponse(response) {
+        const tds = response?.steps?.tds?.[0];
+
+        if (!tds) {
+            console.error('[Pagar.me 3DS] Resposta do AuthSwitch sem dados de 3DS.', response);
+            return { error: initTds.SDK_UNAVAILABLE };
+        }
+
+        if (tds.challenge_canceled) {
+            return { error: initTds.CHALLENGE_CANCELED };
+        }
+
+        return {
+            trans_status: tds.trans_status,
+            tds_server_trans_id: tds.tds_server_trans_id,
+            risk_id: response.risk_id,
         };
-
-        sdk.authenticate({
-            token: tdsToken,
-            data: tdsData,
-            methodContainer: initTds.methodContainerTarget,
-            challengeContainer: initTds.challengeContainerTarget,
-            onComplete: finish,
-            onError: (error) => finish({ error }),
-        });
     },
 
     /**
-     * O modal só é aberto quando o SDK realmente injeta o desafio no container,
-     * para não exibir um overlay vazio em autenticações frictionless.
+     * O bundle legado é baseado em callback e controla a exibição de
+     * #challengeIframeElement por conta própria.
      */
-    observeChallenge() {
-        const container = document.querySelector(initTds.challengeContainerTarget);
-        if (!container || typeof MutationObserver === 'undefined') {
-            return null;
-        }
-
-        const observer = new MutationObserver(() => {
-            if (container.childElementCount > 0) {
-                initTds.showChallengeModal();
-            }
+    runLegacy(token, orderData) {
+        return new Promise((resolve) => {
+            window.Script3ds.init3ds(
+                token,
+                orderData,
+                resolve,
+                initTds.challengeWindowSize
+            );
         });
-        observer.observe(container, { childList: true, subtree: true });
-
-        return observer;
-    },
-
-    showChallengeModal() {
-        const modal = document.querySelector(initTds.modalTarget);
-        if (modal) {
-            modal.style.display = 'block';
-        }
-    },
-
-    hideChallengeModal() {
-        const modal = document.querySelector(initTds.modalTarget);
-        if (modal) {
-            modal.style.display = 'none';
-        }
     },
 };
