@@ -114,6 +114,40 @@ class TdsTokenServiceTest extends TestCase
       );
    }
 
+   public function testShouldSkipNxWhenLegacyEngineIsRequested()
+   {
+      Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
+      $configMock = Mockery::mock(Config::class);
+      $configMock->shouldReceive('getIsSandboxMode')->andReturnFalse();
+
+      // Nenhum stub de wp_remote_post: pedir o legado não deve chamar o NX.
+      $this->stubLegacyProxy('legacy_token_456', 'live');
+
+      $tdsTokenService = new TdsTokenService($configMock);
+
+      $this->assertSame(
+         ['token' => 'legacy_token_456', 'engine' => TdsTokenService::ENGINE_LEGACY],
+         $tdsTokenService->getTdsToken('acc_test', TdsTokenService::ENGINE_LEGACY)
+      );
+   }
+
+   public function testShouldPreferNxWhenRequestedEngineIsUnknown()
+   {
+      Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
+      $configMock = Mockery::mock(Config::class);
+      $configMock->shouldReceive('getIsSandboxMode')->andReturnFalse();
+      $configMock->shouldReceive('getSecretKey')->andReturn('test_secret_key');
+
+      $this->stubNxResponse(200, ['tds_token' => 'nx_token_123']);
+
+      $tdsTokenService = new TdsTokenService($configMock);
+
+      $this->assertSame(
+         ['token' => 'nx_token_123', 'engine' => TdsTokenService::ENGINE_NX],
+         $tdsTokenService->getTdsToken('acc_test', 'engine_inexistente')
+      );
+   }
+
    public function testShouldUseTestEnvironmentOnLegacyFallbackWhenSandbox()
    {
       Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');

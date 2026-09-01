@@ -78,8 +78,9 @@ if (!$this->canInitTds()) {
     const loaded = {};
 
     /**
-     * O engine é definido pelo backend, que sabe qual emissor gerou o token. Não
-     * há fallback entre engines: um token NX é rejeitado pela API do 3DS legado.
+     * O engine é definido pelo backend, que sabe qual emissor gerou o token —
+     * um token NX é rejeitado pela API do 3DS legado, então o checkout troca os
+     * dois juntos quando precisa cair no fallback.
      * Para o NX os dois scripts (AuthSwitch e 3DS NX) são obrigatórios.
      */
     function load(engine) {
@@ -111,7 +112,8 @@ if (!$this->canInitTds()) {
     /**
      * Warm-up: a maioria das contas já está no NX, então adiantamos o download
      * para não pagar a latência dos dois scripts no submit. O engine legado
-     * continua carregando sob demanda. Remover esta linha quando o legado sair.
+     * continua carregando sob demanda, no fallback. Uma falha aqui não quebra o
+     * checkout: o cache é limpo e o submit ainda tenta o NX antes do fallback.
      */
     load('nx').catch((error) => {
         console.warn('[Pagar.me 3DS] Pré-carregamento do 3DS NX falhou.', error);

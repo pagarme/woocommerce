@@ -22,7 +22,7 @@ class TdsToken
     {
         $accountId = $this->config->getAccountId();
         $tdsTokenService = new TdsTokenService($this->config);
-        $tdsToken = $tdsTokenService->getTdsToken($accountId);
+        $tdsToken = $tdsTokenService->getTdsToken($accountId, $this->getRequestedEngine());
         /**
          * O `engine` viaja junto com o token para que o checkout não precise
          * adivinhar qual SDK usar por feature detection: um token NX enviado ao
@@ -33,5 +33,24 @@ class TdsToken
             'engine' => $tdsToken['engine'],
         ]);
         wp_die();
+    }
+
+    /**
+     * O checkout só pode pedir explicitamente o engine legado, usado como
+     * fallback quando o NX não está disponível. Qualquer outro valor cai na
+     * preferência padrão (NX), para que a query string não force o legado por
+     * acidente nem sirva de vetor para escolher um engine arbitrário.
+     *
+     * @return string|null
+     */
+    private function getRequestedEngine()
+    {
+        if (empty($_GET['engine'])) {
+            return null;
+        }
+
+        $engine = sanitize_text_field(wp_unslash($_GET['engine']));
+
+        return $engine === TdsTokenService::ENGINE_LEGACY ? TdsTokenService::ENGINE_LEGACY : null;
     }
 }

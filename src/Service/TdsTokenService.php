@@ -40,17 +40,24 @@ class TdsTokenService
      * não é aceito pela API do 3DS legado (e vice-versa), então as duas decisões
      * não podem ser tomadas de forma independente.
      *
+     * O NX é preferido. Quando o checkout precisa cair no legado, ele pede um
+     * token com `$engine = ENGINE_LEGACY` — trocar de engine sem trocar de token
+     * é o que resulta em 401 no `pre-auth`.
+     *
      * @param string $accountId
+     * @param string|null $engine
      * @return array{token: string, engine: string}
      */
-    public function getTdsToken($accountId)
+    public function getTdsToken($accountId, $engine = null)
     {
-        $token = $this->getNxToken($accountId);
-        if ($token) {
-            return [
-                'token' => $token,
-                'engine' => self::ENGINE_NX,
-            ];
+        if ($engine !== self::ENGINE_LEGACY) {
+            $token = $this->getNxToken($accountId);
+            if ($token) {
+                return [
+                    'token' => $token,
+                    'engine' => self::ENGINE_NX,
+                ];
+            }
         }
 
         return [

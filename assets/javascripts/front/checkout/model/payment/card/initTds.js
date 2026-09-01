@@ -10,20 +10,77 @@ const initTds = {
 
     /**
      * O engine vem do backend junto com o token, porque só o emissor do token
-     * define qual SDK sabe usá-lo. Não há fallback entre engines: mandar um
-     * token NX para o bundle legado resulta em 401 no `pre-auth`.
+     * define qual SDK sabe usá-lo.
+     *
+     * Quando o NX não conclui a autenticação, caímos no 3DS legado — mas
+     * pedindo um token novo ao backend. Trocar de engine reaproveitando o token
+     * do NX é justamente o que resulta em 401 no `pre-auth` do legado.
      */
     callTdsFunction(tokenData, orderData, callbackTds) {
         const engine = tokenData?.engine;
         const token = tokenData?.token;
 
-        initTds.loadEngine(engine)
-            .then(() => initTds.run(engine, token, orderData))
+        initTds.runEngine(engine, token, orderData)
             .then((result) => callbackTds(result))
             .catch((error) => {
-                console.error('[Pagar.me 3DS] Falha ao executar a autenticação.', error);
+                if (engine !== initTds.ENGINE_NX) {
+                    console.error('[Pagar.me 3DS] Falha ao executar a autenticação.', error);
+                    callbackTds({ error: initTds.SDK_UNAVAILABLE });
+                    return;
+                }
+
+                console.warn(
+                    '[Pagar.me 3DS] O 3DS NX falhou. Caindo no 3DS legado.',
+                    error
+                );
+                initTds.runLegacyFallback(orderData, callbackTds);
+            });
+    },
+
+    runEngine(engine, token, orderData) {
+        return initTds.loadEngine(engine)
+            .then(() => initTds.run(engine, token, orderData));
+    },
+
+    /**
+     * O fallback só entra quando o NX não produziu veredito algum: indisponível,
+     * containers ausentes ou erro na `init`. Um `trans_status` do NX — inclusive
+     * `N` ou `R` — e o cancelamento do challenge pelo usuário são respostas
+     * legítimas e resolvem a Promise, então não passam por aqui e não são
+     * reautenticados no legado.
+     */
+    runLegacyFallback(orderData, callbackTds) {
+        initTds.clearContainers();
+
+        const legacyTokenData = pagarmeTdsToken.getToken(initTds.ENGINE_LEGACY);
+        if (legacyTokenData.error || !legacyTokenData.token) {
+            console.error(
+                '[Pagar.me 3DS] Não foi possível obter um token do 3DS legado para o fallback.',
+                legacyTokenData.error
+            );
+            callbackTds({ error: initTds.SDK_UNAVAILABLE });
+            return;
+        }
+
+        initTds.runEngine(initTds.ENGINE_LEGACY, legacyTokenData.token, orderData)
+            .then((result) => callbackTds(result))
+            .catch((error) => {
+                console.error('[Pagar.me 3DS] O fallback para o 3DS legado também falhou.', error);
                 callbackTds({ error: initTds.SDK_UNAVAILABLE });
             });
+    },
+
+    /**
+     * O NX pode ter injetado um iframe parcial antes de falhar; o legado monta o
+     * desafio no modal dele, então o container do NX ficaria visível por cima.
+     */
+    clearContainers() {
+        [initTds.methodContainerId, initTds.challengeContainerId].forEach((id) => {
+            const container = document.getElementById(id);
+            if (container) {
+                container.innerHTML = '';
+            }
+        });
     },
 
     /**
