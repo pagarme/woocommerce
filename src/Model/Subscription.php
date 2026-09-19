@@ -291,7 +291,7 @@ class Subscription extends SubscriptionMeta
         if (!empty($card)) {
             $fields['card_order_value'] = $order->getWcOrder()->get_total();
             $fields['brand'] = $card['brand'];
-            $fields['installments'] = 1;
+            $fields['installments'] = apply_filters( 'woo_pagarme_subscription_renewal_installments', 1, $order->getWcOrder());
             $fields['card_id'] = $card['cardId'];
             $fields['pagarmetoken'] = $card['cardId'];
             $fields['recurrence_cycle'] = "subsequent";
