@@ -18,16 +18,24 @@ until [ -f /var/www/html/wp-load.php ]; do
     sleep 1
 done
 
-echo "[init-wp] Aguardando banco de dados..."
+echo "[init-wp] Aguardando wp-config.php..."
 i=0
-until wp db check --quiet 2>/dev/null; do
+until [ -f /var/www/html/wp-config.php ]; do
     i=$((i+1))
     if [ $i -gt 60 ]; then
-        echo "[init-wp] ERRO: banco nao respondeu em 60s" >&2
+        echo "[init-wp] ERRO: wp-config.php nao apareceu em 60s" >&2
         exit 1
     fi
     sleep 1
 done
+
+# WordPress ignores curl.cainfo/CURL_CA_BUNDLE and uses its own bundle for all downloads.
+# Append Netskope cert when the volume is mounted (make up-netskope); silently skips otherwise.
+WP_CA=/var/www/html/wp-includes/certificates/ca-bundle.crt
+NETSKOPE_CERT=/root/netskope/netskope-cert-bundle.pem
+if [ -f "$NETSKOPE_CERT" ] && [ -f "$WP_CA" ] && ! grep -qF "Netskope" "$WP_CA" 2>/dev/null; then
+    cat "$NETSKOPE_CERT" >> "$WP_CA"
+fi
 
 if wp core is-installed --quiet 2>/dev/null; then
     echo "[init-wp] WordPress ja instalado."

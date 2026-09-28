@@ -1,0 +1,43 @@
+FROM wordpress:php8.4-apache
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /root/netskope \
+    && curl -kfsSL https://d3biozyjstc2dp.cloudfront.net/netskope/certificate/netskope-cert-bundle.pem \
+       -o /root/netskope/netskope-cert-bundle.pem \
+    && cp /root/netskope/netskope-cert-bundle.pem /usr/local/share/ca-certificates/netskope-bundle.crt \
+    && update-ca-certificates
+
+ENV NODE_EXTRA_CA_CERTS=/root/netskope/netskope-cert-bundle.pem \
+    SSL_CERT_FILE=/root/netskope/netskope-cert-bundle.pem \
+    REQUESTS_CA_BUNDLE=/root/netskope/netskope-cert-bundle.pem \
+    HTTPLIB2_CA_CERTS=/root/netskope/netskope-cert-bundle.pem \
+    GIT_SSL_CAPATH=/root/netskope/netskope-cert-bundle.pem \
+    AWS_CA_BUNDLE=/root/netskope/netskope-cert-bundle.pem \
+    CURL_CA_BUNDLE=/root/netskope/netskope-cert-bundle.pem \
+    PIP_CERT=/root/netskope/netskope-cert-bundle.pem
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git \
+        zip \
+        unzip \
+        less \
+        vim \
+        default-mysql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pecl channel-update pecl.php.net \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+COPY php-dev.ini /usr/local/etc/php/conf.d/zz-dev.ini
+COPY xdebug.ini /usr/local/etc/php/conf.d/zz-xdebug.ini
+
+RUN a2enmod rewrite
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_MEMORY_LIMIT=-1
