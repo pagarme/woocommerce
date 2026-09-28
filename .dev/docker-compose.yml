@@ -42,6 +42,8 @@ services:
       MARIADB_USER: wordpress
       MARIADB_PASSWORD: wordpress
       MARIADB_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -56,7 +58,7 @@ services:
     image: wordpress:cli-php8.4
     container_name: woo-pagarme-cli
     profiles: ["tools"]
-    user: "33:33"
+    user: "root:root"
     depends_on:
       wordpress:
         condition: service_started
@@ -74,6 +76,7 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WP_URL: "${WP_URL:-http://woo.localhost}"
       PHP_MEMORY_LIMIT: 2048M
+      WP_CLI_ALLOW_ROOT: "1"
     entrypoint: ["sh", "/init-wp.sh"]
     networks:
       - woo-pagarme
