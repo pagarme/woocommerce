@@ -1,0 +1,16 @@
+services:
+  wordpress:
+    build:
+      dockerfile: Dockerfile.netskope
+    volumes:
+      - netskope_certs:/root/netskope
+
+  wp-cli:
+    volumes:
+      - netskope_certs:/root/netskope:ro
+    environment:
+      CURL_CA_BUNDLE: /root/netskope/netskope-cert-bundle.pem
+      SSL_CERT_FILE: /root/netskope/netskope-cert-bundle.pem
+
+volumes:
+  netskope_certs:

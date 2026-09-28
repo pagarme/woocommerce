@@ -1,4 +1,5 @@
-COMPOSE := docker compose -f .dev/docker-compose.yml
+COMPOSE         := docker compose -f .dev/docker-compose.yml
+COMPOSE_NETSKOPE := $(COMPOSE) -f .dev/docker-compose.netskope.yml
 WP_SERVICE := wordpress
 DB_SERVICE := db
 
@@ -13,11 +14,15 @@ help: ## Lista todos os comandos disponíveis
 # ---------------------------------------------------------------------------
 
 .PHONY: build
-build: ## Build (ou rebuild) das imagens do ambiente de dev
+build: ## Build (ou rebuild) da imagem sem proxy corporativo
 	$(COMPOSE) build
 
+.PHONY: build-netskope
+build-netskope: ## Build (ou rebuild) da imagem com suporte ao proxy Netskope
+	$(COMPOSE_NETSKOPE) build
+
 .PHONY: up
-up: ## Sobe o ambiente em background (WordPress, MariaDB, phpMyAdmin) + instala WooCommerce
+up: ## Sobe o ambiente em background (sem proxy corporativo)
 	$(COMPOSE) up -d
 	@echo ""
 	@echo "Inicializando WordPress + WooCommerce (pode demorar na 1a vez)..."
@@ -28,9 +33,25 @@ up: ## Sobe o ambiente em background (WordPress, MariaDB, phpMyAdmin) + instala 
 	@echo "phpMyAdmin:   http://localhost:$${PMA_PORT:-8081}          (user: root  / pass: root)"
 	@echo ""
 
+.PHONY: up-netskope
+up-netskope: ## Sobe o ambiente em background (com proxy Netskope corporativo)
+	$(COMPOSE_NETSKOPE) up -d
+	@echo ""
+	@echo "Inicializando WordPress + WooCommerce (pode demorar na 1a vez)..."
+	@$(COMPOSE_NETSKOPE) run --rm wp-cli
+	@echo ""
+	@echo "WordPress:    $${WP_URL:-http://woo.localhost}"
+	@echo "wp-admin:     $${WP_URL:-http://woo.localhost}/wp-admin  (user: admin / pass: admin)"
+	@echo "phpMyAdmin:   http://localhost:$${PMA_PORT:-8081}          (user: root  / pass: root)"
+	@echo ""
+
 .PHONY: seed
-seed: ## Reexecuta o init do WP (instala/ativa WordPress + WooCommerce, idempotente)
+seed: ## Reexecuta o init do WP sem proxy corporativo (idempotente)
 	$(COMPOSE) run --rm wp-cli
+
+.PHONY: seed-netskope
+seed-netskope: ## Reexecuta o init do WP com proxy Netskope (idempotente)
+	$(COMPOSE_NETSKOPE) run --rm wp-cli
 
 .PHONY: down
 down: ## Para e remove os containers (volumes preservados)
