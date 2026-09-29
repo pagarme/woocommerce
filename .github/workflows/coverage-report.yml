@@ -31,25 +31,25 @@ jobs:
             image: btfshadow/lcov
 
         steps:
-            - uses: actions/checkout@v4
+            - uses: stone-payments/approved-actions/actions/checkout/v4@stable
               with:
                   fetch-depth: '0'
                   submodules: recursive
                   token: ${{ secrets.EXPORTED_PAGARME_GH_PAT }}
-            - uses: actions/download-artifact@v4
+            - uses: stone-payments/approved-actions/actions/download-artifact/v4@stable
               if: ${{ inputs.ARTIFACT_NAME }}
               with:
                   name: ${{ inputs.ARTIFACT_NAME }}
                   path: coverage-temp
             - name: Download All Artifacts
               if: ${{ inputs.ARTIFACT_PATTERN }}
-              uses: actions/download-artifact@v4
+              uses: stone-payments/approved-actions/actions/download-artifact/v4@stable
               with:
                   path: coverage-temp
                   pattern: ${{ inputs.ARTIFACT_PATTERN }}
                   merge-multiple: true
             - name: Setup node
-              uses: actions/setup-node@v4
+              uses: stone-payments/approved-actions/actions/setup-node/v4@stable
               with:
                   node-version: '20'
 
@@ -72,7 +72,7 @@ jobs:
                   lcovs=$(find "$ROOT_DIR" -type f -name "lcov.info" | awk '{printf "--add-tracefile %s ", $0} END {print ""}')
                   lcov $lcovs --output-file ${{ inputs.WORKING_DIRECTORY }}coverage/lcov.info
 
-            - uses: kefasjw/lcov-pull-request-report@main
+            - uses: stone-payments/approved-actions/kefasjw/lcov-pull-request-report/v1@stable
               with:
                   # Lcov file location. For example, coverage/lcov.info
                   lcov-file: ${{ inputs.WORKING_DIRECTORY }}coverage/lcov.info

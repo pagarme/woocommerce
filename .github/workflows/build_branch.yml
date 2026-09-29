@@ -28,7 +28,7 @@ concurrency:
 
 jobs:
   generate-branch-name:
-    runs-on: ubuntu-latest
+    runs-on: small-runner
     outputs:
       branch: ${{ steps.main_step.outputs.branch }}
     steps:

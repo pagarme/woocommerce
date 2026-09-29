@@ -17,13 +17,13 @@ concurrency:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: small-runner
     container:
       image: php:7.1-apache
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v3
+        uses: stone-payments/approved-actions/actions/checkout/v3@stable
       -
         name: install system packages
         run: apt-get update && apt-get -y install zip git zlib1g-dev wget
@@ -55,16 +55,16 @@ jobs:
           php composer.phar install --no-dev --ignore-platform-reqs
   phpunit:
     name: PHP Unit
-    runs-on: ubuntu-latest
+    runs-on: small-runner
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: stone-payments/approved-actions/actions/checkout/v4@stable
 
       - name: Install dependencies
-        uses: php-actions/composer@v6
+        uses: stone-payments/approved-actions/php-actions/composer/v6@stable
 
       - name: Unit tests
-        uses: php-actions/phpunit@v3
+        uses: stone-payments/approved-actions/php-actions/phpunit/v3@stable
         env:
           XDEBUG_MODE: coverage
         with:
@@ -75,7 +75,7 @@ jobs:
           coverage_clover: "lcov.info"
 
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@master
+        uses: stone-payments/approved-actions/actions/upload-artifact/master@stable
         with:
           name: woo-coverage-${{ github.sha }}
           path: lcov.info
