@@ -62,7 +62,7 @@ jobs:
         steps:
             # Git Checkout
             - name: Checkout Code
-              uses: actions/checkout@v4
+              uses: stone-payments/approved-actions/actions/checkout/v4@stable
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -75,7 +75,7 @@ jobs:
 
                 # You can override MegaLinter flavor used to have faster performances
                 # More info at https://megalinter.io/latest/flavors/
-              uses: oxsecurity/megalinter@v8
+              uses: stone-payments/approved-actions/oxsecurity/megalinter/v8@stable
 
               id: ml
 
@@ -111,7 +111,7 @@ jobs:
             # Upload MegaLinter artifacts
             - name: Archive production artifacts
               if: success() || failure()
-              uses: actions/upload-artifact@v4
+              uses: stone-payments/approved-actions/actions/upload-artifact/v4@stable
               with:
                   name: MegaLinter reports
                   include-hidden-files: "true"
@@ -150,7 +150,7 @@ jobs:
             # Create pull request if applicable
             # (for now works only on PR from same repository, not from forks)
             - name: Create Pull Request with applied fixes
-              uses: peter-evans/create-pull-request@v6
+              uses: stone-payments/approved-actions/peter-evans/create-pull-request/v6@stable
               id: cpr
               if: env.APPLY_FIXES_IF_PR == 'true'
               with:
@@ -172,7 +172,7 @@ jobs:
               run: sudo chown -Rc $UID .git/
 
             - name: Commit and push applied linter fixes
-              uses: stefanzweifel/git-auto-commit-action@v4
+              uses: stone-payments/approved-actions/stefanzweifel/git-auto-commit-action/v4@stable
               if: env.APPLY_FIXES_IF_COMMIT == 'true'
               with:
                   branch: >-
@@ -188,7 +188,7 @@ jobs:
             - name: Upload MegaLinter scan results to GitHub Security tab
               if: success() || failure()
               continue-on-error: true
-              uses: github/codeql-action/upload-sarif@v3
+              uses: stone-payments/approved-actions/github/codeql-action/upload-sarif/v3@stable
               with:
                   sarif_file: 'megalinter-reports/megalinter-report.sarif'
                   category: mega linter
