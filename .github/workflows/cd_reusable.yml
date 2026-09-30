@@ -26,7 +26,7 @@ permissions:
   contents: read
 jobs:
   publish:
-    runs-on: small-runner
+    runs-on: small-runner-on-demand
     steps:
       - name: Checkout Code
         uses: stone-payments/approved-actions/actions/checkout/v4@stable
