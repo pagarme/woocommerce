@@ -28,7 +28,7 @@ concurrency:
 
 jobs:
   generate-branch-name:
-    runs-on: small-runner
+    runs-on: small-runner-on-demand
     outputs:
       branch: ${{ steps.main_step.outputs.branch }}
     steps:

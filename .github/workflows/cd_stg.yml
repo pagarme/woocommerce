@@ -18,7 +18,7 @@ env:
   wp_mail_catcher_version_stg: ${{ vars.wp_mail_catcher_version_stg }}
 jobs:
   generate-variables:
-    runs-on: small-runner
+    runs-on: small-runner-on-demand
     outputs:
       wordpress_version_stg: ${{ steps.main_step.outputs.wordpress_version_stg }}
       woocommerce_version_stg: ${{ steps.main_step.outputs.woocommerce_version_stg }}
