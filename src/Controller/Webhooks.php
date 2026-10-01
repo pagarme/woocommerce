@@ -61,7 +61,10 @@ class Webhooks
             $this->config->log()->info('Webhook Received: empty body!');
             return;
         }
-        if (!$this->orderByWoocommerce($body->data->code, $body->data->order->metadata, $body->id) ) {
+        $code = $body->data->code ?? null;
+        $metadata = $body->data->order->metadata ?? null;
+
+        if (!$this->orderByWoocommerce($code, $metadata, $body->id) ) {
             return;
         }
 
