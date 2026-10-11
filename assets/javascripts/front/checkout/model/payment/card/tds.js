@@ -11,6 +11,7 @@ const pagarmeTds = {
     FAIL_GET_BILLING_ADDRESS: "fail_get_billing_address",
     FAIL_ASSEMBLE_CARD_EXPIRY_DATE: "fail_assemble_card_expiry_date",
     FAIL_ASSEMBLE_PURCHASE: "fail_assemble_purchase",
+    
     addErrors: (errors) => {
         if (errors.error?.email) {
             pagarmeCard.showErrorInPaymentMethod(
@@ -42,7 +43,20 @@ const pagarmeTds = {
                     pagarmeTds.FAIL_ASSEMBLE_PURCHASE
                 ]
             );
+            return;
         }
+
+        pagarmeCard.showErrorInPaymentMethod(
+            pagarmeTds.getErrorMessage(errors.error)
+        );
+    },
+
+    getErrorMessage: (error) => {
+        const messages = PagarmeGlobalVars.checkoutErrors.pt_BR;
+        if (typeof error === "string" && messages[error]) {
+            return messages[error];
+        }
+        return messages.serviceUnavailable;
     },
 
     getToken: () => {
@@ -52,10 +66,10 @@ const pagarmeTds = {
             pagarmeCard.showErrorInPaymentMethod(
                 PagarmeGlobalVars.checkoutErrors.pt_BR[data.error]
             );
-            return "";
+            return null;
         }
 
-        return data.token;
+        return data;
     },
 
     canTdsRun: () => {
@@ -109,92 +123,89 @@ const pagarmeTds = {
             .removeAttr(pagarmeTds.elementTarget);
     },
 
-    getTdsData: (acctType, cardExpiryDate) => {
-        const customerPhones = [
-            {
-                country_code: "55",
-                subscriber: pagarmeTds.filterOnlyNumber(
-                    jQuery('input[name="billing_phone"]').val()
-                ),
-                phone_type: "mobile",
-            },
-        ];
-
-        const billingAddressStreet = jQuery(
-            'input[name="billing_address_1"]'
-        ).val();
-        const billingAddressNumber = jQuery(
-            'input[name="billing_number"]'
-        ).val();
-        const billingAddressComplement = jQuery(
-            'input[name="billing_address_2"]'
-        ).val();
-        const billingAddressCity = jQuery('input[name="billing_city"]').val();
-        const billingAddressState = jQuery(
-            'select[name="billing_state"]'
-        ).val();
-        const billingAddressPostcode = jQuery(
-            'input[name="billing_postcode"]'
-        ).val();
-
-        let shippingAddressStreet = billingAddressStreet;
-        let shippingAddressNumber = billingAddressNumber;
-        let shippingAddressComplement = billingAddressComplement;
-        let shippingAddressCity = billingAddressCity;
-        let shippingAddressState = billingAddressState;
-        let shippingAddressPostcode = billingAddressPostcode;
-
-        if (jQuery('input[name="ship_to_different_address"]').is(":checked")) {
-            shippingAddressStreet = jQuery(
-                'input[name="shipping_address_1"]'
-            ).val();
-            shippingAddressNumber = jQuery(
-                'input[name="shipping_number"]'
-            ).val();
-            shippingAddressComplement = jQuery(
-                'input[name="shipping_address_2"]'
-            ).val();
-            shippingAddressCity = jQuery('input[name="shipping_city"]').val();
-            shippingAddressState = jQuery(
-                'select[name="shipping_state"]'
-            ).val();
-            shippingAddressPostcode = jQuery(
-                'input[name="shipping_postcode"]'
-            ).val();
-        }
+    getCustomerPhone: () => {
+        const rawPhone = pagarmeTds.filterOnlyNumber(
+            jQuery('input[name="billing_phone"]').val()
+        );
 
         return {
-            bill_addr: {
-                street: billingAddressStreet,
-                number: billingAddressNumber,
-                complement: billingAddressComplement,
-                city: billingAddressCity,
-                state: billingAddressState,
-                country: "BRA",
-                post_code: billingAddressPostcode,
-            },
-            ship_addr: {
-                street: shippingAddressStreet,
-                number: shippingAddressNumber,
-                complement: shippingAddressComplement,
-                city: shippingAddressCity,
-                state: shippingAddressState,
-                country: "BRA",
-                post_code: shippingAddressPostcode,
-            },
-            email: jQuery('input[name="billing_email"]').val(),
-            phones: customerPhones,
-            card_expiry_date: cardExpiryDate,
-            purchase: {
-                amount: parseInt(cartTotal * 100),
-                date: new Date().toISOString(),
-                instal_data: 2,
-            },
-            acct_type: acctType,
+            country_code: "55",
+            area_code: rawPhone.slice(0, 2),
+            number: rawPhone.slice(2),
         };
     },
 
-    callTds: (tdsToken) => {
+    getAddress: (prefix) => {
+        const street = jQuery(`input[name="${prefix}_address_1"]`).val();
+        const number = jQuery(`input[name="${prefix}_number"]`).val();
+        const complement = jQuery(`input[name="${prefix}_address_2"]`).val();
+
+        return {
+            country: "BR",
+            state: jQuery(`select[name="${prefix}_state"]`).val(),
+            city: jQuery(`input[name="${prefix}_city"]`).val(),
+            zip_code: jQuery(`input[name="${prefix}_postcode"]`).val(),
+            line_1: `${street}, ${number}`,
+            line_2: complement || "",
+        };
+    },
+
+    getTdsData: (cardData) => {
+        const billingAddress = pagarmeTds.getAddress("billing");
+        const shippingPrefix = jQuery(
+            'input[name="ship_to_different_address"]'
+        ).is(":checked")
+            ? "shipping"
+            : "billing";
+        const shippingAddress = pagarmeTds.getAddress(shippingPrefix);
+
+        const firstName = jQuery('input[name="billing_first_name"]').val();
+        const lastName = jQuery('input[name="billing_last_name"]').val();
+        const shippingFirstName =
+            jQuery(`input[name="${shippingPrefix}_first_name"]`).val() ||
+            firstName;
+        const shippingLastName =
+            jQuery(`input[name="${shippingPrefix}_last_name"]`).val() ||
+            lastName;
+
+        const customerDocument = pagarmeTds.filterOnlyNumber(
+            jQuery('#billing_document').val() ||
+                jQuery('#billing_cpf').val() ||
+                ""
+        );
+
+        return {
+            customer: {
+                name: `${firstName} ${lastName}`.trim(),
+                email: jQuery('input[name="billing_email"]').val(),
+                document: customerDocument,
+                phones: {
+                    mobile_phone: pagarmeTds.getCustomerPhone(),
+                },
+            },
+            shipping: {
+                recipient_name: `${shippingFirstName} ${shippingLastName}`.trim(),
+                address: shippingAddress,
+            },
+            payments: [
+                {
+                    payment_method: "credit_card",
+                    credit_card: {
+                        card: {
+                            number: cardData.number,
+                            holder_name: cardData.holderName,
+                            exp_month: cardData.expMonth,
+                            exp_year: cardData.expYear,
+                            billing_address: billingAddress,
+                        },
+                    },
+                    amount: parseInt(cartTotal * 100),
+                },
+            ],
+        };
+    },
+
+    callTds: (tokenData) => {
         const checkoutPaymentElement = pagarmeCard.getCheckoutPaymentElement();
 
         const expDate = jQuery(checkoutPaymentElement)
@@ -202,14 +213,25 @@ const pagarmeTds = {
             .val();
         let [expMonth, expYear] = expDate.split("/");
         expMonth = expMonth.trim();
-        expYear = expYear.trim();
-        expYear = `20${expYear}`;
+        expYear = `20${expYear.trim()}`;
 
-        const cardExpiryDate = `${expYear}-${expMonth}`;
+        const cardNumber = pagarmeTds.filterOnlyNumber(
+            jQuery(checkoutPaymentElement)
+                .find(pagarmeCard.cardNumberTarget)
+                .val()
+        );
+        const holderName = jQuery(checkoutPaymentElement)
+            .find(pagarmeCard.cardHolderNameTarget)
+            .val();
 
-        const tdsData = pagarmeTds.getTdsData("02", cardExpiryDate);
+        const tdsData = pagarmeTds.getTdsData({
+            number: cardNumber,
+            holderName,
+            expMonth,
+            expYear,
+        });
         initTds.callTdsFunction(
-            tdsToken,
+            tokenData,
             tdsData,
             pagarmeTds.callbackTds.bind(this)
         );
@@ -292,12 +314,12 @@ const pagarmeTds = {
             pagarmeCard.showLoader(event);
             pagarmeTds.checkoutEvent = event;
             pagarmeTds.addTdsAttributeData();
-            const token = pagarmeTds.getToken();
-            if (!token || token.length === 0) {
+            const tokenData = pagarmeTds.getToken();
+            if (!tokenData?.token) {
                 return false;
             }
 
-            pagarmeTds.callTds(token);
+            pagarmeTds.callTds(tokenData);
         }
 
         return canTdsRun;

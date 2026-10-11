@@ -233,6 +233,21 @@ body.woocommerce-checkout.woocommerce-order-received #page #content #main .wooco
     border: 0;
 }
 
+#challengeContainer iframe {
+    position: fixed;
+    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    max-width: 500px;
+    height: 600px;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background: #fff;
+}
+
 input[data-pagarme-uppercase="true"] {
     text-transform: uppercase !important;
 }

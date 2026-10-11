@@ -2,6 +2,7 @@
 
 namespace Woocommerce\Pagarme\Tests\Service;
 
+use Brain;
 use Mockery;
 use PagarmeCoreApiLib\Models\GetTdsTokenResponse;
 use PHPUnit\Framework\TestCase;
@@ -14,56 +15,120 @@ use Woocommerce\Pagarme\Service\TdsTokenService;
  */
 class TdsTokenServiceTest extends TestCase
 {
+   public function setUp(): void
+   {
+      parent::setUp();
+
+      Brain\Monkey\setUp();
+   }
+
    public function tearDown(): void
    {
+      parent::tearDown();
+
       Mockery::close();
+      Brain\Monkey\tearDown();
    }
 
-   public function testShoudGetTdsTokenWithLiveEndpoint()
+   /**
+    * @param int $statusCode
+    * @param array $body
+    * @return void
+    */
+   private function stubNxResponse($statusCode, array $body)
    {
-      Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
-      $configMock = Mockery::mock(Config::class);
-      $configMock->shouldReceive('getIsSandboxMode')
-         ->andReturnFalse();
+      Brain\Monkey\Functions\stubs([
+         'wp_remote_post' => ['response' => ['code' => $statusCode]],
+         'is_wp_error' => false,
+         'wp_remote_retrieve_response_code' => $statusCode,
+         'wp_remote_retrieve_body' => json_encode($body),
+      ]);
+   }
 
-      $tdsTokenService = new TdsTokenService($configMock);
-
-      $token = 'tokentds';
+   /**
+    * @param string $token
+    * @param string $environment
+    * @return void
+    */
+   private function stubLegacyProxy($token, $environment)
+   {
       $getTdsTokenResponseMock = Mockery::mock(GetTdsTokenResponse::class);
       $getTdsTokenResponseMock->tdsToken = $token;
 
       $tdsTokenProxyMock = Mockery::mock('overload:Pagarme\Core\Middle\Proxy\TdsTokenProxy');
-
-
-      $accountId = 'acc_test';
       $tdsTokenProxyMock->shouldReceive('getTdsToken')
-         ->with('live', $accountId)
+         ->with($environment, 'acc_test')
          ->andReturn($getTdsTokenResponseMock);
-
-      $this->assertSame($token, $tdsTokenService->getTdsToken($accountId));
    }
 
-   public function testShoudGetTdsTokenWithTestEnviroment()
+   public function testShouldGetTdsTokenFromNxWithEngineNx()
    {
       Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
       $configMock = Mockery::mock(Config::class);
-      $configMock->shouldReceive('getIsSandboxMode')
-         ->andReturnTrue();
+      $configMock->shouldReceive('getIsSandboxMode')->andReturnFalse();
+      $configMock->shouldReceive('getSecretKey')->andReturn('test_secret_key');
+
+      $this->stubNxResponse(200, ['tds_token' => 'nx_token_123']);
 
       $tdsTokenService = new TdsTokenService($configMock);
 
-      $token = 'tokentds';
-      $getTdsTokenResponseMock = Mockery::mock(GetTdsTokenResponse::class);
-      $getTdsTokenResponseMock->tdsToken = $token;
+      $this->assertSame(
+         ['token' => 'nx_token_123', 'engine' => TdsTokenService::ENGINE_NX],
+         $tdsTokenService->getTdsToken('acc_test')
+      );
+   }
 
-      $tdsTokenProxyMock = Mockery::mock('overload:Pagarme\Core\Middle\Proxy\TdsTokenProxy');
+   public function testShouldFallbackToLegacyTokenWhenNxReturnsError()
+   {
+      Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
+      $configMock = Mockery::mock(Config::class);
+      $configMock->shouldReceive('getIsSandboxMode')->andReturnFalse();
+      $configMock->shouldReceive('getSecretKey')->andReturn('test_secret_key');
 
+      $this->stubNxResponse(500, []);
+      $this->stubLegacyProxy('legacy_token_456', 'live');
 
-      $accountId = 'acc_test';
-      $tdsTokenProxyMock->shouldReceive('getTdsToken')
-         ->with('test', $accountId)
-         ->andReturn($getTdsTokenResponseMock);
+      $tdsTokenService = new TdsTokenService($configMock);
 
-      $this->assertSame($token, $tdsTokenService->getTdsToken($accountId));
+      $this->assertSame(
+         ['token' => 'legacy_token_456', 'engine' => TdsTokenService::ENGINE_LEGACY],
+         $tdsTokenService->getTdsToken('acc_test')
+      );
+   }
+
+   public function testShouldFallbackToLegacyTokenWhenNxResponseHasNoToken()
+   {
+      Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
+      $configMock = Mockery::mock(Config::class);
+      $configMock->shouldReceive('getIsSandboxMode')->andReturnFalse();
+      $configMock->shouldReceive('getSecretKey')->andReturn('test_secret_key');
+
+      $this->stubNxResponse(200, ['unexpected_key' => 'value']);
+      $this->stubLegacyProxy('legacy_token_456', 'live');
+
+      $tdsTokenService = new TdsTokenService($configMock);
+
+      $this->assertSame(
+         ['token' => 'legacy_token_456', 'engine' => TdsTokenService::ENGINE_LEGACY],
+         $tdsTokenService->getTdsToken('acc_test')
+      );
+   }
+
+   public function testShouldUseTestEnvironmentOnLegacyFallbackWhenSandbox()
+   {
+      Mockery::mock('overload:Woocommerce\Pagarme\Model\CoreAuth');
+      $configMock = Mockery::mock(Config::class);
+      $configMock->shouldReceive('getIsSandboxMode')->andReturnTrue();
+      $configMock->shouldReceive('getSecretKey')->andReturn('test_secret_key');
+
+      $this->stubNxResponse(500, []);
+      $this->stubLegacyProxy('tokentds', 'test');
+
+      $tdsTokenService = new TdsTokenService($configMock);
+
+      $this->assertSame(
+         ['token' => 'tokentds', 'engine' => TdsTokenService::ENGINE_LEGACY],
+         $tdsTokenService->getTdsToken('acc_test')
+      );
    }
 }
