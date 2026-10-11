@@ -128,6 +128,13 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
     public $paymentOrigin;
 
     /**
+     * Defines the recurrence model for external recurrences
+     * @maps recurrence_model
+     * @var string|null $recurrenceModel public property
+     */
+    public $recurrenceModel;
+
+    /**
      * Constructor to set initial or default values of member properties
      * @param integer                             $installments         Initialization value for $this->installments
      * @param string                              $statementDescriptor  Initialization value for $this-
@@ -154,10 +161,33 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
      *                                                                    >recurrenceCycle
      * @param string                              $paymentOrigin        Initialization value for $this-
      *                                                                    >paymentOrigin
+     * @param string                              $recurrenceModel      Initialization value for $this-
+     *                                                                    >recurrenceModel
      */
     public function __construct()
     {
         switch (func_num_args()) {
+            case 18:
+                $this->installments         = func_get_arg(0);
+                $this->statementDescriptor  = func_get_arg(1);
+                $this->card                 = func_get_arg(2);
+                $this->cardId               = func_get_arg(3);
+                $this->cardToken            = func_get_arg(4);
+                $this->recurrence           = func_get_arg(5);
+                $this->capture              = func_get_arg(6);
+                $this->extendedLimitEnabled = func_get_arg(7);
+                $this->extendedLimitCode    = func_get_arg(8);
+                $this->merchantCategoryCode = func_get_arg(9);
+                $this->authentication       = func_get_arg(10);
+                $this->contactless          = func_get_arg(11);
+                $this->autoRecovery         = func_get_arg(12);
+                $this->operationType        = func_get_arg(13);
+                $this->recurrencyCycle      = func_get_arg(14);
+                $this->recurrenceCycle      = func_get_arg(15);
+                $this->paymentOrigin        = func_get_arg(16);
+                $this->recurrenceModel      = func_get_arg(17);
+                break;
+
             case 17:
                 $this->installments         = func_get_arg(0);
                 $this->statementDescriptor  = func_get_arg(1);
@@ -209,6 +239,7 @@ class CreateCreditCardPaymentRequest implements JsonSerializable
         $json['recurrency_cycle']       = $this->recurrencyCycle;
         $json['recurrence_cycle']       = $this->recurrenceCycle;
         $json['payment_origin']         = $this->paymentOrigin;
+        $json['recurrence_model']       = $this->recurrenceModel;
 
         return $json;
     }
