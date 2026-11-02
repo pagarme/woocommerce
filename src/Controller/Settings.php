@@ -415,7 +415,7 @@ class Settings
         $paymentGatewaysHandler = WC_Subscriptions_Core_Plugin::instance()->get_gateways_handler_class();
 
         if (
-            !str_starts_with($gateway->id, 'woo-pagarme-payments-')
+            0 !== strpos($gateway->id, 'woo-pagarme-payments-')
             || !$paymentGatewaysHandler::gateway_supports_subscriptions($gateway)
         ) {
             echo '-</td>';
