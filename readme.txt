@@ -4,7 +4,7 @@ Tags: payment, stone, ecommerce, brasil, woocommerce
 Requires at least: 4.1
 Tested up to: 6.9.4
 Requires PHP: 7.1
-Stable tag: 3.10.1
+Stable tag: 3.10.2
 License: MIT
 License URI: https://github.com/pagarme/woocommerce/blob/master/LICENSE
 
@@ -25,8 +25,8 @@ Nosso processo de instalação é simples e bem detalhado:
 == Changelog ==
 Lançamos versões regularmente com melhorias, correções e atualizações.
 
-= 3.10.1 (10/08/2026) =
-Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.10.1)
+= 3.10.2 (10/08/2026) =
+Você pode conferir essas atualizações aqui: [Github](https://github.com/pagarme/woocommerce/releases/tag/3.10.2)
 
 * **Melhorias:**
-  * Atualização de branding do plugin e integrações de Pagar.me para Stone (OneStone).
+  * Corrigir o valor cobrado em pagamentos com cartão de crédito parcelado com juros. O valor enviado ao Pagar.me não incluía os juros da parcela escolhida, e o cálculo de parcelas tinha resíduos de ponto flutuante. Agora o valor cobrado é o mesmo total com juros exibido no checkout.
