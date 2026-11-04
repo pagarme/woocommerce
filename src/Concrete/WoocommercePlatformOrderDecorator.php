@@ -35,6 +35,7 @@ use Throwable;
 use WC_Customer;
 use WC_Order;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\CardInstallments;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Customer as PagarmeCustomer;
 use Woocommerce\Pagarme\Model\Order;
@@ -638,6 +639,18 @@ class WoocommercePlatformOrderDecorator extends AbstractPlatformOrderDecorator
         $paymentMethods = $paymentFactory->createFromJson(
             json_encode($paymentData)
         );
+
+        // ponytail: PaymentFactory builds credit card payments first, so indexes match $paymentData
+        $cardInstallments = new CardInstallments();
+        foreach ($paymentData[AbstractCreditCardPayment::getBaseCode()] ?? [] as $i => $card) {
+            if (!isset($paymentMethods[$i], $card->installments)) {
+                continue;
+            }
+            $amount = $cardInstallments->getTotalWithInterest($card->amount, $card->installments, $card->brand ?? false);
+            if ($amount !== null) {
+                $paymentMethods[$i]->setAmount($amount);
+            }
+        }
 
         return $paymentMethods;
     }
