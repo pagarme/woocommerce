@@ -99,7 +99,11 @@ class CardInstallments
             if ($times <= $noInterest) {
                 $value = $total;
             }
-            $price = ceil($value / $times * 100) / 100;
+            // round before ceil to avoid float residue; same rule as the core Installment
+            $price = ceil(round($value / $times * 100, 4)) / 100;
+            if ($times > $noInterest && $interest) {
+                $value = round($price * $times, 2);
+            }
             if ($price < $minAmount && $times > 1) {
                 break;
             }
@@ -119,6 +123,25 @@ class CardInstallments
             ];
         }
         return $options;
+    }
+
+    /**
+     * Charged amount (cents) for the chosen installment, same rule shown on checkout.
+     *
+     * @param int|string $amountInCents
+     * @param int|string $installments
+     * @param string|bool $flag
+     *
+     * @return int|null null when the installment is not available
+     */
+    public function getTotalWithInterest($amountInCents, $installments, $flag = false)
+    {
+        foreach ($this->getInstallmentsByType($amountInCents / 100, $flag) as $option) {
+            if ((int) $option['value'] === (int) $installments && isset($option['finalPrice'])) {
+                return $option['finalPrice'];
+            }
+        }
+        return null;
     }
 
     private function getInstallmentText($times, $priceInstallment, $priceWithInterest)
@@ -245,6 +268,6 @@ class CardInstallments
 
     private function formatPrice($price)
     {
-        return $price * 100;
+        return (int) round($price * 100);
     }
 }
