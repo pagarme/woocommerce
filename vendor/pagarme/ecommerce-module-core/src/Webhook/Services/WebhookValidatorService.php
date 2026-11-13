@@ -3,17 +3,23 @@
 namespace Pagarme\Core\Webhook\Services;
 
 use Exception;
+use Pagarme\Core\Kernel\Services\ApiUrlService;
 use Pagarme\Core\Kernel\Services\LogService;
 use stdClass;
 
 class WebhookValidatorService
 {
-    const JWKS_URL = 'https://hubapi.pagar.me/.well-known/jwks.json';
+    const JWKS_PATH = '/.well-known/jwks.json';
     const JWKS_CACHE_KEY = 'pagarme-webhook-jwks';
     const JWKS_CACHE_TTL = 31536000; // 1 year in seconds
     const DEFAULT_ALGORITHM = 'RS256';
     const DEFAULT_KTY_TYPE = 'RSA';
     const DEFAULT_USE = 'sig';
+
+    private static function getJwksUrl()
+    {
+        return ApiUrlService::getHubApiUrl() . self::JWKS_PATH;
+    }
 
     /**
      * Validates the signature of a webhook payload.
@@ -66,7 +72,7 @@ class WebhookValidatorService
 
         $jwksData = self::fetchAndParseJwks();
         if ($jwksData === null) {
-            $logService->exception(new Exception("Failed to fetch or parse JWKS from ". self::JWKS_URL));
+            $logService->exception(new Exception("Failed to fetch or parse JWKS from ". self::getJwksUrl()));
             return false;
         }
 
@@ -106,7 +112,7 @@ class WebhookValidatorService
      */
     private static function fetchAndParseJwks(): ?stdClass
     {
-        $curlHandle = curl_init(self::JWKS_URL);
+        $curlHandle = curl_init(self::getJwksUrl());
         curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curlHandle, CURLOPT_TIMEOUT, 10);
         curl_setopt($curlHandle, CURLOPT_FAILONERROR, true);

@@ -2,14 +2,13 @@
 /* jshint esversion: 8 */
 let pagarmeTokenize = {
     appId: jQuery('[data-pagarmecheckout-app-id]').data('pagarmecheckoutAppId'),
-    apiUrl: 'https://api.pagar.me/core/v5/tokens',
     token: 'token',
     vendor: 'pagarme',
     paymentMethodTarget: 'data-pagarmecheckout-method',
     sequenceTarget: 'data-pagarmecheckout-card-num',
     tokenElementTarget: 'data-pagarme-element',
     getEndpoint: function () {
-        let url = new URL(this.apiUrl);
+        let url = new URL(PagarmeGlobalVars.apiUrls.tokens);
         url.searchParams.append('appId', this.appId);
         return url.toString();
     },

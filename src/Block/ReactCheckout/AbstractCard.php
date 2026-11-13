@@ -4,6 +4,7 @@ namespace Woocommerce\Pagarme\Block\ReactCheckout;
 
 use Woocommerce\Pagarme\Block\Checkout\Form\Card as CardBlock;
 use Woocommerce\Pagarme\Block\Checkout\Form\Installments as InstallmentsBlock;
+use Woocommerce\Pagarme\Model\ApiEndpoints;
 use Woocommerce\Pagarme\Model\Config;
 use Woocommerce\Pagarme\Model\Payment\Card;
 
@@ -31,6 +32,7 @@ abstract class AbstractCard extends AbstractPaymentMethodBlock {
             'walletEnabled'    => $this->isWalletEnabled(),
             'installmentsType' => intval( $this->config->getCcInstallmentType() ?? 1 ),
             'appId'            => $this->config->getPublicKey(),
+            'apiUrls'          => ApiEndpoints::getFrontendUrls(),
             'installments'     => $this->getInstallments(),
             'fieldsLabels'     => $this->getFieldsLabels(),
             'brands'           => $this->paymentModel->getConfigDataProvider()['brands'],

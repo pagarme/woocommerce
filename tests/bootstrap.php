@@ -46,6 +46,18 @@ if (!defined('WCMP_PLUGIN_BASE')) {
     define('WCMP_PLUGIN_BASE', 'woo-pagarme-payments/woo-pagarme-payments.php');
 }
 
+if (!defined('WCMP_DEFAULT_API_URL')) {
+    define('WCMP_DEFAULT_API_URL', 'https://api.pagar.me');
+}
+
+if (!defined('WCMP_DEFAULT_HUB_API_URL')) {
+    define('WCMP_DEFAULT_HUB_API_URL', 'https://hubapi.pagar.me');
+}
+
+if (!defined('WCMP_DEFAULT_CDN_URL')) {
+    define('WCMP_DEFAULT_CDN_URL', 'https://cdn.mundipagg.com');
+}
+
 if (!defined('WCMP_JS_HANDLER_BASE_NAME')) {
     define('WCMP_JS_HANDLER_BASE_NAME', 'pagarme_scripts_');
 }

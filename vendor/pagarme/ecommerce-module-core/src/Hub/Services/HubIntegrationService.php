@@ -3,6 +3,7 @@
 namespace Pagarme\Core\Hub\Services;
 
 use Pagarme\Core\Hub\Aggregates\InstallToken;
+use Pagarme\Core\Kernel\Services\ApiUrlService;
 use Pagarme\Core\Kernel\Services\LogService;
 use Pagarme\Core\Hub\Factories\HubCommandFactory;
 use Pagarme\Core\Hub\Factories\InstallTokenFactory;
@@ -115,7 +116,7 @@ final class HubIntegrationService
             $body['webhook_url'] = $webhookUrl;
         }
 
-        $url = 'https://hubapi.mundipagg.com/auth/apps/access-tokens';
+        $url = ApiUrlService::getHubApiUrl() . '/auth/apps/access-tokens';
         $headers = [
             'PublicAppKey' => MPSetup::getHubAppPublicAppKey(),
             'Content-Type' => 'application/json'

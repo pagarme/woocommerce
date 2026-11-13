@@ -13,6 +13,7 @@ namespace Woocommerce\Pagarme\Block\Checkout\Form;
 
 use Woocommerce\Pagarme\Core;
 use Woocommerce\Pagarme\Helper\Utils;
+use Woocommerce\Pagarme\Model\ApiEndpoints;
 use Woocommerce\Pagarme\Model\Subscription;
 use Woocommerce\Pagarme\Model\Payment\Voucher;
 use Woocommerce\Pagarme\Block\Checkout\Gateway;
@@ -157,6 +158,7 @@ class Card extends Gateway
             'checkoutErrors' => array(
                 'pt_BR' => self::getCardErrorsMessagesTranslated(),
             ),
+            'apiUrls'        => ApiEndpoints::getFrontendUrls(),
         );
 
         return array_merge($defaults, $args);

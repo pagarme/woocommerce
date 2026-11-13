@@ -12,7 +12,6 @@ let pagarmeCard = {
     installmentsTarget: '[data-pagarme-component="installments"]',
     installmentsInfoTarget: '[data-pagarme-component="installments-info"]',
     maskTargets: 'input[class*="pagarme-card-form"][data-mask]',
-    mundiCdn: 'https://cdn.mundipagg.com/assets/images/logos/brands/png/',
     tokenElement: '[data-pagarme-element="token"]',
     fieldsetCardElements: 'fieldset[data-pagarmecheckout="card"]',
     billingCpfId: '#billing_cpf',
@@ -228,7 +227,7 @@ let pagarmeCard = {
             jQuery.ajax({
                 type: "GET",
                 dataType: "json",
-                url: 'https://api.pagar.me/bin/v1/' + bin,
+                url: PagarmeGlobalVars.apiUrls.bin + bin,
                 async: false,
                 cache: false,
                 success: function (data) {
@@ -292,7 +291,7 @@ let pagarmeCard = {
         if (card[0].image) {
             return card[0].image;
         }
-        return this.mundiCdn + card[0].brand + '.png';
+        return PagarmeGlobalVars.apiUrls.cardBrandsCdn + card[0].brand + '.png';
     },
     formatValue: function (value, raw = true) {
         if (raw) {
