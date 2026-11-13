@@ -37,6 +37,7 @@ export async function tokenize(
     cardCvv,
     appId,
     errorMessages,
+    tokensUrl,
 ) {
     const [month, year] = getMonthAndYearFromExpirationDate(cardExpirationDate);
     const data = {
@@ -50,8 +51,7 @@ export async function tokenize(
     };
 
     try {
-        const tokenUrl = `https://api.pagar.me/core/v5/tokens?appId=${appId}`;
-        const response = await fetch(tokenUrl, {
+        const response = await fetch(`${tokensUrl}?appId=${appId}`, {
             method: "POST",
             body: JSON.stringify(data),
         });

@@ -3,6 +3,7 @@
 namespace Pagarme\Core\Kernel\Abstractions;
 
 use Pagarme\Core\Kernel\Aggregates\Configuration;
+use Pagarme\Core\Kernel\Services\ApiUrlService;
 use Pagarme\Core\Kernel\Repositories\ConfigurationRepository;
 use PagarmeCoreApiLib\Configuration as PagarmeCoreAPIConfiguration;
 use ReflectionClass;
@@ -81,8 +82,10 @@ abstract class AbstractModuleCoreSetup
     protected static function setApiBaseUrl()
     {
         if (static::$moduleConfig->isHubEnabled()) {
-            PagarmeCoreAPIConfiguration::$BASEURI = 'https://hubapi.pagar.me/core/v1';
+            PagarmeCoreAPIConfiguration::$BASEURI = ApiUrlService::getHubApiUrl() . '/core/v1';
+            return;
         }
+        PagarmeCoreAPIConfiguration::$BASEURI = ApiUrlService::getApiUrl() . '/core/v5';
     }
 
     protected static function updateModuleConfiguration()

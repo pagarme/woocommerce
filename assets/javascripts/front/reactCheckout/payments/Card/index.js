@@ -86,6 +86,7 @@ const Card = ({
                             brand={brand}
                             setBrand={setBrand}
                             brands={backendConfig?.brands}
+                            apiUrls={backendConfig?.apiUrls}
                             setIsLoading={setIsLoading}
                             cardIndex={cardIndex}
                             errors={errors}

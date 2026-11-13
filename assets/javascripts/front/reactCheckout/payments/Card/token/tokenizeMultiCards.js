@@ -33,6 +33,7 @@ const tokenizeMultiCards = async (cards, cardsNumber, backendConfig) => {
             cvv,
             backendConfig.appId,
             backendConfig.errorMessages,
+            backendConfig.apiUrls.tokens,
         );
 
         if (result.errorMessage) {

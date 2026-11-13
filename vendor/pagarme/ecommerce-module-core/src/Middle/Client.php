@@ -4,13 +4,13 @@ namespace Pagarme\Core\Middle;
 
 use PagarmeCoreApiLib\PagarmeCoreApiClient;
 use PagarmeCoreApiLib\Configuration;
+use Pagarme\Core\Kernel\Services\ApiUrlService;
 
 /**
  * This class is responsible for authentication.
  */
 abstract class Client
 {
-    const BASE_URI = 'https://hubapi.pagar.me/';
     const DEFAULT_RESOURCE = 'core/v1';
 
     public $client;
@@ -19,7 +19,7 @@ abstract class Client
     public function __construct($resource = self::DEFAULT_RESOURCE)
     {
         Configuration::$basicAuthPassword = '';
-        Configuration::$BASEURI = self::BASE_URI . $resource;
+        Configuration::$BASEURI = ApiUrlService::getHubApiUrl() . '/' . $resource;
         $this->client = $this->services();
     }
     private function auth()

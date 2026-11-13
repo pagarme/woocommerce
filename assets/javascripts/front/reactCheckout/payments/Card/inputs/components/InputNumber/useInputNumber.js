@@ -3,10 +3,6 @@ import { useState } from "@wordpress/element";
 import { formatCardNumber } from "../../utils/cardNumberFormatter";
 import useCardValidation from "../../../useCardValidation";
 
-const binUrl = "https://api.pagar.me/bin/v1/";
-const mundipaggCdn =
-    "https://cdn.mundipagg.com/assets/images/logos/brands/png/";
-
 const useInputNumber = (
     inputValue,
     brands,
@@ -17,6 +13,7 @@ const useInputNumber = (
     errors,
     setErrors,
     fieldErrors,
+    apiUrls,
 ) => {
     const {validateInputNumber} = useCardValidation(cardIndex, errors, setErrors, fieldErrors);
 
@@ -65,7 +62,7 @@ const useInputNumber = (
 
         setIsLoading(true);
         const bin = cardNumber.substring(0, 6);
-        const binFormattedUrl = `${binUrl}${bin}`;
+        const binFormattedUrl = `${apiUrls.bin}${bin}`;
 
         try {
             const response = await fetch(binFormattedUrl);
@@ -89,7 +86,7 @@ const useInputNumber = (
                 return;
             }
 
-            const brandImage = `${mundipaggCdn}${brand}.png`;
+            const brandImage = `${apiUrls.cardBrandsCdn}${brand}.png`;
             setBrandImageSrc(brandImage);
             setIsLoading(false);
             setBrand(cardIndex, brand);

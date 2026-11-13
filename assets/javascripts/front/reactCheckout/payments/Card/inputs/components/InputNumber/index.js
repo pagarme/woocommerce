@@ -11,6 +11,7 @@ const InputNumber = ({
     brand,
     setBrand,
     brands,
+    apiUrls,
     setIsLoading,
     cardIndex,
     errors,
@@ -27,6 +28,7 @@ const InputNumber = ({
         errors,
         setErrors,
         fieldErrors,
+        apiUrls,
     );
 
     return (
@@ -61,6 +63,10 @@ InputNumber.propTypes = {
     brand: PropTypes.string.isRequired,
     setBrand: PropTypes.func.isRequired,
     brands: PropTypes.object.isRequired,
+    apiUrls: PropTypes.shape({
+        bin: PropTypes.string.isRequired,
+        cardBrandsCdn: PropTypes.string.isRequired,
+    }).isRequired,
     setIsLoading: PropTypes.func.isRequired,
     cardIndex: PropTypes.number.isRequired,
     errors: PropTypes.object.isRequired,
